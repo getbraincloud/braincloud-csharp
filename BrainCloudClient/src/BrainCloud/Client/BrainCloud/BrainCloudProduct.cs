@@ -497,15 +497,59 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        public void VerifyItunesReceipt(String in_base64EncReceiptData, bool in_useSandbox, SuccessCallback in_callback = null, FailureCallback in_failure = null, object in_cbObject = null)
+        /// <summary>
+        /// Verify ITunes Receipt
+        /// </summary>
+        /// <remarks>
+        /// Service Name - product
+        /// Service Operation - OP_CASH_IN_RECEIPT
+        /// </remarks>
+        /// <param name="in_base64EncReceiptData">
+        /// Base64 encoded receipt data
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data":
+        ///   {
+        ///      "playerCurrency" : {
+        ///         "playerId" : "sfhsjdfhfjhf",
+        ///         "currencyMap" : {
+        ///             "coin" : {
+        ///                 "purchased" : NumberLong(0),
+        ///                 "balance" : NumberLong(5000),
+        ///                 "consumed" : NumberLong(0),
+        ///                 "awarded" : NumberLong(5000)
+        ///             },
+        ///             "bar" : {
+        ///                 "purchased" : NumberLong(0),
+        ///                 "balance" : NumberLong(2),
+        ///                 "consumed" : NumberLong(0),
+        ///                 "awarded" : NumberLong(2)
+        ///             }
+        ///         },
+        ///         "createdAt" : 763578645786,
+        ///         "updatedAt" : 8692486255764,
+        ///       },
+        ///       "appleReceipt" : "gsgsfvgvg",
+        ///       "status" : 0,
+        ///       "server_time" : 987490827457
+        ///   }
+        /// }
+        /// </returns>
+        public void VerifyItunesReceipt(String in_base64EncReceiptData, SuccessCallback in_callback = null, FailureCallback in_failure = null, object in_cbObject = null)
         {
             JsonData message = new JsonData();
             message[OperationParam.ProductServiceOpCashInReceiptReceipt.Value] = in_base64EncReceiptData;
-
-            if (in_useSandbox)
-            {
-                message[OperationParam.ProductServiceOpCashInReceiptUrl.Value] = "sandbox";
-            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_callback, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.CashInReceipt, message, callback);
@@ -516,7 +560,7 @@ namespace BrainCloud
         /// Confirm Facebook Purchase
         /// </summary>
         /// <remarks>
-        /// Service Name - productService
+        /// Service Name - product
         /// Service Operation - FB_CONFIRM_PURCHASE
         /// </remarks>
         /// <param name="in_signedRequest">
@@ -554,6 +598,40 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Confirm GooglePlay Purchase
+        /// </summary>
+        /// <remarks>
+        /// Service Name - product
+        /// Service Operation - CONFIRM_GOOGLEPLAY_PURCHASE
+        /// </remarks>
+        /// <param name="in_orderId">
+        /// GooglePlay order id
+        /// </param>
+        /// <param name="in_productId">
+        /// GooglePlay product id
+        /// </param>
+        /// <param name="in_token">
+        /// GooglePlay token string
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data":
+        ///   {
+        ///      "result" : "OK"
+        ///   }
+        /// }
+        /// </returns>
         public void ConfirmGooglePlayPurchase(
             string in_orderId,
             string in_productId,
