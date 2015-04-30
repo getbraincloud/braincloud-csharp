@@ -208,6 +208,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Util.cs">
       <Link>BrainCloud\Util.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Version.cs">
+      <Link>BrainCloud\Version.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\LitJson\IJsonWrapper.cs">
       <Link>LitJson\IJsonWrapper.cs</Link>
     </Compile>

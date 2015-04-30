@@ -216,6 +216,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Properties\AssemblyInfo.cs">
       <Link>BrainCloud\Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Version.cs">
+      <Link>BrainCloud\Version.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

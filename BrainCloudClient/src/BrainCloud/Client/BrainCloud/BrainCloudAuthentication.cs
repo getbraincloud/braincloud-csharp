@@ -338,7 +338,7 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
             data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform;
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
-            data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = m_brainCloudClientRef.BrainCloudClientVersion;
+            data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
             data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = countryCode;
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = languageCode;

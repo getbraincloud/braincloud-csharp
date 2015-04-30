@@ -28,7 +28,6 @@ namespace BrainCloud
     public class BrainCloudClient
     {
         #region Public Static
-        internal static string s_brainCloudClientVersion = "2.8.0";
 
         private static BrainCloudClient s_instance;
 
@@ -479,7 +478,7 @@ namespace BrainCloud
         {
             get
             {
-                return s_brainCloudClientVersion;    //no public "set"
+                return Version.GetVersion();    //no public "set"
             }
         }
 
