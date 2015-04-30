@@ -506,7 +506,7 @@ namespace BrainCloud.Internal
             }
         }
 
-#if UNITY_WP8
+#if UNITY_WP8 || DOT_NET
         private bool AcceptAllCertifications(object sender,
                                              System.Security.Cryptography.X509Certificates.X509Certificate certification,
                                              System.Security.Cryptography.X509Certificates.X509Chain chain,
