@@ -40,15 +40,6 @@
     <None Include="..\..\src\BrainCloud\LitJson\AssemblyInfo.cs.in">
       <Link>LitJson\AssemblyInfo.cs.in</Link>
     </None>
-    <None Include="..\..\src\BrainCloud\Client\BrainCloud\.DS_Store">
-      <Link>BrainCloud\.DS_Store</Link>
-    </None>
-    <None Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\.DS_Store">
-      <Link>BrainCloud\Entity\.DS_Store</Link>
-    </None>
-    <None Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\.DS_Store">
-      <Link>BrainCloud\Internal\.DS_Store</Link>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\src\BrainCloud\LitJson\IJsonWrapper.cs">
@@ -228,7 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\..\..\..\..\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
