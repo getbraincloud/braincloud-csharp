@@ -59,7 +59,9 @@ namespace BrainCloud.Internal
 
         private object  m_processingEvent = new object();
         private volatile bool m_processingBool = false;
+#if (DOT_NET)
         private volatile bool m_processThread = true;
+#endif
 
         private int m_heartBeatInterval = 60000;
         private ITimer m_heartBeatTimer;
@@ -963,21 +965,20 @@ namespace BrainCloud.Internal
 
         private void EnableProcessEvents(bool in_value, bool in_tearDown = false)
         {
-            //m_brainCloudClientRef.Log("EnableProcessEvents  " + in_value);
             if (in_value)
             {
+#if (DOT_NET)
                 m_processThread = true;
-                //m_brainCloudClientRef.Log("calls waiting --- count = " + m_serviceCallsWaiting.Count);
+#endif
             }
-            // false!!!
             else
             {
-
                 if (in_tearDown)
                 {
+#if (DOT_NET)
                     m_processThread = false;
+#endif
                 }
-                //m_brainCloudClientRef.Log("calls waiting --- count = " + m_serviceCallsWaiting.Count);
             }
 
             m_processingBool = in_value;
