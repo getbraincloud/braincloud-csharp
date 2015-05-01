@@ -354,65 +354,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.RemoveAttributes, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        /// <summary>
-        /// Updates the "friend summary data" associated with the logged in player.
-        /// Some operations will return this summary data. For instance the social
-        /// leaderboards will return the player's score in the leaderboard along
-        /// with the friend summary data. Generally this data is used to provide
-        /// a quick overview of the player without requiring a separate API call
-        /// to read their public stats or entity data.
-        ///
-        /// Note this API call pre-dates the shared player data api (public entity/stats)
-        /// and thus usage for anything outside of social leaderboards should be
-        /// deprecated.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - PlayerState
-        /// Service Operation - UpdateSummary
-        /// </remarks>
-        /// <param name="in_jsonSummaryData">
-        /// A JSON string defining the summary data.
-        /// For example:
-        /// {
-        ///   "xp":123,
-        ///   "level":12,
-        ///   "highScore":45123
-        /// }
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
-        public void UpdateSummaryFriendData(
-            string in_jsonSummaryData,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            JsonData data = new JsonData();
-            if (Util.IsOptionalParameterValid(in_jsonSummaryData))
-            {
-                JsonData jsonData = JsonMapper.ToObject(in_jsonSummaryData);
-                data[OperationParam.PlayerStateServiceUpdateFriendSummaryData.Value] = jsonData;
-            }
-            else data = null;
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateSummary, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
     }
 
 }
