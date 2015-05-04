@@ -50,10 +50,6 @@ namespace BrainCloud
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
         /// </param>
-        /// <param name="in_pushNotificationToProduction">
-        /// If the optional push notification message is sent, this controls
-        /// whether it goes to the production environment or the sandbox environment (default production)
-        /// </param>
         /// <param name="in_matchId">
         /// Optional match identifier. An id will be generated if not provided.
         /// </param>
@@ -96,13 +92,12 @@ namespace BrainCloud
         public void CreateMatch(
             string in_jsonOpponentIds,
             string in_pushNotificationMessage,
-            bool in_pushNotificationToProduction,
             string in_matchId,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            CreateMatchWithInitialTurn (in_jsonOpponentIds, null, in_pushNotificationMessage, in_pushNotificationToProduction, in_matchId, null, null, in_success, in_failure, in_cbObject);
+            CreateMatchWithInitialTurn (in_jsonOpponentIds, null, in_pushNotificationMessage, in_matchId, null, null, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -138,10 +133,6 @@ namespace BrainCloud
         /// <param name="in_pushNotificationMessage">
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
-        /// </param>
-        /// <param name="in_pushNotificationToProduction">
-        /// If the optional push notification message is sent, this controls
-        /// whether it goes to the production environment or the sandbox environment (default production)
         /// </param>
         /// <param name="in_matchId">
         /// Optional match identifier. An id will be generated if not provided.
@@ -192,7 +183,6 @@ namespace BrainCloud
             string in_jsonOpponentIds,
             string in_jsonMatchState,
             string in_pushNotificationMessage,
-            bool in_pushNotificationToProduction,
             string in_matchId,
             string in_nextPlayer,
             string in_jsonSummary,
@@ -227,7 +217,6 @@ namespace BrainCloud
             if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
             {
                 data["pushContent"] = in_pushNotificationMessage;
-                data["pushForProduction"] = in_pushNotificationToProduction;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -260,10 +249,6 @@ namespace BrainCloud
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
         /// </param>
-        /// <param name="pushNotificationToProduction">
-        /// If the optional push notification message is sent, this controls
-        /// whether it goes to the production environment or the sandbox environment (default production)
-        /// </param>
         /// <param name="nextPlayer">
         /// Optionally, force the next player player to be a specific player
         /// </param>
@@ -289,7 +274,6 @@ namespace BrainCloud
             UInt64 in_version,
             string in_jsonMatchState,
             string in_pushNotificationMessage,
-            bool in_pushNotificationToProduction,
             string in_nextPlayer,
             string in_jsonSummary,
             string in_jsonStatistics,
@@ -326,7 +310,6 @@ namespace BrainCloud
             if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
             {
                 data["pushContent"] = in_pushNotificationMessage;
-                data["pushForProduction"] = in_pushNotificationToProduction;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
