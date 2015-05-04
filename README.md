@@ -4,6 +4,10 @@ Thanks for downloading the brainCloud Unity / C# client library! Here are a few 
 
 http://apidocs.braincloudservers.com/
 
+If you haven't signed up or you want to log into the brainCloud portal, you can do that here:
+
+https://portal.braincloudservers.com/
+
 ## Installation Guide
 
 To install the brainCloud library simply copy these two folders into the Assets folder of your Unity project:
