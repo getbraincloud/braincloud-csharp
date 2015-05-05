@@ -1,4 +1,4 @@
-# brainCloud Unity/C#
+# brainCloud Unity/Csharp
 
 Thanks for downloading the brainCloud Unity / C# client library! Here are a few notes to get you started. Further information about the brainCloud API and a few example Tutorials can be found here:
 
