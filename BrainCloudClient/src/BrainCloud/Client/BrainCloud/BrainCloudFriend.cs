@@ -72,9 +72,6 @@ namespace BrainCloud
         /// <param name="in_entityType">
         /// Types of entities to retrieve.
         /// </param>
-        /// <param name="in_entitySubtype">
-        /// Subtypes of entities to retrieve.
-        /// </param>
         /// <param name="in_success">
         /// The success callback.
         /// </param>
@@ -88,14 +85,12 @@ namespace BrainCloud
         /// </returns>
         public void ReadFriendsEntities(
             string in_entityType,
-            string in_entitySubtype,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             JsonData data = new JsonData();
             data[OperationParam.FriendServiceEntityType.Value] = in_entityType;
-            data[OperationParam.FriendServiceEntitySubtype.Value] = in_entitySubtype;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriendsEntities, data, callback);
@@ -173,62 +168,6 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Returns the "friend summary data" associated with the logged in player.
-        /// Some operations will return this summary data. For instance the social
-        /// leaderboards will return the player's score in the leaderboard along
-        /// with the player's friend summary data. Generally this data is used to
-        /// provide a quick overview of the player without requiring a separate API
-        /// call to read their public stats or entity data.
-        ///
-        /// Note this API call pre-dates the shared player data api (public entity/stats).
-        /// The shared player data api may be more suitable for sharing of data.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - ReadFriends
-        /// </remarks>
-        /// <param name="in_jsonSummaryData">
-        /// A JSON string defining the summary data.
-        /// For example:
-        /// {
-        ///   "status":200
-        ///   "data":{
-        ///     "friendSummaryData": {
-        ///       "xp":123,
-        ///       "level":12,
-        ///       "highScore":45123
-        ///     }
-        ///   }
-        /// }
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
-        [Obsolete("Deprecated method")]
-        public void ReadSummaryFriendData(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriends, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-
-        /// <summary>
         /// Updates the "friend summary data" associated with the logged in player.
         /// Some operations will return this summary data. For instance the social
         /// leaderboards will return the player's score in the leaderboard along
@@ -269,7 +208,6 @@ namespace BrainCloud
         ///   "data":null
         /// }
         /// </returns>
-        [Obsolete("Deprecated method")]
         public void UpdateSummaryFriendData(
             string in_jsonSummaryData,
             SuccessCallback in_success = null,
@@ -287,33 +225,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateSummary, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        [Obsolete("Deprecated method")]
-        public void ReadFriendPlayerState(
-            long friendId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            JsonData data = new JsonData();
-            data[OperationParam.FriendServiceReadPlayerStateFriendId.Value] = friendId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriends, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Deprecated method")]
-        public void ReadFriendData(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriends, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
     }
 }
 
