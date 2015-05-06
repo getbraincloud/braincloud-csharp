@@ -1095,6 +1095,7 @@ namespace BrainCloud.Internal
                                         // we reset the current player or logged out
                                         // we are no longer authenticated
                                         m_isAuthenticated = false;
+                                        m_brainCloudClientRef.AuthenticationService.ProfileId = null;
                                     }
 
                                     // // only process callbacks that are real
