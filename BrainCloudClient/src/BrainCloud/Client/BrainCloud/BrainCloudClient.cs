@@ -36,7 +36,7 @@ namespace BrainCloud
         {
             // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
             // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
-            if (s_instance != null)
+            if (s_instance == null)
             {
                 s_instance = new BrainCloudClient();
             }
