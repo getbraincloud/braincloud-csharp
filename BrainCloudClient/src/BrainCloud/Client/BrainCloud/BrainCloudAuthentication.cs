@@ -122,7 +122,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateAnonymous(bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value, in_forceCreate, in_success, in_failure);
+            this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value, null, in_forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateFacebook(string in_externalId, string in_authenticationToken, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, null, in_forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateGameCenter(string in_gameCenterId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, null, in_forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateEmailPassword(string in_email, string in_password, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, null, in_forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateUniversal(string in_userid, string in_password, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, null, in_forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateSteam(string in_userid, string in_sessionticket, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, null, forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -290,7 +290,38 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateGoogle(string in_userid, string in_token, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, null, forceCreate, in_success, in_failure);
+        }
+
+        /// <summary>
+        /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
+        /// This allows the developer to extend brainCloud authentication to support other backend authentication systems.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="in_userid">
+        /// The user id
+        /// </param>
+        /// <param name="in_token">
+        /// The user token (password etc)
+        /// </param>
+        /// /// <param name="in_externalAuthName">
+        /// The name of the cloud script to call for external authentication
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        public void AuthenticateExternal(string in_userid, string in_token, string in_externalAuthName, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        {
+            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value, in_externalAuthName, forceCreate, in_success, in_failure);
         }
 
         /// <summary>
@@ -321,7 +352,7 @@ namespace BrainCloud
         }
 
 
-        private void Authenticate(string in_externalId, string in_authenticationToken, string in_authenticationType, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        private void Authenticate(string in_externalId, string in_authenticationToken, string in_authenticationType, string in_externalAuthName, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
             string languageCode = Util.GetIsoCodeForCurrentLanguage();
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
@@ -340,6 +371,10 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
+            if (Util.IsOptionalParameterValid(in_externalAuthName))
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = in_externalAuthName;
+            }
             data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = countryCode;
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = languageCode;
             data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = utcOffset;

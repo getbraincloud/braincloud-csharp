@@ -41,12 +41,16 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateReleasePlatform     = new OperationParam("releasePlatform");
         public static readonly OperationParam AuthenticateServiceAuthenticateGameVersion         = new OperationParam("gameVersion");
         public static readonly OperationParam AuthenticateServiceAuthenticateBrainCloudVersion   = new OperationParam("clientLibVersion");
+        public static readonly OperationParam AuthenticateServiceAuthenticateExternalAuthName    = new OperationParam("clientLibVersion");
+
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthFacebook        = new OperationParam("Facebook");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthEmail           = new OperationParam("Email");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthGameCenter      = new OperationParam("GameCenter");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthUniversal       = new OperationParam("Universal");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthSteam           = new OperationParam("Steam");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthGoogle          = new OperationParam("Google");
+        public static readonly OperationParam AuthenticateServiceAuthenticateAuthExternal        = new OperationParam("External");
+
         public static readonly OperationParam AuthenticateServiceAuthenticateCountryCode         = new OperationParam("countryCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateLanguageCode        = new OperationParam("languageCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateTimeZoneOffset      = new OperationParam("timeZoneOffset");
