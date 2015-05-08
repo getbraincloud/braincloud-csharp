@@ -128,7 +128,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Create a new push notification for the current user to send to another user.
+        /// Sends a simple push notification based on the passed in message.
         /// NOTE: It is possible to send a push notification to oneself.
         /// </param>
         /// <param name="in_toPlayerId">
@@ -170,7 +170,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Create a new push notification for the current user to send to another user.
+        /// Sends a notification to a user based on a brainCloud portal configured notification template.
         /// NOTE: It is possible to send a push notification to oneself.
         /// </param>
         /// <param name="in_toPlayerId">
