@@ -101,6 +101,7 @@ namespace BrainCloud
         private BCEntityFactory m_entityFactory;
 
         private BrainCloudComms m_bc;
+        private bool m_initialized;
         private bool m_loggingEnabled = false;
         private object m_loggingMutex = new object();
         private LogCallback m_logDelegate;
@@ -438,6 +439,14 @@ namespace BrainCloud
             }
         }
 
+        public bool Initialized
+        {
+            get
+            {
+                return m_initialized;
+            }
+        }
+
         public string SessionID
         {
             get
@@ -575,6 +584,8 @@ namespace BrainCloud
             m_gameId = gameId;
             m_gameVersion = gameVersion;
             m_releasePlatform = platform;
+
+            m_initialized = true;
         }
 
         /// <summary>Initialize the identity aspects of brainCloud.</summary>
@@ -677,6 +688,15 @@ namespace BrainCloud
         public bool IsAuthenticated()
         {
             return this.Authenticated;
+        }
+
+        /// <summary>
+        /// Returns true if brainCloud has been initialized.
+        /// </summary>
+        /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
+        public bool IsInitialized()
+        {
+            return this.Initialized;
         }
 
         #endregion Authentication
