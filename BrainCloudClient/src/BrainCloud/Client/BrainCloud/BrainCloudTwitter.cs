@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Net;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -39,8 +39,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
-
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.TwitterServiceVerifyToken.Value] = in_token;
             data[OperationParam.TwitterServiceVerifyVerifier.Value] = in_verifier;
 
@@ -58,11 +57,11 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
-
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.TwitterServiceTweetToken.Value] = in_token;
             data[OperationParam.TwitterServiceTweetSecret.Value] = in_secret;
             data[OperationParam.TwitterServiceTweetTweet.Value] = in_tweet;
+
             if (Util.IsOptionalParameterValid(in_picture))
             {
                 data[OperationParam.TwitterServiceTweetPic.Value] = in_picture;

@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -106,7 +106,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStatisticEventServiceEventName.Value] = in_eventName;
             data[OperationParam.PlayerStatisticEventServiceEventMultiplier.Value] = in_eventMultiplier;
 
@@ -142,9 +142,9 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData ();
-            JsonData jsonData = JsonMapper.ToObject(in_jsonData);
-            data[OperationParam.PlayerStatisticEventServiceEvents.Value] = jsonData;
+            Dictionary<string, object> data = new Dictionary<string, object> ();
+            List<object> events = JsonReader.Deserialize<List<object>> (in_jsonData);
+            data[OperationParam.PlayerStatisticEventServiceEvents.Value] = events;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatisticsEvent, ServiceOperation.TriggerMultiple, data, callback);

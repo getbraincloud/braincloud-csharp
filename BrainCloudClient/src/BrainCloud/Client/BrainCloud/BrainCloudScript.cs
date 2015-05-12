@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -55,11 +55,14 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonScriptData);
-            data[OperationParam.ScriptServiceRunScriptData.Value] = jsonData;
+            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            {
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.Run, data, callback);

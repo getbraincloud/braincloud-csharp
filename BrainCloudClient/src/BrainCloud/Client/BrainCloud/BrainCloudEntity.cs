@@ -6,8 +6,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
 using BrainCloud.Internal;
+using JsonFx.Json;
 
 namespace BrainCloud
 {
@@ -60,22 +60,17 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData ();
+            Dictionary<string, object> data = new Dictionary<string, object> ();
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEntityData);
-            data [OperationParam.EntityServiceCreateData.Value] = jsonData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            data [OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                JsonData jsonAcl = JsonMapper.ToObject(in_jsonEntityAcl);
-                data [OperationParam.EntityServiceCreateAcl.Value] = jsonAcl;
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
+                data [OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
-
-            StringBuilder sb = new StringBuilder ();
-            JsonWriter writer = new JsonWriter (sb);
-            JsonMapper.ToJson (data, writer);
-            //string s = sb.ToString ();
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall serverCall = new ServerCall (ServiceName.Entity, ServiceOperation.Create, data, callback);
@@ -143,7 +138,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceGetSEntitiesByTypeEntityType.Value] = in_entityType;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -203,17 +198,17 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData ();
+            Dictionary<string, object> data = new Dictionary<string, object> ();
             data[OperationParam.EntityServiceCreateEntityId.Value] = in_entityId;
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEntityData);
-            data [OperationParam.EntityServiceCreateData.Value] = jsonData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            data [OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                JsonData jsonAcl = JsonMapper.ToObject(in_jsonEntityAcl);
-                data [OperationParam.EntityServiceCreateAcl.Value] = jsonAcl;
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
+                data [OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
@@ -272,14 +267,14 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityId.Value] = in_entityId;
             data[OperationParam.EntityServiceCreateEntityTargetPlayerId.Value] = in_targetPlayerId;
 
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEntityData);
-            data[OperationParam.EntityServiceCreateData.Value] = jsonData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
@@ -334,7 +329,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData ();
+            Dictionary<string, object> data = new Dictionary<string, object> ();
             data[OperationParam.EntityServiceDeleteEntityId.Value] = in_entityId;
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
@@ -399,16 +394,16 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEntityData);
-            data[OperationParam.EntityServiceCreateData.Value] = jsonData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                JsonData jsonAcl = JsonMapper.ToObject(in_jsonEntityAcl);
-                data[OperationParam.EntityServiceCreateAcl.Value] = jsonAcl;
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
+                data[OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
 
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
@@ -457,7 +452,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
@@ -491,7 +486,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityId.Value] = in_entityId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -551,7 +546,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceGetSharedEntitiesTargetPlayerId.Value] = in_playerId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);

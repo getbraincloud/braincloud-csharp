@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -103,9 +103,9 @@ namespace BrainCloud
             FailureCallback in_failure,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
-            JsonData jsonData = JsonMapper.ToObject(in_jsonData);
-            data[OperationParam.PlayerStatisticsServiceStats.Value] = jsonData;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            List<string> statsSubset = JsonReader.Deserialize<List<string>>(in_jsonData);
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = statsSubset;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.GlobalStatistics, ServiceOperation.ReadSubset, data, callback);
@@ -162,9 +162,9 @@ namespace BrainCloud
             FailureCallback in_failure,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
-            JsonData jsonData = JsonMapper.ToObject(in_jsonData);
-            data[OperationParam.PlayerStatisticsServiceStats.Value] = jsonData;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            Dictionary<string, object> stats = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonData);
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = stats;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.GlobalStatistics, ServiceOperation.UpdateIncrement, data, callback);

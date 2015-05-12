@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -434,7 +434,7 @@ namespace BrainCloud
 
         private void AttachIdentity(String in_externalId, string in_authenticationToken, String in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = in_externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = in_authenticationType;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = in_authenticationToken;
@@ -446,7 +446,7 @@ namespace BrainCloud
 
         private void MergeIdentity(String in_externalId, string in_authenticationToken, String in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = in_externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = in_authenticationType;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = in_authenticationToken;
@@ -458,7 +458,7 @@ namespace BrainCloud
 
         private void DetachIdentity(string in_externalId, string in_authenticationType, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = in_externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = in_authenticationType;
             data[OperationParam.IdentityServiceConfirmAnonymous.Value] = in_continueAnon;

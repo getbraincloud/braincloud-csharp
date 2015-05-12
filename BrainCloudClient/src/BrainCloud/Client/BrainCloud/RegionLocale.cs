@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 public class RegionLocale
 {

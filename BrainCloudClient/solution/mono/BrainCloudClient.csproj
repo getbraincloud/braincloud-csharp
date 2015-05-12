@@ -35,6 +35,7 @@
   <ItemGroup>
     <Folder Include="LitJson\" />
     <Folder Include="BrainCloud\" />
+    <Folder Include="JsonFx\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\BrainCloud\LitJson\AssemblyInfo.cs.in">
@@ -219,11 +220,75 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Version.cs">
       <Link>BrainCloud\Version.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\DataReaderProvider.cs">
+      <Link>JsonFx\DataReaderProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\DataWriterProvider.cs">
+      <Link>JsonFx\DataWriterProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\EcmaScriptIdentifier.cs">
+      <Link>JsonFx\EcmaScriptIdentifier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\EcmaScriptWriter.cs">
+      <Link>JsonFx\EcmaScriptWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\IDataReader.cs">
+      <Link>JsonFx\IDataReader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\IDataWriter.cs">
+      <Link>JsonFx\IDataWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\IJsonSerializable.cs">
+      <Link>JsonFx\IJsonSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonDataReader.cs">
+      <Link>JsonFx\JsonDataReader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonDataWriter.cs">
+      <Link>JsonFx\JsonDataWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonIgnoreAttribute.cs">
+      <Link>JsonFx\JsonIgnoreAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonNameAttribute.cs">
+      <Link>JsonFx\JsonNameAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonReader.cs">
+      <Link>JsonFx\JsonReader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonReaderSettings.cs">
+      <Link>JsonFx\JsonReaderSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonSerializationException.cs">
+      <Link>JsonFx\JsonSerializationException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonSpecifiedPropertyAttribute.cs">
+      <Link>JsonFx\JsonSpecifiedPropertyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonToken.cs">
+      <Link>JsonFx\JsonToken.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonWriter.cs">
+      <Link>JsonFx\JsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonWriterSettings.cs">
+      <Link>JsonFx\JsonWriterSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\TypeCoercionUtility.cs">
+      <Link>JsonFx\TypeCoercionUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\XmlDataReader.cs">
+      <Link>JsonFx\XmlDataReader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\JsonFx\XmlDataWriter.cs">
+      <Link>JsonFx\XmlDataWriter.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\..\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

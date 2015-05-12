@@ -4,9 +4,9 @@
 //----------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
 
 namespace BrainCloud.Internal
 {
@@ -14,7 +14,7 @@ namespace BrainCloud.Internal
     {
         #region Constructors
 
-        public ServerCall(ServiceName service, ServiceOperation operation, JsonData jsonData, ServerCallback callback)
+        public ServerCall(ServiceName service, ServiceOperation operation, IDictionary jsonData, ServerCallback callback)
         {
             m_service = service.Value;
             m_operation = operation.Value;
@@ -30,7 +30,7 @@ namespace BrainCloud.Internal
         #region Private
 
         private ServerCallback m_callback;
-        private JsonData m_jsonData;
+        private IDictionary m_jsonData;
         private string m_operation;
         private string m_service;
 
@@ -99,7 +99,7 @@ namespace BrainCloud.Internal
         /// with the server call
         /// </param>
         /// <returns> Name to identify what type of service this is.</returns>
-        public JsonData GetJsonData()
+        public IDictionary GetJsonData()
         {
             return m_jsonData;
         }

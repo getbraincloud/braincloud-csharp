@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Net;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -225,7 +225,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStateServiceUpdateNameData.Value] = in_playerName;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -304,10 +304,10 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonAttributes);
-            data[OperationParam.PlayerStateServiceAttributes.Value] = jsonData;
+            Dictionary<string, object> attributes = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonAttributes);
+            data[OperationParam.PlayerStateServiceAttributes.Value] = attributes;
             data[OperationParam.PlayerStateServiceWipeExisting.Value] = in_wipeExisting;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -345,10 +345,10 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonAttributeNameList);
-            data[OperationParam.PlayerStateServiceAttributes.Value] = jsonData;
+            List<string> attributeNames = JsonReader.Deserialize<List<string>> (in_jsonAttributeNameList);
+            data[OperationParam.PlayerStateServiceAttributes.Value] = attributeNames;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.RemoveAttributes, data, callback);

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Net;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -76,13 +76,16 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data[OperationParam.EventServiceSendToId.Value] = in_toPlayerId;
             data[OperationParam.EventServiceSendEventType.Value] = in_eventType;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEventData);
-            data[OperationParam.EventServiceSendEventData.Value] = jsonData;
+            if (Util.IsOptionalParameterValid(in_jsonEventData))
+            {
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEventData);
+                data[OperationParam.EventServiceSendEventData.Value] = eventData;
+            }
 
             data[OperationParam.EventServiceSendRecordLocally.Value] = in_recordLocally;
 
@@ -130,12 +133,15 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceUpdateEventDataFromId.Value] = in_fromPlayerId;
             data[OperationParam.EventServiceUpdateEventDataEventId.Value] = in_eventId;
 
-            JsonData jsonData = JsonMapper.ToObject(in_jsonEventData);
-            data[OperationParam.EventServiceUpdateEventDataData.Value] = jsonData;
+            if (Util.IsOptionalParameterValid(in_jsonEventData))
+            {
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEventData);
+                data[OperationParam.EventServiceUpdateEventDataData.Value] = eventData;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.UpdateEventData, data, callback);
@@ -177,7 +183,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceDeleteIncomingFromId.Value] = in_fromPlayerId;
             data[OperationParam.EventServiceDeleteIncomingEventId.Value] = in_eventId;
 
@@ -224,7 +230,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceDeleteSentToId.Value] = in_toPlayerId;
             data[OperationParam.EventServiceDeleteSentEventId.Value] = in_eventId;
 

@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 #if !(DOT_NET)
@@ -172,7 +172,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -253,7 +253,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -324,7 +324,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -419,7 +419,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -458,7 +458,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -496,7 +496,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -539,7 +539,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceCategory.Value] = in_category;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -580,7 +580,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceCategory.Value] = in_category;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -622,7 +622,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceCategory.Value] = in_category;
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
@@ -674,10 +674,10 @@ namespace BrainCloud
             }
             achievementsStr += "]";
 
-            JsonData aaa = JsonMapper.ToObject(achievementsStr);
+            List<object> achievementData = JsonReader.Deserialize<List<object>>(achievementsStr);
 
-            JsonData data = new JsonData();
-            data[OperationParam.GamificationServiceAchievementsName.Value] = aaa;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GamificationServiceAchievementsName.Value] = achievementData;
 
             SuccessCallback successCallbacks = (SuccessCallback) AchievementAwardedSuccessCallback;
             if (in_success != null)
@@ -691,14 +691,15 @@ namespace BrainCloud
 
         private void AchievementAwardedSuccessCallback(string in_data, object in_obj)
         {
-            JsonData incomingData = JsonMapper.ToObject(in_data);
+            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>> (in_data);
             try
             {
-                incomingData = (JsonData)incomingData[OperationParam.GamificationServiceAchievementsData.Value][OperationParam.GamificationServiceAchievementsName.Value];
+                Dictionary<string, object> data = (Dictionary<string, object>) response[OperationParam.GamificationServiceAchievementsData.Value];
+                List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsName.Value];
 
-                for (int i = 0; i < incomingData.Count; i++)
+                for (int i = 0; i < achievements.Count; i++)
                 {
-                    AwardThirdPartyAchievements(incomingData[i].ToString());
+                    AwardThirdPartyAchievements(achievements[i]);
                 }
 
                 if (m_achievementsDelegate != null)
@@ -712,26 +713,28 @@ namespace BrainCloud
             }
         }
 
+      
         // goes through JSON response to award achievements via third party (ie game centre, facebook etc).
         // notifies achievement delegate
         internal void CheckForAchievementsToAward(string in_data, object in_obj)
         {
-            JsonData incomingData = JsonMapper.ToObject(in_data);
+            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>> (in_data);
             try
             {
-                incomingData = (JsonData)incomingData[OperationParam.GamificationServiceAchievementsData.Value];
-                if (incomingData[OperationParam.GamificationServiceAchievementsGranted.Value].IsArray)
+                Dictionary<string, object> data = (Dictionary<string, object>) response[OperationParam.GamificationServiceAchievementsData.Value];
+                List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsGranted.Value];
+                if (achievements != null)
                 {
-                    for (int i = 0; i < incomingData[OperationParam.GamificationServiceAchievementsGranted.Value].Count; i++ )
+                    foreach (string achievement in achievements)
                     {
-                        AwardThirdPartyAchievements(incomingData[OperationParam.GamificationServiceAchievementsGranted.Value][i].ToString());
+                        AwardThirdPartyAchievements(achievement);
                     }
                 }
 
                 //Let the Game Side knows about those Achievements.
                 if (m_achievementsDelegate != null)
                 {
-                    m_achievementsDelegate(incomingData[OperationParam.GamificationServiceAchievementsGranted.Value].ToString(), in_obj);
+                    m_achievementsDelegate(JsonWriter.Serialize(achievements), null);
                 }
             }
             catch (System.Collections.Generic.KeyNotFoundException)
@@ -796,7 +799,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -835,7 +838,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -873,7 +876,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -911,7 +914,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -949,7 +952,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -987,7 +990,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -1025,7 +1028,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -1065,7 +1068,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceCategory.Value] = in_category;
             data[OperationParam.GamificationServiceIncludeMetaData.Value] = in_includeMetaData;
 
@@ -1105,15 +1108,8 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
-
-            JsonData milestones = new JsonData();
-            for (int i = 0; i < in_milestoneIds.Length; i++)
-            {
-                milestones.Add(in_milestoneIds[i]);
-            }
-
-            data[OperationParam.GamificationServiceMilestones.Value] = milestones;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GamificationServiceMilestones.Value] = in_milestoneIds;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ResetMilestones, data, callback);

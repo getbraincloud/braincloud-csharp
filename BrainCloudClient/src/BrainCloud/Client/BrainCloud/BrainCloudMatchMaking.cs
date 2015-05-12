@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -82,7 +82,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServicePlayerRating.Value] = in_playerRating;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -153,7 +153,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServicePlayerRating.Value] = in_increment;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -192,7 +192,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServicePlayerRating.Value] = in_decrement;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -263,7 +263,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServiceMinutes.Value] = in_minutes;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -338,7 +338,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
             data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
 
@@ -386,14 +386,14 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
             data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
 
             if (Util.IsOptionalParameterValid(in_jsonExtraParms))
             {
-                JsonData jsonData = JsonMapper.ToObject(in_jsonExtraParms);
-                data[OperationParam.MatchMakingServiceExtraParams.Value] = jsonData;
+                Dictionary<string, object> extraParms = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonExtraParms);
+                data[OperationParam.MatchMakingServiceExtraParams.Value] = extraParms;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);

@@ -19,8 +19,8 @@ using UnityEngine;
 #endif
 
 using System.IO;
-using LitJson;
 using BrainCloud;
+using JsonFx.Json;
 
 namespace BrainCloud.Internal
 {
@@ -391,9 +391,8 @@ namespace BrainCloud.Internal
             m_triggeredForReset = true;
         }
 
-        public static String getJsonString(JsonData jsonData, String key, String defaultReturn)
+        public static String getJsonString(Dictionary<string, object> jsonData, String key, String defaultReturn)
         {
-
             try
             {
                 return (String)jsonData[key];
@@ -405,15 +404,14 @@ namespace BrainCloud.Internal
 
         }
 
-        public static long getJsonLong(JsonData jsonData, String key, long defaultReturn)
+        public static long getJsonLong(Dictionary<string, object> jsonData, String key, long defaultReturn)
         {
-
             try
             {
-                JsonData value = jsonData[key];
-                if (value.IsLong)
+                object value = jsonData[key];
+                if (value is System.Int64)
                     return (long)value;
-                if (value.IsInt)
+                if (value is System.Int32)
                     return (int)value;
                 return defaultReturn;
             }
@@ -421,7 +419,6 @@ namespace BrainCloud.Internal
             {
                 return defaultReturn;
             }
-
         }
 
         #endregion
@@ -731,36 +728,35 @@ namespace BrainCloud.Internal
                         m_serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
 
                         // prepare json data for server
-                        //JArray jsonMessageList = new JArray();
-                        JsonData jsonMessageList = new JsonData();
+                        List<object> messageList = new List<object>();
 
                         ServerCall scIndex;
                         for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
                         {
                             scIndex = m_serviceCallsInProgress[i] as ServerCall;
-                            JsonData newObj = new JsonData();
-                            newObj[OperationParam.ServiceMessageService.Value] = scIndex.Service;
-                            newObj[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
-                            newObj[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
 
-                            jsonMessageList.Add(newObj);
+                            Dictionary<string, object> message = new Dictionary<string, object>();
+                            message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
+                            message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
+                            message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
+
+                            messageList.Add(message);
                         }
 
                         // create a web request
                         try
                         {
                             // now actually bundle up the data into a string
-                            JsonData bundledObj = new JsonData();
-                            bundledObj[OperationParam.ServiceMessagePacketId.Value] = m_packetId++;
-                            bundledObj[OperationParam.ServiceMessageUserId.Value] = m_userID;
-                            bundledObj[OperationParam.ServiceMessageSessionId.Value] = m_sessionID;
-                            bundledObj[OperationParam.ServiceMessageMessages.Value] = jsonMessageList;
+                            Dictionary<string, object> packet = new Dictionary<string, object>();
+                            packet[OperationParam.ServiceMessagePacketId.Value] = m_packetId++;
+                            packet[OperationParam.ServiceMessageUserId.Value] = m_userID;
+                            packet[OperationParam.ServiceMessageSessionId.Value] = m_sessionID;
+                            packet[OperationParam.ServiceMessageMessages.Value] = messageList;
 
-                            string jsonRequeststring = JsonMapper.ToJson(bundledObj);
-                            string sig = CalculateMD5Hash(jsonRequeststring + m_secretKey);
+                            string jsonRequestString = JsonWriter.Serialize(packet);
+                            string sig = CalculateMD5Hash(jsonRequestString + m_secretKey);
                             //Set the length of the message
-                            byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequeststring);
-
+                            byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
 #if !(DOT_NET)
                             WWW request = null;
@@ -775,7 +771,7 @@ namespace BrainCloud.Internal
                             RequestState requestState = new RequestState();
                             requestState.PacketId = m_packetId - 1;
                             requestState.WebRequest = request;
-                            requestState.Jsonstring = jsonRequeststring;
+                            requestState.Jsonstring = jsonRequestString;
 #if !(DOT_NET)
                             requestState.Signature = sig;
                             requestState.ByteArray = byteArray;
@@ -786,7 +782,7 @@ namespace BrainCloud.Internal
                             }
 #else
 
-                            m_brainCloudClientRef.Log("RequestState - JsonRequeststring GOING OUT: " + jsonRequeststring);
+                            m_brainCloudClientRef.Log("RequestState - jsonRequestString GOING OUT: " + jsonRequestString);
                             request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
 
                             EnableTimeOutTimer(true);
@@ -856,7 +852,7 @@ namespace BrainCloud.Internal
         private void GetResponseCallback(IAsyncResult asynchronousResult)
         {
             //a callback method to end receiving the data
-            string jsonResponsestring = "";
+            string jsonResponseString = "";
             try
             {
                 RequestState requestState = (RequestState)asynchronousResult.AsyncState;
@@ -867,7 +863,7 @@ namespace BrainCloud.Internal
                 Stream streamResponse = response.GetResponseStream();
                 StreamReader streamRead = new StreamReader(streamResponse);
 
-                jsonResponsestring = streamRead.ReadToEnd();
+                jsonResponseString = streamRead.ReadToEnd();
 
                 // Close the stream object
                 streamResponse.Close();
@@ -884,7 +880,7 @@ namespace BrainCloud.Internal
             }
 
             // and now handle the incoming data
-            HandleSuccessCallInProgressCalls(jsonResponsestring);
+            HandleSuccessCallInProgressCalls(jsonResponseString);
 
             EnableHeartBeatTimer(true);
             EnableTimeOutTimer(false);
@@ -893,11 +889,11 @@ namespace BrainCloud.Internal
 
         private void ProcessResponse(string in_response)
         {
-            string jsonResponsestring = in_response;
+            string jsonResponseString = in_response;
             try
             {
                 // and now handle the incoming data
-                HandleSuccessCallInProgressCalls(jsonResponsestring);
+                HandleSuccessCallInProgressCalls(jsonResponseString);
             }
             catch (Exception ex)
             {
@@ -1020,50 +1016,49 @@ namespace BrainCloud.Internal
         {
             //OutputAllJsonData(jsonData);
             m_brainCloudClientRef.Log("GetResponseCallback - JsonResponsestring COMING IN: " + jsonData);
-            JsonReader reader = new JsonReader(jsonData);
-            JsonData root = JsonMapper.ToObject(reader);
+            Dictionary<string, object>[] responseBundle = JsonReader.Deserialize<Dictionary<string, object>[]> (jsonData);
 
             int i = 0;
             List<ServerCall> processed = new List<ServerCall>();
-            JsonData jObject = null;
-            for (int j = 0; j < root.Count; ++j)
+            Dictionary<string, object> response = null;
+            for (int j = 0; j < responseBundle.Length; ++j)
             {
-                jObject = root[j];
+                response = responseBundle[j];
                 //m_brainCloudClientRef.Log(" JsonData - " + JsonData.ToString());
-                int statusCode = (int)jObject["status"];
+                int statusCode = (int) response["status"];
                 string data = "";
 
                 if (statusCode == 200)
                 {
-                    if (jObject[OperationParam.ServiceMessageData.Value] != null)
+                    if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
                         // its a good response!
-                        JsonData goodResponseData = (JsonData)jObject[OperationParam.ServiceMessageData.Value];
+                        Dictionary<string, object> responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
 
                         // send the data back as not formatted
-                        data = JsonMapper.ToJson(jObject);
+                        data = JsonWriter.Serialize(response);
 
                         // TODO:: confirm session ID failure for read player state, read summary friend data
 
                         // save the session ID
                         try
                         {
-                            if (getJsonString(goodResponseData, OperationParam.ServiceMessageSessionId.Value, null) != null)
+                            if (getJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null) != null)
                             {
-                                m_sessionID = (string)goodResponseData[OperationParam.ServiceMessageSessionId.Value];
+                                m_sessionID = (string)responseData[OperationParam.ServiceMessageSessionId.Value];
                                 m_isAuthenticated = true;  // TODO confirm authentication
                             }
 
                             // save the profile ID
-                            if (getJsonString(goodResponseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
+                            if (getJsonString(responseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
                             {
-                                m_brainCloudClientRef.AuthenticationService.ProfileId = (string)goodResponseData[OperationParam.ServiceMessageProfileId.Value];
+                                m_brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ServiceMessageProfileId.Value];
                             }
 
                             // save the user ID
-                            if (getJsonString(goodResponseData, OperationParam.ServiceMessageUserId.Value, null) != null)
+                            if (getJsonString(responseData, OperationParam.ServiceMessageUserId.Value, null) != null)
                             {
-                                m_userID = (string)goodResponseData[OperationParam.ServiceMessageUserId.Value];
+                                m_userID = (string)responseData[OperationParam.ServiceMessageUserId.Value];
                             }
                         }
                         catch (Exception e)
@@ -1119,10 +1114,9 @@ namespace BrainCloud.Internal
                 else if (statusCode >= 400 || statusCode == 202)
                 {
                     // this is an error!
-                    // string message = (string)jObject[OperationParam.ServiceMessageStatusMessage.Value];
                     // pass on the entire returned json object
-                    string message = JsonMapper.ToJson(jObject);
-                    HandleErrorCallInProgressCalls( /*"Error : "+ reasonCode + " : " + */ message);
+                    string message = JsonWriter.Serialize(response);
+                    HandleErrorCallInProgressCalls(message);
                     return;
                 }
             }
@@ -1192,10 +1186,8 @@ namespace BrainCloud.Internal
         {
             try
             {
-                JsonReader reader = new JsonReader(jsonString);
-                JsonData jsonMessage = JsonMapper.ToObject(reader);
-
-                JsonData jsonData = jsonMessage["data"];
+                Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(jsonString);
+                Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
 
                 long playerSessionExpiry = getJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 1200);
                 SetHeartbeatInterval((int)playerSessionExpiry * 1000 / 4);

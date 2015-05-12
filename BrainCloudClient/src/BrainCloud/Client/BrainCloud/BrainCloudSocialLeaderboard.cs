@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Net;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -150,7 +150,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = in_replaceName;
 
@@ -232,7 +232,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceFetchType.Value] = FetchTypeToString(in_fetchType);
             data[OperationParam.SocialLeaderboardServiceMaxResults.Value] = in_maxResults;
@@ -326,7 +326,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
             data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = in_startIndex;
@@ -420,7 +420,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
             data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = in_beforeCount;
@@ -480,13 +480,13 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceScore.Value] = in_score;
             if (Util.IsOptionalParameterValid(in_jsonData))
             {
-                JsonData jsonData = JsonMapper.ToObject(in_jsonData);
-                data[OperationParam.SocialLeaderboardServiceData.Value] = jsonData;
+                Dictionary<string, object> customData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonData);
+                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -554,13 +554,13 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceScore.Value] = in_score;
             if (Util.IsOptionalParameterValid(in_jsonData))
             {
-                JsonData jsonData = JsonMapper.ToObject(in_jsonData);
-                data[OperationParam.SocialLeaderboardServiceData.Value] = jsonData;
+                Dictionary<string, object> customData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonData);
+                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
             }
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = in_leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
@@ -604,8 +604,9 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.Reset, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
@@ -662,7 +663,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = in_replaceName;
 
@@ -710,7 +711,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceEventName.Value] = in_eventName;
             data[OperationParam.SocialLeaderboardServiceEventMultiplier.Value] = in_eventMultiplier;
 

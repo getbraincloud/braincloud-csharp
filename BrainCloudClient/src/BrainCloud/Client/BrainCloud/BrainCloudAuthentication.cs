@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -342,7 +341,7 @@ namespace BrainCloud
         /// </param>
         public void ResetEmailPassword(string in_externalId, SuccessCallback in_success, FailureCallback in_failure)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = in_externalId;
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
 
@@ -358,7 +357,7 @@ namespace BrainCloud
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
             string countryCode = Util.GetCurrentCountryCode();
 
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = in_externalId;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = in_authenticationToken;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = in_authenticationType;

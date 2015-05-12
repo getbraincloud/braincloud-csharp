@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -70,7 +70,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = in_targetPlayerId;
             data[OperationParam.PlaybackStreamServiceIncludeSharedData.Value] = in_includeSharedData;
 
@@ -124,7 +124,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -163,7 +163,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -202,7 +202,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -249,15 +249,20 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
 
-            JsonData jsonEventData = JsonMapper.ToObject(in_eventData);
-            data[OperationParam.PlaybackStreamServiceEventData.Value] = jsonEventData;
+            if (Util.IsOptionalParameterValid(in_eventData))
+            {
+                Dictionary<string, object> jsonEventData = JsonReader.Deserialize<Dictionary<string, object>> (in_eventData);
+                data[OperationParam.PlaybackStreamServiceEventData.Value] = jsonEventData;
+            }
 
-            JsonData jsonSummary = JsonMapper.ToObject(in_summary);
-            data[OperationParam.PlaybackStreamServiceSummary.Value] = jsonSummary;
-
+            if (Util.IsOptionalParameterValid(in_summary))
+            {
+                Dictionary<string, object> jsonSummary = JsonReader.Deserialize<Dictionary<string, object>> (in_summary);
+                data[OperationParam.PlaybackStreamServiceSummary.Value] = jsonSummary;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.AddEvent, data, callback);
@@ -310,7 +315,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = in_initiatingPlayerId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -364,7 +369,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = in_targetPlayerId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);

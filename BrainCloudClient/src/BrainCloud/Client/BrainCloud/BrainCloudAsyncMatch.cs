@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LitJson;
+using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -190,12 +190,12 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null )
         {
-            JsonData data = new JsonData();
-            data["players"] = JsonMapper.ToObject(in_jsonOpponentIds);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["players"] = JsonReader.Deserialize<List<object>> (in_jsonOpponentIds);
 
             if (Util.IsOptionalParameterValid(in_jsonMatchState))
             {
-                data["matchState"] = JsonMapper.ToObject(in_jsonMatchState);
+                data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonMatchState);
             }
 
             if (Util.IsOptionalParameterValid(in_matchId))
@@ -205,13 +205,14 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(in_nextPlayer))
             {
-                data["status"] = new JsonData();
-                data["status"]["currentPlayer"] = in_nextPlayer;
+                Dictionary<string, object> status = new Dictionary<string, object>();
+                status["currentPlayer"] = in_nextPlayer;
+                data["status"] = status;
             }
 
             if (Util.IsOptionalParameterValid(in_jsonSummary))
             {
-                data["summary"] = JsonMapper.ToObject(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummary);
             }
 
             if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
@@ -281,7 +282,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -289,22 +290,24 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(in_jsonMatchState))
             {
-                data["matchState"] = JsonMapper.ToObject(in_jsonMatchState);
+                data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonMatchState);
             }
 
             if (Util.IsOptionalParameterValid(in_nextPlayer))
             {
-                data["status"]["currentPlayer"] = in_nextPlayer;
+                Dictionary<string, object> status = new Dictionary<string, object>();
+                status["currentPlayer"] = in_nextPlayer;
+                data["status"] = status;
             }
 
             if (Util.IsOptionalParameterValid(in_jsonSummary))
             {
-                data["summary"] = JsonMapper.ToObject(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummary);
             }
 
             if (Util.IsOptionalParameterValid(in_jsonStatistics))
             {
-                data["statistics"] = JsonMapper.ToObject(in_jsonStatistics);
+                data["statistics"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonStatistics);
             }
 
             if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
@@ -356,7 +359,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -364,7 +367,7 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(in_jsonSummary))
             {
-                data["summary"] = JsonMapper.ToObject(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummary);
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -403,7 +406,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -444,7 +447,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -485,7 +488,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -582,7 +585,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
@@ -622,7 +625,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            JsonData data = new JsonData();
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
             data["ownerId"] = in_ownerId;
             data["matchId"] = in_matchId;
