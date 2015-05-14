@@ -349,7 +349,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finalize Steam Transaction
+        /// Finalize Steam Transaction. On success, the player will be awarded the 
+        /// associated currencies.
         /// </summary>
         /// <remarks>
         /// Service Name - product
@@ -394,7 +395,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Verify Microsoft Receipt
+        /// Verify Microsoft Receipt. On success, the player will be awarded the 
+        /// associated currencies.
         /// </summary>
         /// <remarks>
         /// Service Name - product
@@ -499,7 +501,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Verify ITunes Receipt
+        /// Verify ITunes Receipt. On success, the player will be awarded the 
+        /// associated currencies.
         /// </summary>
         /// <remarks>
         /// Service Name - product
@@ -558,7 +561,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Confirm Facebook Purchase
+        /// Confirm Facebook Purchase. On success, the player will be awarded the 
+        /// associated currencies.
         /// </summary>
         /// <remarks>
         /// Service Name - product
@@ -600,7 +604,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Confirm GooglePlay Purchase
+        /// Confirm GooglePlay Purchase. On success, the player will be awarded the 
+        /// associated currencies.
         /// </summary>
         /// <remarks>
         /// Service Name - product
