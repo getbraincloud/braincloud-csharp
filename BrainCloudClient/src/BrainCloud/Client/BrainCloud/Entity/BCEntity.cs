@@ -494,19 +494,22 @@ namespace BrainCloud.Entity
         protected static IDictionary<string, object> JsonToDictionary(JsonData in_jsonObj)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
-            foreach (KeyValuePair<string, JsonData> child in in_jsonObj)
+            foreach (DictionaryEntry child in in_jsonObj)
             {
-                if (child.Value.IsObject)
+                var childValue = child.Value as JsonData;
+                var childKey = child.Key as string;
+                
+                if (childValue.IsObject)
                 {
-                    dict[child.Key] = JsonToDictionary(child.Value);
+                    dict[childKey] = JsonToDictionary(childValue);
                 }
-                else if (child.Value.IsArray)
+                else if (childValue.IsArray)
                 {
-                    dict[child.Key] = JsonToList(child.Value);
+                    dict[childKey] = JsonToList(childValue);
                 }
                 else
                 {
-                    dict[child.Key] = JsonToBasicType(child.Value);
+                    dict[childKey] = JsonToBasicType(childValue);
                 }
             }
 
