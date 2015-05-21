@@ -1,4 +1,4 @@
-﻿//----------------------------------------------------
+//----------------------------------------------------
 // brainCloud client source code
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
@@ -41,106 +41,117 @@ namespace BrainCloud.Internal
     }
     #endregion
 
-//[Serializable]
+
     internal sealed class BrainCloudComms
     {
-        #region Private Member Variables
+        /// <summary>
+        /// The maximum number of retries for a packet.
+        /// </summary>
+        private static int MAX_RETRIES = 5;
 
-        private static List<ServerCall> m_serviceCallsWaiting = new List<ServerCall>();
-        private static List<ServerCall> m_serviceCallsInProgress = new List<ServerCall>();
+        /// <summary>
+        /// The maximum number of messages in a bundle.
+        /// Note that this is somewhat arbitrary - using the size
+        /// of the packet would be a more appropriate measuring stick.
+        /// </summary>
+        private static int MAX_MESSAGES_IN_BUNDLE = 50;
 
-        private static List<ServerCallProcessed> m_serviceCallsSuccessful = new List<ServerCallProcessed>();
-        private static List<ServerCallProcessed> m_serviceCallsErroneous = new List<ServerCallProcessed>();
+        /// <summary>
+        /// The id of m_expectedIncomingPacketId when no packet expected
+        /// </summary>
+        private static int NO_PACKET_EXPECTED = -1;
 
-#if !(DOT_NET)
-        private static List<RequestState> m_activeRequestStates = new List<RequestState>();
-        private static List<RequestState> m_toSendRequestStates = new List<RequestState>();
-#endif
-
-        private object  m_processingEvent = new object();
-        private volatile bool m_processingBool = false;
-#if (DOT_NET)
-        private volatile bool m_processThread = true;
-#endif
-
-        private int m_heartBeatInterval = 60000;
-        private ITimer m_heartBeatTimer;
-        private ITimer m_timeoutTimer;
-
-        private int m_numRetry;
+        /// <summary>
+        /// Reference to the brainCloud client object
+        /// </summary>
         private BrainCloudClient m_brainCloudClientRef;
-        private DateTime m_lastpacketSend;
-        private long m_idleInterval;
+        
+        /// <summary>
+        /// Set to true once Initialize has been called.
+        /// </summary>
         private bool m_initialized = false;
-        #endregion
 
-        public BrainCloudComms(BrainCloudClient in_client)
+        /// <summary>
+        /// Set to false if you want to shutdown processing on the Update.
+        /// </summary>
+        private bool m_enabled = true;
+
+        /// <summary>
+        /// The next packet id to send
+        /// </summary>
+        private long m_packetId = 0;
+
+        /// <summary>
+        /// The packet id we're expecting
+        /// </summary>
+        private long m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
+
+        /// <summary>
+        /// The service calls that are waiting to be sent.
+        /// </summary>
+        private List<ServerCall> m_serviceCallsWaiting = new List<ServerCall>();
+
+        /// <summary>
+        /// The service calls that have been sent for which we are waiting for a reply
+        /// </summary>
+        private List<ServerCall> m_serviceCallsInProgress = new List<ServerCall>();
+
+        /// <summary>
+        /// The current request state. Null if no request is in progress.
+        /// </summary>
+        private RequestState m_activeRequest = null;
+
+        /// <summary>
+        /// The last time a packet was sent
+        /// </summary>
+        private DateTime m_lastTimePacketSent;
+
+        /// <summary>
+        /// How long we wait to send a heartbeat if no packets have been sent or received.
+        /// This value is set to a percentage of the heartbeat timeout sent by the authenticate response.
+        /// </summary>
+        private TimeSpan m_idleTimeout = TimeSpan.FromSeconds(60);
+
+        /// <summary>
+        /// Debug value to introduce packet loss for testing retries etc.
+        /// </summary>
+        private double m_debugPacketLossRate = 0;
+
+
+        private enum eWebRequestStatus
         {
-            // used for other unity platforms???
-#if (DOT_NET)
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
-#endif
-            m_brainCloudClientRef = in_client;
+            /// <summary>
+            /// Pending status indicating web request is still active
+            /// </summary>
+            STATUS_PENDING = 0,
+
+            /// <summary>
+            /// Done status indicating web request has completed successfully
+            /// </summary>
+            STATUS_DONE = 1,
+
+            /// <summary>
+            /// Error status indicating there was a network error or error http code returned
+            /// </summary>
+            STATUS_ERROR = 2
         }
 
-        #region Initialize Cloud
 
-        public void Initialize(string serverURL, string secretKey)
-        {
-            m_packetId = 0;
-            m_serverURL = serverURL;
-            m_secretKey = secretKey;
-
-            // for now tick every half second
-            if (!m_initialized)
-                EnableComms(true);
-
-            m_numRetry = 0;
-            m_triggeredForReset = false;
-
-            m_initialized = true;
-        }
-
-        #endregion
-
-        #region Properties
-
-        private bool m_triggeredForReset;
-        //private bool m_triggeredEnableComms = false;
-        //private bool m_commsTrigger = false;
-
-        private bool m_isAuthenticated;
+        private bool m_isAuthenticated = false;
         public bool Authenticated
         {
             get
             {
-                return m_isAuthenticated;    //no public "set"
+                return m_isAuthenticated;
             }
         }
 
-        private ulong m_packetId;
-        public ulong PacketId
-        {
-            get
-            {
-                return m_packetId;    //no public "set"
-            }
-        }
         private string m_sessionID;
         public string SessionID
         {
             get
             {
-                return m_sessionID;    //no public "set"
-            }
-        }
-
-        private string m_userID;
-        public string UserID
-        {
-            get
-            {
-                return m_userID;    //no public "set"
+                return m_sessionID;
             }
         }
 
@@ -149,7 +160,7 @@ namespace BrainCloud.Internal
         {
             get
             {
-                return m_serverURL;    //no public "set"
+                return m_serverURL;
             }
         }
 
@@ -158,351 +169,567 @@ namespace BrainCloud.Internal
         {
             get
             {
-                return m_secretKey;    //no public "set"
+                return m_secretKey;
             }
         }
 
-        #endregion
+        private NetworkErrorHandler m_networkErrorHandler;
 
-
-
-        #region Public Methods
-        public void SetHeartbeatInterval(int milliseconds)
+        /// <summary>
+        /// Gets or sets the network error handler. This method is called when 
+        /// networks errors are detected by the brainCloud communications layer.
+        /// </summary>
+        /// <value>The network error handler.</value>
+        public NetworkErrorHandler NetworkErrorHandler
         {
-            m_heartBeatInterval = milliseconds;
-        }
-
-        internal void AddToQueue(ServerCall call)
-        {
-            lock (m_serviceCallsWaiting)
+            get
             {
-                m_serviceCallsWaiting.Add(call);
-                //m_brainCloudClientRef.Log("AddToQueue --- " + call.GetService() + "  " + call.GetOperation() + "  count = " + m_serviceCallsWaiting.Count);
+                return m_networkErrorHandler;
             }
-            // the calls are actually processed on the background thread in .net
-            // while in unity they are processed on the main thread and spat out using their
-            // WWW class to make aSync calls
+            set
+            {
+                m_networkErrorHandler = value;
+            }
         }
 
+
+        public BrainCloudComms(BrainCloudClient in_client)
+        {
+            #if (DOT_NET)
+            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            #endif
+            m_brainCloudClientRef = in_client;
+        }
+
+
+        /// <summary>
+        /// Initialize the communications library with the specified serverURL and secretKey.
+        /// </summary>
+        /// <param name="serverURL">Server URL.</param>
+        /// <param name="secretKey">Secret key.</param>
+        public void Initialize(string serverURL, string secretKey)
+        {
+            m_packetId = 0;
+            m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
+
+            m_serverURL = serverURL;
+            m_secretKey = secretKey;
+
+            m_initialized = true;
+        }
+
+
+        /// <summary>
+        /// The update method needs to be called periodically to send/receive responses
+        /// and run the associated callbacks.
+        /// </summary>
         public void Update()
         {
-            bool enableComms = false;
-
-            lock (m_processingEvent)
+            // basic flow here is to:
+            // 1- process existing requests
+            // 2- send next request
+            // 3- handle heartbeat/timeouts
+            
+            if (!m_initialized)
             {
-#if !(DOT_NET)
-                if (m_processingBool)
-                {
-                    ProcessQueueHelper();
-                }
+                return;
+            }
+            if (!m_enabled)
+            {
+                return;
+            }
+            
+            // process current request
+            if (m_activeRequest != null)
+            {
+                eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
 
-                // unity responses have to be done on the main loop
-                // but we still process them off of the main thread
-                lock (m_toSendRequestStates)
+                if (status == eWebRequestStatus.STATUS_ERROR)
                 {
-                    lock (m_activeRequestStates)
+                    m_brainCloudClientRef.Log("ERROR: " + GetWebRequestResponse(m_activeRequest));
+                    
+                    if (!ResendMessage(m_activeRequest))
                     {
-                        if (m_toSendRequestStates.Count > 0)
-                        {
-                            List<RequestState> itemsProcessed = new List<RequestState>();
-                            RequestState tempRequest;
-                            for (int i = 0; i < m_toSendRequestStates.Count; ++i)
-                            {
-                                try
-                                {
-                                    tempRequest = m_toSendRequestStates[i];
-                                    if (tempRequest != null)
-                                    {
-                                        //send the WWW response on the main thread
-                                        //Hashtable formTable = new Hashtable();
-                                        //formTable.Add("Content-Type", "application/json; charset=utf-8");
-                                        //formTable.Add("X-SIG", tempRequest.Signature);
-                                        //WWW request = new WWW(m_serverURL, tempRequest.ByteArray, formTable);
-
-                                        // [dsl] Latest of Unity uses Dictionary instead of Hashtable. Apparently it's better.
-                                        // More info here: http://stackoverflow.com/questions/301371/why-is-dictionary-preferred-over-hashtable
-                                        Dictionary<string, string> formTable = new Dictionary<string, string>();
-                                        formTable["Content-Type"] = "application/json; charset=utf-8";
-                                        formTable["X-SIG"] = tempRequest.Signature;
-                                        WWW request = new WWW(m_serverURL, tempRequest.ByteArray, formTable);
-                                        m_brainCloudClientRef.Log("GOING OUT URL: " +m_serverURL);
-
-                                        tempRequest.WebRequest = request;
-                                        m_activeRequestStates.Add(tempRequest);
-                                        m_brainCloudClientRef.Log("RequestState - JsonRequeststring GOING OUT: " + tempRequest.Jsonstring);
-                                        itemsProcessed.Add(tempRequest);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    m_brainCloudClientRef.Log("BeginGetRequestStream - Exception: " + ex.ToString());
-                                    //HandleErrorCallInProgressCalls(ex.ToString());
-                                    //m_toSendRequestStates.Clear();
-                                    //itemsToRemoveToSend.Add(tempRequest);
-                                }// end try catch
-                            }// end for
-
-                            // we send them from here
-                            if (itemsProcessed.Count > 0)
-                            {
-                                EnableTimeOutTimer(true);
-                            }
-
-                            for (int i = 0; i < itemsProcessed.Count; ++i )
-                                m_toSendRequestStates.Remove(itemsProcessed[i]);
-                        }
+                        // we've reached the retry limit - kill the packet and reset comms
+                        ResetCommunication();
+                        CallNetworkErrorHandler("Network is unreachable, max retries hit.");
                     }
                 }
-
-                // process all active request
-                List<RequestState> itemsToRemove = new List<RequestState>();
-                bool bNeedsRetry = false;
-                List<RequestState> listToRetry = new List<RequestState>();
-
-                lock (m_activeRequestStates)
+                else if (status == eWebRequestStatus.STATUS_DONE)
                 {
-                    if (m_activeRequestStates.Count > 0)
+                    HandleResponseBundle(GetWebRequestResponse(m_activeRequest));
+                    ResetIdleTimer();
+                    m_activeRequest = null;
+                }          
+            }
+            
+            // send the next message if we're ready
+            if (m_activeRequest == null)
+            {
+                m_activeRequest = CreateAndSendNextRequestBundle();
+            }
+            
+            // is it time for a retry?
+            if (m_activeRequest != null)
+            {
+                if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest.Retries))
+                {
+                    if (!ResendMessage(m_activeRequest))
                     {
-                        RequestState tempRequest;
-                        //Response tempResponse;
-                        for (int i = 0; i < m_activeRequestStates.Count; ++i)
-                        {
-                            tempRequest = m_activeRequestStates[i];
-                            try
-                            {
-                                if (tempRequest != null && tempRequest.WebRequest != null)
-                                {
-                                    if (tempRequest.WebRequest.error != null)
-                                    {
-                                        bNeedsRetry = true;
-                                        listToRetry.Add(tempRequest);
-                                        itemsToRemove.Add(tempRequest);
-
-                                        // in this case try to process it again ?
-                                        m_brainCloudClientRef.Log("INCOMING -- Error : " + tempRequest.WebRequest.error + " url: " + tempRequest.WebRequest.url);
-                                        m_brainCloudClientRef.Log("INCOMING -- JSON : " + tempRequest.Jsonstring);
-                                        continue;
-                                    }
-                                    else if (tempRequest.WebRequest.isDone)
-                                    {
-                                        try
-                                        {
-                                            ProcessResponse(tempRequest.WebRequest.text);
-                                            itemsToRemove.Add(tempRequest);
-                                            enableComms = true;
-
-                                            // ensure to remove all packet ids that are the same
-                                            itemsToRemove.AddRange(
-                                                m_activeRequestStates.FindAll(
-                                                    x => x.PacketId == tempRequest.PacketId &&
-                                                    x != tempRequest));
-
-                                        }
-                                        catch (System.Exception e)
-                                        {
-                                            // in this case try to process it again ?
-                                            m_brainCloudClientRef.Log("INCOMING -- Exception : " + e);
-                                            m_brainCloudClientRef.Log("INCOMING -- Fail : " + tempRequest.Jsonstring);
-                                        }
-                                    }
-                                }
-
-                            }
-                            catch (System.Exception e)
-                            {
-                                m_brainCloudClientRef.Log("INCOMING -- Exception : " + e);
-                                m_brainCloudClientRef.Log("INCOMING -- Fail : " + tempRequest.Jsonstring);
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < itemsToRemove.Count; ++i)
-                    {
-                        m_activeRequestStates.Remove(itemsToRemove[i]);
-                    }
-
-                    // these will be retried in a bit
-                    if (bNeedsRetry) // due to error
-                    {
-                        m_toSendRequestStates.AddRange(listToRetry);
-                        //return;
+                        // we've reached the retry limit - kill the packet and reset comms
+                        ResetCommunication();
+                        CallNetworkErrorHandler("Timeout hit trying to send packet, max retries hit.");
                     }
                 }
-
-                // disable heart beat timer
-                if (m_serviceCallsSuccessful.Count > 0 || m_serviceCallsErroneous.Count > 0)
-                    EnableHeartBeatTimer(false);
-#endif
-
-                // process the successful calls
-                ProcessCallbackList(m_serviceCallsSuccessful, true);
-
-                // process the error calls
-                ProcessCallbackList(m_serviceCallsErroneous, false);
             }
-
-            if (m_triggeredForReset)
+            
+            // is it time for a heartbeat?
+            if (Authenticated)
             {
-                ResetComms();
-            }
-#if !(DOT_NET)
-            else if (enableComms)
-            {
-                EnableProcessEvents(true);
-                EnableHeartBeatTimer(true);
-                EnableTimeOutTimer(false);
-            }
-#endif
-
-            if (m_heartBeatTimer != null)
-            {
-                m_heartBeatTimer.Update();
-            }
-            if (m_timeoutTimer != null)
-            {
-                m_timeoutTimer.Update();
+                if (DateTime.Now.Subtract(m_lastTimePacketSent) >= m_idleTimeout)
+                {
+                    SendHeartbeat();
+                }
             }
         }
-
-
-        /**
-         * Shuts down this system
-         */
+        
+        
+        /// <summary>
+        /// Shuts down the communications layer.
+        /// Make sure to only call this from the main thread!
+        /// </summary>
         public void ShutDown()
         {
+            lock(m_serviceCallsWaiting)
+            {
+                m_serviceCallsWaiting.Clear();
+            }
+
             // force a log out
             ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null, null);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
             AddToQueue(sc);
-            // force allowed to process events
-            EnableProcessEvents(true);
-            ProcessQueueHelper();
-            // then reset communications
-            ResetCommunication();
 
+            m_activeRequest = null;
+
+            // calling update will try to send the logout
             Update();
+
+            // and then dump the comms layer
+            ResetCommunication();
         }
 
-        /**
-         * Clears all pending and in progress messages from the message queue(s).
-         */
-        public void ResetCommunication()
+
+        /// <summary>
+        /// Resets the idle timer.
+        /// </summary>
+        private void ResetIdleTimer()
         {
-            m_triggeredForReset = true;
+            m_lastTimePacketSent = DateTime.Now;
         }
 
-        public static String getJsonString(Dictionary<string, object> jsonData, String key, String defaultReturn)
-        {
-            try
-            {
-                return (String)jsonData[key];
-            }
-            catch (KeyNotFoundException)
-            {
-                return defaultReturn;
-            }
 
+        private class ResponseBundleV2
+        {
+            public long packetId;
+            public Dictionary<string, object>[] responses;
+
+            public ResponseBundleV2()
+            {}
         }
+        static bool s_useDispatcherV2 = true;
 
-        public static long getJsonLong(Dictionary<string, object> jsonData, String key, long defaultReturn)
+        /// <summary>
+        /// Handles the response bundle and calls registered callbacks.
+        /// </summary>
+        /// <param name="in_jsonData">The received message bundle.</param>
+        private void HandleResponseBundle(string in_jsonData)
         {
-            try
-            {
-                object value = jsonData[key];
-                if (value is System.Int64)
-                    return (long)value;
-                if (value is System.Int32)
-                    return (int)value;
-                return defaultReturn;
-            }
-            catch (KeyNotFoundException)
-            {
-                return defaultReturn;
-            }
-        }
+            m_brainCloudClientRef.Log("INCOMING: " + in_jsonData);
 
-        #endregion
-
-        #region RequestState Class Helper
-        private class RequestState
-        {
-            // This class stores the request state of the request.
-            private ulong m_packetId;
-            public ulong PacketId
+            Dictionary<string, object>[] responseBundle = null;
+            if (s_useDispatcherV2)
             {
-                get
+                ResponseBundleV2 bundleObj = JsonReader.Deserialize<ResponseBundleV2>(in_jsonData);
+                long receivedPacketId = (long) bundleObj.packetId;
+                if (m_expectedIncomingPacketId == NO_PACKET_EXPECTED || m_expectedIncomingPacketId != receivedPacketId)
                 {
-                    return m_packetId;
+                    m_brainCloudClientRef.Log("Dropping duplicate packet");
+                    return;
                 }
-                set
-                {
-                    m_packetId = value;
-                }
+                m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
+                responseBundle = bundleObj.responses;
             }
+            else
+            {
+                responseBundle = JsonReader.Deserialize<Dictionary<string, object>[]> (in_jsonData);
+            }
+
+            Dictionary<string, object> response = null;
+            for (int j = 0; j < responseBundle.Length; ++j)
+            {
+                response = responseBundle[j];
+                int statusCode = (int) response["status"];
+                string data = "";
+
+                ServerCall sc = null;
+                if (m_serviceCallsInProgress.Count > 0)
+                {
+                    sc = m_serviceCallsInProgress[0] as ServerCall;
+                    m_serviceCallsInProgress.RemoveAt(0);
+                }
+
+                // its a success response
+                if (statusCode == 200)
+                {
+                    if (response[OperationParam.ServiceMessageData.Value] != null)
+                    {
+                        Dictionary<string, object> responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
+                        
+                        // send the data back as not formatted
+                        data = JsonWriter.Serialize(response);
+                        
+                        // save the session ID
+                        try
+                        {
+                            if (getJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null) != null)
+                            {
+                                m_sessionID = (string)responseData[OperationParam.ServiceMessageSessionId.Value];
+                                m_isAuthenticated = true;  // TODO confirm authentication
+                            }
+                            
+                            // save the profile ID
+                            if (getJsonString(responseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
+                            {
+                                m_brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ServiceMessageProfileId.Value];
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            m_brainCloudClientRef.Log("SessionId or ProfileId do not exist " + e.ToString());
+                        }
+                    }
+
+                    // now try to execute the callback
+                    if (sc != null)
+                    {
+                        if (sc.GetService().Equals(ServiceName.PlayerState.Value)
+                            && (sc.GetOperation().Equals(ServiceOperation.FullReset.Value)
+                            || sc.GetOperation().Equals(ServiceOperation.Reset.Value)
+                            || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
+                            
+                        {
+                            // we reset the current player or logged out
+                            // we are no longer authenticated
+                            m_isAuthenticated = false;
+                            m_brainCloudClientRef.AuthenticationService.ProfileId = null;
+                        }
+                        else if (sc.GetService().Equals(ServiceName.Authenticate.Value)
+                            && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
+                        {
+                            ProcessAuthenticate(data);
+                        }
+                        
+                        // // only process callbacks that are real
+                        if (sc.GetCallback() != null)
+                        {
+                            try
+                            {
+                                sc.GetCallback().OnSuccessCallback(data);
+                            }
+                            catch(Exception e)
+                            {
+                                m_brainCloudClientRef.Log (e.StackTrace);
+
+                                // TODO should we rethrow?
+                            }
+                        }
+                    }
+                }
+                else if (statusCode >= 400 || statusCode == 202)
+                {
+                    object reasonCodeObj = null;
+                    int reasonCode = 0;
+                    if (response.TryGetValue("reason_code", out reasonCodeObj))
+                    {
+                        reasonCode = (int) reasonCodeObj;
+                    }
+
+                    if (reasonCode == ReasonCodes.SESSION_EXPIRED
+                        || reasonCode == ReasonCodes.SESSION_NOT_FOUND_ERROR)
+                    {
+                        m_isAuthenticated = false;
+                        m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
+                    }
+
+                    // now try to execute the callback
+                    if (sc != null && sc.GetCallback() != null)
+                    {
+                        string message = JsonWriter.Serialize(response);
+                        try
+                        {
+                            sc.GetCallback().OnErrorCallback(message);
+                        }
+                        catch(Exception e)
+                        {
+                            m_brainCloudClientRef.Log (e.StackTrace);
+                                
+                            // TODO should we rethrow?
+                        }
+                    }
+                }
+            }   
+        }
+
+
+        /// <summary>
+        /// Creates the request state object and sends the message bundle
+        /// </summary>
+        /// <returns>The and send next request bundle.</returns>
+        private RequestState CreateAndSendNextRequestBundle()
+        {
+            RequestState requestState = null;
+            lock(m_serviceCallsWaiting)
+            {
+                if (m_serviceCallsWaiting.Count > 0)
+                {
+                    int numMessagesWaiting = m_serviceCallsWaiting.Count;
+                    if (numMessagesWaiting > MAX_MESSAGES_IN_BUNDLE)
+                    {
+                        numMessagesWaiting = MAX_MESSAGES_IN_BUNDLE;
+                    }
+                    
+                    if (m_serviceCallsInProgress.Count > 0)
+                    {
+                        // this should never happen
+                        m_brainCloudClientRef.Log ("ERROR - in progress queue is not empty but we're ready for the next message!");
+                        m_serviceCallsInProgress.Clear ();
+                    }
+
+                    m_serviceCallsInProgress = m_serviceCallsWaiting.GetRange(0, numMessagesWaiting);
+                    m_serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                }
+            } // unlock m_serviceCallsWaiting
+
+            if (m_serviceCallsInProgress.Count > 0)
+            {
+                requestState = new RequestState();
+            
+                // prepare json data for server
+                List<object> messageList = new List<object>();
+                
+                ServerCall scIndex;
+                for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
+                {
+                    scIndex = m_serviceCallsInProgress[i] as ServerCall;
+                    
+                    Dictionary<string, object> message = new Dictionary<string, object>();
+                    message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
+                    message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
+                    message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
+                    
+                    messageList.Add(message);
+                }
+
+                SendMessage(requestState, messageList);
+            }
+
+            return requestState;
+        }
+
+        /// <summary>
+        /// Sends the message, caches the message list and increments the packet id.
+        /// </summary>
+        /// <param name="requestState">Request state.</param>
+        /// <param name="messageList">Message list.</param>
+        private void SendMessage(RequestState requestState, List<object> messageList)
+        {
+            requestState.PacketId = m_packetId;
+            m_expectedIncomingPacketId = m_packetId;
+            requestState.MessageList = messageList;
+            ++m_packetId;
+
+            InternalSendMessage(requestState);
+        }
+
+        /// <summary>
+        /// Resends a message bundle. Returns true if sent or
+        /// false if max retries has been reached.
+        /// </summary>
+        /// <returns><c>true</c>, if message was resent, <c>false</c> if max retries hit.</returns>
+        /// <param name="requestState">Request state.</param>
+        private bool ResendMessage(RequestState requestState)
+        {
+            ++m_activeRequest.Retries;
+            if (m_activeRequest.Retries >= MAX_RETRIES)
+            {
+                return false;
+            }
+            InternalSendMessage(requestState);
+            return true;
+        }
+
+        /// <summary>
+        /// Method creates the web request and sends it immediately.
+        /// Relies upon the requestState PacketId and MessageList being
+        /// set appropriately.
+        /// </summary>
+        /// <param name="requestState">Request state.</param>
+        private void InternalSendMessage(RequestState requestState)
+        {
+            // bundle up the data into a string
+            Dictionary<string, object> packet = new Dictionary<string, object>();
+            packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
+            packet[OperationParam.ServiceMessageSessionId.Value] = m_sessionID;
+            packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
+            
+            string jsonRequestString = JsonWriter.Serialize(packet);
+            string sig = CalculateMD5Hash(jsonRequestString + m_secretKey);
+            byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
+
+            requestState.Signature = sig;
+            requestState.ByteArray = byteArray;
+
+            if (m_debugPacketLossRate > 0.0)
+            {
+                System.Random r = new System.Random();
+                requestState.LoseThisPacket = r.NextDouble () > m_debugPacketLossRate;
+            }
+
+            if (!requestState.LoseThisPacket)
+            {
+                #if !(DOT_NET)
+                Dictionary<string, string> formTable = new Dictionary<string, string>();
+                formTable["Content-Type"] = "application/json; charset=utf-8";
+                formTable["X-SIG"] = sig;
+                WWW request = new WWW(m_serverURL, byteArray, formTable);
+                #else
+                WebRequest request = WebRequest.Create(m_serverURL);
+                request.ContentType = "application/json; charset=utf-8";
+                request.Method = "POST";
+                request.Headers.Add("X-SIG", sig);
+                request.ContentLength = byteArray.Length;
+                request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
+                #endif
+
+                requestState.WebRequest = request;
+            }
+            requestState.Jsonstring = jsonRequestString;
+            requestState.TimeSent = DateTime.Now;
+
+            ResetIdleTimer();
+            
+            m_brainCloudClientRef.Log("OUTGOING " 
+                                      + (requestState.Retries > 0 ? " Retry(" + requestState.Retries +"): " : ": ")
+                                      + jsonRequestString);
+
+        }
+
+
+        /// <summary>
+        /// Gets the web request status.
+        /// </summary>
+        /// <returns>The web request status.</returns>
+        /// <param name="in_requestState">In_request state.</param>
+        private eWebRequestStatus GetWebRequestStatus(RequestState in_requestState)
+        {
+            eWebRequestStatus status = eWebRequestStatus.STATUS_PENDING;
+
+            // for testing packet loss, some packets are flagged to be lost
+            // and should always return status pending no matter what the real
+            // status is
+            if (m_activeRequest.LoseThisPacket)
+            {
+                return status;
+            }
+
 #if !(DOT_NET)
-            // we process the signature on the background thread
-            private string m_sig = "";
-            public string Signature
+            if (m_activeRequest.WebRequest.error != null)
             {
-                get
-                {
-                    return m_sig;
-                }
-                set
-                {
-                    m_sig = value;
-                }
+                status = eWebRequestStatus.STATUS_ERROR;
             }
-
-            // we also process the byte array on the background thread
-            private byte[] m_byteArray = null;
-            public byte[] ByteArray
+            else if (m_activeRequest.WebRequest.isDone)
             {
-                get
-                {
-                    return m_byteArray;
-                }
-                set
-                {
-                    m_byteArray = value;
-                }
+                status = eWebRequestStatus.STATUS_DONE;
             }
-
-            // unity uses WWW objects to make http calls cross platform
-            private WWW request;
-            public WWW WebRequest
-#else
-            // while .net projects can use the WebRequest Object
-            private WebRequest request;
-            public WebRequest WebRequest
 #endif
-            {
-                get
-                {
-                    return request;
-                }
-                set
-                {
-                    request = value;
-                }
+            return status;
+        }
+
+
+        /// <summary>
+        /// Gets the web request response.
+        /// </summary>
+        /// <returns>The web request response.</returns>
+        /// <param name="in_requestState">In_request state.</param>
+        private string GetWebRequestResponse(RequestState in_requestState)
+        {
+            string response = "";
+#if !(DOT_NET)
+            if (m_activeRequest.WebRequest.error != null)
+            { 
+                response = m_activeRequest.WebRequest.error;
             }
-            private string m_jsonstring;
-            public string Jsonstring
+            else
             {
-                get
-                {
-                    return m_jsonstring;
-                }
-                set
-                {
-                    m_jsonstring = value;
-                }
+                response = m_activeRequest.WebRequest.text;
             }
-            public RequestState()
+#endif
+            return response;
+        }
+
+
+        /// <summary>
+        /// Calls the network error handler.
+        /// </summary>
+        /// <param name="error">Error.</param>
+        private void CallNetworkErrorHandler(string error)
+        {
+            if (m_networkErrorHandler != null)
             {
-                request = null;
-                m_jsonstring = "";
+                m_networkErrorHandler(error);
             }
+        }
+
+
+        /// <summary>
+        /// Method staggers the packet timeout value based on the currentRetry
+        /// </summary>
+        /// <returns>The packet timeout.</returns>
+        /// <param name="currentRetryNumber">Current retry number.</param>
+        private TimeSpan GetPacketTimeout(int currentRetry)
+        {
+            TimeSpan ret;
+            switch (currentRetry)
+            {
+            case 0:
+                ret = TimeSpan.FromSeconds(3);
+                break;
+            case 1:
+                ret = TimeSpan.FromSeconds(5);
+                break;
+            case 2:
+                ret = TimeSpan.FromSeconds(5);
+                break;
+            case 3:
+                ret = TimeSpan.FromSeconds(10);
+                break;
+            case 4:
+            default:
+                ret = TimeSpan.FromSeconds(10);
+                break;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Sends the heartbeat.
+        /// </summary>
+        private void SendHeartbeat()
+        {
+            ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null, null);
+            AddToQueue(sc);
         }
 
 #if UNITY_WP8 || DOT_NET
@@ -517,308 +744,45 @@ namespace BrainCloud.Internal
         }
 #endif
 
-        #endregion
-
-        private void EnableTimeOutTimer(bool in_value)
+        /// <summary>
+        /// Adds a server call to the internal queue.
+        /// </summary>
+        /// <param name="call">The server call to execute</param>
+        internal void AddToQueue(ServerCall call)
         {
-            // start it up!
-            if (in_value)
+            lock (m_serviceCallsWaiting)
             {
-                // for now tick every half second
-                if (m_timeoutTimer == null)
-                {
-                    double timeoutMs = 20 * 1000;
-#if !(DOT_NET)
-                    m_timeoutTimer = new SingleThreadedTimer(timeoutMs);
-#else
-                    m_timeoutTimer = new MultiThreadedTimer(timeoutMs);
-#endif
-                    m_timeoutTimer.SetEventHandler(OnTimeOut);
-                }
-
-                m_timeoutTimer.Stop();
-                m_timeoutTimer.Start();
-
-            }
-            else
-            {
-                if (m_timeoutTimer != null)
-                {
-                    m_timeoutTimer.Stop();
-                }
+                m_serviceCallsWaiting.Add(call);
             }
         }
 
-
-        private void EnableHeartBeatTimer(bool in_value, bool in_tearDown = false)
-        {
-            // start it up!
-            if (in_value)
-            {
-                // for now tick every half second
-                if (m_heartBeatTimer == null)
-                {
-#if !(DOT_NET)
-                    m_heartBeatTimer = new SingleThreadedTimer(m_heartBeatInterval);
-#else
-                    m_heartBeatTimer = new MultiThreadedTimer(m_heartBeatInterval);
-#endif
-                    m_heartBeatTimer.SetEventHandler(OnHeartBeat);
-                    m_heartBeatTimer.Start();
-                }
-                else
-                {
-                    m_heartBeatTimer.Stop();
-                    m_heartBeatTimer.Start();
-                }
-            }
-            else
-            {
-                if (m_heartBeatTimer != null)
-                {
-                    m_heartBeatTimer.Stop ();
-                }
-            }
-        }
-
-        /**
-         * EnableComms the Communications
-         * in_value:
-         */
+        /// <summary>
+        /// Enables the communications layer.
+        /// </summary>
+        /// <param name="in_value">If set to <c>true</c> in_value.</param>
         public void EnableComms(bool in_value)
         {
-            //m_brainCloudClientRef.Log("EnableComms -- " + Environment.StackTrace);
-
-            // Enable everything
-            if (in_value)
-            {
-                // we can start the heart beat timer back up
-                EnableProcessEvents(true);
-                EnableHeartBeatTimer(in_value);
-                CreateLoaderThread();
-            }
-            else
-            {
-                EnableProcessEvents(false, true);
-                // heart beat timer we need to pause
-                EnableHeartBeatTimer(in_value);
-                EnableTimeOutTimer(in_value);
-            }
-
-            //m_brainCloudClientRef.Log("EnableComms(bool in_value) -- " + in_value);
+            m_enabled = in_value;
         }
 
-        private void ResetComms()
+        /// <summary>
+        /// Resets the communication layer. Clients will need to
+        /// reauthenticate after this method is called.
+        /// </summary>
+        internal void ResetCommunication()
         {
-            m_isAuthenticated = false;
-
-            // tear all waiting / inprogress / callbacks down
             lock (m_serviceCallsWaiting)
             {
+                m_isAuthenticated = false;
                 m_serviceCallsWaiting.Clear();
-            }
-
-            lock (m_serviceCallsInProgress)
-            {
                 m_serviceCallsInProgress.Clear();
-            }
-
-            lock (m_serviceCallsSuccessful)
-            {
-                m_serviceCallsSuccessful.Clear();
-            }
-
-            lock (m_serviceCallsErroneous)
-            {
-                m_serviceCallsErroneous.Clear();
-            }
-
-            m_numRetry = 0;
-            m_triggeredForReset = false;
-        }
-
-        // processes the callback lists for success and errors with appropriate safe gaurds
-        private void ProcessCallbackList(List<ServerCallProcessed> in_list, bool in_Success)
-        {
-            lock (in_list)
-            {
-                if (in_list.Count > 0)
-                {
-                    //m_brainCloudClientRef.Log("NumItems Processed Start ---" + in_Success);
-                    m_numRetry = 0;
-                    //m_brainCloudClientRef.Log("NumItems Processed Start ----- " + in_list.Count + " + " + in_Success);
-                    ServerCallProcessed toProcess;
-
-                    while(in_list.Count > 0)
-                    {
-                        toProcess = in_list[0];
-                        in_list.RemoveAt(0);
-
-                        if (toProcess.ServerCall.GetCallback() != null)
-                        {
-                            try
-                            {
-                                if (in_Success)
-                                {
-                                    toProcess.ServerCall.GetCallback().OnSuccessCallback(toProcess.Data);
-                                    if (toProcess.ServerCall.GetService().Equals(ServiceName.Authenticate.Value))
-                                    {
-                                        processAuthenticate(toProcess.Data);
-                                    }
-                                }
-                                else
-                                {
-                                    toProcess.ServerCall.GetCallback().OnErrorCallback(toProcess.Data);
-                                }
-                            }
-                            catch(Exception)
-                            {
-                                // callback funtion threw an exception... nothing left to do except rethrow it
-                                throw;
-                            }
-                        }
-                    }
-                    //m_brainCloudClientRef.Log("NumItems Processed " + in_list.Count);
-                }
+                m_activeRequest = null;
             }
         }
 
-
-        private void OnHeartBeat()
-        {
-            if (this != null && this.Authenticated)
-            {
-                TimeSpan idleTime = DateTime.Now - m_lastpacketSend;
-                m_brainCloudClientRef.Log("heartBeatCheck:" + idleTime.TotalSeconds + " " + m_idleInterval);
-                if (idleTime.TotalSeconds > m_idleInterval)
-                {
-                    m_brainCloudClientRef.Log("heartBeatTrigger:" + idleTime.TotalSeconds + " " + m_idleInterval);
-                    ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null, null);
-                    AddToQueue(sc);
-                }
-            }
-        }
-
-        private int REQUEST_MESSAGE_LIMIT = 50;
-        private void ProcessQueueHelper()
-        {
-            // only process the queue if we have some in there
-            lock (m_serviceCallsWaiting)
-            {
-                if (m_serviceCallsWaiting.Count > 0)
-                {
-                    m_lastpacketSend = DateTime.Now;
-
-                    EnableProcessEvents(false);
-#if (DOT_NET)
-                    EnableHeartBeatTimer(false);
-#endif
-                    // only bundle up to REQUEST_MESSAGE_LIMIT at a time
-                    int numMessagesWaiting = m_serviceCallsWaiting.Count;
-                    if (numMessagesWaiting > REQUEST_MESSAGE_LIMIT)
-                    {
-                        numMessagesWaiting = REQUEST_MESSAGE_LIMIT;
-                    }
-
-                    // add the messages that are waiting to be in progress and then
-                    // remove them accordingly
-                    lock (m_serviceCallsInProgress)
-                    {
-                        m_serviceCallsInProgress = m_serviceCallsWaiting.GetRange(0, numMessagesWaiting);
-                        m_serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
-
-                        // prepare json data for server
-                        List<object> messageList = new List<object>();
-
-                        ServerCall scIndex;
-                        for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
-                        {
-                            scIndex = m_serviceCallsInProgress[i] as ServerCall;
-
-                            Dictionary<string, object> message = new Dictionary<string, object>();
-                            message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
-                            message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
-                            message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
-
-                            messageList.Add(message);
-                        }
-
-                        // create a web request
-                        try
-                        {
-                            // now actually bundle up the data into a string
-                            Dictionary<string, object> packet = new Dictionary<string, object>();
-                            packet[OperationParam.ServiceMessagePacketId.Value] = m_packetId++;
-                            packet[OperationParam.ServiceMessageUserId.Value] = m_userID;
-                            packet[OperationParam.ServiceMessageSessionId.Value] = m_sessionID;
-                            packet[OperationParam.ServiceMessageMessages.Value] = messageList;
-
-                            string jsonRequestString = JsonWriter.Serialize(packet);
-                            string sig = CalculateMD5Hash(jsonRequestString + m_secretKey);
-                            //Set the length of the message
-                            byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
-
-#if !(DOT_NET)
-                            WWW request = null;
-#else
-                            // TODO: keep the same web request around?
-                            WebRequest request = WebRequest.Create(m_serverURL);
-                            request.ContentType = "application/json; charset=utf-8";
-                            request.Method = "POST"; // TODO: confirm if all these web requests are POST requests
-                            request.Headers.Add("X-SIG", sig);
-                            request.ContentLength = byteArray.Length;
-#endif
-                            RequestState requestState = new RequestState();
-                            requestState.PacketId = m_packetId - 1;
-                            requestState.WebRequest = request;
-                            requestState.Jsonstring = jsonRequestString;
-#if !(DOT_NET)
-                            requestState.Signature = sig;
-                            requestState.ByteArray = byteArray;
-
-                            lock (m_toSendRequestStates)
-                            {
-                                m_toSendRequestStates.Add(requestState);
-                            }
-#else
-
-                            m_brainCloudClientRef.Log("RequestState - jsonRequestString GOING OUT: " + jsonRequestString);
-                            request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
-
-                            EnableTimeOutTimer(true);
-                            m_brainCloudClientRef.Log("m_serviceCallsInProgress - EnableHeartBeatTimer true ");
-                            EnableHeartBeatTimer(true);
-                            m_brainCloudClientRef.Log("m_serviceCallsInProgress - EnableHeartBeatTimer end ");
-#endif
-                        }
-                        catch (Exception ex)
-                        {
-                            m_brainCloudClientRef.Log("BeginGetRequestStream - Exception: " + ex.ToString());
-                            HandleErrorCallInProgressCalls(ex.ToString());
-                        }
-                    }
-                } // end conditional < 0
-            } // end lock
-        }
 
 #if (DOT_NET)
-        private void ProcessQueue()
-        {
-            // when triggerred to false the queue will be finished
-            while (m_processThread)
-            {
-                lock (m_processingEvent)
-                {
-                    if (m_processingBool)
-                    {
-                        ProcessQueueHelper();
-                    }
-                }
-                Thread.Sleep(10);
-            }
-
-            //m_brainCloudClientRef.Log("ProcessQueue ---- COMPLETE!!!");
-        }
+        // TODO: This implementation needs to be completed!!!
 
         private void GetRequestCallback(IAsyncResult asynchronousResult)
         {
@@ -885,112 +849,19 @@ namespace BrainCloud.Internal
             EnableHeartBeatTimer(true);
             EnableTimeOutTimer(false);
         }
-#endif
-
-        private void ProcessResponse(string in_response)
-        {
-            string jsonResponseString = in_response;
-            try
-            {
-                // and now handle the incoming data
-                HandleSuccessCallInProgressCalls(jsonResponseString);
-            }
-            catch (Exception ex)
-            {
-                m_brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
-                HandleErrorCallInProgressCalls(ex.ToString());
-                return;
-            }
-
-        }
-
-        private void HandleTimeOut()
-        {
-            m_brainCloudClientRef.Log("BrainCloud.OnTimeOut Timeout # " + (m_numRetry+1));
-
-            EnableTimeOutTimer(false);
-            ++m_numRetry;
-
-            // we've already retried three times
-            // now throw the error back
-            if (m_numRetry >= 3)
-            {
-                HandleErrorCallInProgressCalls("Error Timeout --- Num Retries Already " + m_numRetry);
-                m_numRetry = 0;
-                return;
-            }
-
-#if !(DOT_NET)
-            // remove all the ones waiting to be sent, they will be re-added when we retry
-            lock (m_toSendRequestStates)
-            {
-                m_toSendRequestStates.Clear();
-            }
-
-            // remove all the active ones
-            lock (m_activeRequestStates)
-            {
-                for (int i = 0; i < m_activeRequestStates.Count; ++i)
-                {
-                    m_toSendRequestStates.Add(m_activeRequestStates[i]);
-                }
-                m_activeRequestStates.Clear();
-            }
-
-#endif
-            // grab all in progress items, add them to the queue to simulate retrying
-            // and remove all in progress items
-            lock (m_serviceCallsInProgress)
-            {
-                for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
-                {
-                    AddToQueue(m_serviceCallsInProgress[i]);
-                }
-
-                m_serviceCallsInProgress.Clear();
-            }
-
-            EnableProcessEvents(true);
-            EnableHeartBeatTimer(true);
-        }
-
-        private void OnTimeOut()
-        {
-            HandleTimeOut();
-        }
-
-        private void EnableProcessEvents(bool in_value, bool in_tearDown = false)
-        {
-            if (in_value)
-            {
-#if (DOT_NET)
-                m_processThread = true;
-#endif
-            }
-            else
-            {
-                if (in_tearDown)
-                {
-#if (DOT_NET)
-                    m_processThread = false;
-#endif
-                }
-            }
-
-            m_processingBool = in_value;
-        }
 
         private void CreateLoaderThread()
         {
-#if (DOT_NET)
             // processing thread handled via m_processingEvent
             Thread thread = new System.Threading.Thread( (ThreadStart)ProcessQueue );
             thread.Priority = System.Threading.ThreadPriority.BelowNormal;
             thread.IsBackground = true;
             thread.Name = "BrainCloud.m_loaderThread";
             thread.Start();
-#endif
         }
+
+#endif
+
 
         private string CalculateMD5Hash(string input)
         {
@@ -1012,194 +883,185 @@ namespace BrainCloud.Internal
             return sb.ToString();
         }
 
-        private void HandleSuccessCallInProgressCalls(string jsonData)
+
+        private void ProcessAuthenticate(string jsonString)
         {
-            //OutputAllJsonData(jsonData);
-            m_brainCloudClientRef.Log("GetResponseCallback - JsonResponsestring COMING IN: " + jsonData);
-            Dictionary<string, object>[] responseBundle = JsonReader.Deserialize<Dictionary<string, object>[]> (jsonData);
+            Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(jsonString);
+            Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
 
-            int i = 0;
-            List<ServerCall> processed = new List<ServerCall>();
-            Dictionary<string, object> response = null;
-            for (int j = 0; j < responseBundle.Length; ++j)
-            {
-                response = responseBundle[j];
-                //m_brainCloudClientRef.Log(" JsonData - " + JsonData.ToString());
-                int statusCode = (int) response["status"];
-                string data = "";
+            long playerSessionExpiry = getJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 5*60);
+            long idleTimeout = (long) (playerSessionExpiry * 0.85);
 
-                if (statusCode == 200)
-                {
-                    if (response[OperationParam.ServiceMessageData.Value] != null)
-                    {
-                        // its a good response!
-                        Dictionary<string, object> responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
-
-                        // send the data back as not formatted
-                        data = JsonWriter.Serialize(response);
-
-                        // TODO:: confirm session ID failure for read player state, read summary friend data
-
-                        // save the session ID
-                        try
-                        {
-                            if (getJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null) != null)
-                            {
-                                m_sessionID = (string)responseData[OperationParam.ServiceMessageSessionId.Value];
-                                m_isAuthenticated = true;  // TODO confirm authentication
-                            }
-
-                            // save the profile ID
-                            if (getJsonString(responseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
-                            {
-                                m_brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ServiceMessageProfileId.Value];
-                            }
-
-                            // save the user ID
-                            if (getJsonString(responseData, OperationParam.ServiceMessageUserId.Value, null) != null)
-                            {
-                                m_userID = (string)responseData[OperationParam.ServiceMessageUserId.Value];
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // do nothing with this error [smrj]
-                            // it means it can't find either sessionId or userId in the message thrown
-                            m_brainCloudClientRef.Log("SessionId or UserId do not exist " + e.ToString());
-                        }
-                        m_brainCloudClientRef.Log("continuing to process");
-
-                    }
-
-                    // ensure that we send back the success callbacks
-                    lock (m_serviceCallsSuccessful)
-                    {
-                        lock (m_serviceCallsInProgress)
-                        {
-                            if (i < m_serviceCallsInProgress.Count)
-                            {
-                                ServerCall sc = m_serviceCallsInProgress[i] as ServerCall;
-                                if (sc != null)
-                                {
-                                    if (sc.GetService().Equals(ServiceName.PlayerState.Value) &&
-                                            (sc.GetOperation().Equals(ServiceOperation.FullReset.Value) ||
-                                             sc.GetOperation().Equals(ServiceOperation.Reset.Value) ||
-                                             sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
-
-                                    {
-                                        // we reset the current player or logged out
-                                        // we are no longer authenticated
-                                        m_isAuthenticated = false;
-                                        m_brainCloudClientRef.AuthenticationService.ProfileId = null;
-                                    }
-
-                                    // // only process callbacks that are real
-                                    if (sc.GetCallback() != null)
-                                    {
-                                        ServerCallProcessed newProcessed = new ServerCallProcessed();
-                                        newProcessed.ServerCall = sc;
-                                        newProcessed.Data = data;
-                                        m_serviceCallsSuccessful.Add(newProcessed);
-                                    }
-
-                                    processed.Add(sc);
-                                }
-
-                            }
-                        }
-                    }
-                    ++i;
-
-                }
-                else if (statusCode >= 400 || statusCode == 202)
-                {
-                    // this is an error!
-                    // pass on the entire returned json object
-                    string message = JsonWriter.Serialize(response);
-                    HandleErrorCallInProgressCalls(message);
-                    return;
-                }
-            }
-
-            // and clear all handled in progress calls
-            lock (m_serviceCallsInProgress)
-            {
-                for (int j = 0; j < processed.Count; ++j)
-                {
-                    m_serviceCallsInProgress.Remove(processed[j]);
-                }
-            }
-
-            //m_brainCloudClientRef.Log("BrainCloud.ProcessQueue - Not Waiting ! -- HandleSuccessCallInProgressCalls");
-#if (DOT_NET)
-            EnableProcessEvents(true);
-#endif
+            m_idleTimeout = TimeSpan.FromSeconds(idleTimeout);
         }
 
-        private void HandleErrorCallInProgressCalls(string error)
-        {
-            lock (m_serviceCallsErroneous)
-            {
-                int i = 0;
 
-                List<ServerCall> processed = new List<ServerCall>();
-                for (; i < m_serviceCallsInProgress.Count; ++i)
-                {
-                    ServerCallProcessed newProcessed = new ServerCallProcessed();
-                    newProcessed.ServerCall = m_serviceCallsInProgress[i] as ServerCall;
-                    newProcessed.Data = error;
-                    m_serviceCallsErroneous.Add(newProcessed);
-                    processed.Add(m_serviceCallsInProgress[i] as ServerCall);
-                }
-
-                lock (m_serviceCallsInProgress)
-                {
-                    for (int j = 0; j < processed.Count; ++j)
-                    {
-                        m_serviceCallsInProgress.Remove(processed[j]);
-                    }
-                }
-            }
-
-            //m_brainCloudClientRef.Log("BrainCloud.ProcessQueue - Not Waiting ! --- HandleErrorCallInProgressCalls");
-#if (DOT_NET)
-            EnableHeartBeatTimer(true);
-            EnableProcessEvents(true);
-#endif
-        }
-
-        private void OutputAllJsonData(string jsonData)
-        {
-            /*
-            JsonTextReader jsonReader = new JsonTextReader(new stringReader(jsonData));
-            while (jsonReader.Read())
-            {
-              if (jsonReader.Value != null)
-                m_brainCloudClientRef.Log("Token: {0}, Value: {1}", jsonReader.TokenType, jsonReader.Value);
-              else
-                m_brainCloudClientRef.Log("Token: {0}", jsonReader.TokenType);
-            }
-             */
-        }
-
-        private void processAuthenticate(string jsonString)
+        private static String getJsonString(Dictionary<string, object> jsonData, String key, String defaultReturn)
         {
             try
             {
-                Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(jsonString);
-                Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
-
-                long playerSessionExpiry = getJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 1200);
-                SetHeartbeatInterval((int)playerSessionExpiry * 1000 / 4);
-                m_idleInterval = playerSessionExpiry / 2;
-                m_brainCloudClientRef.Log("Setting time interval to " + (playerSessionExpiry * 1000 / 4));
-                m_brainCloudClientRef.Log("Setting idle interval to " + m_idleInterval);
+                return (String)jsonData[key];
             }
-            catch (System.Exception)
+            catch (KeyNotFoundException)
             {
+                return defaultReturn;
             }
-
         }
 
+
+        private static long getJsonLong(Dictionary<string, object> jsonData, String key, long defaultReturn)
+        {
+            try
+            {
+                object value = jsonData[key];
+                if (value is System.Int64)
+                    return (long)value;
+                if (value is System.Int32)
+                    return (int)value;
+                return defaultReturn;
+            }
+            catch (KeyNotFoundException)
+            {
+                return defaultReturn;
+            }
+        }
+
+
+        #region RequestState Class Helper
+        private class RequestState
+        {
+            // This class stores the request state of the request.
+            private long m_packetId;
+            public long PacketId
+            {
+                get
+                {
+                    return m_packetId;
+                }
+                set
+                {
+                    m_packetId = value;
+                }
+            }
+
+            private DateTime m_timeSent;
+            public DateTime TimeSent
+            {
+                get
+                {
+                    return m_timeSent;
+                }
+                set
+                {
+                    m_timeSent = value;
+                }
+            }
+
+            private int m_retries;
+            public int Retries
+            {
+                get
+                {
+                    return m_retries;
+                }
+                set
+                {
+                    m_retries = value;
+                }
+            }
+
+            #if !(DOT_NET)
+            // we process the signature on the background thread
+            private string m_sig = "";
+            public string Signature
+            {
+                get
+                {
+                    return m_sig;
+                }
+                set
+                {
+                    m_sig = value;
+                }
+            }
+            
+            // we also process the byte array on the background thread
+            private byte[] m_byteArray = null;
+            public byte[] ByteArray
+            {
+                get
+                {
+                    return m_byteArray;
+                }
+                set
+                {
+                    m_byteArray = value;
+                }
+            }
+            
+            // unity uses WWW objects to make http calls cross platform
+            private WWW request;
+            public WWW WebRequest
+        #else
+            // while .net projects can use the WebRequest Object
+            private WebRequest request;
+            public WebRequest WebRequest
+        #endif
+            {
+                get
+                {
+                    return request;
+                }
+                set
+                {
+                    request = value;
+                }
+            }
+            private string m_jsonstring;
+            public string Jsonstring
+            {
+                get
+                {
+                    return m_jsonstring;
+                }
+                set
+                {
+                    m_jsonstring = value;
+                }
+            }
+
+            private List<object> m_messageList;
+            public List<object> MessageList
+            {
+                get
+                {
+                    return m_messageList;
+                }
+                set
+                {
+                    m_messageList = value;
+                }
+            }
+
+            private bool m_loseThisPacket;
+            public bool LoseThisPacket
+            {
+                get
+                {
+                    return m_loseThisPacket;
+                }
+                set
+                {
+                    m_loseThisPacket = value;
+                }
+            }
+
+            public RequestState()
+            {
+                request = null;
+                m_jsonstring = "";
+            }
+        }
+        #endregion
     }
 }

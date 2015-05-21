@@ -253,7 +253,6 @@ namespace BrainCloud
 
         // data bundle creation parms
         public static readonly OperationParam ServiceMessagePacketId                             = new OperationParam("packetId");
-        public static readonly OperationParam ServiceMessageUserId                               = new OperationParam("userId");
         public static readonly OperationParam ServiceMessageProfileId                            = new OperationParam("profileId");
         public static readonly OperationParam ServiceMessageSessionId                            = new OperationParam("sessionId");
         public static readonly OperationParam ServiceMessageMessages                             = new OperationParam("messages");

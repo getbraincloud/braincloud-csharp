@@ -22,6 +22,7 @@ namespace BrainCloud
     public delegate void SuccessCallback(string responseData, object cbObject);
     public delegate void FailureCallback(string errorData, object cbObject);
     public delegate void LogCallback(string log);
+    public delegate void NetworkErrorHandler(string error);
 
 //[Serializable]
     public class BrainCloudClient
@@ -499,11 +500,6 @@ namespace BrainCloud
             }
         }
 
-        public void SetHeartbeatInterval(int intervalInMilliseconds)
-        {
-            m_bc.SetHeartbeatInterval(intervalInMilliseconds);
-        }
-
         #endregion
 
         // InitializeClient
@@ -596,6 +592,7 @@ namespace BrainCloud
         }
 
         /// <summary>Shuts down all systems needed for BrainCloudClient
+        /// Only call this from the main thread.
         /// Should be used at the end of the app, and opposite of Initiatilize Client
         /// </summary>
         public void ShutDown()
@@ -676,6 +673,11 @@ namespace BrainCloud
         public void EnableCommunications(bool in_value)
         {
             m_bc.EnableComms(in_value);
+        }
+
+        public void SetNetworkErrorHandler(NetworkErrorHandler in_handler)
+        {
+            m_bc.NetworkErrorHandler = in_handler;
         }
         #endregion
 

@@ -72,7 +72,7 @@ public class BrainCloudSettings : ScriptableObject
 	
 	public string DispatcherURL
 	{
-		get {return m_serverURL + "/dispatcher";}
+		get {return m_serverURL + "/dispatcherv2";}
 	}
 	public string PortalURL
 	{
