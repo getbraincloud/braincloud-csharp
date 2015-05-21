@@ -258,10 +258,11 @@ namespace BrainCloud.Internal
                 else if (status == eWebRequestStatus.STATUS_DONE)
                 {
                     ResetIdleTimer();
-                    m_activeRequest = null;
 
-                    // Important to do this after setting active request to null
+                    // note that active request is set to null if exception is to be thrown
                     HandleResponseBundle(GetWebRequestResponse(m_activeRequest));
+
+                    m_activeRequest = null;
                 }          
             }
             
@@ -493,6 +494,8 @@ namespace BrainCloud.Internal
 
             if (firstThrownException != null)
             {
+                m_activeRequest = null; // to make sure we don't reprocess this message
+
                 throw new Exception("User callback handlers threw " + numExceptionsThrown +" exception(s)."
                                     +" See the Unity log for callstacks or inner exception for first exception thrown.",
                                     firstThrownException);
