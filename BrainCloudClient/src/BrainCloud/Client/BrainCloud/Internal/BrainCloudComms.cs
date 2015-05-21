@@ -785,7 +785,7 @@ namespace BrainCloud.Internal
         // TODO: This implementation needs to be completed!!!
 
         private void GetRequestCallback(IAsyncResult asynchronousResult)
-        {
+        {/*
             try
             {
                 RequestState requestState = (RequestState)asynchronousResult.AsyncState;
@@ -810,11 +810,11 @@ namespace BrainCloud.Internal
             {
                 //Debug.WriteLine("BrainCloud - GetResponseCallback - Exception: " + ex.ToString());
                 HandleErrorCallInProgressCalls(ex.ToString());
-            }
+            }*/
         }
 
         private void GetResponseCallback(IAsyncResult asynchronousResult)
-        {
+        {/*
             //a callback method to end receiving the data
             string jsonResponseString = "";
             try
@@ -847,17 +847,17 @@ namespace BrainCloud.Internal
             HandleSuccessCallInProgressCalls(jsonResponseString);
 
             EnableHeartBeatTimer(true);
-            EnableTimeOutTimer(false);
+            EnableTimeOutTimer(false);*/
         }
 
         private void CreateLoaderThread()
-        {
+        { /*
             // processing thread handled via m_processingEvent
             Thread thread = new System.Threading.Thread( (ThreadStart)ProcessQueue );
             thread.Priority = System.Threading.ThreadPriority.BelowNormal;
             thread.IsBackground = true;
             thread.Name = "BrainCloud.m_loaderThread";
-            thread.Start();
+            thread.Start();*/
         }
 
 #endif
@@ -970,7 +970,6 @@ namespace BrainCloud.Internal
                 }
             }
 
-            #if !(DOT_NET)
             // we process the signature on the background thread
             private string m_sig = "";
             public string Signature
@@ -998,7 +997,8 @@ namespace BrainCloud.Internal
                     m_byteArray = value;
                 }
             }
-            
+
+        #if !(DOT_NET)       
             // unity uses WWW objects to make http calls cross platform
             private WWW request;
             public WWW WebRequest
@@ -1017,6 +1017,7 @@ namespace BrainCloud.Internal
                     request = value;
                 }
             }
+
             private string m_jsonstring;
             public string Jsonstring
             {
