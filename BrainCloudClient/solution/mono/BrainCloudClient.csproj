@@ -283,6 +283,9 @@
     <Compile Include="..\..\src\BrainCloud\JsonFx\XmlDataWriter.cs">
       <Link>JsonFx\XmlDataWriter.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\StatusCodes.cs">
+      <Link>BrainCloud\StatusCodes.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

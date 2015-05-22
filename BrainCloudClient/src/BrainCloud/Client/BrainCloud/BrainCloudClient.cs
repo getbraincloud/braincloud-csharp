@@ -19,10 +19,9 @@ using UnityEngine;
 
 namespace BrainCloud
 {
-    public delegate void SuccessCallback(string responseData, object cbObject);
-    public delegate void FailureCallback(string errorData, object cbObject);
+    public delegate void SuccessCallback(string jsonResponse, object cbObject);
+    public delegate void FailureCallback(int status, int reasonCode, string statusMessage, object cbObject);
     public delegate void LogCallback(string log);
-    public delegate void NetworkErrorHandler(string error);
 
 //[Serializable]
     public class BrainCloudClient
@@ -673,11 +672,6 @@ namespace BrainCloud
         public void EnableCommunications(bool in_value)
         {
             m_bc.EnableComms(in_value);
-        }
-
-        public void SetNetworkErrorHandler(NetworkErrorHandler in_handler)
-        {
-            m_bc.NetworkErrorHandler = in_handler;
         }
         #endregion
 

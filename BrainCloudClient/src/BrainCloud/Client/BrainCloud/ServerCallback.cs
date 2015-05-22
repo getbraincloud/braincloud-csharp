@@ -27,19 +27,19 @@ namespace BrainCloud
         public event FailureCallback m_fnFailureCallback;
         public object m_cbObject;
 
-        public void OnSuccessCallback( string responseData )
+        public void OnSuccessCallback( string jsonResponse )
         {
             if ( m_fnSuccessCallback != null )
             {
-                m_fnSuccessCallback(responseData, m_cbObject);
+                m_fnSuccessCallback(jsonResponse, m_cbObject);
             }
         }
 
-        public void OnErrorCallback(string errorData)
+        public void OnErrorCallback(int statusCode, int reasonCode, string statusMessage)
         {
             if ( m_fnFailureCallback != null )
             {
-                m_fnFailureCallback(errorData, m_cbObject);
+                m_fnFailureCallback(statusCode, reasonCode, statusMessage, m_cbObject);
             }
         }
         #endregion

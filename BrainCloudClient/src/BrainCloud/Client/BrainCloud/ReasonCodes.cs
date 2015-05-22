@@ -77,6 +77,9 @@ namespace BrainCloud
         public const int MAX_CONCURRENT_PLAYER_COUNT_REACHED = 40356;
 
 
-
+        /// <summary>
+        /// Client defined value for a timeout detected client-side.
+        /// </summary>
+        public const int CLIENT_NETWORK_ERROR_TIMEOUT = 90001;
     }
 }

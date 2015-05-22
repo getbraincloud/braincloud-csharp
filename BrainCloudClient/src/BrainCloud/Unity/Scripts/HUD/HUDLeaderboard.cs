@@ -53,9 +53,9 @@ namespace BrainCloudUnity.HUD
 			RetrieveLeaderboard(m_lbId);
 		}
 
-		void PostScoreFailure(string json, object cb)
+		void PostScoreFailure(int statusCode, int reasonCode, string statusMessage, object cb)
 		{
-			Debug.LogError("Failed to post to leaderboard: " + json);
+			Debug.LogError("Failed to post to leaderboard: " + statusMessage);
 		}
 
 		void ReadLeaderboardSuccess(string json, object cb)
@@ -79,9 +79,9 @@ namespace BrainCloudUnity.HUD
 			}
 		}
 		
-		void ReadLeaderboardFailure(string json, object cb)
+		void ReadLeaderboardFailure(int statusCode, int reasonCode, string statusMessage, object cb)
 		{
-			Debug.LogError("Failed to read leaderboard: " + json);
+			Debug.LogError("Failed to read leaderboard: " + statusMessage);
 		}
 		
 		public void OnHUDDraw()

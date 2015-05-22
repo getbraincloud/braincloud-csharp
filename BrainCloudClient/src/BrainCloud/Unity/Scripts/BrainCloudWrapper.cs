@@ -164,16 +164,15 @@ public class BrainCloudWrapper : MonoBehaviour
                 }
             }),
             // failure
-            (delegate(string json, object cbObject)
+		    (delegate(int statusCode, int reasonCode, string statusMessage, object cbObject)
             {
                 if (in_failureCb != null)
                 {
-                    in_failureCb(json, cbObject);
+					in_failureCb(statusCode, reasonCode, statusMessage, cbObject);
                 }
             })
         );
     }
-
 
 
     public void OnDestroy ()

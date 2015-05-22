@@ -59,9 +59,9 @@ namespace BrainCloudUnity.HUD
 			}
 		}
 		
-		void ReadGlobalStatsFailure(string json, object cb)
+		void ReadGlobalStatsFailure(int statusCode, int reasonCode, string statusMessage, object cb)
 		{
-			Debug.LogError("Failed to read global statistics: " + json);
+			Debug.LogError("Failed to read global statistics: " + statusMessage);
 		}
 
 		public void OnHUDDraw()

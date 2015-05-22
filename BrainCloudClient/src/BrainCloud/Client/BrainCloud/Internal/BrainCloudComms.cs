@@ -173,25 +173,6 @@ namespace BrainCloud.Internal
             }
         }
 
-        private NetworkErrorHandler m_networkErrorHandler;
-
-        /// <summary>
-        /// Gets or sets the network error handler. This method is called when 
-        /// networks errors are detected by the brainCloud communications layer.
-        /// </summary>
-        /// <value>The network error handler.</value>
-        public NetworkErrorHandler NetworkErrorHandler
-        {
-            get
-            {
-                return m_networkErrorHandler;
-            }
-            set
-            {
-                m_networkErrorHandler = value;
-            }
-        }
-
 
         public BrainCloudComms(BrainCloudClient in_client)
         {
@@ -243,17 +224,9 @@ namespace BrainCloud.Internal
             if (m_activeRequest != null)
             {
                 eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
-
                 if (status == eWebRequestStatus.STATUS_ERROR)
                 {
-                    m_brainCloudClientRef.Log("ERROR: " + GetWebRequestResponse(m_activeRequest));
-                    
-                    if (!ResendMessage(m_activeRequest))
-                    {
-                        // we've reached the retry limit - kill the packet and reset comms
-                        ResetCommunication();
-                        CallNetworkErrorHandler("Network is unreachable, max retries hit.");
-                    }
+                    // do nothing with the error right now - let the timeout code handle it
                 }
                 else if (status == eWebRequestStatus.STATUS_DONE)
                 {
@@ -279,9 +252,22 @@ namespace BrainCloud.Internal
                 {
                     if (!ResendMessage(m_activeRequest))
                     {
-                        // we've reached the retry limit - kill the packet and reset comms
-                        ResetCommunication();
-                        CallNetworkErrorHandler("Timeout hit trying to send packet, max retries hit.");
+                        // we've reached the retry limit - send timeout error to all client callbacks
+
+                        eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
+                        if (status == eWebRequestStatus.STATUS_ERROR)
+                        {
+                            m_brainCloudClientRef.Log("Timeout with network error: " + GetWebRequestResponse(m_activeRequest));
+                        }
+                        else
+                        {
+                            m_brainCloudClientRef.Log("Timeout no reply from server");
+                        }
+
+                        m_activeRequest = null;
+
+                        // Fake a message bundle to keep the callback logic in one place
+                        TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
                     }
                 }
             }
@@ -294,6 +280,45 @@ namespace BrainCloud.Internal
                     SendHeartbeat();
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Method fakes a json error from the server and sends
+        /// it along to the response callbacks.
+        /// </summary>
+        /// <param name="in_status">In_status.</param>
+        /// <param name="in_reasonCode">In_reason code.</param>
+        /// <param name="in_statusMessage">In_status message.</param>
+        private void TriggerCommsError(int in_status, int in_reasonCode, string in_statusMessage)
+        {
+            // error json format is
+            // {
+            // "reason_code": 40316,
+            // "status": 403,
+            // "status_message": "Processing exception: Invalid game ID in authentication request",
+            // "severity": "ERROR"
+            // }
+
+            int numMessagesToReturn = 0;
+            lock(m_serviceCallsInProgress)
+            {
+                numMessagesToReturn = m_serviceCallsInProgress.Count;
+            }
+            if (numMessagesToReturn <= 0)
+            {
+                return;
+            }
+
+            JsonResponseErrorBundleV2 bundleObj = new JsonResponseErrorBundleV2();
+            bundleObj.packetId = m_expectedIncomingPacketId;
+            bundleObj.responses = new JsonErrorMessage[numMessagesToReturn];
+            for (int i = 0; i < numMessagesToReturn; ++i)
+            {
+                bundleObj.responses[i] = new JsonErrorMessage(in_status, in_reasonCode, in_statusMessage);
+            }
+            string jsonError = JsonWriter.Serialize(bundleObj);
+            HandleResponseBundle(jsonError);
         }
         
         
@@ -332,57 +357,55 @@ namespace BrainCloud.Internal
         }
 
 
-        private class ResponseBundleV2
-        {
-            public long packetId;
-            public Dictionary<string, object>[] responses;
-
-            public ResponseBundleV2()
-            {}
-        }
-        static bool s_useDispatcherV2 = true;
-
         /// <summary>
         /// Handles the response bundle and calls registered callbacks.
         /// </summary>
         /// <param name="in_jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string in_jsonData)
         {
+            m_brainCloudClientRef.Log("INCOMING: " + in_jsonData);
+
+            JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(in_jsonData);
+            long receivedPacketId = (long) bundleObj.packetId;
+            if (m_expectedIncomingPacketId == NO_PACKET_EXPECTED || m_expectedIncomingPacketId != receivedPacketId)
+            {
+                m_brainCloudClientRef.Log("Dropping duplicate packet");
+                return;
+            }
+            m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
+
+            Dictionary<string, object>[] responseBundle = bundleObj.responses;
+            Dictionary<string, object> response = null;
             Exception firstThrownException = null;
             int numExceptionsThrown = 0;
 
-            m_brainCloudClientRef.Log("INCOMING: " + in_jsonData);
-
-            Dictionary<string, object>[] responseBundle = null;
-            if (s_useDispatcherV2)
-            {
-                ResponseBundleV2 bundleObj = JsonReader.Deserialize<ResponseBundleV2>(in_jsonData);
-                long receivedPacketId = (long) bundleObj.packetId;
-                if (m_expectedIncomingPacketId == NO_PACKET_EXPECTED || m_expectedIncomingPacketId != receivedPacketId)
-                {
-                    m_brainCloudClientRef.Log("Dropping duplicate packet");
-                    return;
-                }
-                m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
-                responseBundle = bundleObj.responses;
-            }
-            else
-            {
-                responseBundle = JsonReader.Deserialize<Dictionary<string, object>[]> (in_jsonData);
-            }
-
-            Dictionary<string, object> response = null;
             for (int j = 0; j < responseBundle.Length; ++j)
             {
                 response = responseBundle[j];
                 int statusCode = (int) response["status"];
                 string data = "";
 
+                //
+                // It's important to note here that a user error callback *might* call
+                // ResetCommunications() based on the error being returned.
+                // ResetCommunications will clear the m_serviceCallsInProgress List
+                // effectively removing all registered callbacks for this message bundle.
+                // It's also likely that the developer will want to call authenticate next.
+                // We need to ensure that this is supported as it's the best way to 
+                // reset the brainCloud communications after a session invalid or network
+                // error is triggered.
+                //
+                // This is safe to do from the main thread but just in case someone
+                // calls this method from another thread, we lock on m_serviceCallsWaiting
+                //
                 ServerCall sc = null;
-                if (m_serviceCallsInProgress.Count > 0)
+                lock (m_serviceCallsWaiting)
                 {
-                    sc = m_serviceCallsInProgress[0] as ServerCall;
-                    m_serviceCallsInProgress.RemoveAt(0);
+                    if (m_serviceCallsInProgress.Count > 0)
+                    {
+                        sc = m_serviceCallsInProgress[0] as ServerCall;
+                        m_serviceCallsInProgress.RemoveAt(0);
+                    }
                 }
 
                 // its a success response
@@ -457,27 +480,32 @@ namespace BrainCloud.Internal
                 }
                 else if (statusCode >= 400 || statusCode == 202)
                 {
-                    object reasonCodeObj = null;
+                    object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
+                    string statusMessage = "";
+                    
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
                     {
                         reasonCode = (int) reasonCodeObj;
                     }
-
+                    if (response.TryGetValue ("status_message", out statusMessageObj))
+                    {
+                        statusMessage = (string) statusMessageObj;
+                    }
+                    
                     if (reasonCode == ReasonCodes.SESSION_EXPIRED
                         || reasonCode == ReasonCodes.SESSION_NOT_FOUND_ERROR)
                     {
                         m_isAuthenticated = false;
                         m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
                     }
-
+                    
                     // now try to execute the callback
                     if (sc != null && sc.GetCallback() != null)
                     {
-                        string message = JsonWriter.Serialize(response);
                         try
                         {
-                            sc.GetCallback().OnErrorCallback(message);
+                            sc.GetCallback().OnErrorCallback(statusCode, reasonCode, statusMessage);
                         }
                         catch(Exception e)
                         {
@@ -530,30 +558,30 @@ namespace BrainCloud.Internal
                     m_serviceCallsInProgress = m_serviceCallsWaiting.GetRange(0, numMessagesWaiting);
                     m_serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
                 }
-            } // unlock m_serviceCallsWaiting
 
-            if (m_serviceCallsInProgress.Count > 0)
-            {
-                requestState = new RequestState();
-            
-                // prepare json data for server
-                List<object> messageList = new List<object>();
-                
-                ServerCall scIndex;
-                for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
+                if (m_serviceCallsInProgress.Count > 0)
                 {
-                    scIndex = m_serviceCallsInProgress[i] as ServerCall;
+                    requestState = new RequestState();
                     
-                    Dictionary<string, object> message = new Dictionary<string, object>();
-                    message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
-                    message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
-                    message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
+                    // prepare json data for server
+                    List<object> messageList = new List<object>();
                     
-                    messageList.Add(message);
+                    ServerCall scIndex;
+                    for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
+                    {
+                        scIndex = m_serviceCallsInProgress[i] as ServerCall;
+                        
+                        Dictionary<string, object> message = new Dictionary<string, object>();
+                        message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
+                        message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
+                        message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
+                        
+                        messageList.Add(message);
+                    }
+                    
+                    SendMessage(requestState, messageList);
                 }
-
-                SendMessage(requestState, messageList);
-            }
+            } // unlock m_serviceCallsWaiting
 
             return requestState;
         }
@@ -697,19 +725,6 @@ namespace BrainCloud.Internal
             }
 #endif
             return response;
-        }
-
-
-        /// <summary>
-        /// Calls the network error handler.
-        /// </summary>
-        /// <param name="error">Error.</param>
-        private void CallNetworkErrorHandler(string error)
-        {
-            if (m_networkErrorHandler != null)
-            {
-                m_networkErrorHandler(error);
-            }
         }
 
 
@@ -946,6 +961,50 @@ namespace BrainCloud.Internal
                 return defaultReturn;
             }
         }
+
+
+        #region Json parsing objects
+
+        // Classes to handle JSON serialization - do not
+        // try to make variables conform to coding standards as
+        // they must match json variable name format exactly
+
+        private class JsonResponseBundleV2
+        {
+            public long packetId = 0;
+            public Dictionary<string, object>[] responses = null;
+            
+            public JsonResponseBundleV2()
+            {}
+        }
+       
+        private class JsonResponseErrorBundleV2
+        {
+            public long packetId;
+            public JsonErrorMessage[] responses;
+            
+            public JsonResponseErrorBundleV2()
+            {}
+        }
+
+        private class JsonErrorMessage
+        {
+            public int reason_code;
+            public int status;
+            public string status_message;
+            public string severity = "ERROR";
+            
+            public JsonErrorMessage()
+            {}
+            
+            public JsonErrorMessage(int in_status, int in_reasonCode, string in_statusMessage)
+            {
+                status = in_status;
+                reason_code = in_reasonCode;
+                status_message = in_statusMessage;
+            }
+        }
+        #endregion
 
 
         #region RequestState Class Helper

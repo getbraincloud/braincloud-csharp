@@ -53,9 +53,9 @@ namespace BrainCloudUnity.HUD
 			// definitely need to refresh game state... todo add a callback handler
 		}
 		
-		void Failure(string json, object cb)
+		void Failure(int statusCode, int reasonCode, string statusMessage, object cb)
 		{
-			Debug.LogError("Failed: " + json);
+			Debug.LogError("Failed: " + statusMessage);
 		}
 		
 		public void OnHUDDraw()

@@ -58,9 +58,9 @@ namespace BrainCloudUnity.HUD
 			}
 		}
 
-		void ReadPlayerStatsFailure(string json, object cb)
+		void ReadPlayerStatsFailure(int statusCode, int reasonCode, string statusMessage, object cb)
 		{
-			Debug.LogError("Failed to read player statistics: " + json);
+			Debug.LogError("Failed to read player statistics: " + statusMessage);
 		}
 
 		public void OnHUDDraw()

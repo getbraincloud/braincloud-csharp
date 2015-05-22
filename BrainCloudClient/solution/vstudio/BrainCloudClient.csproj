@@ -205,6 +205,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\ServerCallback.cs">
       <Link>BrainCloud\ServerCallback.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\StatusCodes.cs">
+      <Link>BrainCloud\StatusCodes.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Util.cs">
       <Link>BrainCloud\Util.cs</Link>
     </Compile>

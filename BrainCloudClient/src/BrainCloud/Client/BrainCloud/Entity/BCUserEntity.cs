@@ -61,7 +61,7 @@ namespace BrainCloud.Entity
             QueueUpdates(); // important - kicks off any queued updates that happened before we retrieved an id from the server
         }
 
-        public void CbCreateFailure(string in_json, object in_cbObject)
+        public void CbCreateFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
         {
 
         }
@@ -72,7 +72,7 @@ namespace BrainCloud.Entity
             UpdateTimeStamps(json["data"]);
         }
 
-        public void CbUpdateFailure(string in_json, object in_cbObject)
+        public void CbUpdateFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
         {
 
         }
@@ -82,7 +82,7 @@ namespace BrainCloud.Entity
             State = EntityState.Deleted;
         }
 
-        public void CbDeleteFailure(string in_json, object in_cbObject)
+        public void CbDeleteFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
         {
 
         }
