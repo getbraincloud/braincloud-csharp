@@ -71,7 +71,17 @@ namespace BrainCloud.Entity.Internal
                     return (T)ci.Invoke(parameters);
                 }
             }
-            return (T)in_value;
+
+            T castedValue;
+            try
+            { 
+                castedValue = (T) in_value;
+            }
+            catch(InvalidCastException)
+            {
+                castedValue = (T) Convert.ChangeType(in_value, typeof(T));
+            }
+            return castedValue;
         }
     }
 }
