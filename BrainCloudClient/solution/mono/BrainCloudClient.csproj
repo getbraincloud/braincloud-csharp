@@ -286,6 +286,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\StatusCodes.cs">
       <Link>BrainCloud\StatusCodes.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
+      <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

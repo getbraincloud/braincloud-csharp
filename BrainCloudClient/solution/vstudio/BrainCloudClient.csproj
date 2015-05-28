@@ -175,6 +175,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ITimer.cs">
       <Link>BrainCloud\Internal\ITimer.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
+      <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\MultiThreadedTimer.cs">
       <Link>BrainCloud\Internal\MultiThreadedTimer.cs</Link>
     </Compile>
