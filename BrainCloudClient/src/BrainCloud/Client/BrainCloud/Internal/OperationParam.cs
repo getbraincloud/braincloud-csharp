@@ -218,6 +218,7 @@ namespace BrainCloud
         // Product Service - Get Inventory Params
         public static readonly OperationParam ProductServiceGetInventoryPlatform                  = new OperationParam("platform");
         public static readonly OperationParam ProductServiceGetInventoryUserCurrency              = new OperationParam("user_currency");
+        public static readonly OperationParam ProductServiceGetInventoryCategory                  = new OperationParam("category");
 
         // Product Service - Op Cash In Receipt Params
         public static readonly OperationParam ProductServiceOpCashInReceiptReceipt               = new OperationParam("receipt"); //C++ only

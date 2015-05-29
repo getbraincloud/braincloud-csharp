@@ -289,10 +289,82 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
+            GetSalesInventoryByCategory(in_platform, in_userCurrency, null, in_success, in_failure, in_cbObject);
+        }
+
+        /// <summary>
+        /// Method gets the active sales inventory for the passed-in
+        /// currency type and category.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Product
+        /// Service Operation - GetInventory
+        /// </remarks>
+        /// <param name="in_platform">
+        /// The store platform. Valid stores are:
+        /// - iTunes
+        /// - Facebook
+        /// - AppWorld
+        /// - Steam
+        /// - Windows
+        /// - WindowsPhone
+        /// - GooglePlay
+        /// </param>
+        /// <param name="in_userCurrency">
+        /// The currency to retrieve the sales
+        /// inventory for. This is only used for Steam and Facebook stores.
+        /// </param>
+        /// <param name="in_category">
+        /// The product category
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status":200,
+        ///   "data":{
+        ///      "product_inventory":[
+        ///          {
+        ///              "gameId":"com.roger.football",
+        ///              "itemId":"0000001",
+        ///              "title":"Item 0000001",
+        ///              "description":"Buy 5 footballs",
+        ///              "imageUrl":"http:",
+        ///              "fbUrl":"http:",
+        ///              "currency":{"footballs":5},
+        ///              "priceData":{"currency":"USD","price":1000}
+        ///           }
+        ///       ],
+        ///       "server_time":1398960658981
+        ///    }
+        /// }
+        /// </returns>
+        public void GetSalesInventoryByCategory(
+            string in_platform,
+            string in_userCurrency,
+            string in_category,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ProductServiceGetInventoryPlatform.Value] = in_platform;
-            data[OperationParam.ProductServiceGetInventoryUserCurrency.Value] = in_userCurrency;
-
+            if (Util.IsOptionalParameterValid(in_userCurrency))
+            {
+                data[OperationParam.ProductServiceGetInventoryUserCurrency.Value] = in_userCurrency;
+            }
+            if (Util.IsOptionalParameterValid(in_category))
+            {
+                data[OperationParam.ProductServiceGetInventoryCategory.Value] = in_category;
+            }
+            
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetInventory, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
