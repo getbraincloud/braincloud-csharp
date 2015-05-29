@@ -667,7 +667,7 @@ namespace BrainCloud
             m_bc.ResetCommunication();
         }
 
-        /// <summary>Enable Communications with the server</summary>
+        /// <summary>Enable Communications with the server. By default this is true</summary>
         /// <param name="in_value">True to enable comms, false otherwise.</param>
         public void EnableCommunications(bool in_value)
         {
@@ -677,9 +677,12 @@ namespace BrainCloud
 
         #region Authentication
 
-        // This isn't the best confirmation of authenticated,
-        // Once authenticated this is NOT removed, unless the user
-        // is reset completely.
+        /// <summary>
+        /// Returns true if the user is currently authenticated.
+        /// If a session time out or session invalidation is returned from executing a
+        /// sever api call, this flag will reset back to false.
+        /// </summary>
+        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
         public bool IsAuthenticated()
         {
             return this.Authenticated;
