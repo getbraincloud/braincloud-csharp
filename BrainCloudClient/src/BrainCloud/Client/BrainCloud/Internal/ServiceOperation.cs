@@ -106,6 +106,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ShieldOn = new ServiceOperation("SHIELD_ON");
         public static readonly ServiceOperation ShieldOnFor = new ServiceOperation("SHIELD_ON_FOR");
         public static readonly ServiceOperation ShieldOff = new ServiceOperation("SHIELD_OFF");
+        public static readonly ServiceOperation GetShieldExpiry = new ServiceOperation("GET_SHIELD_EXPIRY");
         public static readonly ServiceOperation GetOnewayPlayers = new ServiceOperation("GET_ONEWAY_PLAYERS");
         public static readonly ServiceOperation GetOnewayPlayersFilter = new ServiceOperation("GET_ONEWAY_PLAYERS_FILTER");
 

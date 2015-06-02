@@ -304,6 +304,46 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Gets the shield expiry for the given player id. The value returned is
+        /// the time in UTC millis when the shield will expire.
+        /// </summary>
+        /// <param name="in_playerId">
+        /// The player id
+        /// </param> 
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data": {
+        ///     "shieldExpiry": 1433259734956
+        ///   }
+        /// }
+        public void GetShieldExpiry(
+            string in_playerId,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            if (Util.IsOptionalParameterValid(in_playerId))
+            {
+                data[OperationParam.MatchMakingServicePlayerId.Value] = in_playerId;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetShieldExpiry, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Gets one oneway players
         /// </summary>
         /// <remarks>
