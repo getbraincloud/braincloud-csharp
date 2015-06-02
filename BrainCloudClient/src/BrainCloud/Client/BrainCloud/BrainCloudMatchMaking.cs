@@ -304,11 +304,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets the shield expiry for the given player id. The value returned is
+        /// Gets the shield expiry for the given player id. Passing in a null player id
+        /// will return the shield expiry for the current player. The value returned is
         /// the time in UTC millis when the shield will expire.
         /// </summary>
         /// <param name="in_playerId">
-        /// The player id
+        /// The player id or use null to retrieve for the current player
         /// </param> 
         /// <param name="in_success">
         /// The success callback.
