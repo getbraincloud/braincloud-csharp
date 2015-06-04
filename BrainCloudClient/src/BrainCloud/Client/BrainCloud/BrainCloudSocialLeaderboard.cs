@@ -474,7 +474,7 @@ namespace BrainCloud
         /// </returns>
         public void PostScoreToLeaderboard(
             string in_leaderboardId,
-            ulong in_score,
+            long in_score,
             string in_jsonData,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -544,7 +544,7 @@ namespace BrainCloud
         /// </returns>
         public void PostScoreToDynamicLeaderboard(
             string in_leaderboardId,
-            ulong in_score,
+            long in_score,
             string in_jsonData,
             SocialLeaderboardType in_leaderboardType,
             RotationType in_rotationType,
