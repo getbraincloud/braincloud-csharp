@@ -194,34 +194,43 @@ namespace BrainCloud
         /// in the leaderboard.
         ///
         /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "social_leaderboard": [
-        ///      {
-        ///        "playerId": "9073dff7-0df6-437e-9be6-39cd704dcoj4",
-        ///        "score": 100,
-        ///        "data": null,
-        ///        "createdAt": 1401385959596,
-        ///        "updatedAt": 1401385959596,
-        ///        "index": 0,
-        ///        "rank": 1,
-        ///        "name": ""
-        ///      },
-        ///      {
-        ///        "playerId": "7c107e9f-ab48-492d-a000-defec6237700",
-        ///        "score": 10,
-        ///        "data": null,
-        ///        "rewarded": false,
-        ///        "createdAt": 1401385898407,
-        ///        "updatedAt": 1401385898407,
-        ///        "index": 1,
-        ///        "rank": 2,
-        ///        "name": ""
-        ///      }
-        ///     ],
-        ///     "timeBeforeReset": 588182412,
-        ///     "server_time": 1395840957588
-        ///   }
+        ///  "status": 200,
+        ///  "data": {
+        ///   "leaderboardId": "abc",
+        ///   "social_leaderboard": [
+        ///    {
+        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
+        ///     "score": 10,
+        ///     "data": {
+        ///      "nickname": "batman"
+        ///     },
+        ///     "createdAt": 1433863814394,
+        ///     "updatedAt": 1433863814394,
+        ///     "index": 0,
+        ///     "rank": 1,
+        ///     "name": "",
+        ///     "summaryFriendData": {
+        ///      "xp": 12,
+        ///      "favColour": "red"
+        ///     }
+        ///    },
+        ///    {
+        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
+        ///     "score": 8,
+        ///     "data": {
+        ///      "nickname": "robin"
+        ///     },
+        ///     "createdAt": 1433864253221,
+        ///     "updatedAt": 1433864253221,
+        ///     "index": 1,
+        ///     "rank": 2,
+        ///     "name": "",
+        ///     "summaryFriendData": null
+        ///    }
+        ///   ],
+        ///   "timeBeforeReset": 48136284,
+        ///   "server_time": 1433864263716
+        ///  }
         /// }
         /// </returns>
         public void GetGlobalLeaderboard(
@@ -283,37 +292,45 @@ namespace BrainCloud
         /// in the leaderboard.
         ///
         /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "leaderboard": [
-        ///      {
-        ///        "playerId": "9073dff7-0df6-437e-9be6-39cd704dcoj4",
-        ///        "score": 100,
-        ///        "data": null,
-        ///        "createdAt": 1401385959596,
-        ///        "updatedAt": 1401385959596,
-        ///        "index": 0,
-        ///        "rank": 1,
-        ///        "name": ""
-        ///      },
-        ///      {
-        ///        "playerId": "7c107e9f-ab48-492d-a000-defec6237700",
-        ///        "score": 10,
-        ///        "data": null,
-        ///        "rewarded": false,
-        ///        "createdAt": 1401385898407,
-        ///        "updatedAt": 1401385898407,
-        ///        "index": 1,
-        ///        "rank": 2,
-        ///        "name": ""
-        ///      }
-        ///     ],
-        ///     "leaderboardSize": 31,
-        ///     "moreBefore": false,
-        ///     "moreAfter": true
-        ///     "timeBeforeReset": 588182412,
-        ///     "server_time": 1395840957588
-        ///   }
+        ///  "status": 200,
+        ///  "data": {
+        ///   "leaderboardId": "abc",
+        ///   "moreBefore": false,
+        ///   "timeBeforeReset": 48085996,
+        ///   "leaderboard": [
+        ///    {
+        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
+        ///     "score": 10,
+        ///     "data": {
+        ///      "nickname": "batman"
+        ///     },
+        ///     "createdAt": 1433863814394,
+        ///     "updatedAt": 1433863814394,
+        ///     "index": 0,
+        ///     "rank": 1,
+        ///     "name": "",
+        ///     "summaryFriendData": {
+        ///      "xp": 12,
+        ///      "favColour": "red"
+        ///     }
+        ///    },
+        ///    {
+        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
+        ///     "score": 8,
+        ///     "data": {
+        ///      "nickname": "robin"
+        ///     },
+        ///     "createdAt": 1433864253221,
+        ///     "updatedAt": 1433864253221,
+        ///     "index": 1,
+        ///     "rank": 2,
+        ///     "name": "",
+        ///     "summaryFriendData": null
+        ///    }
+        ///   ],
+        ///   "server_time": 1433864314004,
+        ///   "moreAfter": false
+        ///  }
         /// }
         /// </returns>
         public void GetGlobalLeaderboardPage(
@@ -377,37 +394,45 @@ namespace BrainCloud
         /// in the leaderboard.
         ///
         /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "leaderboard": [
-        ///      {
-        ///        "playerId": "9073dff7-0df6-437e-9be6-39cd704dcoj4",
-        ///        "score": 100,
-        ///        "data": null,
-        ///        "createdAt": 1401385959596,
-        ///        "updatedAt": 1401385959596,
-        ///        "index": 0,
-        ///        "rank": 1,
-        ///        "name": ""
-        ///      },
-        ///      {
-        ///        "playerId": "7c107e9f-ab48-492d-a000-defec6237700",
-        ///        "score": 10,
-        ///        "data": null,
-        ///        "rewarded": false,
-        ///        "createdAt": 1401385898407,
-        ///        "updatedAt": 1401385898407,
-        ///        "index": 1,
-        ///        "rank": 2,
-        ///        "name": ""
-        ///      }
-        ///     ],
-        ///     "leaderboardSize": 31,
-        ///     "moreBefore": false,
-        ///     "moreAfter": true
-        ///     "timeBeforeReset": 588182412,
-        ///     "server_time": 1395840957588
-        ///   }
+        ///  "status": 200,
+        ///  "data": {
+        ///   "leaderboardId": "abc",
+        ///   "moreBefore": false,
+        ///   "timeBeforeReset": 48085996,
+        ///   "leaderboard": [
+        ///    {
+        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
+        ///     "score": 10,
+        ///     "data": {
+        ///      "nickname": "batman"
+        ///     },
+        ///     "createdAt": 1433863814394,
+        ///     "updatedAt": 1433863814394,
+        ///     "index": 0,
+        ///     "rank": 1,
+        ///     "name": "",
+        ///     "summaryFriendData": {
+        ///      "xp": 12,
+        ///      "favColour": "red"
+        ///     }
+        ///    },
+        ///    {
+        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
+        ///     "score": 8,
+        ///     "data": {
+        ///      "nickname": "robin"
+        ///     },
+        ///     "createdAt": 1433864253221,
+        ///     "updatedAt": 1433864253221,
+        ///     "index": 1,
+        ///     "rank": 2,
+        ///     "name": "",
+        ///     "summaryFriendData": null
+        ///    }
+        ///   ],
+        ///   "server_time": 1433864314004,
+        ///   "moreAfter": false
+        ///  }
         /// }
         /// </returns>
         public void GetGlobalLeaderboardView(
@@ -468,8 +493,7 @@ namespace BrainCloud
         /// <returns> The JSON returned in the callback is as follows:
         /// {
         ///   "status":200,
-        ///   "data":{
-        ///   }
+        ///   "data": null
         /// }
         /// </returns>
         public void PostScoreToLeaderboard(
@@ -594,8 +618,7 @@ namespace BrainCloud
         /// <returns> The JSON returned in the callback is as follows:
         /// {
         ///   "status":200,
-        ///   "data":{
-        ///   }
+        ///   "data": null
         /// }
         /// </returns>
         public void ResetLeaderboardScore(
@@ -700,7 +723,6 @@ namespace BrainCloud
         /// {
         ///   "status":200,
         ///   "data":{
-        ///
         ///   }
         /// }
         /// </returns>
