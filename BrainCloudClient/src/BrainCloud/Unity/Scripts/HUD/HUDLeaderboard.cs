@@ -40,7 +40,7 @@ namespace BrainCloudUnity.HUD
 				ReadLeaderboardSuccess, ReadLeaderboardFailure);
 		}
 
-		void PostScore(string lbId, ulong score)
+		void PostScore(string lbId, long score)
 		{
 			BrainCloudWrapper.GetBC ().SocialLeaderboardService.PostScoreToLeaderboard(
 				lbId, score, null, PostScoreSuccess, PostScoreFailure);
@@ -103,14 +103,14 @@ namespace BrainCloudUnity.HUD
 			m_score = GUILayout.TextField (m_score, GUILayout.MinWidth (100));
 			if (GUILayout.Button("Post"))
 			{
-				ulong scoreAsULong;
-				if (ulong.TryParse (m_score, out scoreAsULong))
+				long scoreAsLong;
+				if (long.TryParse (m_score, out scoreAsLong))
 				{
-					PostScore(m_lbId, scoreAsULong);
+					PostScore(m_lbId, scoreAsLong);
 				}
 				else
 				{
-					Debug.LogError ("Can't parse score to ulong value");
+					Debug.LogError ("Can't parse score to long value");
 				}
 			}
 			GUILayout.EndHorizontal ();
