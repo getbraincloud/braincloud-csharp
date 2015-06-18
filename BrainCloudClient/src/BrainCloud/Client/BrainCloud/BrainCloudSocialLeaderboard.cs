@@ -372,7 +372,7 @@ namespace BrainCloud
         /// Whether to return the leaderboard size
         /// </param>
         /// <param name="in_versionId">
-        /// The historial version to retrieve
+        /// The historial version to retrieve. Use -1 for current leaderboard.
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -533,7 +533,7 @@ namespace BrainCloud
         /// Whether to return the leaderboard size
         /// </param>
         /// <param name="in_versionId">
-        /// The historial version to retrieve
+        /// The historial version to retrieve. Use -1 for current leaderboard.
         /// </param> 
         /// <param name="in_success">
         /// The success callback.
@@ -545,7 +545,7 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         /// <returns> JSON string representing the entries in the leaderboard.
-        /// See GetGlobalLeaderboardPage documentation. Note that historial leaderboards do not
+        /// See GetGlobalLeaderboardView documentation. Note that historial leaderboards do not
         /// include the 'timeBeforeReset' parameter.
         /// </returns>
         public void GetGlobalLeaderboardViewByVersion(
