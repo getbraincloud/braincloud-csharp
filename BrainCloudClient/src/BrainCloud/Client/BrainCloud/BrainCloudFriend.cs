@@ -23,6 +23,55 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Retrieves profile information for the specified user.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GetFriendProfileInfo
+        /// </remarks>
+        /// <param name="in_friendId">
+        /// Profile Id of friend who owns entity.
+        /// </param>
+        /// <param name="in_authenticationType">
+        /// The authentication type used for this friend id e.g. Facebook
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback
+        /// {
+        ///   "status":200,
+        ///   "data": {
+        ///     "playerId" : "17c7ee96-1b73-43d0-8817-cba1953bbf57",
+        ///     "playerName" : "Donald Trump",
+        ///     "email" : "donald@trumpcastle.com",
+        ///     "playerSummaryData" : {},
+        ///   }
+        /// }
+        /// </returns>
+        public void GetFriendProfileInfo(
+            string in_friendId,
+            string in_authenticationType,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceFriendId.Value] = in_friendId;
+            data[OperationParam.FriendServiceAuthenticationType.Value] = in_authenticationType;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetFriendProfileInfo, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Returns a particular entity of a particular friend.
         /// </summary>
         /// <remarks>
