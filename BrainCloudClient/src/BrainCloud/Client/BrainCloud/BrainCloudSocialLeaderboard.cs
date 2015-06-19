@@ -343,8 +343,16 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            GetGlobalLeaderboardPageByVersion(in_leaderboardId, in_sort, in_startIndex, in_endIndex,
-                                              in_includeLeaderboardSize, -1, in_success, in_failure, in_cbObject);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
+            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = in_startIndex;
+            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = in_endIndex;
+            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
@@ -372,7 +380,7 @@ namespace BrainCloud
         /// Whether to return the leaderboard size
         /// </param>
         /// <param name="in_versionId">
-        /// The historial version to retrieve. Use -1 for current leaderboard.
+        /// The historial version to retrieve.
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -404,10 +412,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = in_startIndex;
             data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = in_endIndex;
             data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
-            if (in_versionId != -1)
-            {
-                data[OperationParam.SocialLeaderboardServiceVersionId.Value] = in_versionId;
-            }
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = in_versionId;
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
@@ -504,8 +509,16 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            GetGlobalLeaderboardViewByVersion(in_leaderboardId, in_sort, in_beforeCount, in_afterCount, in_includeLeaderboardSize,
-                                     -1, in_success, in_failure, in_cbObject);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = in_beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = in_afterCount;
+            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
