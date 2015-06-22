@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using BrainCloud;
-using LitJson;
+using JsonFx.Json;
 
 public class BrainCloudWrapper : MonoBehaviour
 {
@@ -91,6 +92,8 @@ public class BrainCloudWrapper : MonoBehaviour
 			BrainCloudSettings.Instance.SecretKey,
 			BrainCloudSettings.Instance.GameId,
 			BrainCloudSettings.Instance.GameVersion);
+
+		GetBC().EnableLogging(BrainCloudSettings.Instance.EnableLogging);
 	}
 
 	public static void Initialize(string in_url, string in_secretKey, string in_gameId, string in_gameVersion)
@@ -152,8 +155,13 @@ public class BrainCloudWrapper : MonoBehaviour
             (delegate(string json, object cbObject)
             {
                 // suck in the profileId and save it in PlayerPrefs
-                JsonData jObj = JsonMapper.ToObject(new JsonReader(json));
-                string profileId = (string)jObj["data"]["profileId"];
+                Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(json);
+                Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
+                string profileId = "";
+                if (jsonData.ContainsKey("profileId"))
+                {
+                    profileId = (string) jsonData["profileId"];   
+                }
                 if (profileId != "")
                 {
                     SetStoredProfileId(profileId);
