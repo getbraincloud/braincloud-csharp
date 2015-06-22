@@ -27,9 +27,7 @@ namespace BrainCloud
         ///</summary>
         public const int MISSING_PROFILE_ERROR = 40208;
 
-        /// <summary>This happens when you try and attach and anonymous identity.
-        /// This means you provided a blank profile id with existing anonymous credentials.
-        /// Subsequent anonymous logins must always have a profile id.
+        /// <summary>Raised when a security error occurs
         /// </summary>
         public const int SECURITY_ERROR = 40209;
 
