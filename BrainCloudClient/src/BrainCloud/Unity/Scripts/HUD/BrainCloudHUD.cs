@@ -12,7 +12,7 @@ namespace BrainCloudUnity.HUD
 		protected List<IHUDElement> m_screens;
 		protected string[] m_screenNames;
 
-		protected bool m_enableUI = false;
+		protected bool m_enableUI = true;
 		public bool EnableUI
 		{
 			get {return m_enableUI;}
