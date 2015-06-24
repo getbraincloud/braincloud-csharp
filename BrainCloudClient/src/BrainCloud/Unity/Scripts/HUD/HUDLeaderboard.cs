@@ -72,8 +72,24 @@ namespace BrainCloudUnity.HUD
 					LBEntry lbe = new LBEntry();
 					lbe.playerId = (string) jEntry["playerId"];
 					lbe.name = (string) jEntry["name"];
-					lbe.rank = (long) jEntry["rank"];
-					lbe.score = (long) jEntry["score"];
+
+					if (jEntry["rank"].IsInt)
+					{
+						lbe.rank = (int) jEntry["rank"];
+					}
+					else
+					{
+						lbe.rank = (long) jEntry["rank"];
+					}
+
+					if (jEntry["score"].IsInt)
+					{
+						lbe.score = (int) jEntry["score"];
+					}
+					else
+					{
+						lbe.score = (long) jEntry["score"];
+					}
 					m_lb.Add (lbe);
 				}
 			}
