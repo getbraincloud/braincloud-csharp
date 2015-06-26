@@ -60,6 +60,7 @@ namespace BrainCloudTests
         {
             m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
             m_result = true;
+            m_done = true;
         }
 
         public void ApiError(int statusCode, int reasonCode, string statusMessage, object cb)
@@ -67,6 +68,8 @@ namespace BrainCloudTests
             m_statusCode = statusCode;
             m_reasonCode = reasonCode; 
             m_statusMessage = statusMessage;
+            m_result = false;
+            m_done = true;
         }
 
         public bool IsDone()
