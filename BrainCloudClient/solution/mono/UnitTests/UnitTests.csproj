@@ -21,6 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -30,23 +31,60 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugDotNet|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\DebugDotNet</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseDotNet|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\ReleaseDotNet</OutputPath>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="tests\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\tests\Main.cs">
-      <Link>tests\Test1.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\tests\SpinTest.cs">
-      <Link>tests\SpinTest.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BrainCloudClient.csproj">
       <Project>{719A9484-6259-4D3C-A904-6958C03B02F7}</Project>
       <Name>BrainCloudClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoDevelop.NUnit, Version=2.6.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>monodevelop-core-addins</Package>
+    </Reference>
+    <Reference Include="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit-console-runner, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.core.interfaces, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\tests\TestAuthenticate.cs">
+      <Link>TestAuthenticate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFixtureBase.cs">
+      <Link>TestFixtureBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestResult.cs">
+      <Link>TestResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\BrainCloudTestsMain.cs">
+      <Link>BrainCloudTestsMain.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
