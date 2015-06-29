@@ -24,7 +24,5 @@
 ehthumbs.db
 Thumbs.db
 
-PhotonExample/Assets/BrainCloud/Resources/BuildSettings.asset
-PhotonExample/Assets/BrainCloud/Resources/BuildSettings.asset.meta
-"PhotonExample/Assets/Photon Unity Networking/Resources/PhotonServerSettings.asset"
-"PhotonExample/Assets/Photon Unity Networking/Resources/PhotonServerSettings.asset.meta"
+BrainCloudClient/solution/mono/UnitTests/test-results/
+BrainCloudClient/tests/ids.txt

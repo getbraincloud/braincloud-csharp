@@ -21,7 +21,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -31,7 +30,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugDotNet|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -304,6 +302,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
       <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
+      <Link>BrainCloud\Internal\RequestState.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

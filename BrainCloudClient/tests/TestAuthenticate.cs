@@ -6,7 +6,7 @@ using BrainCloud;
 namespace BrainCloudTests
 {
     [TestFixture]
-    public class TestAuthenticate : TestFixtureBase
+    public class TestAuthenticate : TestFixtureNoAuth
     {
         [Test]
         public void TestAuthenticateUniversal()
