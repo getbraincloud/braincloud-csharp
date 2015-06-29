@@ -674,7 +674,7 @@ namespace BrainCloud
             }
             achievementsStr += "]";
 
-            List<object> achievementData = JsonReader.Deserialize<List<object>>(achievementsStr);
+            string[] achievementData = JsonReader.Deserialize<string[]>(achievementsStr);
 
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceAchievementsName.Value] = achievementData;
@@ -695,11 +695,14 @@ namespace BrainCloud
             try
             {
                 Dictionary<string, object> data = (Dictionary<string, object>) response[OperationParam.GamificationServiceAchievementsData.Value];
-                List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsName.Value];
-
-                for (int i = 0; i < achievements.Count; i++)
+                //List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsName.Value];
+                if (((object[])data[OperationParam.GamificationServiceAchievementsName.Value]).Length > 0)
                 {
-                    AwardThirdPartyAchievements(achievements[i]);
+                    Dictionary<string, object>[] achievements = (Dictionary<string, object>[])data[OperationParam.GamificationServiceAchievementsName.Value];
+                    for (int i=0;i<achievements.Length;i++)
+                    {
+                        AwardThirdPartyAchievements(achievements[i]["id"].ToString());
+                    }
                 }
 
                 if (m_achievementsDelegate != null)
