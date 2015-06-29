@@ -12,6 +12,14 @@ namespace BrainCloudTests
     {
         static int Main(string[] args)
         {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Get ().GamificationService.AwardAchievements("abc", tr.ApiSuccess, tr.ApiError);
+            if (tr.Run ())
+            {
+                // something
+            }
+
             return 0;
         }
     }

@@ -658,7 +658,8 @@ namespace BrainCloud.Internal
                 request.Method = "POST";
                 request.Headers.Add("X-SIG", sig);
                 request.ContentLength = byteArray.Length;
-                request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
+
+                //requestState.AsyncResult = request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
                 #endif
 
                 requestState.WebRequest = request;
@@ -701,6 +702,8 @@ namespace BrainCloud.Internal
             {
                 status = eWebRequestStatus.STATUS_DONE;
             }
+#else
+            //status = m_activeRequest.WebRequestStatus;
 #endif
             return status;
         }
@@ -723,6 +726,8 @@ namespace BrainCloud.Internal
             {
                 response = m_activeRequest.WebRequest.text;
             }
+#else
+            //response = m_activeRequest.WebRequestResponse;
 #endif
             return response;
         }
@@ -1084,6 +1089,19 @@ namespace BrainCloud.Internal
             public WWW WebRequest
         #else
             // while .net projects can use the WebRequest Object
+            private IAsyncResult m_asyncResult;
+            public IAsyncResult AsyncResult
+            {
+                get
+                {
+                    return m_asyncResult;
+                }
+                set
+                {
+                    m_asyncResult = value;
+                }
+            }
+            //WebRequestStatus
             private WebRequest request;
             public WebRequest WebRequest
         #endif
