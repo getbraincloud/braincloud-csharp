@@ -1,0 +1,8 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="..\..\solution\vstudio\UnitTests\bin\Debug\UnitTests.dll" />
+    <assembly path="..\..\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto" />
+</NUnitProject>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1000]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\NUnitTests.nunit</TopNode>
+  <SelectedNode>[0-1000]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\NUnitTests.nunit</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-2472]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.framework.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-2473]NUnit" Expanded="true" />
+    <Node UniqueName="[0-2474]NUnit.Framework" Expanded="true" />
+    <Node UniqueName="[0-2475]NUnit.Framework.Constraints" Expanded="true" />
+    <Node UniqueName="[0-2476]NUnit.Framework.Syntax" Expanded="true" />
+    <Node UniqueName="[0-2477]NUnit.Framework.Tests" Expanded="true" />
+    <Node UniqueName="[0-3794]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.core.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-3795]NUnit" Expanded="true" />
+    <Node UniqueName="[0-3796]NUnit.Core" Expanded="true" />
+    <Node UniqueName="[0-3797]NUnit.Core.Tests" Expanded="true" />
+    <Node UniqueName="[0-3798]NUnit.Core.Tests.Generic" Expanded="true" />
+    <Node UniqueName="[0-2478]NUnit.Core.Tests.Generic.DeduceTypeArgsFromArgs&lt;T1,T2&gt;" Expanded="true" />
+    <Node UniqueName="[0-2485]NUnit.Core.Tests.Generic.SimpleGenericFixture&lt;TList&gt;" Expanded="true" />
+    <Node UniqueName="[0-2506]NUnit.Core.Tests.Generic.TypeParameterUsedWithTestMethod&lt;T&gt;" Expanded="true" />
+    <Node UniqueName="[0-2852]NUnit.Core.Tests.ParameterizedTestFixture" Expanded="true" />
+    <Node UniqueName="[0-2869]NUnit.Core.Tests.ParameterizedTestFixtureWithDataSources" Expanded="true" />
+    <Node UniqueName="[0-2862]NUnit.Core.Tests.ParameterizedTestFixtureWithNullArguments" Expanded="true" />
+    <Node UniqueName="[0-2896]NUnit.Core.Tests.ParameterizedTestFixtureWithTypeAsArgument" Expanded="true" />
+    <Node UniqueName="[0-4172]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.util.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4173]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4174]NUnit.Util" Expanded="true" />
+    <Node UniqueName="[0-4055]NUnit.Util.Tests.ServiceManagerSetUpFixture" Expanded="true" />
+    <Node UniqueName="[0-4224]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.mocks.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4225]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4226]NUnit.Mocks" Expanded="true" />
+    <Node UniqueName="[0-4227]NUnit.Mocks.Tests" Expanded="true" />
+    <Node UniqueName="[0-4313]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit-console.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4314]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4315]NUnit.ConsoleRunner" Expanded="true" />
+    <Node UniqueName="[0-4316]NUnit.ConsoleRunner.Tests" Expanded="true" />
+    <Node UniqueName="[0-4556]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.uiexception.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4557]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4558]NUnit.UiException" Expanded="true" />
+    <Node UniqueName="[0-4559]NUnit.UiException.Tests" Expanded="true" />
+    <Node UniqueName="[0-4560]NUnit.UiException.Tests.CodeFormatters" Expanded="true" />
+    <Node UniqueName="[0-4561]NUnit.UiException.Tests.Controls" Expanded="true" />
+    <Node UniqueName="[0-4562]NUnit.UiException.Tests.StackTraceAnalyzers" Expanded="true" />
+    <Node UniqueName="[0-4625]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit.uikit.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4626]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4627]NUnit.UiKit" Expanded="true" />
+    <Node UniqueName="[0-4628]NUnit.UiKit.Tests" Expanded="true" />
+    <Node UniqueName="[0-4647]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit-gui.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4648]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4649]NUnit.Gui" Expanded="true" />
+    <Node UniqueName="[0-4650]NUnit.Gui.Tests" Expanded="true" />
+    <Node UniqueName="[0-4797]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\tests/nunit-editor.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4798]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4799]NUnit.ProjectEditor" Expanded="true" />
+    <Node UniqueName="[0-4800]NUnit.ProjectEditor.Tests" Expanded="true" />
+    <Node UniqueName="[0-4801]NUnit.ProjectEditor.Tests.Model" Expanded="true" />
+    <Node UniqueName="[0-4802]NUnit.ProjectEditor.Tests.Presenters" Expanded="true" />
+    <Node UniqueName="[0-4803]NUnit.ProjectEditor.Tests.Views" Expanded="true" />
+  </Nodes>
+</VisualState>
