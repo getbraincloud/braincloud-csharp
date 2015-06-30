@@ -49,6 +49,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateSummary = new ServiceOperation("UPDATE_SUMMARY");
         public static readonly ServiceOperation UpdateSetMinimum = new ServiceOperation("UPDATE_SET_MINIMUM");
         public static readonly ServiceOperation UpdateIncrementToMaximum = new ServiceOperation("UPDATE_INCREMENT_TO_MAXIMUM");
+        public static readonly ServiceOperation GetFriendProfileInfoForExternalId = new ServiceOperation("GET_FRIEND_PROFILE_INFO_FOR_EXTERNAL_ID");
         public static readonly ServiceOperation ReadFriends = new ServiceOperation("READ_FRIENDS");
         public static readonly ServiceOperation ReadFriendEntity = new ServiceOperation("READ_FRIEND_ENTITY");
         public static readonly ServiceOperation ReadFriendsEntities = new ServiceOperation("READ_FRIENDS_ENTITIES");
@@ -58,6 +59,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboardPage = new ServiceOperation("GET_GLOBAL_LEADERBOARD_PAGE");
         public static readonly ServiceOperation GetGlobalLeaderboardView = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VIEW");
+        public static readonly ServiceOperation GetGlobalLeaderboardVersions = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VERSIONS");
         public static readonly ServiceOperation PostScore = new ServiceOperation("POST_SCORE");
         public static readonly ServiceOperation PostScoreDynamic = new ServiceOperation("POST_SCORE_DYNAMIC");
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");

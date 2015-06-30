@@ -31,6 +31,20 @@
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugDotNet|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\DebugDotNet</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DOT_NET</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseDotNet|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\ReleaseDotNet</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DOT_NET</DefineConstants>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="LitJson\" />
@@ -288,6 +302,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
       <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
+      <Link>BrainCloud\Internal\RequestState.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

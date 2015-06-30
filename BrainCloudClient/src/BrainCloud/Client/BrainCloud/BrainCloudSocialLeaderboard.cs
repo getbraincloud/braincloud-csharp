@@ -338,7 +338,7 @@ namespace BrainCloud
             SortOrder in_sort,
             int in_startIndex,
             int in_endIndex,
-            Boolean in_includeLeaderboardSize,
+            bool in_includeLeaderboardSize,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
@@ -349,7 +349,71 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = in_startIndex;
             data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = in_endIndex;
             data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
 
+        /// <summary>
+        /// Method returns a page of global leaderboard results. By using a non-current version id, 
+        /// the user can retrieve a historial leaderboard. See GetGlobalLeaderboardVersions method
+        /// to retrieve the version id.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - SocialLeaderboard
+        /// Service Operation - GetGlobalLeaderboardPage
+        /// </remarks>
+        /// <param name="in_leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="in_sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="in_startIndex">
+        /// The index at which to start the page.
+        /// </param>
+        /// <param name="in_endIndex">
+        /// The index at which to end the page.
+        /// </param>
+        /// <param name="in_includeLeaderboardSize">
+        /// Whether to return the leaderboard size
+        /// </param>
+        /// <param name="in_versionId">
+        /// The historial version to retrieve.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> JSON string representing the entries in the leaderboard.
+        /// See GetGlobalLeaderboardPage documentation. Note that historial leaderboards do not
+        /// include the 'timeBeforeReset' parameter.
+        /// </returns>
+        public void GetGlobalLeaderboardPageByVersion(
+            string in_leaderboardId,
+            SortOrder in_sort,
+            int in_startIndex,
+            int in_endIndex,
+            bool in_includeLeaderboardSize,
+            int in_versionId,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
+            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = in_startIndex;
+            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = in_endIndex;
+            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = in_versionId;
+            
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
@@ -440,7 +504,7 @@ namespace BrainCloud
             SortOrder in_sort,
             int in_beforeCount,
             int in_afterCount,
-            Boolean in_includeLeaderboardSize,
+            bool in_includeLeaderboardSize,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
@@ -451,12 +515,127 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = in_beforeCount;
             data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = in_afterCount;
             data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
-
+            
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Method returns a view of global leaderboard results that centers on the current player.
+        /// By using a non-current version id, the user can retrieve a historial leaderboard.
+        /// See GetGlobalLeaderboardVersions method to retrieve the version id.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - SocialLeaderboard
+        /// Service Operation - GetGlobalLeaderboardView
+        /// </remarks>
+        /// <param name="in_leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="in_sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="in_beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="in_afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="in_includeLeaderboardSize">
+        /// Whether to return the leaderboard size
+        /// </param>
+        /// <param name="in_versionId">
+        /// The historial version to retrieve. Use -1 for current leaderboard.
+        /// </param> 
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> JSON string representing the entries in the leaderboard.
+        /// See GetGlobalLeaderboardView documentation. Note that historial leaderboards do not
+        /// include the 'timeBeforeReset' parameter.
+        /// </returns>
+        public void GetGlobalLeaderboardViewByVersion(
+            string in_leaderboardId,
+            SortOrder in_sort,
+            int in_beforeCount,
+            int in_afterCount,
+            bool in_includeLeaderboardSize,
+            int in_versionId,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = SortOrderToString(in_sort);
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = in_beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = in_afterCount;
+            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = in_includeLeaderboardSize;
+            if (in_versionId != -1)
+            {
+                data[OperationParam.SocialLeaderboardServiceVersionId.Value] = in_versionId;
+            }
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets the global leaderboard versions.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - SocialLeaderboard
+        /// Service Operation - GetGlobalLeaderboardVersions
+        /// </remarks>
+        /// <param name="in_leaderboardId">In_leaderboard identifier.</param>
+        /// <param name="in_success">The success callback.</param>
+        /// <param name="in_failure">The failure callback.</param>
+        /// <param name="in_cbObject">The user object sent to the callback.</param>
+        /// <returns> JSON string representing the leaderboard versions.
+        /// {
+        ///   "status": 200, 
+        ///   "data": {
+        ///     "leaderboardId":"L1",
+        ///     "leaderboardType":"HIGH_VALUE",
+        ///     "rotationType":"WEEKLY",
+        ///     "retainedCount":2,
+        ///     "versions":[  
+        ///        {  
+        ///         "versionId":27,
+        ///         "startingAt":1434499200000,
+        ///         "endingAt":1435104000000
+        ///        },
+        ///        {  
+        ///         "versionId":26,
+        ///         "startingAt":1433894400000,
+        ///         "endingAt":1434499200000
+        ///        }
+        ///        ]
+        ///     }
+        ///   }
+        /// }
+        /// </returns>
+        public void GetGlobalLeaderboardVersions(
+            string in_leaderboardId,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardVersions, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
 
         /// <summary>
         /// Post the players score to the given social leaderboard.

@@ -135,7 +135,9 @@ namespace BrainCloud
 
         // Friend Service - Params
         public static readonly OperationParam FriendServiceEntityId                             = new OperationParam("entityId");
+        public static readonly OperationParam FriendServiceExternalId                           = new OperationParam("externalId");
         public static readonly OperationParam FriendServiceFriendId                             = new OperationParam("friendId");
+        public static readonly OperationParam FriendServiceAuthenticationType                   = new OperationParam("authenticationType");
         public static readonly OperationParam FriendServiceEntityType                           = new OperationParam("entityType");
         public static readonly OperationParam FriendServiceEntitySubtype                        = new OperationParam("entitySubtype");
         public static readonly OperationParam FriendServiceIncludeSummaryData                   = new OperationParam("includeSummaryData");
@@ -211,6 +213,7 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceBeforeCount = new OperationParam("beforeCount");
         public static readonly OperationParam SocialLeaderboardServiceAfterCount = new OperationParam("afterCount");
         public static readonly OperationParam SocialLeaderboardServiceIncludeLeaderboardSize = new OperationParam("includeLeaderboardSize");
+        public static readonly OperationParam SocialLeaderboardServiceVersionId = new OperationParam("versionId");
 
         // Social Leaderboard Service - Reset Score Params
         //public static readonly Operation SocialLeaderboardServiceResetScore = new Operation("");

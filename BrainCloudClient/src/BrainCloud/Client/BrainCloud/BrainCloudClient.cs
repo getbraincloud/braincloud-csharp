@@ -19,11 +19,28 @@ using UnityEngine;
 
 namespace BrainCloud
 {
+    /// <summary>
+    /// Success callback for an API method.
+    /// </summary>
+    /// <param name="jsonResponse">The json response from the server</param>
+    /// <param name="cbObject">The user supplied callback object</param>
     public delegate void SuccessCallback(string jsonResponse, object cbObject);
+
+    /// <summary>
+    /// Failure callback for an API method.
+    /// </summary>
+    /// <param name="status">The http status code</param>
+    /// <param name="reasonCode">The error reason code</param>
+    /// <param name="statusMessage">The status message</param>
+    /// <param name="cbObject">The user supplied callback object</param>
     public delegate void FailureCallback(int status, int reasonCode, string statusMessage, object cbObject);
+
+    /// <summary>
+    /// Log callback to implement if providing a custom logging function.
+    /// </summary>
     public delegate void LogCallback(string log);
 
-//[Serializable]
+
     public class BrainCloudClient
     {
         #region Public Static

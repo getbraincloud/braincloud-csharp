@@ -119,9 +119,17 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateAnonymous(bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateAnonymous(
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value, null, in_forceCreate, in_success, in_failure);
+            this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value,
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -147,9 +155,19 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateFacebook(string in_externalId, string in_authenticationToken, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateFacebook(
+            string in_externalId,
+            string in_authenticationToken,
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, null, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value,
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -171,9 +189,18 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateGameCenter(string in_gameCenterId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateGameCenter(
+            string in_gameCenterId,
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, null, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value,
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -204,9 +231,19 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateEmailPassword(string in_email, string in_password, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateEmailPassword(
+            string in_email,
+            string in_password,
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, null, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value,
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -233,9 +270,19 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateUniversal(string in_userid, string in_password, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateUniversal(
+            string in_userid,
+            string in_password,
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, null, in_forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value,
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -260,9 +307,19 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateSteam(string in_userid, string in_sessionticket, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateSteam(
+            string in_userid,
+            string in_sessionticket,
+            bool forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, null, forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value,
+                              null, forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -287,9 +344,19 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateGoogle(string in_userid, string in_token, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateGoogle(
+            string in_userid,
+            string in_token, 
+            bool forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, null, forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
+                              null, forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -318,9 +385,20 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void AuthenticateExternal(string in_userid, string in_token, string in_externalAuthName, bool forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateExternal(
+            string in_userid,
+            string in_token,
+            string in_externalAuthName,
+            bool forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
-            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value, in_externalAuthName, forceCreate, in_success, in_failure);
+            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value,
+                              in_externalAuthName, forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -339,7 +417,24 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error
         /// </param>
-        public void ResetEmailPassword(string in_externalId, SuccessCallback in_success, FailureCallback in_failure)
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data": {}
+        /// }
+        /// 
+        /// Note the follow error reason codes:
+        /// 
+        /// SECURITY_ERROR (40209) - If the email address cannot be found.
+        /// </returns>
+        public void ResetEmailPassword(
+            string in_externalId,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = in_externalId;
@@ -351,7 +446,15 @@ namespace BrainCloud
         }
 
 
-        private void Authenticate(string in_externalId, string in_authenticationToken, string in_authenticationType, string in_externalAuthName, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        private void Authenticate(
+            string in_externalId,
+            string in_authenticationToken,
+            string in_authenticationType,
+            string in_externalAuthName,
+            bool in_forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject)
         {
             string languageCode = Util.GetIsoCodeForCurrentLanguage();
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
@@ -378,7 +481,7 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = languageCode;
             data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = utcOffset;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }

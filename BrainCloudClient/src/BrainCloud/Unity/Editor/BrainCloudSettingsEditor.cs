@@ -30,6 +30,9 @@ public class BrainCloudSettingsEditor : Editor
 			instance.ServerURL = BrainCloudSettings.DEFAULT_BRAINCLOUD_URL;
 		}
 		GUILayout.EndHorizontal();
+
+		EditorGUILayout.HelpBox("Additional development options for the brainCloud library.", MessageType.None);
+		instance.EnableLogging = EditorGUILayout.Toggle ("Enable Logging:", instance.EnableLogging);
 	}
 	#endif
 }

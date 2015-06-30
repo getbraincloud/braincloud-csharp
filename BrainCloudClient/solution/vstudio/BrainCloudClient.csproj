@@ -184,6 +184,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
+      <Link>BrainCloud\Internal\RequestState.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServerCall.cs">
       <Link>BrainCloud\Internal\ServerCall.cs</Link>
     </Compile>

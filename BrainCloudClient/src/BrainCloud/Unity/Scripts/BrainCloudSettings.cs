@@ -152,4 +152,22 @@ public class BrainCloudSettings : ScriptableObject
 			}
 		}
 	}
+
+	[SerializeField]
+	private bool m_enableLogging = false;
+	public bool EnableLogging
+	{
+		get {return m_enableLogging;}
+		set
+		{
+			if (m_enableLogging != value)
+			{
+				m_enableLogging = value;
+#if UNITY_EDITOR
+				EditorUtility.SetDirty(this);
+#endif
+			}
+		}
+	}
+	
 }

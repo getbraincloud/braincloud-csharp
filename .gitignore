@@ -23,3 +23,6 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+BrainCloudClient/solution/mono/UnitTests/test-results/
+BrainCloudClient/tests/ids.txt
