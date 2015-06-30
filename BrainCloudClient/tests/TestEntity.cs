@@ -161,7 +161,7 @@ namespace BrainCloudTests
         /// Creates basic entity data contaiing a street address
         /// </summary>
         /// <returns> Json string of address entity </returns>
-        private static string CreateAddressEntityJson(string street)
+        private string CreateAddressEntityJson(string street)
         {
             Dictionary<string, string> testEntityObj = new Dictionary<string, string> { { "street", street } };
             return JsonWriter.Serialize(testEntityObj);
@@ -172,7 +172,7 @@ namespace BrainCloudTests
         /// </summary>
         /// <param name="json"> Json to parse for ID </param>
         /// <returns> entityId from data </returns>
-        private static string GetEntityId(Dictionary<string, object> json)
+        private string GetEntityId(Dictionary<string, object> json)
         {
             Dictionary<string, object> data = (Dictionary<string, object>)(json["data"]);
             return (string)data["entityId"];
