@@ -36,19 +36,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.core">
-      <HintPath>..\..\tests\NUnit\lib\nunit.core.dll</HintPath>
+      <HintPath>..\..\..\tests\NUnit\lib\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces">
-      <HintPath>..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
+      <HintPath>..\..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.tests">
-      <HintPath>..\..\tests\NUnit\tests\nunit.core.tests.dll</HintPath>
+      <HintPath>..\..\..\tests\NUnit\tests\nunit.core.tests.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\tests\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\tests\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
