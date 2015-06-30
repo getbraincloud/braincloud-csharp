@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>UnitTests</RootNamespace>
     <AssemblyName>UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -56,7 +56,6 @@
   <ItemGroup>
     <Reference Include="MonoDevelop.NUnit, Version=2.6.0.0, Culture=neutral">
       <Private>False</Private>
-      <Package>monodevelop-core-addins</Package>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
@@ -64,11 +63,14 @@
     <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
     </Reference>
-    <Reference Include="nunit-console-runner, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="nunit.core.interfaces, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit-console-runner">
+      <HintPath>..\..\..\tests\NUnit\lib\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.NUnit">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Unity\MonoDevelop\Addins\NUnit\MonoDevelop.NUnit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +88,69 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestFixtureNoAuth.cs">
       <Link>TestFixtureNoAuth.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestClient.cs">
+      <Link>TestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestEntity.cs">
+      <Link>TestEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestEvent.cs">
+      <Link>TestEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFriend.cs">
+      <Link>TestFriend.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGamification.cs">
+      <Link>TestGamification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalApp.cs">
+      <Link>TestGlobalApp.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalEntity.cs">
+      <Link>TestGlobalEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalStatistics.cs">
+      <Link>TestGlobalStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestIdentity.cs">
+      <Link>TestIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestMatchMaking.cs">
+      <Link>TestMatchMaking.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestOneWayMatch.cs">
+      <Link>TestOneWayMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlaybackStream.cs">
+      <Link>TestPlaybackStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerState.cs">
+      <Link>TestPlayerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerStatistics.cs">
+      <Link>TestPlayerStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerStatisticsEvent.cs">
+      <Link>TestPlayerStatisticsEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestProduct.cs">
+      <Link>TestProduct.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPushNotification.cs">
+      <Link>TestPushNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestScript.cs">
+      <Link>TestScript.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestSocialLeaderboard.cs">
+      <Link>TestSocialLeaderboard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestTime.cs">
+      <Link>TestTime.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestTwitter.cs">
+      <Link>TestTwitter.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
