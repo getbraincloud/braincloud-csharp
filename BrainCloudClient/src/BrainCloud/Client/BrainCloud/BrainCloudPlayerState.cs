@@ -347,7 +347,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            List<string> attributeNames = JsonReader.Deserialize<List<string>> (in_jsonAttributeNameList);
+            object[] attributeNames = JsonReader.Deserialize<object[]>(in_jsonAttributeNameList);
             data[OperationParam.PlayerStateServiceAttributes.Value] = attributeNames;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
