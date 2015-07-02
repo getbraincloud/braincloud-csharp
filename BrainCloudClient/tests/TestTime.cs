@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -9,16 +8,16 @@ namespace BrainCloudTests
 {
     [TestFixture]
     public class TestTime : TestFixtureBase
-    {      
+    {
         [Test]
-        public void Test()
+        public void TestReadServerTime()
         {
             TestResult tr = new TestResult();
 
-            if (tr.Run())
-            {
-                // something
-            }
+            BrainCloudClient.Get().TimeService.ReadServerTime(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
         }
     }
 }
