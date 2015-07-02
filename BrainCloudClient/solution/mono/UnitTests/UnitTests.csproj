@@ -152,5 +152,8 @@
     <Compile Include="..\..\..\tests\TestTwitter.cs">
       <Link>TestTwitter.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\Helpers.cs">
+      <Link>Helpers.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -12,7 +11,7 @@ namespace BrainCloudTests
     public class TestGlobalEntity : TestFixtureBase
     {
         private readonly string _defaultEntityType = "testGlobalEntity";
-        private readonly string _defaultEntityName = "globalTestName";
+        private readonly string _defaultEntityValueName = "globalTestName";
         private readonly string _defaultEntityValue = "Test Name 01";
 
         [Test]
@@ -24,12 +23,12 @@ namespace BrainCloudTests
                 _defaultEntityType,
                 0,
                 null,
-                CreateJsonPair(_defaultEntityName, _defaultEntityValue),
+                Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
                 tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -39,15 +38,15 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GlobalEntityService.CreateEntityWithIndexedId(
                 _defaultEntityType,
-                "indexIdTest",
+                "indexedIdTest",
                 0,
                 null,
-                CreateJsonPair(_defaultEntityName, _defaultEntityValue),
+                Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
                 tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -59,11 +58,11 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GlobalEntityService.DeleteEntity(
                 entityId,
-                -1,
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -94,13 +93,13 @@ namespace BrainCloudTests
             CreateDefaultGlobalEntity();
 
             BrainCloudClient.Get().GlobalEntityService.GetList(
-                CreateJsonPair("entityType", "testGlobalEntity"),
-                CreateJsonPair("data.name", 1),
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
+                Helpers.CreateJsonPair("data.name", 1),
                 1000,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -112,11 +111,11 @@ namespace BrainCloudTests
             CreateDefaultGlobalEntity();
 
             BrainCloudClient.Get().GlobalEntityService.GetListCount(
-                CreateJsonPair("entityType", "testGlobalEntity"),
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -131,7 +130,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -143,12 +142,12 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GlobalEntityService.UpdateEntity(
                 entityId,
-                -1,
-                CreateJsonPair(_defaultEntityName, "Test Name 02 Changed"),
+                1,
+                Helpers.CreateJsonPair(_defaultEntityValueName, "Test Name 02 Changed"),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         [Test]
@@ -160,12 +159,12 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GlobalEntityService.UpdateEntityAcl(
                 entityId,
-                -1,
+                1,
                 new ACL { Other = ACL.Access.ReadWrite }.ToJsonString(),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         [Test]
@@ -177,12 +176,12 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GlobalEntityService.UpdateEntityTimeToLive(
                 entityId,
-                -1,
+                1,
                 1000,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         #region Helper Functions
@@ -217,7 +216,7 @@ namespace BrainCloudTests
                  _defaultEntityType,
                  0,
                  null,
-                 CreateJsonPair(_defaultEntityName, _defaultEntityValue),
+                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                  tr.ApiSuccess,
                  tr.ApiError);
             }
@@ -228,7 +227,7 @@ namespace BrainCloudTests
                indexedId,
                 0,
                 new ACL() { Other = ACL.Access.None }.ToJsonString(),
-                CreateJsonPair(_defaultEntityName, _defaultEntityValue),
+                Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
                 tr.ApiError);
             }
@@ -244,7 +243,7 @@ namespace BrainCloudTests
         /// <summary>
         /// Deletes all defualt entities
         /// </summary>
-        private void DeleteDefaultEntities()
+        private void DeleteAllDefaultEntities(int version = 1)
         {
             TestResult tr = new TestResult();
 
@@ -252,8 +251,8 @@ namespace BrainCloudTests
 
             //get all entities
             BrainCloudClient.Get().GlobalEntityService.GetList(
-                CreateJsonPair("entityType", "testGlobalEntity"),
-                CreateJsonPair("data.name", 1),
+                Helpers.CreateJsonPair("entityType", "testGlobalEntity"),
+                Helpers.CreateJsonPair("data.name", 1),
                 1000,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -275,25 +274,9 @@ namespace BrainCloudTests
             for (int i = 0; i < entityIds.Count; i++)
             {
                 tr.Reset();
-                BrainCloudClient.Get().GlobalEntityService.DeleteEntity(entityIds[i], -1, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Get().GlobalEntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
-        }
-
-        /// <summary>
-        /// Creates a properly formatted key/value json pair
-        /// </summary>
-        /// <param name="key"> Key </param>
-        /// <param name="value"> Value </param>
-        /// <returns> Formatted Json pair </returns>
-        public string CreateJsonPair(string key, string value)
-        {
-            return "{ \"" + key + "\" : \"" + value + "\"}";
-        }
-
-        public string CreateJsonPair(string key, int value)
-        {
-            return "{ \"" + key + "\" : " + value + "}";
         }
 
         #endregion

@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -12,6 +11,8 @@ namespace BrainCloudTests
     public class TestEntity : TestFixtureBase
     {
         private readonly string _defaultEntityType = "address";
+        private readonly string _defaultEntityValueName = "street";
+        private readonly string _defaultEntityValue = "1309 Carling";
 
         [Test]
         public void TestCreateEntity()
@@ -20,13 +21,13 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().EntityService.CreateEntity(
                 _defaultEntityType,
-                CreateAddressEntityJson("1309 Carling"),
+                Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 null,
                 tr.ApiSuccess,
                 tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -36,10 +37,10 @@ namespace BrainCloudTests
             string entityId = CreateDefaultAddressEntity(ACL.Access.None);
 
             //Delete entity
-            BrainCloudClient.Get().EntityService.DeleteEntity(entityId, -1, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Get().EntityService.DeleteEntity(entityId, 1, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -54,14 +55,14 @@ namespace BrainCloudTests
             BrainCloudClient.Get().EntityService.UpdateEntity(
                 entityId,
                 _defaultEntityType,
-                CreateAddressEntityJson(updatedAddress),
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 null,
-                -1,
+                1,
                 tr.ApiSuccess,
                 tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         [Test]
@@ -74,7 +75,7 @@ namespace BrainCloudTests
             BrainCloudClient.Get().EntityService.GetEntity(entityId, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -87,7 +88,7 @@ namespace BrainCloudTests
             BrainCloudClient.Get().EntityService.GetSharedEntitiesForPlayerId("abc", tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
         [Test]
         public void TestGetEntitiesByType()
@@ -99,7 +100,7 @@ namespace BrainCloudTests
             BrainCloudClient.Get().EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -108,17 +109,19 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
+            string updatedAddress = "1609 Bank St";
+
             //UpdateSharedEntity
             BrainCloudClient.Get().EntityService.UpdateSharedEntity(
                 entityId,
                 BrainCloudClient.Get().AuthenticationService.ProfileId,
                 _defaultEntityType,
-                CreateAddressEntityJson("1609 Bank St"),
-                -1,
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         [Test]
@@ -127,16 +130,18 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
+            string updatedAddress = "1609 Bank St";
+
             //UpdateSharedEntity          
             BrainCloudClient.Get().EntityService.UpdateSingleton(
                 _defaultEntityType,
-                CreateAddressEntityJson("1609 Bank St"),
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 new ACL() { Other = ACL.Access.ReadWrite }.ToJsonString(),
-                -1,
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities(2);
         }
 
         [Test]
@@ -148,24 +153,14 @@ namespace BrainCloudTests
             //UpdateSharedEntity
             BrainCloudClient.Get().EntityService.DeleteSingleton(
                 _defaultEntityType,
-                -1,
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteDefaultEntities();
+            DeleteAllDefaultEntities();
         }
 
         #region Helper Functions
-
-        /// <summary>
-        /// Creates basic entity data contaiing a street address
-        /// </summary>
-        /// <returns> Json string of address entity </returns>
-        private string CreateAddressEntityJson(string street)
-        {
-            Dictionary<string, string> testEntityObj = new Dictionary<string, string> { { "street", street } };
-            return JsonWriter.Serialize(testEntityObj);
-        }
 
         /// <summary>
         /// Returns the entityId from a raw json response
@@ -193,15 +188,12 @@ namespace BrainCloudTests
             //Create entity
             BrainCloudClient.Get().EntityService.CreateEntity(
                 _defaultEntityType,
-                CreateAddressEntityJson("1309 Carling"),
+                Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 access.ToJsonString(),
                 tr.ApiSuccess,
                 tr.ApiError);
 
-            if (tr.Run())
-            {
-                entityId = GetEntityId(tr.m_response);
-            }
+            if (tr.Run()) entityId = GetEntityId(tr.m_response);
 
             return entityId;
         }
@@ -209,7 +201,7 @@ namespace BrainCloudTests
         /// <summary>
         /// Deletes all defualt entities
         /// </summary>
-        private void DeleteDefaultEntities()
+        private void DeleteAllDefaultEntities(int version = 1)
         {
             TestResult tr = new TestResult();
 
@@ -236,7 +228,7 @@ namespace BrainCloudTests
             for (int i = 0; i < entityIds.Count; i++)
             {
                 tr.Reset();
-                BrainCloudClient.Get().EntityService.DeleteEntity(entityIds[i], -1, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Get().EntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
         }
