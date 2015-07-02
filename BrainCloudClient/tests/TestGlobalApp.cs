@@ -1,24 +1,21 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
-using System.Collections.Generic;
-using JsonFx.Json;
 
 namespace BrainCloudTests
 {
     [TestFixture]
     public class TestGlobalApp : TestFixtureBase
-    {      
+    {
         [Test]
-        public void Test()
+        public void TestBrainCloudGlobalApp()
         {
             TestResult tr = new TestResult();
 
-            if (tr.Run())
-            {
-                // something
-            }
+            BrainCloudClient.Get().GlobalAppService.ReadProperties(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
         }
     }
 }
