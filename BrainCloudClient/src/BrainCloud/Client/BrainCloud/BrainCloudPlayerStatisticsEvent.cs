@@ -143,7 +143,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object> ();
-            List<object> events = JsonReader.Deserialize<List<object>> (in_jsonData);
+            object[] events = JsonReader.Deserialize<object[]>(in_jsonData);
             data[OperationParam.PlayerStatisticEventServiceEvents.Value] = events;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
