@@ -191,7 +191,7 @@ namespace BrainCloud
             object in_cbObject = null )
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data["players"] = JsonReader.Deserialize<List<object>> (in_jsonOpponentIds);
+            data["players"] = JsonReader.Deserialize<object[]> (in_jsonOpponentIds);
 
             if (Util.IsOptionalParameterValid(in_jsonMatchState))
             {
