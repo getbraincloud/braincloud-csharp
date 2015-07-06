@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>BrainCloudClient</RootNamespace>
     <AssemblyName>BrainCloudClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
