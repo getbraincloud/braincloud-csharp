@@ -9,7 +9,7 @@ namespace BrainCloudTests
     public class TestAuthenticate : TestFixtureNoAuth
     {
         private readonly string _defaultUserId = "abc";
-        private readonly string _defaultUserPassword = "abcPass";
+        private readonly string _defaultUserPassword = "abc";
         private readonly string _defaultUserEmail = "abcTest.email.2015@abcmail.ca";
 
         [Test]
