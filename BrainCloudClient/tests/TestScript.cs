@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -9,16 +8,18 @@ namespace BrainCloudTests
 {
     [TestFixture]
     public class TestScript : TestFixtureBase
-    {      
+    {
         [Test]
-        public void Test()
+        public void TestRunScript()
         {
             TestResult tr = new TestResult();
 
-            if (tr.Run())
-            {
-                // something
-            }
+            BrainCloudClient.Get().ScriptService.RunScript(
+                "testScript",
+                Helpers.CreateJsonPair("testParm1", 1),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
         }
     }
 }

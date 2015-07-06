@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using BrainCloud;
+using BrainCloudTests;
 
 namespace BrainCloudTests
 {
@@ -18,6 +20,18 @@ namespace BrainCloudTests
         public static string CreateJsonPair(string key, long value)
         {
             return "{ \"" + key + "\" : " + value + "}";
+        }
+
+        public static string GetMyPlayerId()
+        {
+            TestResult tr = new TestResult();
+            string id = "";
+
+            BrainCloudClient.Get().PlayerStateService.ReadPlayerState(tr.ApiSuccess, tr.ApiError);
+
+            if (tr.Run()) id = (string)((Dictionary<string, object>)(tr.m_response["data"]))["id"];
+
+            return id;
         }
     }
 }
