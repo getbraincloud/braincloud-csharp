@@ -56,6 +56,7 @@
   <ItemGroup>
     <Reference Include="MonoDevelop.NUnit, Version=2.6.0.0, Culture=neutral">
       <Private>False</Private>
+      <Package>monodevelop-core-addins</Package>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
@@ -70,7 +71,13 @@
       <HintPath>..\..\..\tests\NUnit\lib\nunit-console-runner.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.NUnit">
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Unity\MonoDevelop\Addins\NUnit\MonoDevelop.NUnit.dll</HintPath>
+      <HintPath>C:\Program Files\Unity\MonoDevelop\Addins\NUnit\MonoDevelop.NUnit.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+	<Reference Include="UnityEngine">
+      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

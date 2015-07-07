@@ -215,7 +215,7 @@ namespace BrainCloudTests
                 BrainCloudClient.Get().GlobalEntityService.CreateEntity(
                  _defaultEntityType,
                  0,
-                 null,
+				 access.ToJsonString(),
                  Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                  tr.ApiSuccess,
                  tr.ApiError);
@@ -226,7 +226,7 @@ namespace BrainCloudTests
                 _defaultEntityType,
                indexedId,
                 0,
-                new ACL() { Other = ACL.Access.None }.ToJsonString(),
+				access.ToJsonString(),
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
                 tr.ApiError);

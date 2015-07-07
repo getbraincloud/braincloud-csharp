@@ -128,7 +128,7 @@ namespace BrainCloudTests
         public void TestUpdateSingleton()
         {
             TestResult tr = new TestResult();
-            string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
             string updatedAddress = "1609 Bank St";
 
@@ -148,7 +148,7 @@ namespace BrainCloudTests
         public void TestDeleteSingleton()
         {
             TestResult tr = new TestResult();
-            string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
             //UpdateSharedEntity
             BrainCloudClient.Get().EntityService.DeleteSingleton(
