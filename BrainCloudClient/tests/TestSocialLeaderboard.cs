@@ -151,6 +151,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().SocialLeaderboardService.TriggerSocialLeaderboardTournamentReward(
+                _socialLeaderboardId,
                 _eventId,
                 1,
                 tr.ApiSuccess, tr.ApiError);
