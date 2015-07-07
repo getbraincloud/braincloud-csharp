@@ -26,7 +26,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        [Test]
+        /*[Test]
         public void TestAuthenticateAnonymous()
         {
             TestResult tr = new TestResult();
@@ -36,7 +36,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-        }
+        }*/
 
         [Test]
         public void TestAuthenticateEmailPassword()
