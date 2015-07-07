@@ -682,6 +682,7 @@ namespace BrainCloud
         public void ResetCommunication()
         {
             m_bc.ResetCommunication();
+            AuthenticationService.ClearSavedProfileID();
         }
 
         /// <summary>Enable Communications with the server. By default this is true</summary>
