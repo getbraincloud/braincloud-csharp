@@ -883,6 +883,9 @@ namespace BrainCloud
         /// Service Name - SocialLeaderboard
         /// Service Operation - RewardTournament
         /// </remarks>
+        /// <param name="in_leaderboardId">
+        /// The leaderboard the tournament was on
+        /// </param>
         /// <param name="in_eventName">
         /// The player statistics event name to trigger
         /// </param>
@@ -906,6 +909,7 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void TriggerSocialLeaderboardTournamentReward(
+            string in_leaderboardId,
             string in_eventName,
             ulong in_eventMultiplier,
             SuccessCallback in_success = null,
@@ -913,6 +917,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceEventName.Value] = in_eventName;
             data[OperationParam.SocialLeaderboardServiceEventMultiplier.Value] = in_eventMultiplier;
 

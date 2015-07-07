@@ -9,7 +9,7 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestOneWayMatch : TestFixtureBase
     {
-        private readonly string _otherPlayerid = "029b1c4e-61ca-4a59-8475-9921349c9cc3";
+        private readonly string _otherPlayerid = "0f79d5fd-103f-4e9d-aecf-15228eb13f74";
 
         [Test]
         public void TestStartMatch()
@@ -18,7 +18,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().OneWayMatchService.StartMatch(
                 _otherPlayerid,
-                10,
+                1000,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -62,7 +62,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().OneWayMatchService.StartMatch(
                 _otherPlayerid,
-                10,
+                1000,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

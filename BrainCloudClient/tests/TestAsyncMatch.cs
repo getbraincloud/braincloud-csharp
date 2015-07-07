@@ -9,7 +9,7 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestAsyncMatch : TestFixtureBase
     {
-        private readonly string _otherPlayerid = "029b1c4e-61ca-4a59-8475-9921349c9cc3";
+        private readonly string _otherPlayerid = "0f79d5fd-103f-4e9d-aecf-15228eb13f74";
         private readonly string _platform = "BC";
 
         [Test]
@@ -64,7 +64,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        [Test]
+        /*[Test]
         public void TestDeleteMatch()
         {
             string matchId = CreateMatch();
@@ -76,7 +76,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-        }
+        }*/
 
         [Test]
         public void TestFindCompleteMatches()

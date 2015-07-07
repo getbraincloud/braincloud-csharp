@@ -14,6 +14,7 @@ namespace BrainCloudTests
 
         private readonly string _userStatsCategory = "playerStats";
         private readonly string _milestoneCategory = "Experience";
+        private readonly string _milestoneId = "2";
 
         private readonly string _questsCategory = "Experience";
 
@@ -126,13 +127,11 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().GamificationService.ResetMilestones(
-                new string[] { "1" },
+                new string[] { _milestoneId },
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
-
-        
 
         #endregion
 
