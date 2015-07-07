@@ -10,15 +10,6 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestIdentity: TestFixtureBase
     {      
-        [Test]
-        public void Test()
-        {
-            TestResult tr = new TestResult();
-
-            if (tr.Run())
-            {
-                // something
-            }
-        }
+        
     }
 }

@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -8,17 +7,8 @@ using JsonFx.Json;
 namespace BrainCloudTests
 {
     [TestFixture]
-    public class TestFriend : TestFixtureBase
-    {      
-        [Test]
-        public void Test()
-        {
-            TestResult tr = new TestResult();
-
-            if (tr.Run())
-            {
-                // something
-            }
-        }
+    public class TestFriend : TestFixtureNoAuth
+    {
+        
     }
 }
