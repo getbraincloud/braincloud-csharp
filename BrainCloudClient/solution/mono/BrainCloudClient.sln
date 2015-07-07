@@ -41,6 +41,6 @@ Global
 		{719A9484-6259-4D3C-A904-6958C03B02F7}.ReleaseDotNet|Any CPU.Build.0 = ReleaseDotNet|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = BrainCloudClient.csproj
+		StartupItem = UnitTests\UnitTests.csproj
 	EndGlobalSection
 EndGlobal
