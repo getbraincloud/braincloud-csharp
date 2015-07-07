@@ -56,7 +56,6 @@
   <ItemGroup>
     <Reference Include="MonoDevelop.NUnit, Version=2.6.0.0, Culture=neutral">
       <Private>False</Private>
-      <Package>monodevelop-core-addins</Package>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
@@ -76,7 +75,7 @@
     <Reference Include="UnityEngine">
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
-	<Reference Include="UnityEngine">
+    <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -164,6 +163,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestAsyncMatch.cs">
       <Link>TestAsyncMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestCustomEntity.cs">
+      <Link>TestCustomEntity.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

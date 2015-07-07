@@ -75,6 +75,9 @@
     <Compile Include="..\..\..\tests\TestClient.cs">
       <Link>TestClient.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestCustomEntity.cs">
+      <Link>TestCustomEntity.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestEntity.cs">
       <Link>TestEntity.cs</Link>
     </Compile>

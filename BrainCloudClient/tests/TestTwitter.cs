@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -9,16 +8,7 @@ namespace BrainCloudTests
 {
     [TestFixture]
     public class TestTwitter : TestFixtureBase
-    {      
-        [Test]
-        public void Test()
-        {
-            TestResult tr = new TestResult();
+    {
 
-            if (tr.Run())
-            {
-                // something
-            }
-        }
     }
 }
