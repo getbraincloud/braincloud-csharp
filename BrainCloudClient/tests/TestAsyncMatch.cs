@@ -9,7 +9,6 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestAsyncMatch : TestFixtureBase
     {
-        private readonly string _otherPlayerid = "0f79d5fd-103f-4e9d-aecf-15228eb13f74";
         private readonly string _platform = "BC";
 
         [Test]
@@ -18,7 +17,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
-            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", _otherPlayerid } };
+            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserB).ProfileId } };
 
             BrainCloudClient.Get().AsyncMatchService.CreateMatch(
                 JsonWriter.Serialize(players),
@@ -43,7 +42,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.AbandonMatch(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -57,7 +56,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.CompleteMatch(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -107,7 +106,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.ReadMatch(
-                matchId,
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -123,7 +122,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.ReadMatch(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -138,7 +137,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
-            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", _otherPlayerid } };
+            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserB).ProfileId } };
 
             BrainCloudClient.Get().AsyncMatchService.CreateMatchWithInitialTurn(
                 JsonWriter.Serialize(players),
@@ -166,12 +165,12 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.SubmitTurn(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 0,
                 Helpers.CreateJsonPair("blob", 1),
                 null,
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 Helpers.CreateJsonPair("map", "level1"),
                 Helpers.CreateJsonPair("map", "level1"),
                 tr.ApiSuccess, tr.ApiError);
@@ -188,7 +187,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.UpdateMatchSummaryData(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 0,
                 Helpers.CreateJsonPair("map", "level1"),
@@ -206,7 +205,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
-            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", _otherPlayerid } };
+            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserB).ProfileId } };
 
             BrainCloudClient.Get().AsyncMatchService.CreateMatch(
                 JsonWriter.Serialize(players),
@@ -229,7 +228,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
-            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", _otherPlayerid } };
+            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserB).ProfileId } };
 
             BrainCloudClient.Get().AsyncMatchService.CreateMatchWithInitialTurn(
                 JsonWriter.Serialize(players),
@@ -254,7 +253,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Get().AsyncMatchService.AbandonMatch(
-               Helpers.GetMyPlayerId(),
+               GetUser(Users.UserA).ProfileId,
                matchId,
                tr.ApiSuccess, tr.ApiError);
             tr.Run();

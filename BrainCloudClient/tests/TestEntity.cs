@@ -85,7 +85,7 @@ namespace BrainCloudTests
             CreateDefaultAddressEntity(ACL.Access.None);
 
             //GetEntity
-            BrainCloudClient.Get().EntityService.GetSharedEntitiesForPlayerId("abc", tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Get().EntityService.GetSharedEntitiesForPlayerId(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             DeleteAllDefaultEntities();

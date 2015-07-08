@@ -20,7 +20,7 @@ namespace BrainCloudTests
             ulong eventId = 0;
 
             BrainCloudClient.Get().EventService.SendEvent(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
                 true,
@@ -42,7 +42,7 @@ namespace BrainCloudTests
             ulong eventId = SendDefaultMessage(true);
 
             BrainCloudClient.Get().EventService.DeleteSentEvent(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -59,7 +59,7 @@ namespace BrainCloudTests
             ulong eventId = SendDefaultMessage(false);
 
             BrainCloudClient.Get().EventService.DeleteIncomingEvent(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -74,7 +74,7 @@ namespace BrainCloudTests
             ulong eventId = SendDefaultMessage(false);
 
             BrainCloudClient.Get().EventService.UpdateIncomingEventData(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 eventId,
                 Helpers.CreateJsonPair(_eventDataKey, 343),
                 tr.ApiSuccess, tr.ApiError);
@@ -92,7 +92,7 @@ namespace BrainCloudTests
             ulong eventId = 0;
 
             BrainCloudClient.Get().EventService.SendEvent(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
                 recordLocally,
@@ -111,7 +111,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().EventService.DeleteIncomingEvent(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 

@@ -40,7 +40,7 @@ namespace BrainCloudTests
             BrainCloudClient.Get().EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
             Player playerEntity = BrainCloudClient.Get().EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
 
-            playerEntity.StoreAsyncShared(Helpers.GetMyPlayerId(), tr.ApiSuccess, tr.ApiError);
+            playerEntity.StoreAsyncShared(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             Cleanup(playerEntity);

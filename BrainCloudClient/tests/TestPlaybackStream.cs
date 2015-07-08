@@ -9,8 +9,6 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestPlaybackStream : TestFixtureBase
     {
-        private readonly string _otherPlayerid = "0f79d5fd-103f-4e9d-aecf-15228eb13f74";
-
         [Test]
         public void TestStartStream()
         {
@@ -18,7 +16,7 @@ namespace BrainCloudTests
             string streamId = "";
 
             BrainCloudClient.Get().PlaybackStreamService.StartStream(
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -132,7 +130,7 @@ namespace BrainCloudTests
             string streamId = "";
 
             BrainCloudClient.Get().PlaybackStreamService.StartStream(
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -162,7 +160,7 @@ namespace BrainCloudTests
             string streamId = "";
 
             BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForTargetPlayer(
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())

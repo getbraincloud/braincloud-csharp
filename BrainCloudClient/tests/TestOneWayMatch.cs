@@ -9,20 +9,10 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestOneWayMatch : TestFixtureBase
     {
-        private readonly string _otherPlayerid = "0f79d5fd-103f-4e9d-aecf-15228eb13f74";
-
         [Test]
         public void TestStartMatch()
         {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Get().OneWayMatchService.StartMatch(
-                _otherPlayerid,
-                1000,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-
+            StartMatch();
             CancelMatch(GetStreamId());
         }
 
@@ -30,14 +20,7 @@ namespace BrainCloudTests
         public void TestCancelMatch()
         {
             StartMatch();
-            string streamId = GetStreamId();
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Get().OneWayMatchService.CancelMatch(
-                streamId,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
+            CancelMatch(GetStreamId());
         }
 
         [Test]
@@ -61,7 +44,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().OneWayMatchService.StartMatch(
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 1000,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -84,7 +67,7 @@ namespace BrainCloudTests
             string streamId = "";
 
             BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForTargetPlayer(
-                _otherPlayerid,
+                GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())

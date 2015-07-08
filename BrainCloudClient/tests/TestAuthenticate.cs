@@ -8,18 +8,14 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestAuthenticate : TestFixtureNoAuth
     {
-        private readonly string _defaultUserId = "abc";
-        private readonly string _defaultUserPassword = "abc";
-        private readonly string _defaultUserEmail = "abcTest.email.2015@abcmail.ca";
-
         [Test]
         public void TestAuthenticateUniversal()
         {
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
-                _defaultUserId,
-                _defaultUserPassword,
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -44,8 +40,8 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AuthenticationService.AuthenticateEmailPassword(
-                _defaultUserEmail,
-                _defaultUserPassword,
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -58,8 +54,8 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AuthenticationService.AuthenticateEmailPassword(
-                _defaultUserEmail,
-                _defaultUserPassword,
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -67,7 +63,7 @@ namespace BrainCloudTests
             tr.Reset();
 
             BrainCloudClient.Get().AuthenticationService.ResetEmailPassword(
-                _defaultUserEmail,
+                GetUser(Users.UserA).Email,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
