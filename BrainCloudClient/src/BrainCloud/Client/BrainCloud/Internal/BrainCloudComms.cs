@@ -484,6 +484,15 @@ namespace BrainCloud.Internal
                         m_isAuthenticated = false;
                         m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
                     }
+
+                    if (sc != null && sc.GetOperation().Equals(ServiceOperation.Logout.Value))
+                    {
+                        if (reasonCode == ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT)
+                        {
+                            m_isAuthenticated = false;
+                            m_brainCloudClientRef.Log("Could not communicate with the server on logout due to network timeout");
+                        }
+                    }
                     
                     // now try to execute the callback
                     if (sc != null && sc.GetCallback() != null)
