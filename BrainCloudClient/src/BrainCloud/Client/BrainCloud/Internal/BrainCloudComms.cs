@@ -740,7 +740,7 @@ namespace BrainCloud.Internal
             switch (currentRetry)
             {
             case 0:
-                ret = TimeSpan.FromSeconds(3);
+                ret = TimeSpan.FromSeconds(5);
                 break;
             case 1:
                 ret = TimeSpan.FromSeconds(5);
