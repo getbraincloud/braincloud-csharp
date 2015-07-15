@@ -631,7 +631,7 @@ namespace BrainCloud
             data["matchId"] = in_matchId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Delete, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.DeleteMatch, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

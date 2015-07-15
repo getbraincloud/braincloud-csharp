@@ -63,19 +63,19 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        /*[Test]
+        [Test]
         public void TestDeleteMatch()
         {
             string matchId = CreateMatch();
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().AsyncMatchService.DeleteMatch(
-                Helpers.GetMyPlayerId(),
+                GetUser(Users.UserA).ProfileId,
                 matchId,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-        }*/
+        }
 
         [Test]
         public void TestFindCompleteMatches()

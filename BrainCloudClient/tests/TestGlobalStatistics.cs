@@ -35,7 +35,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestReadPlayerStatsSubset()
+        public void TestReadGlobalStatsSubset()
         {
             TestResult tr = new TestResult();
 
