@@ -770,7 +770,7 @@ namespace BrainCloud
             }
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = in_leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.ToString("d-MM-yyyy");
+            data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.ToString("d-MM-yyyy HH:mm");
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = in_retainedCount;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
