@@ -12,22 +12,21 @@ namespace BrainCloudTests
         [Test]
         public void TestStartMatch()
         {
-            StartMatch();
-            CancelMatch(GetStreamId());
+            string streamId = StartMatch();
+            CancelMatch(streamId);
         }
 
         [Test]
         public void TestCancelMatch()
         {
-            StartMatch();
-            CancelMatch(GetStreamId());
+            string streamId = StartMatch();
+            CancelMatch(streamId);
         }
 
         [Test]
         public void TestCompleteMatch()
         {
-            StartMatch();
-            string streamId = GetStreamId();
+            string streamId = StartMatch();
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().OneWayMatchService.CompleteMatch(
@@ -39,16 +38,22 @@ namespace BrainCloudTests
 
         #region Helper functions
 
-        private void StartMatch()
+        private string StartMatch()
         {
             TestResult tr = new TestResult();
+            string streamId = "";
 
             BrainCloudClient.Get().OneWayMatchService.StartMatch(
                 GetUser(Users.UserB).ProfileId,
                 1000,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
+            if (tr.Run())
+            {
+                streamId = (string)(((Dictionary<string, object>)tr.m_response["data"])["playbackStreamId"]);
+            }
+
+            return streamId;
         }
 
         private void CancelMatch(string streamId)
@@ -58,25 +63,6 @@ namespace BrainCloudTests
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-        }
-
-        private string GetStreamId()
-        {
-            TestResult tr = new TestResult();
-
-            string streamId = "";
-
-            BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForTargetPlayer(
-                GetUser(Users.UserB).ProfileId,
-                tr.ApiSuccess, tr.ApiError);
-
-            if (tr.Run())
-            {
-                Dictionary<string, object>[] streams = (Dictionary<string, object>[])(((Dictionary<string, object>)(tr.m_response["data"]))["streams"]);
-                streamId = (string)streams[0]["playbackStreamId"];
-            }
-
-            return streamId;
         }
 
         #endregion

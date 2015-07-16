@@ -234,6 +234,17 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestReadXPLevelsMetaData()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().GamificationService.ReadXpLevelsMetaData(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         #endregion
 
         #region Misc

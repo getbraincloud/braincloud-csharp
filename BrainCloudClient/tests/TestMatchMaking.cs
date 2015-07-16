@@ -134,6 +134,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        /*
         [Test]
         public void TestGetOneWayPlayers()
         {
@@ -164,5 +165,6 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+        */
     }
 }

@@ -25,7 +25,9 @@ namespace BrainCloud
         public enum SocialLeaderboardType
         {
             HIGH_VALUE,
-            CUMULATIVE
+            CUMULATIVE,
+            LAST_VALUE,
+            LOW_VALUE
         }
 
         public enum RotationType
@@ -233,6 +235,7 @@ namespace BrainCloud
         ///  }
         /// }
         /// </returns>
+        [Obsolete("Use GetGlobalLeaderboardPage instead")]
         public void GetGlobalLeaderboard(
             string in_leaderboardId,
             FetchType in_fetchType,

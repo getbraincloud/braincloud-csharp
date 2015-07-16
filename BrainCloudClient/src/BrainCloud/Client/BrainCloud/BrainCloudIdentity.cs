@@ -47,7 +47,11 @@ namespace BrainCloud
         ///
         /// To switch profiles, call ClearSavedProfileID() and call AuthenticateFacebook().
         /// </returns>
-        public void AttachFacebookIdentity(string in_externalId, string in_authenticationToken, SuccessCallback in_success, FailureCallback in_failure)
+        public void AttachFacebookIdentity(
+            string in_externalId, 
+            string in_authenticationToken, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.AttachIdentity(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, in_success, in_failure);
         }
@@ -73,7 +77,11 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void MergeFacebookIdentity(string in_externalId, string in_authenticationToken, SuccessCallback in_success, FailureCallback in_failure)
+        public void MergeFacebookIdentity(
+            string in_externalId, 
+            string in_authenticationToken,
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.MergeIdentity(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, in_success, in_failure);
         }
@@ -102,7 +110,11 @@ namespace BrainCloud
         /// disconnecting this identity would result in the profile being anonymous (which means that
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
-        public void DetachFacebookIdentity(string in_externalId, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
+        public void DetachFacebookIdentity(
+            string in_externalId,
+            bool in_continueAnon,
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.DetachIdentity(in_externalId, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, in_continueAnon, in_success, in_failure);
         }
@@ -130,7 +142,10 @@ namespace BrainCloud
         ///
         /// To switch profiles, call ClearSavedProfileID() and call this method again.
         /// </returns>
-        public void AttachGameCenterIdentity(string in_gameCenterId, SuccessCallback in_success, FailureCallback in_failure)
+        public void AttachGameCenterIdentity(
+            string in_gameCenterId, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.AttachIdentity(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, in_success, in_failure);
         }
@@ -150,7 +165,10 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void MergeGameCenterIdentity(string in_gameCenterId, SuccessCallback in_success, FailureCallback in_failure)
+        public void MergeGameCenterIdentity(
+            string in_gameCenterId,
+            SuccessCallback in_success,
+            FailureCallback in_failure)
         {
             this.MergeIdentity(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, in_success, in_failure);
         }
@@ -177,7 +195,10 @@ namespace BrainCloud
         /// disconnecting this identity would result in the profile being anonymous (which means that
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
-        public void DetachGameCenterIdentity(string in_gameCenterId, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
+        public void DetachGameCenterIdentity(string in_gameCenterId, 
+            bool in_continueAnon, 
+            SuccessCallback in_success,
+            FailureCallback in_failure)
         {
             this.DetachIdentity(in_gameCenterId, OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, in_continueAnon, in_success, in_failure);
         }
@@ -208,7 +229,11 @@ namespace BrainCloud
         ///
         /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateEmailPassword().
         /// </returns>
-        public void AttachEmailIdentity(string in_email, string in_password, SuccessCallback in_success, FailureCallback in_failure)
+        public void AttachEmailIdentity(
+            string in_email, 
+            string in_password, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.AttachIdentity(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, in_success, in_failure);
         }
@@ -232,7 +257,11 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void MergeEmailIdentity(string in_email, string in_password, SuccessCallback in_success, FailureCallback in_failure)
+        public void MergeEmailIdentity(
+            string in_email, 
+            string in_password, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.MergeIdentity(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, in_success, in_failure);
         }
@@ -260,7 +289,11 @@ namespace BrainCloud
         /// disconnecting this identity would result in the profile being anonymous (which means that
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
-        public void DetachEmailIdentity(string in_email, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
+        public void DetachEmailIdentity(
+            string in_email, 
+            bool in_continueAnon, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.DetachIdentity(in_email, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, in_continueAnon, in_success, in_failure);
         }
@@ -291,7 +324,10 @@ namespace BrainCloud
         ///
         /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateEmailPassword().
         /// </returns>
-        public void AttachUniversalIdentity(string in_userid, string in_password, SuccessCallback in_success, FailureCallback in_failure)
+        public void AttachUniversalIdentity(string in_userid,
+            string in_password, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.AttachIdentity(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, in_success, in_failure);
         }
@@ -315,7 +351,11 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void MergeUniversalIdentity(string in_userid, string in_password, SuccessCallback in_success, FailureCallback in_failure)
+        public void MergeUniversalIdentity(
+            string in_userid, 
+            string in_password, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.MergeIdentity(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, in_success, in_failure);
         }
@@ -343,7 +383,11 @@ namespace BrainCloud
         /// disconnecting this identity would result in the profile being anonymous (which means that
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
-        public void DetachUniversalIdentity(string in_userid, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
+        public void DetachUniversalIdentity(
+            string in_userid,
+            bool in_continueAnon,
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.DetachIdentity(in_userid, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, in_continueAnon, in_success, in_failure);
         }
@@ -374,7 +418,10 @@ namespace BrainCloud
         ///
         /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateSteam().
         /// </returns>
-        public void AttachSteamIdentity(string in_userid, string in_sessionticket, SuccessCallback in_success, FailureCallback in_failure)
+        public void AttachSteamIdentity(string in_userid, 
+            string in_sessionticket, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.AttachIdentity(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, in_success, in_failure);
         }
@@ -398,7 +445,11 @@ namespace BrainCloud
         /// <param name="in_failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        public void MergeSteamIdentity(string in_userid, string in_sessionticket, SuccessCallback in_success, FailureCallback in_failure)
+        public void MergeSteamIdentity(
+            string in_userid, 
+            string in_sessionticket,
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.MergeIdentity(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, in_success, in_failure);
         }
@@ -426,7 +477,11 @@ namespace BrainCloud
         /// disconnecting this identity would result in the profile being anonymous (which means that
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
-        public void DetachSteamIdentity(string in_userid, bool in_continueAnon, SuccessCallback in_success, FailureCallback in_failure)
+        public void DetachSteamIdentity(
+            string in_userid,
+            bool in_continueAnon,
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             this.DetachIdentity(in_userid, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, in_continueAnon, in_success, in_failure);
         }

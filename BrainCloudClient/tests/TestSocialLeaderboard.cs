@@ -55,7 +55,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestGetGlobalLeaderboardPage()
+        public void TestGetGlobalLeaderboardPageHigh()
         {
             TestResult tr = new TestResult();
 
@@ -68,6 +68,38 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardPageLow()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPage(
+                _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
+                0,
+                10,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardPageFail()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPage(
+                "thisDoesNotExistLeaderboard",
+                BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
+                0,
+                10,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 0);
         }
 
         [Test]
@@ -160,17 +192,71 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestPostScoreToDynamicLeaderboard()
+        public void TestPostScoreToDynamicLeaderboardHighValue()
         {
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId,
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
                 System.DateTime.Now.AddDays(5),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardLowValue()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
+                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
+                System.DateTime.Now.AddDays(5),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardCumulative()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE,
+                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
+                System.DateTime.Now.AddDays(5),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardLastValue()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
+                BrainCloudSocialLeaderboard.RotationType.DAILY,
+                System.DateTime.Now.AddHours(15),
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
