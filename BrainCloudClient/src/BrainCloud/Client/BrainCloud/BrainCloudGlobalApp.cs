@@ -39,14 +39,12 @@ namespace BrainCloud
         /// <returns> JSON describing the global properties:
         /// {
         ///   "status":200,
-        ///   "data":{
-        ///     {
-        ///		 "pName": {
-        ///		  "name": "pName",
-        ///		  "description": "pValue",
-        ///		  "value": "pDescription"
-        ///		 }
-        ///		}
+        ///   "data": {
+        ///     "pName": {
+        ///       "name": "pName",
+        ///	      "description": "pValue",
+        ///	      "value": "pDescription"
+        ///	    }
         ///   }
         /// }
         /// </returns>

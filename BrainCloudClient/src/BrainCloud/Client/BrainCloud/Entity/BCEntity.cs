@@ -320,6 +320,12 @@ namespace BrainCloud.Entity
                 // IList    : list of objects
                 // IDictionary  : dictionary of objects
 
+                if (value == null)
+                {
+                    Remove(in_key);
+                    return;
+                }
+
                 if (IsBasicType(value)
                         || value is IList
                         || value is IDictionary)

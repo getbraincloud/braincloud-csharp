@@ -622,7 +622,11 @@ namespace BrainCloud
         ///   }
         /// }
         /// </returns>
-        public void VerifyItunesReceipt(String in_base64EncReceiptData, SuccessCallback in_callback = null, FailureCallback in_failure = null, object in_cbObject = null)
+        public void VerifyItunesReceipt(
+            String in_base64EncReceiptData,
+            SuccessCallback in_callback = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
         {
             Dictionary<string, object> message = new Dictionary<string, object>();
             message[OperationParam.ProductServiceOpCashInReceiptReceipt.Value] = in_base64EncReceiptData;

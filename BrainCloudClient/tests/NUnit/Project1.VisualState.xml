@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1000]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\Project1.nunit</TopNode>
+  <SelectedNode>[0-1008]BrainCloudTests.TestEntity.TestCreateEntity</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1000]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\Project1.nunit" Expanded="true" />
+    <Node UniqueName="[0-1055]C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\..\..\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" Expanded="true" />
+    <Node UniqueName="[0-1056]BrainCloudTests" Expanded="true" />
+    <Node UniqueName="[0-1003]BrainCloudTests.TestAuthenticate" Expanded="true" />
+    <Node UniqueName="[0-1007]BrainCloudTests.TestEntity" Expanded="true" />
+  </Nodes>
+</VisualState>

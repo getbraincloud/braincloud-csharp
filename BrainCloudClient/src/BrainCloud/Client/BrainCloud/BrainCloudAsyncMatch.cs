@@ -191,7 +191,7 @@ namespace BrainCloud
             object in_cbObject = null )
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data["players"] = JsonReader.Deserialize<List<object>> (in_jsonOpponentIds);
+            data["players"] = JsonReader.Deserialize<object[]> (in_jsonOpponentIds);
 
             if (Util.IsOptionalParameterValid(in_jsonMatchState))
             {
@@ -631,7 +631,7 @@ namespace BrainCloud
             data["matchId"] = in_matchId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Delete, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.DeleteMatch, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

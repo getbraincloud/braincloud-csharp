@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C6CAE932-D378-4110-818F-01798E518F34}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UnitTest</RootNamespace>
+    <AssemblyName>UnitTest</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.core">
+      <HintPath>..\..\..\tests\NUnit\lib\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.tests">
+      <HintPath>..\..\..\tests\NUnit\tests\nunit.core.tests.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\tests\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BrainCloudClient.csproj">
+      <Project>{473ee270-253a-487b-9dd7-896a25c23844}</Project>
+      <Name>BrainCloudClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\tests\BrainCloudTestsMain.cs">
+      <Link>BrainCloudTestsMain.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\Helpers.cs">
+      <Link>Helpers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestAsyncMatch.cs">
+      <Link>TestAsyncMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestAuthenticate.cs">
+      <Link>TestAuthenticate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestClient.cs">
+      <Link>TestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestCustomEntity.cs">
+      <Link>TestCustomEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestEntity.cs">
+      <Link>TestEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestEvent.cs">
+      <Link>TestEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFixtureBase.cs">
+      <Link>TestFixtureBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFixtureNoAuth.cs">
+      <Link>TestFixtureNoAuth.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFriend.cs">
+      <Link>TestFriend.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGamification.cs">
+      <Link>TestGamification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalApp.cs">
+      <Link>TestGlobalApp.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalEntity.cs">
+      <Link>TestGlobalEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalStatistics.cs">
+      <Link>TestGlobalStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestIdentity.cs">
+      <Link>TestIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestMatchMaking.cs">
+      <Link>TestMatchMaking.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestOneWayMatch.cs">
+      <Link>TestOneWayMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlaybackStream.cs">
+      <Link>TestPlaybackStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerState.cs">
+      <Link>TestPlayerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerStatistics.cs">
+      <Link>TestPlayerStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPlayerStatisticsEvent.cs">
+      <Link>TestPlayerStatisticsEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestProduct.cs">
+      <Link>TestProduct.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestPushNotification.cs">
+      <Link>TestPushNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestResult.cs">
+      <Link>TestResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestScript.cs">
+      <Link>TestScript.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestSocialLeaderboard.cs">
+      <Link>TestSocialLeaderboard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestTime.cs">
+      <Link>TestTime.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestTwitter.cs">
+      <Link>TestTwitter.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -25,7 +25,9 @@ namespace BrainCloud
         public enum SocialLeaderboardType
         {
             HIGH_VALUE,
-            CUMULATIVE
+            CUMULATIVE,
+            LAST_VALUE,
+            LOW_VALUE
         }
 
         public enum RotationType
@@ -233,6 +235,7 @@ namespace BrainCloud
         ///  }
         /// }
         /// </returns>
+        [Obsolete("Use GetGlobalLeaderboardPage instead")]
         public void GetGlobalLeaderboard(
             string in_leaderboardId,
             FetchType in_fetchType,
@@ -767,7 +770,7 @@ namespace BrainCloud
             }
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = in_leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.ToString("d-MM-yyyy");
+            data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.ToString("d-MM-yyyy HH:mm");
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = in_retainedCount;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -883,6 +886,9 @@ namespace BrainCloud
         /// Service Name - SocialLeaderboard
         /// Service Operation - RewardTournament
         /// </remarks>
+        /// <param name="in_leaderboardId">
+        /// The leaderboard the tournament was on
+        /// </param>
         /// <param name="in_eventName">
         /// The player statistics event name to trigger
         /// </param>
@@ -906,6 +912,7 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void TriggerSocialLeaderboardTournamentReward(
+            string in_leaderboardId,
             string in_eventName,
             ulong in_eventMultiplier,
             SuccessCallback in_success = null,
@@ -913,6 +920,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
             data[OperationParam.SocialLeaderboardServiceEventName.Value] = in_eventName;
             data[OperationParam.SocialLeaderboardServiceEventMultiplier.Value] = in_eventMultiplier;
 
