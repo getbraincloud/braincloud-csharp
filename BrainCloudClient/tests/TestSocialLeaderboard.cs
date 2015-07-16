@@ -219,8 +219,8 @@ namespace BrainCloudTests
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
-                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
-                System.DateTime.Now.AddDays(5),
+                BrainCloudSocialLeaderboard.RotationType.NEVER,
+                null,
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -257,6 +257,24 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
                 BrainCloudSocialLeaderboard.RotationType.DAILY,
                 System.DateTime.Now.AddHours(15),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardNullRotationTime()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
+                BrainCloudSocialLeaderboard.RotationType.NEVER,
+                null,
                 5,
                 tr.ApiSuccess, tr.ApiError);
 

@@ -754,7 +754,7 @@ namespace BrainCloud
             string in_jsonData,
             SocialLeaderboardType in_leaderboardType,
             RotationType in_rotationType,
-            DateTime in_rotationStart,
+            DateTime? in_rotationStart,
             int in_retainedCount,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -770,7 +770,10 @@ namespace BrainCloud
             }
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = in_leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.ToString("d-MM-yyyy HH:mm");
+
+            if (in_rotationStart.HasValue)            
+                data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.Value.ToString("d-MM-yyyy HH:mm");
+            
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = in_retainedCount;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
