@@ -306,12 +306,15 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
       <Link>BrainCloud\Internal\RequestState.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudS3Handling.cs">
+      <Link>BrainCloud\BrainCloudS3Handling.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
-	<Reference Include="UnityEngine">
+    <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />

@@ -167,5 +167,8 @@
     <Compile Include="..\..\..\tests\TestCustomEntity.cs">
       <Link>TestCustomEntity.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestS3Handling.cs">
+      <Link>TestS3Handling.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

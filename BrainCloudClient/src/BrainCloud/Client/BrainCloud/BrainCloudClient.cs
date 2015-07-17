@@ -106,6 +106,8 @@ namespace BrainCloud
             m_twitterService = new BrainCloudTwitter(this);
             m_pushNotificationService = new BrainCloudPushNotification(this);
             m_playerStatisticsEventService = new BrainCloudPlayerStatisticsEvent(this);
+
+            m_s3HandlingService = new BrainCloudS3Handling(this);
         }
 
         //---------------------------------------------------------------
@@ -144,6 +146,7 @@ namespace BrainCloud
         private BrainCloudTwitter m_twitterService;
         private BrainCloudPushNotification m_pushNotificationService;
         private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
+        private BrainCloudS3Handling m_s3HandlingService;
 
         #endregion Private Data
 
@@ -445,6 +448,16 @@ namespace BrainCloud
         public BrainCloudPlayerStatisticsEvent GetPlayerStatisticsEventService()
         {
             return this.m_playerStatisticsEventService;
+        }
+
+        public BrainCloudS3Handling S3HandlingService
+        {
+            get { return m_s3HandlingService; }
+        }
+
+        public BrainCloudS3Handling GetS3HandlingService()
+        {
+            return this.m_s3HandlingService;
         }
 
         public bool Authenticated

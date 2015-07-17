@@ -184,6 +184,9 @@ namespace BrainCloud.Internal
 
         public static readonly ServiceOperation ReadProperties = new ServiceOperation("READ_PROPERTIES");
 
+        public static readonly ServiceOperation GetUpdatedFiles = new ServiceOperation("GET_UPDATED_FILES");
+        public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
+
         private ServiceOperation(string value)
         {
             Value = value;
