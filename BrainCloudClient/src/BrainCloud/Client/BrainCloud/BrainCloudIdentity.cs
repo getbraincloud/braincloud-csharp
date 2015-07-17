@@ -486,6 +486,105 @@ namespace BrainCloud
             this.DetachIdentity(in_userid, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, in_continueAnon, in_success, in_failure);
         }
 
+        /// <summary>
+        /// Attach the user's Google credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="externalId">
+        /// The google id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Google SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <returns>
+        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Google identity you provided
+        /// already points to a different profile.  You will likely want to offer the player the
+        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
+        ///
+        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateGoogle().
+        /// </returns>
+        public void AttachGoogleIdentity(
+            string in_externalId,
+            string in_authenticationToken,
+            SuccessCallback in_success,
+            FailureCallback in_failure)
+        {
+            this.AttachIdentity(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, in_success, in_failure);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Google credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="externalId">
+        /// The Google id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Google SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        public void MergeGoogleIdentity(
+            string in_externalId,
+            string in_authenticationToken,
+            SuccessCallback in_success,
+            FailureCallback in_failure)
+        {
+            this.MergeIdentity(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, in_success, in_failure);
+        }
+
+        /// <summary>
+        /// Detach the Google identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="externalId">
+        /// The Google id of the user
+        /// </param>
+        /// <param name="in_continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <returns>
+        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
+        /// disconnecting this identity would result in the profile being anonymous (which means that
+        /// the profile wouldn't be retrievable if the user loses their device)
+        /// </returns>
+        public void DetachGoogleIdentity(
+            string in_externalId,
+            bool in_continueAnon,
+            SuccessCallback in_success,
+            FailureCallback in_failure)
+        {
+            this.DetachIdentity(in_externalId, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, in_continueAnon, in_success, in_failure);
+        }
+
 
         private void AttachIdentity(String in_externalId, string in_authenticationToken, String in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {

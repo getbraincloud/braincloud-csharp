@@ -27,7 +27,7 @@ namespace BrainCloud
         /// the details of any of those files that have changed
         /// </summary>
         /// <param name="in_category">  
-        /// 
+        /// Category of files on server to compare against
         /// </param>
         /// <param name="in_fileDetailsJson">  
         /// An array of file details
@@ -76,10 +76,7 @@ namespace BrainCloud
                 data[OperationParam.S3HandlingServiceFileCategory.Value] = in_category;
             }
 
-            if (Util.IsOptionalParameterValid(in_fileDetailsJson))
-            {
-                data[OperationParam.S3HandlingServiceFileDetails.Value] = JsonReader.Deserialize<object[]>(in_fileDetailsJson);
-            }
+            data[OperationParam.S3HandlingServiceFileDetails.Value] = JsonReader.Deserialize<object[]>(in_fileDetailsJson);
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetUpdatedFiles, data, callback);
@@ -87,10 +84,10 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retreives an array of all custom files on the server
+        /// Retreives the detailds of custom files stored on the server
         /// </summary>
         /// <param name="in_category">  
-        /// 
+        /// Category of files to retreive
         /// </param>
         /// <param name="in_success">
         /// The success callback.
