@@ -267,8 +267,8 @@ namespace BrainCloud
         public static readonly OperationParam ServiceMessageReasonCode                           = new OperationParam("reason_code");
         public static readonly OperationParam ServiceMessageStatusMessage                        = new OperationParam("status_message");
 
-        public static readonly OperationParam DeviceRegistrationTypeIos                          = new OperationParam("iOS");
-        public static readonly OperationParam DeviceRegistrationTypeAndroid                      = new OperationParam("googlePlay");
+        public static readonly OperationParam DeviceRegistrationTypeIos                          = new OperationParam("IOS");
+        public static readonly OperationParam DeviceRegistrationTypeAndroid                      = new OperationParam("ANG");
 
         public static readonly OperationParam ScriptServiceRunScriptName                         = new OperationParam("scriptName");
         public static readonly OperationParam ScriptServiceRunScriptData                         = new OperationParam("scriptData");
