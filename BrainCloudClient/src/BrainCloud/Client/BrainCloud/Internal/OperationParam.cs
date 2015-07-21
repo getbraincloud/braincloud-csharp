@@ -112,6 +112,8 @@ namespace BrainCloud
         public static readonly OperationParam GlobalEntityServiceMaxReturn                      = new OperationParam("maxReturn");
         public static readonly OperationParam GlobalEntityServiceWhere                          = new OperationParam("where");
         public static readonly OperationParam GlobalEntityServiceOrderBy                        = new OperationParam("orderBy");
+        public static readonly OperationParam GlobalEntityServiceContext                        = new OperationParam("context");
+        public static readonly OperationParam GlobalEntityServicePageOffset                     = new OperationParam("pageOffset");
 
         // Event Service - Send Params
         public static readonly OperationParam EventServiceSendToId                               = new OperationParam("toId");

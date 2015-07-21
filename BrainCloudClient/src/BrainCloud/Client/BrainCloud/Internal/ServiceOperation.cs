@@ -174,6 +174,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetList = new ServiceOperation("GET_LIST");
         public static readonly ServiceOperation GetListByIndexedId = new ServiceOperation("GET_LIST_BY_INDEXED_ID");
         public static readonly ServiceOperation GetListCount = new ServiceOperation("GET_LIST_COUNT");
+        public static readonly ServiceOperation GetPage = new ServiceOperation("GET_PAGE");
+        public static readonly ServiceOperation GetPageOffset = new ServiceOperation("GET_PAGE_BY_OFFSET");
 
         public static readonly ServiceOperation GetAttributes = new ServiceOperation("GET_ATTRIBUTES");
         public static readonly ServiceOperation UpdateAttributes = new ServiceOperation("UPDATE_ATTRIBUTES");
