@@ -827,6 +827,10 @@ namespace BrainCloud
         /// The context string returned from the server from a previous call
         /// to GetPage() or GetPageOffset()
         /// </param>
+        /// <param name="in_pageOffset">
+        /// The positive or negative page offset to fetch. Uses the last page
+        /// retrieved using the context string to determine a starting point.
+        /// </param>
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
         /// <param name="in_cbObject">The callback object</param>
@@ -860,7 +864,7 @@ namespace BrainCloud
         ///              "moreAfter": false
         ///         },
         ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmciLCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3d
-        ///              uZXJJZCI6Ijk5MjM4ZmFiLTkxYTItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcm
+        ///              uZXJJZCI6Ijk5MjM4ZmFiLTd12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcm
         ///              l0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBdCI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJlc
         ///              iI6NH0sIm9wdGlvbnMiOm51bGx9"
         ///     }
