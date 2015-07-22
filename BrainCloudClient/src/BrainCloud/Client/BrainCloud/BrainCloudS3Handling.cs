@@ -87,7 +87,7 @@ namespace BrainCloud
         /// Retreives the detailds of custom files stored on the server
         /// </summary>
         /// <param name="in_category">  
-        /// Category of files to retreive
+        /// Category of files to retrieve
         /// </param>
         /// <param name="in_success">
         /// The success callback.
