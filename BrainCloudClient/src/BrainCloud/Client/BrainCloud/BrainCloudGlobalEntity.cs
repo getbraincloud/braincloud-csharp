@@ -750,12 +750,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Method uses a paging system to iterate through Global Entities.
+        /// After retrieving a page of Global Entities with this method,
+        /// use GetPageOffset() to retrieve previous or next pages.
         /// </summary>
-        /// <param name="in_context"></param>
-        /// <param name="in_success"></param>
-        /// <param name="in_failure"></param>
-        /// <param name="in_cbObject"></param>
+        /// <remarks>
+        /// Service Name - GlobalEntity
+        /// Service Operation - GetPage
+        /// </remarks>
+        /// <param name="in_jsonContext">The json context for the page request.
+        /// See the portal appendix documentation for format</param>
+        /// <param name="in_success">The success callback</param>
+        /// <param name="in_failure">The failure callback</param>
+        /// <param name="in_cbObject">The callback object</param>
         /// 
         /// <returns> The JSON returned in the callback is as follows:
         /// {
@@ -793,14 +800,14 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void GetPage(
-            string in_context,
+            string in_jsonContext,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            Dictionary<string, object> context = JsonReader.Deserialize<Dictionary<string, object>>(in_context);
+            Dictionary<string, object> context = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonContext);
             data[OperationParam.GlobalEntityServiceContext.Value] = context;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
@@ -809,13 +816,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Method to retrieve previous or next pages after having called
+        /// the GetPage method.
         /// </summary>
-        /// <param name="in_context"></param>
-        /// <param name="in_pageOffset"></param>
-        /// <param name="in_success"></param>
-        /// <param name="in_failure"></param>
-        /// <param name="in_cbObject"></param>
+        /// <remarks>
+        /// Service Name - GlobalEntity
+        /// Service Operation - GetPageOffset
+        /// </remarks>
+        /// <param name="in_context">
+        /// The context string returned from the server from a previous call
+        /// to GetPage() or GetPageOffset()
+        /// </param>
+        /// <param name="in_success">The success callback</param>
+        /// <param name="in_failure">The failure callback</param>
+        /// <param name="in_cbObject">The callback object</param>
         /// 
         /// <returns> The JSON returned in the callback is as follows:
         /// {
