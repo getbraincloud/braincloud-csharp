@@ -189,6 +189,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetUpdatedFiles = new ServiceOperation("GET_UPDATED_FILES");
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
 
+        public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
+
         private ServiceOperation(string value)
         {
             Value = value;

@@ -763,10 +763,27 @@ namespace BrainCloud
         ///     "data": {
         ///         "results": {
         ///             "moreBefore": false,
-        ///             "count": 0,
-        ///             "items": [],
-        ///              "page": 4,
-        ///              "moreAfter": false
+        ///             "count": 200,
+        ///             "items": [
+        ///                 {
+        ///                     "entityId": "00edfd8e-5028-45d5-95d4-b1869cf2afaa",
+        ///                     "ownerId": "153a5ac3-582e-42d7-9e7d-aa80ca7e6689",
+        ///                     "entityType": "testGlobalEntity",
+        ///                     "entityIndexedId": null,
+        ///                     "version": 1,
+        ///                     "data": {
+        ///                         "globalTestName": "Test Name 01"
+        ///                     },
+        ///                     "acl": {
+        ///                         "other": 2
+        ///                     },
+        ///                     "expiresAt": 9223372036854776000,
+        ///                     "timeToLive": 0,
+        ///                     "createdAt": 1437505537168,
+        ///                     "updatedAt": 1437505537168
+        ///              }],
+        ///              "page": 1,
+        ///              "moreAfter": true
         ///         },
         ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmciLCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3d
         ///              uZXJJZCI6Ijk5MjM4ZmFiLTkxYTItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcm
@@ -795,6 +812,7 @@ namespace BrainCloud
         /// 
         /// </summary>
         /// <param name="in_context"></param>
+        /// <param name="in_pageOffset"></param>
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="in_cbObject"></param>
@@ -804,10 +822,27 @@ namespace BrainCloud
         ///     "status": 200,
         ///     "data": {
         ///         "results": {
-        ///             "moreBefore": false,
-        ///             "count": 0,
-        ///             "items": [],
-        ///              "page": 4,
+        ///             "moreBefore": true,
+        ///             "count": 200,
+        ///             "items": [
+        ///                 {
+        ///                     "entityId": "00edfd8e-5028-45d5-95d4-b1869cf2afaa",
+        ///                     "ownerId": "153a5ac3-582e-42d7-9e7d-aa80ca7e6689",
+        ///                     "entityType": "testGlobalEntity",
+        ///                     "entityIndexedId": null,
+        ///                     "version": 1,
+        ///                     "data": {
+        ///                         "globalTestName": "Test Name 01"
+        ///                     },
+        ///                     "acl": {
+        ///                         "other": 2
+        ///                     },
+        ///                     "expiresAt": 9223372036854776000,
+        ///                     "timeToLive": 0,
+        ///                     "createdAt": 1437505537168,
+        ///                     "updatedAt": 1437505537168
+        ///              }],
+        ///              "page": 2,
         ///              "moreAfter": false
         ///         },
         ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmciLCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3d

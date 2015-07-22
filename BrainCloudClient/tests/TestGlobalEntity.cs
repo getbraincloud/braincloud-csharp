@@ -186,7 +186,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            //DeleteAllDefaultEntities(1);
         }
 
         [Test]
@@ -212,7 +211,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            //DeleteAllDefaultEntities(1);
         }
 
         #region Helper Functions
