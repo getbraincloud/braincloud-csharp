@@ -26,6 +26,10 @@ namespace BrainCloud
         /// Sends an array of file details and returns 
         /// the details of any of those files that have changed
         /// </summary>
+        /// <remarks>
+        /// Service Name - S3Handling
+        /// Service Operation - GetUpdatedFiles
+        /// </remarks>
         /// <param name="in_category">  
         /// Category of files on server to compare against
         /// </param>
@@ -86,6 +90,10 @@ namespace BrainCloud
         /// <summary>
         /// Retreives the detailds of custom files stored on the server
         /// </summary>
+        /// <remarks>
+        /// Service Name - S3Handling
+        /// Service Operation - GetFileList
+        /// </remarks>
         /// <param name="in_category">  
         /// Category of files to retrieve
         /// </param>
