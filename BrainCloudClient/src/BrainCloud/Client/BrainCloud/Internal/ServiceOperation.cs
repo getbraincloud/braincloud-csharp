@@ -55,6 +55,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadFriendsEntities = new ServiceOperation("READ_FRIENDS_ENTITIES");
         public static readonly ServiceOperation ReadFriendsWithApplication = new ServiceOperation("READ_FRIENDS_WITH_APPLICATION");
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
+        public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
         public static readonly ServiceOperation GetLeaderboard = new ServiceOperation("GET_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboardPage = new ServiceOperation("GET_GLOBAL_LEADERBOARD_PAGE");

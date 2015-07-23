@@ -149,6 +149,9 @@ namespace BrainCloud
 
         // Friend Service - Read Player State Params
         public static readonly OperationParam FriendServiceReadPlayerStateFriendId               = new OperationParam("friendId");
+        public static readonly OperationParam FriendServiceSearchText                            = new OperationParam("searchText");
+        public static readonly OperationParam FriendServiceMaxResults                            = new OperationParam("maxResults");
+
 
         // Friend Data Service - Read Friends Params (C++ only?)
         //public static readonly Operation FriendDataServiceReadFriends = new Operation("");
