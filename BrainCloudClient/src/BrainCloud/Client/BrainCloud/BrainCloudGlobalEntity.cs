@@ -792,10 +792,12 @@ namespace BrainCloud
         ///              "page": 1,
         ///              "moreAfter": true
         ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmciLCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3d
-        ///              uZXJJZCI6Ijk5MjM4ZmFiLTkxYTItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcm
-        ///              l0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBdCI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJlc
-        ///              iI6NH0sIm9wdGlvbnMiOm51bGx9"
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
+        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
+        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
+        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
+        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
+        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
         ///     }
         /// }
         /// </returns>
@@ -863,10 +865,12 @@ namespace BrainCloud
         ///              "page": 2,
         ///              "moreAfter": false
         ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmciLCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3d
-        ///              uZXJJZCI6Ijk5MjM4ZmFiLTd12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcm
-        ///              l0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBdCI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJlc
-        ///              iI6NH0sIm9wdGlvbnMiOm51bGx9"
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
+        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
+        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
+        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
+        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
+        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
         ///     }
         /// }
         /// </returns>
