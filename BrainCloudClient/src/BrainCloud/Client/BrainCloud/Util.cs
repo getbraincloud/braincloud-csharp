@@ -28,6 +28,11 @@ namespace BrainCloud
         {
             return s_unixEpoch.AddMilliseconds(millis);
         }
+
+        public static double DateTimeToBcTimestamp(DateTime dateTime)
+        {
+            return (dateTime - new DateTime(1970, 1, 1).ToLocalTime()).TotalMilliseconds;
+        }
         #endregion
 
         #region Language

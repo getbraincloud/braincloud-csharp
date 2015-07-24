@@ -11,6 +11,7 @@ using BrainCloud.Internal;
 
 #if !(DOT_NET)
 using UnityEngine.SocialPlatforms;
+using UnityEngine;
 #endif
 
 namespace BrainCloud
@@ -640,7 +641,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            string[] ids = in_achievementIds.Split(new char[] {','});
+            string[] ids = in_achievementIds.Split(new char[] { ',' });
             string achievementsStr = "[";
             for (int i = 0, isize = ids.Length; i < isize; ++i)
             {
@@ -655,7 +656,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceAchievementsName.Value] = achievementData;
 
-            SuccessCallback successCallbacks = (SuccessCallback) AchievementAwardedSuccessCallback;
+            SuccessCallback successCallbacks = (SuccessCallback)AchievementAwardedSuccessCallback;
             if (in_success != null)
             {
                 successCallbacks += in_success;
@@ -667,15 +668,15 @@ namespace BrainCloud
 
         private void AchievementAwardedSuccessCallback(string in_data, object in_obj)
         {
-            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>> (in_data);
+            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>>(in_data);
             try
             {
-                Dictionary<string, object> data = (Dictionary<string, object>) response[OperationParam.GamificationServiceAchievementsData.Value];
+                Dictionary<string, object> data = (Dictionary<string, object>)response[OperationParam.GamificationServiceAchievementsData.Value];
                 //List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsName.Value];
                 if (((object[])data[OperationParam.GamificationServiceAchievementsName.Value]).Length > 0)
                 {
                     Dictionary<string, object>[] achievements = (Dictionary<string, object>[])data[OperationParam.GamificationServiceAchievementsName.Value];
-                    for (int i=0;i<achievements.Length;i++)
+                    for (int i = 0; i < achievements.Length; i++)
                     {
                         AwardThirdPartyAchievements(achievements[i]["id"].ToString());
                     }
@@ -686,22 +687,22 @@ namespace BrainCloud
                     m_achievementsDelegate(in_data, in_obj);
                 }
             }
-            catch(System.Collections.Generic.KeyNotFoundException)
+            catch (System.Collections.Generic.KeyNotFoundException)
             {
                 //do nothing.
             }
         }
 
-      
+
         // goes through JSON response to award achievements via third party (ie game centre, facebook etc).
         // notifies achievement delegate
         internal void CheckForAchievementsToAward(string in_data, object in_obj)
         {
-            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>> (in_data);
+            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>>(in_data);
             try
             {
-                Dictionary<string, object> data = (Dictionary<string, object>) response[OperationParam.GamificationServiceAchievementsData.Value];
-                List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsGranted.Value];
+                Dictionary<string, object> data = (Dictionary<string, object>)response[OperationParam.GamificationServiceAchievementsData.Value];
+                List<string> achievements = (List<string>)data[OperationParam.GamificationServiceAchievementsGranted.Value];
                 if (achievements != null)
                 {
                     foreach (string achievement in achievements)
@@ -724,25 +725,23 @@ namespace BrainCloud
 
         private void AwardThirdPartyAchievements(string in_achievements)
         {
-
 #if !(DOT_NET)
             // only do it for logged in players
-            UnityEngine.Social.localUser.Authenticate (success =>
+            if (!UnityEngine.Social.localUser.authenticated)
             {
-                if (success)
-                {
-                    IAchievement achievement = UnityEngine.Social.CreateAchievement();
-                    achievement.id = in_achievements;
-                    achievement.percentCompleted = 100.0; //progress as double
-                    achievement.ReportProgress(result =>
-                    {
-                        if (result)
-                            Console.Write("AwardThirdPartyAchievements Success");
-                        else
-                            Console.Write("AwardThirdPartyAchievements Failed");
+                Debug.Log("Couldnt award Unity Social achievement because localUser was not authenticated");
+                return;
+            }
 
-                    });
-                }
+            IAchievement achievement = UnityEngine.Social.CreateAchievement();
+            achievement.id = in_achievements;
+            achievement.percentCompleted = 100.0; //progress as double
+            achievement.ReportProgress(result =>
+            {
+                if (result)
+                    Debug.Log("AwardThirdPartyAchievements Success");
+                else
+                    Debug.Log("AwardThirdPartyAchievements Failed");
             });
 #endif
         }
