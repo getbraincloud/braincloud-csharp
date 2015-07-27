@@ -726,7 +726,7 @@ namespace BrainCloud
         /// <param name="in_rotationType">
         /// Type of rotation
         /// </param>
-        /// <param name="in_rotationStart">
+        /// <param name="in_rotationReset">
         /// Date to start rotation calculations (Date is converted to "dd-mm-yyyy" format)
         /// </param>
         /// <param name="in_retainedCount">
@@ -754,7 +754,7 @@ namespace BrainCloud
             string in_jsonData,
             SocialLeaderboardType in_leaderboardType,
             RotationType in_rotationType,
-            DateTime? in_rotationStart,
+            DateTime? in_rotationReset,
             int in_retainedCount,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -771,8 +771,8 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = in_leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
 
-            if (in_rotationStart.HasValue)            
-                data[OperationParam.SocialLeaderboardServiceRotationStart.Value] = in_rotationStart.Value.ToString("d-MM-yyyy HH:mm");
+            if (in_rotationReset.HasValue)            
+                data[OperationParam.SocialLeaderboardServiceRotationReset.Value] = in_rotationReset.Value.ToString("d-MM-yyyy HH:mm");
             
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = in_retainedCount;
 
