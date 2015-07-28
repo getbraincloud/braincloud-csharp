@@ -267,7 +267,7 @@ namespace BrainCloud
             if (Util.IsOptionalParameterValid(in_jsonSummaryData))
             {
                 Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummaryData);
-                data[OperationParam.PlayerStateServiceUpdateFriendSummaryData.Value] = summaryData;
+                data[OperationParam.PlayerStateServiceUpdateSummaryFriendData.Value] = summaryData;
             }
             else data = null;
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);

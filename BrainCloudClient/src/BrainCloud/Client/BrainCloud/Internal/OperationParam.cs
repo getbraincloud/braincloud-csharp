@@ -175,7 +175,7 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStateServiceReadEntitySubtype                = new OperationParam("entitySubType");
 
         // Player State Service - Update Summary Params
-        public static readonly OperationParam PlayerStateServiceUpdateFriendSummaryData          = new OperationParam("friendSummaryData");
+        public static readonly OperationParam PlayerStateServiceUpdateSummaryFriendData          = new OperationParam("summaryFriendData");
         public static readonly OperationParam PlayerStateServiceUpdateNameData                   = new OperationParam("playerName");
 
         // Player State Service - Atributes
@@ -208,7 +208,7 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceEventMultiplier            = new OperationParam("eventMultiplier");
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardType            = new OperationParam("leaderboardType");
         public static readonly OperationParam SocialLeaderboardServiceRotationType               = new OperationParam("rotationType");
-        public static readonly OperationParam SocialLeaderboardServiceRotationStart              = new OperationParam("rotationStart");
+        public static readonly OperationParam SocialLeaderboardServiceRotationReset              = new OperationParam("rotationReset");
         public static readonly OperationParam SocialLeaderboardServiceRetainedCount              = new OperationParam("retainedCount");
         public static readonly OperationParam SocialLeaderboardServiceFetchType                  = new OperationParam("fetchType");
         public static readonly OperationParam SocialLeaderboardServiceMaxResults                 = new OperationParam("maxResults");
