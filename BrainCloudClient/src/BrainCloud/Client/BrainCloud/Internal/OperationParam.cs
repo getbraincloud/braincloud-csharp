@@ -175,7 +175,7 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStateServiceReadEntitySubtype                = new OperationParam("entitySubType");
 
         // Player State Service - Update Summary Params
-        public static readonly OperationParam PlayerStateServiceUpdateFriendSummaryData          = new OperationParam("friendSummaryData");
+        public static readonly OperationParam PlayerStateServiceUpdateSummaryFriendData          = new OperationParam("summaryFriendData");
         public static readonly OperationParam PlayerStateServiceUpdateNameData                   = new OperationParam("playerName");
 
         // Player State Service - Atributes
