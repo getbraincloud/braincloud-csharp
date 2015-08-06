@@ -727,7 +727,7 @@ namespace BrainCloud
         /// Type of rotation
         /// </param>
         /// <param name="in_rotationReset">
-        /// Date to start rotation calculations (Date is converted to "dd-mm-yyyy" format)
+        /// Date to reset the leaderboard (Date is converted to "dd-mm-yyyy hh:ss" format)
         /// </param>
         /// <param name="in_retainedCount">
         /// Hpw many rotations to keep
