@@ -27,7 +27,7 @@ public class BrainCloudWrapper : MonoBehaviour
 
     public BrainCloudWrapper()
     {
-        return GetInstance().m_client;
+        m_client = BrainCloudClient.Get ();
     }
 
     public static BrainCloudWrapper GetInstance()
