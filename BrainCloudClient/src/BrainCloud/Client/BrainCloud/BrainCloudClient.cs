@@ -529,12 +529,24 @@ namespace BrainCloud
             }
         }
 
+        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com";
         #endregion
 
         // InitializeClient
         // OnHeartBeat
         // ResetCommunication
         #region Miscellaneous
+
+        /// <summary>Method initializes the BrainCloudClient.</summary>
+        /// <param name="secretKey">The secret key for your game
+        /// <param name="gameId ">The game id</param>
+        /// <param name="gameVersion The game version</param>
+        /// <param name="cachedProfileId The profile Id</param>
+        /// <param name="anonymousId The anonymous Id</param>
+        public void Initialize(string secretKey, string gameId, string gameVersion)
+        {
+            Initialize(s_defaultServerURL, secretKey, gameId, gameVersion);
+        }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The url to the brainCloud server</param>
