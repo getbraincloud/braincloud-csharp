@@ -529,7 +529,7 @@ namespace BrainCloud
             }
         }
 
-        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com";
+        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
         #endregion
 
         // InitializeClient
