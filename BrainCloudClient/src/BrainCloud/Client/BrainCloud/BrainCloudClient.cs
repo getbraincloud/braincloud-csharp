@@ -669,7 +669,7 @@ namespace BrainCloud
         {
             if (m_loggingEnabled)
             {
-                string formattedLog = "#BCC " + log;
+                string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
                 lock(m_loggingMutex)
                 {
                     if (m_logDelegate != null)
@@ -678,6 +678,7 @@ namespace BrainCloud
                     }
                     else
                     {
+
 #if !(DOT_NET)
                         Debug.Log(formattedLog);
 #else
