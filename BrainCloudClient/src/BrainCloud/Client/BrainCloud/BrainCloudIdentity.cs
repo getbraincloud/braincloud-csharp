@@ -592,7 +592,7 @@ namespace BrainCloud
         /// Service Name - Identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="externalId">
+        /// <param name="in_twitterUserId">
         /// String representation of a Twitter user ID
         /// </param>
         /// <param name="in_authenticationToken">
@@ -615,13 +615,13 @@ namespace BrainCloud
         /// To switch profiles, call ClearSavedProfileID() and call AuthenticateTwitter().
         /// </returns>
         public void AttachTwitterIdentity(
-            string in_externalId,
+            string in_twitterUserId,
             string in_authenticationToken,
             string in_secret,
             SuccessCallback in_success,
             FailureCallback in_failure)
         {
-            AttachIdentity(in_externalId, in_authenticationToken + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_success, in_failure);
+            AttachIdentity(in_twitterUserId, in_authenticationToken + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_success, in_failure);
         }
 
         /// <summary>
@@ -632,7 +632,7 @@ namespace BrainCloud
         /// Service Name - Identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="externalId">
+        /// <param name="in_twitterUserId">
         /// String representation of a Twitter user ID
         /// </param>
         /// <param name="in_authenticationToken">
@@ -648,13 +648,13 @@ namespace BrainCloud
         /// The method to call in the event of an error during authentication
         /// </param>
         public void MergeTwitterIdentity(
-            string in_externalId,
+            string in_twitterUserId,
             string in_authenticationToken,
             string in_secret,
             SuccessCallback in_success,
             FailureCallback in_failure)
         {
-            MergeIdentity(in_externalId, in_authenticationToken + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_success, in_failure);
+            MergeIdentity(in_twitterUserId, in_authenticationToken + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_success, in_failure);
         }
 
         /// <summary>
@@ -664,7 +664,7 @@ namespace BrainCloud
         /// Service Name - Identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="externalId">
+        /// <param name="in_twitterUserId">
         /// The Twitter id of the user
         /// </param>
         /// <param name="in_continueAnon">
@@ -682,12 +682,12 @@ namespace BrainCloud
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
         public void DetachTwitterIdentity(
-            string in_externalId,
+            string in_twitterUserId,
             bool in_continueAnon,
             SuccessCallback in_success,
             FailureCallback in_failure)
         {
-            DetachIdentity(in_externalId, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_continueAnon, in_success, in_failure);
+            DetachIdentity(in_twitterUserId, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_continueAnon, in_success, in_failure);
         }
 
 
