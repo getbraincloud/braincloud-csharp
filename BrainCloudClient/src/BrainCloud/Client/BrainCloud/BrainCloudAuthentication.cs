@@ -349,7 +349,7 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateGoogle(
             string in_userid,
-            string in_token, 
+            string in_token,
             bool forceCreate,
             SuccessCallback in_success,
             FailureCallback in_failure,
@@ -370,7 +370,7 @@ namespace BrainCloud
         /// String representation of a Twitter user ID
         /// </param>
         /// <param name="in_token">
-        /// The authentication token derived via the Twitter apis.
+        /// The authentication token derived via the Twitter apis
         /// </param>
         /// <param name="in_secret">
         /// The secret given when attempting to link with Twitter
@@ -396,7 +396,7 @@ namespace BrainCloud
             FailureCallback in_failure,
             object in_cbObject = null)
         {
-            Authenticate(in_userid, in_token +":"+ in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
+            Authenticate(in_userid, in_token + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
                               null, forceCreate, in_success, in_failure, in_cbObject);
         }
 
