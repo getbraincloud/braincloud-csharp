@@ -617,7 +617,7 @@ namespace BrainCloud
         public void AttachTwitterIdentity(
             string in_externalId,
             string in_authenticationToken,
-                        string in_secret,
+            string in_secret,
             SuccessCallback in_success,
             FailureCallback in_failure)
         {
