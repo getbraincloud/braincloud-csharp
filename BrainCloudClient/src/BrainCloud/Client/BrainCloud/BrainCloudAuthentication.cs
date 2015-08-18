@@ -349,13 +349,54 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateGoogle(
             string in_userid,
-            string in_token, 
+            string in_token,
             bool forceCreate,
             SuccessCallback in_success,
             FailureCallback in_failure,
             object in_cbObject = null)
         {
             this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
+                              null, forceCreate, in_success, in_failure, in_cbObject);
+        }
+
+        /// <summary>
+        /// Authenticate the user using a Twitter userid, authentication token, and secret from twitter.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="in_userid">
+        /// String representation of a Twitter user ID
+        /// </param>
+        /// <param name="in_token">
+        /// The authentication token derived via the Twitter apis
+        /// </param>
+        /// <param name="in_secret">
+        /// The secret given when attempting to link with Twitter
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateTwitter(
+            string in_userid,
+            string in_token,
+            string in_secret,
+            bool forceCreate,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
+            object in_cbObject = null)
+        {
+            Authenticate(in_userid, in_token + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
                               null, forceCreate, in_success, in_failure, in_cbObject);
         }
 
