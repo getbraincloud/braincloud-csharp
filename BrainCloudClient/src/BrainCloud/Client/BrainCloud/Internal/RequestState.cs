@@ -222,6 +222,19 @@ namespace BrainCloud.Internal
             }
         }
 
+        private bool m_isSessionTerminatingPacket;
+        public bool IsSessionTerminatingPacket
+        {
+            get
+            {
+                return m_isSessionTerminatingPacket;
+            }
+            set
+            {
+                m_isSessionTerminatingPacket = value;
+            }
+        }
+
         public RequestState()
         {
             request = null;

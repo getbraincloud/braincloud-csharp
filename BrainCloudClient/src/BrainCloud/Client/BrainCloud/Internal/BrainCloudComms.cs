@@ -231,7 +231,7 @@ namespace BrainCloud.Internal
             // is it time for a retry?
             if (m_activeRequest != null)
             {
-                if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest.Retries))
+                if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest))
                 {
                     m_activeRequest.CancelRequest();
 
@@ -571,6 +571,12 @@ namespace BrainCloud.Internal
                         message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
                         
                         messageList.Add(message);
+
+                        if (scIndex.GetOperation ().Equals (ServiceOperation.FullReset.Value)
+                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value))
+                        {
+                            requestState.IsSessionTerminatingPacket = true;
+                        }
                     }
                     
                     SendMessage(requestState, messageList);
@@ -734,27 +740,56 @@ namespace BrainCloud.Internal
         /// </summary>
         /// <returns>The packet timeout.</returns>
         /// <param name="currentRetryNumber">Current retry number.</param>
-        private TimeSpan GetPacketTimeout(int currentRetry)
+        private TimeSpan GetPacketTimeout(RequestState in_requestState)
         {
+            int currentRetry = in_requestState.Retries;
             TimeSpan ret;
-            switch (currentRetry)
+
+            // if this is a delete player or logout we change the
+            // timeout behaviour
+            if (in_requestState.IsSessionTerminatingPacket)
             {
-            case 0:
-                ret = TimeSpan.FromSeconds(3);
-                break;
-            case 1:
-                ret = TimeSpan.FromSeconds(5);
-                break;
-            case 2:
-                ret = TimeSpan.FromSeconds(5);
-                break;
-            case 3:
-                ret = TimeSpan.FromSeconds(10);
-                break;
-            case 4:
-            default:
-                ret = TimeSpan.FromSeconds(10);
-                break;
+                switch (currentRetry)
+                {
+                case 0:
+                    ret = TimeSpan.FromSeconds(15);
+                    break;
+                case 1:
+                    ret = TimeSpan.FromSeconds(15);
+                    break;
+                case 2:
+                    ret = TimeSpan.FromSeconds(2);
+                    break;
+                case 3:
+                    ret = TimeSpan.FromSeconds(2);
+                    break;
+                case 4:
+                default:
+                    ret = TimeSpan.FromSeconds(1);
+                    break;
+                }
+            }
+            else
+            {
+                switch (currentRetry)
+                {
+                case 0:
+                    ret = TimeSpan.FromSeconds(3);
+                    break;
+                case 1:
+                    ret = TimeSpan.FromSeconds(5);
+                    break;
+                case 2:
+                    ret = TimeSpan.FromSeconds(5);
+                    break;
+                case 3:
+                    ret = TimeSpan.FromSeconds(10);
+                    break;
+                case 4:
+                default:
+                    ret = TimeSpan.FromSeconds(10);
+                    break;
+                }
             }
 
             return ret;
@@ -847,7 +882,7 @@ namespace BrainCloud.Internal
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("BrainCloud - GetResponseCallback - Exception: " + ex.ToString());
+                m_brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
         }
@@ -882,12 +917,12 @@ namespace BrainCloud.Internal
             }
             catch (WebException wex)
             {
-                Debug.WriteLine("BrainCloud - GetResponseCallback - WebException: " + wex.ToString());
+                m_brainCloudClientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("BrainCloud - GetResponseCallback - Exception: " + ex.ToString());
+                m_brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
         }
