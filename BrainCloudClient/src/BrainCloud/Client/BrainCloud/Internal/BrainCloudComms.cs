@@ -523,21 +523,17 @@ namespace BrainCloud.Internal
 
             if (bundleObj.events != null && m_eventCallback != null)
             {
-                Dictionary<string, object>[] events = bundleObj.events;
-                Dictionary<string, object> theEvent = null;
-                for (int i = 0; i < events.Length; ++i)
+                Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
+                eventsJsonObj["events"] = bundleObj.events;
+                string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
+                try
                 {
-                    theEvent = events[i];
-                    string eventAsJson = JsonWriter.Serialize(theEvent);
-                    try
-                    {
-                        m_eventCallback(eventAsJson);
-                    }
-                    catch(Exception e)
-                    {
-                        m_brainCloudClientRef.Log (e.StackTrace);
-                        exceptions.Add (e);
-                    }
+                    m_eventCallback(eventsAsJson);
+                }
+                catch(Exception e)
+                {
+                    m_brainCloudClientRef.Log (e.StackTrace);
+                    exceptions.Add (e);
                 }
             }
 
