@@ -31,7 +31,7 @@ namespace BrainCloud
         /// The entity type as defined by the user
         /// </param>
         /// <param name="in_timeToLive">
-        /// Sets expiry time for entity if > 0
+        /// Sets expiry time for entity in milliseconds if > 0
         /// </param>
         /// <param name="in_jsonEntityAcl">
         /// The entity's access control list as json. A null acl implies default
@@ -116,7 +116,7 @@ namespace BrainCloud
         /// A secondary ID that will be indexed
         /// </param>
         /// <param name="in_timeToLive">
-        /// Sets expiry time for entity if > 0
+        /// Sets expiry time for entity in milliseconds if > 0
         /// </param>
         /// <param name="in_jsonEntityAcl">
         /// The entity's access control list as json. A null acl implies default
@@ -350,7 +350,7 @@ namespace BrainCloud
         /// The version of the entity to update
         /// </param>
         /// <param name="in_timeToLive">
-        /// Sets expiry time for entity if > 0
+        /// Sets expiry time for entity in milliseconds if > 0
         /// </param>
         /// <param name="in_success">
         /// The success callback.
