@@ -243,13 +243,13 @@ namespace BrainCloud
         /// Get the events currently queued for the player.
         /// </summary>
         /// <param name="in_includeIncomingEvents">Get events sent to the player</param>
-        /// <param name="in_includeOutgoingEvents">Get events sent from the player</param>
+        /// <param name="in_includeSentEvents">Get events sent from the player</param>
         /// <param name="in_success">The success callback.</param>
         /// <param name="in_failure">The failure callback.</param>
         /// <param name="in_cbObject">The user object sent to the callback.</param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "outgoingEvents": [
+        ///     "sent_events": [
         ///         {
         ///             "gameId": "10045",
         ///             "eventData": {
@@ -262,7 +262,7 @@ namespace BrainCloud
         ///             "eventType": "type1"
         ///         }
         ///     ],
-        ///     "incomingEvents": [
+        ///     "incoming_events": [
         ///         {
         ///             "gameId": "10045",
         ///             "eventData": {
@@ -279,14 +279,14 @@ namespace BrainCloud
         /// </returns>  
         public void GetEvents(
             bool in_includeIncomingEvents,
-            bool in_includeOutgoingEvents,
+            bool in_includeSentEvents,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceIncludeIncomingEvents.Value] = in_includeIncomingEvents;
-            data[OperationParam.EventServiceIncludeOutgoingEvents.Value] = in_includeOutgoingEvents;
+            data[OperationParam.EventServiceIncludeSentEvents.Value] = in_includeSentEvents;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.GetEvents, data, callback);

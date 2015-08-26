@@ -136,7 +136,7 @@ namespace BrainCloud
         public static readonly OperationParam EventServiceDeleteSentEventId                      = new OperationParam("eventId");
         public static readonly OperationParam EventServiceDeleteSentToId                         = new OperationParam("toId");
         public static readonly OperationParam EventServiceIncludeIncomingEvents                  = new OperationParam("includeIncomingEvents");
-        public static readonly OperationParam EventServiceIncludeOutgoingEvents                  = new OperationParam("includeOutgoingEvents");
+        public static readonly OperationParam EventServiceIncludeSentEvents                      = new OperationParam("includeSentEvents");
 
         // Friend Service - Params
         public static readonly OperationParam FriendServiceEntityId                             = new OperationParam("entityId");
