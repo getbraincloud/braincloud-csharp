@@ -74,6 +74,12 @@ namespace BrainCloudTests
         public void EventCallback(string jsonResponse)
         {
             Console.WriteLine("Events received: " + jsonResponse);
+
+            var response = JsonReader.Deserialize<Dictionary<string, object>>(jsonResponse);
+            var events = (object[])(response["events"]);
+
+            Assert.Greater(events.Length, 0);
+
             _callbackRan = true;
         }
 
