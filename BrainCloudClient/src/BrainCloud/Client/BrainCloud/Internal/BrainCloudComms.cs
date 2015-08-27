@@ -444,14 +444,13 @@ namespace BrainCloud.Internal
                     {
                         if (sc.GetService().Equals(ServiceName.PlayerState.Value)
                             && (sc.GetOperation().Equals(ServiceOperation.FullReset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Reset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
+                                || sc.GetOperation().Equals(ServiceOperation.Logout.Value))
                             
                         {
                             // we reset the current player or logged out
                             // we are no longer authenticated
                             m_isAuthenticated = false;
-                            m_brainCloudClientRef.AuthenticationService.ProfileId = null;
+                            m_brainCloudClientRef.AuthenticationService.ClearSavedProfileID();
                         }
                         else if (sc.GetService().Equals(ServiceName.Authenticate.Value)
                             && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
