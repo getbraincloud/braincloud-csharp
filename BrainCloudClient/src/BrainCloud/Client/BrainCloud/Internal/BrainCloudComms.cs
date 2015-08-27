@@ -444,8 +444,7 @@ namespace BrainCloud.Internal
                     {
                         if (sc.GetService().Equals(ServiceName.PlayerState.Value)
                             && (sc.GetOperation().Equals(ServiceOperation.FullReset.Value)
-                                || sc.GetOperation().Equals(ServiceOperation.Logout.Value))
-                            
+                                || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
                         {
                             // we reset the current player or logged out
                             // we are no longer authenticated
