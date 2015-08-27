@@ -40,6 +40,11 @@ namespace BrainCloud
     /// </summary>
     public delegate void LogCallback(string log);
 
+    /// <summary>
+    /// Callback method invoked when brainCloud events are received.
+    /// </summary>
+    public delegate void EventCallback(string jsonResponse);
+
 
     public class BrainCloudClient
     {
@@ -600,6 +605,13 @@ namespace BrainCloud
                 platform = Constants.PlatformWindows;
                 break;
             }
+            
+            // linux
+            case UnityEngine.RuntimePlatform.LinuxPlayer:
+            {
+                platform = Constants.PlatformLinux;
+                break;
+            }
 
             // ios and default
             case UnityEngine.RuntimePlatform.IPhonePlayer:
@@ -647,6 +659,20 @@ namespace BrainCloud
         public void Update()
         {
             if (m_bc != null) m_bc.Update();
+        }
+
+        /// <summary>
+        /// Registers a delegate to receive event notifications.
+        /// </summary>
+        /// <param name="in_delegate">The event handler delegate</param>
+        public void RegisterEventCallback(EventCallback in_cb)
+        {
+            m_bc.RegisterEventCallback(in_cb);
+        }
+
+        public void DeregisterEventCallback()
+        {
+            m_bc.DeregisterEventCallback();
         }
 
 

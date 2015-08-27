@@ -88,6 +88,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
         public static readonly ServiceOperation DeleteIncoming = new ServiceOperation("DELETE_INCOMING");
+        public static readonly ServiceOperation GetEvents = new ServiceOperation("GET_EVENTS");
 
         public static readonly ServiceOperation UpdateIncrement = new ServiceOperation("UPDATE_INCREMENT");
         public static readonly ServiceOperation ReadNextXpLevel = new ServiceOperation("READ_NEXT_XPLEVEL");

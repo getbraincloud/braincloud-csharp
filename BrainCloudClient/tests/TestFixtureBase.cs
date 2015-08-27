@@ -4,6 +4,7 @@ using System.Reflection;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
+using System.Collections.Generic;
 
 namespace BrainCloudTests
 {
@@ -110,21 +111,24 @@ namespace BrainCloudTests
         {
             if (!_init)
             {
+                Console.Write(">> Initializing New Random Users");
+                BrainCloudClient.Get().EnableLogging(false);
                 _testUsers = new TestUser[Enum.GetNames(typeof(Users)).Length];
                 Random rand = new Random();
 
                 for (int i = _testUsers.Length; i-- > 0; )
                 {
                     _testUsers[i] = new TestUser(((Users)i).ToString() + "-", rand.Next());
+                    Console.Write(".");
                 }
-
+                Console.Write("\n");
+                BrainCloudClient.Get().EnableLogging(true);
                 _init = true;
             }
 
             return _testUsers[(int)user];
         }
     }
-
 
     /// <summary>
     /// Holds data for a randomly generated user
@@ -154,7 +158,15 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
             ProfileId = BrainCloudClient.Get().AuthenticationService.ProfileId;
-            tr.Reset();
+
+            if (((string)((Dictionary<string, object>)tr.m_response["data"])["newUser"]) == "true")
+            {
+                BrainCloudClient.Get().MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+                BrainCloudClient.Get().PlayerStateService.UpdatePlayerName(Id, tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+            }
+
             BrainCloudClient.Get().PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

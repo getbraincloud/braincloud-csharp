@@ -238,5 +238,59 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteSent, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Get the events currently queued for the player.
+        /// </summary>
+        /// <param name="in_includeIncomingEvents">Get events sent to the player</param>
+        /// <param name="in_includeSentEvents">Get events sent from the player</param>
+        /// <param name="in_success">The success callback.</param>
+        /// <param name="in_failure">The failure callback.</param>
+        /// <param name="in_cbObject">The user object sent to the callback.</param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "sent_events": [
+        ///         {
+        ///             "gameId": "10045",
+        ///             "eventData": {
+        ///                 "someMapAttribute": "someValue"
+        ///             },
+        ///             "createdAt": 1440528872855,
+        ///             "eventId": 1847,
+        ///             "fromPlayerId": "f89233ba-aeeb-4be2-b267-89781c2f0a12",
+        ///             "toPlayerId": "78a2a76b-1158-4a5a-b1dc-aa49e37997e8",
+        ///             "eventType": "type1"
+        ///         }
+        ///     ],
+        ///     "incoming_events": [
+        ///         {
+        ///             "gameId": "10045",
+        ///             "eventData": {
+        ///                 "someMapAttribute": "XXX"
+        ///             },
+        ///             "createdAt": 1440528981281,
+        ///             "eventId": 11981,
+        ///             "fromPlayerId": "36373298-b8bb-4b5c-917a-1c889fdae094",
+        ///             "toPlayerId": "f89233ba-aeeb-4be2-b267-89781c2f0a12",
+        ///             "eventType": "type1"
+        ///         }
+        ///     ]
+        /// }      
+        /// </returns>  
+        public void GetEvents(
+            bool in_includeIncomingEvents,
+            bool in_includeSentEvents,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EventServiceIncludeIncomingEvents.Value] = in_includeIncomingEvents;
+            data[OperationParam.EventServiceIncludeSentEvents.Value] = in_includeSentEvents;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.GetEvents, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }

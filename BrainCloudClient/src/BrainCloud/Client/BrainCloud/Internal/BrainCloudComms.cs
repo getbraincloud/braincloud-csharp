@@ -117,6 +117,10 @@ namespace BrainCloud.Internal
         /// </summary>
         private double m_debugPacketLossRate = 0;
 
+        /// <summary>
+        /// The event handler callback method
+        /// </summary>
+        private EventCallback m_eventCallback;
 
 
 
@@ -180,6 +184,16 @@ namespace BrainCloud.Internal
             m_secretKey = secretKey;
 
             m_initialized = true;
+        }
+
+        public void RegisterEventCallback(EventCallback in_cb)
+        {
+            m_eventCallback = in_cb;
+        }
+
+        public void DeregisterEventCallback()
+        {
+            m_eventCallback = null;
         }
 
 
@@ -363,6 +377,7 @@ namespace BrainCloud.Internal
             Dictionary<string, object> response = null;
             Exception firstThrownException = null;
             int numExceptionsThrown = 0;
+            IList<Exception> exceptions = new List<Exception>(); 
 
             for (int j = 0; j < responseBundle.Length; ++j)
             {
@@ -429,14 +444,13 @@ namespace BrainCloud.Internal
                     {
                         if (sc.GetService().Equals(ServiceName.PlayerState.Value)
                             && (sc.GetOperation().Equals(ServiceOperation.FullReset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Reset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
+                                || sc.GetOperation().Equals(ServiceOperation.Logout.Value))
                             
                         {
                             // we reset the current player or logged out
                             // we are no longer authenticated
                             m_isAuthenticated = false;
-                            m_brainCloudClientRef.AuthenticationService.ProfileId = null;
+                            m_brainCloudClientRef.AuthenticationService.ClearSavedProfileID();
                         }
                         else if (sc.GetService().Equals(ServiceName.Authenticate.Value)
                             && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
@@ -454,11 +468,7 @@ namespace BrainCloud.Internal
                             catch(Exception e)
                             {
                                 m_brainCloudClientRef.Log (e.StackTrace);
-                                ++numExceptionsThrown;
-                                if (firstThrownException == null)
-                                {
-                                    firstThrownException = e;
-                                }
+                                exceptions.Add (e);
                             }
                         }
                     }
@@ -504,23 +514,35 @@ namespace BrainCloud.Internal
                         catch(Exception e)
                         {
                             m_brainCloudClientRef.Log (e.StackTrace);
-                            ++numExceptionsThrown;
-                            if (firstThrownException == null)
-                            {
-                                firstThrownException = e;
-                            }
+                            exceptions.Add (e);
                         }
                     }
                 }
             }
 
-            if (firstThrownException != null)
+            if (bundleObj.events != null && m_eventCallback != null)
+            {
+                Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
+                eventsJsonObj["events"] = bundleObj.events;
+                string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
+                try
+                {
+                    m_eventCallback(eventsAsJson);
+                }
+                catch(Exception e)
+                {
+                    m_brainCloudClientRef.Log (e.StackTrace);
+                    exceptions.Add (e);
+                }
+            }
+
+            if (exceptions.Count > 0)
             {
                 m_activeRequest = null; // to make sure we don't reprocess this message
 
-                throw new Exception("User callback handlers threw " + numExceptionsThrown +" exception(s)."
+                throw new Exception("User callback handlers threw " + exceptions.Count +" exception(s)."
                                     +" See the Unity log for callstacks or inner exception for first exception thrown.",
-                                    firstThrownException);
+                                    exceptions[0]);
             }
         }
 
@@ -1003,6 +1025,8 @@ namespace BrainCloud.Internal
         {
             public long packetId = 0;
             public Dictionary<string, object>[] responses = null;
+            public Dictionary<string, object>[] events = null;
+
             
             public JsonResponseBundleV2()
             {}

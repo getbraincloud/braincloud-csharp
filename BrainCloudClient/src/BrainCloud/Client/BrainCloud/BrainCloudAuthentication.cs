@@ -99,7 +99,7 @@ namespace BrainCloud
         /// </summary>
         public void ClearSavedProfileID()
         {
-            m_profileId = null;  // Not sure if this is correct...
+            m_profileId = null;
         }
 
         /// <summary>

@@ -16,8 +16,15 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().PlayerStateService.DeletePlayer(
                 tr.ApiSuccess, tr.ApiError);
-
             tr.Run();
+            BrainCloudClient.Get().AuthenticationService.ClearSavedProfileID();
+            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            GetUser(Users.UserA).ProfileId = BrainCloudClient.Get().AuthenticationService.ProfileId;
         }
 
         [Test]
