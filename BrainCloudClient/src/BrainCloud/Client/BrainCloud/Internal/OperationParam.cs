@@ -43,6 +43,8 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateBrainCloudVersion   = new OperationParam("clientLibVersion");
         public static readonly OperationParam AuthenticateServiceAuthenticateExternalAuthName    = new OperationParam("externalAuthName");
 
+        public static readonly OperationParam AuthenticateServiceAuthenticateLevelName           = new OperationParam("levelName");
+
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthFacebook        = new OperationParam("Facebook");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthEmail           = new OperationParam("Email");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthGameCenter      = new OperationParam("GameCenter");
@@ -184,6 +186,8 @@ namespace BrainCloud
         // Player State Service - Atributes
         public static readonly OperationParam PlayerStateServiceAttributes = new OperationParam("attributes");
         public static readonly OperationParam PlayerStateServiceWipeExisting = new OperationParam("wipeExisting");
+
+        public static readonly OperationParam PlayerStateServiceIncludeSummaryData = new OperationParam("includePlayerSummaryData");
 
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");
