@@ -762,6 +762,51 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - GET_CHILD_PROFILES
+        /// </remarks>
+        /// <param name="in_includeSummaryData">
+        /// Whether to return the summary friend data along with this call
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        /// "status":200,
+        /// "data":{
+        ///   "children":[
+        ///   {
+        ///     "appId":"10322",
+        ///     "profileId":"7f012e94-3147-43be-8360-e71d20bf60cd",
+        ///     "profileName":"Staa"
+        ///   }
+        /// ]}
+        /// }
+        /// </returns>
+        public void GetChildProfiles(
+            bool in_includeSummaryData,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceIncludeSummaryData.Value] = in_includeSummaryData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetChildProfiles, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         private void AttachIdentity(string in_externalId, string in_authenticationToken, string in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
