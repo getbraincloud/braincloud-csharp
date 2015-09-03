@@ -870,6 +870,7 @@ namespace BrainCloud.Internal
                 m_serviceCallsWaiting.Clear();
                 m_serviceCallsInProgress.Clear();
                 m_activeRequest = null;
+                m_brainCloudClientRef.AuthenticationService.ProfileId = "";
             }
         }
 
