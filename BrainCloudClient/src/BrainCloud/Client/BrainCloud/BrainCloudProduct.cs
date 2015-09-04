@@ -302,13 +302,13 @@ namespace BrainCloud
         /// </remarks>
         /// <param name="in_platform">
         /// The store platform. Valid stores are:
-        /// - iTunes
-        /// - Facebook
-        /// - AppWorld
-        /// - Steam
-        /// - Windows
-        /// - WindowsPhone
-        /// - GooglePlay
+        /// - itunes
+        /// - facebook
+        /// - appworld
+        /// - steam
+        /// - windows
+        /// - windowsPhone
+        /// - googlePlay
         /// </param>
         /// <param name="in_userCurrency">
         /// The currency to retrieve the sales
