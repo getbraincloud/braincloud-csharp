@@ -88,7 +88,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retreives the detailds of custom files stored on the server
+        /// Retrieves the details of custom files stored on the server
         /// </summary>
         /// <remarks>
         /// Service Name - S3Handling
