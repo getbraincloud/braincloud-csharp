@@ -74,6 +74,8 @@ namespace BrainCloud
         /// <summary>Max Concurrent Player Count Reached</summary>
         public const int MAX_CONCURRENT_PLAYER_COUNT_REACHED = 40356;
 
+        /// <summary>Game has to parent to switch profile to</summary>
+        public const int GAME_HAS_NO_PARENT = 40377;
 
         /// <summary>
         /// Client defined value for a timeout detected client-side.

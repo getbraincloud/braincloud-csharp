@@ -355,5 +355,4 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
-
 }

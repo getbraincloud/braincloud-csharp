@@ -19,5 +19,6 @@ namespace BrainCloud.Common
         public readonly static string PlatformWindows = "WINDOWS";
         public readonly static string PlatformWindowsPhone = "WINP";
         public readonly static string PlatformGooglePlayAndroid = "ANG";
+        public readonly static string PlatformLinux = "LINUX";
     }
 }

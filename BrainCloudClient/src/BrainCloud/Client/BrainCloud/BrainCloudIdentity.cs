@@ -690,8 +690,124 @@ namespace BrainCloud
             DetachIdentity(in_twitterUserId, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, in_continueAnon, in_success, in_failure);
         }
 
+        /// <summary>
+        /// Switch to a Child Profile
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - SWITCH_TO_CHILD_PROFILE
+        /// </remarks>
+        /// <param name="in_childProfileId">
+        /// The id of the profile id of the child game id
+        /// </param>
+        /// <param name="in_childGameId">
+        /// The id of the child game id
+        /// </param>
+        /// <param name="in_forceCreate">
+        /// Should a new profile be created if it does not exist?
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        public void SwitchToChildProfile(string in_childProfileId, string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ServiceMessageProfileId.Value] = in_childProfileId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = in_childGameId;
+            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = in_forceCreate;
 
-        private void AttachIdentity(String in_externalId, string in_authenticationToken, String in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
+            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform;
+            data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = Util.GetCurrentCountryCode();
+            data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = Util.GetIsoCodeForCurrentLanguage();
+            data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = Util.GetUTCOffsetForCurrentTimeZone();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Switch to a Child Profile
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - SWITCH_TO_PARENT_PROFILE
+        /// </remarks>
+        /// <param name="in_parentGameId">
+        /// The id of the parent game id
+        /// </param>
+         /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
+        /// 
+        public void SwitchToParentProfile(string in_parentLevelName, SuccessCallback in_success, FailureCallback in_failure)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevelName;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToParentProfile, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - GET_CHILD_PROFILES
+        /// </remarks>
+        /// <param name="in_includeSummaryData">
+        /// Whether to return the summary friend data along with this call
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        /// "status":200,
+        /// "data":{
+        ///   "children":[
+        ///   {
+        ///     "appId":"10322",
+        ///     "profileId":"7f012e94-3147-43be-8360-e71d20bf60cd",
+        ///     "profileName":"Staa"
+        ///   }
+        /// ]}
+        /// }
+        /// </returns>
+        public void GetChildProfiles(
+            bool in_includeSummaryData,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceIncludeSummaryData.Value] = in_includeSummaryData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetChildProfiles, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        private void AttachIdentity(string in_externalId, string in_authenticationToken, string in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = in_externalId;
@@ -703,7 +819,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void MergeIdentity(String in_externalId, string in_authenticationToken, String in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
+        private void MergeIdentity(string in_externalId, string in_authenticationToken, string in_authenticationType, SuccessCallback in_success, FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = in_externalId;

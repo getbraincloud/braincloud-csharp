@@ -605,6 +605,13 @@ namespace BrainCloud
                 platform = Constants.PlatformWindows;
                 break;
             }
+            
+            // linux
+            case UnityEngine.RuntimePlatform.LinuxPlayer:
+            {
+                platform = Constants.PlatformLinux;
+                break;
+            }
 
             // ios and default
             case UnityEngine.RuntimePlatform.IPhonePlayer:

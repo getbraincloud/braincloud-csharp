@@ -375,8 +375,6 @@ namespace BrainCloud.Internal
 
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
-            Exception firstThrownException = null;
-            int numExceptionsThrown = 0;
             IList<Exception> exceptions = new List<Exception>(); 
 
             for (int j = 0; j < responseBundle.Length; ++j)
@@ -444,14 +442,12 @@ namespace BrainCloud.Internal
                     {
                         if (sc.GetService().Equals(ServiceName.PlayerState.Value)
                             && (sc.GetOperation().Equals(ServiceOperation.FullReset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Reset.Value)
-                            || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
-                            
+                                || sc.GetOperation().Equals(ServiceOperation.Logout.Value)))
                         {
                             // we reset the current player or logged out
                             // we are no longer authenticated
                             m_isAuthenticated = false;
-                            m_brainCloudClientRef.AuthenticationService.ProfileId = null;
+                            m_brainCloudClientRef.AuthenticationService.ClearSavedProfileID();
                         }
                         else if (sc.GetService().Equals(ServiceName.Authenticate.Value)
                             && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
@@ -872,6 +868,7 @@ namespace BrainCloud.Internal
                 m_serviceCallsWaiting.Clear();
                 m_serviceCallsInProgress.Clear();
                 m_activeRequest = null;
+                m_brainCloudClientRef.AuthenticationService.ProfileId = "";
             }
         }
 
