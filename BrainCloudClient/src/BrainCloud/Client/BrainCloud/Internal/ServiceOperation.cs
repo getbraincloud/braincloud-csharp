@@ -195,6 +195,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
 
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
+        public static readonly ServiceOperation RunAsParent = new ServiceOperation("RUN_AS_PARENT");
 
         private ServiceOperation(string value)
         {

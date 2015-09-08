@@ -284,6 +284,7 @@ namespace BrainCloud
         public static readonly OperationParam ScriptServiceRunScriptData                         = new OperationParam("scriptData");
         public static readonly OperationParam ScriptServiceStartDateUTC                          = new OperationParam("startDateUTC");
         public static readonly OperationParam ScriptServiceStartMinutesFromNow                   = new OperationParam("minutesFromNow");
+        public static readonly OperationParam ScriptServiceParentLevel                           = new OperationParam("parentLevel");
 
         public static readonly OperationParam MatchMakingServicePlayerRating                     = new OperationParam("playerRating");
         public static readonly OperationParam MatchMakingServiceMinutes                          = new OperationParam("minutes");
