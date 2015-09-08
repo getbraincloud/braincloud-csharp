@@ -662,14 +662,31 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Registers a delegate to receive event notifications.
+        /// Sets a callback handler for any out of band event messages that come from
+        /// brainCloud.
         /// </summary>
-        /// <param name="in_delegate">The event handler delegate</param>
+        /// <param name="in_cb">in_eventCallback A function which takes a json string as it's only parameter.
+        ///  The json format looks like the following:
+        /// {
+        ///   "events": [{
+        ///      "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
+        ///      "eventId": 3967,
+        ///      "createdAt": 1441742105908,
+        ///      "gameId": "123",
+        ///      "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
+        ///      "eventType": "test",
+        ///      "eventData": {"testData": 117}
+        ///    }],
+        ///    ]
+        ///  }
         public void RegisterEventCallback(EventCallback in_cb)
         {
             m_bc.RegisterEventCallback(in_cb);
         }
 
+        /// <summary>
+        /// Deregisters the event callback.
+        /// </summary>
         public void DeregisterEventCallback()
         {
             m_bc.DeregisterEventCallback();
