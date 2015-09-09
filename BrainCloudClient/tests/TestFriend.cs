@@ -25,7 +25,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             
-            BrainCloudClient.Get().FriendService.FindPlayerByName(
+            BrainCloudClient.Get().FriendService.UpdateSummaryFriendData(
                 "{\"field\":\"value\"}",
                 tr.ApiSuccess, tr.ApiError);
             
