@@ -309,7 +309,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudS3Handling.cs">
       <Link>BrainCloud\BrainCloudS3Handling.cs</Link>
     </Compile>
-    <Compile Include="BrainCloud\Common\Platform.cs" />
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
+      <Link>BrainCloud\Common\Platform.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
