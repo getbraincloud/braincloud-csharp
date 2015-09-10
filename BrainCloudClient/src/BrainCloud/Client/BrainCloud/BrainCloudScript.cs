@@ -184,7 +184,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Run a script from the Parent Profile
+        /// Run a cloud script in a parent app
         /// </summary>
         /// <remarks>
         /// Service Name - Script
@@ -197,10 +197,17 @@ namespace BrainCloud
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
         /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "response": {
+        ///             "success": true
+        ///         },
+        ///         "success": true
+        ///     }
+        /// }
         /// @see The API documentation site for more details on cloud code
         /// </returns>
-        /// /*
-        /// 
         public void RunAsParent(
             string in_scriptName,
             string in_jsonScriptData,

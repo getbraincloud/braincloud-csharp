@@ -698,10 +698,11 @@ namespace BrainCloud
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="in_childProfileId">
-        /// The id of the profile id of the child game id
+        /// The profileId of the child profile to switch to
+        /// If null and forceCreate is true a new profile will be created
         /// </param>
         /// <param name="in_childGameId">
-        /// The id of the child game id
+        /// The appId of the child game to switch to
         /// </param>
         /// <param name="in_forceCreate">
         /// Should a new profile be created if it does not exist?
@@ -713,12 +714,52 @@ namespace BrainCloud
         /// The method to call in the event of an error during authentication
         /// </param>
         /// <returns>
-        /// 
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "vcPurchased": 0,
+        ///         "experiencePoints": 0,
+        ///         "xpCapped": false,
+        ///         "playerName": "TestUser",
+        ///         "vcClaimed": 0,
+        ///         "rewards": {
+        ///             "rewardDetails": {},
+        ///             "rewards": {},
+        ///             "currency": {
+        ///                 "credits": {
+        ///                     "purchased": 0,
+        ///                     "balance": 0,
+        ///                     "consumed": 0,
+        ///                     "awarded": 0
+        ///                 },
+        ///                 "gold": {
+        ///                     "purchased": 0,
+        ///                     "balance": 0,
+        ///                     "consumed": 0,
+        ///                     "awarded": 0
+        ///                 }
+        ///             }
+        ///         },
+        ///         "loginCount": 1,
+        ///         "server_time": 1441901094386,
+        ///         "experienceLevel": 0,
+        ///         "currency": {},
+        ///         "statistics": {},
+        ///         "id": "a17b347b-695b-431f-b1e7-5f783a562310",
+        ///         "profileId": "a17t347b-692b-43ef-b1e7-5f783a566310",
+        ///         "newUser": false
+        ///     }
+        /// }
         /// </returns>
         public void SwitchToChildProfile(string in_childProfileId, string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ServiceMessageProfileId.Value] = in_childProfileId;
+
+            if (Util.IsOptionalParameterValid(in_childProfileId))
+            {
+                data[OperationParam.ServiceMessageProfileId.Value] = in_childProfileId;
+            }
+
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = in_childGameId;
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = in_forceCreate;
 
@@ -733,25 +774,30 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Switch to a Child Profile
+        /// Switch to a Parent Profile
         /// </summary>
         /// <remarks>
         /// Service Name - Identity
         /// Service Operation - SWITCH_TO_PARENT_PROFILE
         /// </remarks>
-        /// <param name="in_parentGameId">
-        /// The id of the parent game id
+        /// <param name="in_parentLevelName">
+        /// The level of the parent to switch to
         /// </param>
-         /// <param name="in_success">
-        /// The method to call in event of successful login
+        /// <param name="in_success">
+        /// The method to call in event of successful switch
         /// </param>
         /// <param name="in_failure">
-        /// The method to call in the event of an error during authentication
+        /// The method to call in the event of an error while switching
         /// </param>
         /// <returns>
-        /// 
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "profileId": "1d1h32aa-4c41-404f-bc18-29b3fg5wab8a",
+        ///         "gameId": "123456"
+        ///     }
+        /// }
         /// </returns>
-        /// 
         public void SwitchToParentProfile(string in_parentLevelName, SuccessCallback in_success, FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -763,6 +809,7 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Returns a list of all child profiles in child Apps
         /// </summary>
         /// <remarks>
         /// Service Name - Identity
@@ -782,15 +829,23 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        /// "status":200,
-        /// "data":{
-        ///   "children":[
-        ///   {
-        ///     "appId":"10322",
-        ///     "profileId":"7f012e94-3147-43be-8360-e71d20bf60cd",
-        ///     "profileName":"Staa"
-        ///   }
-        /// ]}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "children": [
+        ///             {
+        ///                 "appId": "123456",
+        ///                 "profileId": "b7h4c751-befd-4a89-b6da-cd55hs3b2a86",
+        ///                 "profileName": "Child1",
+        ///                 "summaryFriendData": null
+        ///             },
+        ///             {
+        ///                 "appId": "123456",
+        ///                 "profileId": "a17b347b-195b-45hf-b1e7-5f78g3462310",
+        ///                 "profileName": "Child2",
+        ///                 "summaryFriendData": null
+        ///             }
+        ///         ]
+        ///     }
         /// }
         /// </returns>
         public void GetChildProfiles(

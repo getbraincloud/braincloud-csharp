@@ -11,6 +11,8 @@ namespace BrainCloudTests
     public class TestScript : TestFixtureBase
     {
         private readonly string _scriptName = "testScript";
+        private readonly string _childAppId = "10326";
+        private readonly string _parentLevel = "Master";
 
         [Test]
         public void TestRunScript()
@@ -52,5 +54,24 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        //[Test]
+        //public void TestRunScriptAsParent()
+        //{
+        //    TestResult tr = new TestResult();
+        //    BrainCloudClient.Get().IdentityService.SwitchToChildProfile(
+        //        null,
+        //        _childAppId,
+        //        true,
+        //        tr.ApiSuccess, tr.ApiError);
+        //    tr.Run();
+
+        //    BrainCloudClient.Get().ScriptService.RunAsParent(
+        //        _scriptName,
+        //        Helpers.CreateJsonPair("testParm1", 1), _parentLevel,
+        //        tr.ApiSuccess, tr.ApiError);
+
+        //    tr.Run();
+        //}
     }
 }
