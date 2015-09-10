@@ -525,8 +525,8 @@ namespace BrainCloud
             }
         }
 
-        private Platform m_platform;
-        public Platform ReleasePlatform
+        private BrainCloud.Common.Platform m_platform;
+        public BrainCloud.Common.Platform ReleasePlatform
         {
             get
             {
