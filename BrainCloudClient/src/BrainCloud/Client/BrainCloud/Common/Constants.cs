@@ -10,6 +10,7 @@ using LitJson;
 
 namespace BrainCloud.Common
 {
+    [Obsolete("Use the Platform class instead - removal in 90 days, 2015-12-15")]
     class Constants
     {
         public readonly static string PlatformIOS = "IOS";
