@@ -869,6 +869,7 @@ namespace BrainCloud.Internal
                 m_serviceCallsInProgress.Clear();
                 m_activeRequest = null;
                 m_brainCloudClientRef.AuthenticationService.ProfileId = "";
+                m_sessionID = "";
             }
         }
 
