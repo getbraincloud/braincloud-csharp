@@ -525,17 +525,8 @@ namespace BrainCloud
             }
         }
 
-        [Obsolete("Use Platform instead, removed by 2015-12-15")]
-        public string ReleasePlatform
-        {
-            get
-            {
-                return m_platform.ToString();    //no public "set"
-            }
-        }
-
         private Platform m_platform;
-        public Platform Platform
+        public Platform ReleasePlatform
         {
             get
             {
