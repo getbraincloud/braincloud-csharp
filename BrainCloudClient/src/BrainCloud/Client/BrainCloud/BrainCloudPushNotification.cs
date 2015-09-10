@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Net;
 using JsonFx.Json;
+using BrainCloud.Common;
 using BrainCloud.Internal;
 
 namespace BrainCloud
@@ -56,21 +57,14 @@ namespace BrainCloud
             {
                 byte[] token = in_token;
 
-                // send token to a provider
-                // default to iOS
-                // TODO: implement other device types
-                string deviceType = OperationParam.DeviceRegistrationTypeIos.Value;
-                if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.Android)
-                {
-                    deviceType = OperationParam.DeviceRegistrationTypeAndroid.Value;
-                }
-
+                Platform platform = Platform.FromUnityRuntime();
                 string hexToken = System.BitConverter.ToString(token).Replace("-","").ToLower();
-                return RegisterPushNotificationDeviceToken(deviceType,
+                RegisterPushNotificationDeviceToken(platform,
                         hexToken,
                         in_success,
                         in_failure,
                         in_cbObject);
+                return true;
             }
             // there was an error
             else
@@ -80,6 +74,7 @@ namespace BrainCloud
 
         }
 #endif
+
         /// <summary>
         /// Registers the given device token with the server to enable this device
         /// to receive push notifications.
@@ -99,31 +94,69 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the new value of the statistics and any rewards that were triggered:
+        /// <returns> JSON describing the result
         /// {
         ///   "status":200,
         ///   "data":null
         /// }
         /// </returns>
-        public bool RegisterPushNotificationDeviceToken(
+        public void RegisterPushNotificationDeviceToken(
+            Platform in_platform,
+            string in_token,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            string devicePlatform = in_platform.ToString();
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationRegisterParamDeviceType.Value] = devicePlatform;
+            data[OperationParam.PushNotificationRegisterParamDeviceToken.Value] = in_token;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Register, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+
+        /// <summary>
+        /// Registers the given device token with the server to enable this device
+        /// to receive push notifications.
+        /// </param>
+        /// <param name="in_device">
+        /// The device platform being registered.
+        /// </param>
+        /// <param name="in_token">
+        /// The platform-dependant device token needed for push notifications.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The callback object
+        /// </param>
+        /// <returns> JSON describing the result
+        /// {
+        ///   "status":200,
+        ///   "data":null
+        /// }
+        /// </returns>
+        [Obsolete("Use RegisterPushNotificationDeviceToken with Platform object instead of passing the in_device string directly - removal in 90 days, 2015-12-15")]
+        public void RegisterPushNotificationDeviceToken(
             string in_device,
             string in_token,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            bool bToReturn = false;
-
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PushNotificationRegisterParamDeviceType.Value] = in_device;
-            data[OperationParam.PushNotificationRegisterParamDeviceToken.Value] = in_token;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Register, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-
-            bToReturn = true;
-            return bToReturn;
+            RegisterPushNotificationDeviceToken(
+                Platform.FromString (in_device),
+                in_token,
+                in_success,
+                in_failure,
+                in_cbObject);
         }
 
         /// <summary>

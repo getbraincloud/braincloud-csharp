@@ -147,6 +147,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Constants.cs">
       <Link>BrainCloud\Common\Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
+      <Link>BrainCloud\Common\Platform.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\BCEntity.cs">
       <Link>BrainCloud\Entity\BCEntity.cs</Link>
     </Compile>
