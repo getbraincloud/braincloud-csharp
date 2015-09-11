@@ -86,6 +86,11 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetPlayerVC = new ServiceOperation("GET_PLAYER_VC");
         public static readonly ServiceOperation ResetPlayerVC = new ServiceOperation("RESET_PLAYER_VC");
 
+        public static readonly ServiceOperation AwardParentCurrency = new ServiceOperation("AWARD_PARENT_VC");
+        public static readonly ServiceOperation ConsumeParentCurrency = new ServiceOperation("CONSUME_PARENT_VC");
+        public static readonly ServiceOperation GetParentCurrency = new ServiceOperation("GET_PARENT_VC");
+        public static readonly ServiceOperation ResetParentCurrency = new ServiceOperation("RESET_PARENT_VC");
+
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
@@ -195,7 +200,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
 
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
-        public static readonly ServiceOperation RunAsParent = new ServiceOperation("RUN_AS_PARENT");
+        public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
 
         private ServiceOperation(string value)
         {

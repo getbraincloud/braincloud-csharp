@@ -11,17 +11,20 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestFixtureBase
     {
-        protected string m_serverUrl = "";
-        protected string m_appId = "";
-        protected string m_secret = "";
-        protected string m_version = "1.0.0";
+        public readonly string ChildAppId = "10326";
+        public readonly string ParentLevel = "Master";
+
+        protected string _serverUrl = "";
+        protected string _appId = "";
+        protected string _secret = "";
+        protected string _version = "1.0.0";
 
         [SetUp]
         public void Setup()
         {
             LoadIds();
 
-            BrainCloudClient.Get().Initialize(m_serverUrl, m_secret, m_appId, m_version);
+            BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
             BrainCloudClient.Get().EnableLogging(true);
 
             if (ShouldAuthenticate())
@@ -52,6 +55,28 @@ namespace BrainCloudTests
         }
 
         /// <summary>
+        /// Convenience method to switch to the child profile
+        /// </summary>
+        /// <returns>If the swtich was successful</returns>
+        protected bool GoToChildProfile()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().IdentityService.SwitchToChildProfile(null, ChildAppId, true, tr.ApiSuccess, tr.ApiError);
+            return tr.Run();
+        }
+
+        /// <summary>
+        /// Convenience method to switch to the parent profile
+        /// </summary>
+        /// <returns>If the swtich was successful</returns>
+        protected bool GoToParentProfile()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().IdentityService.SwitchToParentProfile(ParentLevel, tr.ApiSuccess, tr.ApiError);
+            return tr.Run();
+        }
+
+        /// <summary>
         /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
         /// in a platform agnostic way.
         /// </summary>
@@ -75,23 +100,23 @@ namespace BrainCloudTests
                 {
                     if (line.StartsWith("serverUrl="))
                     {
-                        m_serverUrl = line.Substring(("serverUrl=").Length);
-                        m_serverUrl.Trim();
+                        _serverUrl = line.Substring(("serverUrl=").Length);
+                        _serverUrl.Trim();
                     }
                     else if (line.StartsWith("appId="))
                     {
-                        m_appId = line.Substring(("appId=").Length);
-                        m_appId.Trim();
+                        _appId = line.Substring(("appId=").Length);
+                        _appId.Trim();
                     }
                     else if (line.StartsWith("secret="))
                     {
-                        m_secret = line.Substring(("secret=").Length);
-                        m_secret.Trim();
+                        _secret = line.Substring(("secret=").Length);
+                        _secret.Trim();
                     }
                     else if (line.StartsWith("version="))
                     {
-                        m_version = line.Substring(("version=").Length);
-                        m_version.Trim();
+                        _version = line.Substring(("version=").Length);
+                        _version.Trim();
                     }
                 }
             }

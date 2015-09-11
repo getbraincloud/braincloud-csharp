@@ -208,7 +208,7 @@ namespace BrainCloud
         /// }
         /// @see The API documentation site for more details on cloud code
         /// </returns>
-        public void RunAsParent(
+        public void RunParentScript(
             string in_scriptName,
             string in_jsonScriptData,
             string in_parentLevel,
@@ -228,7 +228,7 @@ namespace BrainCloud
             data[OperationParam.ScriptServiceParentLevel.Value] = in_parentLevel;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.RunAsParent, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.RunParentScript, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
