@@ -54,7 +54,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestRunScriptAsParent()
+        public void TestRunParentScript()
         {
             GoToChildProfile();
 

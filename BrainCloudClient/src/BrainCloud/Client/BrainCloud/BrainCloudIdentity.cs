@@ -753,24 +753,70 @@ namespace BrainCloud
         /// </returns>
         public void SwitchToChildProfile(string in_childProfileId, string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
+            SwitchToChildProfile(in_childProfileId, in_childGameId, in_forceCreate, false, in_success, in_failure);
+        }
 
-            if (Util.IsOptionalParameterValid(in_childProfileId))
-            {
-                data[OperationParam.ServiceMessageProfileId.Value] = in_childProfileId;
-            }
-
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = in_childGameId;
-            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = in_forceCreate;
-
-            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
-            data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = Util.GetCurrentCountryCode();
-            data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = Util.GetIsoCodeForCurrentLanguage();
-            data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = Util.GetUTCOffsetForCurrentTimeZone();
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
-            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+        /// <summary>
+        /// Switches to the child profile of an app when only one profile exists
+        /// If multiple profiles exist this returns an error
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Identity
+        /// Service Operation - SWITCH_TO_CHILD_PROFILE
+        /// </remarks>
+        /// <param name="in_childGameId">
+        /// The App Id of the child game to switch to
+        /// </param>
+        /// <param name="in_forceCreate">
+        /// Should a new profile be created if one does not exist?
+        /// </param>
+        /// <param name="in_success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="in_failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <returns>
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "vcPurchased": 0,
+        ///         "experiencePoints": 0,
+        ///         "xpCapped": false,
+        ///         "playerName": "TestUser",
+        ///         "vcClaimed": 0,
+        ///         "rewards": {
+        ///             "rewardDetails": {},
+        ///             "rewards": {},
+        ///             "currency": {
+        ///                 "credits": {
+        ///                     "purchased": 0,
+        ///                     "balance": 0,
+        ///                     "consumed": 0,
+        ///                     "awarded": 0
+        ///                 },
+        ///                 "gold": {
+        ///                     "purchased": 0,
+        ///                     "balance": 0,
+        ///                     "consumed": 0,
+        ///                     "awarded": 0
+        ///                 }
+        ///             }
+        ///         },
+        ///         "loginCount": 1,
+        ///         "server_time": 1441901094386,
+        ///         "experienceLevel": 0,
+        ///         "currency": {},
+        ///         "statistics": {},
+        ///         "id": "a17b347b-695b-431f-b1e7-5f783a562310",
+        ///         "profileId": "a17t347b-692b-43ef-b1e7-5f783a566310",
+        ///         "newUser": false
+        ///     }
+        /// }
+        /// </returns>
+        public void SwitchToSingletonChildProfile(string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        {
+            SwitchToChildProfile(null, in_childGameId, in_forceCreate, true, in_success, in_failure);
         }
 
         /// <summary>
@@ -895,6 +941,29 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        private void SwitchToChildProfile(string in_childProfileId, string in_childGameId, bool in_forceCreate, bool in_forceSingleton, SuccessCallback in_success, FailureCallback in_failure)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            if (Util.IsOptionalParameterValid(in_childProfileId))
+            {
+                data[OperationParam.ServiceMessageProfileId.Value] = in_childProfileId;
+            }
+
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = in_childGameId;
+            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = in_forceCreate;
+            data[OperationParam.IdentityServiceForceSingleton.Value] = in_forceSingleton;
+
+            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
+            data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = Util.GetCurrentCountryCode();
+            data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = Util.GetIsoCodeForCurrentLanguage();
+            data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = Util.GetUTCOffsetForCurrentTimeZone();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

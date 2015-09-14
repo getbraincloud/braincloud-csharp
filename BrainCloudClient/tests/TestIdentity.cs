@@ -20,6 +20,17 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestSwitchToSingletonChildProfile()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().IdentityService.SwitchToSingletonChildProfile(
+                ChildAppId,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestSwitchToParentProfile()
         {
             TestResult tr = new TestResult();

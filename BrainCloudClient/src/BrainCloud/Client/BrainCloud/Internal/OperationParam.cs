@@ -311,6 +311,8 @@ namespace BrainCloud
         public static readonly OperationParam S3HandlingServiceFileCategory                      = new OperationParam("category");
         public static readonly OperationParam S3HandlingServiceFileDetails                       = new OperationParam("fileDetails");
 
+        //Shared Identity
+        public static readonly OperationParam IdentityServiceForceSingleton = new OperationParam("forceSingleton");
 
         private OperationParam(string value)
         {

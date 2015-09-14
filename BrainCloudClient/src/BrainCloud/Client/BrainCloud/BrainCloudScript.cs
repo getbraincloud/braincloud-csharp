@@ -188,7 +188,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - Script
-        /// Service Operation - RunAsParent
+        /// Service Operation - RUN_PARENT_SCRIPT
         /// </remarks>
         /// <param name="in_scriptName"> Name of script </param>
         /// <param name="in_jsonScriptData"> JSON bundle to pass to script </param>
