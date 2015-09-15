@@ -841,13 +841,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets information on a currency in a parent app
+        /// Gets information on a single currency in a parent app
+        /// or all currency types if a null type is passed in.
         /// </summary>
         /// <remarks>
         /// Service Name - product
         /// Service Operation - GET_PARENT_VC
         /// </remarks>
-        /// <param name="in_currencyType">The ID of the parent currency</param>
+        /// <param name="in_currencyType">The ID of the parent currency or null to get all currencies</param>
         /// <param name="in_parentLevel">The level of the parent containing the currency</param>
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
@@ -878,7 +879,11 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
+
+            if (Util.IsOptionalParameterValid(in_currencyType))
+            {
+                data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
+            }
             data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
