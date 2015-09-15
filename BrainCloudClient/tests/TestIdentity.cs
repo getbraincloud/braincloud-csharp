@@ -34,8 +34,7 @@ namespace BrainCloudTests
         public void TestSwitchToParentProfile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.SwitchToChildProfile(
-                null,
+            BrainCloudClient.Get().IdentityService.SwitchToSingletonChildProfile(
                 ChildAppId,
                 true,
                 tr.ApiSuccess, tr.ApiError);

@@ -765,7 +765,7 @@ namespace BrainCloud
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="in_childGameId">
-        /// The App Id of the child game to switch to
+        /// The App ID of the child game to switch to
         /// </param>
         /// <param name="in_forceCreate">
         /// Should a new profile be created if one does not exist?
