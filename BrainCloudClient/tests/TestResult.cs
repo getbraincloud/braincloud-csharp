@@ -83,8 +83,8 @@ namespace BrainCloudTests
             while(!m_done && maxWait > 0)
             {
                 BrainCloudClient.Get ().Update();
-                Thread.Sleep (100);
-                maxWait -= 100;
+                Thread.Sleep (10);
+                maxWait -= 10;
             }
         }
     }
