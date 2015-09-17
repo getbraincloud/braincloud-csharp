@@ -375,8 +375,6 @@ namespace BrainCloud.Internal
 
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
-            Exception firstThrownException = null;
-            int numExceptionsThrown = 0;
             IList<Exception> exceptions = new List<Exception>(); 
 
             for (int j = 0; j < responseBundle.Length; ++j)
@@ -870,6 +868,8 @@ namespace BrainCloud.Internal
                 m_serviceCallsWaiting.Clear();
                 m_serviceCallsInProgress.Clear();
                 m_activeRequest = null;
+                m_brainCloudClientRef.AuthenticationService.ProfileId = "";
+                m_sessionID = "";
             }
         }
 

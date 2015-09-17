@@ -525,12 +525,12 @@ namespace BrainCloud
             }
         }
 
-        private string m_releasePlatform = "";
-        public string ReleasePlatform
+        private BrainCloud.Common.Platform m_platform;
+        public BrainCloud.Common.Platform ReleasePlatform
         {
             get
             {
-                return m_releasePlatform;    //no public "set"
+                return m_platform;
             }
         }
 
@@ -562,68 +562,10 @@ namespace BrainCloud
         /// <param name="anonymousId The anonymous Id</param>
         public void Initialize(string serverURL, string secretKey, string gameId, string gameVersion)
         {
-            string platform = "";
-#if !(DOT_NET)
-            switch ( UnityEngine.Application.platform )
-            {
-            // web browser
-            case UnityEngine.RuntimePlatform.WindowsWebPlayer:
-            case UnityEngine.RuntimePlatform.OSXWebPlayer:
-            {
-                // this is going to change to "WEB" at some point (when we remove "FB")
-                platform = Constants.PlatformFacebook;
-                break;
-            }
-
-            // android
-            case UnityEngine.RuntimePlatform.Android:
-            {
-                platform = Constants.PlatformGooglePlayAndroid;
-                break;
-            }
-
-            // windows phone 8
-            case UnityEngine.RuntimePlatform.WP8Player:
-            {
-                platform = Constants.PlatformWindowsPhone;
-                break;
-            }
-
-            // mac osx
-            case UnityEngine.RuntimePlatform.OSXEditor:
-            case UnityEngine.RuntimePlatform.OSXPlayer:
-            case UnityEngine.RuntimePlatform.OSXDashboardPlayer:
-            {
-                platform = Constants.PlatformOSX;
-                break;
-            }
-
-            // windows desktop
-            case UnityEngine.RuntimePlatform.WindowsEditor:
-            case UnityEngine.RuntimePlatform.WindowsPlayer:
-            {
-                platform = Constants.PlatformWindows;
-                break;
-            }
-            
-            // linux
-            case UnityEngine.RuntimePlatform.LinuxPlayer:
-            {
-                platform = Constants.PlatformLinux;
-                break;
-            }
-
-            // ios and default
-            case UnityEngine.RuntimePlatform.IPhonePlayer:
-            default:
-            {
-                platform = Constants.PlatformIOS;
-                break;
-            }
-            }
-#else
             // TODO: what is our default c# platform?
-            platform = Constants.PlatformIOS;
+            Platform platform = Platform.Windows;
+#if !(DOT_NET)
+            platform = Platform.FromUnityRuntime();
 #endif
 
             // set up braincloud which does the message handling
@@ -631,7 +573,7 @@ namespace BrainCloud
 
             m_gameId = gameId;
             m_gameVersion = gameVersion;
-            m_releasePlatform = platform;
+            m_platform = platform;
 
             m_initialized = true;
         }
@@ -662,14 +604,31 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Registers a delegate to receive event notifications.
+        /// Sets a callback handler for any out of band event messages that come from
+        /// brainCloud.
         /// </summary>
-        /// <param name="in_delegate">The event handler delegate</param>
+        /// <param name="in_cb">in_eventCallback A function which takes a json string as it's only parameter.
+        ///  The json format looks like the following:
+        /// {
+        ///   "events": [{
+        ///      "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
+        ///      "eventId": 3967,
+        ///      "createdAt": 1441742105908,
+        ///      "gameId": "123",
+        ///      "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
+        ///      "eventType": "test",
+        ///      "eventData": {"testData": 117}
+        ///    }],
+        ///    ]
+        ///  }
         public void RegisterEventCallback(EventCallback in_cb)
         {
             m_bc.RegisterEventCallback(in_cb);
         }
 
+        /// <summary>
+        /// Deregisters the event callback.
+        /// </summary>
         public void DeregisterEventCallback()
         {
             m_bc.DeregisterEventCallback();

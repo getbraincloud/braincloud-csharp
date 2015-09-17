@@ -52,5 +52,19 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestRunParentScript()
+        {
+            GoToChildProfile();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().ScriptService.RunParentScript(
+                _scriptName,
+                Helpers.CreateJsonPair("testParm1", 1), ParentLevel,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }

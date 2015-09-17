@@ -141,7 +141,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().AsyncMatchService.CreateMatchWithInitialTurn(
                 JsonWriter.Serialize(players),
-                Helpers.CreateJsonPair("blob", 1),
+                null,
                 null,
                 null,
                 null,

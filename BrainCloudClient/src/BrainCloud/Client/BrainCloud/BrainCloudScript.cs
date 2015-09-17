@@ -182,5 +182,54 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Run a cloud script in a parent app
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Script
+        /// Service Operation - RUN_PARENT_SCRIPT
+        /// </remarks>
+        /// <param name="in_scriptName"> Name of script </param>
+        /// <param name="in_jsonScriptData"> JSON bundle to pass to script </param>
+        /// <param name="in_parentLevel"> The level name of the parent to run the script from </param>
+        /// <param name="in_success"> The success callback. </param>
+        /// <param name="in_failure"> The failure callback. </param>
+        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "response": {
+        ///             "success": true
+        ///         },
+        ///         "success": true
+        ///     }
+        /// }
+        /// @see The API documentation site for more details on cloud code
+        /// </returns>
+        public void RunParentScript(
+            string in_scriptName,
+            string in_jsonScriptData,
+            string in_parentLevel,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
+
+            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            {
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
+            }
+
+            data[OperationParam.ScriptServiceParentLevel.Value] = in_parentLevel;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.RunParentScript, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }

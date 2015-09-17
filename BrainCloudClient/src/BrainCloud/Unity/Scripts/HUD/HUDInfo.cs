@@ -43,7 +43,7 @@ namespace BrainCloudUnity.HUD
 			GUILayout.Label (bcc.GameId);
 			GUILayout.Label (bcc.GameVersion);
 			GUILayout.Label (bcc.BrainCloudClientVersion);
-			GUILayout.Label (bcc.ReleasePlatform);
+			GUILayout.Label (bcc.ReleasePlatform.ToString());
 			GUILayout.EndVertical ();
 			GUILayout.EndHorizontal();
 

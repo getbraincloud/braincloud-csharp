@@ -510,7 +510,7 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = m_profileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = m_anonymousId;
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
-            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform;
+            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
