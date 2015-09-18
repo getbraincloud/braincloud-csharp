@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using JsonFx.Json;
 using BrainCloud.Internal;
 
@@ -23,12 +22,10 @@ namespace BrainCloud
         /// <summary>
         /// Creates an instance of an asynchronous match.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - Create
         /// </remarks>
-        ///
         /// <param name="in_jsonOpponentIds">
         /// JSON string identifying the opponent platform and id for this match.
         ///
@@ -37,14 +34,16 @@ namespace BrainCloud
         /// FB - a Facebook id
         ///
         /// An exmaple of this string would be:
-        /// [{
-        ///   "platform":"BC",
-        ///   "id": "some-braincloud-profile"
-        /// },
-        /// {
-        ///   "platform":"FB",
-        ///   "id": "some-facebook-id"
-        /// }]
+        /// [
+        ///     {
+        ///         "platform": "BC",
+        ///         "id": "some-braincloud-profile"
+        ///     },
+        ///     {
+        ///         "platform": "FB",
+        ///         "id": "some-facebook-id"
+        ///     }
+        /// ]
         /// </param>
         /// <param name="in_pushNotificationMessage">
         /// Optional push notification message to send to the other party.
@@ -71,7 +70,7 @@ namespace BrainCloud
         ///     "players": [
         ///         {
         ///             "playerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///             "playerName": "",
+        ///             "playerName": "UserB",
         ///             "pictureUrl": null
         ///         },
         ///         {
@@ -101,14 +100,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Creates an instance of an asynchronous match.
+        /// Creates an instance of an asynchronous match with an initial turn.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - Create
         /// </remarks>
-        ///
         /// <param name="in_jsonOpponentIds">
         /// JSON string identifying the opponent platform and id for this match.
         ///
@@ -117,15 +114,16 @@ namespace BrainCloud
         /// FB - a Facebook id
         ///
         /// An exmaple of this string would be:
-        /// [{
-        ///   "platform":"BC",
-        ///   "id": "some-braincloud-profile"
-        /// },
-        /// {
-        ///   "platform":"FB",
-        ///   "id": "some-facebook-id"
-        /// }]
-        ///
+        /// [
+        ///     {
+        ///         "platform": "BC",
+        ///         "id": "some-braincloud-profile"
+        ///     },
+        ///     {
+        ///         "platform": "FB",
+        ///         "id": "some-facebook-id"
+        ///     }
+        /// ]
         /// </param>
         /// <param name="in_jsonMatchState">
         /// JSON string blob provided by the caller
@@ -141,7 +139,7 @@ namespace BrainCloud
         /// Optionally, force the next player player to be a specific player
         /// </param>
         /// <param name="in_jsonSummary">
-        /// Optional JSON string defining what the other player will see as a summary of the game when they are listing their games
+        /// Optional JSON string defining what the other player will see as a summary of the game when listing their games
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -161,7 +159,7 @@ namespace BrainCloud
         ///     "players": [
         ///         {
         ///             "playerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///             "playerName": "",
+        ///             "playerName": "UserB",
         ///             "pictureUrl": null
         ///         },
         ///         {
@@ -205,12 +203,10 @@ namespace BrainCloud
         /// <summary>
         /// Submits a turn for the given match.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - SubmitTurn
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identfier
         /// </param>
@@ -231,8 +227,7 @@ namespace BrainCloud
         /// Optionally, force the next player player to be a specific player
         /// </param>
         /// <param name="jsonSummary">
-        /// Optional JSON string blob provided by the caller that other players will see as a
-        /// summary of the game when they are listing their games
+        /// Optional JSON string that other players will see as a summary of the game when listing their games
         /// </param>
         /// <param name="jsonStatistics">
         /// Optional JSON string blob provided by the caller
@@ -257,12 +252,12 @@ namespace BrainCloud
         ///         "players": [
         ///             {
         ///                 "playerId": "2bd7abc6-c2ec-4946-a1a8-02bad38540ad",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserB",
         ///                 "pictureUrl": null
         ///             },
         ///             {
         ///                 "playerId": "11c9dd4d-9ed1-416d-baw2-5228c1efafac",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserA",
         ///                 "pictureUrl": null
         ///             }
         ///         ],
@@ -328,12 +323,10 @@ namespace BrainCloud
         /// <summary>
         /// Allows the current player (only) to update Summary data without having to submit a whole turn.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - UpdateMatchSummary
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identfier
         /// </param>
@@ -344,7 +337,7 @@ namespace BrainCloud
         /// Game state version to ensure turns are submitted once and in order
         /// </param>
         /// <param name="jsonSummary">
-        /// JSON string blob provided by the caller that other players will see as a summary of the game when they are listing their games
+        /// JSON string provided by the caller that other players will see as a summary of the game when listing their games
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -366,12 +359,12 @@ namespace BrainCloud
         ///         "players": [
         ///             {
         ///                 "playerId": "2bd723c6-c2ec-4946-a1a8-02b7a38540ad",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserA",
         ///                 "pictureUrl": null
         ///             },
         ///             {
         ///                 "playerId": "11c2dd4d-9ed1-416d-bd04-5228c1efafac",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserB",
         ///                 "pictureUrl": null
         ///             }
         ///         ],
@@ -415,12 +408,10 @@ namespace BrainCloud
         /// <summary>
         /// Marks the given match as complete.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - Complete
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identifier
         /// </param>
@@ -462,12 +453,10 @@ namespace BrainCloud
         /// <summary>
         /// Returns the current state of the given match.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - ReadMatch
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identifier
         /// </param>
@@ -494,12 +483,12 @@ namespace BrainCloud
         ///         "players": [
         ///             {
         ///                 "playerId": "11c9dd4d-9ed1-416d-bd04-5228c1efafac",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserB",
         ///                 "pictureUrl": null
         ///             },
         ///             {
         ///                 "playerId": "2bd7abc6-c2ec-4946-a1a8-02b7a38540ad",
-        ///                 "playerName": "",
+        ///                 "playerName": "UserA",
         ///                 "pictureUrl": null
         ///             }
         ///         ],
@@ -535,12 +524,10 @@ namespace BrainCloud
         /// <summary>
         /// Returns the match history of the given match.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - ReadMatchHistory
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identifier
         /// </param>
@@ -600,12 +587,10 @@ namespace BrainCloud
         /// <summary>
         /// Returns all matches that are NOT in a COMPLETE state for which the player is involved.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - FindMatches
         /// </remarks>
-        ///
         /// <param name="in_success">
         /// The success callback.
         /// </param>
@@ -615,6 +600,45 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
+        /// <returns>
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": [
+        ///             {
+        ///                 "gameId": "123456",
+        ///                 "ownerId": "7630f98e-1236-4ead-88ee-27ce63b2db2c",
+        ///                 "matchId": "97c8d087-40d8-45c2-aa2b-6d0d83424ec5",
+        ///                 "version": 1,
+        ///                 "players": [
+        ///                     {
+        ///                         "playerId": "7630f98e-13b6-4ead-88ee-27ce63b2db2c",
+        ///                         "playerName": "UserA-122217922",
+        ///                         "pictureUrl": null
+        ///                     },
+        ///                     {
+        ///                         "playerId": "efab2d0b-90a1-48cf-8678-ae81d7aaed89",
+        ///                         "playerName": "UserB-122217922",
+        ///                         "pictureUrl": null
+        ///                     },
+        ///                     {
+        ///                         "playerId": "b28ff14a-364a-40b3-ac4e-d2b23983519c",
+        ///                         "playerName": "UserC-338593317",
+        ///                         "pictureUrl": null
+        ///                     }
+        ///                 ],
+        ///                 "status": {
+        ///                     "status": "PENDING",
+        ///                     "currentPlayer": "efab2d0b-90a1-48cf-8678-ae81d7aaed89"
+        ///                 },
+        ///                 "summary": null,
+        ///                 "createdAt": 1442586020180,
+        ///                 "updatedAt": 1442586020188
+        ///             }
+        ///         ]
+        ///     }
+        /// }
+        /// </returns>
         public void FindMatches(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -628,12 +652,10 @@ namespace BrainCloud
         /// <summary>
         /// Returns all matches that are in a COMPLETE state for which the player is involved.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - FindMatchesCompleted
         /// </remarks>
-        ///
         /// <param name="in_success">
         /// The success callback.
         /// </param>
@@ -643,6 +665,40 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.e is received.
         /// </param>
+        /// <returns>
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": [
+        ///             {
+        ///                 "gameId": "10170",
+        ///                 "ownerId": "9ad4f990-5466-4d00-a334-de834e1ac4ec",
+        ///                 "matchId": "877dd25d-ea21-4857-ba2a-2134d0f5ace2",
+        ///                 "version": 2,
+        ///                 "players": [
+        ///                     {
+        ///                         "playerId": "9ad4f990-5466-4d00-a334-de834e1ac4ec",
+        ///                         "playerName": "",
+        ///                         "pictureUrl": null
+        ///                     },
+        ///                     {
+        ///                         "playerId": "963a2079-6e7a-48de-a4f2-8ab16c811975",
+        ///                         "playerName": "",
+        ///                         "pictureUrl": null
+        ///                     }
+        ///                 ],
+        ///                 "status": {
+        ///                     "status": "COMPLETE",
+        ///                     "currentPlayer": "963a2079-6e7a-48de-a4f2-8ab16c811975"
+        ///                 },
+        ///                 "summary": null,
+        ///                 "createdAt": 1442586358023,
+        ///                 "updatedAt": 1442586374787
+        ///             }
+        ///         ]
+        ///     }
+        /// }
+        /// </returns>
         public void FindCompleteMatches(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -656,12 +712,10 @@ namespace BrainCloud
         /// <summary>
         /// Marks the given match as abandoned.
         /// </summary>
-        ///
         /// <remarks>
         /// Service Name - AsyncMatch
         /// Service Operation - Abandon
         /// </remarks>
-        ///
         /// <param name="ownerId">
         /// Match owner identifier
         /// </param>
@@ -745,7 +799,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.DeleteMatch, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-        
+
         private void CreateMatchInternal(
             string in_jsonOpponentIds,
             string in_jsonMatchState,
