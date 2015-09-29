@@ -592,9 +592,10 @@ namespace BrainCloud.Internal
                         messageList.Add(message);
 
                         if (scIndex.GetOperation ().Equals (ServiceOperation.FullReset.Value)
-                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value))
+                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value)
+                            || scIndex.GetOperation ().Equals (ServiceOperation.Authenticate.Value))
                         {
-                            requestState.IsSessionTerminatingPacket = true;
+                            requestState.PacketRequiresLongTimeout = true;
                         }
                     }
                     
@@ -764,9 +765,9 @@ namespace BrainCloud.Internal
             int currentRetry = in_requestState.Retries;
             TimeSpan ret;
 
-            // if this is a delete player or logout we change the
+            // if this is an authenticate, delete player, or logout we change the
             // timeout behaviour
-            if (in_requestState.IsSessionTerminatingPacket)
+            if (in_requestState.PacketRequiresLongTimeout)
             {
                 switch (currentRetry)
                 {
@@ -774,7 +775,7 @@ namespace BrainCloud.Internal
                     ret = TimeSpan.FromSeconds(15);
                     break;
                 case 1:
-                    ret = TimeSpan.FromSeconds(15);
+                    ret = TimeSpan.FromSeconds(10);
                     break;
                 case 2:
                     ret = TimeSpan.FromSeconds(2);

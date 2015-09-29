@@ -224,9 +224,6 @@ namespace BrainCloud
         /// a quick overview of the player without requiring a separate API call
         /// to read their public stats or entity data.
         ///
-        /// Note this API call pre-dates the shared player data api (public entity/stats)
-        /// and thus usage for anything outside of social leaderboards should be
-        /// deprecated.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
@@ -257,6 +254,7 @@ namespace BrainCloud
         ///   "data":null
         /// }
         /// </returns>
+        [Obsolete("Use BrainCloudPlayerState.UpdateSummaryFriendData instead")]
         public void UpdateSummaryFriendData(
             string in_jsonSummaryData,
             SuccessCallback in_success = null,
