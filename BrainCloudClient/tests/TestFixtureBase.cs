@@ -61,7 +61,7 @@ namespace BrainCloudTests
         protected bool GoToChildProfile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.SwitchToChildProfile(null, ChildAppId, true, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Get().IdentityService.SwitchToSingletonChildProfile(ChildAppId, true, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 
@@ -141,7 +141,7 @@ namespace BrainCloudTests
                 _testUsers = new TestUser[Enum.GetNames(typeof(Users)).Length];
                 Random rand = new Random();
 
-                for (int i = _testUsers.Length; i-- > 0; )
+                for (int i = _testUsers.Length; i-- > 0;)
                 {
                     _testUsers[i] = new TestUser(((Users)i).ToString() + "-", rand.Next());
                     Console.Write(".");
