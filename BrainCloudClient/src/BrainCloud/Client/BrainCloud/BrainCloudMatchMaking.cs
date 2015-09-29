@@ -349,7 +349,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets one oneway players
+        /// Finds matchmaking enabled players
         /// </summary>
         /// <remarks>
         /// Service Name - MatchMaking
@@ -372,11 +372,28 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///   "status": 200,
-        ///   "data": null
+        ///     "status": 200,
+        ///     "data": {
+        ///         "matchesFound": [
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserC-1239941736",
+        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             },
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserA-914307852",
+        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             }
+        ///         ]
+        ///     }
         /// }
         /// </returns>
-        public void GetOneWayPlayers(
+        public void FindPlayers(
             long in_rangeDelta,
             long in_numMatches,
             SuccessCallback in_success = null,
@@ -390,6 +407,17 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOnewayPlayers, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Use FindPlayers instead")]
+        public void GetOneWayPlayers(
+            long in_rangeDelta,
+            long in_numMatches,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            FindPlayers(in_rangeDelta, in_numMatches, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -419,11 +447,28 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///   "status": 200,
-        ///   "data": null
+        ///     "status": 200,
+        ///     "data": {
+        ///         "matchesFound": [
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserC-1239941736",
+        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             },
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserA-914307852",
+        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             }
+        ///         ]
+        ///     }
         /// }
         /// </returns>
-        public void GetOneWayPlayersWithFilter(
+        public void FindPlayersWithFilter(
             long in_rangeDelta,
             long in_numMatches,
             string in_jsonExtraParms,
@@ -444,6 +489,18 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOnewayPlayersFilter, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Use FindPlayersWithFilter instead")]
+        public void GetOneWayPlayersWithFilter(
+            long in_rangeDelta,
+            long in_numMatches,
+            string in_jsonExtraParms,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            FindPlayersWithFilter(in_rangeDelta, in_numMatches, in_jsonExtraParms, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
