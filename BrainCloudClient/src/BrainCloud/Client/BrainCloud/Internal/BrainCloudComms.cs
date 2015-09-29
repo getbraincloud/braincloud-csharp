@@ -690,7 +690,7 @@ namespace BrainCloud.Internal
             requestState.TimeSent = DateTime.Now;
 
             ResetIdleTimer();
-            
+           
             m_brainCloudClientRef.Log("OUTGOING " 
                                       + (requestState.Retries > 0 ? " Retry(" + requestState.Retries +"): " : ": ")
                                       + jsonRequestString);
