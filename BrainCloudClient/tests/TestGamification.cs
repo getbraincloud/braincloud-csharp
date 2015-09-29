@@ -73,18 +73,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestReadGameStatisticsByCategory()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Get().GamificationService.ReadGameStatisticsByCategory(
-                _userStatsCategory,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
         public void TestReadInProgressMilestones()
         {
             TestResult tr = new TestResult();

@@ -38,6 +38,18 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestReadPlayerStatsForCategory()
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Get().PlayerStatisticsService.ReadPlayerStatsForCategory(
+                "Test",
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
+
+        [Test]
         public void TestIncrementPlayerStats()
         {
             TestResult tr = new TestResult();
