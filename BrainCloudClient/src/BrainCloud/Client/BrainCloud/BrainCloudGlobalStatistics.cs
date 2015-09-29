@@ -112,6 +112,46 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+		/// <summary>
+		/// Method retrieves the global statistics for the given category.
+		/// </summary>
+		/// <remarks>
+		/// Service Name - GlobalStatistics
+		/// Service Operation - READ_FOR_CATEGORY
+		/// </remarks>
+		/// <param name="in_category">
+		/// The global statistics category
+		/// </param>
+		/// <param name="in_success">
+		/// The success callback.
+		/// </param>
+		/// <param name="in_failure">
+		/// The failure callback.
+		/// </param>
+		/// <param name="in_cbObject">
+		/// The user object sent to the callback.
+		/// </param>
+		/// <returns> The JSON returned in the callback is as follows:
+		/// {
+		///   "status":200,
+		///   "data":{
+		///     "gameStatistics": []
+		///   }
+		/// }
+		/// </returns>
+		public void ReadGlobalStatsForCategory(
+			string in_category,
+			SuccessCallback in_success = null,
+			FailureCallback in_failure = null,
+			object in_cbObject = null)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>();
+			data[OperationParam.GamificationServiceCategory.Value] = in_category;
+			
+			ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+			ServerCall sc = new ServerCall(ServiceName.GlobalStatistics, ServiceOperation.ReadForCategory, data, callback);
+			m_brainCloudClientRef.SendRequest(sc);
+		}
 
         /// <summary>
         /// Atomically increment (or decrement) global statistics.

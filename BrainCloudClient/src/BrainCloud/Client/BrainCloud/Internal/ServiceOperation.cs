@@ -143,8 +143,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadQuestsByCategory = new ServiceOperation("READ_QUESTS_BY_CATEGORY");
         public static readonly ServiceOperation ResetMilestones = new ServiceOperation("RESET_MILESTONES");
 
-        public static readonly ServiceOperation ReadGameStatisticsByCategory = new ServiceOperation("READ_GAME_STATISTICS_BY_CATEGORY");
-        public static readonly ServiceOperation ReadPlayerStatisticsByCategory = new ServiceOperation("READ_PLAYER_STATISTICS_BY_CATEGORY");
+		public static readonly ServiceOperation ReadForCategory = new ServiceOperation("READ_FOR_CATEGORY");
 
         public static readonly ServiceOperation ReadMilestones = new ServiceOperation("READ_MILESTONES");
         public static readonly ServiceOperation ReadMilestonesByCategory = new ServiceOperation("READ_MILESTONES_BY_CATEGORY");

@@ -17,7 +17,7 @@ namespace BrainCloud
         public const int MISSING_IDENTITY_ERROR = 40206;
 
         /// <summary>This means that you have provided a profile id and an
-        /// identity that is matched to a different  profile id.
+        /// identity that is matched to a different profile id.
         /// This is where you blank out the profile to allow the switch.
         /// </summary>
         public const int SWITCHING_PROFILES = 40207;
