@@ -353,7 +353,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - MatchMaking
-        /// Service Operation - GetOnewayPlayers
+        /// Service Operation - FIND_PLAYERS
         /// </remarks>
         /// <param name="in_rangeDelta">
         /// The range delta
@@ -405,7 +405,7 @@ namespace BrainCloud
             data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOnewayPlayers, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayers, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
@@ -421,11 +421,11 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets one oneway players
+        /// Finds matchmaking enabled players
         /// </summary>
         /// <remarks>
         /// Service Name - MatchMaking
-        /// Service Operation - GetOnewayPlayersFilter
+        /// Service Operation - FIND_PLAYERS_USING_FILTER
         /// </remarks>
         /// <param name="in_rangeDelta">
         /// The range delta
@@ -487,7 +487,7 @@ namespace BrainCloud
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOnewayPlayersFilter, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayersUsingFilter, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
