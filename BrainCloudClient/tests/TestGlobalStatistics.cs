@@ -47,5 +47,17 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestReadGlobalStatsForCategory()
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Get().GlobalStatisticsService.ReadGlobalStatsForCategory(
+                "Test",
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
     }
 }

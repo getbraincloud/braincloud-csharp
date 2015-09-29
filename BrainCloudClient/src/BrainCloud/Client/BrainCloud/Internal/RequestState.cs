@@ -222,16 +222,16 @@ namespace BrainCloud.Internal
             }
         }
 
-        private bool m_isSessionTerminatingPacket;
-        public bool IsSessionTerminatingPacket
+        private bool m_packetRequiresLongTimeout;
+        public bool PacketRequiresLongTimeout
         {
             get
             {
-                return m_isSessionTerminatingPacket;
+                return m_packetRequiresLongTimeout;
             }
             set
             {
-                m_isSessionTerminatingPacket = value;
+                m_packetRequiresLongTimeout = value;
             }
         }
 

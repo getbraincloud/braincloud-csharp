@@ -751,7 +751,12 @@ namespace BrainCloud
         ///     }
         /// }
         /// </returns>
-        public void SwitchToChildProfile(string in_childProfileId, string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        public void SwitchToChildProfile(
+            string in_childProfileId,
+            string in_childGameId, 
+            bool in_forceCreate, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             SwitchToChildProfile(in_childProfileId, in_childGameId, in_forceCreate, false, in_success, in_failure);
         }
@@ -814,7 +819,11 @@ namespace BrainCloud
         ///     }
         /// }
         /// </returns>
-        public void SwitchToSingletonChildProfile(string in_childGameId, bool in_forceCreate, SuccessCallback in_success, FailureCallback in_failure)
+        public void SwitchToSingletonChildProfile(
+            string in_childGameId, 
+            bool in_forceCreate, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             SwitchToChildProfile(null, in_childGameId, in_forceCreate, true, in_success, in_failure);
         }
@@ -844,7 +853,10 @@ namespace BrainCloud
         ///     }
         /// }
         /// </returns>
-        public void SwitchToParentProfile(string in_parentLevelName, SuccessCallback in_success, FailureCallback in_failure)
+        public void SwitchToParentProfile(
+            string in_parentLevelName, 
+            SuccessCallback in_success, 
+            FailureCallback in_failure)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevelName;

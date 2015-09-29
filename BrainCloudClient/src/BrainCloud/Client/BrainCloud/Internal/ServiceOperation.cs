@@ -118,8 +118,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ShieldOnFor = new ServiceOperation("SHIELD_ON_FOR");
         public static readonly ServiceOperation ShieldOff = new ServiceOperation("SHIELD_OFF");
         public static readonly ServiceOperation GetShieldExpiry = new ServiceOperation("GET_SHIELD_EXPIRY");
-        public static readonly ServiceOperation GetOnewayPlayers = new ServiceOperation("GET_ONEWAY_PLAYERS");
-        public static readonly ServiceOperation GetOnewayPlayersFilter = new ServiceOperation("GET_ONEWAY_PLAYERS_FILTER");
+        public static readonly ServiceOperation FindPlayers = new ServiceOperation("FIND_PLAYERS");
+        public static readonly ServiceOperation FindPlayersUsingFilter = new ServiceOperation("FIND_PLAYERS_USING_FILTER");
 
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
@@ -143,8 +143,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadQuestsByCategory = new ServiceOperation("READ_QUESTS_BY_CATEGORY");
         public static readonly ServiceOperation ResetMilestones = new ServiceOperation("RESET_MILESTONES");
 
-        public static readonly ServiceOperation ReadGameStatisticsByCategory = new ServiceOperation("READ_GAME_STATISTICS_BY_CATEGORY");
-        public static readonly ServiceOperation ReadPlayerStatisticsByCategory = new ServiceOperation("READ_PLAYER_STATISTICS_BY_CATEGORY");
+		public static readonly ServiceOperation ReadForCategory = new ServiceOperation("READ_FOR_CATEGORY");
 
         public static readonly ServiceOperation ReadMilestones = new ServiceOperation("READ_MILESTONES");
         public static readonly ServiceOperation ReadMilestonesByCategory = new ServiceOperation("READ_MILESTONES_BY_CATEGORY");

@@ -1,8 +1,6 @@
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
-using System.Collections.Generic;
-using JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -12,7 +10,6 @@ namespace BrainCloudTests
         private readonly string _achievementId01 = "testAchievement01";
         private readonly string _achievementId02 = "testAchievement02";
 
-        private readonly string _userStatsCategory = "playerStats";
         private readonly string _milestoneCategory = "Experience";
         private readonly string _milestoneId = "2";
 
@@ -67,18 +64,6 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().GamificationService.ReadCompletedMilestones(
                 true,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
-        public void TestReadGameStatisticsByCategory()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Get().GamificationService.ReadGameStatisticsByCategory(
-                _userStatsCategory,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

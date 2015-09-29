@@ -139,7 +139,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.GetOneWayPlayers(
+            BrainCloudClient.Get().MatchMakingService.FindPlayers(
                 3,
                 5,
                 tr.ApiSuccess,
@@ -155,7 +155,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object> filters = new Dictionary<string, object> { { "filter1", 10 } };
 
-            BrainCloudClient.Get().MatchMakingService.GetOneWayPlayersWithFilter(
+            BrainCloudClient.Get().MatchMakingService.FindPlayersWithFilter(
                 3,
                 5,
                 JsonWriter.Serialize(filters),
