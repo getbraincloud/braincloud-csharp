@@ -16,6 +16,7 @@ namespace BrainCloudTests
             BrainCloudClient.Get ().EnableLogging(true);
 
             TestResult tr = new TestResult();
+            tr.SetTimeToWaitSecs(120);
             BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
         }
