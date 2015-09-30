@@ -110,7 +110,7 @@ namespace BrainCloud.Internal
         /// How long we wait to send a heartbeat if no packets have been sent or received.
         /// This value is set to a percentage of the heartbeat timeout sent by the authenticate response.
         /// </summary>
-        private TimeSpan m_idleTimeout = TimeSpan.FromSeconds(60);
+        private TimeSpan m_idleTimeout = TimeSpan.FromSeconds(5*60);
 
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
@@ -244,7 +244,7 @@ namespace BrainCloud.Internal
             
             // is it time for a retry?
             if (m_activeRequest != null)
-            {
+               {
                 if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest))
                 {
                     m_activeRequest.CancelRequest();
@@ -591,9 +591,13 @@ namespace BrainCloud.Internal
                         
                         messageList.Add(message);
 
+                        if (scIndex.GetOperation ().Equals (ServiceOperation.Authenticate.Value))
+                        {
+                            requestState.PacketNoRetry = true;
+                        }
+
                         if (scIndex.GetOperation ().Equals (ServiceOperation.FullReset.Value)
-                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value)
-                            || scIndex.GetOperation ().Equals (ServiceOperation.Authenticate.Value))
+                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value))
                         {
                             requestState.PacketRequiresLongTimeout = true;
                         }
@@ -630,7 +634,7 @@ namespace BrainCloud.Internal
         private bool ResendMessage(RequestState requestState)
         {
             ++m_activeRequest.Retries;
-            if (m_activeRequest.Retries >= MAX_RETRIES)
+            if (m_activeRequest.Retries >= GetMaxRetriesForPacket(requestState))
             {
                 return false;
             }
@@ -690,7 +694,7 @@ namespace BrainCloud.Internal
             requestState.TimeSent = DateTime.Now;
 
             ResetIdleTimer();
-            
+           
             m_brainCloudClientRef.Log("OUTGOING " 
                                       + (requestState.Retries > 0 ? " Retry(" + requestState.Retries +"): " : ": ")
                                       + jsonRequestString);
@@ -754,17 +758,34 @@ namespace BrainCloud.Internal
             return response;
         }
 
+        /// <summary>
+        /// Method returns the maximum retries for the given packet
+        /// </summary>
+        /// <returns>The maximum retries for the given packet.</returns>
+        /// <param name="in_requestState">The active request.</param>
+        private int GetMaxRetriesForPacket(RequestState in_requestState)
+        {
+            if (in_requestState.PacketNoRetry)
+            {
+                return 0;
+            }
+            return MAX_RETRIES;
+        }
 
         /// <summary>
         /// Method staggers the packet timeout value based on the currentRetry
         /// </summary>
         /// <returns>The packet timeout.</returns>
-        /// <param name="currentRetryNumber">Current retry number.</param>
+        /// <param name="in_requestState">The active request.</param>
         private TimeSpan GetPacketTimeout(RequestState in_requestState)
         {
+            if (in_requestState.PacketNoRetry)
+            {
+                return TimeSpan.FromSeconds(15);
+            }
+
             int currentRetry = in_requestState.Retries;
             TimeSpan ret;
-
             // if this is an authenticate, delete player, or logout we change the
             // timeout behaviour
             if (in_requestState.PacketRequiresLongTimeout)

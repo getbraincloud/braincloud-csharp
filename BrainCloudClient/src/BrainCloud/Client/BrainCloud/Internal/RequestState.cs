@@ -222,7 +222,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        private bool m_packetRequiresLongTimeout;
+        private bool m_packetRequiresLongTimeout = false;
         public bool PacketRequiresLongTimeout
         {
             get
@@ -232,6 +232,19 @@ namespace BrainCloud.Internal
             set
             {
                 m_packetRequiresLongTimeout = value;
+            }
+        }
+
+        private bool m_packetNoRetry = false;
+        public bool PacketNoRetry
+        {
+            get
+            {
+                return m_packetNoRetry;
+            }
+            set
+            {
+                m_packetNoRetry = value;
             }
         }
 
