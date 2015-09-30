@@ -255,10 +255,26 @@ namespace BrainCloud.Internal
 
         public void CancelRequest()
         {
+            try
+            {
 #if DOT_NET
-            // kill the task - we've timed out
-            m_isCancelled = true;
+                // kill the task - we've timed out
+                m_isCancelled = true;
+                if (WebRequest != null)
+                {
+                    
+                    WebRequest.Abort();
+                }
+#else
+                if (WebRequest != null)
+                {
+                    WebRequest.Dispose();
+                }
 #endif
+            }
+            catch(Exception)
+            {
+            }
         }
     }
 }
