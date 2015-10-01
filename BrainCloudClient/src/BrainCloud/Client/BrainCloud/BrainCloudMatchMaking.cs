@@ -37,8 +37,16 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///   "status": 200,
-        ///   "data": null
+        ///     "status": 200,
+        ///     "data": {
+        ///         "lastMatch": 0,
+        ///         "matchAttackExpiry": 0,
+        ///         "matchEnabled": false,
+        ///         "sharedAPIToken": null,
+        ///         "shieldExpiry": 0,
+        ///         "playerRating": 100,
+        ///         "matchesPlayed": 0
+        ///     }
         /// }
         /// </returns>
         public void Read(
