@@ -295,11 +295,11 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(in_substitutionJson))
             {
-                data[OperationParam.PushNotificationSendParamSubstitutions.Value] = in_substitutionJson;
+                data[OperationParam.PushNotificationSendParamSubstitutions.Value] = JsonReader.Deserialize<Dictionary<string, object>>(in_substitutionJson);
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Create, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
