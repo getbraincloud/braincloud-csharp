@@ -45,11 +45,6 @@ namespace BrainCloud.Internal
     internal sealed class BrainCloudComms
     {
         /// <summary>
-        /// The maximum number of retries for a packet.
-        /// </summary>
-        private static int MAX_RETRIES = 5;
-
-        /// <summary>
         /// The maximum number of messages in a bundle.
         /// Note that this is somewhat arbitrary - using the size
         /// of the packet would be a more appropriate measuring stick.
@@ -122,8 +117,6 @@ namespace BrainCloud.Internal
         /// </summary>
         private EventCallback m_eventCallback;
 
-
-
         private bool m_isAuthenticated = false;
         public bool Authenticated
         {
@@ -159,6 +152,27 @@ namespace BrainCloud.Internal
                 return m_secretKey;
             }
         }
+
+        /// <summary>
+        /// A list of packet timeouts. Index represents the packet attempt number.
+        /// </summary>
+        private List<int> m_packetTimeouts = new List<int> {10, 10, 10};
+        public List<int> PacketTimeouts
+        {
+            get
+            {
+                return m_packetTimeouts;
+            }
+            set
+            {
+                m_packetTimeouts = value;
+            }
+        }
+        public void SetPacketTimeoutsToDefault()
+        {
+            m_packetTimeouts = new List<int> {10, 10, 10};
+        }
+
 
 
         public BrainCloudComms(BrainCloudClient in_client)
@@ -244,7 +258,7 @@ namespace BrainCloud.Internal
             
             // is it time for a retry?
             if (m_activeRequest != null)
-               {
+            {
                 if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest))
                 {
                     m_activeRequest.CancelRequest();
@@ -682,10 +696,10 @@ namespace BrainCloud.Internal
                 request.Method = "POST";
                 request.Headers.Add("X-SIG", sig);
                 request.ContentLength = byteArray.Length;
+                request.Timeout = (int) GetPacketTimeout(requestState).TotalMilliseconds;
+
                 // TODO: Convert to using a task as BeginGetRequestStream can block for minutes
                 requestState.AsyncResult = request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
-
-
                 #endif
 
                 requestState.WebRequest = request;
@@ -769,7 +783,7 @@ namespace BrainCloud.Internal
             {
                 return 0;
             }
-            return MAX_RETRIES;
+            return m_packetTimeouts.Count;
         }
 
         /// <summary>
@@ -786,51 +800,26 @@ namespace BrainCloud.Internal
 
             int currentRetry = in_requestState.Retries;
             TimeSpan ret;
-            // if this is an authenticate, delete player, or logout we change the
+
+            // if this is a delete player, or logout we change the
             // timeout behaviour
             if (in_requestState.PacketRequiresLongTimeout)
             {
-                switch (currentRetry)
+                // unused as default timeouts are now quite long
+            }
+
+            if (currentRetry >= m_packetTimeouts.Count)
+            {
+                int secs = 10;
+                if (m_packetTimeouts.Count > 0)
                 {
-                case 0:
-                    ret = TimeSpan.FromSeconds(15);
-                    break;
-                case 1:
-                    ret = TimeSpan.FromSeconds(10);
-                    break;
-                case 2:
-                    ret = TimeSpan.FromSeconds(2);
-                    break;
-                case 3:
-                    ret = TimeSpan.FromSeconds(2);
-                    break;
-                case 4:
-                default:
-                    ret = TimeSpan.FromSeconds(1);
-                    break;
+                    secs = m_packetTimeouts[m_packetTimeouts.Count - 1];
                 }
+                ret = TimeSpan.FromSeconds(secs);
             }
             else
             {
-                switch (currentRetry)
-                {
-                case 0:
-                    ret = TimeSpan.FromSeconds(3);
-                    break;
-                case 1:
-                    ret = TimeSpan.FromSeconds(5);
-                    break;
-                case 2:
-                    ret = TimeSpan.FromSeconds(5);
-                    break;
-                case 3:
-                    ret = TimeSpan.FromSeconds(10);
-                    break;
-                case 4:
-                default:
-                    ret = TimeSpan.FromSeconds(10);
-                    break;
-                }
+                ret = TimeSpan.FromSeconds(m_packetTimeouts[currentRetry]);
             }
 
             return ret;
@@ -934,7 +923,7 @@ namespace BrainCloud.Internal
         {
             RequestState requestState = (RequestState)asynchronousResult.AsyncState;
             if (requestState.IsCancelled)
-            { 
+            {
                 return;
             }
 
