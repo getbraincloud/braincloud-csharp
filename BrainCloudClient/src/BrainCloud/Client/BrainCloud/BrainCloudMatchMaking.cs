@@ -417,13 +417,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
-            data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
-            
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOneWayPlayers, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            FindPlayers(in_rangeDelta, in_numMatches, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -506,19 +500,7 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
-            data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
-            
-            if (Util.IsOptionalParameterValid(in_jsonExtraParms))
-            {
-                Dictionary<string, object> extraParms = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonExtraParms);
-                data[OperationParam.MatchMakingServiceExtraParams.Value] = extraParms;
-            }
-            
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetOneWayPlayersFilter, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            FindPlayersUsingFilter(in_rangeDelta, in_numMatches, in_jsonExtraParms, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
