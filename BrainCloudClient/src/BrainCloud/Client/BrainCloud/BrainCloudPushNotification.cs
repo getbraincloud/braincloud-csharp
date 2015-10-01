@@ -221,10 +221,8 @@ namespace BrainCloud
         /// </param>
         /// <returns> JSON describing the result
         /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "created": true
-        ///     }
+        ///   "status":200,
+        ///   "data":null
         /// }
         /// </returns>
         public void SendRichPushNotification(
@@ -263,10 +261,8 @@ namespace BrainCloud
         /// </param>
         /// <returns> JSON describing the result
         /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "created": true
-        ///     }
+        ///   "status":200,
+        ///   "data":null
         /// }
         /// </returns>
         public void SendRichPushNotificationWithParams(
