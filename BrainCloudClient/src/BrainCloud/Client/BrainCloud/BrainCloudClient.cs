@@ -702,6 +702,41 @@ namespace BrainCloud
         {
             m_bc.EnableComms(in_value);
         }
+
+        /// <summary>
+        /// Sets the packet timeouts using a list of integers that
+        /// represent timeout values for each packet retry. The 
+        /// first item in the list represents the timeout for the first packet
+        /// attempt, the second for the second packet attempt, and so on.
+        /// 
+        /// The number of entries in this array determines how many packet
+        /// retries will occur.
+        /// 
+        /// By default, the packet timeout array is {10, 10, 10}
+        /// </summary>
+        /// <param name="in_timeouts">An array of packet timeouts.</param>
+        public void SetPacketTimeouts(List<int> in_timeouts)
+        {
+            m_bc.PacketTimeouts = in_timeouts;
+        }
+
+        /// <summary>
+        /// Sets the packet timeouts back to default.
+        /// </summary>
+        public void SetPacketTimeoutsToDefault()
+        {
+            m_bc.SetPacketTimeoutsToDefault();
+        }
+
+        /// <summary>
+        /// Returns the list of packet timeouts.
+        /// </summary>
+        /// <returns>The packet timeouts.</returns>
+        public List<int> GetPacketTimeouts()
+        {
+            return m_bc.PacketTimeouts;
+        }
+
         #endregion
 
         #region Authentication

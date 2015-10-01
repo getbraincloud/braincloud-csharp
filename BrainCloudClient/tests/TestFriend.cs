@@ -19,18 +19,5 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-        [Test]
-        public void TestUpdateSummaryFriendData()
-        {
-            TestResult tr = new TestResult();
-            
-            BrainCloudClient.Get().FriendService.UpdateSummaryFriendData(
-                "{\"field\":\"value\"}",
-                tr.ApiSuccess, tr.ApiError);
-            
-            tr.Run();
-        }
-
     }
 }

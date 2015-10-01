@@ -20,6 +20,7 @@ namespace BrainCloudTests
         public int m_statusCode;
         public int m_reasonCode;
         public string m_statusMessage;
+        public int m_timeToWaitSecs = 30;
 
         public TestResult()
         {}
@@ -79,13 +80,18 @@ namespace BrainCloudTests
 
         private void Spin()
         {
-            long maxWait = 30 * 1000;
+            long maxWait = m_timeToWaitSecs * 1000;
             while(!m_done && maxWait > 0)
             {
                 BrainCloudClient.Get ().Update();
                 Thread.Sleep (10);
                 maxWait -= 10;
             }
+        }
+
+        public void SetTimeToWaitSecs(int secs)
+        {
+            m_timeToWaitSecs = secs;
         }
     }
 }

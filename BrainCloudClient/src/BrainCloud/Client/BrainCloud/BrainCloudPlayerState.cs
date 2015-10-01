@@ -234,6 +234,62 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Updates the "friend summary data" associated with the logged in player.
+        /// Some operations will return this summary data. For instance the social
+        /// leaderboards will return the player's score in the leaderboard along
+        /// with the friend summary data. Generally this data is used to provide
+        /// a quick overview of the player without requiring a separate API call
+        /// to read their public stats or entity data.
+        ///
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlayerState
+        /// Service Operation - UpdateSummary
+        /// </remarks>
+        /// <param name="in_jsonSummaryData">
+        /// A JSON string defining the summary data.
+        /// For example:
+        /// {
+        ///   "xp":123,
+        ///   "level":12,
+        ///   "highScore":45123
+        /// }
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        ///
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status":200,
+        ///   "data":null
+        /// }
+        /// </returns>
+        public void UpdateSummaryFriendData(
+            string in_jsonSummaryData,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            if (Util.IsOptionalParameterValid(in_jsonSummaryData))
+            {
+                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummaryData);
+                data[OperationParam.PlayerStateServiceUpdateSummaryFriendData.Value] = summaryData;
+            }
+            else data = null;
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateSummary, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Retrieve the player attributes.
         /// </summary>
         /// <remarks>

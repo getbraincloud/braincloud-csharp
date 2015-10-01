@@ -222,16 +222,29 @@ namespace BrainCloud.Internal
             }
         }
 
-        private bool m_isSessionTerminatingPacket;
-        public bool IsSessionTerminatingPacket
+        private bool m_packetRequiresLongTimeout = false;
+        public bool PacketRequiresLongTimeout
         {
             get
             {
-                return m_isSessionTerminatingPacket;
+                return m_packetRequiresLongTimeout;
             }
             set
             {
-                m_isSessionTerminatingPacket = value;
+                m_packetRequiresLongTimeout = value;
+            }
+        }
+
+        private bool m_packetNoRetry = false;
+        public bool PacketNoRetry
+        {
+            get
+            {
+                return m_packetNoRetry;
+            }
+            set
+            {
+                m_packetNoRetry = value;
             }
         }
 
@@ -242,10 +255,26 @@ namespace BrainCloud.Internal
 
         public void CancelRequest()
         {
+            try
+            {
 #if DOT_NET
-            // kill the task - we've timed out
-            m_isCancelled = true;
+                // kill the task - we've timed out
+                m_isCancelled = true;
+                if (WebRequest != null)
+                {
+                    
+                    WebRequest.Abort();
+                }
+#else
+                if (WebRequest != null)
+                {
+                    WebRequest.Dispose();
+                }
 #endif
+            }
+            catch(Exception)
+            {
+            }
         }
     }
 }
