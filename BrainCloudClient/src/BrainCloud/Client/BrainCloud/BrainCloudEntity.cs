@@ -15,7 +15,7 @@ namespace BrainCloud
     {
         private BrainCloudClient m_brainCloudClientRef;
 
-        public BrainCloudEntity (BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudEntity(BrainCloudClient in_brainCloudClientRef)
         {
             m_brainCloudClientRef = in_brainCloudClientRef;
         }
@@ -60,21 +60,21 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object> ();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
-            data [OperationParam.EntityServiceCreateData.Value] = entityData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityData);
+            data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
-                data [OperationParam.EntityServiceCreateAcl.Value] = acl;
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityAcl);
+                data[OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall serverCall = new ServerCall (ServiceName.Entity, ServiceOperation.Create, data, callback);
-            m_brainCloudClientRef.SendRequest (serverCall);
+            ServerCall serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.Create, data, callback);
+            m_brainCloudClientRef.SendRequest(serverCall);
         }
 
 
@@ -198,23 +198,23 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object> ();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityId.Value] = in_entityId;
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
-            data [OperationParam.EntityServiceCreateData.Value] = entityData;
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityData);
+            data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
-                data [OperationParam.EntityServiceCreateAcl.Value] = acl;
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityAcl);
+                data[OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall (ServiceName.Entity, ServiceOperation.Update, data, callback);
-            m_brainCloudClientRef.SendRequest (sc);
+            ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.Update, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace BrainCloud
 
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityData);
             data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
@@ -322,20 +322,20 @@ namespace BrainCloud
         ///   "data":null
         /// }
         /// </returns>
-        public void DeleteEntity (
+        public void DeleteEntity(
             string in_entityId,
             int in_version,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object> ();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceDeleteEntityId.Value] = in_entityId;
             data[OperationParam.EntityServiceUpdateVersion.Value] = in_version;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall (ServiceName.Entity, ServiceOperation.Delete, data, callback);
-            m_brainCloudClientRef.SendRequest (sc);
+            ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.Delete, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
@@ -397,12 +397,12 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EntityServiceCreateEntityType.Value] = in_entityType;
 
-            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityData);
+            Dictionary<string, object> entityData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityData);
             data[OperationParam.EntityServiceCreateData.Value] = entityData;
 
             if (Util.IsOptionalParameterValid(in_jsonEntityAcl))
             {
-                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonEntityAcl);
+                Dictionary<string, object> acl = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEntityAcl);
                 data[OperationParam.EntityServiceCreateAcl.Value] = acl;
             }
 
@@ -554,43 +554,138 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-/// METHOD DOES NOT YET EXIST
-/// <summary>
-/// Method returns all shared statistics for the given player id.
-/// A statistic is shared if its ACL allows for the currently logged
-/// in player to read the data. This is configured in the brainCloud
-/// portal.
-/// </summary>
-/// <remarks>
-/// Service Name - Entity
-/// Service Operation - ReadShared
-/// </remarks>
-/// <param name="in_playerId">
-/// The player id to retrieve shared entities for
-/// </param>
-/// <param name="in_success">
-/// The success callback.
-/// </param>
-/// <param name="in_failure">
-/// The failure callback.
-/// </param>
-/// <param name="in_cbObject">
-/// The user object sent to the callback.
-/// </param>
-/// <returns> JSON TODO_DOC
-/// </returns>
-//public void GetSharedStatsForPlayerId(
-//    string in_playerId,
-//    SuccessCallback in_success = null,
-//    FailureCallback in_failure = null,
-//    object in_cbObject = null)
-//{
-//    JsonData data = new JsonData();
-//    data[OperationParam.EntityServiceGetSharedStatsTargetPlayerId.Value] = in_playerId;
+        /// <summary>
+        /// Method uses a paging system to iterate through user entities.
+        /// After retrieving a page of entities with this method,
+        /// use GetPageOffset() to retrieve previous or next pages.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Entity
+        /// Service Operation - GetPage
+        /// </remarks>
+        /// <param name="in_jsonContext">The json context for the page request.
+        /// See the portal appendix documentation for format</param>
+        /// <param name="in_success">The success callback</param>
+        /// <param name="in_failure">The failure callback</param>
+        /// <param name="in_cbObject">The callback object</param>
+        /// 
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": false,
+        ///             "count": 200,
+        ///             "items": [
+        ///                 {
+        ///                     "entityId": "00edfd8e-5028-45d5-95d4-b1869cf2afaa",
+        ///                     "entityType": "testEntity",
+        ///                     "version": 1,
+        ///                     "data": {
+        ///                         "testName": "Test Name 01"
+        ///                     },
+        ///                     "acl": {
+        ///                         "other": 2
+        ///                     },
+        ///                     "createdAt": 1437505537168,
+        ///                     "updatedAt": 1437505537168
+        ///              }],
+        ///              "page": 1,
+        ///              "moreAfter": true
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
+        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
+        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
+        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
+        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
+        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
+        ///     }
+        /// }
+        /// </returns>
+        public void GetPage(
+            string in_jsonContext,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
-//    ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-//    ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadShared, data, callback);
-//    m_brainCloudClientRef.SendRequest(sc);
-//}
+            Dictionary<string, object> context = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonContext);
+            data[OperationParam.GlobalEntityServiceContext.Value] = context;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetPage, data, callback);
+            m_brainCloudClientRef.SendRequest(serverCall);
+        }
+
+        /// <summary>
+        /// Method to retrieve previous or next pages after having called
+        /// the GetPage method.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Entity
+        /// Service Operation - GetPageOffset
+        /// </remarks>
+        /// <param name="in_context">
+        /// The context string returned from the server from a previous call
+        /// to GetPage() or GetPageOffset()
+        /// </param>
+        /// <param name="in_pageOffset">
+        /// The positive or negative page offset to fetch. Uses the last page
+        /// retrieved using the context string to determine a starting point.
+        /// </param>
+        /// <param name="in_success">The success callback</param>
+        /// <param name="in_failure">The failure callback</param>
+        /// <param name="in_cbObject">The callback object</param>
+        /// 
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": true,
+        ///             "count": 200,
+        ///             "items": [
+        ///                 {
+        ///                     "entityId": "00adfd8e-5028-45d5-95d4-b1869cf2afaa",
+        ///                     "entityType": "testEntity",
+        ///                     "version": 1,
+        ///                     "data": {
+        ///                         "testName": "Test Name 01"
+        ///                     },
+        ///                     "acl": {
+        ///                         "other": 2
+        ///                     },
+        ///                     "createdAt": 1437505537168,
+        ///                     "updatedAt": 1437505537168
+        ///              }],
+        ///              "page": 2,
+        ///              "moreAfter": false
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
+        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
+        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
+        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
+        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
+        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
+        ///     }
+        /// }
+        /// </returns>
+        public void GetPageOffset(
+            string in_context,
+            int in_pageOffset,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.GlobalEntityServiceContext.Value] = in_context;
+            data[OperationParam.GlobalEntityServicePageOffset.Value] = in_pageOffset;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetPageOffset, data, callback);
+            m_brainCloudClientRef.SendRequest(serverCall);
+        }
     }
 }
