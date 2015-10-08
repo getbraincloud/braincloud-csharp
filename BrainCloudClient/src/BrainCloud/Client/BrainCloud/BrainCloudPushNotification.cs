@@ -18,7 +18,7 @@ namespace BrainCloud
     {
         private BrainCloudClient m_brainCloudClientRef;
 
-        public BrainCloudPushNotification (BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudPushNotification(BrainCloudClient in_brainCloudClientRef)
         {
             m_brainCloudClientRef = in_brainCloudClientRef;
         }
@@ -111,7 +111,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PushNotificationRegisterParamDeviceType.Value] = devicePlatform;
             data[OperationParam.PushNotificationRegisterParamDeviceToken.Value] = in_token;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Register, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
@@ -152,7 +152,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             RegisterPushNotificationDeviceToken(
-                Platform.FromString (in_device),
+                Platform.FromString(in_device),
                 in_token,
                 in_success,
                 in_failure,
@@ -232,12 +232,70 @@ namespace BrainCloud
             FailureCallback in_failure = null,
             object in_cbObject = null)
         {
+            SendRichPushNotification(in_toPlayerId, in_notificationTemplateId, null, in_success, in_failure, in_cbObject);
+        }
+
+        /// <summary>
+        /// Sends a notification to a user based on a brainCloud portal configured notification template.
+        /// Includes JSON defining the substitution params to use with the template.
+        /// See the Portal documentation for more info.
+        /// NOTE: It is possible to send a push notification to oneself.
+        /// </param>
+        /// <param name="in_toPlayerId">
+        /// The braincloud playerId of the user to receive the notification
+        /// </param>
+        /// <param name="in_notificationTemplateId">
+        /// Id of the notification template
+        /// </param>
+        /// <param name="in_substitutionJson">
+        /// JSON defining the substitution params to use with the template
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The callback object
+        /// </param>
+        /// <returns> JSON describing the result
+        /// {
+        ///   "status":200,
+        ///   "data":null
+        /// }
+        /// </returns>
+        public void SendRichPushNotificationWithParams(
+            string in_toPlayerId,
+            int in_notificationTemplateId,
+            string in_substitutionJson,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            SendRichPushNotification(in_toPlayerId, in_notificationTemplateId, in_substitutionJson, in_success, in_failure, in_cbObject);
+        }
+
+        //Internal
+        private void SendRichPushNotification(
+            string in_toPlayerId,
+            int in_notificationTemplateId,
+            string in_substitutionJson,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PushNotificationSendParamToPlayerId.Value] = in_toPlayerId;
             data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = in_notificationTemplateId;
 
+            if (Util.IsOptionalParameterValid(in_substitutionJson))
+            {
+                data[OperationParam.PushNotificationSendParamSubstitutions.Value] = JsonReader.Deserialize<Dictionary<string, object>>(in_substitutionJson);
+            }
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Create, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
