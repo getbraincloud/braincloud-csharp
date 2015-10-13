@@ -261,16 +261,22 @@ namespace BrainCloud.Internal
             {
                 if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest))
                 {
+                    // grab status/response before cancelling the request as in Unity, the www object
+                    // will set internal status fields to null when www object is disposed
+                    RequestState.eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
+                    string errorResponse = "";
+                    if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
+                    {
+                        errorResponse = GetWebRequestResponse(m_activeRequest);
+                    }
                     m_activeRequest.CancelRequest();
 
                     if (!ResendMessage(m_activeRequest))
                     {
                         // we've reached the retry limit - send timeout error to all client callbacks
-
-                        RequestState.eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
-                            m_brainCloudClientRef.Log("Timeout with network error: " + GetWebRequestResponse(m_activeRequest));
+							m_brainCloudClientRef.Log("Timeout with network error: " + errorResponse);
                         }
                         else
                         {

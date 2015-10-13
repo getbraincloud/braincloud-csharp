@@ -59,7 +59,7 @@ namespace BrainCloudTests
             }
 
         }
-
+        /*
         [Test]
         public void Test503()
         {
@@ -90,6 +90,6 @@ namespace BrainCloudTests
                 BrainCloudClient.Get ().SetPacketTimeoutsToDefault();
             }
             
-        }
+        }*/
     }
 }
