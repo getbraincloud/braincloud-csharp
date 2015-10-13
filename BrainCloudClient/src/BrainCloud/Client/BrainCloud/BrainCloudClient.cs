@@ -737,6 +737,24 @@ namespace BrainCloud
             return m_bc.PacketTimeouts;
         }
 
+        /// <summary>
+        /// Sets the authentication packet timeout.
+        /// </summary>
+        /// <param name="valueSecs">Value in secs.</param>
+        public void SetAuthenticationPacketTimeout(int valueSecs)
+        {
+            m_bc.AuthenticationPacketTimeoutSecs = valueSecs;
+        }
+
+        /// <summary>
+        /// Gets the authentication packet timeout. Defaults to 15 seconds.
+        /// </summary>
+        /// <returns>The authentication packet timeoutin seconds.</returns>
+        public int GetAuthenticationPacketTimeout()
+        {
+            return m_bc.AuthenticationPacketTimeoutSecs;
+        }
+
         #endregion
 
         #region Authentication
