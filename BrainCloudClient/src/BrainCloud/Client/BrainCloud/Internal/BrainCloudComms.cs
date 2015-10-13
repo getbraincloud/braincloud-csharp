@@ -173,6 +173,18 @@ namespace BrainCloud.Internal
             m_packetTimeouts = new List<int> {10, 10, 10};
         }
 
+        private int m_authPacketTimeoutSecs = 15;
+        public int AuthenticationPacketTimeoutSecs
+        {
+            get
+            {
+                return m_authPacketTimeoutSecs;
+            }
+            set
+            {
+                m_authPacketTimeoutSecs = value;
+            }
+        }
 
 
         public BrainCloudComms(BrainCloudClient in_client)
@@ -801,7 +813,7 @@ namespace BrainCloud.Internal
         {
             if (in_requestState.PacketNoRetry)
             {
-                return TimeSpan.FromSeconds(15);
+                return TimeSpan.FromSeconds(m_authPacketTimeoutSecs);
             }
 
             int currentRetry = in_requestState.Retries;
