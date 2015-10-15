@@ -59,6 +59,9 @@ namespace BrainCloud
         /// <summary>You must have an active session in order to call this api</summary>
         public const int INVALID_GAME_ID = 40316;
 
+        /// <summary>This product and receipt have already been claimed</summary>
+        public const int ITUNES_PURCHASE_ALREADY_CLAIMED = 40316;
+
         /// <summary>Player is currently in a match</summary>
         public const int PLAYER_RATING_OUT_OF_RANGE = 40334;
 
