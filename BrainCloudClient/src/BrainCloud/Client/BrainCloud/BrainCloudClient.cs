@@ -713,6 +713,10 @@ namespace BrainCloud
         /// retries will occur.
         /// 
         /// By default, the packet timeout array is {10, 10, 10}
+        /// 
+        /// Note that this method does not change the timeout for authentication
+        /// packets (use SetAuthenticationPacketTimeout method).
+        ///
         /// </summary>
         /// <param name="in_timeouts">An array of packet timeouts.</param>
         public void SetPacketTimeouts(List<int> in_timeouts)
@@ -738,16 +742,24 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sets the authentication packet timeout.
+        /// Sets the authentication packet timeout which is tracked separately
+        /// from all other packets. Note that authentication packets are never
+        /// retried and so this value represents the total time a client would
+        /// wait to receive a reply to an authentication api call. By default
+        /// this timeout is set to 15 seconds.
         /// </summary>
-        /// <param name="valueSecs">Value in secs.</param>
-        public void SetAuthenticationPacketTimeout(int valueSecs)
+        /// <param name="valueSecs">The timeout in seconds.</param>
+        public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
-            m_bc.AuthenticationPacketTimeoutSecs = valueSecs;
+            m_bc.AuthenticationPacketTimeoutSecs = timeoutSecs;
         }
 
         /// <summary>
-        /// Gets the authentication packet timeout. Defaults to 15 seconds.
+        /// Gets the authentication packet timeout which is tracked separately
+        /// from all other packets. Note that authentication packets are never
+        /// retried and so this value represents the total time a client would
+        /// wait to receive a reply to an authentication api call. By default
+        /// this timeout is set to 15 seconds.
         /// </summary>
         /// <returns>The authentication packet timeoutin seconds.</returns>
         public int GetAuthenticationPacketTimeout()
