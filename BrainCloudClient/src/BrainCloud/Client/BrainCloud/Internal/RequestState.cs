@@ -266,10 +266,11 @@ namespace BrainCloud.Internal
                     WebRequest.Abort();
                 }
 #else
+                /* disposing of the www class causes unity editor to lock up
                 if (WebRequest != null)
                 {
                     WebRequest.Dispose();
-                }
+                }*/
 #endif
             }
             catch(Exception)

@@ -173,6 +173,18 @@ namespace BrainCloud.Internal
             m_packetTimeouts = new List<int> {10, 10, 10};
         }
 
+        private int m_authPacketTimeoutSecs = 15;
+        public int AuthenticationPacketTimeoutSecs
+        {
+            get
+            {
+                return m_authPacketTimeoutSecs;
+            }
+            set
+            {
+                m_authPacketTimeoutSecs = value;
+            }
+        }
 
 
         public BrainCloudComms(BrainCloudClient in_client)
@@ -261,16 +273,22 @@ namespace BrainCloud.Internal
             {
                 if (DateTime.Now.Subtract(m_activeRequest.TimeSent) >= GetPacketTimeout(m_activeRequest))
                 {
+                    // grab status/response before cancelling the request as in Unity, the www object
+                    // will set internal status fields to null when www object is disposed
+                    RequestState.eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
+                    string errorResponse = "";
+                    if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
+                    {
+                        errorResponse = GetWebRequestResponse(m_activeRequest);
+                    }
                     m_activeRequest.CancelRequest();
 
                     if (!ResendMessage(m_activeRequest))
                     {
                         // we've reached the retry limit - send timeout error to all client callbacks
-
-                        RequestState.eWebRequestStatus status = GetWebRequestStatus(m_activeRequest);
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
-                            m_brainCloudClientRef.Log("Timeout with network error: " + GetWebRequestResponse(m_activeRequest));
+							m_brainCloudClientRef.Log("Timeout with network error: " + errorResponse);
                         }
                         else
                         {
@@ -795,7 +813,7 @@ namespace BrainCloud.Internal
         {
             if (in_requestState.PacketNoRetry)
             {
-                return TimeSpan.FromSeconds(15);
+                return TimeSpan.FromSeconds(m_authPacketTimeoutSecs);
             }
 
             int currentRetry = in_requestState.Retries;

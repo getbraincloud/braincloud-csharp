@@ -37,7 +37,7 @@ public class BrainCloudSettings : ScriptableObject
 				AssetDatabase.CreateAsset(s_instance, fullPath);
 #endif
 			}
-			s_instance.name = "BrainCloud Settings";
+			s_instance.name = "BrainCloudSettings";
 			return s_instance;
 		}
 	}
