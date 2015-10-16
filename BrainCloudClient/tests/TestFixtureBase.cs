@@ -143,7 +143,7 @@ namespace BrainCloudTests
 
                 for (int i = _testUsers.Length; i-- > 0;)
                 {
-                    _testUsers[i] = new TestUser(((Users)i).ToString() + "-", rand.Next());
+                    _testUsers[i] = new TestUser(((Users)i).ToString() + "_CS" + "-", rand.Next());
                     Console.Write(".");
                 }
                 Console.Write("\n");
