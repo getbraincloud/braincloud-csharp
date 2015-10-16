@@ -160,6 +160,42 @@ namespace BrainCloudTests
             DeleteAllDefaultEntities();
         }
 
+        [Test]
+        public void TestGetPage()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().EntityService.GetPage(
+                CreateContext(125, 1, _defaultEntityType),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPageOffset()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().EntityService.GetPage(
+                CreateContext(50, 1, _defaultEntityType),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            int page = 0;
+            page = (int)((Dictionary<string, object>)(((Dictionary<string, object>)tr.m_response["data"])["results"]))["page"];
+
+            string context = "";
+            context = (string)((Dictionary<string, object>)tr.m_response["data"])["context"];
+
+            BrainCloudClient.Get().GlobalEntityService.GetPageOffset(
+                context,
+                page,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         #region Helper Functions
 
         /// <summary>
@@ -231,6 +267,29 @@ namespace BrainCloudTests
                 BrainCloudClient.Get().EntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numberOfEntitiesPerPage"></param>
+        /// <param name="startPage"></param>
+        /// <param name="entityType"></param>
+        /// <returns></returns>
+        private string CreateContext(int numberOfEntitiesPerPage, int startPage, string entityType)
+        {
+            Dictionary<string, object> context = new Dictionary<string, object>();
+
+            Dictionary<string, object> pagination = new Dictionary<string, object>();
+            pagination.Add("rowsPerPage", numberOfEntitiesPerPage);
+            pagination.Add("pageNumber", startPage);
+            context.Add("pagination", pagination);
+
+            Dictionary<string, object> searchCriteria = new Dictionary<string, object>();
+            searchCriteria.Add("entityType", entityType);
+            context.Add("searchCriteria", searchCriteria);
+
+            return JsonWriter.Serialize(context);
         }
 
         #endregion
