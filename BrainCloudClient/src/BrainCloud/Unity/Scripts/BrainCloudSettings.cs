@@ -137,7 +137,7 @@ public class BrainCloudSettings : ScriptableObject
 	}
 
 	[SerializeField]
-	private string m_gameVersion = "1.0";
+	private string m_gameVersion = "1.0.0";
 	public string GameVersion
 	{
 		get {return m_gameVersion;}
