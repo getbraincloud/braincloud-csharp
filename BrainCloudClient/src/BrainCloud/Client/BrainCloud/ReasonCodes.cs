@@ -60,7 +60,10 @@ namespace BrainCloud
         public const int INVALID_GAME_ID = 40316;
 
         /// <summary>This product and receipt have already been claimed</summary>
-        public const int ITUNES_PURCHASE_ALREADY_CLAIMED = 40316;
+        public const int ITUNES_PURCHASE_ALREADY_CLAIMED = 40317;
+
+        /// <summary>App Version No Longer Supported</summary>
+        public const int APP_VERSION_NO_LONGER_SUPPORTED = 40322;
 
         /// <summary>Player is currently in a match</summary>
         public const int PLAYER_RATING_OUT_OF_RANGE = 40334;
