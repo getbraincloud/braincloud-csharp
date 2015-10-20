@@ -51,8 +51,14 @@ namespace BrainCloudTests
             Spin();
 
             Assert.False(m_result);
-            Assert.AreEqual(in_expectedStatusCode, m_statusCode);
-            Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+            if (in_expectedStatusCode != -1)
+            {
+                Assert.AreEqual(in_expectedStatusCode, m_statusCode);
+            }
+            if (in_expectedReasonCode != -1)
+            {
+                Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+            }
 
             return !m_result;
         }

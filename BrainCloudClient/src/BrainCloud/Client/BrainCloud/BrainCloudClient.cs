@@ -31,9 +31,9 @@ namespace BrainCloud
     /// </summary>
     /// <param name="status">The http status code</param>
     /// <param name="reasonCode">The error reason code</param>
-    /// <param name="statusMessage">The status message</param>
+    /// <param name="jsonError">The error json string</param>
     /// <param name="cbObject">The user supplied callback object</param>
-    public delegate void FailureCallback(int status, int reasonCode, string statusMessage, object cbObject);
+    public delegate void FailureCallback(int status, int reasonCode, string jsonError, object cbObject);
 
     /// <summary>
     /// Log callback to implement if providing a custom logging function.
@@ -765,6 +765,17 @@ namespace BrainCloud
         public int GetAuthenticationPacketTimeout()
         {
             return m_bc.AuthenticationPacketTimeoutSecs;
+        }
+
+        /// <summary>
+        /// Sets the error callback to return the status message instead of the
+        /// error json string. This flag is used to conform to pre-2.17 client
+        /// behaviour.
+        /// </summary>
+        /// <param name="enabled">If set to <c>true</c>, enable.</param>
+        public void SetOldStyleStatusMessageErrorCallback(bool enabled)
+        {
+            m_bc.OldStyleStatusResponseInErrorCallback = enabled;
         }
 
         #endregion

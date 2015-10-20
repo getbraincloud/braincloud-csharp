@@ -186,6 +186,19 @@ namespace BrainCloud.Internal
             }
         }
 
+        private bool m_oldStyleStatusResponseInErrorCallback = false;
+        public bool OldStyleStatusResponseInErrorCallback
+        {
+            get
+            {
+                return m_oldStyleStatusResponseInErrorCallback;
+            }
+            set
+            {
+                m_oldStyleStatusResponseInErrorCallback = value;
+            }
+        }
+
 
         public BrainCloudComms(BrainCloudClient in_client)
         {
@@ -506,15 +519,22 @@ namespace BrainCloud.Internal
                 {
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
-                    string statusMessage = "";
+                    string errorJson = "";
                     
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
                     {
                         reasonCode = (int) reasonCodeObj;
                     }
-                    if (response.TryGetValue ("status_message", out statusMessageObj))
+                    if (m_oldStyleStatusResponseInErrorCallback)
                     {
-                        statusMessage = (string) statusMessageObj;
+                        if (response.TryGetValue ("status_message", out statusMessageObj))
+                        {
+                            errorJson = (string) statusMessageObj;
+                        }
+                    }
+                    else
+                    {
+                        errorJson = JsonWriter.Serialize (response);
                     }
                     
                     if (reasonCode == ReasonCodes.SESSION_EXPIRED
@@ -538,7 +558,7 @@ namespace BrainCloud.Internal
                     {
                         try
                         {
-                            sc.GetCallback().OnErrorCallback(statusCode, reasonCode, statusMessage);
+                            sc.GetCallback().OnErrorCallback(statusCode, reasonCode, errorJson);
                         }
                         catch(Exception e)
                         {
