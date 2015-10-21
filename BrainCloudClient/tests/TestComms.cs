@@ -129,6 +129,9 @@ namespace BrainCloudTests
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine (tr.m_statusMessage);
             Assert.False (tr.m_statusMessage.StartsWith("{"));
+
+            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(false);
+            BrainCloudClient.Get ().ResetCommunication();
         }
     }
 }
