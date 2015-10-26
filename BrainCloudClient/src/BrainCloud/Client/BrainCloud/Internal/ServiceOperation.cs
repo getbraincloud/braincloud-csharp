@@ -206,6 +206,10 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
         public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
 
+        //RedemptionCode
+        public static readonly ServiceOperation GetRedeemedCodes = new ServiceOperation("GET_REDEEMED_CODES");
+        public static readonly ServiceOperation RedeemCode = new ServiceOperation("REDEEM_CODE");
+
         private ServiceOperation(string value)
         {
             Value = value;

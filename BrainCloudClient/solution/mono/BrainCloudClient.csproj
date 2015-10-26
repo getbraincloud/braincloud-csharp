@@ -312,6 +312,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudRedemptionCode.cs">
+      <Link>BrainCloud\BrainCloudRedemptionCode.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

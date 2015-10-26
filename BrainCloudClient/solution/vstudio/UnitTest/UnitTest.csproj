@@ -132,6 +132,9 @@
     <Compile Include="..\..\..\tests\TestPushNotification.cs">
       <Link>TestPushNotification.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestRedemptionCode.cs">
+      <Link>TestRedemptionCode.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestResult.cs">
       <Link>TestResult.cs</Link>
     </Compile>

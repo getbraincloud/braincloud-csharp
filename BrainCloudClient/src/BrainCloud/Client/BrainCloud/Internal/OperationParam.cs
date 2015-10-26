@@ -315,6 +315,11 @@ namespace BrainCloud
         //Shared Identity
         public static readonly OperationParam IdentityServiceForceSingleton = new OperationParam("forceSingleton");
 
+        //RedemptionCode
+        public static readonly OperationParam RedemptionCodeServiceScanCode = new OperationParam("scanCode");
+        public static readonly OperationParam RedemptionCodeServiceCodeType = new OperationParam("codeType");
+        public static readonly OperationParam RedemptionCodeServiceCustomRedemptionInfo = new OperationParam("customRedemptionInfo");
+
         private OperationParam(string value)
         {
             Value = value;
