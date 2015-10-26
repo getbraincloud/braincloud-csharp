@@ -537,8 +537,8 @@ namespace BrainCloud.Internal
                         errorJson = JsonWriter.Serialize (response);
                     }
                     
-                    if (reasonCode == ReasonCodes.SESSION_EXPIRED
-                        || reasonCode == ReasonCodes.SESSION_NOT_FOUND_ERROR)
+                    if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
+                        || reasonCode == ReasonCodes.NO_SESSION)
                     {
                         m_isAuthenticated = false;
                         m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
