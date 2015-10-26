@@ -32,6 +32,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().RedemptionCodeService.GetRedeemedCodes(
+                _codeType,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

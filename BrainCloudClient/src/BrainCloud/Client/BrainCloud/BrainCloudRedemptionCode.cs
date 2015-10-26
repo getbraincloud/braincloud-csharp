@@ -68,8 +68,8 @@ namespace BrainCloud
             string in_scanCode,
             string in_codeType,
             string in_customRedemptionInfo,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -94,6 +94,9 @@ namespace BrainCloud
         /// Service Name - redemptionCode
         /// Service Operation - GET_REDEEMED_CODES
         /// </remarks>
+        /// <param name="in_codeType">
+        /// Optional - The type of codes to retrieve. Returns all codes if left unspecified.
+        /// </param>
         /// <param name="in_success">
         /// The success callback.
         /// </param>
@@ -129,12 +132,21 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void GetRedeemedCodes(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
+            string in_codeType,
+            SuccessCallback in_success,
+            FailureCallback in_failure,
             object in_cbObject = null)
         {
+            Dictionary<string, object> data = null;
+
+            if (Util.IsOptionalParameterValid(in_codeType))
+            {
+                data = new Dictionary<string, object>();
+                data[OperationParam.RedemptionCodeServiceCodeType.Value] = in_codeType;
+            }
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.RedemptionCode, ServiceOperation.GetRedeemedCodes, null, callback);
+            ServerCall sc = new ServerCall(ServiceName.RedemptionCode, ServiceOperation.GetRedeemedCodes, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
