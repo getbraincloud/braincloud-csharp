@@ -31,7 +31,7 @@ namespace BrainCloud
         /// <param name="in_codeType">
         /// The type of code
         /// </param>
-        /// <param name="in_customRedemptionInfo">
+        /// <param name="in_jsonCustomRedemptionInfo">
         /// Optional - A JSON string containing custom redemption data
         /// </param>
         /// <param name="in_success">
@@ -67,7 +67,7 @@ namespace BrainCloud
         public void RedeemCode(
             string in_scanCode,
             string in_codeType,
-            string in_customRedemptionInfo,
+            string in_jsonCustomRedemptionInfo,
             SuccessCallback in_success,
             FailureCallback in_failure,
             object in_cbObject = null)
@@ -76,9 +76,9 @@ namespace BrainCloud
             data[OperationParam.RedemptionCodeServiceScanCode.Value] = in_scanCode;
             data[OperationParam.RedemptionCodeServiceCodeType.Value] = in_codeType;
 
-            if (Util.IsOptionalParameterValid(in_customRedemptionInfo))
+            if (Util.IsOptionalParameterValid(in_jsonCustomRedemptionInfo))
             {
-                Dictionary<string, object> customRedemptionInfo = JsonReader.Deserialize<Dictionary<string, object>>(in_customRedemptionInfo);
+                Dictionary<string, object> customRedemptionInfo = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonCustomRedemptionInfo);
                 data[OperationParam.RedemptionCodeServiceCustomRedemptionInfo.Value] = customRedemptionInfo;
             }
 
