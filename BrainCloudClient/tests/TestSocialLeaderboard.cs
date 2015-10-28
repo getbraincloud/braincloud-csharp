@@ -15,11 +15,11 @@ namespace BrainCloudTests
         private readonly string _eventId = "tournamentRewardTest";
 
         [Test]
-        public void TestGetLeaderboard()
+        public void TestGetSocialLeaderboard()
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetLeaderboard(
+            BrainCloudClient.Get().SocialLeaderboardService.GetSocialLeaderboard(
                 _globalLeaderboardId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -27,18 +27,43 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestGetMultiSocialLeaderboard()
+        {
+            PostScoreToNonDynamicLeaderboard();
+            PostScoreToDynamicLeaderboardHighValue();
+                
+            TestResult tr = new TestResult();
+
+            List<string> lbIds = new List<string>();
+            lbIds.Add (_globalLeaderboardId);
+            lbIds.Add (_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+
+            BrainCloudClient.Get().SocialLeaderboardService.GetMultiSocialLeaderboard(
+                lbIds,
+                10,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
 
         [Test]
         public void TestPostScoreToLeaderboard()
         {
-            TestResult tr = new TestResult();
+            PostScoreToNonDynamicLeaderboard();
+        }
 
+        public void PostScoreToNonDynamicLeaderboard()
+        {
+            TestResult tr = new TestResult();
+            
             BrainCloudClient.Get().SocialLeaderboardService.PostScoreToLeaderboard(
                 _globalLeaderboardId,
                 1000,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 tr.ApiSuccess, tr.ApiError);
-
+            
             tr.Run();
         }
 
@@ -194,8 +219,13 @@ namespace BrainCloudTests
         [Test]
         public void TestPostScoreToDynamicLeaderboardHighValue()
         {
-            TestResult tr = new TestResult();
+            PostScoreToDynamicLeaderboardHighValue();
+        }
 
+        public void PostScoreToDynamicLeaderboardHighValue()
+        {
+            TestResult tr = new TestResult();
+            
             BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString(),
                 100,
@@ -205,7 +235,7 @@ namespace BrainCloudTests
                 System.DateTime.Now.AddDays(5),
                 5,
                 tr.ApiSuccess, tr.ApiError);
-
+            
             tr.Run();
         }
 
