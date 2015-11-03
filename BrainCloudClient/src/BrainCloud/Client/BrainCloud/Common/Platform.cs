@@ -5,6 +5,7 @@ namespace BrainCloud.Common
     {
         private readonly String value;
 
+        public static readonly Platform AppleTVOS = new Platform ("APPLE_TV_OS");
         public static readonly Platform BlackBerry = new Platform ("BB");
         public static readonly Platform Facebook = new Platform ("FB");
         public static readonly Platform GooglePlayAndroid = new Platform ("ANG");
@@ -29,6 +30,8 @@ namespace BrainCloud.Common
         {
             switch(s)
             {
+            case "APPLE_TV_OS":
+                return AppleTVOS;
             case "BB":
                 return BlackBerry;
             case "FB":
@@ -89,6 +92,10 @@ namespace BrainCloud.Common
                 // ios and default
             case UnityEngine.RuntimePlatform.IPhonePlayer:
                 return iOS;
+
+            // appletv to add soon
+            // case ???
+                // return AppleTVOS;
 
             default:
                 throw new Exception("Unknown unity runtime platform: " + UnityEngine.Application.platform);

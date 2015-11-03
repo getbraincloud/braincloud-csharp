@@ -576,11 +576,13 @@ namespace BrainCloud.Internal
 
                                 if (rewards != null)
                                 {
+                                    Dictionary<string, object> theReward = new Dictionary<string, object>();
+                                    theReward["rewards"] = rewards;
+                                    theReward["service"] = sc.GetService ();
+                                    theReward["operation"] = sc.GetOperation();
                                     Dictionary<string, object> apiRewards = new Dictionary<string, object>();
                                     List<object> rewardList = new List<object>();
-                                    rewardList.Add (rewards);
-                                    apiRewards["service"] = sc.GetService ();
-                                    apiRewards["operation"] = sc.GetOperation();
+                                    rewardList.Add (theReward);
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
