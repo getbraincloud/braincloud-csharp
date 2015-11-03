@@ -117,6 +117,11 @@ namespace BrainCloud.Internal
         /// </summary>
         private EventCallback m_eventCallback;
 
+        /// <summary>
+        /// The reward handler callback method
+        /// </summary>
+        private RewardCallback m_rewardCallback;
+
         private bool m_isAuthenticated = false;
         public bool Authenticated
         {
@@ -233,6 +238,16 @@ namespace BrainCloud.Internal
         public void DeregisterEventCallback()
         {
             m_eventCallback = null;
+        }
+
+        public void RegisterRewardCallback(RewardCallback in_cb)
+        {
+            m_rewardCallback = in_cb;
+        }
+
+        public void DeregisterRewardCallback()
+        {
+            m_rewardCallback = null;
         }
 
 
@@ -454,9 +469,10 @@ namespace BrainCloud.Internal
                 // its a success response
                 if (statusCode == 200)
                 {
+                    Dictionary<string, object> responseData = null;
                     if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
-                        Dictionary<string, object> responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
+                        responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
                         
                         // send the data back as not formatted
                         data = JsonWriter.Serialize(response);
@@ -508,6 +524,70 @@ namespace BrainCloud.Internal
                                 sc.GetCallback().OnSuccessCallback(data);
                             }
                             catch(Exception e)
+                            {
+                                m_brainCloudClientRef.Log (e.StackTrace);
+                                exceptions.Add (e);
+                            }
+                        }
+
+                        // now deal with rewards
+                        if (m_rewardCallback != null && responseData != null) 
+                        {
+                            try
+                            {
+                                Dictionary<string, object> rewards = null;
+
+                                // it's an operation that return a reward
+                                if (sc.GetService().Equals(ServiceName.Authenticate.Value)
+                                        && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
+                                {
+                                    object objRewards = null;
+                                    if (responseData.TryGetValue("rewards", out objRewards))
+                                    {
+                                        Dictionary<string, object> outerRewards = (Dictionary<string, object>) objRewards;
+                                        if (outerRewards.TryGetValue("rewards", out objRewards))
+                                        {
+                                            Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                            if (innerRewards.Count > 0)
+                                            {
+                                                // we found rewards
+                                                rewards = outerRewards;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if ((sc.GetService().Equals(ServiceName.PlayerStatistics.Value)
+                                        && sc.GetOperation().Equals (ServiceOperation.Update.Value))
+                                    || (sc.GetService().Equals(ServiceName.PlayerStatisticsEvent.Value)
+                                       && (sc.GetOperation().Equals (ServiceOperation.Trigger.Value)
+                                            || sc.GetOperation().Equals (ServiceOperation.TriggerMultiple.Value))))
+                                {
+                                    object objRewards = null;
+                                    if (responseData.TryGetValue("rewards", out objRewards))
+                                    {
+                                        Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                        if (innerRewards.Count > 0)
+                                        {
+                                            // we found rewards
+                                            rewards = responseData;
+                                        }
+                                    }
+                                }
+
+                                if (rewards != null)
+                                {
+                                    Dictionary<string, object> apiRewards = new Dictionary<string, object>();
+                                    List<object> rewardList = new List<object>();
+                                    rewardList.Add (rewards);
+                                    apiRewards["service"] = sc.GetService ();
+                                    apiRewards["operation"] = sc.GetOperation();
+                                    apiRewards["apiRewards"] = rewardList;
+
+                                    string rewardsAsJson = JsonWriter.Serialize(apiRewards);
+                                    m_rewardCallback(rewardsAsJson);
+                                }
+                            }
+                            catch (Exception e)
                             {
                                 m_brainCloudClientRef.Log (e.StackTrace);
                                 exceptions.Add (e);

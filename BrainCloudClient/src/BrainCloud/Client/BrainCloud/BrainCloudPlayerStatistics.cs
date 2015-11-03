@@ -277,12 +277,7 @@ namespace BrainCloud
             Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonData);
             data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
 
-            SuccessCallback successCallbacks = m_brainCloudClientRef.GetGamificationService().CheckForAchievementsToAward;
-            if (in_success != null)
-            {
-                successCallbacks += in_success;
-            }
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(successCallbacks, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -381,12 +376,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStatisticsServiceStats.Value] = in_dictData;
 
-            SuccessCallback successCallbacks = m_brainCloudClientRef.GetGamificationService().CheckForAchievementsToAward;
-            if (in_success != null)
-            {
-                successCallbacks += in_success;
-            }
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(successCallbacks, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -496,12 +486,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStatisticsExperiencePoints.Value] = in_xpValue;
 
-            SuccessCallback successCallbacks = m_brainCloudClientRef.GetGamificationService().CheckForAchievementsToAward;
-            if (in_success != null)
-            {
-                successCallbacks += in_success;
-            }
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(successCallbacks, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -542,12 +527,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStatisticsExperiencePoints.Value] = in_xpValue;
 
-            SuccessCallback successCallbacks = m_brainCloudClientRef.GetGamificationService().CheckForAchievementsToAward;
-            if (in_success != null)
-            {
-                successCallbacks += in_success;
-            }
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(successCallbacks, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.SetXpPoints, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }

@@ -45,6 +45,11 @@ namespace BrainCloud
     /// </summary>
     public delegate void EventCallback(string jsonResponse);
 
+    /// <summary>
+    /// Callback method invoked when brainCloud rewards are received.
+    /// </summary>
+    public delegate void RewardCallback(string jsonResponse);
+
 
     public class BrainCloudClient
     {
@@ -644,6 +649,24 @@ namespace BrainCloud
         public void DeregisterEventCallback()
         {
             m_bc.DeregisterEventCallback();
+        }
+
+        /// <summary>
+        /// Sets a reward handler for any api call results that return rewards.
+        /// </summary>
+        /// <param name="in_cb">The reward callback handler.</param>
+        /// <see cref="http://getbraincloud.com/apidocs">The brainCloud apidocs site for more information on the return JSON</see>
+        public void RegisterRewardCallback(RewardCallback in_cb)
+        {
+            m_bc.RegisterRewardCallback(in_cb);
+        }
+        
+        /// <summary>
+        /// Deregisters the reward callback.
+        /// </summary>
+        public void DeregisterRewardCallback()
+        {
+            m_bc.DeregisterRewardCallback();
         }
 
 

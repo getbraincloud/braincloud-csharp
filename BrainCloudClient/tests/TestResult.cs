@@ -12,6 +12,7 @@ namespace BrainCloudTests
     {
         public bool m_done;
         public bool m_result;
+        public int m_apiCountExpected;
         
         // if success
         public Dictionary<string, object> m_response;
@@ -29,6 +30,7 @@ namespace BrainCloudTests
         {
             m_done = false;
             m_result = false;
+            m_apiCountExpected = 0;
             m_response = null;
             m_statusCode = 0;
             m_reasonCode = 0;
@@ -37,13 +39,21 @@ namespace BrainCloudTests
 
         public bool Run()
         {
+            return RunExpectCount(1);
+        }
+
+        public bool RunExpectCount(int in_apiCount)
+        {
             Reset();
+            m_apiCountExpected = in_apiCount;
+
             Spin();
-
+            
             Assert.True(m_result);
-
+            
             return m_result;
         }
+
 
         public bool RunExpectFail(int in_expectedStatusCode, int in_expectedReasonCode)
         {
@@ -67,7 +77,11 @@ namespace BrainCloudTests
         {
             m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
             m_result = true;
-            m_done = true;
+            --m_apiCountExpected;
+            if (m_apiCountExpected <= 0)
+            {
+                m_done = true;
+            }
         }
 
         public void ApiError(int statusCode, int reasonCode, string statusMessage, object cb)
@@ -76,7 +90,11 @@ namespace BrainCloudTests
             m_reasonCode = reasonCode; 
             m_statusMessage = statusMessage;
             m_result = false;
-            m_done = true;
+            --m_apiCountExpected;
+            if (m_apiCountExpected <= 0)
+            {
+                m_done = true;
+            }
         }
 
         public bool IsDone()

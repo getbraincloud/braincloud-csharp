@@ -42,6 +42,8 @@ namespace BrainCloudTests
         public void TearDown()
         {
             BrainCloudClient.Get().ResetCommunication();
+            BrainCloudClient.Get ().DeregisterEventCallback();
+            BrainCloudClient.Get ().DeregisterRewardCallback();
         }
 
         /// <summary>

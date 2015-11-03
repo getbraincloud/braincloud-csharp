@@ -19,20 +19,10 @@ namespace BrainCloud
     public class BrainCloudGamification
     {
         private BrainCloudClient m_brainCloudClientRef;
-        SuccessCallback m_achievementsDelegate;
 
         public BrainCloudGamification(BrainCloudClient in_brainCloud)
         {
             m_brainCloudClientRef = in_brainCloud;
-        }
-
-        /// <summary>
-        /// Sets the achievement awarded delegate which is called anytime
-        /// an achievement is awarded
-        /// </summary>
-        public void SetAchievementAwardedDelegate(SuccessCallback in_delegate)
-        {
-            m_achievementsDelegate = in_delegate;
         }
 
 
@@ -572,96 +562,10 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GamificationServiceAchievementsName.Value] = achievementData;
 
-            SuccessCallback successCallbacks = (SuccessCallback)AchievementAwardedSuccessCallback;
-            if (in_success != null)
-            {
-                successCallbacks += in_success;
-            }
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(successCallbacks, in_failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.AwardAchievements, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        private void AchievementAwardedSuccessCallback(string in_data, object in_obj)
-        {
-            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>>(in_data);
-            try
-            {
-                Dictionary<string, object> data = (Dictionary<string, object>)response[OperationParam.GamificationServiceAchievementsData.Value];
-                //List<string> achievements = (List<string>) data[OperationParam.GamificationServiceAchievementsName.Value];
-                if (((object[])data[OperationParam.GamificationServiceAchievementsName.Value]).Length > 0)
-                {
-                    Dictionary<string, object>[] achievements = (Dictionary<string, object>[])data[OperationParam.GamificationServiceAchievementsName.Value];
-                    for (int i = 0; i < achievements.Length; i++)
-                    {
-                        AwardThirdPartyAchievements(achievements[i]["id"].ToString());
-                    }
-                }
-
-                if (m_achievementsDelegate != null)
-                {
-                    m_achievementsDelegate(in_data, in_obj);
-                }
-            }
-            catch (System.Collections.Generic.KeyNotFoundException)
-            {
-                //do nothing.
-            }
-        }
-
-
-        // goes through JSON response to award achievements via third party (ie game centre, facebook etc).
-        // notifies achievement delegate
-        internal void CheckForAchievementsToAward(string in_data, object in_obj)
-        {
-            Dictionary<string, object> response = JsonReader.Deserialize<Dictionary<string, object>>(in_data);
-            try
-            {
-                Dictionary<string, object> data = (Dictionary<string, object>)response[OperationParam.GamificationServiceAchievementsData.Value];
-                List<string> achievements = (List<string>)data[OperationParam.GamificationServiceAchievementsGranted.Value];
-                if (achievements != null)
-                {
-                    foreach (string achievement in achievements)
-                    {
-                        AwardThirdPartyAchievements(achievement);
-                    }
-                }
-
-                //Let the Game Side knows about those Achievements.
-                if (m_achievementsDelegate != null)
-                {
-                    m_achievementsDelegate(JsonWriter.Serialize(achievements), null);
-                }
-            }
-            catch (System.Collections.Generic.KeyNotFoundException)
-            {
-                //do nothing.
-            }
-        }
-
-        private void AwardThirdPartyAchievements(string in_achievements)
-        {
-#if !(DOT_NET)
-            // only do it for logged in players
-            if (!UnityEngine.Social.localUser.authenticated)
-            {
-                Debug.Log("Couldnt award Unity Social achievement because localUser was not authenticated");
-                return;
-            }
-
-            IAchievement achievement = UnityEngine.Social.CreateAchievement();
-            achievement.id = in_achievements;
-            achievement.percentCompleted = 100.0; //progress as double
-            achievement.ReportProgress(result =>
-            {
-                if (result)
-                    Debug.Log("AwardThirdPartyAchievements Success");
-                else
-                    Debug.Log("AwardThirdPartyAchievements Failed");
-            });
-#endif
-        }
-
 
         /// <summary>
         /// Method retrieves all of the quests defined for the game.
