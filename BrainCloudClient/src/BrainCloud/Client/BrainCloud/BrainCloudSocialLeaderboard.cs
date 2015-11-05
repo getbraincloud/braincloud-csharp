@@ -89,7 +89,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - SocialLeaderboard
-        /// Service Operation - GetLeaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD
         /// </remarks>
         /// <param name="in_leaderboardId">
         /// The id of the leaderboard to retrieve
@@ -145,7 +145,7 @@ namespace BrainCloud
         ///   }
         /// }
         /// </returns>
-        public void GetLeaderboard(
+        public void GetSocialLeaderboard(
             string in_leaderboardId,
             bool in_replaceName,
             SuccessCallback in_success = null,
@@ -157,9 +157,123 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = in_replaceName;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetLeaderboard, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetSocialLeaderboard, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        [Obsolete("Since 2.17 - use GetSocialLeaderboard instead")]
+        public void GetLeaderboard(
+            string in_leaderboardId,
+            bool in_replaceName,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            GetSocialLeaderboard(in_leaderboardId, in_replaceName, in_success, in_failure, in_cbObject);
+        }
+
+ 
+        /// <summary>
+        /// Reads multiple social leaderboards.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - SocialLeaderboard
+        /// Service Operation - GET_MULTI_SOCIAL_LEADERBOARD
+        /// </remarks>
+        /// <param name="in_leaderboardIds">
+        /// Array of leaderboard id strings
+        /// </param>
+        /// <param name="in_leaderboardResultCount">
+        /// Maximum count of entries to return for each leaderboard.
+        /// </param>
+        /// <param name="in_replaceName">
+        /// If true, the currently logged in player's name will be replaced
+        /// by the string "You".
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> JSON string representing the entries in the leaderboard.
+        /// Note that the friend summary data is returned for each record
+        /// in the leaderboard.
+        ///
+        /// {
+        ///   "server_time": 1445952203123,
+        ///   "leaderboards": [
+        ///    {
+        ///     "leaderboardId": "default",
+        ///     "leaderboard": [
+        ///      {
+        ///       "externalId": "pacer5",
+        ///       "name": "Rollo",
+        ///       "pictureUrl": "http://localhost:8080/gameserver/s3/portal/g/eggies/metadata/pacers/pacer5.png",
+        ///       "playerId": "pacer5",
+        ///       "authenticationType": null,
+        ///       "score": 100000,
+        ///       "data": {
+        ///        "pacerTag": null,
+        ///        "pacerLeaderboardTag": {}
+        ///       },
+        ///       "createdAt": null,
+        ///       "updatedAt": null
+        ///      },
+        ///      {
+        ///       "externalId": "pacer4",
+        ///       "name": "Chirp",
+        ///       "pictureUrl": "http://localhost:8080/gameserver/s3/portal/g/eggies/metadata/pacers/pacer4.png",
+        ///       "playerId": "pacer4",
+        ///       "authenticationType": null,
+        ///       "score": 80000,
+        ///       "data": {
+        ///        "pacerTag": null,
+        ///        "pacerLeaderboardTag": {}
+        ///       },
+        ///       "createdAt": null,
+        ///       "updatedAt": null
+        ///      }
+        ///     ],
+        ///     "self": {
+        ///      "externalId": null,
+        ///      "name": null,
+        ///      "pictureUrl": null,
+        ///      "playerId": "49390659-33bd-4812-b0c4-ab04e614ec98",
+        ///      "authenticationType": null,
+        ///      "score": 10,
+        ///      "data": {
+        ///       "nickname": "batman"
+        ///      },
+        ///      "createdAt": 1445952060607,
+        ///      "updatedAt": 1445952060607,
+        ///      "summaryFriendData": null
+        ///     },
+        ///     "selfIndex": 5
+        ///    }
+        ///   ]
+        ///  }
+        ////
+        public void GetMultiSocialLeaderboard(IList<string> in_leaderboardIds,
+                                              int in_leaderboardResultCount,
+                                              bool in_replaceName,
+                                              SuccessCallback in_success = null,
+                                              FailureCallback in_failure = null,
+                                              object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardIds.Value] = in_leaderboardIds;
+            data[OperationParam.SocialLeaderboardServiceLeaderboardResultCount.Value] = in_leaderboardResultCount;
+            data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = in_replaceName;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetMultiSocialLeaderboard, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
 
         /// <summary>
         /// Method returns the global leaderboard.

@@ -31,9 +31,9 @@ namespace BrainCloud
     /// </summary>
     /// <param name="status">The http status code</param>
     /// <param name="reasonCode">The error reason code</param>
-    /// <param name="statusMessage">The status message</param>
+    /// <param name="jsonError">The error json string</param>
     /// <param name="cbObject">The user supplied callback object</param>
-    public delegate void FailureCallback(int status, int reasonCode, string statusMessage, object cbObject);
+    public delegate void FailureCallback(int status, int reasonCode, string jsonError, object cbObject);
 
     /// <summary>
     /// Log callback to implement if providing a custom logging function.
@@ -44,6 +44,11 @@ namespace BrainCloud
     /// Callback method invoked when brainCloud events are received.
     /// </summary>
     public delegate void EventCallback(string jsonResponse);
+
+    /// <summary>
+    /// Callback method invoked when brainCloud rewards are received.
+    /// </summary>
+    public delegate void RewardCallback(string jsonResponse);
 
 
     public class BrainCloudClient
@@ -113,6 +118,7 @@ namespace BrainCloud
             m_playerStatisticsEventService = new BrainCloudPlayerStatisticsEvent(this);
 
             m_s3HandlingService = new BrainCloudS3Handling(this);
+            m_redemptionCodeService = new BrainCloudRedemptionCode(this);
         }
 
         //---------------------------------------------------------------
@@ -152,6 +158,7 @@ namespace BrainCloud
         private BrainCloudPushNotification m_pushNotificationService;
         private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
         private BrainCloudS3Handling m_s3HandlingService;
+        private BrainCloudRedemptionCode m_redemptionCodeService;
 
         #endregion Private Data
 
@@ -465,6 +472,16 @@ namespace BrainCloud
             return this.m_s3HandlingService;
         }
 
+        public BrainCloudRedemptionCode RedemptionCodeService
+        {
+            get { return m_redemptionCodeService; }
+        }
+
+        public BrainCloudRedemptionCode GetRedemptionCodeService
+        {
+            get { return m_redemptionCodeService; }
+        }
+
         public bool Authenticated
         {
             get
@@ -634,6 +651,24 @@ namespace BrainCloud
             m_bc.DeregisterEventCallback();
         }
 
+        /// <summary>
+        /// Sets a reward handler for any api call results that return rewards.
+        /// </summary>
+        /// <param name="in_cb">The reward callback handler.</param>
+        /// <see cref="http://getbraincloud.com/apidocs">The brainCloud apidocs site for more information on the return JSON</see>
+        public void RegisterRewardCallback(RewardCallback in_cb)
+        {
+            m_bc.RegisterRewardCallback(in_cb);
+        }
+        
+        /// <summary>
+        /// Deregisters the reward callback.
+        /// </summary>
+        public void DeregisterRewardCallback()
+        {
+            m_bc.DeregisterRewardCallback();
+        }
+
 
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="in_enable">True if logging is to be enabled</param>
@@ -713,6 +748,10 @@ namespace BrainCloud
         /// retries will occur.
         /// 
         /// By default, the packet timeout array is {10, 10, 10}
+        /// 
+        /// Note that this method does not change the timeout for authentication
+        /// packets (use SetAuthenticationPacketTimeout method).
+        ///
         /// </summary>
         /// <param name="in_timeouts">An array of packet timeouts.</param>
         public void SetPacketTimeouts(List<int> in_timeouts)
@@ -738,21 +777,40 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sets the authentication packet timeout.
+        /// Sets the authentication packet timeout which is tracked separately
+        /// from all other packets. Note that authentication packets are never
+        /// retried and so this value represents the total time a client would
+        /// wait to receive a reply to an authentication api call. By default
+        /// this timeout is set to 15 seconds.
         /// </summary>
-        /// <param name="valueSecs">Value in secs.</param>
-        public void SetAuthenticationPacketTimeout(int valueSecs)
+        /// <param name="valueSecs">The timeout in seconds.</param>
+        public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
-            m_bc.AuthenticationPacketTimeoutSecs = valueSecs;
+            m_bc.AuthenticationPacketTimeoutSecs = timeoutSecs;
         }
 
         /// <summary>
-        /// Gets the authentication packet timeout. Defaults to 15 seconds.
+        /// Gets the authentication packet timeout which is tracked separately
+        /// from all other packets. Note that authentication packets are never
+        /// retried and so this value represents the total time a client would
+        /// wait to receive a reply to an authentication api call. By default
+        /// this timeout is set to 15 seconds.
         /// </summary>
         /// <returns>The authentication packet timeoutin seconds.</returns>
         public int GetAuthenticationPacketTimeout()
         {
             return m_bc.AuthenticationPacketTimeoutSecs;
+        }
+
+        /// <summary>
+        /// Sets the error callback to return the status message instead of the
+        /// error json string. This flag is used to conform to pre-2.17 client
+        /// behaviour.
+        /// </summary>
+        /// <param name="enabled">If set to <c>true</c>, enable.</param>
+        public void SetOldStyleStatusMessageErrorCallback(bool enabled)
+        {
+            m_bc.OldStyleStatusResponseInErrorCallback = enabled;
         }
 
         #endregion

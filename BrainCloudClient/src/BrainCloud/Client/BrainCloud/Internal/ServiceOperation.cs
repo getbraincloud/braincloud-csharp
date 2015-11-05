@@ -58,7 +58,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadFriendsWithApplication = new ServiceOperation("READ_FRIENDS_WITH_APPLICATION");
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
         public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
-        public static readonly ServiceOperation GetLeaderboard = new ServiceOperation("GET_LEADERBOARD");
+        public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetMultiSocialLeaderboard = new ServiceOperation("GET_MULTI_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboardPage = new ServiceOperation("GET_GLOBAL_LEADERBOARD_PAGE");
         public static readonly ServiceOperation GetGlobalLeaderboardView = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VIEW");
@@ -205,6 +206,10 @@ namespace BrainCloud.Internal
 
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
         public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
+
+        //RedemptionCode
+        public static readonly ServiceOperation GetRedeemedCodes = new ServiceOperation("GET_REDEEMED_CODES");
+        public static readonly ServiceOperation RedeemCode = new ServiceOperation("REDEEM_CODE");
 
         private ServiceOperation(string value)
         {

@@ -91,5 +91,47 @@ namespace BrainCloudTests
             }
             
         }*/
+
+        [Test]
+        public void TestErrorCallback()
+        {
+
+            BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
+            BrainCloudClient.Get().EnableLogging(true);
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(-1, -1);
+            Console.Out.WriteLine (tr.m_statusMessage);
+            Assert.True (tr.m_statusMessage.StartsWith("{"));
+
+            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(true);
+            tr.Reset();
+
+            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(-1, -1);
+            Console.Out.WriteLine (tr.m_statusMessage);
+            Assert.False (tr.m_statusMessage.StartsWith("{"));
+
+            // try now using 900 client timeout
+            BrainCloudClient.Get().Initialize("http://localhost:5432", _secret, _appId, _version);
+
+            tr.Reset();
+            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(false);
+            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(-1, -1);
+            Console.Out.WriteLine (tr.m_statusMessage);
+            Assert.True (tr.m_statusMessage.StartsWith("{"));
+
+            tr.Reset();
+            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(true);
+            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(-1, -1);
+            Console.Out.WriteLine (tr.m_statusMessage);
+            Assert.False (tr.m_statusMessage.StartsWith("{"));
+
+            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(false);
+            BrainCloudClient.Get ().ResetCommunication();
+        }
     }
 }

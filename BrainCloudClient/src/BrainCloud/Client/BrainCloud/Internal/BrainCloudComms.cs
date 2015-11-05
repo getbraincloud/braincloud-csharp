@@ -117,6 +117,11 @@ namespace BrainCloud.Internal
         /// </summary>
         private EventCallback m_eventCallback;
 
+        /// <summary>
+        /// The reward handler callback method
+        /// </summary>
+        private RewardCallback m_rewardCallback;
+
         private bool m_isAuthenticated = false;
         public bool Authenticated
         {
@@ -186,6 +191,19 @@ namespace BrainCloud.Internal
             }
         }
 
+        private bool m_oldStyleStatusResponseInErrorCallback = false;
+        public bool OldStyleStatusResponseInErrorCallback
+        {
+            get
+            {
+                return m_oldStyleStatusResponseInErrorCallback;
+            }
+            set
+            {
+                m_oldStyleStatusResponseInErrorCallback = value;
+            }
+        }
+
 
         public BrainCloudComms(BrainCloudClient in_client)
         {
@@ -220,6 +238,16 @@ namespace BrainCloud.Internal
         public void DeregisterEventCallback()
         {
             m_eventCallback = null;
+        }
+
+        public void RegisterRewardCallback(RewardCallback in_cb)
+        {
+            m_rewardCallback = in_cb;
+        }
+
+        public void DeregisterRewardCallback()
+        {
+            m_rewardCallback = null;
         }
 
 
@@ -441,9 +469,10 @@ namespace BrainCloud.Internal
                 // its a success response
                 if (statusCode == 200)
                 {
+                    Dictionary<string, object> responseData = null;
                     if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
-                        Dictionary<string, object> responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
+                        responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
                         
                         // send the data back as not formatted
                         data = JsonWriter.Serialize(response);
@@ -500,25 +529,98 @@ namespace BrainCloud.Internal
                                 exceptions.Add (e);
                             }
                         }
+
+                        // now deal with rewards
+                        if (m_rewardCallback != null && responseData != null) 
+                        {
+                            try
+                            {
+                                Dictionary<string, object> rewards = null;
+
+                                // it's an operation that return a reward
+                                if (sc.GetService().Equals(ServiceName.Authenticate.Value)
+                                        && sc.GetOperation().Equals(ServiceOperation.Authenticate.Value))
+                                {
+                                    object objRewards = null;
+                                    if (responseData.TryGetValue("rewards", out objRewards))
+                                    {
+                                        Dictionary<string, object> outerRewards = (Dictionary<string, object>) objRewards;
+                                        if (outerRewards.TryGetValue("rewards", out objRewards))
+                                        {
+                                            Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                            if (innerRewards.Count > 0)
+                                            {
+                                                // we found rewards
+                                                rewards = outerRewards;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if ((sc.GetService().Equals(ServiceName.PlayerStatistics.Value)
+                                        && sc.GetOperation().Equals (ServiceOperation.Update.Value))
+                                    || (sc.GetService().Equals(ServiceName.PlayerStatisticsEvent.Value)
+                                       && (sc.GetOperation().Equals (ServiceOperation.Trigger.Value)
+                                            || sc.GetOperation().Equals (ServiceOperation.TriggerMultiple.Value))))
+                                {
+                                    object objRewards = null;
+                                    if (responseData.TryGetValue("rewards", out objRewards))
+                                    {
+                                        Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                        if (innerRewards.Count > 0)
+                                        {
+                                            // we found rewards
+                                            rewards = responseData;
+                                        }
+                                    }
+                                }
+
+                                if (rewards != null)
+                                {
+                                    Dictionary<string, object> theReward = new Dictionary<string, object>();
+                                    theReward["rewards"] = rewards;
+                                    theReward["service"] = sc.GetService ();
+                                    theReward["operation"] = sc.GetOperation();
+                                    Dictionary<string, object> apiRewards = new Dictionary<string, object>();
+                                    List<object> rewardList = new List<object>();
+                                    rewardList.Add (theReward);
+                                    apiRewards["apiRewards"] = rewardList;
+
+                                    string rewardsAsJson = JsonWriter.Serialize(apiRewards);
+                                    m_rewardCallback(rewardsAsJson);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                m_brainCloudClientRef.Log (e.StackTrace);
+                                exceptions.Add (e);
+                            }
+                        }
                     }
                 }
                 else if (statusCode >= 400 || statusCode == 202)
                 {
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
-                    string statusMessage = "";
+                    string errorJson = "";
                     
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
                     {
                         reasonCode = (int) reasonCodeObj;
                     }
-                    if (response.TryGetValue ("status_message", out statusMessageObj))
+                    if (m_oldStyleStatusResponseInErrorCallback)
                     {
-                        statusMessage = (string) statusMessageObj;
+                        if (response.TryGetValue ("status_message", out statusMessageObj))
+                        {
+                            errorJson = (string) statusMessageObj;
+                        }
+                    }
+                    else
+                    {
+                        errorJson = JsonWriter.Serialize (response);
                     }
                     
-                    if (reasonCode == ReasonCodes.SESSION_EXPIRED
-                        || reasonCode == ReasonCodes.SESSION_NOT_FOUND_ERROR)
+                    if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
+                        || reasonCode == ReasonCodes.NO_SESSION)
                     {
                         m_isAuthenticated = false;
                         m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
@@ -538,7 +640,7 @@ namespace BrainCloud.Internal
                     {
                         try
                         {
-                            sc.GetCallback().OnErrorCallback(statusCode, reasonCode, statusMessage);
+                            sc.GetCallback().OnErrorCallback(statusCode, reasonCode, errorJson);
                         }
                         catch(Exception e)
                         {

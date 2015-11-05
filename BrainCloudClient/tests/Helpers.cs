@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using BrainCloud;
-using BrainCloudTests;
+using JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -20,6 +19,17 @@ namespace BrainCloudTests
         public static string CreateJsonPair(string key, long value)
         {
             return "{ \"" + key + "\" : " + value + "}";
+        }
+
+        public static Dictionary<string, object> GetDataFromJsonResponse(string response)
+        {
+            Dictionary<string, object> responseObj = JsonReader.Deserialize(response) as Dictionary<string, object>;
+            return GetDataFromJsonResponse(responseObj);
+        }
+
+        public static Dictionary<string, object> GetDataFromJsonResponse(Dictionary<string, object> response)
+        {
+            return response["data"] as Dictionary<string, object>;
         }
     }
 }

@@ -47,6 +47,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName GlobalApp = new ServiceName("globalApp");
 
         public static readonly ServiceName S3Handling = new ServiceName("s3Handling");
+        public static readonly ServiceName RedemptionCode = new ServiceName("redemptionCode");
 
         private ServiceName(string value)
         {

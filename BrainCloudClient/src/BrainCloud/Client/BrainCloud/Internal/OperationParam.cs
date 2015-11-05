@@ -209,6 +209,7 @@ namespace BrainCloud
 
         // Social Leaderboard Service - general parameters
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardId              = new OperationParam("leaderboardId");
+        public static readonly OperationParam SocialLeaderboardServiceLeaderboardIds             = new OperationParam("leaderboardIds");
         public static readonly OperationParam SocialLeaderboardServiceReplaceName                = new OperationParam("replaceName");
         public static readonly OperationParam SocialLeaderboardServiceScore                      = new OperationParam("score");
         public static readonly OperationParam SocialLeaderboardServiceData                       = new OperationParam("data");
@@ -227,6 +228,8 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceAfterCount                 = new OperationParam("afterCount");
         public static readonly OperationParam SocialLeaderboardServiceIncludeLeaderboardSize     = new OperationParam("includeLeaderboardSize");
         public static readonly OperationParam SocialLeaderboardServiceVersionId                  = new OperationParam("versionId");
+        public static readonly OperationParam SocialLeaderboardServiceLeaderboardResultCount     = new OperationParam("leaderboardResultCount");
+
 
         // Social Leaderboard Service - Reset Score Params
         //public static readonly Operation SocialLeaderboardServiceResetScore = new Operation("");
@@ -314,6 +317,11 @@ namespace BrainCloud
 
         //Shared Identity
         public static readonly OperationParam IdentityServiceForceSingleton = new OperationParam("forceSingleton");
+
+        //RedemptionCode
+        public static readonly OperationParam RedemptionCodeServiceScanCode = new OperationParam("scanCode");
+        public static readonly OperationParam RedemptionCodeServiceCodeType = new OperationParam("codeType");
+        public static readonly OperationParam RedemptionCodeServiceCustomRedemptionInfo = new OperationParam("customRedemptionInfo");
 
         private OperationParam(string value)
         {

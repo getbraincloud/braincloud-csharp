@@ -56,7 +56,6 @@
   <ItemGroup>
     <Reference Include="MonoDevelop.NUnit, Version=2.6.0.0, Culture=neutral">
       <Private>False</Private>
-      <Package>monodevelop-core-addins</Package>
     </Reference>
     <Reference Include="nunit.core, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <Private>False</Private>
@@ -173,6 +172,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestComms.cs">
       <Link>TestComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestRedemptionCode.cs">
+      <Link>TestRedemptionCode.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
