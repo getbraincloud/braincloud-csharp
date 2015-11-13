@@ -63,9 +63,9 @@ namespace BrainCloud.Common
             // web browser
             case UnityEngine.RuntimePlatform.WindowsWebPlayer:
             case UnityEngine.RuntimePlatform.OSXWebPlayer:
+            case UnityEngine.RuntimePlatform.WebGLPlayer:
                 return Web;
 
-                
                 // android
             case UnityEngine.RuntimePlatform.Android:
                 return GooglePlayAndroid;
