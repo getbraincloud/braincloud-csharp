@@ -51,7 +51,11 @@ namespace JsonFx.Xml
 		#region Fields
 
 		private readonly XmlReaderSettings Settings;
+
+		// to prevent warning when compiling
+		#pragma warning disable 0414
 		private readonly XmlSerializerNamespaces Namespaces;
+		#pragma warning restore 0414
 
 		#endregion Fields
 
