@@ -63,7 +63,9 @@ namespace BrainCloud.Common
             // web browser
             case UnityEngine.RuntimePlatform.WindowsWebPlayer:
             case UnityEngine.RuntimePlatform.OSXWebPlayer:
+#if !UNITY_4_6
             case UnityEngine.RuntimePlatform.WebGLPlayer:
+#endif
                 return Web;
 
                 // android
@@ -93,9 +95,11 @@ namespace BrainCloud.Common
             case UnityEngine.RuntimePlatform.IPhonePlayer:
                 return iOS;
 
-            // appletv to add soon
+#if !UNITY_4_6
+            // appletv to add soon... but to which unity version???
             // case ???
                 // return AppleTVOS;
+#endif
 
             default:
                 throw new Exception("Unknown unity runtime platform: " + UnityEngine.Application.platform);
