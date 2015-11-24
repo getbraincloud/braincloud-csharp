@@ -16,7 +16,7 @@ namespace BrainCloudTests
         public void TestRedeemCode()
         {
             TestResult tr = new TestResult();
-
+            /*
             BrainCloudClient.Get().RedemptionCodeService.RedeemCode(
                 GetValidCode().ToString(),
                 _codeType,
@@ -24,6 +24,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+            */
         }
 
         [Test]
