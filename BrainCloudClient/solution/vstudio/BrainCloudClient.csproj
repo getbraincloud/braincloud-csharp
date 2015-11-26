@@ -74,6 +74,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudClient.cs">
       <Link>BrainCloud\BrainCloudClient.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
+      <Link>BrainCloud\BrainCloudDataStream.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudEntity.cs">
       <Link>BrainCloud\BrainCloudEntity.cs</Link>
     </Compile>
