@@ -76,6 +76,79 @@ namespace BrainCloud
 #endif
 
         /// <summary>
+        /// Deregisters all device tokens currently registered to the player.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The callback object
+        /// </param>
+        /// <returns> JSON describing the result
+        /// {
+        ///   "status":200,
+        ///   "data":null
+        /// }
+        /// </returns>
+        public void DeregisterAllPushNotificationDeviceTokens(
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+           {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.DeregisterAll, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Deregisters the given device token from the server to disable this device
+        /// from receiving push notifications.
+        /// </param>
+        /// <param name="in_platform">
+        /// The device platform being registered.
+        /// </param>
+        /// <param name="in_token">
+        /// The platform-dependant device token needed for push notifications.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The callback object
+        /// </param>
+        /// <returns> JSON describing the result
+        /// {
+        ///   "status":200,
+        ///   "data":null
+        /// }
+        /// </returns>
+        public void DeregisterPushNotificationDeviceToken(
+            Platform in_platform,
+            string in_token,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            string devicePlatform = in_platform.ToString();
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationRegisterParamDeviceType.Value] = devicePlatform;
+            data[OperationParam.PushNotificationRegisterParamDeviceToken.Value] = in_token;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Deregister, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+
+        /// <summary>
         /// Registers the given device token with the server to enable this device
         /// to receive push notifications.
         /// </param>

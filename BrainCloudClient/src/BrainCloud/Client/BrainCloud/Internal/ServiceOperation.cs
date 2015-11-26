@@ -33,6 +33,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
 
         // push notification
+        public static readonly ServiceOperation DeregisterAll = new ServiceOperation("DEREGISTER_ALL");
+        public static readonly ServiceOperation Deregister = new ServiceOperation("DEREGISTER");
         public static readonly ServiceOperation Register = new ServiceOperation("REGISTER");
         public static readonly ServiceOperation SendSimple = new ServiceOperation("SEND_SIMPLE");
         public static readonly ServiceOperation SendRich = new ServiceOperation("SEND_RICH");
