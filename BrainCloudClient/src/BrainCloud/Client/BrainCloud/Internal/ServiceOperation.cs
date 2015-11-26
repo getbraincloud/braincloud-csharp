@@ -211,6 +211,12 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetRedeemedCodes = new ServiceOperation("GET_REDEEMED_CODES");
         public static readonly ServiceOperation RedeemCode = new ServiceOperation("REDEEM_CODE");
 
+        //DataStream
+        public static readonly ServiceOperation CustomPageEvent = new ServiceOperation("CUSTOM_PAGE_EVENT");
+        public static readonly ServiceOperation CustomScreenEvent = new ServiceOperation("CUSTOM_SCREEN_EVENT");
+        public static readonly ServiceOperation CustomTrackEvent = new ServiceOperation("CUSTOM_TRACK_EVENT");
+
+
         private ServiceOperation(string value)
         {
             Value = value;

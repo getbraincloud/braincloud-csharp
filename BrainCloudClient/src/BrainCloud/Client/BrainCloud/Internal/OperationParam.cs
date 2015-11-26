@@ -316,12 +316,16 @@ namespace BrainCloud
         public static readonly OperationParam S3HandlingServiceFileDetails                       = new OperationParam("fileDetails");
 
         //Shared Identity
-        public static readonly OperationParam IdentityServiceForceSingleton = new OperationParam("forceSingleton");
+        public static readonly OperationParam IdentityServiceForceSingleton                     = new OperationParam("forceSingleton");
 
         //RedemptionCode
-        public static readonly OperationParam RedemptionCodeServiceScanCode = new OperationParam("scanCode");
-        public static readonly OperationParam RedemptionCodeServiceCodeType = new OperationParam("codeType");
-        public static readonly OperationParam RedemptionCodeServiceCustomRedemptionInfo = new OperationParam("customRedemptionInfo");
+        public static readonly OperationParam RedemptionCodeServiceScanCode                     = new OperationParam("scanCode");
+        public static readonly OperationParam RedemptionCodeServiceCodeType                     = new OperationParam("codeType");
+        public static readonly OperationParam RedemptionCodeServiceCustomRedemptionInfo         = new OperationParam("customRedemptionInfo");
+
+        //DataStream
+        public static readonly OperationParam DataStreamEventName                               = new OperationParam("eventName");
+        public static readonly OperationParam DataStreamEventProperties                         = new OperationParam("eventProperties");
 
         private OperationParam(string value)
         {
