@@ -60,10 +60,6 @@
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngineX86">
-      <HintPath>C:\Program Files (x86)\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -77,6 +73,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudClient.cs">
       <Link>BrainCloud\BrainCloudClient.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
+      <Link>BrainCloud\BrainCloudDataStream.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudEntity.cs">
       <Link>BrainCloud\BrainCloudEntity.cs</Link>

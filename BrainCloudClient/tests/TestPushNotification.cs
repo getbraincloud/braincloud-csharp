@@ -11,6 +11,38 @@ namespace BrainCloudTests
     public class TestPushNotification : TestFixtureBase
     {
         [Test]
+        public void DeregisterAllPushNotificationDeviceTokens()
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Get().PushNotificationService.DeregisterAllPushNotificationDeviceTokens(
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
+
+        [Test]
+        public void DeregisterPushNotificationDeviceToken()
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Get().PushNotificationService.RegisterPushNotificationDeviceToken(
+                Platform.iOS,
+                "GARBAGE_TOKEN",
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+
+            tr.Reset ();
+            BrainCloudClient.Get().PushNotificationService.DeregisterPushNotificationDeviceToken(
+                Platform.iOS,
+                "GARBAGE_TOKEN",
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
+
+        [Test]
         public void RegisterPushNotificationDeviceToken()
         {
             TestResult tr = new TestResult();

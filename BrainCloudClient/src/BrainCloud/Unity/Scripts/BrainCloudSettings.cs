@@ -44,28 +44,28 @@ public class BrainCloudSettings : ScriptableObject
 	
 #if UNITY_EDITOR
 	// Menu Bar
-	[MenuItem ("brainCloud/Settings", false, 0)]
+	[MenuItem ("Window/brainCloud/Settings", false, 0)]
 	public static void  GoSettings () 
 	{
 		Selection.activeObject = BrainCloudSettings.Instance;
 	}
 
-	[MenuItem ("brainCloud/Portal...", false, 100)]
+	[MenuItem ("Window/brainCloud/Launch Portal...", false, 100)]
 	public static void  GoPortal () 
 	{
 		Help.BrowseURL(Instance.PortalURL);
 	}
 
-	[MenuItem ("brainCloud/API Documentation...", false, 101)]
+	[MenuItem ("Window/brainCloud/View API Documentation...", false, 101)]
 	public static void  GoAPIDoc () 
 	{
 		Help.BrowseURL(Instance.ApiDocsURL);
 	}
 	
-	[MenuItem ("brainCloud/Tutorials...", false, 200)]
+	[MenuItem ("Window/brainCloud/View Tutorials...", false, 102)]
 	public static void  GoTutorials () 
 	{
-		Help.BrowseURL(Instance.ApiDocsURL + "/api/tutorials");
+		Help.BrowseURL(Instance.ApiDocsURL + "/tutorials/unity-tutorials/");
 	}
 #endif
 
@@ -76,11 +76,11 @@ public class BrainCloudSettings : ScriptableObject
 	}
 	public string PortalURL
 	{
-		get {return m_serverURL;}
+		get {return "https://portal.braincloudservers.com";}
 	}
 	public string ApiDocsURL
 	{
-		get {return "http://apidocs.braincloudservers.com";}
+		get {return "http://getbraincloud.com/apidocs";}
 	}
 
 	// Settings
