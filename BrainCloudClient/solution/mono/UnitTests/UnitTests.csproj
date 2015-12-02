@@ -176,5 +176,8 @@
     <Compile Include="..\..\..\tests\TestRedemptionCode.cs">
       <Link>TestRedemptionCode.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestDataStream.cs">
+      <Link>TestDataStream.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

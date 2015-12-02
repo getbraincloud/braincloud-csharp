@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 #if !(DOT_NET)
 using UnityEngine;
 using SysLanguageObject = UnityEngine.SystemLanguage;
@@ -18,7 +17,7 @@ using SysLanguageObject = System.String; // todo
 
 namespace BrainCloud
 {
-//[Serializable]
+    //[Serializable]
     public class Util
     {
         #region DateTime
@@ -126,11 +125,10 @@ namespace BrainCloud
             return isoCode;
         }
 
-        /// <summary> Method returns the fractional UTC offset in hours of the
-        /// current timezone.
+        /// <summary> 
+        /// Method returns the fractional UTC offset in hours of the current timezone.
         /// </summary>
-        /// <returns>The fractional UTC offset in hours
-        /// </returns>
+        /// <returns>The fractional UTC offset in hours</returns>
         public static double GetUTCOffsetForCurrentTimeZone()
         {
             double utcOffset = 0;
@@ -143,7 +141,7 @@ namespace BrainCloud
                 TimeSpan localOffset = localZone.GetUtcOffset(localTime);
                 utcOffset = localOffset.TotalHours;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 // what to do now?
             }
@@ -151,11 +149,20 @@ namespace BrainCloud
         }
 
         protected static string _usersLocale = "";
+
+        /// <summary>
+        /// Manually set the country code overriding the automatic value
+        /// </summary>
+        /// <param name="in_string">Two letter ISO country code</param>
         public static void SetCurrentCountryCode(string in_string)
         {
             _usersLocale = in_string;
         }
 
+        /// <summary>
+        /// Gets the current country code
+        /// </summary>
+        /// <returns>Two letter ISO country code</returns>
         public static string GetCurrentCountryCode()
         {
             return _usersLocale;

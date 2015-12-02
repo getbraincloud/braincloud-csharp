@@ -11,6 +11,7 @@ using System.Net;
 using BrainCloud.Internal;
 using BrainCloud.Common;
 using BrainCloud.Entity;
+using System.Globalization;
 
 
 #if !(DOT_NET)
@@ -603,6 +604,16 @@ namespace BrainCloud
             m_gameId = gameId;
             m_gameVersion = gameVersion;
             m_platform = platform;
+
+            //setup region/country code
+            if(Util.GetCurrentCountryCode() == string.Empty)
+            {
+#if(DOT_NET)
+                Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
+#else
+                Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);
+#endif
+            }
 
             m_initialized = true;
         }

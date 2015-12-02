@@ -3,12 +3,6 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
-using JsonFx.Json;
 using BrainCloud.Internal;
 
 namespace BrainCloud
