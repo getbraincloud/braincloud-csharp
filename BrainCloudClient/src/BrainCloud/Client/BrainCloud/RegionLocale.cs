@@ -1,4 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+#if !DOT_NET
+using UnityEngine;
+#endif
 
 public class RegionLocale
 {
@@ -24,6 +27,14 @@ public class RegionLocale
     {
 #if UNITY_IPHONE && !UNITY_EDITOR
         m_countryLocale = _GetUsersCountryLocale();
+#elif UNITY_ANDROID && !UNITY_EDITOR
+		AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer"); 
+		AndroidJavaObject activityContext = jc.GetStatic<AndroidJavaObject>("currentActivity");
+		AndroidJavaObject regionLocaleNative = new AndroidJavaObject("com.braincloud.unity.RegionLocaleNative");
+		if (regionLocaleNative != null)
+		{
+			m_countryLocale = regionLocaleNative.CallStatic<string>("GetUsersCountryLocale", activityContext);
+		}
 #endif
     }
 }
