@@ -76,10 +76,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            string[] stats = new string[] { "testAttrib1", "testAttrib2" };
-
             BrainCloudClient.Get().PlayerStateService.RemoveAttributes(
-                JsonWriter.Serialize(stats),
+                new string[] { "testAttrib1", "testAttrib2" },
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

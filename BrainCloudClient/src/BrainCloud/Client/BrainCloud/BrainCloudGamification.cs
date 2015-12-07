@@ -524,7 +524,7 @@ namespace BrainCloud
         /// Service Operation - AwardAchievements
         /// </remarks>
         /// <param name="in_achievementIds">
-        /// A comma separated list of achievement ids to award
+        /// A collection of achievement ids to award
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -541,6 +541,21 @@ namespace BrainCloud
         ///   "data":null
         /// }
         /// </returns>
+        public void AwardAchievements(
+            IList<string> in_achievementIds,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GamificationServiceAchievementsName.Value] = in_achievementIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.AwardAchievements, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
         public void AwardAchievements(
             string in_achievementIds,
             SuccessCallback in_success = null,
@@ -901,7 +916,7 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void ResetMilestones(
-            string[] in_milestoneIds,
+            IList<string> in_milestoneIds,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
@@ -914,6 +929,5 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
 
         }
-
     }
 }

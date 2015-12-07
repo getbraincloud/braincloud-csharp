@@ -378,8 +378,8 @@ namespace BrainCloud
         /// Service Name - PlayerState
         /// Service Operation - RemoveAttributes
         /// </remarks>
-        /// <param name="in_jsonAttributeNameList">
-        /// Json array of attribute names.
+        /// <param name="in_attributeNames">
+        /// List of attribute names.
         /// </param>
         /// <param name="in_success">
         /// The success callback.
@@ -395,6 +395,21 @@ namespace BrainCloud
         ///   "status": 200,
         /// }
         /// </returns>
+        public void RemoveAttributes(
+            IList<string> in_attributeNames,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceAttributes.Value] = in_attributeNames;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.RemoveAttributes, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
         public void RemoveAttributes(
             string in_jsonAttributeNameList,
             SuccessCallback in_success = null,
