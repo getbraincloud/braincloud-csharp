@@ -137,6 +137,7 @@ namespace BrainCloudUnity
 			{
 				BrainCloudHUD hud = (BrainCloudHUD)o;
 				hud.EnableUI = true;
+				hud.Minimized = false;
 			}
 			if (m_authSuccessLevel != null && m_authSuccessLevel.Length > 0)
 			{
