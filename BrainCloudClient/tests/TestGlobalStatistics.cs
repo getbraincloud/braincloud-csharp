@@ -39,10 +39,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            string[] stats = new string[] { "TestStat" };
-
             BrainCloudClient.Get().GlobalStatisticsService.ReadGlobalStatsSubset(
-                JsonWriter.Serialize(stats),
+                new string[] { "TestStat" },
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

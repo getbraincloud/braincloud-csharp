@@ -84,7 +84,7 @@ namespace BrainCloudTests
         /// </summary>
         private void LoadIds()
         {
-            string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
             string absPath = exePath;
             string search = "Unity-Csharp" + Path.DirectorySeparatorChar + "BrainCloudClient";
             if (absPath.Contains(search))
