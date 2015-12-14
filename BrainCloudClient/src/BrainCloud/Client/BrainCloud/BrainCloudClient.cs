@@ -121,6 +121,7 @@ namespace BrainCloud
             m_s3HandlingService = new BrainCloudS3Handling(this);
             m_redemptionCodeService = new BrainCloudRedemptionCode(this);
             m_dataStreamService = new BrainCloudDataStream(this);
+            m_profanityService = new BrainCloudProfanity(this);
         }
 
         //---------------------------------------------------------------
@@ -162,6 +163,7 @@ namespace BrainCloud
         private BrainCloudS3Handling m_s3HandlingService;
         private BrainCloudRedemptionCode m_redemptionCodeService;
         private BrainCloudDataStream m_dataStreamService;
+        private BrainCloudProfanity m_profanityService;
 
         #endregion Private Data
 
@@ -494,6 +496,17 @@ namespace BrainCloud
         {
             get { return m_dataStreamService; }
         }
+
+        public BrainCloudProfanity ProfanityService
+        {
+            get { return m_profanityService; }
+        }
+
+        public BrainCloudProfanity GetProfanityService
+        {
+            get { return m_profanityService; }
+        }
+
 
         public bool Authenticated
         {

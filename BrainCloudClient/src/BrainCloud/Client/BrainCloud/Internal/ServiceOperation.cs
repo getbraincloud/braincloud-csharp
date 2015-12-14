@@ -218,6 +218,12 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation CustomScreenEvent = new ServiceOperation("CUSTOM_SCREEN_EVENT");
         public static readonly ServiceOperation CustomTrackEvent = new ServiceOperation("CUSTOM_TRACK_EVENT");
 
+        //Profanity
+        public static readonly ServiceOperation ProfanityCheck = new ServiceOperation("PROFANITY_CHECK");
+        public static readonly ServiceOperation ProfanityReplaceText = new ServiceOperation("PROFANITY_REPLACE_TEXT");
+        public static readonly ServiceOperation ProfanityIdentifyBadWords = new ServiceOperation("PROFANITY_IDENTIFY_BAD_WORDS");
+
+
 
         private ServiceOperation(string value)
         {

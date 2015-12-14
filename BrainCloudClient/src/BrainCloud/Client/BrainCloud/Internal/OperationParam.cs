@@ -327,6 +327,14 @@ namespace BrainCloud
         public static readonly OperationParam DataStreamEventName                               = new OperationParam("eventName");
         public static readonly OperationParam DataStreamEventProperties                         = new OperationParam("eventProperties");
 
+        // Profanity
+        public static readonly  OperationParam ProfanityText                                      = new OperationParam("text");
+        public static readonly  OperationParam ProfanityReplaceSymbol                             = new OperationParam("replaceSymbol");
+        public static readonly  OperationParam ProfanityFlagEmail                                 = new OperationParam("flagEmail");
+        public static readonly  OperationParam ProfanityFlagPhone                                 = new OperationParam("flagPhone");
+        public static readonly  OperationParam ProfanityFlagUrls                                  = new OperationParam("flagUrls");
+        public static readonly  OperationParam ProfanityLanguages                                 = new OperationParam("languages");
+
         private OperationParam(string value)
         {
             Value = value;
