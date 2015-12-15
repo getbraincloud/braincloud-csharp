@@ -543,12 +543,18 @@ namespace BrainCloud
             return this.SessionID;
         }
 
-        private string m_gameId = "";
         public string GameId
         {
             get
             {
-                return m_gameId;    //no public "set"
+                if (m_bc != null)
+                {
+                    return m_bc.GameId;
+                }
+                else
+                {
+                    return "";
+                }
             }
         }
 
@@ -612,9 +618,8 @@ namespace BrainCloud
 #endif
 
             // set up braincloud which does the message handling
-            m_bc.Initialize(serverURL, secretKey);
+            m_bc.Initialize(serverURL, gameId, secretKey);
 
-            m_gameId = gameId;
             m_gameVersion = gameVersion;
             m_platform = platform;
 

@@ -268,6 +268,7 @@ namespace BrainCloud
         public static readonly OperationParam ServiceMessagePacketId                             = new OperationParam("packetId");
         public static readonly OperationParam ServiceMessageProfileId                            = new OperationParam("profileId");
         public static readonly OperationParam ServiceMessageSessionId                            = new OperationParam("sessionId");
+        public static readonly OperationParam ServiceMessageGameId                               = new OperationParam("gameId");
         public static readonly OperationParam ServiceMessageMessages                             = new OperationParam("messages");
 
         // Error Params
