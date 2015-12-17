@@ -28,10 +28,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            string[] stats = new string[] { "currency", "highestScore" };
-
             BrainCloudClient.Get().PlayerStatisticsService.ReadPlayerStatsSubset(
-                JsonWriter.Serialize(stats),
+                new string[] { "currency", "highestScore" },
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

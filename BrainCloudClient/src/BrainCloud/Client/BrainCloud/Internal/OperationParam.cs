@@ -268,6 +268,7 @@ namespace BrainCloud
         public static readonly OperationParam ServiceMessagePacketId                             = new OperationParam("packetId");
         public static readonly OperationParam ServiceMessageProfileId                            = new OperationParam("profileId");
         public static readonly OperationParam ServiceMessageSessionId                            = new OperationParam("sessionId");
+        public static readonly OperationParam ServiceMessageGameId                               = new OperationParam("gameId");
         public static readonly OperationParam ServiceMessageMessages                             = new OperationParam("messages");
 
         // Error Params
@@ -326,6 +327,14 @@ namespace BrainCloud
         //DataStream
         public static readonly OperationParam DataStreamEventName                               = new OperationParam("eventName");
         public static readonly OperationParam DataStreamEventProperties                         = new OperationParam("eventProperties");
+
+        // Profanity
+        public static readonly  OperationParam ProfanityText                                      = new OperationParam("text");
+        public static readonly  OperationParam ProfanityReplaceSymbol                             = new OperationParam("replaceSymbol");
+        public static readonly  OperationParam ProfanityFlagEmail                                 = new OperationParam("flagEmail");
+        public static readonly  OperationParam ProfanityFlagPhone                                 = new OperationParam("flagPhone");
+        public static readonly  OperationParam ProfanityFlagUrls                                  = new OperationParam("flagUrls");
+        public static readonly  OperationParam ProfanityLanguages                                 = new OperationParam("languages");
 
         private OperationParam(string value)
         {

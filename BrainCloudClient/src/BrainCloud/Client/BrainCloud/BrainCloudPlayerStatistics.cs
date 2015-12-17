@@ -65,9 +65,8 @@ namespace BrainCloud
         /// Service Name - PlayerStatistics
         /// Service Operation - ReadSubset
         /// </remarks>
-        /// <param name="in_jsonData">
-        /// The json data containing the subset of statistics to read:
-        /// ex. [ "pantaloons", "minions" ]
+        /// <param name="in_playerStats">
+        /// A list containing the subset of statistics to read.
         /// </param>
         /// <param name="in_success">
         /// The success callback
@@ -92,6 +91,21 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void ReadPlayerStatsSubset(
+            IList<string> in_playerStats,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = in_playerStats;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.ReadSubset, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
+        public void ReadPlayerStatsSubset(
             string in_jsonData,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -106,49 +120,46 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-		
-		
-		
-		/// <summary>
-		/// Method retrieves the player statistics for the given category.
-		/// </summary>
-		/// <remarks>
-		/// Service Name - PlayerStatistics
-		/// Service Operation - READ_FOR_CATEGORY
-		/// </remarks>
-		/// <param name="in_category">
-		/// The player statistics category
-		/// </param>
-		/// <param name="in_success">
-		/// The success callback.
-		/// </param>
-		/// <param name="in_failure">
-		/// The failure callback.
-		/// </param>
-		/// <param name="in_cbObject">
-		/// The user object sent to the callback.
-		/// </param>
-		/// <returns> The JSON returned in the callback is as follows:
-		/// {
-		///   "status":200,
-		///   "data":{
-		///     "playerStatistics": []
-		///   }
-		/// }
-		/// </returns>
-		public void ReadPlayerStatsForCategory(
-			string in_category,
-			SuccessCallback in_success = null,
-			FailureCallback in_failure = null,
-			object in_cbObject = null)
-		{
-			Dictionary<string, object> data = new Dictionary<string, object>();
-			data[OperationParam.GamificationServiceCategory.Value] = in_category;
-			
-			ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-			ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.ReadForCategory, data, callback);
-			m_brainCloudClientRef.SendRequest(sc);
-		}
+        /// <summary>
+        /// Method retrieves the player statistics for the given category.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlayerStatistics
+        /// Service Operation - READ_FOR_CATEGORY
+        /// </remarks>
+        /// <param name="in_category">
+        /// The player statistics category
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status":200,
+        ///   "data":{
+        ///     "playerStatistics": []
+        ///   }
+        /// }
+        /// </returns>
+        public void ReadPlayerStatsForCategory(
+            string in_category,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GamificationServiceCategory.Value] = in_category;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.ReadForCategory, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
 
         /// <summary>
         /// Reset all of the statistics for this player back to their initial value.
@@ -274,7 +285,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonData);
+            Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonData);
             data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);

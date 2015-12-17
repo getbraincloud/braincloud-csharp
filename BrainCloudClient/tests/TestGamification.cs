@@ -23,7 +23,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Get().GamificationService.AwardAchievements(
-                _achievementId01 + "," + _achievementId02,
+                new string[] {_achievementId01, _achievementId02},
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

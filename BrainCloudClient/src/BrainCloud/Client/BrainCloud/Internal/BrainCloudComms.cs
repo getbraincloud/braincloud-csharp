@@ -131,6 +131,15 @@ namespace BrainCloud.Internal
             }
         }
 
+        private string m_gameId = null;
+        public string GameId
+        {
+            get
+            {
+                return m_gameId;
+            }
+        }
+
         private string m_sessionID;
         public string SessionID
         {
@@ -219,12 +228,13 @@ namespace BrainCloud.Internal
         /// </summary>
         /// <param name="serverURL">Server URL.</param>
         /// <param name="secretKey">Secret key.</param>
-        public void Initialize(string serverURL, string secretKey)
+        public void Initialize(string serverURL, string gameId, string secretKey)
         {
             m_packetId = 0;
             m_expectedIncomingPacketId = NO_PACKET_EXPECTED;
 
             m_serverURL = serverURL;
+            m_gameId = gameId;
             m_secretKey = secretKey;
 
             m_initialized = true;
@@ -788,8 +798,12 @@ namespace BrainCloud.Internal
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
             packet[OperationParam.ServiceMessageSessionId.Value] = m_sessionID;
+            if (m_gameId != null && m_gameId.Length > 0)
+            {
+                packet[OperationParam.ServiceMessageGameId.Value] = m_gameId;
+            }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
-            
+
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + m_secretKey);
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
