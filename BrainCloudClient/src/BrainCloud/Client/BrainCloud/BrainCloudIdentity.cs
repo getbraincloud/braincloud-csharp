@@ -297,14 +297,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Attach a Universal (userid + password) identity to the current profile.
+        /// Attach a Universal (userId + password) identity to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - Identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="userid">
-        /// The player's userid
+        /// <param name="userId">
+        /// The player's userId
         /// </param>
         /// <param name="password">
         /// The player's password
@@ -323,12 +323,12 @@ namespace BrainCloud
         /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateEmailPassword().
         /// </returns>
         public void AttachUniversalIdentity(
-            string userid,
+            string userId,
             string password,
             SuccessCallback success,
             FailureCallback failure)
         {
-            AttachIdentity(userid, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
+            AttachIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
         }
 
         /// <summary>
@@ -338,8 +338,8 @@ namespace BrainCloud
         /// Service Name - Identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="userid">
-        /// The player's userid
+        /// <param name="userId">
+        /// The player's userId
         /// </param>
         /// <param name="password">
         /// The player's password
@@ -351,12 +351,12 @@ namespace BrainCloud
         /// The method to call in the event of an error during authentication
         /// </param>
         public void MergeUniversalIdentity(
-            string userid,
+            string userId,
             string password,
             SuccessCallback success,
             FailureCallback failure)
         {
-            MergeIdentity(userid, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
+            MergeIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
         }
 
         /// <summary>Detach the universal identity from the current profile
@@ -365,8 +365,8 @@ namespace BrainCloud
         /// Service Name - Identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="userid">
-        /// The player's userid
+        /// <param name="userId">
+        /// The player's userId
         /// </param>
         /// <param name="continueAnon">
         /// Proceed even if the profile will revert to anonymous?
@@ -383,16 +383,16 @@ namespace BrainCloud
         /// the profile wouldn't be retrievable if the user loses their device)
         /// </returns>
         public void DetachUniversalIdentity(
-            string userid,
+            string userId,
             bool continueAnon,
             SuccessCallback success,
             FailureCallback failure)
         {
-            DetachIdentity(userid, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, continueAnon, success, failure);
+            DetachIdentity(userId, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, continueAnon, success, failure);
         }
 
         /// <summary>
-        /// Attach a Steam (userid + steamsessionticket) identity to the current profile.
+        /// Attach a Steam (userId + steamsessionticket) identity to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - Identity
@@ -427,7 +427,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Merge the profile associated with the provided steam userid with the current profile.
+        /// Merge the profile associated with the provided steam userId with the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - Identity
