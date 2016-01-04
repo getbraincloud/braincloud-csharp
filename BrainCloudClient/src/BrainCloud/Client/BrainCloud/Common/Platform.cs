@@ -14,7 +14,6 @@ namespace BrainCloud.Common
         public static readonly Platform Mac = new Platform ("MAC");
         public static readonly Platform PS3 = new Platform ("PS3");
         public static readonly Platform PS4 = new Platform ("PS4");
-        public static readonly Platform PSVita = new Platform ("PS_VITA");
         public static readonly Platform Tizen = new Platform ("TIZEN");
         public static readonly Platform Unknown = new Platform ("UNKNOWN");
         public static readonly Platform Web = new Platform ("WEB");
@@ -56,8 +55,6 @@ namespace BrainCloud.Common
                 return PS3;
             case "PS4":
                 return PS4;
-            case "PS_VITA":
-                return PSVita;
             case "TIZEN":
                 return Tizen;
             case "WEB":
@@ -104,11 +101,6 @@ namespace BrainCloud.Common
             return PS3;
         #elif UNITY_PS4
             return PS4;
-
-        // no define for ps vita?
-        // #elif UNITY_PSP2???
-        // return PSVita;
-
         #elif UNITY_XBOX360
             return Xbox360;
         #elif UNITY_XBOXONE
