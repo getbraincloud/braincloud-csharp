@@ -80,6 +80,11 @@ namespace BrainCloud.Common
 #if !(DOT_NET)
         public static Platform FromUnityRuntime()
         {
+            // this kicks in if dll is compiled from visual studio solution
+        #if NO_UNITY_DEFINES
+            return Unknown;
+        #else
+            
             // first deal with platforms that have no define
 
             // newer than 5.3
@@ -131,6 +136,8 @@ namespace BrainCloud.Common
         #else
             return Unknown;
         #endif
+            
+        #endif // NO_UNITY_DEFINES
         }
 #endif
     }
