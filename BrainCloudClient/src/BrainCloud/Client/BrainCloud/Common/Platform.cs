@@ -80,26 +80,6 @@ namespace BrainCloud.Common
 #if !(DOT_NET)
         public static Platform FromUnityRuntime()
         {
-            // first deal with platforms that have no define
-
-            // newer than 5.3
-        #if !UNITY_4_6 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
-            if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.tvOS)
-            {
-                return AppleTVOS;
-            }
-        #endif
-
-            // 5.0 and later
-        #if !UNITY_4_6
-            if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
-            {
-                return PSVita;
-            }
-        #endif
-
-            // otherwise we rely on the unity compile flag to denote platform
-
         #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             return Windows;
         #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
@@ -110,6 +90,8 @@ namespace BrainCloud.Common
             return Web;
         #elif UNITY_IOS
             return iOS;
+        #elif UNITY_TVOS
+            return AppleTVOS;
         #elif UNITY_ANDROID
             return Android;
         #elif UNITY_WP8 || UNITY_WP8_1
@@ -122,6 +104,11 @@ namespace BrainCloud.Common
             return PS3;
         #elif UNITY_PS4
             return PS4;
+
+        // no define for ps vita?
+        // #elif UNITY_PSP2???
+        // return PSVita;
+
         #elif UNITY_XBOX360
             return Xbox360;
         #elif UNITY_XBOXONE
