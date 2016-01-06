@@ -87,14 +87,6 @@ namespace BrainCloud.Common
             
             // first deal with platforms that have no define
 
-            // newer than 5.3
-        #if !UNITY_4_6 && !UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2
-            if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.tvOS)
-            {
-                return AppleTVOS;
-            }
-        #endif
-
             // 5.0 and later
         #if !UNITY_4_6
             if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
@@ -115,6 +107,8 @@ namespace BrainCloud.Common
             return Web;
         #elif UNITY_IOS
             return iOS;
+        #elif UNITY_TVOS
+            return AppleTVOS;
         #elif UNITY_ANDROID
             return Android;
         #elif UNITY_WP8 || UNITY_WP8_1
