@@ -4,22 +4,16 @@
 //----------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 
 #if (DOT_NET)
 using System.Net;
-using System.Web;
-using System.Threading;
-using System.Diagnostics;
 #else
 using UnityEngine;
 #endif
 
 using System.IO;
-using BrainCloud;
 using JsonFx.Json;
 
 namespace BrainCloud.Internal
@@ -60,7 +54,7 @@ namespace BrainCloud.Internal
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_brainCloudClientRef;
-        
+
         /// <summary>
         /// Set to true once Initialize has been called.
         /// </summary>
@@ -105,7 +99,7 @@ namespace BrainCloud.Internal
         /// How long we wait to send a heartbeat if no packets have been sent or received.
         /// This value is set to a percentage of the heartbeat timeout sent by the authenticate response.
         /// </summary>
-        private TimeSpan m_idleTimeout = TimeSpan.FromSeconds(5*60);
+        private TimeSpan m_idleTimeout = TimeSpan.FromSeconds(5 * 60);
 
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
@@ -170,7 +164,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// A list of packet timeouts. Index represents the packet attempt number.
         /// </summary>
-        private List<int> m_packetTimeouts = new List<int> {10, 10, 10};
+        private List<int> m_packetTimeouts = new List<int> { 10, 10, 10 };
         public List<int> PacketTimeouts
         {
             get
@@ -184,7 +178,7 @@ namespace BrainCloud.Internal
         }
         public void SetPacketTimeoutsToDefault()
         {
-            m_packetTimeouts = new List<int> {10, 10, 10};
+            m_packetTimeouts = new List<int> { 10, 10, 10 };
         }
 
         private int m_authPacketTimeoutSecs = 15;
@@ -216,9 +210,9 @@ namespace BrainCloud.Internal
 
         public BrainCloudComms(BrainCloudClient in_client)
         {
-            #if (DOT_NET)
+#if (DOT_NET)
             ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
-            #endif
+#endif
             m_brainCloudClientRef = in_client;
         }
 
@@ -271,7 +265,7 @@ namespace BrainCloud.Internal
             // 1- process existing requests
             // 2- send next request
             // 3- handle heartbeat/timeouts
-            
+
             if (!m_initialized)
             {
                 return;
@@ -280,7 +274,7 @@ namespace BrainCloud.Internal
             {
                 return;
             }
-            
+
             // process current request
             if (m_activeRequest != null)
             {
@@ -297,15 +291,15 @@ namespace BrainCloud.Internal
                     HandleResponseBundle(GetWebRequestResponse(m_activeRequest));
 
                     m_activeRequest = null;
-                }          
+                }
             }
-            
+
             // send the next message if we're ready
             if (m_activeRequest == null)
             {
                 m_activeRequest = CreateAndSendNextRequestBundle();
             }
-            
+
             // is it time for a retry?
             if (m_activeRequest != null)
             {
@@ -326,7 +320,7 @@ namespace BrainCloud.Internal
                         // we've reached the retry limit - send timeout error to all client callbacks
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
-							m_brainCloudClientRef.Log("Timeout with network error: " + errorResponse);
+                            m_brainCloudClientRef.Log("Timeout with network error: " + errorResponse);
                         }
                         else
                         {
@@ -340,7 +334,7 @@ namespace BrainCloud.Internal
                     }
                 }
             }
-            
+
             // is it time for a heartbeat?
             if (Authenticated)
             {
@@ -370,7 +364,7 @@ namespace BrainCloud.Internal
             // }
 
             int numMessagesToReturn = 0;
-            lock(m_serviceCallsInProgress)
+            lock (m_serviceCallsInProgress)
             {
                 numMessagesToReturn = m_serviceCallsInProgress.Count;
             }
@@ -389,15 +383,15 @@ namespace BrainCloud.Internal
             string jsonError = JsonWriter.Serialize(bundleObj);
             HandleResponseBundle(jsonError);
         }
-        
-        
+
+
         /// <summary>
         /// Shuts down the communications layer.
         /// Make sure to only call this from the main thread!
         /// </summary>
         public void ShutDown()
         {
-            lock(m_serviceCallsWaiting)
+            lock (m_serviceCallsWaiting)
             {
                 m_serviceCallsWaiting.Clear();
             }
@@ -435,7 +429,7 @@ namespace BrainCloud.Internal
             m_brainCloudClientRef.Log("INCOMING: " + in_jsonData);
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(in_jsonData);
-            long receivedPacketId = (long) bundleObj.packetId;
+            long receivedPacketId = (long)bundleObj.packetId;
             if (m_expectedIncomingPacketId == NO_PACKET_EXPECTED || m_expectedIncomingPacketId != receivedPacketId)
             {
                 m_brainCloudClientRef.Log("Dropping duplicate packet");
@@ -445,12 +439,12 @@ namespace BrainCloud.Internal
 
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
-            IList<Exception> exceptions = new List<Exception>(); 
+            IList<Exception> exceptions = new List<Exception>();
 
             for (int j = 0; j < responseBundle.Length; ++j)
             {
                 response = responseBundle[j];
-                int statusCode = (int) response["status"];
+                int statusCode = (int)response["status"];
                 string data = "";
 
                 //
@@ -482,11 +476,11 @@ namespace BrainCloud.Internal
                     Dictionary<string, object> responseData = null;
                     if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
-                        responseData = (Dictionary<string, object>) response[OperationParam.ServiceMessageData.Value];
-                        
+                        responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
+
                         // send the data back as not formatted
                         data = JsonWriter.Serialize(response);
-                        
+
                         // save the session ID
                         try
                         {
@@ -495,7 +489,7 @@ namespace BrainCloud.Internal
                                 m_sessionID = (string)responseData[OperationParam.ServiceMessageSessionId.Value];
                                 m_isAuthenticated = true;  // TODO confirm authentication
                             }
-                            
+
                             // save the profile ID
                             if (getJsonString(responseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
                             {
@@ -518,6 +512,7 @@ namespace BrainCloud.Internal
                             // we reset the current player or logged out
                             // we are no longer authenticated
                             m_isAuthenticated = false;
+                            m_sessionID = "";
                             m_brainCloudClientRef.AuthenticationService.ClearSavedProfileID();
                         }
                         else if (sc.GetService().Equals(ServiceName.Authenticate.Value)
@@ -525,7 +520,7 @@ namespace BrainCloud.Internal
                         {
                             ProcessAuthenticate(data);
                         }
-                        
+
                         // // only process callbacks that are real
                         if (sc.GetCallback() != null)
                         {
@@ -533,15 +528,15 @@ namespace BrainCloud.Internal
                             {
                                 sc.GetCallback().OnSuccessCallback(data);
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
-                                m_brainCloudClientRef.Log (e.StackTrace);
-                                exceptions.Add (e);
+                                m_brainCloudClientRef.Log(e.StackTrace);
+                                exceptions.Add(e);
                             }
                         }
 
                         // now deal with rewards
-                        if (m_rewardCallback != null && responseData != null) 
+                        if (m_rewardCallback != null && responseData != null)
                         {
                             try
                             {
@@ -554,10 +549,10 @@ namespace BrainCloud.Internal
                                     object objRewards = null;
                                     if (responseData.TryGetValue("rewards", out objRewards))
                                     {
-                                        Dictionary<string, object> outerRewards = (Dictionary<string, object>) objRewards;
+                                        Dictionary<string, object> outerRewards = (Dictionary<string, object>)objRewards;
                                         if (outerRewards.TryGetValue("rewards", out objRewards))
                                         {
-                                            Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                            Dictionary<string, object> innerRewards = (Dictionary<string, object>)objRewards;
                                             if (innerRewards.Count > 0)
                                             {
                                                 // we found rewards
@@ -567,15 +562,15 @@ namespace BrainCloud.Internal
                                     }
                                 }
                                 else if ((sc.GetService().Equals(ServiceName.PlayerStatistics.Value)
-                                        && sc.GetOperation().Equals (ServiceOperation.Update.Value))
+                                        && sc.GetOperation().Equals(ServiceOperation.Update.Value))
                                     || (sc.GetService().Equals(ServiceName.PlayerStatisticsEvent.Value)
-                                       && (sc.GetOperation().Equals (ServiceOperation.Trigger.Value)
-                                            || sc.GetOperation().Equals (ServiceOperation.TriggerMultiple.Value))))
+                                       && (sc.GetOperation().Equals(ServiceOperation.Trigger.Value)
+                                            || sc.GetOperation().Equals(ServiceOperation.TriggerMultiple.Value))))
                                 {
                                     object objRewards = null;
                                     if (responseData.TryGetValue("rewards", out objRewards))
                                     {
-                                        Dictionary<string, object> innerRewards = (Dictionary<string, object>) objRewards;
+                                        Dictionary<string, object> innerRewards = (Dictionary<string, object>)objRewards;
                                         if (innerRewards.Count > 0)
                                         {
                                             // we found rewards
@@ -588,11 +583,11 @@ namespace BrainCloud.Internal
                                 {
                                     Dictionary<string, object> theReward = new Dictionary<string, object>();
                                     theReward["rewards"] = rewards;
-                                    theReward["service"] = sc.GetService ();
+                                    theReward["service"] = sc.GetService();
                                     theReward["operation"] = sc.GetOperation();
                                     Dictionary<string, object> apiRewards = new Dictionary<string, object>();
                                     List<object> rewardList = new List<object>();
-                                    rewardList.Add (theReward);
+                                    rewardList.Add(theReward);
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
@@ -601,8 +596,8 @@ namespace BrainCloud.Internal
                             }
                             catch (Exception e)
                             {
-                                m_brainCloudClientRef.Log (e.StackTrace);
-                                exceptions.Add (e);
+                                m_brainCloudClientRef.Log(e.StackTrace);
+                                exceptions.Add(e);
                             }
                         }
                     }
@@ -612,28 +607,30 @@ namespace BrainCloud.Internal
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
                     string errorJson = "";
-                    
+
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
                     {
-                        reasonCode = (int) reasonCodeObj;
+                        reasonCode = (int)reasonCodeObj;
                     }
                     if (m_oldStyleStatusResponseInErrorCallback)
                     {
-                        if (response.TryGetValue ("status_message", out statusMessageObj))
+                        if (response.TryGetValue("status_message", out statusMessageObj))
                         {
-                            errorJson = (string) statusMessageObj;
+                            errorJson = (string)statusMessageObj;
                         }
                     }
                     else
                     {
-                        errorJson = JsonWriter.Serialize (response);
+                        errorJson = JsonWriter.Serialize(response);
                     }
-                    
+
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
-                        || reasonCode == ReasonCodes.NO_SESSION)
+                        || reasonCode == ReasonCodes.NO_SESSION
+                        || reasonCode == ReasonCodes.PLAYER_SESSION_LOGGED_OUT)
                     {
                         m_isAuthenticated = false;
-                        m_brainCloudClientRef.Log ("Received session expired or not found, need to re-authenticate");
+                        m_sessionID = "";
+                        m_brainCloudClientRef.Log("Received session expired or not found, need to re-authenticate");
                     }
 
                     if (sc != null && sc.GetOperation().Equals(ServiceOperation.Logout.Value))
@@ -641,10 +638,11 @@ namespace BrainCloud.Internal
                         if (reasonCode == ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT)
                         {
                             m_isAuthenticated = false;
+                            m_sessionID = "";
                             m_brainCloudClientRef.Log("Could not communicate with the server on logout due to network timeout");
                         }
                     }
-                    
+
                     // now try to execute the callback
                     if (sc != null && sc.GetCallback() != null)
                     {
@@ -652,10 +650,10 @@ namespace BrainCloud.Internal
                         {
                             sc.GetCallback().OnErrorCallback(statusCode, reasonCode, errorJson);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
-                            m_brainCloudClientRef.Log (e.StackTrace);
-                            exceptions.Add (e);
+                            m_brainCloudClientRef.Log(e.StackTrace);
+                            exceptions.Add(e);
                         }
                     }
                 }
@@ -670,10 +668,10 @@ namespace BrainCloud.Internal
                 {
                     m_eventCallback(eventsAsJson);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    m_brainCloudClientRef.Log (e.StackTrace);
-                    exceptions.Add (e);
+                    m_brainCloudClientRef.Log(e.StackTrace);
+                    exceptions.Add(e);
                 }
             }
 
@@ -681,8 +679,8 @@ namespace BrainCloud.Internal
             {
                 m_activeRequest = null; // to make sure we don't reprocess this message
 
-                throw new Exception("User callback handlers threw " + exceptions.Count +" exception(s)."
-                                    +" See the Unity log for callstacks or inner exception for first exception thrown.",
+                throw new Exception("User callback handlers threw " + exceptions.Count + " exception(s)."
+                                    + " See the Unity log for callstacks or inner exception for first exception thrown.",
                                     exceptions[0]);
             }
         }
@@ -695,7 +693,7 @@ namespace BrainCloud.Internal
         private RequestState CreateAndSendNextRequestBundle()
         {
             RequestState requestState = null;
-            lock(m_serviceCallsWaiting)
+            lock (m_serviceCallsWaiting)
             {
                 if (m_serviceCallsWaiting.Count > 0)
                 {
@@ -704,12 +702,12 @@ namespace BrainCloud.Internal
                     {
                         numMessagesWaiting = MAX_MESSAGES_IN_BUNDLE;
                     }
-                    
+
                     if (m_serviceCallsInProgress.Count > 0)
                     {
                         // this should never happen
-                        m_brainCloudClientRef.Log ("ERROR - in progress queue is not empty but we're ready for the next message!");
-                        m_serviceCallsInProgress.Clear ();
+                        m_brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                        m_serviceCallsInProgress.Clear();
                     }
 
                     m_serviceCallsInProgress = m_serviceCallsWaiting.GetRange(0, numMessagesWaiting);
@@ -719,34 +717,34 @@ namespace BrainCloud.Internal
                 if (m_serviceCallsInProgress.Count > 0)
                 {
                     requestState = new RequestState();
-                    
+
                     // prepare json data for server
                     List<object> messageList = new List<object>();
-                    
+
                     ServerCall scIndex;
                     for (int i = 0; i < m_serviceCallsInProgress.Count; ++i)
                     {
                         scIndex = m_serviceCallsInProgress[i] as ServerCall;
-                        
+
                         Dictionary<string, object> message = new Dictionary<string, object>();
                         message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
                         message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
                         message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
-                        
+
                         messageList.Add(message);
 
-                        if (scIndex.GetOperation ().Equals (ServiceOperation.Authenticate.Value))
+                        if (scIndex.GetOperation().Equals(ServiceOperation.Authenticate.Value))
                         {
                             requestState.PacketNoRetry = true;
                         }
 
-                        if (scIndex.GetOperation ().Equals (ServiceOperation.FullReset.Value)
-                            || scIndex.GetOperation ().Equals(ServiceOperation.Logout.Value))
+                        if (scIndex.GetOperation().Equals(ServiceOperation.FullReset.Value)
+                            || scIndex.GetOperation().Equals(ServiceOperation.Logout.Value))
                         {
                             requestState.PacketRequiresLongTimeout = true;
                         }
                     }
-                    
+
                     SendMessage(requestState, messageList);
                 }
             } // unlock m_serviceCallsWaiting
@@ -814,27 +812,27 @@ namespace BrainCloud.Internal
             if (m_debugPacketLossRate > 0.0)
             {
                 System.Random r = new System.Random();
-                requestState.LoseThisPacket = r.NextDouble () > m_debugPacketLossRate;
+                requestState.LoseThisPacket = r.NextDouble() > m_debugPacketLossRate;
             }
 
             if (!requestState.LoseThisPacket)
             {
-                #if !(DOT_NET)
+#if !(DOT_NET)
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
                 formTable["Content-Type"] = "application/json; charset=utf-8";
                 formTable["X-SIG"] = sig;
                 WWW request = new WWW(m_serverURL, byteArray, formTable);
-                #else
+#else
                 WebRequest request = WebRequest.Create(m_serverURL);
                 request.ContentType = "application/json; charset=utf-8";
                 request.Method = "POST";
                 request.Headers.Add("X-SIG", sig);
                 request.ContentLength = byteArray.Length;
-                request.Timeout = (int) GetPacketTimeout(requestState).TotalMilliseconds;
+                request.Timeout = (int)GetPacketTimeout(requestState).TotalMilliseconds;
 
                 // TODO: Convert to using a task as BeginGetRequestStream can block for minutes
                 requestState.AsyncResult = request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
-                #endif
+#endif
 
                 requestState.WebRequest = request;
             }
@@ -842,9 +840,9 @@ namespace BrainCloud.Internal
             requestState.TimeSent = DateTime.Now;
 
             ResetIdleTimer();
-           
-            m_brainCloudClientRef.Log("OUTGOING " 
-                                      + (requestState.Retries > 0 ? " Retry(" + requestState.Retries +"): " : ": ")
+
+            m_brainCloudClientRef.Log("OUTGOING "
+                                      + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
                                       + jsonRequestString);
 
         }
@@ -1024,7 +1022,7 @@ namespace BrainCloud.Internal
         {
             RequestState requestState = (RequestState)asynchronousResult.AsyncState;
             if (requestState.IsCancelled)
-            { 
+            {
                 return;
             }
             WebRequest webRequest = (WebRequest)requestState.WebRequest;
@@ -1118,21 +1116,21 @@ namespace BrainCloud.Internal
 
         private void ProcessAuthenticate(string jsonString)
         {
-            Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(jsonString);
-            Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
+            Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonReader.Deserialize(jsonString);
+            Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
 
-            long playerSessionExpiry = getJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 5*60);
-            long idleTimeout = (long) (playerSessionExpiry * 0.85);
+            long playerSessionExpiry = getJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 5 * 60);
+            long idleTimeout = (long)(playerSessionExpiry * 0.85);
 
             m_idleTimeout = TimeSpan.FromSeconds(idleTimeout);
         }
 
 
-        private static String getJsonString(Dictionary<string, object> jsonData, String key, String defaultReturn)
+        private static string getJsonString(Dictionary<string, object> jsonData, string key, string defaultReturn)
         {
             try
             {
-                return (String)jsonData[key];
+                return (string)jsonData[key];
             }
             catch (KeyNotFoundException)
             {
@@ -1141,7 +1139,7 @@ namespace BrainCloud.Internal
         }
 
 
-        private static long getJsonLong(Dictionary<string, object> jsonData, String key, long defaultReturn)
+        private static long getJsonLong(Dictionary<string, object> jsonData, string key, long defaultReturn)
         {
             try
             {
@@ -1171,18 +1169,18 @@ namespace BrainCloud.Internal
             public Dictionary<string, object>[] responses = null;
             public Dictionary<string, object>[] events = null;
 
-            
+
             public JsonResponseBundleV2()
-            {}
+            { }
         }
-       
+
         private class JsonResponseErrorBundleV2
         {
             public long packetId;
             public JsonErrorMessage[] responses;
-            
+
             public JsonResponseErrorBundleV2()
-            {}
+            { }
         }
 
         private class JsonErrorMessage
@@ -1191,10 +1189,10 @@ namespace BrainCloud.Internal
             public int status;
             public string status_message;
             public string severity = "ERROR";
-            
+
             public JsonErrorMessage()
-            {}
-            
+            { }
+
             public JsonErrorMessage(int in_status, int in_reasonCode, string in_statusMessage)
             {
                 status = in_status;
