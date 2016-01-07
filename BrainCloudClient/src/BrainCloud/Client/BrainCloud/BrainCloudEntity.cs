@@ -3,9 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using BrainCloud.Internal;
 using JsonFx.Json;
 
@@ -139,7 +137,7 @@ namespace BrainCloud
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EntityServiceGetSEntitiesByTypeEntityType.Value] = in_entityType;
+            data[OperationParam.EntityServiceGetEntitiesByTypeEntityType.Value] = in_entityType;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadByType, data, callback);
@@ -491,6 +489,39 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.Read, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Method retrieves a singleton entity on the server. If the entity doesn't exist, null is returned.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Entity
+        /// Service Operation - ReadSingleton
+        /// </remarks>
+        /// <param name="in_entityType">
+        /// The entity type as defined by the user
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetSingleton(
+            string in_entityType,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EntityServiceGetEntitiesByTypeEntityType.Value] = in_entityType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSingleton, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 

@@ -82,7 +82,7 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceCreateFriendData                      = new OperationParam("friendData");
 
         // Entity Service - GetEntitiesByType
-        public static readonly OperationParam EntityServiceGetSEntitiesByTypeEntityType          = new OperationParam("entityType");
+        public static readonly OperationParam EntityServiceGetEntitiesByTypeEntityType          = new OperationParam("entityType");
 
         // Entity Service - Update Params
         public static readonly OperationParam EntityServiceUpdateEntityType                      = new OperationParam("entityType");

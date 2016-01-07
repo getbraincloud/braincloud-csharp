@@ -28,6 +28,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");
         public static readonly ServiceOperation Read = new ServiceOperation("READ");
+        public static readonly ServiceOperation ReadSingleton = new ServiceOperation("READ_SINGLETON");
         public static readonly ServiceOperation ReadByType = new ServiceOperation("READ_BY_TYPE");
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
