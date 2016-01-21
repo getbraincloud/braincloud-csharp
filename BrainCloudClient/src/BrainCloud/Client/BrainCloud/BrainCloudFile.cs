@@ -31,7 +31,8 @@ namespace BrainCloud
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        /// <returns> The JSON returned in the callback is as follows:
+        /// <returns> A bool which is false if the file cannot be found, or file size cannot be determind.
+        /// Otherwise the JSON returned in the callback is as follows:
         /// {
         /// 	"status": 200,
         /// 	"data": {
@@ -95,7 +96,7 @@ namespace BrainCloud
         /// Method cancels an upload. If an IFileUploadCallback has been registered with the BrainCloudClient class,
         /// the fileUploadFailed callback method will be called once the upload has been canceled.
         /// NOTE: The upload will still continue in the background on versions of Unity before 5.3
-        /// and on mobile devices.
+        /// and on Unity mobile platforms.
         /// </summary>
         /// <param name="uploadId">Upload ID of the file to cancel</param>
         public void CancelUpload(string uploadId)
@@ -105,7 +106,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Returns the progress of the given upload from 0.0 to 1.0 or -1 if upload not found.
-        /// NOTE: This will always return 1 on mobile devices.
+        /// NOTE: This will always return 1 on Unity mobile platforms.
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
         /// <returns></returns>
@@ -116,7 +117,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Returns the number of bytes uploaded or -1 if upload not found.
-        /// NOTE: This will always return the total bytes to transfer on mobile devices.
+        /// NOTE: This will always return the total bytes to transfer on Unity mobile platforms.
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
         /// <returns>Total bytes transfered</returns>

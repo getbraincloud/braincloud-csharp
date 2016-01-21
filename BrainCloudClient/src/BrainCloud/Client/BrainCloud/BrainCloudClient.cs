@@ -913,7 +913,7 @@ namespace BrainCloud
         /// (ie transfer rate which is underneath the low transfer rate threshold).
         /// By default this is set to 120 secs.Setting this value to 0 will
         /// turn off the timeout. Note that this timeout method
-        /// does not work on mobile platforms.
+        /// does not work on Unity mobile platforms.
         /// </summary>
         /// <param name="timeoutSecs"></param>
         void SetUploadLowTransferRateTimeout(int timeoutSecs)
@@ -935,7 +935,7 @@ namespace BrainCloud
         /// If the transfer rate dips below the given threshold longer
         /// than the specified timeout, the transfer will fail.
         /// By default this is set to 50 bytes/sec. Note that this timeout method
-        /// does not work on mobile platforms.
+        /// does not work on Unity mobile platforms.
         /// </summary>
         /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
         void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
