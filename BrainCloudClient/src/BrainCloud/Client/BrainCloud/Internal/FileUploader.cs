@@ -167,6 +167,9 @@ namespace BrainCloud.Internal
 #endif
             if (Status == FileUploaderStatus.CompleteFailed || Status == FileUploaderStatus.CompleteSuccess)
             {
+#if USE_WEB_REQUEST
+                CleanupRequest();
+#endif
                 return;
             }
 
@@ -232,6 +235,8 @@ namespace BrainCloud.Internal
 #endif            
                 BrainCloudClient.Get().Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
+
+            CleanupRequest();
 #else
             //.NET
 #endif
@@ -289,5 +294,14 @@ namespace BrainCloud.Internal
         {
             return new JsonErrorMessage(statusCode, reasonCode, message).GetJsonString();
         }
+
+#if USE_WEB_REQUEST
+        private void CleanupRequest()
+        {
+            if (_request == null) return;
+            _request.Dispose();
+            _request = null;
+        }
+#endif
     }
 }
