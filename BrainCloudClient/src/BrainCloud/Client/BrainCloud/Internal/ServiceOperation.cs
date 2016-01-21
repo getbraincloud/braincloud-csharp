@@ -224,6 +224,11 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ProfanityReplaceText = new ServiceOperation("PROFANITY_REPLACE_TEXT");
         public static readonly ServiceOperation ProfanityIdentifyBadWords = new ServiceOperation("PROFANITY_IDENTIFY_BAD_WORDS");
 
+        //file upload
+        public static readonly ServiceOperation PrepareUserUpload = new ServiceOperation("PREPARE_USER_UPLOAD");
+        public static readonly ServiceOperation ListUserFiles = new ServiceOperation("LIST_USER_FILES");
+        public static readonly ServiceOperation DeleteUserFile = new ServiceOperation("DELETE_USER_FILE");
+        public static readonly ServiceOperation DeleteUserFiles = new ServiceOperation("DELETE_USER_FILES");
 
 
         private ServiceOperation(string value)

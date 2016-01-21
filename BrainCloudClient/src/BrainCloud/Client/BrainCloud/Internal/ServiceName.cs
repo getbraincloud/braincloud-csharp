@@ -51,6 +51,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceName DataStream = new ServiceName("dataStream");
         public static readonly ServiceName Profanity = new ServiceName("profanity");
 
+        public static readonly ServiceName File = new ServiceName("file");
+
         private ServiceName(string value)
         {
             Value = value;

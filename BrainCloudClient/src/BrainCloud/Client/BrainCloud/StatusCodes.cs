@@ -7,6 +7,8 @@ namespace BrainCloud
 {
     public static class StatusCodes
     {
+        public const int OK = 200;
+
         /// <summary>
         /// Status code for a client side error
         /// </summary>

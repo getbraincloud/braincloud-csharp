@@ -99,39 +99,39 @@ namespace BrainCloud.Common
 
         #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             return Windows;
-        #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             return Mac;
-        #elif UNITY_STANDALONE_LINUX
+#elif UNITY_STANDALONE_LINUX
             return Linux;
-        #elif UNITY_WEBPLAYER || UNITY_WEBGL
+#elif UNITY_WEBPLAYER || UNITY_WEBGL
             return Web;
-        #elif UNITY_IOS
+#elif UNITY_IOS
             return iOS;
-        #elif UNITY_TVOS
+#elif UNITY_TVOS
             return AppleTVOS;
-        #elif UNITY_ANDROID
-            return Android;
-        #elif UNITY_WP8 || UNITY_WP8_1
+#elif UNITY_ANDROID
+            return GooglePlayAndroid;
+#elif UNITY_WP8 || UNITY_WP8_1
             return WindowsPhone;
-        #elif UNITY_WSA
+#elif UNITY_WSA
             return Windows;
-        #elif UNITY_WII
+#elif UNITY_WII
             return Wii;
-        #elif UNITY_PS3
+#elif UNITY_PS3
             return PS3;
-        #elif UNITY_PS4
+#elif UNITY_PS4
             return PS4;
-        #elif UNITY_XBOX360
+#elif UNITY_XBOX360
             return Xbox360;
-        #elif UNITY_XBOXONE
+#elif UNITY_XBOXONE
             return XboxOne;
-        #elif UNITY_TIZEN
+#elif UNITY_TIZEN
             return Tizen;
-        #else
+#else
             return Unknown;
-        #endif
-            
-        #endif // NO_UNITY_DEFINES
+#endif
+
+#endif // NO_UNITY_DEFINES
         }
 #endif
     }

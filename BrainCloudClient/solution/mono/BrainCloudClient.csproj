@@ -322,6 +322,12 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
       <Link>BrainCloud\BrainCloudDataStream.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
+      <Link>BrainCloud\BrainCloudFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
+      <Link>BrainCloud\Internal\FileUploader.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

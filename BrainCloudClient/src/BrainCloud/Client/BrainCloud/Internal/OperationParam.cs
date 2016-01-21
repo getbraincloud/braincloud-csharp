@@ -336,6 +336,16 @@ namespace BrainCloud
         public static readonly  OperationParam ProfanityFlagUrls                                  = new OperationParam("flagUrls");
         public static readonly  OperationParam ProfanityLanguages                                 = new OperationParam("languages");
 
+        //File upload
+        public static readonly OperationParam UploadLocalPath                                    = new OperationParam("localPath");
+        public static readonly OperationParam UploadCloudPath                                    = new OperationParam("cloudPath");
+        public static readonly OperationParam UploadCloudFilename                                = new OperationParam("cloudFilename");
+        public static readonly OperationParam UploadShareable                                    = new OperationParam("shareable");
+        public static readonly OperationParam UploadReplaceIfExists                              = new OperationParam("replaceIfExists");
+        public static readonly OperationParam UploadFileSize                                     = new OperationParam("fileSize");
+        public static readonly OperationParam UploadRecurse                                      = new OperationParam("recurse");
+        public static readonly OperationParam UploadPath                                         = new OperationParam("path");
+
         private OperationParam(string value)
         {
             Value = value;

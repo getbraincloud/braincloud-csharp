@@ -83,6 +83,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudEvent.cs">
       <Link>BrainCloud\BrainCloudEvent.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
+      <Link>BrainCloud\BrainCloudFile.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFriend.cs">
       <Link>BrainCloud\BrainCloudFriend.cs</Link>
     </Compile>
@@ -187,6 +190,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
+      <Link>BrainCloud\Internal\FileUploader.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ITimer.cs">
       <Link>BrainCloud\Internal\ITimer.cs</Link>

@@ -262,5 +262,8 @@ namespace BrainCloud
         /// Client defined value for a timeout detected client-side.
         /// </summary>
         public const int CLIENT_NETWORK_ERROR_TIMEOUT = 90001;
+        public const int CLIENT_UPLOAD_FILE_CANCELLED = 90100;
+        public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
+        public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
     }
 }

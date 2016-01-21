@@ -90,6 +90,9 @@
     <Compile Include="..\..\..\tests\TestEvent.cs">
       <Link>TestEvent.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestFile.cs">
+      <Link>TestFile.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestFixtureBase.cs">
       <Link>TestFixtureBase.cs</Link>
     </Compile>
