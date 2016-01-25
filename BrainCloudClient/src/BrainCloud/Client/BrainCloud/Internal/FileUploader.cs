@@ -236,7 +236,9 @@ namespace BrainCloud.Internal
                 BrainCloudClient.Get().Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
 
+#if USE_WEB_REQUEST
             CleanupRequest();
+#endif
 #else
             //.NET
 #endif
