@@ -64,11 +64,6 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-#if DOT_NET
-            m_brainCloudClientRef.Log("File service not yet supported on .NET");
-            return false;
-#endif
-
             FileInfo info = new FileInfo(localPath);
 
             if (!info.Exists)

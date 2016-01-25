@@ -18,6 +18,8 @@ using UnityEngine.Experimental.Networking;
 #endif
 #else
 using System.Net;
+using System.Collections.Generic;
+using System.Text;
 #endif
 
 namespace BrainCloud.Internal
@@ -78,7 +80,9 @@ namespace BrainCloud.Internal
 #elif !DOT_NET
         private WWW _request;
 #else
-        private WebRequest _request;
+        private WebClient _request;
+        private UploadDataCompletedEventArgs _result;
+        private Object _lock = new Object();
 #endif
 
         public FileUploader(string uploadId, string localPath, string serverUrl, string sessionId, int timeout, int timeoutThreshold)
@@ -124,17 +128,23 @@ namespace BrainCloud.Internal
             _request = new WWW(_serverUrl, postForm);
 #endif
 #else
-            _request = WebRequest.Create(_serverUrl);
-            _request.Method = "POST";
-            _request.ContentLength = TotalBytesToTransfer;
-            _request.ContentType = "multipart/form-data";
+            _request = new WebClient();
 
-            Stream dataStream = _request.GetRequestStream();
-            dataStream.Write(file, 0, file.Length);
-            dataStream.Close();
+            // Generate post objects
+            Dictionary<string, object> postParameters = new Dictionary<string, object>();
+            postParameters.Add("sessionId", _sessionId);
+            postParameters.Add("uploadId", UploadId);
+            postParameters.Add("fileSize", TotalBytesToTransfer.ToString());
+            postParameters.Add("uploadFile", new FormUpload.FileParameter(file, _fileName, "application/octet-stream"));
 
-            _request.BeginGetResponse(FinishWebRequest, null);
+            string boundary = Guid.NewGuid().ToString();
+            _request.Headers.Set("Content-type", "multipart/form-data; boundary=" + boundary);
+
+            _request.UploadProgressChanged += new UploadProgressChangedEventHandler(UploadProgress);
+            _request.UploadDataCompleted += new UploadDataCompletedEventHandler(UploadComplete);
+            _request.UploadDataAsync(new Uri(_serverUrl), FormUpload.GetMultipartFormData(postParameters, boundary));
 #endif
+
             Status = FileUploaderStatus.Uploading;
             BrainCloudClient.Get().Log("Started upload of " + _fileName);
             _lastTime = DateTime.Now;
@@ -147,7 +157,7 @@ namespace BrainCloud.Internal
 #elif !DOT_NET
             _request = null;
 #else
-            //.NET
+            _request.CancelAsync();
 #endif
             Status = FileUploaderStatus.CompleteFailed;
             StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
@@ -167,7 +177,7 @@ namespace BrainCloud.Internal
 #endif
             if (Status == FileUploaderStatus.CompleteFailed || Status == FileUploaderStatus.CompleteSuccess)
             {
-#if USE_WEB_REQUEST
+#if DOT_NET || USE_WEB_REQUEST
                 CleanupRequest();
 #endif
                 return;
@@ -178,14 +188,29 @@ namespace BrainCloud.Internal
 
             if (_request.isDone) HandleResponse();
 #else
-            //.NET
+            if (_result != null) HandleResponse();
 #endif
         }
 
+#if DOT_NET
+        private void UploadProgress(object sender, UploadProgressChangedEventArgs e)
+        {
+            Progress = (double)e.BytesSent / e.TotalBytesToSend; 
+        }
+
+        private void UploadComplete(object sender, UploadDataCompletedEventArgs e)
+        {
+            lock (_lock)
+            {
+                _result = e;
+            }
+        }
+#endif
+
         private void HandleResponse()
         {
-#if !DOT_NET
             _transferRatePerSecond = 0;
+#if !DOT_NET
 #if USE_WEB_REQUEST
             StatusCode = (int)_request.responseCode;
 #else
@@ -240,7 +265,33 @@ namespace BrainCloud.Internal
             CleanupRequest();
 #endif
 #else
-            //.NET
+            if (_result.Error != null)
+            {
+                Status = FileUploaderStatus.CompleteFailed;
+
+                if (_result.Error is WebException)
+                {
+                    StatusCode = (int)((WebException)_result.Error).Status;
+                    Response = CreateErrorString(StatusCode, ReasonCode, ((WebException)_result.Error).Message);
+                }
+                else
+                {
+                    StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
+                }
+                ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_UNKNOWN;
+            }
+            else
+            {
+                Status = FileUploaderStatus.CompleteSuccess;
+                StatusCode = StatusCodes.OK;
+                Response = Encoding.UTF8.GetString(_result.Result);
+                BrainCloudClient.Get().Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+            }
+
+            CleanupRequest();
+#endif
+#if DOT_NET || USE_WEB_REQUEST
+
 #endif
         }
 
@@ -278,12 +329,6 @@ namespace BrainCloud.Internal
             _lastTime = DateTime.Now;
         }
 
-#if DOT_NET
-        void FinishWebRequest(IAsyncResult result)
-        {
-            _request.EndGetResponse(result);
-        }
-#endif
         private void ThrowError(int reasonCode, string message)
         {
             Status = FileUploaderStatus.CompleteFailed;
@@ -297,7 +342,7 @@ namespace BrainCloud.Internal
             return new JsonErrorMessage(statusCode, reasonCode, message).GetJsonString();
         }
 
-#if USE_WEB_REQUEST
+#if DOT_NET || USE_WEB_REQUEST
         private void CleanupRequest()
         {
             if (_request == null) return;
@@ -306,4 +351,81 @@ namespace BrainCloud.Internal
         }
 #endif
     }
+
+#if DOT_NET
+    // Implements multipart/form-data POST in C# http://www.ietf.org/rfc/rfc2388.txt
+    // http://www.briangrinstead.com/blog/multipart-form-post-in-c
+    public static class FormUpload
+    {
+        private static readonly Encoding encoding = Encoding.UTF8;
+
+        public static byte[] GetMultipartFormData(Dictionary<string, object> postParameters, string boundary)
+        {
+            Stream formDataStream = new System.IO.MemoryStream();
+            bool needsCLRF = false;
+
+            foreach (var param in postParameters)
+            {
+                // Thanks to feedback from commenters, add a CRLF to allow multiple parameters to be added.
+                // Skip it on the first parameter, add it to subsequent parameters.
+                if (needsCLRF)
+                    formDataStream.Write(encoding.GetBytes("\r\n"), 0, encoding.GetByteCount("\r\n"));
+
+                needsCLRF = true;
+
+                if (param.Value is FileParameter)
+                {
+                    FileParameter fileToUpload = (FileParameter)param.Value;
+
+                    // Add just the first part of this param, since we will write the file data directly to the Stream
+                    string header = string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"; filename=\"{2}\"\r\nContent-Type: {3}\r\n\r\n",
+                        boundary,
+                        param.Key,
+                        fileToUpload.FileName ?? param.Key,
+                        fileToUpload.ContentType ?? "application/octet-stream");
+
+                    formDataStream.Write(encoding.GetBytes(header), 0, encoding.GetByteCount(header));
+
+                    // Write the file data directly to the Stream, rather than serializing it to a string.
+                    formDataStream.Write(fileToUpload.File, 0, fileToUpload.File.Length);
+                }
+                else
+                {
+                    string postData = string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}",
+                        boundary,
+                        param.Key,
+                        param.Value);
+                    formDataStream.Write(encoding.GetBytes(postData), 0, encoding.GetByteCount(postData));
+                }
+            }
+
+            // Add the end of the request.  Start with a newline
+            string footer = "\r\n--" + boundary + "--\r\n";
+            formDataStream.Write(encoding.GetBytes(footer), 0, encoding.GetByteCount(footer));
+
+            // Dump the Stream into a byte[]
+            formDataStream.Position = 0;
+            byte[] formData = new byte[formDataStream.Length];
+            formDataStream.Read(formData, 0, formData.Length);
+            formDataStream.Close();
+
+            return formData;
+        }
+
+        public class FileParameter
+        {
+            public byte[] File { get; set; }
+            public string FileName { get; set; }
+            public string ContentType { get; set; }
+            public FileParameter(byte[] file) : this(file, null) { }
+            public FileParameter(byte[] file, string filename) : this(file, filename, null) { }
+            public FileParameter(byte[] file, string filename, string contenttype)
+            {
+                File = file;
+                FileName = filename;
+                ContentType = contenttype;
+            }
+        }
+    }
+#endif
 }
