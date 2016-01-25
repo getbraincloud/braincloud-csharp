@@ -137,7 +137,7 @@ namespace BrainCloudTests
                 info.FullName,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();            
+            tr.Run();
 
             WaitForReturn(GetUploadId(tr.m_response));
 
@@ -149,6 +149,39 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+
+            CleanupUploadTest();
+        }
+
+        [Test]
+        public void TestUploadMultiple()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+
+            FileInfo info = new FileInfo(CreateFile(4024));
+
+            BrainCloudClient.Get().FileService.UploadFile(
+                _cloudPath,
+                info.Name,
+                true,
+                true,
+                info.FullName,
+                tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Get().FileService.UploadFile(
+                _cloudPath,
+                info.Name + "22",
+                true,
+                true,
+                info.FullName,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            WaitForReturn(GetUploadId(tr.m_response));
+
+            Assert.IsFalse(_isError);
 
             CleanupUploadTest();
         }
@@ -217,6 +250,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             _isDone = false;
             BrainCloudClient.Get().FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         /// <summary>
