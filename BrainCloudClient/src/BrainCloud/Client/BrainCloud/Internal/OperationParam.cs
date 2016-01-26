@@ -190,6 +190,9 @@ namespace BrainCloud
 
         public static readonly OperationParam PlayerStateServiceIncludeSummaryData = new OperationParam("includePlayerSummaryData");
 
+        // Player State Service - UPDATE_PICTURE_URL
+        public static readonly OperationParam PlayerStateServicePlayerPictureUrl = new OperationParam("playerPictureUrl");
+
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");
 

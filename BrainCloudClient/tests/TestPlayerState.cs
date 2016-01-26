@@ -133,5 +133,17 @@ namespace BrainCloudTests
             
             tr.Run();
         }
+
+        [Test]
+        public void TestUpdatePlayerPictureUrl()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().PlayerStateService.UpdatePlayerPictureUrl(
+                @"https://some.domain.com/mypicture.jpg",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
