@@ -32,7 +32,7 @@ namespace BrainCloudTests
             tr.Run();
 
             BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NULL_SESSION);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
         }
 
         [Test]
