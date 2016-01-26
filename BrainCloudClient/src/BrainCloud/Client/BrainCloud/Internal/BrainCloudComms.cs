@@ -116,14 +116,8 @@ namespace BrainCloud.Internal
         /// </summary>
         private RewardCallback _rewardCallback;
 
-        /// <summary>
-        /// The reward handler callback method
-        /// </summary>
         private FileUploadSuccessCallback _fileUploadSuccessCallback;
 
-        /// <summary>
-        /// The reward handler callback method
-        /// </summary>
         private FileUploadFailedCallback _fileUploadFailedCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
