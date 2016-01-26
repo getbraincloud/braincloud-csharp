@@ -1339,8 +1339,8 @@ namespace BrainCloud.Internal
         private void ResetErrorCache()
         {
             _cachedStatusCode = StatusCodes.FORBIDDEN;
-            _cachedReasonCode = ReasonCodes.NULL_SESSION;
-            _cachedStatusMessage = "Processing exception (bundle): Session id is null";
+            _cachedReasonCode = ReasonCodes.NO_SESSION;
+            _cachedStatusMessage = "No session";
         }
     }
 
