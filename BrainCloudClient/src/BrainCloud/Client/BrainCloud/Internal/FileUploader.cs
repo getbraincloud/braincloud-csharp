@@ -87,6 +87,9 @@ namespace BrainCloud.Internal
 
         public FileUploader(string uploadId, string localPath, string serverUrl, string sessionId, int timeout, int timeoutThreshold)
         {
+#if UNITY_WEBPLAYER || UNITY_WEBGL
+            throw new Exception("File upload API is not supported on Web builds");
+#else
             UploadId = uploadId;
             _localPath = localPath;
             _serverUrl = serverUrl;
@@ -108,10 +111,14 @@ namespace BrainCloud.Internal
             Status = FileUploaderStatus.Pending;
 
             Start();
+#endif
         }
 
         public void Start()
         {
+#if UNITY_WEBPLAYER || UNITY_WEBGL
+            throw new Exception("File upload API is not supported on Web builds");
+#else
             byte[] file = File.ReadAllBytes(_localPath);
 
 #if !DOT_NET
@@ -148,6 +155,7 @@ namespace BrainCloud.Internal
             Status = FileUploaderStatus.Uploading;
             BrainCloudClient.Get().Log("Started upload of " + _fileName);
             _lastTime = DateTime.Now;
+#endif //!Web build
         }
 
         public void CancelUpload()

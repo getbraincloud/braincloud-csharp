@@ -603,6 +603,9 @@ namespace BrainCloud
                 }
             } //no public "set"
         }
+  
+        /// <summary>Returns the sessionId or empty string if no session present.</summary>
+        /// <returns>The sessionId or empty string if no session present.</returns>
         public string GetSessionId()
         {
             return SessionID;

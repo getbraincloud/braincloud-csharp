@@ -6,6 +6,7 @@
 using BrainCloud.Internal;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace BrainCloud
 {
@@ -64,6 +65,9 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
+#if UNITY_WEBPLAYER || UNITY_WEBGL
+            throw new Exception("File upload API is not supported on Web builds");
+#else
             FileInfo info = new FileInfo(localPath);
 
             if (!info.Exists)
@@ -85,6 +89,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
 
             return true;
+#endif
         }
 
         /// <summary>
