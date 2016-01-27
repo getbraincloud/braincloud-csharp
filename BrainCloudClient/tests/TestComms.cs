@@ -2,14 +2,64 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
-using JsonFx.Json;
 using System;
+using System.Threading;
 
 namespace BrainCloudTests
 {
     [TestFixture]
     public class TestComms : TestFixtureNoAuth
-    {     
+    {
+        [Test]
+        public void TestNoSession()
+        {
+            //BrainCloudClient.Get().ResetCommunication();
+            //BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
+            //BrainCloudClient.Get().EnableLogging(true);
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            BrainCloudClient.Get().PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+        }
+
+        [Test]
+        public void TestSessionTimeout()
+        {
+            //BrainCloudClient.Get().ResetCommunication();
+            //BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
+            //BrainCloudClient.Get().EnableLogging(true);
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            Console.WriteLine("\nWaiting for session to expire...");
+            Thread.Sleep(61 * 1000);
+
+            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
+
+            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
+        }
+
         [Test]
         public void TestBadUrl()
         {

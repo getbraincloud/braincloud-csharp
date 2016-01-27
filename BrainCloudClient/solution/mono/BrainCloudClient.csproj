@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{719A9484-6259-4D3C-A904-6958C03B02F7}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;NO_UNITY_DEFINES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
+    <DefineConstants>NO_UNITY_DEFINES</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugDotNet|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -321,13 +322,16 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
       <Link>BrainCloud\BrainCloudDataStream.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
+      <Link>BrainCloud\BrainCloudFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
+      <Link>BrainCloud\Internal\FileUploader.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

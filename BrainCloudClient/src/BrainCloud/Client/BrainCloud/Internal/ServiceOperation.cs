@@ -28,6 +28,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");
         public static readonly ServiceOperation Read = new ServiceOperation("READ");
+        public static readonly ServiceOperation ReadSingleton = new ServiceOperation("READ_SINGLETON");
         public static readonly ServiceOperation ReadByType = new ServiceOperation("READ_BY_TYPE");
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
@@ -193,6 +194,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetPage = new ServiceOperation("GET_PAGE");
         public static readonly ServiceOperation GetPageOffset = new ServiceOperation("GET_PAGE_BY_OFFSET");
 
+        public static readonly ServiceOperation UpdatePictureUrl = new ServiceOperation("UPDATE_PICTURE_URL");
+
         public static readonly ServiceOperation GetAttributes = new ServiceOperation("GET_ATTRIBUTES");
         public static readonly ServiceOperation UpdateAttributes = new ServiceOperation("UPDATE_ATTRIBUTES");
         public static readonly ServiceOperation RemoveAttributes = new ServiceOperation("REMOVE_ATTRIBUTES");
@@ -223,6 +226,11 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ProfanityReplaceText = new ServiceOperation("PROFANITY_REPLACE_TEXT");
         public static readonly ServiceOperation ProfanityIdentifyBadWords = new ServiceOperation("PROFANITY_IDENTIFY_BAD_WORDS");
 
+        //file upload
+        public static readonly ServiceOperation PrepareUserUpload = new ServiceOperation("PREPARE_USER_UPLOAD");
+        public static readonly ServiceOperation ListUserFiles = new ServiceOperation("LIST_USER_FILES");
+        public static readonly ServiceOperation DeleteUserFile = new ServiceOperation("DELETE_USER_FILE");
+        public static readonly ServiceOperation DeleteUserFiles = new ServiceOperation("DELETE_USER_FILES");
 
 
         private ServiceOperation(string value)

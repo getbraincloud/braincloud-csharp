@@ -2,17 +2,14 @@
 // brainCloud client source code
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BrainCloud
 {
     public class Version
     {
-        public static string GetVersion ()
+        public static string GetVersion()
         {
-            return "2.19.0";
+            return "2.20.0";
         }
     }
 }

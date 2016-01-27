@@ -217,11 +217,35 @@ namespace BrainCloud
         public const int REDEMPTION_CODE_VERSION_MISMATCH = 40396;
         public const int REDEMPTION_CODE_ACTIVE = 40397;
         public const int REDEMPTION_CODE_NOT_ACTIVE = 40398;
-        public const int REDEMPTION_CODE_INVALID = 40399;
-        public const int REDEMPTION_CODE_REDEEMED = 40400;
-        public const int REDEMPTION_CODE_REDEEMED_BY_SELF = 40401;
-        public const int REDEMPTION_CODE_REDEEMED_BY_OTHER = 40402;
-        
+        public const int REDEMPTION_CODE_TYPE_NOT_FOUND = 40399;
+        public const int REDEMPTION_CODE_INVALID = 40400;
+        public const int REDEMPTION_CODE_REDEEMED = 40401;
+        public const int REDEMPTION_CODE_REDEEMED_BY_SELF = 40402;
+        public const int REDEMPTION_CODE_REDEEMED_BY_OTHER = 40403;
+        public const int SCRIPT_EMPTY = 40404;
+        public const int ITUNES_COMMUNICATION_ERROR = 40405;
+        public const int ITUNES_NO_RESPONSE = 40406;
+        public const int ITUNES_RESPONSE_NOT_OK = 40407;
+        public const int JSON_PARSING_ERROR = 40408;
+        public const int ITUNES_NULL_RESPONSE = 40409;
+        public const int ITUNES_RESPONSE_WITH_NULL_STATUS = 40410;
+        public const int ITUNES_STATUS_BAD_JSON_RECEIPT = 40411;
+        public const int ITUNES_STATUS_BAD_RECEIPT = 40412;
+        public const int ITUNES_STATUS_RECEIPT_NOT_AUTHENTICATED = 40413;
+        public const int ITUNES_STATUS_BAD_SHARED_SECRET = 40414;
+        public const int ITUNES_STATUS_RECEIPT_SERVER_UNAVAILABLE = 40415;
+        public const int ITUNES_RECEIPT_MISSING_ITUNES_PRODUCT_ID = 40416;
+        public const int PRODUCT_NOT_FOUND_FOR_ITUNES_PRODUCT_ID = 40417;
+        public const int DATA_STREAM_EVENTS_NOT_ENABLED = 40418;
+        public const int INVALID_DEVICE_TOKEN = 40419;
+        public const int ERROR_DELETING_DEVICE_TOKEN = 40420;
+        public const int WEBPURIFY_NOT_CONFIGURED = 40421;
+        public const int WEBPURIFY_EXCEPTION = 40422;
+        public const int WEBPURIFY_FAILURE = 40423;
+        public const int WEBPURIFY_NOT_ENABLED = 40424;
+        public const int NAME_CONTAINS_PROFANITY = 40425;
+        public const int NULL_SESSION = 40426;
+
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
@@ -238,5 +262,8 @@ namespace BrainCloud
         /// Client defined value for a timeout detected client-side.
         /// </summary>
         public const int CLIENT_NETWORK_ERROR_TIMEOUT = 90001;
+        public const int CLIENT_UPLOAD_FILE_CANCELLED = 90100;
+        public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
+        public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
     }
 }

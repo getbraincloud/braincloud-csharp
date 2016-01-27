@@ -75,6 +75,9 @@
     <Compile Include="..\..\..\tests\TestClient.cs">
       <Link>TestClient.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestComms.cs">
+      <Link>TestComms.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestCustomEntity.cs">
       <Link>TestCustomEntity.cs</Link>
     </Compile>
@@ -86,6 +89,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestEvent.cs">
       <Link>TestEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestFile.cs">
+      <Link>TestFile.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestFixtureBase.cs">
       <Link>TestFixtureBase.cs</Link>

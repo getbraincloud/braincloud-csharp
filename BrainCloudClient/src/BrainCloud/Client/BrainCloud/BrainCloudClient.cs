@@ -51,6 +51,53 @@ namespace BrainCloud
     /// </summary>
     public delegate void RewardCallback(string jsonResponse);
 
+    /// <summary>
+    /// Method called when a file upload has completed.
+    /// </summary>
+    /// <param name="fileUploadId">The file upload id</param>
+    /// <param name="jsonResponse">The json response describing the file details similar to this</param>
+    /// <return>
+    /// {
+    ///  "status": 200,
+    ///  "data": {
+    ///   "fileList": [
+    ///    {
+    ///     "updatedAt": 1452603368201,
+    ///     "uploadedAt": null,
+    ///     "fileSize": 85470,
+    ///     "shareable": true,
+    ///     "createdAt": 1452603368201,
+    ///     "profileId": "bf8a1433-62d2-448e-b396-f3dbffff44",
+    ///     "gameId": "99999",
+    ///     "path": "test2",
+    ///     "filename": "testup.dat",
+    ///     "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a1433-62d2-448e-b396-f3dbffff44/f/test2/..."
+    ///     "cloudLocation": "bc/g/99999/u/bf8a1433-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
+    ///    }
+    ///   ]
+    ///  }
+    /// }
+    /// </return>
+    public delegate void FileUploadSuccessCallback(string fileUploadId, string jsonResponse);
+
+    /// <summary>
+    /// Method called when a file upload has failed.
+    /// </summary>
+    /// <param name="fileUploadId">The file upload id</param>
+    /// <param name="statusCode">The http status of the operation</param>
+    /// <param name="reasonCode">The reason code of the operation</param>
+    /// <param name="jsonResponse">The json response describing the failure. This uses the 
+    /// usual brainCloud error format similar to this:</param>
+    /// <return>
+    /// {
+    ///   "status": 403,
+    ///   "reason_code": 40300,
+    ///   "status_message": "Message describing failure",
+    ///   "severity": "ERROR"
+    /// }
+    /// </return>
+    public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
+
 
     public class BrainCloudClient
     {
@@ -70,13 +117,13 @@ namespace BrainCloud
             return s_instance;
         }
 
-        public static ServerCallback CreateServerCallback(SuccessCallback in_success, FailureCallback in_failure, object in_cbObject = null)
+        public static ServerCallback CreateServerCallback(SuccessCallback success, FailureCallback failure, object cbObject = null)
         {
             ServerCallback newCallback = null;
 
-            if (in_success != null || in_failure != null)
+            if (success != null || failure != null)
             {
-                newCallback = new ServerCallback(in_success, in_failure, in_cbObject);
+                newCallback = new ServerCallback(success, failure, cbObject);
             }
 
             return newCallback;
@@ -88,7 +135,7 @@ namespace BrainCloud
 
         public BrainCloudClient()
         {
-            m_bc = new BrainCloudComms(this);
+            m_comms = new BrainCloudComms(this);
             m_entityService = new BrainCloudEntity(this);
             m_entityFactory = new BCEntityFactory(m_entityService);
             m_globalEntityService = new BrainCloudGlobalEntity(this);
@@ -122,6 +169,7 @@ namespace BrainCloud
             m_redemptionCodeService = new BrainCloudRedemptionCode(this);
             m_dataStreamService = new BrainCloudDataStream(this);
             m_profanityService = new BrainCloudProfanity(this);
+            m_fileService = new BrainCloudFile(this);
         }
 
         //---------------------------------------------------------------
@@ -132,7 +180,7 @@ namespace BrainCloud
 
         private BCEntityFactory m_entityFactory;
 
-        private BrainCloudComms m_bc;
+        private BrainCloudComms m_comms;
         private bool m_initialized;
         private bool m_loggingEnabled = false;
         private object m_loggingMutex = new object();
@@ -164,10 +212,19 @@ namespace BrainCloud
         private BrainCloudRedemptionCode m_redemptionCodeService;
         private BrainCloudDataStream m_dataStreamService;
         private BrainCloudProfanity m_profanityService;
+        private BrainCloudFile m_fileService;
 
         #endregion Private Data
 
         #region Properties
+
+        internal BrainCloudComms Comms
+        {
+            get
+            {
+                return m_comms;
+            }
+        }
 
         public BrainCloudEntity EntityService
         {
@@ -179,7 +236,7 @@ namespace BrainCloud
 
         public BrainCloudEntity GetEntityService()
         {
-            return this.EntityService;
+            return EntityService;
         }
 
         public BCEntityFactory EntityFactory
@@ -213,12 +270,12 @@ namespace BrainCloud
 
         public BrainCloudGlobalApp GetGlobalAppService()
         {
-            return this.GlobalAppService;
+            return GlobalAppService;
         }
 
         public BrainCloudGlobalEntity GetGlobalEntityService()
         {
-            return this.GlobalEntityService;
+            return GlobalEntityService;
         }
 
         public BrainCloudProduct ProductService
@@ -231,7 +288,7 @@ namespace BrainCloud
 
         public BrainCloudProduct GetProductService()
         {
-            return this.ProductService;
+            return ProductService;
         }
 
         public BrainCloudPlayerStatistics PlayerStatisticsService
@@ -244,7 +301,7 @@ namespace BrainCloud
 
         public BrainCloudPlayerStatistics GetPlayerStatisticsService()
         {
-            return this.PlayerStatisticsService;
+            return PlayerStatisticsService;
         }
 
         public BrainCloudGlobalStatistics GlobalStatisticsService
@@ -257,7 +314,7 @@ namespace BrainCloud
 
         public BrainCloudGlobalStatistics GetGlobalStatisticsService()
         {
-            return this.GlobalStatisticsService;
+            return GlobalStatisticsService;
         }
 
         public BrainCloudIdentity IdentityService
@@ -269,7 +326,7 @@ namespace BrainCloud
         }
         public BrainCloudIdentity GetIdentityService()
         {
-            return this.IdentityService;
+            return IdentityService;
         }
 
         public BrainCloudScript ScriptService
@@ -282,7 +339,7 @@ namespace BrainCloud
 
         public BrainCloudScript GetScriptService()
         {
-            return this.ScriptService;
+            return ScriptService;
         }
 
         public BrainCloudMatchMaking MatchMakingService
@@ -295,7 +352,7 @@ namespace BrainCloud
 
         public BrainCloudMatchMaking GetMatchMakingService()
         {
-            return this.MatchMakingService;
+            return MatchMakingService;
         }
 
         public BrainCloudOneWayMatch OneWayMatchService
@@ -308,7 +365,7 @@ namespace BrainCloud
 
         public BrainCloudOneWayMatch GetOneWayMatchService()
         {
-            return this.OneWayMatchService;
+            return OneWayMatchService;
         }
 
         public BrainCloudPlaybackStream PlaybackStreamService
@@ -321,7 +378,7 @@ namespace BrainCloud
 
         public BrainCloudPlaybackStream GetPlaybackStreamService()
         {
-            return this.PlaybackStreamService;
+            return PlaybackStreamService;
         }
 
         public BrainCloudGamification GamificationService
@@ -334,7 +391,7 @@ namespace BrainCloud
 
         public BrainCloudGamification GetGamificationService()
         {
-            return this.GamificationService;
+            return GamificationService;
         }
 
         public BrainCloudPlayerState PlayerStateService
@@ -347,7 +404,7 @@ namespace BrainCloud
 
         public BrainCloudPlayerState GetPlayerStateService()
         {
-            return this.m_playerStateService;
+            return m_playerStateService;
         }
 
         public BrainCloudFriend FriendService
@@ -360,7 +417,7 @@ namespace BrainCloud
 
         public BrainCloudFriend GetFriendService()
         {
-            return this.m_friendService;
+            return m_friendService;
         }
 
         public BrainCloudEvent EventService
@@ -373,7 +430,7 @@ namespace BrainCloud
 
         public BrainCloudEvent GetEventService()
         {
-            return this.m_eventService;
+            return m_eventService;
         }
 
         public BrainCloudSocialLeaderboard SocialLeaderboardService
@@ -386,14 +443,14 @@ namespace BrainCloud
 
         public BrainCloudSocialLeaderboard GetSocialLeaderboardService()
         {
-            return this.m_socialLeaderboardService;
+            return m_socialLeaderboardService;
         }
 
         public BrainCloudAsyncMatch AsyncMatchService
         {
             get
             {
-                return this.m_asyncMatchService;
+                return m_asyncMatchService;
             }
         }
 
@@ -412,7 +469,7 @@ namespace BrainCloud
 
         public BrainCloudTime GetTimeService()
         {
-            return this.m_timeService;
+            return m_timeService;
         }
 
         public BrainCloudAuthentication AuthenticationService
@@ -425,7 +482,7 @@ namespace BrainCloud
 
         public BrainCloudAuthentication GetAuthenticationService()
         {
-            return this.m_authenticationService;
+            return m_authenticationService;
         }
 
         public BrainCloudTwitter TwitterService
@@ -438,7 +495,7 @@ namespace BrainCloud
 
         public BrainCloudTwitter GetTwitterService()
         {
-            return this.m_twitterService;
+            return m_twitterService;
         }
 
         public BrainCloudPushNotification PushNotificationService
@@ -451,7 +508,7 @@ namespace BrainCloud
 
         public BrainCloudPushNotification GetPushNotificationService()
         {
-            return this.m_pushNotificationService;
+            return m_pushNotificationService;
         }
 
         public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
@@ -464,7 +521,7 @@ namespace BrainCloud
 
         public BrainCloudPlayerStatisticsEvent GetPlayerStatisticsEventService()
         {
-            return this.m_playerStatisticsEventService;
+            return m_playerStatisticsEventService;
         }
 
         public BrainCloudS3Handling S3HandlingService
@@ -474,7 +531,7 @@ namespace BrainCloud
 
         public BrainCloudS3Handling GetS3HandlingService()
         {
-            return this.m_s3HandlingService;
+            return m_s3HandlingService;
         }
 
         public BrainCloudRedemptionCode RedemptionCodeService
@@ -507,12 +564,22 @@ namespace BrainCloud
             get { return m_profanityService; }
         }
 
+        public BrainCloudFile FileService
+        {
+            get { return m_fileService; }
+        }
+
+        public BrainCloudFile GetFileService
+        {
+            get { return m_fileService; }
+        }
+
 
         public bool Authenticated
         {
             get
             {
-                return m_bc.Authenticated;    //no public "set"
+                return m_comms.Authenticated;    //no public "set"
             }
         }
 
@@ -528,9 +595,9 @@ namespace BrainCloud
         {
             get
             {
-                if (m_bc != null)
+                if (m_comms != null)
                 {
-                    return m_bc.SessionID;
+                    return m_comms.SessionID;
                 }
                 else
                 {
@@ -540,16 +607,16 @@ namespace BrainCloud
         }
         public string GetSessionId()
         {
-            return this.SessionID;
+            return SessionID;
         }
 
         public string GameId
         {
             get
             {
-                if (m_bc != null)
+                if (m_comms != null)
                 {
-                    return m_bc.GameId;
+                    return m_comms.GameId;
                 }
                 else
                 {
@@ -618,13 +685,13 @@ namespace BrainCloud
 #endif
 
             // set up braincloud which does the message handling
-            m_bc.Initialize(serverURL, gameId, secretKey);
+            m_comms.Initialize(serverURL, gameId, secretKey);
 
             m_gameVersion = gameVersion;
             m_platform = platform;
 
             //setup region/country code
-            if(Util.GetCurrentCountryCode() == string.Empty)
+            if (Util.GetCurrentCountryCode() == string.Empty)
             {
 #if(DOT_NET)
                 Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
@@ -650,7 +717,7 @@ namespace BrainCloud
         /// </summary>
         public void ShutDown()
         {
-            m_bc.ShutDown();
+            m_comms.ShutDown();
         }
 
         /// <summary>Update method needs to be called regularly in order
@@ -658,14 +725,14 @@ namespace BrainCloud
         /// </summary>
         public void Update()
         {
-            if (m_bc != null) m_bc.Update();
+            if (m_comms != null) m_comms.Update();
         }
 
         /// <summary>
         /// Sets a callback handler for any out of band event messages that come from
         /// brainCloud.
         /// </summary>
-        /// <param name="in_cb">in_eventCallback A function which takes a json string as it's only parameter.
+        /// <param name="cb">eventCallback A function which takes a json string as it's only parameter.
         ///  The json format looks like the following:
         /// {
         ///   "events": [{
@@ -679,9 +746,9 @@ namespace BrainCloud
         ///    }],
         ///    ]
         ///  }
-        public void RegisterEventCallback(EventCallback in_cb)
+        public void RegisterEventCallback(EventCallback cb)
         {
-            m_bc.RegisterEventCallback(in_cb);
+            m_comms.RegisterEventCallback(cb);
         }
 
         /// <summary>
@@ -689,40 +756,55 @@ namespace BrainCloud
         /// </summary>
         public void DeregisterEventCallback()
         {
-            m_bc.DeregisterEventCallback();
+            m_comms.DeregisterEventCallback();
         }
 
         /// <summary>
         /// Sets a reward handler for any api call results that return rewards.
         /// </summary>
-        /// <param name="in_cb">The reward callback handler.</param>
+        /// <param name="cb">The reward callback handler.</param>
         /// <see cref="http://getbraincloud.com/apidocs">The brainCloud apidocs site for more information on the return JSON</see>
-        public void RegisterRewardCallback(RewardCallback in_cb)
+        public void RegisterRewardCallback(RewardCallback cb)
         {
-            m_bc.RegisterRewardCallback(in_cb);
+            m_comms.RegisterRewardCallback(cb);
         }
-        
+
         /// <summary>
         /// Deregisters the reward callback.
         /// </summary>
         public void DeregisterRewardCallback()
         {
-            m_bc.DeregisterRewardCallback();
+            m_comms.DeregisterRewardCallback();
         }
 
+        /// <summary>
+        /// Registers the file upload callbacks.
+        /// </summary>
+        public void RegisterFileUploadCallbacks(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
+        {
+            m_comms.RegisterFileUploadCallbacks(success, failure);
+        }
+
+        /// <summary>
+        /// Deregisters the file upload callbacks.
+        /// </summary>
+        public void DeregisterFileUploadCallbacks()
+        {
+            m_comms.DeregisterFileUploadCallbacks();
+        }
 
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
-        /// <param name="in_enable">True if logging is to be enabled</param>
-        public void EnableLogging(bool in_enable)
+        /// <param name="enable">True if logging is to be enabled</param>
+        public void EnableLogging(bool enable)
         {
-            m_loggingEnabled = in_enable;
+            m_loggingEnabled = enable;
         }
 
         /// <summary>Allow developers to register their own log handling routine</summary>
-        /// <param name="in_logDelegate">The log delegate</param>
-        public void RegisterLogDelegate(LogCallback in_logDelegate)
+        /// <param name="logDelegate">The log delegate</param>
+        public void RegisterLogDelegate(LogCallback logDelegate)
         {
-            m_logDelegate = in_logDelegate;
+            m_logDelegate = logDelegate;
         }
 
         /// <summary>Method writes log if logging is enabled</summary>
@@ -731,7 +813,7 @@ namespace BrainCloud
             if (m_loggingEnabled)
             {
                 string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
-                lock(m_loggingMutex)
+                lock (m_loggingMutex)
                 {
                     if (m_logDelegate != null)
                     {
@@ -756,27 +838,27 @@ namespace BrainCloud
         {
             // pass this directly to the brainCloud Class
             // which will add it to its queue and send back responses accordingly
-            m_bc.AddToQueue(serviceMessage);
+            m_comms.AddToQueue(serviceMessage);
         }
 
         /// <summary>Get the Server URL</summary>
         public string GetUrl()
         {
-            return m_bc.ServerURL;
+            return m_comms.ServerURL;
         }
 
         /// <summary>Resets all messages and calls to the server</summary>
         public void ResetCommunication()
         {
-            m_bc.ResetCommunication();
+            m_comms.ResetCommunication();
             AuthenticationService.ClearSavedProfileID();
         }
 
         /// <summary>Enable Communications with the server. By default this is true</summary>
-        /// <param name="in_value">True to enable comms, false otherwise.</param>
-        public void EnableCommunications(bool in_value)
+        /// <param name="value">True to enable comms, false otherwise.</param>
+        public void EnableCommunications(bool value)
         {
-            m_bc.EnableComms(in_value);
+            m_comms.EnableComms(value);
         }
 
         /// <summary>
@@ -794,10 +876,10 @@ namespace BrainCloud
         /// packets (use SetAuthenticationPacketTimeout method).
         ///
         /// </summary>
-        /// <param name="in_timeouts">An array of packet timeouts.</param>
-        public void SetPacketTimeouts(List<int> in_timeouts)
+        /// <param name="timeouts">An array of packet timeouts.</param>
+        public void SetPacketTimeouts(List<int> timeouts)
         {
-            m_bc.PacketTimeouts = in_timeouts;
+            m_comms.PacketTimeouts = timeouts;
         }
 
         /// <summary>
@@ -805,7 +887,7 @@ namespace BrainCloud
         /// </summary>
         public void SetPacketTimeoutsToDefault()
         {
-            m_bc.SetPacketTimeoutsToDefault();
+            m_comms.SetPacketTimeoutsToDefault();
         }
 
         /// <summary>
@@ -814,7 +896,7 @@ namespace BrainCloud
         /// <returns>The packet timeouts.</returns>
         public List<int> GetPacketTimeouts()
         {
-            return m_bc.PacketTimeouts;
+            return m_comms.PacketTimeouts;
         }
 
         /// <summary>
@@ -827,7 +909,7 @@ namespace BrainCloud
         /// <param name="valueSecs">The timeout in seconds.</param>
         public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
-            m_bc.AuthenticationPacketTimeoutSecs = timeoutSecs;
+            m_comms.AuthenticationPacketTimeoutSecs = timeoutSecs;
         }
 
         /// <summary>
@@ -840,7 +922,7 @@ namespace BrainCloud
         /// <returns>The authentication packet timeoutin seconds.</returns>
         public int GetAuthenticationPacketTimeout()
         {
-            return m_bc.AuthenticationPacketTimeoutSecs;
+            return m_comms.AuthenticationPacketTimeoutSecs;
         }
 
         /// <summary>
@@ -851,7 +933,51 @@ namespace BrainCloud
         /// <param name="enabled">If set to <c>true</c>, enable.</param>
         public void SetOldStyleStatusMessageErrorCallback(bool enabled)
         {
-            m_bc.OldStyleStatusResponseInErrorCallback = enabled;
+            m_comms.OldStyleStatusResponseInErrorCallback = enabled;
+        }
+
+        /// <summary>
+        /// Returns the low transfer rate timeout in secs
+        /// </summary>
+        /// <returns>The low transfer rate timeout in secs</returns>
+        int GetUploadLowTransferRateTimeout()
+        {
+            return m_comms.UploadLowTransferRateTimeout;
+        }
+
+        /// <summary>
+        /// Sets the timeout in seconds of a low speed upload
+        /// (ie transfer rate which is underneath the low transfer rate threshold).
+        /// By default this is set to 120 secs.Setting this value to 0 will
+        /// turn off the timeout. Note that this timeout method
+        /// does not work on Unity mobile platforms.
+        /// </summary>
+        /// <param name="timeoutSecs"></param>
+        void SetUploadLowTransferRateTimeout(int timeoutSecs)
+        {
+            m_comms.UploadLowTransferRateTimeout = timeoutSecs;
+        }
+
+        /// <summary>
+        /// Returns the low transfer rate threshold in bytes/sec
+        /// </summary>
+        /// <returns>The low transfer rate threshold in bytes/sec</returns>
+        int GetUploadLowTransferRateThreshold()
+        {
+            return m_comms.UploadLowTransferRateThreshold;
+        }
+
+        /// <summary>
+        /// Sets the low transfer rate threshold of an upload in bytes/sec.
+        /// If the transfer rate dips below the given threshold longer
+        /// than the specified timeout, the transfer will fail.
+        /// By default this is set to 50 bytes/sec. Note that this timeout method
+        /// does not work on Unity mobile platforms.
+        /// </summary>
+        /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
+        void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
+        {
+            m_comms.UploadLowTransferRateThreshold = in_bytesPerSec;
         }
 
         #endregion
@@ -866,7 +992,7 @@ namespace BrainCloud
         /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
         public bool IsAuthenticated()
         {
-            return this.Authenticated;
+            return Authenticated;
         }
 
         /// <summary>
@@ -875,7 +1001,7 @@ namespace BrainCloud
         /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
         public bool IsInitialized()
         {
-            return this.Initialized;
+            return Initialized;
         }
 
         #endregion Authentication

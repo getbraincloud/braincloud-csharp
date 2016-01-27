@@ -82,7 +82,7 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceCreateFriendData                      = new OperationParam("friendData");
 
         // Entity Service - GetEntitiesByType
-        public static readonly OperationParam EntityServiceGetSEntitiesByTypeEntityType          = new OperationParam("entityType");
+        public static readonly OperationParam EntityServiceGetEntitiesByTypeEntityType          = new OperationParam("entityType");
 
         // Entity Service - Update Params
         public static readonly OperationParam EntityServiceUpdateEntityType                      = new OperationParam("entityType");
@@ -189,6 +189,9 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStateServiceWipeExisting = new OperationParam("wipeExisting");
 
         public static readonly OperationParam PlayerStateServiceIncludeSummaryData = new OperationParam("includePlayerSummaryData");
+
+        // Player State Service - UPDATE_PICTURE_URL
+        public static readonly OperationParam PlayerStateServicePlayerPictureUrl = new OperationParam("playerPictureUrl");
 
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");
@@ -335,6 +338,16 @@ namespace BrainCloud
         public static readonly  OperationParam ProfanityFlagPhone                                 = new OperationParam("flagPhone");
         public static readonly  OperationParam ProfanityFlagUrls                                  = new OperationParam("flagUrls");
         public static readonly  OperationParam ProfanityLanguages                                 = new OperationParam("languages");
+
+        //File upload
+        public static readonly OperationParam UploadLocalPath                                    = new OperationParam("localPath");
+        public static readonly OperationParam UploadCloudPath                                    = new OperationParam("cloudPath");
+        public static readonly OperationParam UploadCloudFilename                                = new OperationParam("cloudFilename");
+        public static readonly OperationParam UploadShareable                                    = new OperationParam("shareable");
+        public static readonly OperationParam UploadReplaceIfExists                              = new OperationParam("replaceIfExists");
+        public static readonly OperationParam UploadFileSize                                     = new OperationParam("fileSize");
+        public static readonly OperationParam UploadRecurse                                      = new OperationParam("recurse");
+        public static readonly OperationParam UploadPath                                         = new OperationParam("path");
 
         private OperationParam(string value)
         {

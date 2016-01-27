@@ -12,9 +12,17 @@ namespace BrainCloud.Common
         public static readonly Platform iOS = new Platform ("IOS");
         public static readonly Platform Linux = new Platform ("LINUX");
         public static readonly Platform Mac = new Platform ("MAC");
+        public static readonly Platform PS3 = new Platform ("PS3");
+        public static readonly Platform PS4 = new Platform ("PS4");
+        public static readonly Platform PSVita = new Platform ("PS_VITA");
+        public static readonly Platform Tizen = new Platform ("TIZEN");
+        public static readonly Platform Unknown = new Platform ("UNKNOWN");
         public static readonly Platform Web = new Platform ("WEB");
+        public static readonly Platform Wii = new Platform ("WII");
         public static readonly Platform WindowsPhone = new Platform ("WINP");
         public static readonly Platform Windows = new Platform ("WINDOWS");
+        public static readonly Platform Xbox360 = new Platform ("XBOX_360");
+        public static readonly Platform XboxOne = new Platform ("XBOX_ONE");
 
         private Platform(String value)
         {
@@ -44,66 +52,86 @@ namespace BrainCloud.Common
                 return Linux;
             case "MAC":
                 return Mac;
+            case "PS3":
+                return PS3;
+            case "PS4":
+                return PS4;
+            case "PS_VITA":
+                return PSVita;
+            case "TIZEN":
+                return Tizen;
             case "WEB":
                 return Web;
+            case "WII":
+                return Wii;
             case "WINP":
                 return WindowsPhone;
             case "WINDOWS":
                 return Windows;
+            case "XBOX_360":
+                return Xbox360;
+            case "XBOX_ONE":
+                return XboxOne;
             default:
-                throw new Exception("Unknown platform string: " + s);
+                return Unknown;
             }
         }
 
 #if !(DOT_NET)
         public static Platform FromUnityRuntime()
         {
-            switch ( UnityEngine.Application.platform )
+            // this kicks in if dll is compiled from visual studio solution
+        #if NO_UNITY_DEFINES
+            return Unknown;
+        #else
+            
+            // first deal with platforms that have no define
+
+            // 5.0 and later
+        #if !UNITY_4_6
+            if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
             {
-            // web browser
-            case UnityEngine.RuntimePlatform.WindowsWebPlayer:
-            case UnityEngine.RuntimePlatform.OSXWebPlayer:
-#if !UNITY_4_6
-            case UnityEngine.RuntimePlatform.WebGLPlayer:
-#endif
-                return Web;
-
-                // android
-            case UnityEngine.RuntimePlatform.Android:
-                return GooglePlayAndroid;
-                
-                // windows phone 8
-            case UnityEngine.RuntimePlatform.WP8Player:
-                return WindowsPhone;
-                
-                // mac osx
-            case UnityEngine.RuntimePlatform.OSXEditor:
-            case UnityEngine.RuntimePlatform.OSXPlayer:
-            case UnityEngine.RuntimePlatform.OSXDashboardPlayer:
-                return Mac;
-                
-                // windows desktop
-            case UnityEngine.RuntimePlatform.WindowsEditor:
-            case UnityEngine.RuntimePlatform.WindowsPlayer:
-                return Windows;
-                
-                // linux
-            case UnityEngine.RuntimePlatform.LinuxPlayer:
-                return Linux;
-                
-                // ios and default
-            case UnityEngine.RuntimePlatform.IPhonePlayer:
-                return iOS;
-
-#if !UNITY_4_6
-            // appletv to add soon... but to which unity version???
-            // case ???
-                // return AppleTVOS;
-#endif
-
-            default:
-                throw new Exception("Unknown unity runtime platform: " + UnityEngine.Application.platform);
+                return PSVita;
             }
+        #endif
+
+            // otherwise we rely on the unity compile flag to denote platform
+
+        #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            return Windows;
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            return Mac;
+#elif UNITY_STANDALONE_LINUX
+            return Linux;
+#elif UNITY_WEBPLAYER || UNITY_WEBGL
+            return Web;
+#elif UNITY_IOS
+            return iOS;
+#elif UNITY_TVOS
+            return AppleTVOS;
+#elif UNITY_ANDROID
+            return GooglePlayAndroid;
+#elif UNITY_WP8 || UNITY_WP8_1
+            return WindowsPhone;
+#elif UNITY_WSA
+            return Windows;
+#elif UNITY_WII
+            return Wii;
+#elif UNITY_PS3
+            return PS3;
+#elif UNITY_PS4
+            return PS4;
+#elif UNITY_XBOX360
+            return Xbox360;
+#elif UNITY_XBOXONE
+            return XboxOne;
+#elif UNITY_TIZEN
+            return Tizen;
+#else
+            return Unknown;
+#endif
+
+#endif // NO_UNITY_DEFINES
         }
 #endif
     }
