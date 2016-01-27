@@ -64,7 +64,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Get().FileService.UploadFile(
                 _cloudPath,
-                info.Name,
+                "testFileCANCEL.dat",
                 true,
                 true,
                 info.FullName,
@@ -76,15 +76,13 @@ namespace BrainCloudTests
 
             WaitForReturn(GetUploadId(tr.m_response), 500);
 
-            Assert.IsTrue(_isError);
-
-            Thread.Sleep(2000);
+            Thread.Sleep(5000);
 
             BrainCloudClient.Get().FileService.ListUserFiles(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             var fileList = ((object[])((Dictionary<string, object>)tr.m_response["data"])["fileList"]);
-            Assert.IsFalse(fileList.Length > 0);
+            Assert.IsFalse(!_isError || fileList.Length > 0);
 
             CleanupUploadTest();
         }
