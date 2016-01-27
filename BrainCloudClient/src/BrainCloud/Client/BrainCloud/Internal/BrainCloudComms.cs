@@ -642,7 +642,7 @@ namespace BrainCloud.Internal
                             var fileData = (Dictionary<string, object>)uploadData["fileDetails"];
                             string uploadId = (string)fileData["uploadId"];
                             string localPath = (string)fileData["localPath"];
-                            int fileSize = (int)fileData["fileSize"];
+                            //int fileSize = (int)fileData["fileSize"];
 
                             _fileUploads.Add(new FileUploader(uploadId, localPath, _uploadURL, _sessionID, 
                                 _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold));
