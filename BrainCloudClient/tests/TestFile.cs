@@ -57,10 +57,12 @@ namespace BrainCloudTests
         [Test]
         public void TestUploadSimpleFileAndCancel()
         {
+            DeleteAllFiles();
+
             TestResult tr = new TestResult();
             BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            FileInfo info = new FileInfo(CreateFile(4024));
+            FileInfo info = new FileInfo(CreateFile(8192));
 
             BrainCloudClient.Get().FileService.UploadFile(
                 _cloudPath,
@@ -82,6 +84,10 @@ namespace BrainCloudTests
             tr.Run();
 
             var fileList = ((object[])((Dictionary<string, object>)tr.m_response["data"])["fileList"]);
+
+            Console.WriteLine("\nDid fail = " + _isError);
+            Console.WriteLine("File list length  = " + fileList.Length + "\n");
+
             Assert.IsFalse(!_isError || fileList.Length > 0);
 
             CleanupUploadTest();
@@ -153,7 +159,7 @@ namespace BrainCloudTests
 
         [Test]
         public void TestUploadMultiple()
-        {
+        {     
             TestResult tr = new TestResult();
             BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
@@ -207,10 +213,12 @@ namespace BrainCloudTests
             _client.Update();
             while (!_isDone && count < 1000 * 15)
             {
+                double progress = _client.FileService.GetUploadProgress(uploadId);
+
                 if (sw)
                 {
                     string logStr = "Progress: " +
-                        _client.FileService.GetUploadProgress(uploadId) + " | " +
+                        progress + " | " +
                         _client.FileService.GetUploadBytesTransferred(uploadId) + "/" +
                         _client.FileService.GetUploadTotalBytesToTransfer(uploadId);
 
@@ -220,7 +228,7 @@ namespace BrainCloudTests
                 _client.Update();
                 sw = !sw;
 
-                if (cancelTime > 0 && count > cancelTime)
+                if (cancelTime > 0 && progress > 0.05 && count > cancelTime)
                 {
                     _client.FileService.CancelUpload(uploadId);
                 }
@@ -228,6 +236,8 @@ namespace BrainCloudTests
                 Thread.Sleep(150);
                 count += 150;
             }
+
+            _isDone = false;
         }
 
         private string GetUploadId(Dictionary<string, object> response)
@@ -245,8 +255,13 @@ namespace BrainCloudTests
         private void CleanupUploadTest()
         {
             BrainCloudClient.Get().DeregisterFileUploadCallbacks();
-            TestResult tr = new TestResult();
             _isDone = false;
+            DeleteAllFiles();
+        }
+
+        private void DeleteAllFiles()
+        {
+            TestResult tr = new TestResult();
             BrainCloudClient.Get().FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
