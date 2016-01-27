@@ -24,34 +24,34 @@ namespace BrainCloud
         /// register an IFileUploadCallback with the BrainCloudClient class.
         /// </summary>
         /// <param name="cloudPath">The desired cloud path of the file</param>
-        /// <param name="cloudFilename">The desired cloud filename of the file</param>
+        /// <param name="cloudFilename">The desired cloud fileName of the file</param>
         /// <param name="shareable">True if the file is shareable</param>
         /// <param name="replaceIfExists">Whether to replace file if it exists</param>
-        /// <param name="localPath">The path and filename of the local file</param>
+        /// <param name="localPath">The path and fileName of the local file</param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         /// <returns> A bool which is false if the file cannot be found, or file size cannot be determind.
         /// Otherwise the JSON returned in the callback is as follows:
         /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"fileDetails": {
-        /// 			"updatedAt": 1452616408147,
-        /// 			"fileSize": 100,
-        /// 			"fileType": "User",
-        /// 			"expiresAt": 1452702808146,
-        /// 			"shareable": true,
-        /// 			"uploadId": "cf9a075c-587e-4bd1-af0b-eab1a79b958f",
-        /// 			"createdAt": 1452616408147,
-        /// 			"profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        /// 			"gameId": "99999",
-        /// 			"path": "dir1/dir2",
-        /// 			"filename": "filename",
-        /// 			"replaceIfExists": true,
-        /// 			"cloudPath": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/dir1/dir2/filename"
-        /// 		}
-        /// 	}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "fileDetails": {
+        ///             "updatedAt": 1452616408147,
+        ///             "fileSize": 100,
+        ///             "fileType": "User",
+        ///             "expiresAt": 1452702808146,
+        ///             "shareable": true,
+        ///             "uploadId": "cf9a075c-587e-4bd1-af0b-eab1a79b958f",
+        ///             "createdAt": 1452616408147,
+        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
+        ///             "gameId": "99999",
+        ///             "path": "dir1/dir2",
+        ///             "fileName": "fileName",
+        ///             "replaceIfExists": true,
+        ///             "cloudPath": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/dir1/dir2/fileName"
+        ///         }
+        ///     }
         /// }
         /// </returns>
         public bool UploadFile(
@@ -139,23 +139,23 @@ namespace BrainCloud
         /// <param name="cbObject">The callback object</param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"fileList": [{
-        /// 			"updatedAt": 1452603368201,
-        /// 			"uploadedAt": null,
-        /// 			"fileSize": 85470,
-        /// 			"shareable": true,
-        /// 			"createdAt": 1452603368201,
-        /// 			"profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        /// 			"gameId": "99999",
-        /// 			"path": "test2",
-        /// 			"filename": "testup.dat",
-        /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        /// 			"cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        /// 
+        ///     "status": 200,
+        ///     "data": {
+        ///         "fileList": [{
+        ///             "updatedAt": 1452603368201,
+        ///             "uploadedAt": null,
+        ///             "fileSize": 85470,
+        ///             "shareable": true,
+        ///             "createdAt": 1452603368201,
+        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
+        ///             "gameId": "99999",
+        ///             "path": "test2",
+        ///             "fileName": "testup.dat",
+        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
+        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
+        ///
         ///         }]
-        /// 	}
+        ///     }
         /// }
         /// </returns>
         public void ListUserFiles(
@@ -176,23 +176,23 @@ namespace BrainCloud
         /// <param name="cbObject">The callback object</param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"fileList": [{
-        /// 			"updatedAt": 1452603368201,
-        /// 			"uploadedAt": null,
-        /// 			"fileSize": 85470,
-        /// 			"shareable": true,
-        /// 			"createdAt": 1452603368201,
-        /// 			"profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        /// 			"gameId": "99999",
-        /// 			"path": "test2",
-        /// 			"filename": "testup.dat",
-        /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        /// 			"cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        /// 
+        ///     "status": 200,
+        ///     "data": {
+        ///         "fileList": [{
+        ///             "updatedAt": 1452603368201,
+        ///             "uploadedAt": null,
+        ///             "fileSize": 85470,
+        ///             "shareable": true,
+        ///             "createdAt": 1452603368201,
+        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
+        ///             "gameId": "99999",
+        ///             "path": "test2",
+        ///             "fileName": "testup.dat",
+        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
+        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
+        ///
         ///         }]
-        /// 	}
+        ///     }
         /// }
         /// </returns>
         public void ListUserFiles(
@@ -224,22 +224,22 @@ namespace BrainCloud
         /// <param name="cbObject"></param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"fileDetails": {
-        /// 			"updatedAt": 1452603368201,
-        /// 			"uploadedAt": null,
-        /// 			"fileSize": 85470,
-        /// 			"shareable": true,
-        /// 			"createdAt": 1452603368201,
-        /// 			"profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        /// 			"gameId": "99999",
-        /// 			"path": "test2",
-        /// 			"filename": "testup.dat",
-        /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        /// 			"cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        /// 		}
-        /// 	}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "fileDetails": {
+        ///             "updatedAt": 1452603368201,
+        ///             "uploadedAt": null,
+        ///             "fileSize": 85470,
+        ///             "shareable": true,
+        ///             "createdAt": 1452603368201,
+        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
+        ///             "gameId": "99999",
+        ///             "path": "test2",
+        ///             "fileName": "testup.dat",
+        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
+        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
+        ///         }
+        ///     }
         /// }
         /// </returns>
         public void DeleteUserFile(
@@ -269,22 +269,22 @@ namespace BrainCloud
         /// <param name="cbObject"></param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"fileList": [{
-        /// 			"updatedAt": 1452603368201,
-        /// 			"uploadedAt": null,
-        /// 			"fileSize": 85470,
-        /// 			"shareable": true,
-        /// 			"createdAt": 1452603368201,
-        /// 			"profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        /// 			"gameId": "99999",
-        /// 			"path": "test2",
-        /// 			"filename": "testup.dat",
-        /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        /// 			"cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "fileList": [{
+        ///             "updatedAt": 1452603368201,
+        ///             "uploadedAt": null,
+        ///             "fileSize": 85470,
+        ///             "shareable": true,
+        ///             "createdAt": 1452603368201,
+        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
+        ///             "gameId": "99999",
+        ///             "path": "test2",
+        ///             "fileName": "testup.dat",
+        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
+        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
         ///         }]
-        /// 	}
+        ///     }
         /// }
         /// </returns>
         public void DeleteUserFiles(
