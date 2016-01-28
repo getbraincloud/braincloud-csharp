@@ -245,6 +245,17 @@ namespace BrainCloud
         public const int WEBPURIFY_NOT_ENABLED = 40424;
         public const int NAME_CONTAINS_PROFANITY = 40425;
         public const int NULL_SESSION = 40426;
+        public const int PURCHASE_ALREADY_VERIFIED = 40427;
+        public const int GOOGLE_IAP_NOT_CONFIGURED = 40428;
+        public const int UPLOAD_FILE_TOO_LARGE = 40429;
+        public const int FILE_ALREADY_EXISTS = 40430;
+        public const int CLOUD_STORAGE_SERVICE_ERROR = 40431;
+        public const int FILE_DOES_NOT_EXIST = 40432;
+        public const int UPLOAD_ID_MISSING = 40433;
+        public const int UPLOAD_JOB_MISSING = 40434;
+        public const int UPLOAD_JOB_EXPIRED = 40435;
+        public const int UPLOADER_EXCEPTION = 40436;
+        public const int UPLOADER_FILESIZE_MISMATCH = 40437;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
