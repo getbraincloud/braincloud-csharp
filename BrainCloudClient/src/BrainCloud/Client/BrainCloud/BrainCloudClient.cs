@@ -794,6 +794,39 @@ namespace BrainCloud
             m_comms.DeregisterFileUploadCallbacks();
         }
 
+        /// <summary>
+        /// Failure callback invoked for all errors generated
+        /// </summary>
+        public void RegisterGlobalErrorCallback(FailureCallback callback)
+        {
+            m_comms.RegisterGlobalErrorCallback(callback);
+        }
+
+        /// <summary>
+        /// Deregisters the global error callback.
+        /// </summary>
+        public void DeregisterGlobalErrorCallback()
+        {
+            m_comms.DeregisterGlobalErrorCallback();
+        }
+
+        /// <summary>
+        /// Callback invoked when authentication is lost due to an error
+        /// and the client must re-authenticate.
+        /// </summary>
+        public void RegisterUnauthenticatedCallback(FailureCallback callback)
+        {
+            m_comms.RegisterUnauthenticatedCallback(callback);
+        }
+
+        /// <summary>
+        /// Deregisters the authentication lost callback.
+        /// </summary>
+        public void DeregisterUnauthenticatedCallback()
+        {
+            m_comms.DeregisterUnauthenticatedCallback();
+        }
+
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
@@ -822,7 +855,6 @@ namespace BrainCloud
                     }
                     else
                     {
-
 #if !(DOT_NET)
                         Debug.Log(formattedLog);
 #else

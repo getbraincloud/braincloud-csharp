@@ -120,6 +120,10 @@ namespace BrainCloud.Internal
 
         private FileUploadFailedCallback _fileUploadFailedCallback;
 
+        private FailureCallback _globalErrorCallback;
+
+        private FailureCallback _unauthenticatedCallback;
+
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
         //For handling local session errors
@@ -306,6 +310,25 @@ namespace BrainCloud.Internal
             _fileUploadFailedCallback = null;
         }
 
+        public void RegisterGlobalErrorCallback(FailureCallback callback)
+        {
+            _globalErrorCallback = callback;
+        }
+
+        public void DeregisterGlobalErrorCallback()
+        {
+            _globalErrorCallback = null;
+        }
+
+        public void RegisterUnauthenticatedCallback(FailureCallback callback)
+        {
+            _unauthenticatedCallback = callback;
+        }
+
+        public void DeregisterUnauthenticatedCallback()
+        {
+            _unauthenticatedCallback = null;
+        }
 
         /// <summary>
         /// The update method needs to be called periodically to send/receive responses
@@ -766,6 +789,8 @@ namespace BrainCloud.Internal
                         {
                             _cachedStatusMessage = status as string;
                         }
+
+                        if (_unauthenticatedCallback != null) _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc.GetCallback().m_cbObject);
                     }
 
                     if (sc != null && sc.GetOperation() == ServiceOperation.Logout.Value)
@@ -791,6 +816,8 @@ namespace BrainCloud.Internal
                             exceptions.Add(e);
                         }
                     }
+
+                    if (_globalErrorCallback != null) _globalErrorCallback(statusCode, reasonCode, errorJson, sc.GetCallback().m_cbObject);
                 }
             }
 
@@ -929,7 +956,7 @@ namespace BrainCloud.Internal
 
             ResetIdleTimer();
 
-            TriggerCommsError(_cachedStatusCode, _cachedReasonCode, "INTERNAL: | " + _cachedStatusMessage);
+            TriggerCommsError(_cachedStatusCode, _cachedReasonCode, _cachedStatusMessage);
             _activeRequest = null;
         }
 
