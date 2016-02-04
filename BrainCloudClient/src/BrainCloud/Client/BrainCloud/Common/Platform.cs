@@ -23,6 +23,7 @@ namespace BrainCloud.Common
         public static readonly Platform Windows = new Platform ("WINDOWS");
         public static readonly Platform Xbox360 = new Platform ("XBOX_360");
         public static readonly Platform XboxOne = new Platform ("XBOX_ONE");
+        public static readonly Platform Roku = new Platform("ROKU");
 
         private Platform(String value)
         {

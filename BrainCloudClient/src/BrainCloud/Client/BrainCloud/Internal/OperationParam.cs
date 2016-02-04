@@ -192,6 +192,7 @@ namespace BrainCloud
 
         // Player State Service - UPDATE_PICTURE_URL
         public static readonly OperationParam PlayerStateServicePlayerPictureUrl = new OperationParam("playerPictureUrl");
+        public static readonly OperationParam PlayerStateServiceContactEmail = new OperationParam("contactEmail");
 
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");

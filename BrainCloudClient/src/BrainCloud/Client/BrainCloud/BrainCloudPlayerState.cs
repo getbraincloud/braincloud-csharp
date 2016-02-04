@@ -466,5 +466,47 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdatePictureUrl, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Update the player's contact email. 
+        /// Note this is unrelated to email authentication.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlayerState
+        /// Service Operation - UPDATE_CONTACT_EMAIL
+        /// </remarks>
+        /// <param name="contactEmail">
+        /// Updated email
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "contactEmail": "someName@somedomain.com"
+        ///     }
+        /// }
+        /// </returns>
+        public void UpdateContactEmail(
+            string contactEmail,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceContactEmail.Value] = contactEmail;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateContactEmail, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }
