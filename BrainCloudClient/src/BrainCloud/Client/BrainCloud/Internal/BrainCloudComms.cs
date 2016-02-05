@@ -667,7 +667,7 @@ namespace BrainCloud.Internal
                             string localPath = (string)fileData["localPath"];
                             //int fileSize = (int)fileData["fileSize"];
 
-                            _fileUploads.Add(new FileUploader(uploadId, localPath, _uploadURL, _sessionID, 
+                            _fileUploads.Add(new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
                                 _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold));
                         }
 
@@ -790,7 +790,8 @@ namespace BrainCloud.Internal
                             _cachedStatusMessage = status as string;
                         }
 
-                        if (_unauthenticatedCallback != null) _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc.GetCallback().m_cbObject);
+                        if (_unauthenticatedCallback != null)
+                            _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
                     }
 
                     if (sc != null && sc.GetOperation() == ServiceOperation.Logout.Value)
@@ -817,7 +818,8 @@ namespace BrainCloud.Internal
                         }
                     }
 
-                    if (_globalErrorCallback != null) _globalErrorCallback(statusCode, reasonCode, errorJson, sc.GetCallback().m_cbObject);
+                    if (_globalErrorCallback != null)
+                        _globalErrorCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
                 }
             }
 
