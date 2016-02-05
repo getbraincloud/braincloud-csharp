@@ -145,5 +145,17 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestUpdateContactEmail()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Get().PlayerStateService.UpdateContactEmail(
+                GetUser(Users.UserA).Email,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
