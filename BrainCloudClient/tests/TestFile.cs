@@ -71,7 +71,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            FileInfo info = new FileInfo(CreateFile(8192));
+            FileInfo info = new FileInfo(CreateFile(12*1024));
 
             BrainCloudClient.Get().FileService.UploadFile(
                 _cloudPath,
@@ -230,7 +230,7 @@ namespace BrainCloudTests
                         Console.WriteLine(logStr);
                     }
 
-                    if (cancelTime > 0 && progress > 0.05 && count > cancelTime)
+                    if (cancelTime > 0 && progress > 0.05)
                     {
                         _client.FileService.CancelUpload(uploadIds[i]);
                     }
