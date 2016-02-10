@@ -918,6 +918,74 @@ namespace BrainCloud
             m_comms.UploadLowTransferRateThreshold = in_bytesPerSec;
         }
 
+        /// <summary>
+        /// Enables the timeout message caching which is disabled by default.
+        /// Once enabled, if a client side timeout is encountered 
+        /// (i.e. brainCloud server is unreachable presumably due to the client
+        /// network being down) the sdk will do the following:
+        /// 
+        /// 1 - cache the currently queued messages to brainCloud
+        /// 2 - call the global error callback with the timeout error
+        ///     statusCode: CLIENT_NETWORK_ERROR
+        ///     reasonCode: CLIENT_NETWORK_ERROR_TIMEOUT
+        /// 3 - then expect the app to call either:
+        ///     a) RetryCachedMessages() to retry sending to brainCloud
+        ///     b) FlushCachedMessages() to dump all messages in the queue.
+        /// 
+        /// Between steps 2 & 3, the app can prompt the user to retry connecting
+        /// to brainCloud to determine whether to follow path 3a or 3b.
+        /// 
+        /// Note that if path 3a is followed, and another timeout is encountered,
+        /// the process will begin all over again from step 1.
+        /// 
+        /// WARNING - the brainCloud sdk will cache *all* api calls sent
+        /// when a timeout is encountered if this mechanism is enabled.
+        /// This effectively freezes all communication with brainCloud.
+        /// Apps must call either RetryCachedMessages() or FlushCachedMessages() 
+        /// for the brainCloud SDK to resume sending messages.
+        /// ResetCommunication() will also clear the message cache.
+        /// </summary>
+        /// <param name="in_enabled">True if message should be cached on timeout</param>
+        public void EnableCachedMessagesOnTimeout(bool in_enabled)
+        {
+            m_comms.EnableCachedMessagesOnTimeout(in_enabled);
+        }
+
+        /// <summary>
+        /// Attempts to resend any cached messages. If no messages are in the cache,
+        /// this method does nothing.
+        /// </summary>
+        public void RetryCachedMessages()
+        {
+            m_comms.RetryCachedMessages();
+        }
+
+        /// <summary>
+        /// Flushs the cached messages to resume api call processing. This will dump
+        /// all of the cached messages in the queue.
+        /// </summary>
+        /// <param name="in_sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
+        /// be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.
+        /// </param>
+        public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
+        {
+            m_comms.FlushCachedMessages(in_sendApiErrorCallbacks);
+        }
+
+        /// <summary>
+        /// Normally not needed as the brainCloud SDK sends heartbeats automatically.
+        /// Regardless, this is a manual way to send a heartbeat.
+        /// </summary>
+        public void SendHeartbeat(
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null,
+                new ServerCallback(in_success, in_failure, in_cbObject));
+            m_comms.AddToQueue(sc);
+        }
+
         /// <summary>Method writes log if logging is enabled</summary>
         internal void Log(string log)
         {
