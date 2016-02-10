@@ -435,12 +435,6 @@ namespace BrainCloud.Internal
 
                         // Fake a message bundle to keep the callback logic in one place
                         TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
-
-                        if (_cacheMessagesOnTimeout)
-                        {
-                            // rollback packet id to ensure we get the same one as a before if we retry
-                            --_packetId;
-                        }
                     }
                 }
             }
@@ -606,6 +600,7 @@ namespace BrainCloud.Internal
                     _activeRequest = null;
                 }
 
+                --_packetId;
                 _activeRequest = CreateAndSendNextRequestBundle();
                 _blockingQueue = false;
             }
@@ -659,6 +654,7 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
+                ++_packetId;
                 _blockingQueue = false;
             }
         }
