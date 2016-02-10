@@ -126,8 +126,50 @@ namespace BrainCloudTests
                 // reset to defaults
                 BrainCloudClient.Get().SetPacketTimeoutsToDefault();
             }
-
         }
+
+        public void MessageCacheGlobalError()
+        {
+            
+        }
+
+        [Test]
+        public void TestMessageCache()
+        {
+            try
+            {
+                BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+                BrainCloudClient.Get().EnableCachedMessagesOnTimeout(true);
+                BrainCloudClient.Get().EnableLogging(true);
+                BrainCloudClient.Get().SetPacketTimeouts(new List<int> { 1, 1, 1 });
+
+                DateTime timeStart = DateTime.Now;
+                TestResult tr = new TestResult();
+                tr.SetTimeToWaitSecs(30);
+                BrainCloudClient.Get().RegisterGlobalErrorCallback(tr.ApiError);
+                BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
+                tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
+
+                BrainCloudClient.Get().RetryCachedMessages();
+                tr.Reset();
+                tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
+
+                BrainCloudClient.Get().FlushCachedMessages(true);
+                // unable to catch the api callback in this case using tr...
+
+                //tr.Reset();
+                //tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
+            }
+            finally
+            {
+                // reset to defaults
+                BrainCloudClient.Get().SetPacketTimeoutsToDefault();
+                BrainCloudClient.Get().EnableCachedMessagesOnTimeout(false);
+                BrainCloudClient.Get().DeregisterGlobalErrorCallback();
+            }
+        }
+
+
         /*
         [Test]
         public void Test503()

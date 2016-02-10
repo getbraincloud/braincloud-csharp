@@ -68,5 +68,25 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestAuthenticateWithHeartbeat()
+        {
+            TestResult tr = new TestResult();
+
+            // Insert heartbeat as first packet. This would normally cause the
+            // server to reject the second authenticate packet but with the
+            // new comms change, this should result in the heartbeat being
+            // removed from the message bundle.
+            BrainCloudClient.Get().SendHeartbeat();
+
+            BrainCloudClient.Get().AuthenticationService.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
