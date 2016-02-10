@@ -86,6 +86,11 @@ namespace BrainCloud.Internal
         private List<ServerCall> _serviceCallsInProgress = new List<ServerCall>();
 
         /// <summary>
+        /// The service calls in the timeout queue.
+        /// </summary>
+        private List<ServerCall> _serviceCallsInTimeoutQueue = new List<ServerCall>();
+
+        /// <summary>
         /// The current request state. Null if no request is in progress.
         /// </summary>
         private RequestState _activeRequest = null;
@@ -423,10 +428,9 @@ namespace BrainCloud.Internal
                             _brainCloudClientRef.Log("Caching messages");
 
                             // and insert the inProgress messages into head of wait queue
-                            lock (_serviceCallsWaiting)
+                            lock (_serviceCallsInTimeoutQueue)
                             {
-                                _serviceCallsWaiting.InsertRange(0, _serviceCallsInProgress);
-                                _serviceCallsInProgress.Clear();
+                                _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
                             }
 
                             _blockingQueue = true;
@@ -622,11 +626,11 @@ namespace BrainCloud.Internal
 
                 // then flush the message queues
                 List<ServerCall> callsToProcess = new List<ServerCall>();
-                lock (_serviceCallsInProgress)
+                lock (_serviceCallsInTimeoutQueue)
                 {
-                    for (int i = 0, isize = _serviceCallsInProgress.Count; i < isize; ++i)
+                    for (int i = 0, isize = _serviceCallsInTimeoutQueue.Count; i < isize; ++i)
                     {
-                        callsToProcess.Add(_serviceCallsInProgress[i]);
+                        callsToProcess.Add(_serviceCallsInTimeoutQueue[i]);
                     }
                     _serviceCallsInProgress.Clear();
                 }
@@ -971,23 +975,31 @@ namespace BrainCloud.Internal
             RequestState requestState = null;
             lock (_serviceCallsWaiting)
             {
-                if (_serviceCallsWaiting.Count > 0)
+                if (_blockingQueue)
                 {
-                    int numMessagesWaiting = _serviceCallsWaiting.Count;
-                    if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
+                    _serviceCallsInProgress.InsertRange(0, _serviceCallsInTimeoutQueue);
+                    _serviceCallsInTimeoutQueue.Clear();
+                }
+                else 
+                {
+                    if (_serviceCallsWaiting.Count > 0)
                     {
-                        numMessagesWaiting = MAX_MESSAGES_BUNDLE;
-                    }
+                        int numMessagesWaiting = _serviceCallsWaiting.Count;
+                        if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
+                        {
+                            numMessagesWaiting = MAX_MESSAGES_BUNDLE;
+                        }
 
-                    if (_serviceCallsInProgress.Count > 0)
-                    {
-                        // this should never happen
-                        _brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
-                        _serviceCallsInProgress.Clear();
-                    }
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            // this should never happen
+                            _brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            _serviceCallsInProgress.Clear();
+                        }
 
-                    _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
-                    _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                        _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
+                        _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                    }
                 }
 
                 if (_serviceCallsInProgress.Count > 0)
@@ -1332,6 +1344,7 @@ namespace BrainCloud.Internal
                 _blockingQueue = false;
                 _serviceCallsWaiting.Clear();
                 _serviceCallsInProgress.Clear();
+                _serviceCallsInTimeoutQueue.Clear();
                 _activeRequest = null;
                 _brainCloudClientRef.AuthenticationService.ProfileId = "";
                 _sessionID = "";
