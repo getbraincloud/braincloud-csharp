@@ -19,10 +19,10 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().EntityService.CreateEntity(
+            BrainCloudClient.Instance.EntityService.CreateEntity(
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
-                null,
+                new ACL(ACL.Access.None).ToJsonString(),
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -37,7 +37,7 @@ namespace BrainCloudTests
             string entityId = CreateDefaultAddressEntity(ACL.Access.None);
 
             //Delete entity
-            BrainCloudClient.Get().EntityService.DeleteEntity(entityId, 1, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.DeleteEntity(entityId, 1, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             DeleteAllDefaultEntities();
@@ -52,7 +52,7 @@ namespace BrainCloudTests
             //Update entity
             string updatedAddress = "1609 Bank St";
 
-            BrainCloudClient.Get().EntityService.UpdateEntity(
+            BrainCloudClient.Instance.EntityService.UpdateEntity(
                 entityId,
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
@@ -72,7 +72,7 @@ namespace BrainCloudTests
             string entityId = CreateDefaultAddressEntity(ACL.Access.None);
 
             //GetEntity
-            BrainCloudClient.Get().EntityService.GetEntity(entityId, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.GetEntity(entityId, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             DeleteAllDefaultEntities();
@@ -85,7 +85,7 @@ namespace BrainCloudTests
             CreateDefaultAddressEntity(ACL.Access.None);
 
             //GetEntity
-            BrainCloudClient.Get().EntityService.GetSharedEntitiesForPlayerId(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.GetSharedEntitiesForPlayerId(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             DeleteAllDefaultEntities();
@@ -97,7 +97,7 @@ namespace BrainCloudTests
             CreateDefaultAddressEntity(ACL.Access.None);
 
             //GetEntity
-            BrainCloudClient.Get().EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             DeleteAllDefaultEntities();
@@ -112,9 +112,9 @@ namespace BrainCloudTests
             string updatedAddress = "1609 Bank St";
 
             //UpdateSharedEntity
-            BrainCloudClient.Get().EntityService.UpdateSharedEntity(
+            BrainCloudClient.Instance.EntityService.UpdateSharedEntity(
                 entityId,
-                BrainCloudClient.Get().AuthenticationService.ProfileId,
+                BrainCloudClient.Instance.AuthenticationService.ProfileId,
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 1,
@@ -133,7 +133,7 @@ namespace BrainCloudTests
             string updatedAddress = "1609 Bank St";
 
             //UpdateSharedEntity          
-            BrainCloudClient.Get().EntityService.UpdateSingleton(
+            BrainCloudClient.Instance.EntityService.UpdateSingleton(
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 new ACL() { Other = ACL.Access.ReadWrite }.ToJsonString(),
@@ -151,7 +151,7 @@ namespace BrainCloudTests
             CreateDefaultAddressEntity(ACL.Access.None);
 
             //UpdateSharedEntity          
-            BrainCloudClient.Get().EntityService.GetSingleton(
+            BrainCloudClient.Instance.EntityService.GetSingleton(
                 _defaultEntityType,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -166,7 +166,7 @@ namespace BrainCloudTests
             CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
             //UpdateSharedEntity
-            BrainCloudClient.Get().EntityService.DeleteSingleton(
+            BrainCloudClient.Instance.EntityService.DeleteSingleton(
                 _defaultEntityType,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -180,7 +180,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().EntityService.GetPage(
+            BrainCloudClient.Instance.EntityService.GetPage(
                 CreateContext(125, 1, _defaultEntityType),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -192,7 +192,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().EntityService.GetPage(
+            BrainCloudClient.Instance.EntityService.GetPage(
                 CreateContext(50, 1, _defaultEntityType),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -203,7 +203,7 @@ namespace BrainCloudTests
             string context = "";
             context = (string)((Dictionary<string, object>)tr.m_response["data"])["context"];
 
-            BrainCloudClient.Get().GlobalEntityService.GetPageOffset(
+            BrainCloudClient.Instance.GlobalEntityService.GetPageOffset(
                 context,
                 page,
                 tr.ApiSuccess, tr.ApiError);
@@ -237,7 +237,7 @@ namespace BrainCloudTests
             string entityId = "";
 
             //Create entity
-            BrainCloudClient.Get().EntityService.CreateEntity(
+            BrainCloudClient.Instance.EntityService.CreateEntity(
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 access.ToJsonString(),
@@ -259,7 +259,7 @@ namespace BrainCloudTests
             List<string> entityIds = new List<string>(0);
 
             //get all entities
-            BrainCloudClient.Get().EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
@@ -279,7 +279,7 @@ namespace BrainCloudTests
             for (int i = 0; i < entityIds.Count; i++)
             {
                 tr.Reset();
-                BrainCloudClient.Get().EntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Instance.EntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
         }

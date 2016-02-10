@@ -25,6 +25,11 @@ namespace BrainCloud.Common
         {
         }
 
+        public ACL(Access access)
+        {
+            m_other = access;
+        }
+
         public Access Other
         {
             get

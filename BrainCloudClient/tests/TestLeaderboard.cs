@@ -2,12 +2,11 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
-using JsonFx.Json;
 
 namespace BrainCloudTests
 {
     [TestFixture]
-    public class TestSocialLeaderboard : TestFixtureBase
+    public class TestLeaderboard : TestFixtureBase
     {
         private readonly string _globalLeaderboardId = "testLeaderboard";
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
@@ -19,7 +18,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetSocialLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetSocialLeaderboard(
                 _globalLeaderboardId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -39,7 +38,7 @@ namespace BrainCloudTests
             lbIds.Add (_globalLeaderboardId);
             lbIds.Add (_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetMultiSocialLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetMultiSocialLeaderboard(
                 lbIds,
                 10,
                 true,
@@ -58,7 +57,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToLeaderboard(
                 _globalLeaderboardId,
                 1000,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -72,7 +71,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.ResetLeaderboardScore(
+            BrainCloudClient.Instance.SocialLeaderboardService.ResetLeaderboardScore(
                 _globalLeaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -84,7 +83,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
@@ -100,7 +99,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
@@ -116,7 +115,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
                 "thisDoesNotExistLeaderboard",
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
@@ -132,7 +131,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetCompletedLeaderboardTournament(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetCompletedLeaderboardTournament(
                 _socialLeaderboardId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -145,7 +144,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardPageByVersion(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPageByVersion(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
@@ -162,7 +161,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardVersions(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardVersions(
                 _globalLeaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -174,7 +173,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardView(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardView(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
@@ -190,7 +189,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.GetGlobalLeaderboardViewByVersion(
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardViewByVersion(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
@@ -207,7 +206,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.TriggerSocialLeaderboardTournamentReward(
+            BrainCloudClient.Instance.SocialLeaderboardService.TriggerSocialLeaderboardTournamentReward(
                 _socialLeaderboardId,
                 _eventId,
                 1,
@@ -226,7 +225,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -244,7 +243,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -262,7 +261,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -280,7 +279,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -298,7 +297,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),

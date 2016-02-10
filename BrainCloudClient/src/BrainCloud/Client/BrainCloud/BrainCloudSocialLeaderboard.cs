@@ -43,7 +43,8 @@ namespace BrainCloud
         {
             HIGHEST_RANKED
         }
-        private string FetchTypeToString(FetchType fetchType)
+
+        private static string FetchTypeToString(FetchType fetchType)
         {
             if (fetchType == FetchType.HIGHEST_RANKED)
             {
@@ -59,7 +60,7 @@ namespace BrainCloud
             LOW_TO_HIGH
         }
 
-        private string SortOrderToString(SortOrder sortOrder)
+        private static string SortOrderToString(SortOrder sortOrder)
         {
             if (sortOrder == SortOrder.HIGH_TO_LOW)
             {

@@ -16,15 +16,15 @@ namespace BrainCloudTests
         [SetUp]
         public void RegisterCallbacks()
         {
-            BrainCloudClient.Get().RegisterGlobalErrorCallback(GlobalErrorHandler);
-            BrainCloudClient.Get().RegisterUnauthenticatedCallback(UnauthHandler);
+            BrainCloudClient.Instance.RegisterGlobalErrorCallback(GlobalErrorHandler);
+            BrainCloudClient.Instance.RegisterUnauthenticatedCallback(UnauthHandler);
         }
 
         [TearDown]
         public void Cleanup()
         {
-            BrainCloudClient.Get().DeregisterGlobalErrorCallback();
-            BrainCloudClient.Get().DeregisterUnauthenticatedCallback();
+            BrainCloudClient.Instance.DeregisterGlobalErrorCallback();
+            BrainCloudClient.Instance.DeregisterUnauthenticatedCallback();
             _unauthErrorCount = 0;
             _globalErrorCount = 0;
         }
@@ -32,38 +32,38 @@ namespace BrainCloudTests
         [Test]
         public void TestNoSession()
         {
-            //BrainCloudClient.Get().ResetCommunication();
-            //BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
-            //BrainCloudClient.Get().EnableLogging(true);
+            //BrainCloudClient.Instance.ResetCommunication();
+            //BrainCloudClient.Instance.Initialize(_serverUrl, _secret, _appId, _version);
+            //BrainCloudClient.Instance.EnableLogging(true);
 
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 false, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
         }
 
         [Test]
         public void TestSessionTimeout()
         {
-            //BrainCloudClient.Get().ResetCommunication();
-            //BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
-            //BrainCloudClient.Get().EnableLogging(true);
+            //BrainCloudClient.Instance.ResetCommunication();
+            //BrainCloudClient.Instance.Initialize(_serverUrl, _secret, _appId, _version);
+            //BrainCloudClient.Instance.EnableLogging(true);
 
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 false, tr.ApiSuccess, tr.ApiError);
@@ -72,23 +72,23 @@ namespace BrainCloudTests
             Console.WriteLine("\nWaiting for session to expire...");
             Thread.Sleep(61 * 1000);
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
         }
 
         [Test]
         public void TestBadUrl()
         {
-            BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
-            BrainCloudClient.Get().EnableLogging(true);
+            BrainCloudClient.Instance.Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+            BrainCloudClient.Instance.EnableLogging(true);
 
             DateTime timeStart = DateTime.Now;
             TestResult tr = new TestResult();
             tr.SetTimeToWaitSecs(120);
-            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
 
             DateTime timeEnd = DateTime.Now;
@@ -101,14 +101,14 @@ namespace BrainCloudTests
         {
             try
             {
-                BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
-                BrainCloudClient.Get().EnableLogging(true);
-                BrainCloudClient.Get().SetPacketTimeouts(new List<int> { 3, 3, 3 });
+                BrainCloudClient.Instance.Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+                BrainCloudClient.Instance.EnableLogging(true);
+                BrainCloudClient.Instance.SetPacketTimeouts(new List<int> { 3, 3, 3 });
 
                 DateTime timeStart = DateTime.Now;
                 TestResult tr = new TestResult();
                 tr.SetTimeToWaitSecs(120);
-                BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
 
 
@@ -124,7 +124,7 @@ namespace BrainCloudTests
             finally
             {
                 // reset to defaults
-                BrainCloudClient.Get().SetPacketTimeoutsToDefault();
+                BrainCloudClient.Instance.SetPacketTimeoutsToDefault();
             }
 
         }
@@ -134,13 +134,13 @@ namespace BrainCloudTests
         {
             try 
             {
-                BrainCloudClient.Get().Initialize("http://localhost:5432", _secret, _appId, _version);
+                BrainCloudClient.Instance.Initialize("http://localhost:5432", _secret, _appId, _version);
                 BrainCloudClient.Get ().EnableLogging(true);
 
                 DateTime timeStart = DateTime.Now;
                 TestResult tr = new TestResult();
                 tr.SetTimeToWaitSecs(120);
-                BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
                 
                 
@@ -165,42 +165,42 @@ namespace BrainCloudTests
         public void TestErrorCallback()
         {
 
-            BrainCloudClient.Get().Initialize(_serverUrl, _secret, _appId, _version);
-            BrainCloudClient.Get().EnableLogging(true);
+            BrainCloudClient.Instance.Initialize(_serverUrl, _secret, _appId, _version);
+            BrainCloudClient.Instance.EnableLogging(true);
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
             Assert.True(tr.m_statusMessage.StartsWith("{"));
 
-            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(true);
+            BrainCloudClient.Instance.SetOldStyleStatusMessageErrorCallback(true);
             tr.Reset();
 
-            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
             Assert.False(tr.m_statusMessage.StartsWith("{"));
 
             // try now using 900 client timeout
-            BrainCloudClient.Get().Initialize("http://localhost:5432", _secret, _appId, _version);
+            BrainCloudClient.Instance.Initialize("http://localhost:5432", _secret, _appId, _version);
 
             tr.Reset();
-            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(false);
-            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.SetOldStyleStatusMessageErrorCallback(false);
+            BrainCloudClient.Instance.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
             Assert.True(tr.m_statusMessage.StartsWith("{"));
 
             tr.Reset();
-            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(true);
-            BrainCloudClient.Get().EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.SetOldStyleStatusMessageErrorCallback(true);
+            BrainCloudClient.Instance.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
             Assert.False(tr.m_statusMessage.StartsWith("{"));
 
-            BrainCloudClient.Get().SetOldStyleStatusMessageErrorCallback(false);
-            BrainCloudClient.Get().ResetCommunication();
+            BrainCloudClient.Instance.SetOldStyleStatusMessageErrorCallback(false);
+            BrainCloudClient.Instance.ResetCommunication();
         }
 
         [Test]
@@ -208,22 +208,22 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
 
             Assert.AreEqual(_unauthErrorCount, 1);
             Assert.AreEqual(_globalErrorCount, 1);
 
-            BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 false, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().EntityService.UpdateEntity(
+            BrainCloudClient.Instance.EntityService.UpdateEntity(
                 "fakeId",
                 "type",
                 Helpers.CreateJsonPair("test", 2),

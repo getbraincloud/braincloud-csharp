@@ -17,7 +17,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ScriptService.RunScript(
+            BrainCloudClient.Instance.ScriptService.RunScript(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 tr.ApiSuccess, tr.ApiError);
@@ -30,7 +30,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ScriptService.ScheduleRunScriptUTC(
+            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptUTC(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 DateTime.Now.AddDays(1),
@@ -44,7 +44,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ScriptService.ScheduleRunScriptMinutes(
+            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptMinutes(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 60,
@@ -59,7 +59,7 @@ namespace BrainCloudTests
             GoToChildProfile();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().ScriptService.RunParentScript(
+            BrainCloudClient.Instance.ScriptService.RunParentScript(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1), ParentLevel,
                 tr.ApiSuccess, tr.ApiError);

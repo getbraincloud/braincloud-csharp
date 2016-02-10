@@ -16,7 +16,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.AwardCurrency(
+            BrainCloudClient.Instance.ProductService.AwardCurrency(
                 _currencytype,
                 200,
                 tr.ApiSuccess, tr.ApiError);
@@ -29,7 +29,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.ConsumeCurrency(
+            BrainCloudClient.Instance.ProductService.ConsumeCurrency(
                 _currencytype,
                 100,
                 tr.ApiSuccess, tr.ApiError);
@@ -42,7 +42,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.GetCurrency(
+            BrainCloudClient.Instance.ProductService.GetCurrency(
                 _currencytype,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -54,7 +54,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.GetEligiblePromotions(
+            BrainCloudClient.Instance.ProductService.GetEligiblePromotions(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -65,7 +65,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.GetSalesInventory(
+            BrainCloudClient.Instance.ProductService.GetSalesInventory(
                 _platform,
                 "CAD",
                 tr.ApiSuccess, tr.ApiError);
@@ -78,7 +78,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.GetSalesInventoryByCategory(
+            BrainCloudClient.Instance.ProductService.GetSalesInventoryByCategory(
                 _platform,
                 "CAD",
                 _productCatagory,
@@ -92,7 +92,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProductService.ResetCurrency(
+            BrainCloudClient.Instance.ProductService.ResetCurrency(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -104,7 +104,7 @@ namespace BrainCloudTests
             GoToChildProfile();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().ProductService.AwardParentCurrency(
+            BrainCloudClient.Instance.ProductService.AwardParentCurrency(
                 _currencytype,
                 1000,
                 ParentLevel,
@@ -118,7 +118,7 @@ namespace BrainCloudTests
             GoToChildProfile();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().ProductService.ConsumeParentCurrency(
+            BrainCloudClient.Instance.ProductService.ConsumeParentCurrency(
                 _currencytype,
                 200,
                 ParentLevel,
@@ -132,7 +132,7 @@ namespace BrainCloudTests
             GoToChildProfile();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().ProductService.GetParentCurrency(
+            BrainCloudClient.Instance.ProductService.GetParentCurrency(
                 _currencytype,
                 ParentLevel,
                 tr.ApiSuccess, tr.ApiError);
@@ -145,7 +145,7 @@ namespace BrainCloudTests
             GoToChildProfile();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().ProductService.ResetParentCurrency(
+            BrainCloudClient.Instance.ProductService.ResetParentCurrency(
                 ParentLevel,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

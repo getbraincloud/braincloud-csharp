@@ -11,14 +11,14 @@ namespace BrainCloudTests
         public void TestSwitchToChildProfile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.SwitchToChildProfile(
+            BrainCloudClient.Instance.IdentityService.SwitchToChildProfile(
                 null,
                 ChildAppId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().PlayerStateService.DeletePlayer(
+            BrainCloudClient.Instance.PlayerStateService.DeletePlayer(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -27,7 +27,7 @@ namespace BrainCloudTests
         public void TestSwitchToSingletonChildProfile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.SwitchToSingletonChildProfile(
+            BrainCloudClient.Instance.IdentityService.SwitchToSingletonChildProfile(
                 ChildAppId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -38,13 +38,13 @@ namespace BrainCloudTests
         public void TestSwitchToParentProfile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.SwitchToSingletonChildProfile(
+            BrainCloudClient.Instance.IdentityService.SwitchToSingletonChildProfile(
                 ChildAppId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get().IdentityService.SwitchToParentProfile(
+            BrainCloudClient.Instance.IdentityService.SwitchToParentProfile(
                 ParentLevel,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -54,7 +54,7 @@ namespace BrainCloudTests
         public void TestGetChildProfiles()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().IdentityService.GetChildProfiles(
+            BrainCloudClient.Instance.IdentityService.GetChildProfiles(
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

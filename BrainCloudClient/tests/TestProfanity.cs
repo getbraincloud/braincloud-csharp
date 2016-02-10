@@ -12,7 +12,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProfanityService.ProfanityCheck(
+            BrainCloudClient.Instance.ProfanityService.ProfanityCheck(
                 "shitbird fly away", "en", true, true, true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -24,7 +24,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProfanityService.ProfanityReplaceText(
+            BrainCloudClient.Instance.ProfanityService.ProfanityReplaceText(
                 "shitbird fly away", "*", "en", false, false, false,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -36,7 +36,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().ProfanityService.ProfanityIdentifyBadWords(
+            BrainCloudClient.Instance.ProfanityService.ProfanityIdentifyBadWords(
                 "shitbird fly away", "en", true, false, false,
                 tr.ApiSuccess, tr.ApiError);
 

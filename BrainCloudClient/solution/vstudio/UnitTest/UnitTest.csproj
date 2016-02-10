@@ -117,6 +117,9 @@
     <Compile Include="..\..\..\tests\TestIdentity.cs">
       <Link>TestIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestLeaderboard.cs">
+      <Link>TestLeaderboard.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestMatchMaking.cs">
       <Link>TestMatchMaking.cs</Link>
     </Compile>
@@ -156,14 +159,8 @@
     <Compile Include="..\..\..\tests\TestScript.cs">
       <Link>TestScript.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\TestSocialLeaderboard.cs">
-      <Link>TestSocialLeaderboard.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\tests\TestTime.cs">
       <Link>TestTime.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\tests\TestTwitter.cs">
-      <Link>TestTwitter.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
