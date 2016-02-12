@@ -127,8 +127,6 @@ namespace BrainCloud.Internal
 
         private FailureCallback _globalErrorCallback;
 
-        private FailureCallback _unauthenticatedCallback;
-
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
         //For handling local session errors
@@ -338,16 +336,6 @@ namespace BrainCloud.Internal
         public void DeregisterGlobalErrorCallback()
         {
             _globalErrorCallback = null;
-        }
-
-        public void RegisterUnauthenticatedCallback(FailureCallback callback)
-        {
-            _unauthenticatedCallback = callback;
-        }
-
-        public void DeregisterUnauthenticatedCallback()
-        {
-            _unauthenticatedCallback = null;
         }
 
         /// <summary>
@@ -903,9 +891,6 @@ namespace BrainCloud.Internal
                         {
                             _cachedStatusMessage = status as string;
                         }
-
-                        if (_unauthenticatedCallback != null)
-                            _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
                     }
 
                     if (sc != null && sc.GetOperation() == ServiceOperation.Logout.Value)

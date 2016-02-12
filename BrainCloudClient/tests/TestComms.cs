@@ -11,21 +11,17 @@ namespace BrainCloudTests
     public class TestComms : TestFixtureNoAuth
     {
         private int _globalErrorCount;
-        private int _unauthErrorCount;
 
         [SetUp]
         public void RegisterCallbacks()
         {
             BrainCloudClient.Instance.RegisterGlobalErrorCallback(GlobalErrorHandler);
-            BrainCloudClient.Instance.RegisterUnauthenticatedCallback(UnauthHandler);
         }
 
         [TearDown]
         public void Cleanup()
         {
             BrainCloudClient.Instance.DeregisterGlobalErrorCallback();
-            BrainCloudClient.Instance.DeregisterUnauthenticatedCallback();
-            _unauthErrorCount = 0;
             _globalErrorCount = 0;
         }
 
@@ -252,8 +248,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
-
-            Assert.AreEqual(_unauthErrorCount, 1);
+            
             Assert.AreEqual(_globalErrorCount, 1);
 
             BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
@@ -273,8 +268,7 @@ namespace BrainCloudTests
                 -1,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(404, 40332);
-
-            Assert.AreEqual(_unauthErrorCount, 1);
+            
             Assert.AreEqual(_globalErrorCount, 2);
         }
 
@@ -282,12 +276,6 @@ namespace BrainCloudTests
         {
             _globalErrorCount++;
             Console.Out.WriteLine("Global error: " + jsonError);
-        }
-
-        private void UnauthHandler(int status, int reasonCode, string jsonError, object cbObject)
-        {
-            _unauthErrorCount++;
-            Console.Out.WriteLine("Unauthenticated error: " + jsonError);
         }
     }
 }

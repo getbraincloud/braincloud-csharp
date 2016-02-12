@@ -748,23 +748,6 @@ namespace BrainCloud
             m_comms.DeregisterGlobalErrorCallback();
         }
 
-        /// <summary>
-        /// Callback invoked when authentication is lost due to an error
-        /// and the client must re-authenticate.
-        /// </summary>
-        public void RegisterUnauthenticatedCallback(FailureCallback callback)
-        {
-            m_comms.RegisterUnauthenticatedCallback(callback);
-        }
-
-        /// <summary>
-        /// Deregisters the authentication lost callback.
-        /// </summary>
-        public void DeregisterUnauthenticatedCallback()
-        {
-            m_comms.DeregisterUnauthenticatedCallback();
-        }
-
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
