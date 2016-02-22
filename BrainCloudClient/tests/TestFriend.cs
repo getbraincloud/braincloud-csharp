@@ -12,7 +12,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().FriendService.FindPlayerByName(
+            BrainCloudClient.Instance.FriendService.FindPlayerByName(
                 "search",
                 10,
                 tr.ApiSuccess, tr.ApiError);

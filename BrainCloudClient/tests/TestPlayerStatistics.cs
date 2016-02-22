@@ -17,7 +17,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -28,7 +28,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.ReadPlayerStatsSubset(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadPlayerStatsSubset(
                 new string[] { "currency", "highestScore" },
                 tr.ApiSuccess, tr.ApiError);
 
@@ -40,7 +40,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             
-            BrainCloudClient.Get().PlayerStatisticsService.ReadPlayerStatsForCategory(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadPlayerStatsForCategory(
                 "Test",
                 tr.ApiSuccess, tr.ApiError);
             
@@ -54,7 +54,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object> stats = new Dictionary<string, object> { { "highestScore", "RESET" } };
 
-            BrainCloudClient.Get().PlayerStatisticsService.IncrementPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.IncrementPlayerStats(
                 JsonWriter.Serialize(stats),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -66,7 +66,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.ResetAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ResetAllPlayerStats(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -81,7 +81,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.IncrementExperiencePoints(
+            BrainCloudClient.Instance.PlayerStatisticsService.IncrementExperiencePoints(
                 10,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -93,7 +93,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.GetNextExperienceLevel(
+            BrainCloudClient.Instance.PlayerStatisticsService.GetNextExperienceLevel(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -104,7 +104,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlayerStatisticsService.SetExperiencePoints(
+            BrainCloudClient.Instance.PlayerStatisticsService.SetExperiencePoints(
                 100,
                 tr.ApiSuccess, tr.ApiError);
 

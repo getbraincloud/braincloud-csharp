@@ -3,23 +3,22 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
 using BrainCloud.Internal;
 using BrainCloud.Common;
 using BrainCloud.Entity;
-using System.Globalization;
-
 
 #if !(DOT_NET)
 using UnityEngine;
+#else
+using System.Globalization;
+using System;
 #endif
 
 namespace BrainCloud
 {
+    #region Delegates
+
     /// <summary>
     /// Success callback for an API method.
     /// </summary>
@@ -102,12 +101,56 @@ namespace BrainCloud
     /// </returns>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
 
+    #endregion
+
     public class BrainCloudClient
     {
-        #region Public Static
+        #region Private Data
 
+        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
         private static BrainCloudClient s_instance;
 
+        private string m_gameVersion = "";
+        private Platform m_platform;
+        private bool m_initialized;
+        private bool m_loggingEnabled = false;
+        private object m_loggingMutex = new object();
+
+        private LogCallback m_logDelegate;
+
+        private BCEntityFactory m_entityFactory;
+        private BrainCloudComms m_comms;
+        private BrainCloudEntity m_entityService;
+        private BrainCloudGlobalEntity m_globalEntityService;
+        private BrainCloudGlobalApp m_globalAppService;
+        private BrainCloudProduct m_productService;
+        private BrainCloudPlayerStatistics m_playerStatisticsService;
+        private BrainCloudGlobalStatistics m_globalStatisticsService;
+        private BrainCloudIdentity m_identityService;
+        private BrainCloudScript m_scriptService;
+        private BrainCloudMatchMaking m_matchMakingService;
+        private BrainCloudOneWayMatch m_oneWayMatchService;
+        private BrainCloudPlaybackStream m_playbackStreamService;
+        private BrainCloudGamification m_gamificationService;
+        private BrainCloudPlayerState m_playerStateService;
+        private BrainCloudFriend m_friendService;
+        private BrainCloudEvent m_eventService;
+        private BrainCloudSocialLeaderboard m_leaderboardService;
+        private BrainCloudAsyncMatch m_asyncMatchService;
+        private BrainCloudTime m_timeService;
+        private BrainCloudAuthentication m_authenticationService;
+        private BrainCloudTwitter m_twitterService;
+        private BrainCloudPushNotification m_pushNotificationService;
+        private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
+        private BrainCloudS3Handling m_s3HandlingService;
+        private BrainCloudRedemptionCode m_redemptionCodeService;
+        private BrainCloudDataStream m_dataStreamService;
+        private BrainCloudProfanity m_profanityService;
+        private BrainCloudFile m_fileService;
+
+        #endregion Private Data
+
+        #region Public Static
         /// <summary>A way to get a Singleton instance of brainCloud.</summary>
         public static BrainCloudClient Get()
         {
@@ -131,7 +174,6 @@ namespace BrainCloud
 
             return newCallback;
         }
-
         #endregion
 
         #region Constructors
@@ -159,7 +201,7 @@ namespace BrainCloud
             m_friendService = new BrainCloudFriend(this);
 
             m_eventService = new BrainCloudEvent(this);
-            m_socialLeaderboardService = new BrainCloudSocialLeaderboard(this);
+            m_leaderboardService = new BrainCloudSocialLeaderboard(this);
             m_asyncMatchService = new BrainCloudAsyncMatch(this);
             m_timeService = new BrainCloudTime(this);
 
@@ -177,90 +219,82 @@ namespace BrainCloud
 
         //---------------------------------------------------------------
 
-        #endregion
-
-        #region Private Data
-
-        private BCEntityFactory m_entityFactory;
-
-        private BrainCloudComms m_comms;
-        private bool m_initialized;
-        private bool m_loggingEnabled = false;
-        private object m_loggingMutex = new object();
-        private LogCallback m_logDelegate;
-
-        private BrainCloudEntity m_entityService;
-        private BrainCloudGlobalEntity m_globalEntityService;
-        private BrainCloudGlobalApp m_globalAppService;
-        private BrainCloudProduct m_productService;
-        private BrainCloudPlayerStatistics m_playerStatisticsService;
-        private BrainCloudGlobalStatistics m_globalStatisticsService;
-        private BrainCloudIdentity m_identityService;
-        private BrainCloudScript m_scriptService;
-        private BrainCloudMatchMaking m_matchMakingService;
-        private BrainCloudOneWayMatch m_oneWayMatchService;
-        private BrainCloudPlaybackStream m_playbackStreamService;
-        private BrainCloudGamification m_gamificationService;
-        private BrainCloudPlayerState m_playerStateService;
-        private BrainCloudFriend m_friendService;
-        private BrainCloudEvent m_eventService;
-        private BrainCloudSocialLeaderboard m_socialLeaderboardService;
-        private BrainCloudAsyncMatch m_asyncMatchService;
-        private BrainCloudTime m_timeService;
-        private BrainCloudAuthentication m_authenticationService;
-        private BrainCloudTwitter m_twitterService;
-        private BrainCloudPushNotification m_pushNotificationService;
-        private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
-        private BrainCloudS3Handling m_s3HandlingService;
-        private BrainCloudRedemptionCode m_redemptionCodeService;
-        private BrainCloudDataStream m_dataStreamService;
-        private BrainCloudProfanity m_profanityService;
-        private BrainCloudFile m_fileService;
-
-        #endregion Private Data
+        #endregion        
 
         #region Properties
 
-        internal BrainCloudComms Comms
+        public static BrainCloudClient Instance
         {
             get
             {
-                return m_comms;
+                // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
+                // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
+                if (s_instance == null)
+                {
+                    s_instance = new BrainCloudClient();
+                }
+                return s_instance;
             }
+        }
+
+        public bool Authenticated
+        {
+            get { return m_comms.Authenticated; }
+        }
+
+        public bool Initialized
+        {
+            get { return m_initialized; }
+        }
+
+        /// <summary>Returns the sessionId or empty string if no session present.</summary>
+        /// <returns>The sessionId or empty string if no session present.</returns>
+        public string SessionID
+        {
+            get { return m_comms != null ? m_comms.SessionID : ""; }
+        }
+
+        public string GameId
+        {
+            get { return m_comms != null ? m_comms.GameId : ""; }
+        }
+
+        public string GameVersion
+        {
+            get { return m_gameVersion; }
+        }
+        public string BrainCloudClientVersion
+        {
+            get { return Version.GetVersion(); }
+        }
+
+        public Platform ReleasePlatform
+        {
+            get { return m_platform; }
+        }
+
+        #endregion
+
+        #region Service Properties
+
+        internal BrainCloudComms Comms
+        {
+            get { return m_comms; }
         }
 
         public BrainCloudEntity EntityService
         {
-            get
-            {
-                return m_entityService;
-            }
-        }
-
-        public BrainCloudEntity GetEntityService()
-        {
-            return EntityService;
+            get { return m_entityService; }
         }
 
         public BCEntityFactory EntityFactory
         {
-            get
-            {
-                return m_entityFactory;
-            }
-        }
-
-        public BCEntityFactory GetEntityFactory()
-        {
-            return EntityFactory;
+            get { return m_entityFactory; }
         }
 
         public BrainCloudGlobalEntity GlobalEntityService
         {
-            get
-            {
-                return m_globalEntityService;
-            }
+            get { return m_globalEntityService; }
         }
 
         public BrainCloudGlobalApp GlobalAppService
@@ -269,6 +303,140 @@ namespace BrainCloud
             {
                 return m_globalAppService;
             }
+        }
+
+        public BrainCloudProduct ProductService
+        {
+            get { return m_productService; }
+        }
+
+        public BrainCloudPlayerStatistics PlayerStatisticsService
+        {
+            get { return m_playerStatisticsService; }
+        }
+
+        public BrainCloudGlobalStatistics GlobalStatisticsService
+        {
+            get { return m_globalStatisticsService; }
+        }
+
+        public BrainCloudIdentity IdentityService
+        {
+            get { return m_identityService; }
+        }
+
+        public BrainCloudScript ScriptService
+        {
+            get { return m_scriptService; }
+        }
+
+        public BrainCloudMatchMaking MatchMakingService
+        {
+            get { return m_matchMakingService; }
+        }
+
+        public BrainCloudOneWayMatch OneWayMatchService
+        {
+            get { return m_oneWayMatchService; }
+        }
+
+        public BrainCloudPlaybackStream PlaybackStreamService
+        {
+            get { return m_playbackStreamService; }
+        }
+
+        public BrainCloudGamification GamificationService
+        {
+            get { return m_gamificationService; }
+        }
+
+        public BrainCloudPlayerState PlayerStateService
+        {
+            get { return m_playerStateService; }
+        }
+
+        public BrainCloudFriend FriendService
+        {
+            get { return m_friendService; }
+        }
+
+        public BrainCloudEvent EventService
+        {
+            get { return m_eventService; }
+        }
+
+        public BrainCloudSocialLeaderboard SocialLeaderboardService
+        {
+            get { return m_leaderboardService; }
+        }
+
+        public BrainCloudAsyncMatch AsyncMatchService
+        {
+            get { return m_asyncMatchService; }
+        }
+
+        public BrainCloudTime TimeService
+        {
+            get { return m_timeService; }
+        }
+
+        public BrainCloudAuthentication AuthenticationService
+        {
+            get { return m_authenticationService; }
+        }
+
+        public BrainCloudTwitter TwitterService
+        {
+            get { return m_twitterService; }
+        }
+
+        public BrainCloudPushNotification PushNotificationService
+        {
+            get { return m_pushNotificationService; }
+        }
+
+        public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
+        {
+            get { return m_playerStatisticsEventService; }
+        }
+
+        public BrainCloudS3Handling S3HandlingService
+        {
+            get { return m_s3HandlingService; }
+        }
+
+        public BrainCloudRedemptionCode RedemptionCodeService
+        {
+            get { return m_redemptionCodeService; }
+        }
+
+        public BrainCloudDataStream DataStreamService
+        {
+            get { return m_dataStreamService; }
+        }
+
+        public BrainCloudProfanity ProfanityService
+        {
+            get { return m_profanityService; }
+        }
+
+        public BrainCloudFile FileService
+        {
+            get { return m_fileService; }
+        }
+
+        #endregion
+
+        #region Service Getters
+
+        public BrainCloudEntity GetEntityService()
+        {
+            return EntityService;
+        }
+
+        public BCEntityFactory GetEntityFactory()
+        {
+            return EntityFactory;
         }
 
         public BrainCloudGlobalApp GetGlobalAppService()
@@ -281,25 +449,9 @@ namespace BrainCloud
             return GlobalEntityService;
         }
 
-        public BrainCloudProduct ProductService
-        {
-            get
-            {
-                return m_productService;
-            }
-        }
-
         public BrainCloudProduct GetProductService()
         {
             return ProductService;
-        }
-
-        public BrainCloudPlayerStatistics PlayerStatisticsService
-        {
-            get
-            {
-                return m_playerStatisticsService;
-            }
         }
 
         public BrainCloudPlayerStatistics GetPlayerStatisticsService()
@@ -307,37 +459,14 @@ namespace BrainCloud
             return PlayerStatisticsService;
         }
 
-        public BrainCloudGlobalStatistics GlobalStatisticsService
-        {
-            get
-            {
-                return m_globalStatisticsService;
-            }
-        }
-
         public BrainCloudGlobalStatistics GetGlobalStatisticsService()
         {
             return GlobalStatisticsService;
         }
 
-        public BrainCloudIdentity IdentityService
-        {
-            get
-            {
-                return m_identityService;
-            }
-        }
         public BrainCloudIdentity GetIdentityService()
         {
             return IdentityService;
-        }
-
-        public BrainCloudScript ScriptService
-        {
-            get
-            {
-                return m_scriptService;
-            }
         }
 
         public BrainCloudScript GetScriptService()
@@ -345,25 +474,9 @@ namespace BrainCloud
             return ScriptService;
         }
 
-        public BrainCloudMatchMaking MatchMakingService
-        {
-            get
-            {
-                return m_matchMakingService;
-            }
-        }
-
         public BrainCloudMatchMaking GetMatchMakingService()
         {
             return MatchMakingService;
-        }
-
-        public BrainCloudOneWayMatch OneWayMatchService
-        {
-            get
-            {
-                return m_oneWayMatchService;
-            }
         }
 
         public BrainCloudOneWayMatch GetOneWayMatchService()
@@ -371,25 +484,9 @@ namespace BrainCloud
             return OneWayMatchService;
         }
 
-        public BrainCloudPlaybackStream PlaybackStreamService
-        {
-            get
-            {
-                return m_playbackStreamService;
-            }
-        }
-
         public BrainCloudPlaybackStream GetPlaybackStreamService()
         {
             return PlaybackStreamService;
-        }
-
-        public BrainCloudGamification GamificationService
-        {
-            get
-            {
-                return m_gamificationService;
-            }
         }
 
         public BrainCloudGamification GetGamificationService()
@@ -397,64 +494,9 @@ namespace BrainCloud
             return GamificationService;
         }
 
-        public BrainCloudPlayerState PlayerStateService
-        {
-            get
-            {
-                return m_playerStateService;
-            }
-        }
-
         public BrainCloudPlayerState GetPlayerStateService()
         {
             return m_playerStateService;
-        }
-
-        public BrainCloudFriend FriendService
-        {
-            get
-            {
-                return m_friendService;
-            }
-        }
-
-        public BrainCloudFriend GetFriendService()
-        {
-            return m_friendService;
-        }
-
-        public BrainCloudEvent EventService
-        {
-            get
-            {
-                return m_eventService;
-            }
-        }
-
-        public BrainCloudEvent GetEventService()
-        {
-            return m_eventService;
-        }
-
-        public BrainCloudSocialLeaderboard SocialLeaderboardService
-        {
-            get
-            {
-                return m_socialLeaderboardService;
-            }
-        }
-
-        public BrainCloudSocialLeaderboard GetSocialLeaderboardService()
-        {
-            return m_socialLeaderboardService;
-        }
-
-        public BrainCloudAsyncMatch AsyncMatchService
-        {
-            get
-            {
-                return m_asyncMatchService;
-            }
         }
 
         public BrainCloudAsyncMatch GetAsyncMatchService()
@@ -462,12 +504,19 @@ namespace BrainCloud
             return m_asyncMatchService;
         }
 
-        public BrainCloudTime TimeService
+        public BrainCloudFriend GetFriendService()
         {
-            get
-            {
-                return m_timeService;
-            }
+            return m_friendService;
+        }
+
+        public BrainCloudEvent GetEventService()
+        {
+            return m_eventService;
+        }
+
+        public BrainCloudSocialLeaderboard GetSocialLeaderboardService()
+        {
+            return m_leaderboardService;
         }
 
         public BrainCloudTime GetTimeService()
@@ -475,25 +524,9 @@ namespace BrainCloud
             return m_timeService;
         }
 
-        public BrainCloudAuthentication AuthenticationService
-        {
-            get
-            {
-                return m_authenticationService;
-            }
-        }
-
         public BrainCloudAuthentication GetAuthenticationService()
         {
             return m_authenticationService;
-        }
-
-        public BrainCloudTwitter TwitterService
-        {
-            get
-            {
-                return m_twitterService;
-            }
         }
 
         public BrainCloudTwitter GetTwitterService()
@@ -501,25 +534,9 @@ namespace BrainCloud
             return m_twitterService;
         }
 
-        public BrainCloudPushNotification PushNotificationService
-        {
-            get
-            {
-                return m_pushNotificationService;
-            }
-        }
-
         public BrainCloudPushNotification GetPushNotificationService()
         {
             return m_pushNotificationService;
-        }
-
-        public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
-        {
-            get
-            {
-                return m_playerStatisticsEventService;
-            }
         }
 
         public BrainCloudPlayerStatisticsEvent GetPlayerStatisticsEventService()
@@ -527,19 +544,9 @@ namespace BrainCloud
             return m_playerStatisticsEventService;
         }
 
-        public BrainCloudS3Handling S3HandlingService
-        {
-            get { return m_s3HandlingService; }
-        }
-
         public BrainCloudS3Handling GetS3HandlingService()
         {
             return m_s3HandlingService;
-        }
-
-        public BrainCloudRedemptionCode RedemptionCodeService
-        {
-            get { return m_redemptionCodeService; }
         }
 
         public BrainCloudRedemptionCode GetRedemptionCodeService
@@ -547,19 +554,9 @@ namespace BrainCloud
             get { return m_redemptionCodeService; }
         }
 
-        public BrainCloudDataStream DataStreamService
-        {
-            get { return m_dataStreamService; }
-        }
-
         public BrainCloudDataStream GetDataStreamService
         {
             get { return m_dataStreamService; }
-        }
-
-        public BrainCloudProfanity ProfanityService
-        {
-            get { return m_profanityService; }
         }
 
         public BrainCloudProfanity GetProfanityService
@@ -567,48 +564,15 @@ namespace BrainCloud
             get { return m_profanityService; }
         }
 
-        public BrainCloudFile FileService
-        {
-            get { return m_fileService; }
-        }
-
         public BrainCloudFile GetFileService
         {
             get { return m_fileService; }
         }
 
+        #endregion
 
-        public bool Authenticated
-        {
-            get
-            {
-                return m_comms.Authenticated;    //no public "set"
-            }
-        }
+        #region Getters
 
-        public bool Initialized
-        {
-            get
-            {
-                return m_initialized;
-            }
-        }
-
-        public string SessionID
-        {
-            get
-            {
-                if (m_comms != null)
-                {
-                    return m_comms.SessionID;
-                }
-                else
-                {
-                    return "";
-                }
-            } //no public "set"
-        }
-  
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
         /// <returns>The sessionId or empty string if no session present.</returns>
         public string GetSessionId()
@@ -616,53 +580,27 @@ namespace BrainCloud
             return SessionID;
         }
 
-        public string GameId
+        /// <summary>
+        /// Returns true if the user is currently authenticated.
+        /// If a session time out or session invalidation is returned from executing a
+        /// sever api call, this flag will reset back to false.
+        /// </summary>
+        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
+        public bool IsAuthenticated()
         {
-            get
-            {
-                if (m_comms != null)
-                {
-                    return m_comms.GameId;
-                }
-                else
-                {
-                    return "";
-                }
-            }
+            return Authenticated;
         }
 
-        private string m_gameVersion = "";
-        public string GameVersion
+        /// <summary>
+        /// Returns true if brainCloud has been initialized.
+        /// </summary>
+        /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
+        public bool IsInitialized()
         {
-            get
-            {
-                return m_gameVersion;    //no public "set"
-            }
-        }
-        public string BrainCloudClientVersion
-        {
-            get
-            {
-                return Version.GetVersion();    //no public "set"
-            }
+            return Initialized;
         }
 
-        private BrainCloud.Common.Platform m_platform;
-        public BrainCloud.Common.Platform ReleasePlatform
-        {
-            get
-            {
-                return m_platform;
-            }
-        }
-
-        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
         #endregion
-
-        // InitializeClient
-        // OnHeartBeat
-        // ResetCommunication
-        #region Miscellaneous
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your game
@@ -832,8 +770,7 @@ namespace BrainCloud
         {
             m_comms.DeregisterNetworkErrorCallback();
         }
-
-
+            
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
@@ -846,39 +783,6 @@ namespace BrainCloud
         public void RegisterLogDelegate(LogCallback logDelegate)
         {
             m_logDelegate = logDelegate;
-        }
-
-        /// <summary>Method writes log if logging is enabled</summary>
-        internal void Log(string log)
-        {
-            if (m_loggingEnabled)
-            {
-                string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
-                lock (m_loggingMutex)
-                {
-                    if (m_logDelegate != null)
-                    {
-                        m_logDelegate(formattedLog);
-                    }
-                    else
-                    {
-#if !(DOT_NET)
-                        Debug.Log(formattedLog);
-#else
-                        Console.WriteLine(formattedLog);
-#endif
-                    }
-                }
-            }
-        }
-
-        /// <summary>Sends a service request message to the server. </summary>
-        /// <param name="serviceMessage">The message to send</param>
-        internal void SendRequest(ServerCall serviceMessage)
-        {
-            // pass this directly to the brainCloud Class
-            // which will add it to its queue and send back responses accordingly
-            m_comms.AddToQueue(serviceMessage);
         }
 
         /// <summary>Get the Server URL</summary>
@@ -980,7 +884,7 @@ namespace BrainCloud
         /// Returns the low transfer rate timeout in secs
         /// </summary>
         /// <returns>The low transfer rate timeout in secs</returns>
-        int GetUploadLowTransferRateTimeout()
+        public int GetUploadLowTransferRateTimeout()
         {
             return m_comms.UploadLowTransferRateTimeout;
         }
@@ -993,7 +897,7 @@ namespace BrainCloud
         /// does not work on Unity mobile platforms.
         /// </summary>
         /// <param name="timeoutSecs"></param>
-        void SetUploadLowTransferRateTimeout(int timeoutSecs)
+        public void SetUploadLowTransferRateTimeout(int timeoutSecs)
         {
             m_comms.UploadLowTransferRateTimeout = timeoutSecs;
         }
@@ -1002,7 +906,7 @@ namespace BrainCloud
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
         /// <returns>The low transfer rate threshold in bytes/sec</returns>
-        int GetUploadLowTransferRateThreshold()
+        public int GetUploadLowTransferRateThreshold()
         {
             return m_comms.UploadLowTransferRateThreshold;
         }
@@ -1015,7 +919,7 @@ namespace BrainCloud
         /// does not work on Unity mobile platforms.
         /// </summary>
         /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
-        void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
+        public void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
         {
             m_comms.UploadLowTransferRateThreshold = in_bytesPerSec;
         }
@@ -1074,32 +978,6 @@ namespace BrainCloud
             m_comms.FlushCachedMessages(in_sendApiErrorCallbacks);
         }
 
-        #endregion
-
-        #region Authentication
-
-        /// <summary>
-        /// Returns true if the user is currently authenticated.
-        /// If a session time out or session invalidation is returned from executing a
-        /// sever api call, this flag will reset back to false.
-        /// </summary>
-        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
-        public bool IsAuthenticated()
-        {
-            return Authenticated;
-        }
-
-        /// <summary>
-        /// Returns true if brainCloud has been initialized.
-        /// </summary>
-        /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
-        public bool IsInitialized()
-        {
-            return Initialized;
-        }
-
-        #endregion Authentication
-
         /// <summary>
         /// Normally not needed as the brainCloud SDK sends heartbeats automatically.
         /// Regardless, this is a manual way to send a heartbeat.
@@ -1112,6 +990,39 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null,
                 new ServerCallback(in_success, in_failure, in_cbObject));
             m_comms.AddToQueue(sc);
+        }
+
+        /// <summary>Method writes log if logging is enabled</summary>
+        internal void Log(string log)
+        {
+            if (m_loggingEnabled)
+            {
+                string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
+                lock (m_loggingMutex)
+                {
+                    if (m_logDelegate != null)
+                    {
+                        m_logDelegate(formattedLog);
+                    }
+                    else
+                    {
+#if !(DOT_NET)
+                        Debug.Log(formattedLog);
+#else
+                        Console.WriteLine(formattedLog);
+#endif
+                    }
+                }
+            }
+        }
+
+        /// <summary>Sends a service request message to the server. </summary>
+        /// <param name="serviceMessage">The message to send</param>
+        internal void SendRequest(ServerCall serviceMessage)
+        {
+            // pass this directly to the brainCloud Class
+            // which will add it to its queue and send back responses accordingly
+            m_comms.AddToQueue(serviceMessage);
         }
     }
 }

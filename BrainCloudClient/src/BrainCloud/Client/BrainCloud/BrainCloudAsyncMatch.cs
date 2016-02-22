@@ -49,9 +49,6 @@ namespace BrainCloud
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
         /// </param>
-        /// <param name="in_matchId">
-        /// Optional match identifier. An id will be generated if not provided.
-        /// </param>
         /// <param name="in_success">
         /// The success callback.
         /// </param>
@@ -88,6 +85,17 @@ namespace BrainCloud
         ///     "updatedAt": 1415641372974
         /// }
         /// </returns>
+        public void CreateMatch(
+            string in_jsonOpponentIds,
+            string in_pushNotificationMessage,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            CreateMatchInternal(in_jsonOpponentIds, null, in_pushNotificationMessage, null, null, null, in_success, in_failure, in_cbObject);
+        }
+
+        [Obsolete("Deprecated. Use method without in_matchId parameter instead.  Will be removed after May 10 2016.")]
         public void CreateMatch(
             string in_jsonOpponentIds,
             string in_pushNotificationMessage,
@@ -131,9 +139,6 @@ namespace BrainCloud
         /// <param name="in_pushNotificationMessage">
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
-        /// </param>
-        /// <param name="in_matchId">
-        /// Optional match identifier. An id will be generated if not provided.
         /// </param>
         /// <param name="in_nextPlayer">
         /// Optionally, force the next player player to be a specific player
@@ -179,6 +184,27 @@ namespace BrainCloud
         ///     "updatedAt": 1415641372974
         /// }                                                                     
         /// </returns>
+        public void CreateMatchWithInitialTurn(
+            string in_jsonOpponentIds,
+            string in_jsonMatchState,
+            string in_pushNotificationMessage,
+            string in_nextPlayer,
+            string in_jsonSummary,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            CreateMatchInternal(
+                in_jsonOpponentIds,
+                in_jsonMatchState == null ? "{}" : in_jsonMatchState,
+                in_pushNotificationMessage,
+                null,
+                in_nextPlayer,
+                in_jsonSummary,
+                in_success, in_failure, in_cbObject);
+        }
+
+        [Obsolete("Deprecated. Use method without in_matchId parameter instead.  Will be removed after May 10 2016.")]
         public void CreateMatchWithInitialTurn(
             string in_jsonOpponentIds,
             string in_jsonMatchState,

@@ -16,7 +16,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().S3HandlingService.GetUpdatedFiles(
+            BrainCloudClient.Instance.S3HandlingService.GetUpdatedFiles(
                 _category,
                 GetModifiedFileDetails(),
                 tr.ApiSuccess, tr.ApiError);
@@ -29,7 +29,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().S3HandlingService.GetFileList(
+            BrainCloudClient.Instance.S3HandlingService.GetFileList(
                 _category,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -41,7 +41,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             string fileDetails = "";
 
-            BrainCloudClient.Get().S3HandlingService.GetFileList(
+            BrainCloudClient.Instance.S3HandlingService.GetFileList(
                 _category,
                 tr.ApiSuccess, tr.ApiError);
 
