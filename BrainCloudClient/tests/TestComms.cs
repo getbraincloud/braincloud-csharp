@@ -11,21 +11,17 @@ namespace BrainCloudTests
     public class TestComms : TestFixtureNoAuth
     {
         private int _globalErrorCount;
-        private int _unauthErrorCount;
 
         [SetUp]
         public void RegisterCallbacks()
         {
             BrainCloudClient.Get().RegisterGlobalErrorCallback(GlobalErrorHandler);
-            BrainCloudClient.Get().RegisterUnauthenticatedCallback(UnauthHandler);
         }
 
         [TearDown]
         public void Cleanup()
         {
             BrainCloudClient.Get().DeregisterGlobalErrorCallback();
-            BrainCloudClient.Get().DeregisterUnauthenticatedCallback();
-            _unauthErrorCount = 0;
             _globalErrorCount = 0;
         }
 
@@ -139,14 +135,14 @@ namespace BrainCloudTests
             try
             {
                 BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
-                BrainCloudClient.Get().EnableCachedMessagesOnTimeout(true);
+                BrainCloudClient.Get().EnableCachedMessagesOnNetworkError(true);
                 BrainCloudClient.Get().EnableLogging(true);
                 BrainCloudClient.Get().SetPacketTimeouts(new List<int> { 1, 1, 1 });
 
                 DateTime timeStart = DateTime.Now;
                 TestResult tr = new TestResult();
                 tr.SetTimeToWaitSecs(30);
-                BrainCloudClient.Get().RegisterGlobalErrorCallback(tr.ApiError);
+                BrainCloudClient.Get().RegisterNetworkErrorCallback(tr.NetworkError);
                 BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
 
@@ -164,8 +160,8 @@ namespace BrainCloudTests
             {
                 // reset to defaults
                 BrainCloudClient.Get().SetPacketTimeoutsToDefault();
-                BrainCloudClient.Get().EnableCachedMessagesOnTimeout(false);
-                BrainCloudClient.Get().DeregisterGlobalErrorCallback();
+                BrainCloudClient.Get().EnableCachedMessagesOnNetworkError(false);
+                BrainCloudClient.Get().DeregisterNetworkErrorCallback();
             }
         }
 
@@ -253,7 +249,6 @@ namespace BrainCloudTests
             BrainCloudClient.Get().TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
 
-            Assert.AreEqual(_unauthErrorCount, 1);
             Assert.AreEqual(_globalErrorCount, 1);
 
             BrainCloudClient.Get().AuthenticationService.AuthenticateUniversal(
@@ -274,7 +269,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(404, 40332);
 
-            Assert.AreEqual(_unauthErrorCount, 1);
             Assert.AreEqual(_globalErrorCount, 2);
         }
 
@@ -282,12 +276,6 @@ namespace BrainCloudTests
         {
             _globalErrorCount++;
             Console.Out.WriteLine("Global error: " + jsonError);
-        }
-
-        private void UnauthHandler(int status, int reasonCode, string jsonError, object cbObject)
-        {
-            _unauthErrorCount++;
-            Console.Out.WriteLine("Unauthenticated error: " + jsonError);
         }
     }
 }

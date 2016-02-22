@@ -37,6 +37,11 @@ namespace BrainCloud
     public delegate void FailureCallback(int status, int reasonCode, string jsonError, object cbObject);
 
     /// <summary>
+    /// Network error callback.
+    /// </summary>
+    public delegate void NetworkErrorCallback();
+
+    /// <summary>
     /// Log callback to implement if providing a custom logging function.
     /// </summary>
     public delegate void LogCallback(string log);
@@ -811,21 +816,23 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Callback invoked when authentication is lost due to an error
-        /// and the client must re-authenticate.
+        /// Registers a callback that is invloked for network errors.
+        /// Note this is only called if EnableCachedMessagesOnNetworkError
+        /// has been set to true.
         /// </summary>
-        public void RegisterUnauthenticatedCallback(FailureCallback callback)
+        public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
-            m_comms.RegisterUnauthenticatedCallback(callback);
+            m_comms.RegisterNetworkErrorCallback(callback);
         }
 
         /// <summary>
-        /// Deregisters the authentication lost callback.
+        /// Deregisters the network error callback.
         /// </summary>
-        public void DeregisterUnauthenticatedCallback()
+        public void DeregisterNetworkErrorCallback()
         {
-            m_comms.DeregisterUnauthenticatedCallback();
+            m_comms.DeregisterNetworkErrorCallback();
         }
+
 
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
@@ -1041,9 +1048,9 @@ namespace BrainCloud
         /// ResetCommunication() will also clear the message cache.
         /// </summary>
         /// <param name="in_enabled">True if message should be cached on timeout</param>
-        public void EnableCachedMessagesOnTimeout(bool in_enabled)
+        public void EnableCachedMessagesOnNetworkError(bool in_enabled)
         {
-            m_comms.EnableCachedMessagesOnTimeout(in_enabled);
+            m_comms.EnableCachedMessagesOnNetworkError(in_enabled);
         }
 
         /// <summary>

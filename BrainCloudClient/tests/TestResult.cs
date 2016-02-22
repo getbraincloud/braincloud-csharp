@@ -23,6 +23,8 @@ namespace BrainCloudTests
         public int m_reasonCode;
         public string m_statusMessage;
         public int m_timeToWaitSecs = 30;
+        public int m_globalErrorCount;
+        public int m_networkErrorCount;
 
         public TestResult()
         {}
@@ -36,6 +38,8 @@ namespace BrainCloudTests
             m_statusCode = 0;
             m_reasonCode = 0;
             m_statusMessage = null;
+            m_globalErrorCount = 0;
+            m_networkErrorCount = 0;
         }
 
         public bool Run()
@@ -85,17 +89,45 @@ namespace BrainCloudTests
             }
         }
 
-        public void ApiError(int statusCode, int reasonCode, string statusMessage, object cb)
+        public void ApiError(int statusCode, int reasonCode, string jsonError, object cb)
         {
             m_statusCode = statusCode;
             m_reasonCode = reasonCode; 
-            m_statusMessage = statusMessage;
+            m_statusMessage = jsonError;
             m_result = false;
             --m_apiCountExpected;
             if (m_apiCountExpected <= 0)
             {
                 m_done = true;
             }
+        }
+
+        public void GlobalError(int statusCode, int reasonCode, string jsonError, object cb)
+        {
+            m_statusCode = statusCode;
+            m_reasonCode = reasonCode;
+            m_statusMessage = jsonError;
+            m_result = false;
+            --m_apiCountExpected;
+            if (m_apiCountExpected <= 0)
+            {
+                m_done = true;
+            }
+            ++m_globalErrorCount;
+        }
+
+        public void NetworkError()
+        {
+            m_statusCode = StatusCodes.CLIENT_NETWORK_ERROR;
+            m_reasonCode = ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT;
+            m_statusMessage = "Network Error";
+            m_result = false;
+            --m_apiCountExpected;
+            if (m_apiCountExpected <= 0)
+            {
+                m_done = true;
+            }
+            ++m_networkErrorCount;
         }
 
         public bool IsDone()

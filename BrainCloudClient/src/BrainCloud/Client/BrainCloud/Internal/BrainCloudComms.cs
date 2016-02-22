@@ -127,7 +127,7 @@ namespace BrainCloud.Internal
 
         private FailureCallback _globalErrorCallback;
 
-        private FailureCallback _unauthenticatedCallback;
+        private NetworkErrorCallback _networkErrorCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
@@ -250,14 +250,14 @@ namespace BrainCloud.Internal
             }
         }
 
-        private bool _cacheMessagesOnTimeout = false;
-        public void EnableCachedMessagesOnTimeout(bool in_enabled)
+        private bool _cacheMessagesOnNetworkError = false;
+        public void EnableCachedMessagesOnNetworkError(bool in_enabled)
         {
-            _cacheMessagesOnTimeout = in_enabled;
+            _cacheMessagesOnNetworkError = in_enabled;
         }
 
         /// <summary>
-        /// This flag is set when _cacheMessagesOnTimeout is true
+        /// This flag is set when _cacheMessagesOnNetworkError is true
         /// and a timeout occurs. It is reset when a call is made 
         /// to either RetryCachedMessages or FlushCachedMessages
         /// </summary>
@@ -340,14 +340,14 @@ namespace BrainCloud.Internal
             _globalErrorCallback = null;
         }
 
-        public void RegisterUnauthenticatedCallback(FailureCallback callback)
+        public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
-            _unauthenticatedCallback = callback;
+            _networkErrorCallback = callback;
         }
 
-        public void DeregisterUnauthenticatedCallback()
+        public void DeregisterNetworkErrorCallback()
         {
-            _unauthenticatedCallback = null;
+            _networkErrorCallback = null;
         }
 
         /// <summary>
@@ -423,22 +423,25 @@ namespace BrainCloud.Internal
                         _activeRequest = null;
 
                         // if we're doing caching of messages on timeout, kick it in now!
-                        if (_cacheMessagesOnTimeout)
+                        if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
                         {
                             _brainCloudClientRef.Log("Caching messages");
+                            _blockingQueue = true;
 
                             // and insert the inProgress messages into head of wait queue
                             lock (_serviceCallsInTimeoutQueue)
                             {
                                 _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
+                                _serviceCallsInProgress.Clear();
                             }
 
-                            _blockingQueue = true;
-                            // triggercomms will send to the global error handler even if no service calls in progress
+                            _networkErrorCallback();
                         }
-
-                        // Fake a message bundle to keep the callback logic in one place
-                        TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
+                        else
+                        {
+                            // Fake a message bundle to keep the callback logic in one place
+                            TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
+                        }
                     }
                 }
             }
@@ -632,7 +635,7 @@ namespace BrainCloud.Internal
                     {
                         callsToProcess.Add(_serviceCallsInTimeoutQueue[i]);
                     }
-                    _serviceCallsInProgress.Clear();
+                    _serviceCallsInTimeoutQueue.Clear();
                 }
                 lock (_serviceCallsWaiting)
                 {
@@ -641,6 +644,10 @@ namespace BrainCloud.Internal
                         callsToProcess.Add(_serviceCallsWaiting[i]);
                     }
                     _serviceCallsWaiting.Clear();
+                }
+                lock (_serviceCallsInProgress)
+                {
+                    _serviceCallsInProgress.Clear(); // shouldn't be anything in here...
                 }
 
                 // and send api error callbacks if required
@@ -658,7 +665,6 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
-                ++_packetId;
                 _blockingQueue = false;
             }
         }
@@ -903,9 +909,6 @@ namespace BrainCloud.Internal
                         {
                             _cachedStatusMessage = status as string;
                         }
-
-                        if (_unauthenticatedCallback != null)
-                            _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
                     }
 
                     if (sc != null && sc.GetOperation() == ServiceOperation.Logout.Value)
