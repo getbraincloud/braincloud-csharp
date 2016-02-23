@@ -952,9 +952,9 @@ namespace BrainCloud
         /// ResetCommunication() will also clear the message cache.
         /// </summary>
         /// <param name="in_enabled">True if message should be cached on timeout</param>
-        public void EnableCachedMessagesOnNetworkError(bool in_enabled)
+        public void EnableNetworkErrorMessageCaching(bool in_enabled)
         {
-            m_comms.EnableCachedMessagesOnNetworkError(in_enabled);
+            m_comms.EnableNetworkErrorMessageCaching(in_enabled);
         }
 
         /// <summary>

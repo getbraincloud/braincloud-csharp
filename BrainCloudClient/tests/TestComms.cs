@@ -135,7 +135,7 @@ namespace BrainCloudTests
             try
             {
                 BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
-                BrainCloudClient.Get().EnableCachedMessagesOnNetworkError(true);
+                BrainCloudClient.Get().EnableNetworkErrorMessageCaching(true);
                 BrainCloudClient.Get().EnableLogging(true);
                 BrainCloudClient.Get().SetPacketTimeouts(new List<int> { 1, 1, 1 });
 
@@ -160,7 +160,7 @@ namespace BrainCloudTests
             {
                 // reset to defaults
                 BrainCloudClient.Get().SetPacketTimeoutsToDefault();
-                BrainCloudClient.Get().EnableCachedMessagesOnNetworkError(false);
+                BrainCloudClient.Get().EnableNetworkErrorMessageCaching(false);
                 BrainCloudClient.Get().DeregisterNetworkErrorCallback();
             }
         }
