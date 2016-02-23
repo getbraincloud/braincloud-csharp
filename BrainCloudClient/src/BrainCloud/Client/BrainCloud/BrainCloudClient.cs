@@ -755,7 +755,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Registers a callback that is invloked for network errors.
-        /// Note this is only called if EnableCachedMessagesOnNetworkError
+        /// Note this is only called if EnableNetworkErrorMessageCaching
         /// has been set to true.
         /// </summary>
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
