@@ -869,7 +869,7 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
-                else if (statusCode >= 400 || statusCode == 202)
+                else
                 {
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
