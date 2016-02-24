@@ -251,7 +251,7 @@ namespace BrainCloud.Internal
         }
 
         private bool _cacheMessagesOnNetworkError = false;
-        public void EnableCachedMessagesOnNetworkError(bool in_enabled)
+        public void EnableNetworkErrorMessageCaching(bool in_enabled)
         {
             _cacheMessagesOnNetworkError = in_enabled;
         }
