@@ -109,7 +109,7 @@ namespace BrainCloud.Common
             return Linux;
 #elif UNITY_WEBPLAYER || UNITY_WEBGL
             return Web;
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_IPHONE
             return iOS;
 #elif UNITY_TVOS
             return AppleTVOS;
