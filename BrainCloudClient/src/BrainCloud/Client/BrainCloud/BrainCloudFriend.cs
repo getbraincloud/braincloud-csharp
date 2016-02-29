@@ -72,6 +72,46 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Retrieves the external ID for the specified user profile ID on the specified social platform.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_EXTERNAL_ID_FOR_PROFILE_ID
+        /// </remarks>
+        /// <param name="in_profileId">
+        /// Profile (player) ID.
+        /// </param>
+        /// <param name="in_authenticationType">
+        /// Associated authentication type.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback
+        /// </returns>
+        public void GetExternalIdForProfileId(
+            string in_profileId,
+            string in_authenticationType,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceProfileId.Value] = in_profileId;
+            data[OperationParam.FriendServiceAuthenticationType.Value] = in_authenticationType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetExternalIdForProfileId, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Returns a particular entity of a particular friend.
         /// </summary>
         /// <remarks>
