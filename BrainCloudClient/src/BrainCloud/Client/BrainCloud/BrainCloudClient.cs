@@ -931,9 +931,7 @@ namespace BrainCloud
         /// network being down) the sdk will do the following:
         /// 
         /// 1 - cache the currently queued messages to brainCloud
-        /// 2 - call the global error callback with the timeout error
-        ///     statusCode: CLIENT_NETWORK_ERROR
-        ///     reasonCode: CLIENT_NETWORK_ERROR_TIMEOUT
+        /// 2 - call the network error callback
         /// 3 - then expect the app to call either:
         ///     a) RetryCachedMessages() to retry sending to brainCloud
         ///     b) FlushCachedMessages() to dump all messages in the queue.
@@ -967,7 +965,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Flushs the cached messages to resume api call processing. This will dump
+        /// Flushes the cached messages to resume api call processing. This will dump
         /// all of the cached messages in the queue.
         /// </summary>
         /// <param name="in_sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
