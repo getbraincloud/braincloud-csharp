@@ -58,7 +58,7 @@
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
@@ -146,14 +146,8 @@
     <Compile Include="..\..\..\tests\TestScript.cs">
       <Link>TestScript.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\TestSocialLeaderboard.cs">
-      <Link>TestSocialLeaderboard.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\tests\TestTime.cs">
       <Link>TestTime.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\tests\TestTwitter.cs">
-      <Link>TestTwitter.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\Helpers.cs">
       <Link>Helpers.cs</Link>
@@ -178,6 +172,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestFile.cs">
       <Link>TestFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestLeaderboard.cs">
+      <Link>TestLeaderboard.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

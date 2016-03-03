@@ -12,9 +12,22 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().FriendService.FindPlayerByName(
+            BrainCloudClient.Instance.FriendService.FindPlayerByName(
                 "search",
                 10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetExternalIdForProfileId()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.GetExternalIdForProfileId(
+                GetUser(Users.UserA).ProfileId,
+                "Facebook",
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

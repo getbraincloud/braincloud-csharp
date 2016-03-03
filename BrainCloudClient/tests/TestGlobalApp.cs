@@ -12,7 +12,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().GlobalAppService.ReadProperties(
+            BrainCloudClient.Instance.GlobalAppService.ReadProperties(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

@@ -21,7 +21,7 @@ namespace BrainCloudTests
         [TearDown]
         public void Cleanup()
         {
-            BrainCloudClient.Get().DeregisterFileUploadCallbacks();
+            BrainCloudClient.Instance.DeregisterFileUploadCallbacks();
             DeleteAllFiles();
             _returnCount = 0;
             _successCount = 0;
@@ -33,7 +33,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().FileService.ListUserFiles(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.FileService.ListUserFiles(tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -42,11 +42,11 @@ namespace BrainCloudTests
         public void TestSimpleUpload()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 info.Name,
                 true,
@@ -56,7 +56,7 @@ namespace BrainCloudTests
 
             tr.Run();
 
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
@@ -69,11 +69,11 @@ namespace BrainCloudTests
             DeleteAllFiles();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            FileInfo info = new FileInfo(CreateFile(8192));
+            FileInfo info = new FileInfo(CreateFile(12*1024));
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 "testFileCANCEL.dat",
                 true,
@@ -83,13 +83,13 @@ namespace BrainCloudTests
 
             tr.Run();
 
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) }, 500);
 
             Thread.Sleep(5000);
 
-            BrainCloudClient.Get().FileService.ListUserFiles(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.FileService.ListUserFiles(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             var fileList = ((object[])((Dictionary<string, object>)tr.m_response["data"])["fileList"]);
@@ -104,11 +104,11 @@ namespace BrainCloudTests
         public void TestDeleteUserFile()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 info.Name,
                 true,
@@ -122,7 +122,7 @@ namespace BrainCloudTests
 
             Assert.IsFalse(_failCount > 0);
 
-            BrainCloudClient.Get().FileService.DeleteUserFile(
+            BrainCloudClient.Instance.FileService.DeleteUserFile(
                 GetCloudPath(tr.m_response),
                 info.Name,
                 tr.ApiSuccess, tr.ApiError);
@@ -134,11 +134,11 @@ namespace BrainCloudTests
         public void TestDeleteUserFiles()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 info.Name,
                 true,
@@ -152,7 +152,7 @@ namespace BrainCloudTests
 
             Assert.IsFalse(_failCount > 0);
 
-            BrainCloudClient.Get().FileService.DeleteUserFiles(
+            BrainCloudClient.Instance.FileService.DeleteUserFiles(
                 GetCloudPath(tr.m_response),
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -164,11 +164,11 @@ namespace BrainCloudTests
         public void TestUploadMultiple()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4096));
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 info.Name + "_multi_1",
                 true,
@@ -179,7 +179,7 @@ namespace BrainCloudTests
             tr.Run();
             string id1 = GetUploadId(tr.m_response);            
 
-            BrainCloudClient.Get().FileService.UploadFile(
+            BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
                 info.Name + "_multi_2",
                 true,
@@ -211,7 +211,7 @@ namespace BrainCloudTests
             int count = 0;
             bool sw = true;
 
-            BrainCloudClient _client = BrainCloudClient.Get();
+            BrainCloudClient _client = BrainCloudClient.Instance;
 
             _client.Update();
             while (_returnCount < uploadIds.Length && count < 1000 * 30)
@@ -230,7 +230,7 @@ namespace BrainCloudTests
                         Console.WriteLine(logStr);
                     }
 
-                    if (cancelTime > 0 && progress > 0.05 && count > cancelTime)
+                    if (cancelTime > 0 && progress > 0.05)
                     {
                         _client.FileService.CancelUpload(uploadIds[i]);
                     }
@@ -259,7 +259,7 @@ namespace BrainCloudTests
         private void DeleteAllFiles()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 

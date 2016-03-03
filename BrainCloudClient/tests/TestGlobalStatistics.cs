@@ -16,7 +16,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object> stats = new Dictionary<string, object> { { "TestStat", "RESET" } };
 
-            BrainCloudClient.Get().GlobalStatisticsService.IncrementGlobalStats(
+            BrainCloudClient.Instance.GlobalStatisticsService.IncrementGlobalStats(
                 JsonWriter.Serialize(stats),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -28,7 +28,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().GlobalStatisticsService.ReadAllGlobalStats(
+            BrainCloudClient.Instance.GlobalStatisticsService.ReadAllGlobalStats(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -39,7 +39,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().GlobalStatisticsService.ReadGlobalStatsSubset(
+            BrainCloudClient.Instance.GlobalStatisticsService.ReadGlobalStatsSubset(
                 new string[] { "TestStat" },
                 tr.ApiSuccess, tr.ApiError);
 
@@ -51,7 +51,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             
-            BrainCloudClient.Get().GlobalStatisticsService.ReadGlobalStatsForCategory(
+            BrainCloudClient.Instance.GlobalStatisticsService.ReadGlobalStatsForCategory(
                 "Test",
                 tr.ApiSuccess, tr.ApiError);
             

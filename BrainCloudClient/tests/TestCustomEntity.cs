@@ -14,8 +14,8 @@ namespace BrainCloudTests
         public void TestStoreAsync()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Get().EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
 
             playerEntity.StoreAsync(tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -37,8 +37,8 @@ namespace BrainCloudTests
         public void TestStoreAsyncShared()
         {
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Get().EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
 
             playerEntity.StoreAsyncShared(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -53,12 +53,12 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             Player playerEntity = null;
 
-            BrainCloudClient.Get().PlayerStateService.ReadPlayerState(
+            BrainCloudClient.Instance.PlayerStateService.ReadPlayerState(
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
-                IList<BCUserEntity> entities = BrainCloudClient.Get().EntityFactory.NewUserEntitiesFromReadPlayerState(JsonWriter.Serialize(tr.m_response));
+                IList<BCUserEntity> entities = BrainCloudClient.Instance.EntityFactory.NewUserEntitiesFromReadPlayerState(JsonWriter.Serialize(tr.m_response));
                 foreach (BCUserEntity e in entities)
                 {
                     if (e.EntityType == Player.ENTITY_TYPE)
@@ -74,8 +74,8 @@ namespace BrainCloudTests
         private Player Initialize()
         {            
             TestResult tr = new TestResult();
-            BrainCloudClient.Get().EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Get().EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
             playerEntity.StoreAsync(tr.ApiSuccess, tr.ApiError);            
             tr.Run();
             return playerEntity;
@@ -95,7 +95,7 @@ namespace BrainCloudTests
         public static string ENTITY_TYPE = "player";
 
         public Player()
-            : base(BrainCloudClient.Get().EntityService)
+            : base(BrainCloudClient.Instance.EntityService)
         {
             // set up some defaults
             m_entityType = "player";

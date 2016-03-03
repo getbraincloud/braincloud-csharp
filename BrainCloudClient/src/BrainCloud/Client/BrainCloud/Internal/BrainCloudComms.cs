@@ -86,6 +86,11 @@ namespace BrainCloud.Internal
         private List<ServerCall> _serviceCallsInProgress = new List<ServerCall>();
 
         /// <summary>
+        /// The service calls in the timeout queue.
+        /// </summary>
+        private List<ServerCall> _serviceCallsInTimeoutQueue = new List<ServerCall>();
+
+        /// <summary>
         /// The current request state. Null if no request is in progress.
         /// </summary>
         private RequestState _activeRequest = null;
@@ -122,7 +127,7 @@ namespace BrainCloud.Internal
 
         private FailureCallback _globalErrorCallback;
 
-        private FailureCallback _unauthenticatedCallback;
+        private NetworkErrorCallback _networkErrorCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
@@ -245,6 +250,20 @@ namespace BrainCloud.Internal
             }
         }
 
+        private bool _cacheMessagesOnNetworkError = false;
+        public void EnableNetworkErrorMessageCaching(bool in_enabled)
+        {
+            _cacheMessagesOnNetworkError = in_enabled;
+        }
+
+        /// <summary>
+        /// This flag is set when _cacheMessagesOnNetworkError is true
+        /// and a timeout occurs. It is reset when a call is made 
+        /// to either RetryCachedMessages or FlushCachedMessages
+        /// </summary>
+        private bool _blockingQueue = false;
+
+
 
         public BrainCloudComms(BrainCloudClient client)
         {
@@ -275,6 +294,7 @@ namespace BrainCloud.Internal
             _gameId = gameId;
             _secretKey = secretKey;
 
+            _blockingQueue = false;
             _initialized = true;
         }
 
@@ -320,14 +340,14 @@ namespace BrainCloud.Internal
             _globalErrorCallback = null;
         }
 
-        public void RegisterUnauthenticatedCallback(FailureCallback callback)
+        public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
-            _unauthenticatedCallback = callback;
+            _networkErrorCallback = callback;
         }
 
-        public void DeregisterUnauthenticatedCallback()
+        public void DeregisterNetworkErrorCallback()
         {
-            _unauthenticatedCallback = null;
+            _networkErrorCallback = null;
         }
 
         /// <summary>
@@ -346,6 +366,10 @@ namespace BrainCloud.Internal
                 return;
             }
             if (!_enabled)
+            {
+                return;
+            }
+            if (_blockingQueue)
             {
                 return;
             }
@@ -398,8 +422,26 @@ namespace BrainCloud.Internal
 
                         _activeRequest = null;
 
-                        // Fake a message bundle to keep the callback logic in one place
-                        TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
+                        // if we're doing caching of messages on timeout, kick it in now!
+                        if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
+                        {
+                            _brainCloudClientRef.Log("Caching messages");
+                            _blockingQueue = true;
+
+                            // and insert the inProgress messages into head of wait queue
+                            lock (_serviceCallsInTimeoutQueue)
+                            {
+                                _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
+                                _serviceCallsInProgress.Clear();
+                            }
+
+                            _networkErrorCallback();
+                        }
+                        else
+                        {
+                            // Fake a message bundle to keep the callback logic in one place
+                            TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
+                        }
                     }
                 }
             }
@@ -409,7 +451,7 @@ namespace BrainCloud.Internal
             }
 
             // is it time for a heartbeat?
-            if (_isAuthenticated)
+            if (_isAuthenticated && !_blockingQueue)
             {
                 if (DateTime.Now.Subtract(_lastTimePacketSent) >= _idleTimeout)
                 {
@@ -508,7 +550,7 @@ namespace BrainCloud.Internal
             }
             if (numMessagesToReturn <= 0)
             {
-                return;
+                numMessagesToReturn = 1; // for when we want to send to only global error callback
             }
 
             JsonResponseErrorBundleV2 bundleObj = new JsonResponseErrorBundleV2();
@@ -547,7 +589,85 @@ namespace BrainCloud.Internal
             // and then dump the comms layer
             ResetCommunication();
         }
+            
+        // see BrainCloudClient.RetryCachedMessages() docs
+        public void RetryCachedMessages()
+        {
+            if (_blockingQueue)
+            {
+                _brainCloudClientRef.Log("Retrying cached messages");
 
+                if (_activeRequest != null)
+                {
+                    // this is definitely an error in the comms lib if it happens. 
+                    // we attempt to cancel it but this is uncharted territory.
+
+                    _brainCloudClientRef.Log("ERROR - retrying cached messages but there is an active request!");
+                    _activeRequest.CancelRequest();
+                    _activeRequest = null;
+                }
+
+                --_packetId;
+                _activeRequest = CreateAndSendNextRequestBundle();
+                _blockingQueue = false;
+            }
+        }
+
+        // see BrainCloudClient.FlushCachedMessages() docs
+        public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
+        {
+            if (_blockingQueue)
+            {
+                _brainCloudClientRef.Log("Flushing cached messages");
+
+                // try to cancel if request is in progress (shouldn't happen)
+                if (_activeRequest != null)
+                {
+                    _activeRequest.CancelRequest();
+                    _activeRequest = null;
+                }
+
+                // then flush the message queues
+                List<ServerCall> callsToProcess = new List<ServerCall>();
+                lock (_serviceCallsInTimeoutQueue)
+                {
+                    for (int i = 0, isize = _serviceCallsInTimeoutQueue.Count; i < isize; ++i)
+                    {
+                        callsToProcess.Add(_serviceCallsInTimeoutQueue[i]);
+                    }
+                    _serviceCallsInTimeoutQueue.Clear();
+                }
+                lock (_serviceCallsWaiting)
+                {
+                    for (int i = 0, isize = _serviceCallsWaiting.Count; i < isize; ++i)
+                    {
+                        callsToProcess.Add(_serviceCallsWaiting[i]);
+                    }
+                    _serviceCallsWaiting.Clear();
+                }
+                lock (_serviceCallsInProgress)
+                {
+                    _serviceCallsInProgress.Clear(); // shouldn't be anything in here...
+                }
+
+                // and send api error callbacks if required
+                if (in_sendApiErrorCallbacks)
+                {
+                    for (int i = 0, isize = callsToProcess.Count; i < isize; ++i)
+                    {
+                        ServerCall sc = callsToProcess[i];
+                        if (sc.GetCallback() != null)
+                        {
+                            sc.GetCallback().OnErrorCallback(
+                                StatusCodes.CLIENT_NETWORK_ERROR,
+                                ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT,
+                                "Timeout trying to reach brainCloud server");
+                        }
+                    }
+                }
+                _blockingQueue = false;
+            }
+        }
 
         /// <summary>
         /// Resets the idle timer.
@@ -749,7 +869,7 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
-                else if (statusCode >= 400 || statusCode == 202)
+                else
                 {
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
@@ -789,9 +909,6 @@ namespace BrainCloud.Internal
                         {
                             _cachedStatusMessage = status as string;
                         }
-
-                        if (_unauthenticatedCallback != null)
-                            _unauthenticatedCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
                     }
 
                     if (sc != null && sc.GetOperation() == ServiceOperation.Logout.Value)
@@ -819,7 +936,9 @@ namespace BrainCloud.Internal
                     }
 
                     if (_globalErrorCallback != null)
+                    {
                         _globalErrorCallback(statusCode, reasonCode, errorJson, sc != null && sc.GetCallback() != null ? sc.GetCallback().m_cbObject : null);
+                    }
                 }
             }
 
@@ -859,23 +978,31 @@ namespace BrainCloud.Internal
             RequestState requestState = null;
             lock (_serviceCallsWaiting)
             {
-                if (_serviceCallsWaiting.Count > 0)
+                if (_blockingQueue)
                 {
-                    int numMessagesWaiting = _serviceCallsWaiting.Count;
-                    if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
+                    _serviceCallsInProgress.InsertRange(0, _serviceCallsInTimeoutQueue);
+                    _serviceCallsInTimeoutQueue.Clear();
+                }
+                else 
+                {
+                    if (_serviceCallsWaiting.Count > 0)
                     {
-                        numMessagesWaiting = MAX_MESSAGES_BUNDLE;
-                    }
+                        int numMessagesWaiting = _serviceCallsWaiting.Count;
+                        if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
+                        {
+                            numMessagesWaiting = MAX_MESSAGES_BUNDLE;
+                        }
 
-                    if (_serviceCallsInProgress.Count > 0)
-                    {
-                        // this should never happen
-                        _brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
-                        _serviceCallsInProgress.Clear();
-                    }
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            // this should never happen
+                            _brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            _serviceCallsInProgress.Clear();
+                        }
 
-                    _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
-                    _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                        _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
+                        _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                    }
                 }
 
                 if (_serviceCallsInProgress.Count > 0)
@@ -890,6 +1017,23 @@ namespace BrainCloud.Internal
                     for (int i = 0; i < _serviceCallsInProgress.Count; ++i)
                     {
                         scIndex = _serviceCallsInProgress[i] as ServerCall;
+                        string operation = scIndex.GetOperation();
+                        string service = scIndex.GetService();
+
+                        // don't send heartbeat if it was generated by comms (null callbacks)
+                        // and there are other messages in the bundle - it's unnecessary
+                        if (service.Equals(ServiceName.HeartBeat.Value)
+                            && operation.Equals(ServiceOperation.Read.Value)
+                            && (scIndex.GetCallback() == null
+                                || scIndex.GetCallback().AreCallbacksNull()))
+                        {
+                            if (_serviceCallsInProgress.Count > 1)
+                            {
+                                _serviceCallsInProgress.RemoveAt(i);
+                                --i;
+                                continue;
+                            }
+                        }
 
                         Dictionary<string, object> message = new Dictionary<string, object>();
                         message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
@@ -898,21 +1042,19 @@ namespace BrainCloud.Internal
 
                         messageList.Add(message);
 
-                        string operation = scIndex.GetOperation();
-
-                        if (operation == ServiceOperation.Authenticate.Value)
+                        if (operation.Equals(ServiceOperation.Authenticate.Value))
                         {
                             requestState.PacketNoRetry = true;
                         }
 
-                        if (operation == ServiceOperation.Authenticate.Value ||
-                            operation == ServiceOperation.ResetEmailPassword.Value)
+                        if (operation.Equals(ServiceOperation.Authenticate.Value)
+                            || operation.Equals(ServiceOperation.ResetEmailPassword.Value))
                         {
                             isAuth = true;
                         }
 
-                        if (operation == ServiceOperation.FullReset.Value ||
-                            operation == ServiceOperation.Logout.Value)
+                        if (operation.Equals(ServiceOperation.FullReset.Value)
+                            || operation.Equals(ServiceOperation.Logout.Value))
                         {
                             requestState.PacketRequiresLongTimeout = true;
                         }
@@ -1202,8 +1344,10 @@ namespace BrainCloud.Internal
             lock (_serviceCallsWaiting)
             {
                 _isAuthenticated = false;
+                _blockingQueue = false;
                 _serviceCallsWaiting.Clear();
                 _serviceCallsInProgress.Clear();
+                _serviceCallsInTimeoutQueue.Clear();
                 _activeRequest = null;
                 _brainCloudClientRef.AuthenticationService.ProfileId = "";
                 _sessionID = "";

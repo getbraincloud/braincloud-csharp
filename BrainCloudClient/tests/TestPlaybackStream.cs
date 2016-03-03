@@ -15,7 +15,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             string streamId = "";
 
-            BrainCloudClient.Get().PlaybackStreamService.StartStream(
+            BrainCloudClient.Instance.PlaybackStreamService.StartStream(
                 GetUser(Users.UserB).ProfileId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -35,7 +35,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.EndStream(
+            BrainCloudClient.Instance.PlaybackStreamService.EndStream(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -49,7 +49,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.DeleteStream(
+            BrainCloudClient.Instance.PlaybackStreamService.DeleteStream(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -63,7 +63,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.AddEvent(
+            BrainCloudClient.Instance.PlaybackStreamService.AddEvent(
                 streamId,
                 Helpers.CreateJsonPair("data", 1),
                 Helpers.CreateJsonPair("total", 5),
@@ -80,7 +80,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForTargetPlayer(
+            BrainCloudClient.Instance.PlaybackStreamService.GetStreamSummariesForTargetPlayer(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -95,7 +95,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForInitiatingPlayer(
+            BrainCloudClient.Instance.PlaybackStreamService.GetStreamSummariesForInitiatingPlayer(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -110,7 +110,7 @@ namespace BrainCloudTests
 
             string streamId = StartStream();
 
-            BrainCloudClient.Get().PlaybackStreamService.ReadStream(
+            BrainCloudClient.Instance.PlaybackStreamService.ReadStream(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -129,7 +129,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             string streamId = "";
 
-            BrainCloudClient.Get().PlaybackStreamService.StartStream(
+            BrainCloudClient.Instance.PlaybackStreamService.StartStream(
                 GetUser(Users.UserB).ProfileId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -146,7 +146,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().PlaybackStreamService.EndStream(
+            BrainCloudClient.Instance.PlaybackStreamService.EndStream(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -159,7 +159,7 @@ namespace BrainCloudTests
 
             string streamId = "";
 
-            BrainCloudClient.Get().PlaybackStreamService.GetStreamSummariesForTargetPlayer(
+            BrainCloudClient.Instance.PlaybackStreamService.GetStreamSummariesForTargetPlayer(
                 GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
 

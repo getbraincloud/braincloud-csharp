@@ -14,7 +14,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.GetShieldExpiry(
+            BrainCloudClient.Instance.MatchMakingService.GetShieldExpiry(
                 null,
                 tr.ApiSuccess,
                 tr.ApiError);
@@ -27,7 +27,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.Read(
+            BrainCloudClient.Instance.MatchMakingService.Read(
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -39,7 +39,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.EnableMatchMaking(
+            BrainCloudClient.Instance.MatchMakingService.EnableMatchMaking(
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -51,7 +51,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.SetPlayerRating(
+            BrainCloudClient.Instance.MatchMakingService.SetPlayerRating(
                 5,
                 tr.ApiSuccess,
                 tr.ApiError);
@@ -64,7 +64,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.ResetPlayerRating(
+            BrainCloudClient.Instance.MatchMakingService.ResetPlayerRating(
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -76,7 +76,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.IncrementPlayerRating(
+            BrainCloudClient.Instance.MatchMakingService.IncrementPlayerRating(
                 2,
                 tr.ApiSuccess,
                 tr.ApiError);
@@ -89,7 +89,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.DecrementPlayerRating(
+            BrainCloudClient.Instance.MatchMakingService.DecrementPlayerRating(
                 2,
                 tr.ApiSuccess,
                 tr.ApiError);
@@ -102,7 +102,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.TurnShieldOn(
+            BrainCloudClient.Instance.MatchMakingService.TurnShieldOn(
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -114,7 +114,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.TurnShieldOff(
+            BrainCloudClient.Instance.MatchMakingService.TurnShieldOff(
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -126,7 +126,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.TurnShieldOnFor(
+            BrainCloudClient.Instance.MatchMakingService.TurnShieldOnFor(
                 1,
                 tr.ApiSuccess,
                 tr.ApiError);
@@ -139,7 +139,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().MatchMakingService.FindPlayers(
+            BrainCloudClient.Instance.MatchMakingService.FindPlayers(
                 3,
                 5,
                 tr.ApiSuccess,
@@ -155,7 +155,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object> filters = new Dictionary<string, object> { { "filter1", 10 } };
 
-            BrainCloudClient.Get().MatchMakingService.FindPlayersUsingFilter(
+            BrainCloudClient.Instance.MatchMakingService.FindPlayersUsingFilter(
                 3,
                 5,
                 JsonWriter.Serialize(filters),

@@ -15,6 +15,7 @@ namespace BrainCloud.Common
         public static readonly Platform PS3 = new Platform ("PS3");
         public static readonly Platform PS4 = new Platform ("PS4");
         public static readonly Platform PSVita = new Platform ("PS_VITA");
+        public static readonly Platform Roku = new Platform("ROKU");
         public static readonly Platform Tizen = new Platform ("TIZEN");
         public static readonly Platform Unknown = new Platform ("UNKNOWN");
         public static readonly Platform Web = new Platform ("WEB");
@@ -23,7 +24,7 @@ namespace BrainCloud.Common
         public static readonly Platform Windows = new Platform ("WINDOWS");
         public static readonly Platform Xbox360 = new Platform ("XBOX_360");
         public static readonly Platform XboxOne = new Platform ("XBOX_ONE");
-        public static readonly Platform Roku = new Platform("ROKU");
+
 
         private Platform(String value)
         {
@@ -59,6 +60,8 @@ namespace BrainCloud.Common
                 return PS4;
             case "PS_VITA":
                 return PSVita;
+            case "ROKU":
+                return Roku;
             case "TIZEN":
                 return Tizen;
             case "WEB":
@@ -98,7 +101,7 @@ namespace BrainCloud.Common
 
             // otherwise we rely on the unity compile flag to denote platform
 
-        #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             return Windows;
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             return Mac;
@@ -106,7 +109,7 @@ namespace BrainCloud.Common
             return Linux;
 #elif UNITY_WEBPLAYER || UNITY_WEBGL
             return Web;
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_IPHONE
             return iOS;
 #elif UNITY_TVOS
             return AppleTVOS;

@@ -1,8 +1,6 @@
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
-using System.Collections.Generic;
-using JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -14,7 +12,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Get().TimeService.ReadServerTime(
+            BrainCloudClient.Instance.TimeService.ReadServerTime(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

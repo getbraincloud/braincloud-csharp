@@ -37,6 +37,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the Facebook identity you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -48,9 +51,10 @@ namespace BrainCloud
             string facebookId,
             string authenticationToken,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(facebookId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, success, failure);
+            AttachIdentity(facebookId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -74,13 +78,17 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeFacebookIdentity(
             string facebookId,
             string authenticationToken,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(facebookId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, success, failure);
+            MergeIdentity(facebookId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -102,6 +110,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -111,9 +122,10 @@ namespace BrainCloud
             string facebookId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(facebookId, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, continueAnon, success, failure);
+            DetachIdentity(facebookId, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -132,6 +144,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the Facebook identity you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -142,9 +157,10 @@ namespace BrainCloud
         public void AttachGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, success, failure);
+            AttachIdentity(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, success, failure, cbObject);
         }
 
         /// <summary>Merge the profile associated with the specified Game Center identity with the current profile.
@@ -162,12 +178,16 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, success, failure);
+            MergeIdentity(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, success, failure, cbObject);
         }
 
         /// <summary>Detach the Game Center identity from the current profile.</summary>
@@ -187,6 +207,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -196,9 +219,10 @@ namespace BrainCloud
             string gameCenterId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(gameCenterId, OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, continueAnon, success, failure);
+            DetachIdentity(gameCenterId, OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -220,6 +244,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -231,9 +258,10 @@ namespace BrainCloud
             string email,
             string password,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, success, failure);
+            AttachIdentity(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -255,13 +283,17 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeEmailIdentity(
             string email,
             string password,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, success, failure);
+            MergeIdentity(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, success, failure, cbObject);
         }
 
         /// <summary>Detach the e-mail identity from the current profile
@@ -282,6 +314,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -291,9 +326,10 @@ namespace BrainCloud
             string email,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(email, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, continueAnon, success, failure);
+            DetachIdentity(email, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -315,6 +351,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -326,9 +365,10 @@ namespace BrainCloud
             string userId,
             string password,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
+            AttachIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -350,13 +390,17 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeUniversalIdentity(
             string userId,
             string password,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure);
+            MergeIdentity(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, success, failure, cbObject);
         }
 
         /// <summary>Detach the universal identity from the current profile
@@ -377,6 +421,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -386,9 +433,10 @@ namespace BrainCloud
             string userId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(userId, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, continueAnon, success, failure);
+            DetachIdentity(userId, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -410,6 +458,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -421,9 +472,10 @@ namespace BrainCloud
             string steamId,
             string sessionTicket,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(steamId, sessionTicket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, success, failure);
+            AttachIdentity(steamId, sessionTicket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -445,13 +497,17 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeSteamIdentity(
             string steamId,
             string sessionTicket,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(steamId, sessionTicket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, success, failure);
+            MergeIdentity(steamId, sessionTicket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, success, failure, cbObject);
         }
 
         /// <summary>Detach the steam identity from the current profile
@@ -472,6 +528,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -481,9 +540,10 @@ namespace BrainCloud
             string steamId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(steamId, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, continueAnon, success, failure);
+            DetachIdentity(steamId, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -506,6 +566,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the Google identity you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -517,9 +580,10 @@ namespace BrainCloud
             string googleId,
             string authenticationToken,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(googleId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, success, failure);
+            AttachIdentity(googleId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -543,13 +607,17 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeGoogleIdentity(
             string googleId,
             string authenticationToken,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(googleId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, success, failure);
+            MergeIdentity(googleId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -571,6 +639,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -580,9 +651,10 @@ namespace BrainCloud
             string googleId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(googleId, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, continueAnon, success, failure);
+            DetachIdentity(googleId, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -607,6 +679,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Errors to watch for:  SWITCHING_PROFILES - this means that the Twitter identity you provided
         /// already points to a different profile.  You will likely want to offer the player the
@@ -619,9 +694,10 @@ namespace BrainCloud
             string authenticationToken,
             string secret,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            AttachIdentity(twitterId, authenticationToken + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, success, failure);
+            AttachIdentity(twitterId, authenticationToken + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -647,14 +723,18 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void MergeTwitterIdentity(
             string twitterId,
             string authenticationToken,
             string secret,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            MergeIdentity(twitterId, authenticationToken + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, success, failure);
+            MergeIdentity(twitterId, authenticationToken + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, success, failure, cbObject);
         }
 
         /// <summary>
@@ -676,6 +756,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
         /// disconnecting this identity would result in the profile being anonymous (which means that
@@ -685,9 +768,10 @@ namespace BrainCloud
             string twitterId,
             bool continueAnon,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            DetachIdentity(twitterId, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, continueAnon, success, failure);
+            DetachIdentity(twitterId, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -712,6 +796,9 @@ namespace BrainCloud
         /// </param>
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
         /// </param>
         /// <returns>
         /// {
@@ -756,9 +843,10 @@ namespace BrainCloud
             string childGameId,
             bool forceCreate,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            SwitchToChildProfile(childProfileId, childGameId, forceCreate, false, success, failure);
+            SwitchToChildProfile(childProfileId, childGameId, forceCreate, false, success, failure, cbObject);
         }
 
         /// <summary>
@@ -780,6 +868,9 @@ namespace BrainCloud
         /// </param>
         /// <param name="failure">
         /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
         /// </param>
         /// <returns>
         /// {
@@ -823,9 +914,10 @@ namespace BrainCloud
             string childGameId,
             bool forceCreate,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
-            SwitchToChildProfile(null, childGameId, forceCreate, true, success, failure);
+            SwitchToChildProfile(null, childGameId, forceCreate, true, success, failure, cbObject);
         }
 
         /// <summary>
@@ -844,6 +936,9 @@ namespace BrainCloud
         /// <param name="failure">
         /// The method to call in the event of an error while switching
         /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         /// <returns>
         /// {
         ///     "status": 200,
@@ -856,12 +951,13 @@ namespace BrainCloud
         public void SwitchToParentProfile(
             string parentLevelName,
             SuccessCallback success,
-            FailureCallback failure)
+            FailureCallback failure,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = parentLevelName;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToParentProfile, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -920,43 +1016,47 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void AttachIdentity(string externalId, string authenticationToken, string authenticationType, SuccessCallback success, FailureCallback failure)
+        private void AttachIdentity(string externalId, string authenticationToken, string authenticationType, SuccessCallback success, FailureCallback failure,
+            object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Attach, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void MergeIdentity(string externalId, string authenticationToken, string authenticationType, SuccessCallback success, FailureCallback failure)
+        private void MergeIdentity(string externalId, string authenticationToken, string authenticationType, SuccessCallback success, FailureCallback failure,
+            object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Merge, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void DetachIdentity(string externalId, string authenticationType, bool continueAnon, SuccessCallback success, FailureCallback failure)
+        private void DetachIdentity(string externalId, string authenticationType, bool continueAnon, SuccessCallback success, FailureCallback failure,
+            object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
             data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void SwitchToChildProfile(string childProfileId, string childGameId, bool forceCreate, bool forceSingleton, SuccessCallback success, FailureCallback failure)
+        private void SwitchToChildProfile(string childProfileId, string childGameId, bool forceCreate, bool forceSingleton, SuccessCallback success, FailureCallback failure,
+            object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
@@ -974,7 +1074,7 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = Util.GetIsoCodeForCurrentLanguage();
             data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = Util.GetUTCOffsetForCurrentTimeZone();
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
