@@ -218,8 +218,8 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType(AUTHENTICATION_ANONYMOUS);
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateAnonymous(
             true, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -269,8 +269,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateEmailPassword(
             in_email, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -319,8 +320,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateExternal(
             in_userid, in_token, in_externalAuthName, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -365,8 +367,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateFacebook(
             in_fbUserId, in_fbAuthToken, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -406,8 +409,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateGameCenter(
             in_gameCenterId, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -451,8 +455,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateGoogle(
             in_userid, in_token, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -496,8 +501,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateSteam(
             in_userid, in_sessionticket, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -545,8 +551,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateTwitter(
             in_userid, in_token, in_secret, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -592,8 +599,9 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        InitializeIdentity();
         SetStoredAuthenticationType("");
+        SetStoredProfileId("");
+        InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateUniversal(
             in_username, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
