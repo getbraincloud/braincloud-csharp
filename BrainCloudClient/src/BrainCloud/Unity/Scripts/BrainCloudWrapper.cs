@@ -65,6 +65,19 @@ public class BrainCloudWrapper : MonoBehaviour
     private string m_lastSecretKey = "";
     private string m_lastGameId = "";
     private string m_lastGameVersion = "";
+
+    private bool m_alwaysAllowProfileSwitch = true;
+    public bool AlwaysAllowProfileSwitch
+    {
+        get
+        {
+            return m_alwaysAllowProfileSwitch;
+        }
+        set
+        {
+            m_alwaysAllowProfileSwitch = value;
+        }
+    }
     
     public static string AUTHENTICATION_ANONYMOUS = "anonymous";
 
@@ -184,6 +197,18 @@ public class BrainCloudWrapper : MonoBehaviour
     }
 
     /// <summary>
+    /// If set to true, profile id is never sent along with non-anonymous authenticates
+    /// thereby ensuring that valid credentials always work but potentially cause a profile switch.
+    /// If set to false, profile id is passed to the server (if it has been stored) and a profile id
+    /// to non-anonymous credential mismatch will cause an error.
+    /// </summary>
+    /// <param name="in_enabled">True if we always allow profile switch</param>
+    public void SetAlwaysAllowProfileSwitch(bool in_enabled)
+    {
+        AlwaysAllowProfileSwitch = in_enabled;
+    }
+
+    /// <summary>
     /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
     /// the user to login, or for users who are sensitive to their privacy
     /// 
@@ -218,8 +243,7 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType(AUTHENTICATION_ANONYMOUS);
-        InitializeIdentity();
+        InitializeIdentity(true);
 
         m_client.AuthenticationService.AuthenticateAnonymous(
             true, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -269,8 +293,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateEmailPassword(
@@ -320,8 +342,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateExternal(
@@ -367,8 +387,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateFacebook(
@@ -409,8 +427,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateGameCenter(
@@ -455,8 +471,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateGoogle(
@@ -501,8 +515,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateSteam(
@@ -551,8 +563,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateTwitter(
@@ -599,8 +609,6 @@ public class BrainCloudWrapper : MonoBehaviour
         aco.m_failureCallback = in_failure;
         aco.m_cbObject = in_cbObject;
 
-        SetStoredAuthenticationType("");
-        SetStoredProfileId("");
         InitializeIdentity();
 
         m_client.AuthenticationService.AuthenticateUniversal(
@@ -619,7 +627,7 @@ public class BrainCloudWrapper : MonoBehaviour
     /// Note that clients are free to implement this logic on their own as well if they 
     /// wish to store the information in another location and/or change the behaviour.
     /// </summary>
-    protected virtual void InitializeIdentity()
+    protected virtual void InitializeIdentity(bool in_isAnonymousAuth = false)
     {
         // retrieve profile and anonymous ids out of the cache
         string profileId = GetStoredProfileId();
@@ -628,9 +636,17 @@ public class BrainCloudWrapper : MonoBehaviour
         if ((anonymousId != "" && profileId == "") || anonymousId == "")
         {
             anonymousId = m_client.AuthenticationService.GenerateGUID();
+            profileId = "";
             SetStoredAnonymousId(anonymousId);
+            SetStoredProfileId(profileId);
         }
-        m_client.InitializeIdentity(profileId, anonymousId);
+        string profileIdToAuthenticateWith = profileId;
+        if (!in_isAnonymousAuth && m_alwaysAllowProfileSwitch)
+        {
+            profileIdToAuthenticateWith = "";
+        }
+        SetStoredAuthenticationType(in_isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
+        m_client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
 
 
