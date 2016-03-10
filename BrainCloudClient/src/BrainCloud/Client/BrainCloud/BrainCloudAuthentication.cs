@@ -124,8 +124,8 @@ namespace BrainCloud
         /// </param>
         public void AuthenticateAnonymous(
             bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value,
@@ -162,8 +162,8 @@ namespace BrainCloud
             string in_externalId,
             string in_authenticationToken,
             bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value,
@@ -180,7 +180,7 @@ namespace BrainCloud
         /// <param name="in_gameCenterId">
         /// The player's game center id  (use the playerID property from the local GKPlayer object)
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -195,8 +195,8 @@ namespace BrainCloud
         public void AuthenticateGameCenter(
             string in_gameCenterId,
             bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value,
@@ -222,7 +222,7 @@ namespace BrainCloud
         /// <param name="in_password">
         /// The password of the user
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -238,8 +238,8 @@ namespace BrainCloud
             string in_email,
             string in_password,
             bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value,
@@ -261,7 +261,7 @@ namespace BrainCloud
         /// <param name="in_password">
         /// The password of the user
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -277,8 +277,8 @@ namespace BrainCloud
             string in_userid,
             string in_password,
             bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value,
@@ -298,7 +298,7 @@ namespace BrainCloud
         /// <param name="in_sessionticket">
         /// The session ticket of the user (hex encoded)
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -313,13 +313,13 @@ namespace BrainCloud
         public void AuthenticateSteam(
             string in_userid,
             string in_sessionticket,
-            bool forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            bool in_forceCreate,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value,
-                              null, forceCreate, in_success, in_failure, in_cbObject);
+                              null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace BrainCloud
         /// <param name="in_token">
         /// The authentication token derived via the google apis.
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -350,13 +350,13 @@ namespace BrainCloud
         public void AuthenticateGoogle(
             string in_userid,
             string in_token,
-            bool forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            bool in_forceCreate,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
-                              null, forceCreate, in_success, in_failure, in_cbObject);
+                null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace BrainCloud
         /// <param name="in_secret">
         /// The secret given when attempting to link with Twitter
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -391,13 +391,13 @@ namespace BrainCloud
             string in_userid,
             string in_token,
             string in_secret,
-            bool forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            bool in_forceCreate,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             Authenticate(in_userid, in_token + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
-                              null, forceCreate, in_success, in_failure, in_cbObject);
+                null, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace BrainCloud
         /// /// <param name="in_externalAuthName">
         /// The name of the cloud script to call for external authentication
         /// </param>
-        /// <param name="forceCreate">
+        /// <param name="in_forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="in_success">
@@ -433,13 +433,13 @@ namespace BrainCloud
             string in_userid,
             string in_token,
             string in_externalAuthName,
-            bool forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            bool in_forceCreate,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value,
-                              in_externalAuthName, forceCreate, in_success, in_failure, in_cbObject);
+                in_externalAuthName, in_forceCreate, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -473,8 +473,8 @@ namespace BrainCloud
         /// </returns>
         public void ResetEmailPassword(
             string in_externalId,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();

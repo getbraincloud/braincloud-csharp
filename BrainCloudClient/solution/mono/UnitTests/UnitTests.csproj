@@ -57,9 +57,6 @@
     <Reference Include="UnityEngine">
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
     </Reference>
