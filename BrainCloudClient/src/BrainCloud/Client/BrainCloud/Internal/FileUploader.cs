@@ -3,7 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-#if UNITY_5_3 && (!UNITY_IOS || ENABLE_IL2CPP)
+#if UNITY_5_3 && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
