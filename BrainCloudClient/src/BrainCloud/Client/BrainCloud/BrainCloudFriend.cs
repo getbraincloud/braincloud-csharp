@@ -5,9 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
 using JsonFx.Json;
 using BrainCloud.Internal;
 
@@ -17,9 +14,73 @@ namespace BrainCloud
     {
         private BrainCloudClient m_brainCloudClientRef;
 
-        public BrainCloudFriend (BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudFriend(BrainCloudClient in_brainCloudClientRef)
         {
             m_brainCloudClientRef = in_brainCloudClientRef;
+        }
+
+        /// <summary>
+        /// Retrieves profile information for the partial matches of the specified text.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_PLAYER_BY_UNIVERSAL_ID
+        /// </remarks>
+        /// <param name="searchText">
+        /// Universal ID text on which to search.
+        /// </param>
+        /// <param name="maxResults">
+        /// Maximum number of results to return.
+        /// </param>
+        /// <param name="in_success">
+        /// The success callback.
+        /// </param>
+        /// <param name="in_failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="in_cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback
+        /// {
+        /// 	"status": 200,
+        /// 	"data": {
+        /// 		"matchedCount": 20,
+        /// 		"matches": [{
+        /// 			"profileId": "17c7ee96-1b73-43d0-8817-cba1953bbf57",
+        /// 			"profileName": "Donald Trump",
+        /// 			"playerSummaryData": {}
+        /// }, {
+        /// 			"profileId": "19d7ee96-2x73-43d0-8817-cba1953bbf57",
+        /// 			"profileName": "Donald Duck",
+        /// 			"playerSummaryData": {}
+        /// 		}]
+        /// 	}
+        /// }
+        /// 
+        /// Alternatively, if there are too many results: 
+        /// {
+        /// 	"status": 200,
+        /// 	"data": {
+        /// 		"matchedCount": 2059,
+        /// 		"message": "Too many results to return."
+        /// 	}
+        /// }
+        /// </returns>
+        public void FindPlayerByUniversalId(
+            string searchText,
+            int maxResults,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByUniversalId, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
@@ -65,7 +126,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.FriendServiceExternalId.Value] = in_externalId;
             data[OperationParam.FriendServiceAuthenticationType.Value] = in_authenticationType;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetFriendProfileInfoForExternalId, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
@@ -310,7 +371,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             if (Util.IsOptionalParameterValid(in_jsonSummaryData))
             {
-                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonSummaryData);
+                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSummaryData);
                 data[OperationParam.PlayerStateServiceUpdateSummaryFriendData.Value] = summaryData;
             }
             else data = null;

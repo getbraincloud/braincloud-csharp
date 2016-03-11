@@ -32,5 +32,18 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestFindPlayerByUniversalId()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.FindPlayerByUniversalId(
+                "search",
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
