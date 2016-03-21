@@ -71,6 +71,9 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceAuthenticationType                  = new OperationParam("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous                    = new OperationParam("confirmAnonymous");
 
+        // Entity Service 
+        public static readonly OperationParam EntityServiceEntityId = new OperationParam("entityId");
+
         // Entity Service - Create Params
         public static readonly OperationParam EntityServiceCreateEntityId                        = new OperationParam("entityId");
         public static readonly OperationParam EntityServiceCreateEntityTargetPlayerId            = new OperationParam("targetPlayerId");
@@ -101,7 +104,7 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceDeleteEntityId                        = new OperationParam("entityId");
 
         // Entity Service - GetSharedEntitiesForPlayerId
-        public static readonly OperationParam EntityServiceGetSharedEntitiesTargetPlayerId       = new OperationParam("targetPlayerId");
+        public static readonly OperationParam EntityServicePlayerId       = new OperationParam("targetPlayerId");
         public static readonly OperationParam EntityServiceGetSharedStatsTargetPlayerId          = new OperationParam("targetPlayerId");
         public static readonly OperationParam EntityServiceGetSharedPlayerStateTargetPlayerId    = new OperationParam("targetPlayerId");
 

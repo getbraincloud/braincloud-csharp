@@ -82,7 +82,7 @@ namespace BrainCloudTests
         public void TestGetSharedEntitiesForPlayerId()
         {
             TestResult tr = new TestResult();
-            CreateDefaultAddressEntity(ACL.Access.None);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
 
             //GetEntity
             BrainCloudClient.Instance.EntityService.GetSharedEntitiesForPlayerId(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
@@ -90,6 +90,23 @@ namespace BrainCloudTests
             tr.Run();
             DeleteAllDefaultEntities();
         }
+
+        [Test]
+        public void TestGetSharedEntityForPlayerId()
+        {
+            TestResult tr = new TestResult();
+            string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            //GetEntity
+            BrainCloudClient.Instance.EntityService.GetSharedEntityForPlayerId(
+                GetUser(Users.UserA).ProfileId,
+                entityId,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
         [Test]
         public void TestGetEntitiesByType()
         {

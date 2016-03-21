@@ -32,6 +32,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadByType = new ServiceOperation("READ_BY_TYPE");
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
+        public static readonly ServiceOperation ReadSharedEntity = new ServiceOperation("READ_SHARED_ENTITY");
 
         // push notification
         public static readonly ServiceOperation DeregisterAll = new ServiceOperation("DEREGISTER_ALL");
