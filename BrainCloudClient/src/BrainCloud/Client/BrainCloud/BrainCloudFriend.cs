@@ -12,6 +12,13 @@ namespace BrainCloud
 {
     public class BrainCloudFriend
     {
+        public enum FriendPlatform
+        {
+            All,
+            brainCloud,
+            Facebook
+        }
+
         private BrainCloudClient m_brainCloudClientRef;
 
         public BrainCloudFriend(BrainCloudClient in_brainCloudClientRef)
@@ -432,6 +439,172 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByName, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves a list of player and friend platform information for all friends of the current player.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - LIST_FRIENDS
+        /// </remarks>
+        /// <param name="friendPlatform">Friend platform to query.</param>
+        /// <param name="includeSummaryData">True if including summary data; false otherwise.</param>
+        /// <param name="in_success"> The success callback. </param>
+        /// <param name="in_failure"> The failure callback. </param>
+        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// Example 1: for friendPlatform = All
+        /// {
+        /// 	"status": 200,
+        /// 	"data": {
+        /// 		"friends": [{
+        /// 			"externalData": {
+        /// 				"Facebook": {
+        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfp1/v/t1.0-1/p50x50/XXX.jpg?oh=YYY&oe=ZZZ",
+        /// 					"name": "scientist at large",
+        /// 					"externalId": "100003668521730"
+        /// 
+        ///                 },
+        /// 				"brainCloud": {}
+        /// 			},
+        /// 			"playerId": "1aa3428c-5877-4624-a909-f2b1af931f00",
+        /// 			"name": "Mr. Peabody",
+        /// 			"summaryFriendData": {
+        /// 				"LEVEL": -4
+        /// 			}
+        /// 		}, {
+        /// 			"externalData": {
+        /// 				"Facebook": {
+        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfa1/v/t1.0-1/c0.11.50.50/p50x50/3AAA.jpg?oh=BBBa&oe=CCC",
+        /// 					"name": "Aquaman",
+        /// 					"externalId": "100003509724516"
+        /// 				}
+        /// 			},
+        /// 			"playerId": "1598c5b6-1b09-431b-96bc-9c2c928cad3b",
+        /// 			"name": null,
+        /// 			"summaryFriendData": {
+        /// 				"LEVEL": 1
+        /// 			}
+        /// 		}],
+        /// 		"server_time": 1458224807855
+        /// 	}
+        /// }
+        /// 
+        /// Example 2: for friendPlatform = Facebook
+        /// {
+        /// 	"status": 200,
+        /// 	"data": {
+        /// 		"friends": [{
+        /// 			"externalData": {
+        /// 				"Facebook": {
+        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfp1/v/t1.0-1/p50x50/XXX.jpg?oh=YYY&oe=ZZZ",
+        /// 					"name": "scientist at large",
+        /// 					"externalId": "100003668521730"
+        /// 				}
+        /// 			},
+        /// 			"playerId": "1aa3428c-5877-4624-a909-f2b1af931f00",
+        /// 			"name": "Mr. Peabody",
+        /// 			"summaryFriendData": {
+        /// 				"LEVEL": -4
+        /// 			}
+        /// 		}, {
+        /// 			"externalData": {
+        /// 				"Facebook": {
+        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfa1/v/t1.0-1/c0.11.50.50/p50x50/3AAA.jpg?oh=BBBa&oe=CCC",
+        /// 					"name": "Aquaman",
+        /// 					"externalId": "100003509724516"
+        /// 				}
+        /// 			},
+        /// 			"playerId": "1598c5b6-1b09-431b-96bc-9c2c928cad3b",
+        /// 			"name": null,
+        /// 			"summaryFriendData": {
+        /// 				"LEVEL": 1
+        /// 			}
+        /// 		}],
+        /// 		"server_time": 1458224807855
+        /// 	}
+        /// }
+        /// </returns>
+        public void ListFriends(
+            FriendPlatform friendPlatform,
+            bool includeSummaryData,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceFriendPlatform.Value] = friendPlatform.ToString();
+            data[OperationParam.FriendServiceIncludeSummaryData.Value] = includeSummaryData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ListFriends, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Links the current player and the specified players as brainCloud friends.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - ADD_FRIENDS
+        /// </remarks>
+        /// <param name="profileIds">Collection of player IDs.</param>
+        /// <param name="in_success"> The success callback. </param>
+        /// <param name="in_failure"> The failure callback. </param>
+        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        /// 	"status": 200,
+        /// 	"data": null
+        /// }
+        /// </returns>
+        public void AddFriends(
+            IList<string> profileIds,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceProfileIds.Value] = profileIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.AddFriends, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Unlinks the current player and the specified players as brainCloud friends.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - REMOVE_FRIENDS
+        /// </remarks>
+        /// <param name="profileIds">Collection of player IDs.</param>
+        /// <param name="in_success"> The success callback. </param>
+        /// <param name="in_failure"> The failure callback. </param>
+        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        /// 	"status": 200,
+        /// 	"data": null
+        /// }
+        /// </returns>
+        public void RemoveFriends(
+            IList<string> profileIds,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceProfileIds.Value] = profileIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.RemoveFriends, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

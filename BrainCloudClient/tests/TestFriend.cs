@@ -45,5 +45,53 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestListFriends()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.ListFriends(
+                BrainCloudFriend.FriendPlatform.All,
+                false,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestAddFriends()
+        {
+            AddFriends();
+        }
+
+        [Test]
+        public void TestRemoveFriends()
+        {
+            AddFriends();
+
+            TestResult tr = new TestResult();
+
+            string[] friends = { GetUser(Users.UserB).ProfileId };
+
+            BrainCloudClient.Instance.FriendService.RemoveFriends(
+                friends,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        private void AddFriends()
+        {
+            TestResult tr = new TestResult();
+
+            string[] friends = { GetUser(Users.UserB).ProfileId };
+
+            BrainCloudClient.Instance.FriendService.AddFriends(
+                friends,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
