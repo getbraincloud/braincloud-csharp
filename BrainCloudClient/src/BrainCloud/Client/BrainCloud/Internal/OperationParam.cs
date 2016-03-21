@@ -298,6 +298,7 @@ namespace BrainCloud
         public static readonly OperationParam MatchMakingServiceMinutes                          = new OperationParam("minutes");
         public static readonly OperationParam MatchMakingServiceRangeDelta                       = new OperationParam("rangeDelta");
         public static readonly OperationParam MatchMakingServiceNumMatches                       = new OperationParam("numMatches");
+        public static readonly OperationParam MatchMakingServiceAttributes                       = new OperationParam("attributes");
         public static readonly OperationParam MatchMakingServiceExtraParams                      = new OperationParam("extraParams");
         public static readonly OperationParam MatchMakingServicePlayerId                         = new OperationParam("playerId");
         public static readonly OperationParam MatchMakingServicePlaybackStreamId                 = new OperationParam("playbackStreamId");
