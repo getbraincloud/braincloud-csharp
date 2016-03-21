@@ -555,33 +555,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
-        public void AwardAchievements(
-            string in_achievementIds,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            string[] ids = in_achievementIds.Split(new char[] { ',' });
-            string achievementsStr = "[";
-            for (int i = 0, isize = ids.Length; i < isize; ++i)
-            {
-                achievementsStr += (i == 0 ? "\"" : ",\"");
-                achievementsStr += ids[i];
-                achievementsStr += "\"";
-            }
-            achievementsStr += "]";
-
-            string[] achievementData = JsonReader.Deserialize<string[]>(achievementsStr);
-
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GamificationServiceAchievementsName.Value] = achievementData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
-            ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.AwardAchievements, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Method retrieves all of the quests defined for the game.
         /// </summary>

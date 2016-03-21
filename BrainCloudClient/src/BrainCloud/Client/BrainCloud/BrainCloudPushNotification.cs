@@ -190,48 +190,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-
-        /// <summary>
-        /// Registers the given device token with the server to enable this device
-        /// to receive push notifications.
-        /// </param>
-        /// <param name="in_device">
-        /// The device platform being registered.
-        /// </param>
-        /// <param name="in_token">
-        /// The platform-dependant device token needed for push notifications.
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The callback object
-        /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
-        [Obsolete("Use RegisterPushNotificationDeviceToken with Platform object instead of passing the in_device string directly - removal in 90 days, 2015-12-15")]
-        public void RegisterPushNotificationDeviceToken(
-            string in_device,
-            string in_token,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            RegisterPushNotificationDeviceToken(
-                Platform.FromString(in_device),
-                in_token,
-                in_success,
-                in_failure,
-                in_cbObject);
-        }
-
         /// <summary>
         /// Sends a simple push notification based on the passed in message.
         /// NOTE: It is possible to send a push notification to oneself.

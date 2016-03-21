@@ -417,17 +417,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Use FindPlayers instead")]
-        public void GetOneWayPlayers(
-            long in_rangeDelta,
-            long in_numMatches,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            FindPlayers(in_rangeDelta, in_numMatches, in_success, in_failure, in_cbObject);
-        }
-
         /// <summary>
         /// Finds matchmaking enabled players using a cloud code filter
         /// </summary>
@@ -497,18 +486,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayersUsingFilter, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Use FindPlayersWithFilter instead")]
-        public void GetOneWayPlayersWithFilter(
-            long in_rangeDelta,
-            long in_numMatches,
-            string in_jsonExtraParms,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            FindPlayersUsingFilter(in_rangeDelta, in_numMatches, in_jsonExtraParms, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>

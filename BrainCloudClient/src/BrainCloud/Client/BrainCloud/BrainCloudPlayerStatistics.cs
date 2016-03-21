@@ -104,22 +104,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
-        public void ReadPlayerStatsSubset(
-            string in_jsonData,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            object[] statsSubset = JsonReader.Deserialize<object[]>(in_jsonData);
-            data[OperationParam.PlayerStatisticsServiceStats.Value] = statsSubset;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.ReadSubset, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Method retrieves the player statistics for the given category.
         /// </summary>

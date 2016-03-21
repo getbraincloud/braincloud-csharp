@@ -161,18 +161,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetSocialLeaderboard, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        [Obsolete("Since 2.17 - use GetSocialLeaderboard instead")]
-        public void GetLeaderboard(
-            string in_leaderboardId,
-            bool in_replaceName,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            GetSocialLeaderboard(in_leaderboardId, in_replaceName, in_success, in_failure, in_cbObject);
-        }
-
  
         /// <summary>
         /// Reads multiple social leaderboards.
@@ -272,100 +260,6 @@ namespace BrainCloud
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetMultiSocialLeaderboard, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-
-        /// <summary>
-        /// Method returns the global leaderboard.
-        ///
-        /// Leaderboards entries contain the player's score and optionally, some user-defined
-        /// data associated with the score.
-        ///
-        /// Note: If no leaderboard records exist then this method will empty list.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboard
-        /// </remarks>
-        /// <param name="in_leaderboardId">
-        /// The id of the leaderboard to retrieve
-        /// </param>
-        /// <param name="in_fetchType">
-        /// The type of scores to return.
-        /// </param>
-        /// <param name="in_maxResults">
-        /// The maximum number of scores returned.
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// Note that the friend summary data is returned for each record
-        /// in the leaderboard.
-        ///
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "leaderboardId": "abc",
-        ///   "social_leaderboard": [
-        ///    {
-        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
-        ///     "score": 10,
-        ///     "data": {
-        ///      "nickname": "batman"
-        ///     },
-        ///     "createdAt": 1433863814394,
-        ///     "updatedAt": 1433863814394,
-        ///     "index": 0,
-        ///     "rank": 1,
-        ///     "name": "",
-        ///     "summaryFriendData": {
-        ///      "xp": 12,
-        ///      "favColour": "red"
-        ///     }
-        ///    },
-        ///    {
-        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
-        ///     "score": 8,
-        ///     "data": {
-        ///      "nickname": "robin"
-        ///     },
-        ///     "createdAt": 1433864253221,
-        ///     "updatedAt": 1433864253221,
-        ///     "index": 1,
-        ///     "rank": 2,
-        ///     "name": "",
-        ///     "summaryFriendData": null
-        ///    }
-        ///   ],
-        ///   "timeBeforeReset": 48136284,
-        ///   "server_time": 1433864263716
-        ///  }
-        /// }
-        /// </returns>
-        [Obsolete("Use GetGlobalLeaderboardPage instead")]
-        public void GetGlobalLeaderboard(
-            string in_leaderboardId,
-            FetchType in_fetchType,
-            int in_maxResults ,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = in_leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceFetchType.Value] = FetchTypeToString(in_fetchType);
-            data[OperationParam.SocialLeaderboardServiceMaxResults.Value] = in_maxResults;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboard, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
