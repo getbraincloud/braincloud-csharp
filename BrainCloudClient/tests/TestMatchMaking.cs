@@ -156,8 +156,8 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.MatchMakingService.FindPlayersWithAttributes(
                 3,
-                Helpers.CreateJsonPair("name", "asdf"),
                 5,
+                Helpers.CreateJsonPair("name", "asdf"),
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -190,8 +190,8 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.MatchMakingService.FindPlayersWithAttributesUsingFilter(
                 3,
-                Helpers.CreateJsonPair("name", "asdf"),
                 5,
+                Helpers.CreateJsonPair("name", "asdf"),
                 JsonWriter.Serialize(filters),
                 tr.ApiSuccess,
                 tr.ApiError);

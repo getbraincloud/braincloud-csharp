@@ -406,7 +406,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            FindPlayersWithAttributes(rangeDelta, null, numMatches, success, failure, cbObject);
+            FindPlayersWithAttributes(rangeDelta, numMatches, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -419,11 +419,11 @@ namespace BrainCloud
         /// <param name="rangeDelta">
         /// The range delta
         /// </param>
-        /// <param name="attributes">
-        /// Optional attributes match criteria
-        /// </param>
         /// <param name="numMatches">
         /// The maximum number of matches to return
+        /// </param>
+        /// <param name="jsonAttributes">
+        /// Optional attributes match criteria
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -459,8 +459,8 @@ namespace BrainCloud
         /// </returns>
         public void FindPlayersWithAttributes(
             long rangeDelta,
-            string attributes,
             long numMatches,
+            string jsonAttributes,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -469,9 +469,9 @@ namespace BrainCloud
             data[OperationParam.MatchMakingServiceRangeDelta.Value] = rangeDelta;
             data[OperationParam.MatchMakingServiceNumMatches.Value] = numMatches;
 
-            if (Util.IsOptionalParameterValid(attributes))
+            if (Util.IsOptionalParameterValid(jsonAttributes))
             {
-                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(attributes);
+                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
                 data[OperationParam.MatchMakingServiceAttributes.Value] = attribs;
             }
 
@@ -536,7 +536,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            FindPlayersWithAttributesUsingFilter(rangeDelta, null, numMatches, jsonExtraParms, success, failure, cbObject);
+            FindPlayersWithAttributesUsingFilter(rangeDelta, numMatches, null, jsonExtraParms, success, failure, cbObject);
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace BrainCloud
         /// <param name="numMatches">
         /// The maximum number of matches to return
         /// </param>
-        /// <param name="attributes">
+        /// <param name="jsonAttributes">
         /// Optional attributes match criteria
         /// </param>
         /// <param name="jsonExtraParms">
@@ -593,8 +593,8 @@ namespace BrainCloud
         /// </returns>
         public void FindPlayersWithAttributesUsingFilter(
             long rangeDelta,
-            string attributes,
             long numMatches,
+            string jsonAttributes,
             string jsonExtraParms,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -604,9 +604,9 @@ namespace BrainCloud
             data[OperationParam.MatchMakingServiceRangeDelta.Value] = rangeDelta;
             data[OperationParam.MatchMakingServiceNumMatches.Value] = numMatches;
 
-            if (Util.IsOptionalParameterValid(attributes))
+            if (Util.IsOptionalParameterValid(jsonAttributes))
             {
-                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(attributes);
+                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
                 data[OperationParam.MatchMakingServiceAttributes.Value] = attribs;
             }
 
