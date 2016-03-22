@@ -260,27 +260,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Returns list of friends with optional summary data.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - ReadFriendsWithApplication
-        /// </remarks>
-        /// <param name="in_includeSummaryData">
-        /// Whether to include summary data
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-        /// <returns> The JSON returned in the callback
-        /// </returns>
+        [Obsolete("Use ListFriends method instead - removal after June 21 2016")]
         public void ReadFriendsWithApplication(
             bool in_includeSummaryData,
             SuccessCallback in_success = null,

@@ -423,7 +423,7 @@ namespace BrainCloud
         /// The maximum number of matches to return
         /// </param>
         /// <param name="jsonAttributes">
-        /// Optional attributes match criteria
+        /// Attributes match criteria
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -494,7 +494,7 @@ namespace BrainCloud
         /// The maximum number of matches to return
         /// </param>
         /// <param name="jsonExtraParms">
-        /// Other parameters
+        /// Parameters to pass to the CloudCode filter script
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -554,10 +554,10 @@ namespace BrainCloud
         /// The maximum number of matches to return
         /// </param>
         /// <param name="jsonAttributes">
-        /// Optional attributes match criteria
+        /// Attributes match criteria
         /// </param>
         /// <param name="jsonExtraParms">
-        /// Other parameters
+        /// Parameters to pass to the CloudCode filter script
         /// </param>
         /// <param name="success">
         /// The success callback.
