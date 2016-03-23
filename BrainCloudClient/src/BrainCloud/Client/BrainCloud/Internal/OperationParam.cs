@@ -72,41 +72,15 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceConfirmAnonymous                    = new OperationParam("confirmAnonymous");
 
         // Entity Service 
-        public static readonly OperationParam EntityServiceEntityId = new OperationParam("entityId");
-
-        // Entity Service - Create Params
-        public static readonly OperationParam EntityServiceCreateEntityId                        = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceCreateEntityTargetPlayerId            = new OperationParam("targetPlayerId");
-
-        public static readonly OperationParam EntityServiceCreateEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceCreateEntitySubtype                   = new OperationParam("entitySubtype");
-        public static readonly OperationParam EntityServiceCreateData                            = new OperationParam("data");
-        public static readonly OperationParam EntityServiceCreateAcl = new OperationParam("acl");
-        public static readonly OperationParam EntityServiceCreateFriendData                      = new OperationParam("friendData");
-
-        // Entity Service - GetEntitiesByType
-        public static readonly OperationParam EntityServiceGetEntitiesByTypeEntityType          = new OperationParam("entityType");
-
-        // Entity Service - Update Params
-        public static readonly OperationParam EntityServiceUpdateEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceUpdateEntityId                        = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceUpdateData                            = new OperationParam("data");
-        public static readonly OperationParam EntityServiceUpdateVersion                         = new OperationParam("version");
-        public static readonly OperationParam EntityServiceUpdateAcl                             = new OperationParam("acl");
-
-        // Entity Service - Update Partial Params
-        public static readonly OperationParam EntityServiceUpdatePartialEntityType               = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceUpdatePartialEntityId                 = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceUpdatePartialUpdateOps                = new OperationParam("updateOps");
-
-        // Entity Service - Delete Params
-        public static readonly OperationParam EntityServiceDeleteEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceDeleteEntityId                        = new OperationParam("entityId");
-
-        // Entity Service - GetSharedEntitiesForPlayerId
-        public static readonly OperationParam EntityServicePlayerId       = new OperationParam("targetPlayerId");
-        public static readonly OperationParam EntityServiceGetSharedStatsTargetPlayerId          = new OperationParam("targetPlayerId");
-        public static readonly OperationParam EntityServiceGetSharedPlayerStateTargetPlayerId    = new OperationParam("targetPlayerId");
+        public static readonly OperationParam EntityServiceEntityId                             = new OperationParam("entityId");
+        public static readonly OperationParam EntityServiceEntityType                           = new OperationParam("entityType");
+        public static readonly OperationParam EntityServiceEntitySubtype                        = new OperationParam("entitySubtype");
+        public static readonly OperationParam EntityServiceData                                 = new OperationParam("data");
+        public static readonly OperationParam EntityServiceAcl                                  = new OperationParam("acl");
+        public static readonly OperationParam EntityServiceFriendData                           = new OperationParam("friendData");
+        public static readonly OperationParam EntityServiceVersion                              = new OperationParam("version");
+        public static readonly OperationParam EntityServiceUpdateOps                            = new OperationParam("updateOps");
+        public static readonly OperationParam EntityServiceTargetPlayerId                       = new OperationParam("targetPlayerId");
 
         // Global Entity Service - Params
         public static readonly OperationParam GlobalEntityServiceEntityId                       = new OperationParam("entityId");
