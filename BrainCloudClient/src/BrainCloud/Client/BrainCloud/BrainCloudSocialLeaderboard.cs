@@ -781,7 +781,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = in_rotationType.ToString();
 
             if (in_rotationReset.HasValue)            
-                data[OperationParam.SocialLeaderboardServiceRotationReset.Value] = in_rotationReset.Value.ToString("d-MM-yyyy HH:mm");
+                data[OperationParam.SocialLeaderboardServiceRotationReset.Value] = in_rotationReset.Value.ToString("dd-MM-yyyy HH:mm");
             
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = in_retainedCount;
 
