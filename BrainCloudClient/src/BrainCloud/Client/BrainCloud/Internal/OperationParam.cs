@@ -53,6 +53,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthSteam           = new OperationParam("Steam");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthGoogle          = new OperationParam("Google");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthTwitter         = new OperationParam("Twitter");
+        public static readonly OperationParam AuthenticateServiceAuthenticateAuthParse           = new OperationParam("Parse");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthExternal        = new OperationParam("External");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateCountryCode         = new OperationParam("countryCode");

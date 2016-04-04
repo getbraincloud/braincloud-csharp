@@ -40,9 +40,9 @@ namespace BrainCloud
             }
         }
 
-        public BrainCloudAuthentication(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudAuthentication(BrainCloudClient brainCloudClientRef)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            m_brainCloudClientRef = brainCloudClientRef;
         }
 
         /// <summary>
@@ -71,16 +71,16 @@ namespace BrainCloud
         /// anonymous installation id and most recently used profile id
         /// </summary>
         /// </param>
-        /// <param name="in_profileId">
+        /// <param name="profileId">
         /// The id of the profile id that was most recently used by the app (on this device)
         /// </param>
-        /// <param name="in_anonymousId">
+        /// <param name="anonymousId">
         /// The anonymous installation id that was generated for this device
         /// </param>
-        public void Initialize(string in_profileId, string in_anonymousId)
+        public void Initialize(string profileId, string anonymousId)
         {
-            m_anonymousId = in_anonymousId;
-            m_profileId = in_profileId;
+            m_anonymousId = anonymousId;
+            m_profileId = profileId;
         }
 
         /// <summary>
@@ -110,26 +110,26 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created if it does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateAnonymous(
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -149,25 +149,25 @@ namespace BrainCloud
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateFacebook(
-            string in_externalId,
-            string in_authenticationToken,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string externalId,
+            string authenticationToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_externalId, in_authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(externalId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -177,30 +177,30 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_gameCenterId">
+        /// <param name="gameCenterId">
         /// The player's game center id  (use the playerID property from the local GKPlayer object)
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateGameCenter(
-            string in_gameCenterId,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string gameCenterId,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -216,38 +216,38 @@ namespace BrainCloud
         ///
         /// Note that the password sent from the client to the server is protected via SSL.
         /// </remarks>
-        /// <param name="in_email">
+        /// <param name="email">
         /// The e-mail address of the user
         /// </param>
-        /// <param name="in_password">
+        /// <param name="password">
         /// The password of the user
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateEmailPassword(
-            string in_email,
-            string in_password,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string email,
+            string password,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_email, in_password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
-        /// Authenticate the user using a userid and password (without any validation on the userid).
+        /// Authenticate the user using a userId and password (without any validation on the userId).
         /// Similar to AuthenticateEmailPassword - except that that method has additional features to
         /// allow for e-mail validation, password resets, etc.
         /// </summary>
@@ -255,149 +255,186 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_email">
+        /// <param name="email">
         /// The e-mail address of the user
         /// </param>
-        /// <param name="in_password">
+        /// <param name="password">
         /// The password of the user
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateUniversal(
-            string in_userid,
-            string in_password,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string userId,
+            string password,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_userid, in_password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
-        /// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+        /// Authenticate the user using a steam userId and session ticket (without any validation on the userId).
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_userid">
+        /// <param name="userId">
         /// String representation of 64 bit steam id
         /// </param>
-        /// <param name="in_sessionticket">
+        /// <param name="sessionticket">
         /// The session ticket of the user (hex encoded)
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateSteam(
-            string in_userid,
-            string in_sessionticket,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string userId,
+            string sessionticket,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_userid, in_sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value,
-                              null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(userId, sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value,
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
-        /// Authenticate the user using a google userid(email address) and google authentication token.
+        /// Authenticate the user using a google userId(email address) and google authentication token.
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_userid">
-        /// String representation of google+ userid (email)
+        /// <param name="userId">
+        /// String representation of google+ userId (email)
         /// </param>
-        /// <param name="in_token">
+        /// <param name="token">
         /// The authentication token derived via the google apis.
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateGoogle(
-            string in_userid,
-            string in_token,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string userId,
+            string token,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
-                null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
-        /// Authenticate the user using a Twitter userid, authentication token, and secret from twitter.
+        /// Authenticate the user using a Twitter userId, authentication token, and secret from twitter.
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_userid">
+        /// <param name="userId">
         /// String representation of a Twitter user ID
         /// </param>
-        /// <param name="in_token">
+        /// <param name="token">
         /// The authentication token derived via the Twitter apis
         /// </param>
-        /// <param name="in_secret">
+        /// <param name="secret">
         /// The secret given when attempting to link with Twitter
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateTwitter(
-            string in_userid,
-            string in_token,
-            string in_secret,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string userId,
+            string token,
+            string secret,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            Authenticate(in_userid, in_token + ":" + in_secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
-                null, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(userId, token + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
+                null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Authenticate the user using a Pase userId and authentication token
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="userId">
+        /// String representation of Parse user ID
+        /// </param>
+        /// <param name="token">
+        /// The authentication token
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateParse(
+            string userId,
+            string token,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthParse.Value,
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -408,38 +445,38 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="in_userid">
+        /// <param name="userId">
         /// The user id
         /// </param>
-        /// <param name="in_token">
+        /// <param name="token">
         /// The user token (password etc)
         /// </param>
-        /// /// <param name="in_externalAuthName">
+        /// /// <param name="externalAuthName">
         /// The name of the cloud script to call for external authentication
         /// </param>
-        /// <param name="in_forceCreate">
+        /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of successful login
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error during authentication
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         public void AuthenticateExternal(
-            string in_userid,
-            string in_token,
-            string in_externalAuthName,
-            bool in_forceCreate,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string userId,
+            string token,
+            string externalAuthName,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            this.Authenticate(in_userid, in_token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value,
-                in_externalAuthName, in_forceCreate, in_success, in_failure, in_cbObject);
+            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value,
+                externalAuthName, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -449,16 +486,16 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Operation - ResetEmailPassword
         /// </remarks>
-        /// <param name="in_externalId">
+        /// <param name="externalId">
         /// The email address to send the reset email to.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The method to call in event of success
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The method to call in the event of an error
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -472,40 +509,40 @@ namespace BrainCloud
         /// SECURITY_ERROR (40209) - If the email address cannot be found.
         /// </returns>
         public void ResetEmailPassword(
-            string in_externalId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string externalId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = in_externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPassword, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
 
         private void Authenticate(
-            string in_externalId,
-            string in_authenticationToken,
-            string in_authenticationType,
-            string in_externalAuthName,
-            bool in_forceCreate,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
-            object in_cbObject)
+            string externalId,
+            string authenticationToken,
+            string authenticationType,
+            string externalAuthName,
+            bool forceCreate,
+            SuccessCallback success,
+            FailureCallback failure,
+            object cbObject)
         {
             string languageCode = Util.GetIsoCodeForCurrentLanguage();
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
             string countryCode = Util.GetCurrentCountryCode();
 
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = in_externalId;
-            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = in_authenticationToken;
-            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = in_authenticationType;
-            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = in_forceCreate;
+            data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = authenticationType;
+            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = m_profileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = m_anonymousId;
@@ -514,15 +551,15 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
-            if (Util.IsOptionalParameterValid(in_externalAuthName))
+            if (Util.IsOptionalParameterValid(externalAuthName))
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = in_externalAuthName;
+                data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
             }
             data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = countryCode;
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = languageCode;
             data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = utcOffset;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
