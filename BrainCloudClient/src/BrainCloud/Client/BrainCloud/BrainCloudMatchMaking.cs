@@ -652,5 +652,37 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.EnableMatchMaking, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Disables Match Making for the Player
+        /// </summary>
+        /// <remarks>
+        /// Service Name - MatchMaking
+        /// Service Operation - EnableMatchMaking
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data": null
+        /// }
+        /// </returns>
+        public void DisableMatchMaking(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.DisableMatchMaking, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }

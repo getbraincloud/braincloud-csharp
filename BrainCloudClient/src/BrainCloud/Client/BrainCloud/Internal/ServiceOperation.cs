@@ -175,6 +175,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation CancelMatch = new ServiceOperation("CANCEL_MATCH");
         public static readonly ServiceOperation CompleteMatch = new ServiceOperation("COMPLETE_MATCH");
         public static readonly ServiceOperation EnableMatchMaking = new ServiceOperation("ENABLE_FOR_MATCH");
+        public static readonly ServiceOperation DisableMatchMaking = new ServiceOperation("DISABLE_FOR_MATCH");
         public static readonly ServiceOperation UpdateName = new ServiceOperation("UPDATE_NAME");
 
         public static readonly ServiceOperation StartStream = new ServiceOperation("START_STREAM");

@@ -47,6 +47,17 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestDisableMatchMaking()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.MatchMakingService.DisableMatchMaking(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestSetPlayerRating()
         {
             TestResult tr = new TestResult();
