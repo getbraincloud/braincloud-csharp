@@ -5,8 +5,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using BrainCloud.Internal;
+using BrainCloud.Common;
 
 namespace BrainCloud
 {
@@ -14,31 +14,8 @@ namespace BrainCloud
     {
         private BrainCloudClient m_brainCloudClientRef;
 
-        private string m_anonymousId = "";
-        private string m_profileId = "";
-
-        public string AnonymousId
-        {
-            get
-            {
-                return m_anonymousId;
-            }
-            set
-            {
-                m_anonymousId = value;
-            }
-        }
-        public string ProfileId
-        {
-            get
-            {
-                return m_profileId;
-            }
-            set
-            {
-                m_profileId = value;
-            }
-        }
+        public string AnonymousId { get; set; }
+        public string ProfileId { get; set; }
 
         public BrainCloudAuthentication(BrainCloudClient brainCloudClientRef)
         {
@@ -79,8 +56,8 @@ namespace BrainCloud
         /// </param>
         public void Initialize(string profileId, string anonymousId)
         {
-            m_anonymousId = anonymousId;
-            m_profileId = profileId;
+            AnonymousId = anonymousId;
+            ProfileId = profileId;
         }
 
         /// <summary>
@@ -89,7 +66,7 @@ namespace BrainCloud
         ///</summary>
         public void GenerateNewAnonymousID()
         {
-            m_anonymousId = GenerateGUID();
+            AnonymousId = GenerateGUID();
         }
 
 
@@ -99,7 +76,7 @@ namespace BrainCloud
         /// </summary>
         public void ClearSavedProfileID()
         {
-            m_profileId = null;
+            ProfileId = null;
         }
 
         /// <summary>
@@ -128,78 +105,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(m_anonymousId, "", OperationParam.AuthenticateServiceAuthenticateAuthAnonymous.Value,
-                              null, forceCreate, success, failure, cbObject);
-        }
-
-        /// <summary>
-        /// Authenticate the user with brainCloud using their Facebook Credentials
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="externalId">
-        /// The facebook id of the user
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The validated token from the Facebook SDK (that will be further
-        /// validated when sent to the bC service)
-        /// </param>
-        /// <param name="forceCreate">
-        /// Should a new profile be created for this user if the account does not exist?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user supplied callback object
-        /// </param>
-        public void AuthenticateFacebook(
-            string externalId,
-            string authenticationToken,
-            bool forceCreate,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Authenticate(externalId, authenticationToken, OperationParam.AuthenticateServiceAuthenticateAuthFacebook.Value,
-                              null, forceCreate, success, failure, cbObject);
-        }
-
-        /// <summary>
-        /// Authenticate the user using their Game Center id
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
-        /// </param>
-        /// <param name="forceCreate">
-        /// Should a new profile be created for this user if the account does not exist?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user supplied callback object
-        /// </param>
-        public void AuthenticateGameCenter(
-            string gameCenterId,
-            bool forceCreate,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Authenticate(gameCenterId, "", OperationParam.AuthenticateServiceAuthenticateAuthGameCenter.Value,
+            Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
                               null, forceCreate, success, failure, cbObject);
         }
 
@@ -242,7 +148,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(email, password, OperationParam.AuthenticateServiceAuthenticateAuthEmail.Value,
+            Authenticate(email, password, AuthenticationType.Email,
                               null, forceCreate, success, failure, cbObject);
         }
 
@@ -281,7 +187,78 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, password, OperationParam.AuthenticateServiceAuthenticateAuthUniversal.Value,
+            Authenticate(userId, password, AuthenticationType.Universal,
+                              null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Authenticate the user with brainCloud using their Facebook Credentials
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="externalId">
+        /// The facebook id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Facebook SDK (that will be further
+        /// validated when sent to the bC service)
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateFacebook(
+            string externalId,
+            string authenticationToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(externalId, authenticationToken, AuthenticationType.Facebook,
+                              null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Authenticate the user using their Game Center id
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="gameCenterId">
+        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateGameCenter(
+            string gameCenterId,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(gameCenterId, "", AuthenticationType.GameCenter,
                               null, forceCreate, success, failure, cbObject);
         }
 
@@ -318,7 +295,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, sessionticket, OperationParam.AuthenticateServiceAuthenticateAuthSteam.Value,
+            Authenticate(userId, sessionticket, AuthenticationType.Steam,
                               null, forceCreate, success, failure, cbObject);
         }
 
@@ -355,7 +332,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthGoogle.Value,
+            Authenticate(userId, token, AuthenticationType.Google,
                 null, forceCreate, success, failure, cbObject);
         }
 
@@ -396,7 +373,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token + ":" + secret, OperationParam.AuthenticateServiceAuthenticateAuthTwitter.Value,
+            Authenticate(userId, token + ":" + secret, AuthenticationType.Twitter,
                 null, forceCreate, success, failure, cbObject);
         }
 
@@ -433,7 +410,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthParse.Value,
+            Authenticate(userId, token, AuthenticationType.Parse,
                 null, forceCreate, success, failure, cbObject);
         }
 
@@ -475,7 +452,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, OperationParam.AuthenticateServiceAuthenticateAuthExternal.Value,
+            Authenticate(userId, token, AuthenticationType.External,
                 externalAuthName, forceCreate, success, failure, cbObject);
         }
 
@@ -527,7 +504,7 @@ namespace BrainCloud
         private void Authenticate(
             string externalId,
             string authenticationToken,
-            string authenticationType,
+            AuthenticationType authenticationType,
             string externalAuthName,
             bool forceCreate,
             SuccessCallback success,
@@ -541,11 +518,11 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
-            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = authenticationType;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
 
-            data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = m_profileId;
-            data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = m_anonymousId;
+            data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
+            data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
             data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;

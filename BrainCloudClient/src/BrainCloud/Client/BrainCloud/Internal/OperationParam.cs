@@ -46,22 +46,11 @@ namespace BrainCloud
 
         public static readonly OperationParam AuthenticateServiceAuthenticateLevelName           = new OperationParam("levelName");
 
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthFacebook        = new OperationParam("Facebook");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthEmail           = new OperationParam("Email");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthGameCenter      = new OperationParam("GameCenter");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthUniversal       = new OperationParam("Universal");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthSteam           = new OperationParam("Steam");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthGoogle          = new OperationParam("Google");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthTwitter         = new OperationParam("Twitter");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthParse           = new OperationParam("Parse");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthExternal        = new OperationParam("External");
-
         public static readonly OperationParam AuthenticateServiceAuthenticateCountryCode         = new OperationParam("countryCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateLanguageCode        = new OperationParam("languageCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateTimeZoneOffset      = new OperationParam("timeZoneOffset");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthUpgradeID       = new OperationParam("upgradeAppId");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthAnonymous       = new OperationParam("Anonymous");
         public static readonly OperationParam AuthenticateServiceAuthenticateAnonymousId         = new OperationParam("anonymousId");
         public static readonly OperationParam AuthenticateServiceAuthenticateProfileId           = new OperationParam("profileId");
         public static readonly OperationParam AuthenticateServiceAuthenticateForceCreate         = new OperationParam("forceCreate");
