@@ -1,103 +1,87 @@
-using System;
+using System.Collections.Generic;
+
 namespace BrainCloud.Common
 {
     public sealed class Platform
     {
-        private readonly String value;
+        private readonly string value;
 
-        public static readonly Platform AppleTVOS = new Platform ("APPLE_TV_OS");
-        public static readonly Platform BlackBerry = new Platform ("BB");
-        public static readonly Platform Facebook = new Platform ("FB");
-        public static readonly Platform GooglePlayAndroid = new Platform ("ANG");
-        public static readonly Platform iOS = new Platform ("IOS");
-        public static readonly Platform Linux = new Platform ("LINUX");
-        public static readonly Platform Mac = new Platform ("MAC");
-        public static readonly Platform PS3 = new Platform ("PS3");
-        public static readonly Platform PS4 = new Platform ("PS4");
-        public static readonly Platform PSVita = new Platform ("PS_VITA");
+        public static readonly Platform AppleTVOS = new Platform("APPLE_TV_OS");
+        public static readonly Platform BlackBerry = new Platform("BB");
+        public static readonly Platform Facebook = new Platform("FB");
+        public static readonly Platform GooglePlayAndroid = new Platform("ANG");
+        public static readonly Platform iOS = new Platform("IOS");
+        public static readonly Platform Linux = new Platform("LINUX");
+        public static readonly Platform Mac = new Platform("MAC");
+        public static readonly Platform PS3 = new Platform("PS3");
+        public static readonly Platform PS4 = new Platform("PS4");
+        public static readonly Platform PSVita = new Platform("PS_VITA");
         public static readonly Platform Roku = new Platform("ROKU");
-        public static readonly Platform Tizen = new Platform ("TIZEN");
-        public static readonly Platform Unknown = new Platform ("UNKNOWN");
-        public static readonly Platform Web = new Platform ("WEB");
-        public static readonly Platform Wii = new Platform ("WII");
-        public static readonly Platform WindowsPhone = new Platform ("WINP");
-        public static readonly Platform Windows = new Platform ("WINDOWS");
-        public static readonly Platform Xbox360 = new Platform ("XBOX_360");
-        public static readonly Platform XboxOne = new Platform ("XBOX_ONE");
+        public static readonly Platform Tizen = new Platform("TIZEN");
+        public static readonly Platform Unknown = new Platform("UNKNOWN");
+        public static readonly Platform Web = new Platform("WEB");
+        public static readonly Platform Wii = new Platform("WII");
+        public static readonly Platform WindowsPhone = new Platform("WINP");
+        public static readonly Platform Windows = new Platform("WINDOWS");
+        public static readonly Platform Xbox360 = new Platform("XBOX_360");
+        public static readonly Platform XboxOne = new Platform("XBOX_ONE");
 
+        private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>
+        {
+            { AppleTVOS.value, AppleTVOS },
+            { BlackBerry.value, BlackBerry },
+            { Facebook.value, Facebook },
+            { GooglePlayAndroid.value, GooglePlayAndroid },
+            { iOS.value, iOS },
+            { Linux.value, Linux },
+            { Mac.value, Mac },
+            { PS3.value, PS3 },
+            { PS4.value, PS4 },
+            { PSVita.value, PSVita },
+            { Roku.value, Roku },
+            { Tizen.value, Tizen },
+            { Unknown.value, Unknown },
+            { Web.value, Web },
+            { Wii.value, Wii },
+            { WindowsPhone.value, WindowsPhone },
+            { Windows.value, Windows },
+            { Xbox360.value, Xbox360 },
+            { XboxOne.value, XboxOne }
+        };
 
-        private Platform(String value)
+        private Platform(string value)
         {
             this.value = value;
         }
-        
-        public override String ToString()
+
+        public override string ToString()
         {
             return value;
         }
 
         public static Platform FromString(string s)
         {
-            switch(s)
-            {
-            case "APPLE_TV_OS":
-                return AppleTVOS;
-            case "BB":
-                return BlackBerry;
-            case "FB":
-                return Facebook;
-            case "ANG":
-                return GooglePlayAndroid;
-            case "IOS":
-                return iOS;
-            case "LINUX":
-                return Linux;
-            case "MAC":
-                return Mac;
-            case "PS3":
-                return PS3;
-            case "PS4":
-                return PS4;
-            case "PS_VITA":
-                return PSVita;
-            case "ROKU":
-                return Roku;
-            case "TIZEN":
-                return Tizen;
-            case "WEB":
-                return Web;
-            case "WII":
-                return Wii;
-            case "WINP":
-                return WindowsPhone;
-            case "WINDOWS":
-                return Windows;
-            case "XBOX_360":
-                return Xbox360;
-            case "XBOX_ONE":
-                return XboxOne;
-            default:
-                return Unknown;
-            }
+            Platform platform;
+            return _platformsForString.TryGetValue(s, out platform) ? platform : Unknown;
         }
 
 #if !(DOT_NET)
         public static Platform FromUnityRuntime()
         {
             // this kicks in if dll is compiled from visual studio solution
-        #if NO_UNITY_DEFINES
+#if NO_UNITY_DEFINES
             return Unknown;
-        #else
+#else
             
             // first deal with platforms that have no define
 
             // 5.0 and later
-        #if !UNITY_4_6
+#if !UNITY_4_6
             if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
             {
                 return PSVita;
             }
-        #endif
+#endif
 
             // otherwise we rely on the unity compile flag to denote platform
 
