@@ -193,6 +193,36 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetList()
+        {
+            TestResult tr = new TestResult();
+
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            BrainCloudClient.Instance.EntityService.GetList(
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
+                Helpers.CreateJsonPair("createdAt", 1),
+                1000,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
+        public void TestGetListCount()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.EntityService.GetListCount(
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetPage()
         {
             TestResult tr = new TestResult();
