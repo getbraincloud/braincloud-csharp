@@ -59,5 +59,16 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+
+		[Test]
+		public void TestAttachEmailIdentity()
+		{
+			TestResult tr = new TestResult();
+			BrainCloudClient.Instance.IdentityService.AttachEmailIdentity(
+				"id_" + GetUser (Users.UserA).Email,
+				GetUser (Users.UserA).Password,
+				tr.ApiSuccess, tr.ApiError);
+			tr.Run();
+		}
     }
 }

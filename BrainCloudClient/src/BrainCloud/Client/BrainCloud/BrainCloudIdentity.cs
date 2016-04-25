@@ -1133,7 +1133,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
+			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1146,7 +1146,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
+			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1159,7 +1159,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType;
+			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
