@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using BrainCloudUnity.HUD;
-using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -137,7 +136,7 @@ namespace BrainCloudUnity
             }
             if (m_authSuccessLevel != null && m_authSuccessLevel.Length > 0)
             {
-                SceneManager.LoadScene(m_authSuccessLevel);
+				Application.LoadLevel(m_authSuccessLevel);
             }
         }
 
