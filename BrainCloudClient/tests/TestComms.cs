@@ -78,7 +78,7 @@ namespace BrainCloudTests
         [Test]
         public void TestBadUrl()
         {
-            BrainCloudClient.Instance.Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+            BrainCloudClient.Instance.Initialize(ServerUrl + "unitTestFail", Secret, AppId, Version);
             BrainCloudClient.Instance.EnableLogging(true);
 
             DateTime timeStart = DateTime.Now;
@@ -97,7 +97,7 @@ namespace BrainCloudTests
         {
             try
             {
-                BrainCloudClient.Instance.Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+                BrainCloudClient.Instance.Initialize(ServerUrl + "unitTestFail", Secret, AppId, Version);
                 BrainCloudClient.Instance.EnableLogging(true);
                 BrainCloudClient.Instance.SetPacketTimeouts(new List<int> { 3, 3, 3 });
 
@@ -134,7 +134,7 @@ namespace BrainCloudTests
         {
             try
             {
-                BrainCloudClient.Get().Initialize(_serverUrl + "unitTestFail", _secret, _appId, _version);
+                BrainCloudClient.Get().Initialize(ServerUrl + "unitTestFail", Secret, AppId, Version);
                 BrainCloudClient.Get().EnableNetworkErrorMessageCaching(true);
                 BrainCloudClient.Get().EnableLogging(true);
                 BrainCloudClient.Get().SetPacketTimeouts(new List<int> { 1, 1, 1 });
@@ -203,7 +203,7 @@ namespace BrainCloudTests
         public void TestErrorCallback()
         {
 
-            BrainCloudClient.Instance.Initialize(_serverUrl, _secret, _appId, _version);
+            BrainCloudClient.Instance.Initialize(ServerUrl, Secret, AppId, Version);
             BrainCloudClient.Instance.EnableLogging(true);
 
             TestResult tr = new TestResult();
@@ -221,7 +221,7 @@ namespace BrainCloudTests
             Assert.False(tr.m_statusMessage.StartsWith("{"));
 
             // try now using 900 client timeout
-            BrainCloudClient.Instance.Initialize("http://localhost:5432", _secret, _appId, _version);
+            BrainCloudClient.Instance.Initialize("http://localhost:5432", Secret, AppId, Version);
 
             tr.Reset();
             BrainCloudClient.Instance.SetOldStyleStatusMessageErrorCallback(false);

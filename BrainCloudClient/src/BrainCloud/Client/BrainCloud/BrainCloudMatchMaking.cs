@@ -3,9 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using JsonFx.Json;
 using BrainCloud.Internal;
 
@@ -14,9 +12,9 @@ namespace BrainCloud
     public class BrainCloudMatchMaking
     {
         private BrainCloudClient m_brainCloudClientRef;
-        public BrainCloudMatchMaking(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudMatchMaking(BrainCloudClient brainCloudClientRef)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            m_brainCloudClientRef = brainCloudClientRef;
         }
 
         /// <summary>
@@ -26,13 +24,13 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - Read
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -50,11 +48,11 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void Read(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.Read, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -66,16 +64,16 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - SetPlayerRating
         /// </remarks>
-        /// <param name="in_playerRating">
+        /// <param name="playerRating">
         /// The new player rating.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -85,15 +83,15 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void SetPlayerRating(
-            long in_playerRating,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            long playerRating,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServicePlayerRating.Value] = in_playerRating;
+            data[OperationParam.MatchMakingServicePlayerRating.Value] = playerRating;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.SetPlayerRating, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -105,13 +103,13 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - ResetPlayerRating
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -121,11 +119,11 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void ResetPlayerRating(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ResetPlayerRating, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -137,16 +135,16 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - IncrementPlayerRating
         /// </remarks>
-        /// <param name="in_increment">
+        /// <param name="increment">
         /// The increment amount
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -156,15 +154,15 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void IncrementPlayerRating(
-            long in_increment,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            long increment,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServicePlayerRating.Value] = in_increment;
+            data[OperationParam.MatchMakingServicePlayerRating.Value] = increment;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.IncrementPlayerRating, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -176,16 +174,16 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - DecrementPlayerRating
         /// </remarks>
-        /// <param name="in_decrement">
+        /// <param name="decrement">
         /// The decrement amount
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -195,15 +193,15 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void DecrementPlayerRating(
-            long in_decrement,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            long decrement,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServicePlayerRating.Value] = in_decrement;
+            data[OperationParam.MatchMakingServicePlayerRating.Value] = decrement;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.DecrementPlayerRating, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -215,13 +213,13 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - ShieldOn
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -231,11 +229,11 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void TurnShieldOn(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOn, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -247,16 +245,16 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - ShieldOnFor
         /// </remarks>
-        /// <param name="in_minutes">
+        /// <param name="minutes">
         /// Number of minutes to turn the shield on for
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -266,15 +264,15 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void TurnShieldOnFor(
-            int in_minutes,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            int minutes,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServiceMinutes.Value] = in_minutes;
+            data[OperationParam.MatchMakingServiceMinutes.Value] = minutes;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOnFor, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -286,13 +284,13 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - ShieldOff
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -302,11 +300,11 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void TurnShieldOff(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOff, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -320,16 +318,16 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - GetShieldExpiry
         /// </remarks>
-        /// <param name="in_playerId">
+        /// <param name="playerId">
         /// The player id or use null to retrieve for the current player
         /// </param> 
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -340,18 +338,18 @@ namespace BrainCloud
         ///   }
         /// }
         public void GetShieldExpiry(
-            string in_playerId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playerId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            if (Util.IsOptionalParameterValid(in_playerId))
+            if (Util.IsOptionalParameterValid(playerId))
             {
-                data[OperationParam.MatchMakingServicePlayerId.Value] = in_playerId;
+                data[OperationParam.MatchMakingServicePlayerId.Value] = playerId;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetShieldExpiry, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -363,19 +361,19 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - FIND_PLAYERS
         /// </remarks>
-        /// <param name="in_rangeDelta">
+        /// <param name="rangeDelta">
         /// The range delta
         /// </param>
-        /// <param name="in_numMatches">
+        /// <param name="numMatches">
         /// The maximum number of matches to return
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -402,30 +400,84 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void FindPlayers(
-            long in_rangeDelta,
-            long in_numMatches,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            long rangeDelta,
+            long numMatches,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
-            data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayers, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            FindPlayersWithAttributes(rangeDelta, numMatches, null, success, failure, cbObject);
         }
 
-        [Obsolete("Use FindPlayers instead")]
-        public void GetOneWayPlayers(
-            long in_rangeDelta,
-            long in_numMatches,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+        /// <summary>
+        /// Finds matchmaking enabled players with additional attributes
+        /// </summary>
+        /// <remarks>
+        /// Service Name - MatchMaking
+        /// Service Operation - FIND_PLAYERS
+        /// </remarks>
+        /// <param name="rangeDelta">
+        /// The range delta
+        /// </param>
+        /// <param name="numMatches">
+        /// The maximum number of matches to return
+        /// </param>
+        /// <param name="jsonAttributes">
+        /// Attributes match criteria
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "matchesFound": [
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserC-1239941736",
+        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             },
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserA-914307852",
+        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             }
+        ///         ]
+        ///     }
+        /// }
+        /// </returns>
+        public void FindPlayersWithAttributes(
+            long rangeDelta,
+            long numMatches,
+            string jsonAttributes,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            FindPlayers(in_rangeDelta, in_numMatches, in_success, in_failure, in_cbObject);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.MatchMakingServiceRangeDelta.Value] = rangeDelta;
+            data[OperationParam.MatchMakingServiceNumMatches.Value] = numMatches;
+
+            if (Util.IsOptionalParameterValid(jsonAttributes))
+            {
+                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
+                data[OperationParam.MatchMakingServiceAttributes.Value] = attribs;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayers, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
         }
 
         /// <summary>
@@ -435,22 +487,22 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - FIND_PLAYERS_USING_FILTER
         /// </remarks>
-        /// <param name="in_rangeDelta">
+        /// <param name="rangeDelta">
         /// The range delta
         /// </param>
-        /// <param name="in_numMatches">
+        /// <param name="numMatches">
         /// The maximum number of matches to return
         /// </param>
-        /// <param name="in_jsonExtraParms">
-        /// Other parameters
+        /// <param name="jsonExtraParms">
+        /// Parameters to pass to the CloudCode filter script
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -477,38 +529,96 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void FindPlayersUsingFilter(
-            long in_rangeDelta,
-            long in_numMatches,
-            string in_jsonExtraParms,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            long rangeDelta,
+            long numMatches,
+            string jsonExtraParms,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            FindPlayersWithAttributesUsingFilter(rangeDelta, numMatches, null, jsonExtraParms, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Finds matchmaking enabled players using a cloud code filter 
+        /// and additional attributes
+        /// </summary>
+        /// <remarks>
+        /// Service Name - MatchMaking
+        /// Service Operation - FIND_PLAYERS_USING_FILTER
+        /// </remarks>
+        /// <param name="rangeDelta">
+        /// The range delta
+        /// </param>
+        /// <param name="numMatches">
+        /// The maximum number of matches to return
+        /// </param>
+        /// <param name="jsonAttributes">
+        /// Attributes match criteria
+        /// </param>
+        /// <param name="jsonExtraParms">
+        /// Parameters to pass to the CloudCode filter script
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///     "status": 200,
+        ///     "data": {
+        ///         "matchesFound": [
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserC-1239941736",
+        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             },
+        ///             {
+        ///                 "pictureUrl": null,
+        ///                 "playerName": "UserA-914307852",
+        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
+        ///                 "playerRating": 0,
+        ///                 "summaryFriendData": null
+        ///             }
+        ///         ]
+        ///     }
+        /// }
+        /// </returns>
+        public void FindPlayersWithAttributesUsingFilter(
+            long rangeDelta,
+            long numMatches,
+            string jsonAttributes,
+            string jsonExtraParms,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MatchMakingServiceRangeDelta.Value] = in_rangeDelta;
-            data[OperationParam.MatchMakingServiceNumMatches.Value] = in_numMatches;
+            data[OperationParam.MatchMakingServiceRangeDelta.Value] = rangeDelta;
+            data[OperationParam.MatchMakingServiceNumMatches.Value] = numMatches;
 
-            if (Util.IsOptionalParameterValid(in_jsonExtraParms))
+            if (Util.IsOptionalParameterValid(jsonAttributes))
             {
-                Dictionary<string, object> extraParms = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonExtraParms);
+                Dictionary<string, object> attribs = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
+                data[OperationParam.MatchMakingServiceAttributes.Value] = attribs;
+            }
+
+            if (Util.IsOptionalParameterValid(jsonExtraParms))
+            {
+                Dictionary<string, object> extraParms = JsonReader.Deserialize<Dictionary<string, object>>(jsonExtraParms);
                 data[OperationParam.MatchMakingServiceExtraParams.Value] = extraParms;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayersUsingFilter, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Use FindPlayersWithFilter instead")]
-        public void GetOneWayPlayersWithFilter(
-            long in_rangeDelta,
-            long in_numMatches,
-            string in_jsonExtraParms,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            FindPlayersUsingFilter(in_rangeDelta, in_numMatches, in_jsonExtraParms, in_success, in_failure, in_cbObject);
         }
 
         /// <summary>
@@ -518,13 +628,13 @@ namespace BrainCloud
         /// Service Name - MatchMaking
         /// Service Operation - EnableMatchMaking
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
@@ -534,12 +644,44 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void EnableMatchMaking(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.EnableMatchMaking, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Disables Match Making for the Player
+        /// </summary>
+        /// <remarks>
+        /// Service Name - MatchMaking
+        /// Service Operation - EnableMatchMaking
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// <returns> The JSON returned in the callback is as follows:
+        /// {
+        ///   "status": 200,
+        ///   "data": null
+        /// }
+        /// </returns>
+        public void DisableMatchMaking(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.DisableMatchMaking, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

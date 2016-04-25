@@ -1,4 +1,3 @@
-using NUnit;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -53,17 +52,10 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateEmailPassword(
-                GetUser(Users.UserA).Email,
-                GetUser(Users.UserA).Password,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-            tr.Reset();
+            string email = "braincloudunittest@gmail.com";
 
             BrainCloudClient.Instance.AuthenticationService.ResetEmailPassword(
-                GetUser(Users.UserA).Email,
+                email,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

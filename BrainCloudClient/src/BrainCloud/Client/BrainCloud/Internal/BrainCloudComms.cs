@@ -480,7 +480,7 @@ namespace BrainCloud.Internal
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
                 {
-                    if (_fileUploadSuccessCallback != null)
+                    if (_fileUploadFailedCallback != null)
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
 
                     BrainCloudClient.Get().Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);

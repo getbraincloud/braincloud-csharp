@@ -11,20 +11,19 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestFixtureBase
     {
-        public readonly string ChildAppId = "10326";
-        public readonly string ParentLevel = "Master";
-
-        protected string _serverUrl = "";
-        protected string _appId = "";
-        protected string _secret = "";
-        protected string _version = "1.0.0";
+        protected string ServerUrl = "";
+        protected string AppId = "";
+        protected string Secret = "";
+        protected string Version = "1.0.0";
+        protected string ChildAppId = "";
+        protected string ParentLevel = "";
 
         [SetUp]
         public void Setup()
         {
             LoadIds();
 
-            BrainCloudClient.Instance.Initialize(_serverUrl, _secret, _appId, _version);
+            BrainCloudClient.Instance.Initialize(ServerUrl, Secret, AppId, Version);
             BrainCloudClient.Instance.EnableLogging(true);
 
             if (ShouldAuthenticate())
@@ -102,23 +101,33 @@ namespace BrainCloudTests
                 {
                     if (line.StartsWith("serverUrl="))
                     {
-                        _serverUrl = line.Substring(("serverUrl=").Length);
-                        _serverUrl.Trim();
+                        ServerUrl = line.Substring(("serverUrl=").Length);
+                        ServerUrl.Trim();
                     }
                     else if (line.StartsWith("appId="))
                     {
-                        _appId = line.Substring(("appId=").Length);
-                        _appId.Trim();
+                        AppId = line.Substring(("appId=").Length);
+                        AppId.Trim();
                     }
                     else if (line.StartsWith("secret="))
                     {
-                        _secret = line.Substring(("secret=").Length);
-                        _secret.Trim();
+                        Secret = line.Substring(("secret=").Length);
+                        Secret.Trim();
                     }
                     else if (line.StartsWith("version="))
                     {
-                        _version = line.Substring(("version=").Length);
-                        _version.Trim();
+                        Version = line.Substring(("version=").Length);
+                        Version.Trim();
+                    }
+                    else if (line.StartsWith("childAppId="))
+                    {
+                        ChildAppId = line.Substring(("childAppId=").Length);
+                        ChildAppId.Trim();
+                    }
+                    else if (line.StartsWith("parentLevelName="))
+                    {
+                        ParentLevel = line.Substring(("parentLevelName=").Length);
+                        ParentLevel.Trim();
                     }
                 }
             }

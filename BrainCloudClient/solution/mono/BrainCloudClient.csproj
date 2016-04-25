@@ -175,9 +175,6 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\ACL.cs">
       <Link>BrainCloud\Common\ACL.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Constants.cs">
-      <Link>BrainCloud\Common\Constants.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\BCEntity.cs">
       <Link>BrainCloud\Entity\BCEntity.cs</Link>
     </Compile>
@@ -327,6 +324,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
       <Link>BrainCloud\Internal\FileUploader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
+      <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

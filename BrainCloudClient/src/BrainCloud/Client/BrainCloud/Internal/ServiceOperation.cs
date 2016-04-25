@@ -32,6 +32,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadByType = new ServiceOperation("READ_BY_TYPE");
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
+        public static readonly ServiceOperation ReadSharedEntity = new ServiceOperation("READ_SHARED_ENTITY");
 
         // push notification
         public static readonly ServiceOperation DeregisterAll = new ServiceOperation("DEREGISTER_ALL");
@@ -56,12 +57,16 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateIncrementToMaximum = new ServiceOperation("UPDATE_INCREMENT_TO_MAXIMUM");
         public static readonly ServiceOperation GetFriendProfileInfoForExternalId = new ServiceOperation("GET_FRIEND_PROFILE_INFO_FOR_EXTERNAL_ID");
         public static readonly ServiceOperation GetExternalIdForProfileId = new ServiceOperation("GET_EXTERNAL_ID_FOR_PROFILE_ID");
+        public static readonly ServiceOperation FindPlayerByUniversalId = new ServiceOperation("FIND_PLAYER_BY_UNIVERSAL_ID");
         public static readonly ServiceOperation ReadFriends = new ServiceOperation("READ_FRIENDS");
         public static readonly ServiceOperation ReadFriendEntity = new ServiceOperation("READ_FRIEND_ENTITY");
         public static readonly ServiceOperation ReadFriendsEntities = new ServiceOperation("READ_FRIENDS_ENTITIES");
         public static readonly ServiceOperation ReadFriendsWithApplication = new ServiceOperation("READ_FRIENDS_WITH_APPLICATION");
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
         public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
+        public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
+        public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
+        public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
         public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetMultiSocialLeaderboard = new ServiceOperation("GET_MULTI_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
@@ -170,6 +175,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation CancelMatch = new ServiceOperation("CANCEL_MATCH");
         public static readonly ServiceOperation CompleteMatch = new ServiceOperation("COMPLETE_MATCH");
         public static readonly ServiceOperation EnableMatchMaking = new ServiceOperation("ENABLE_FOR_MATCH");
+        public static readonly ServiceOperation DisableMatchMaking = new ServiceOperation("DISABLE_FOR_MATCH");
         public static readonly ServiceOperation UpdateName = new ServiceOperation("UPDATE_NAME");
 
         public static readonly ServiceOperation StartStream = new ServiceOperation("START_STREAM");

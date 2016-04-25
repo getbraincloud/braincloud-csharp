@@ -47,6 +47,17 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestDisableMatchMaking()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.MatchMakingService.DisableMatchMaking(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestSetPlayerRating()
         {
             TestResult tr = new TestResult();
@@ -148,6 +159,22 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+
+        [Test]
+        public void TestFindPlayersWithAttributes()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.MatchMakingService.FindPlayersWithAttributes(
+                3,
+                5,
+                Helpers.CreateJsonPair("name", "asdf"),
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+        }
+
         [Test]
         public void TestFindPlayersUsingFilter()
         {
@@ -158,6 +185,24 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.MatchMakingService.FindPlayersUsingFilter(
                 3,
                 5,
+                JsonWriter.Serialize(filters),
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestFindPlayersUsingFilterWithAttributes()
+        {
+            TestResult tr = new TestResult();
+
+            Dictionary<string, object> filters = new Dictionary<string, object> { { "filter1", 10 } };
+
+            BrainCloudClient.Instance.MatchMakingService.FindPlayersWithAttributesUsingFilter(
+                3,
+                5,
+                Helpers.CreateJsonPair("name", "asdf"),
                 JsonWriter.Serialize(filters),
                 tr.ApiSuccess,
                 tr.ApiError);

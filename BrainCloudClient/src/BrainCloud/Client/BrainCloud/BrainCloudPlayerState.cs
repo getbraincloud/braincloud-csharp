@@ -409,23 +409,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Deprecated. Use method with collection parameter instead.  Will be removed after March 7 2016.")]
-        public void RemoveAttributes(
-            string jsonAttributeNameList,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            object[] attributeNames = JsonReader.Deserialize<object[]>(jsonAttributeNameList);
-            data[OperationParam.PlayerStateServiceAttributes.Value] = attributeNames;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.RemoveAttributes, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Updates player's picture URL.
         /// </summary>

@@ -46,21 +46,11 @@ namespace BrainCloud
 
         public static readonly OperationParam AuthenticateServiceAuthenticateLevelName           = new OperationParam("levelName");
 
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthFacebook        = new OperationParam("Facebook");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthEmail           = new OperationParam("Email");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthGameCenter      = new OperationParam("GameCenter");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthUniversal       = new OperationParam("Universal");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthSteam           = new OperationParam("Steam");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthGoogle          = new OperationParam("Google");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthTwitter         = new OperationParam("Twitter");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthExternal        = new OperationParam("External");
-
         public static readonly OperationParam AuthenticateServiceAuthenticateCountryCode         = new OperationParam("countryCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateLanguageCode        = new OperationParam("languageCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateTimeZoneOffset      = new OperationParam("timeZoneOffset");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthUpgradeID       = new OperationParam("upgradeAppId");
-        public static readonly OperationParam AuthenticateServiceAuthenticateAuthAnonymous       = new OperationParam("Anonymous");
         public static readonly OperationParam AuthenticateServiceAuthenticateAnonymousId         = new OperationParam("anonymousId");
         public static readonly OperationParam AuthenticateServiceAuthenticateProfileId           = new OperationParam("profileId");
         public static readonly OperationParam AuthenticateServiceAuthenticateForceCreate         = new OperationParam("forceCreate");
@@ -71,39 +61,16 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceAuthenticationType                  = new OperationParam("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous                    = new OperationParam("confirmAnonymous");
 
-        // Entity Service - Create Params
-        public static readonly OperationParam EntityServiceCreateEntityId                        = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceCreateEntityTargetPlayerId            = new OperationParam("targetPlayerId");
-
-        public static readonly OperationParam EntityServiceCreateEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceCreateEntitySubtype                   = new OperationParam("entitySubtype");
-        public static readonly OperationParam EntityServiceCreateData                            = new OperationParam("data");
-        public static readonly OperationParam EntityServiceCreateAcl = new OperationParam("acl");
-        public static readonly OperationParam EntityServiceCreateFriendData                      = new OperationParam("friendData");
-
-        // Entity Service - GetEntitiesByType
-        public static readonly OperationParam EntityServiceGetEntitiesByTypeEntityType          = new OperationParam("entityType");
-
-        // Entity Service - Update Params
-        public static readonly OperationParam EntityServiceUpdateEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceUpdateEntityId                        = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceUpdateData                            = new OperationParam("data");
-        public static readonly OperationParam EntityServiceUpdateVersion                         = new OperationParam("version");
-        public static readonly OperationParam EntityServiceUpdateAcl                             = new OperationParam("acl");
-
-        // Entity Service - Update Partial Params
-        public static readonly OperationParam EntityServiceUpdatePartialEntityType               = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceUpdatePartialEntityId                 = new OperationParam("entityId");
-        public static readonly OperationParam EntityServiceUpdatePartialUpdateOps                = new OperationParam("updateOps");
-
-        // Entity Service - Delete Params
-        public static readonly OperationParam EntityServiceDeleteEntityType                      = new OperationParam("entityType");
-        public static readonly OperationParam EntityServiceDeleteEntityId                        = new OperationParam("entityId");
-
-        // Entity Service - GetSharedEntitiesForPlayerId
-        public static readonly OperationParam EntityServiceGetSharedEntitiesTargetPlayerId       = new OperationParam("targetPlayerId");
-        public static readonly OperationParam EntityServiceGetSharedStatsTargetPlayerId          = new OperationParam("targetPlayerId");
-        public static readonly OperationParam EntityServiceGetSharedPlayerStateTargetPlayerId    = new OperationParam("targetPlayerId");
+        // Entity Service 
+        public static readonly OperationParam EntityServiceEntityId                             = new OperationParam("entityId");
+        public static readonly OperationParam EntityServiceEntityType                           = new OperationParam("entityType");
+        public static readonly OperationParam EntityServiceEntitySubtype                        = new OperationParam("entitySubtype");
+        public static readonly OperationParam EntityServiceData                                 = new OperationParam("data");
+        public static readonly OperationParam EntityServiceAcl                                  = new OperationParam("acl");
+        public static readonly OperationParam EntityServiceFriendData                           = new OperationParam("friendData");
+        public static readonly OperationParam EntityServiceVersion                              = new OperationParam("version");
+        public static readonly OperationParam EntityServiceUpdateOps                            = new OperationParam("updateOps");
+        public static readonly OperationParam EntityServiceTargetPlayerId                       = new OperationParam("targetPlayerId");
 
         // Global Entity Service - Params
         public static readonly OperationParam GlobalEntityServiceEntityId                       = new OperationParam("entityId");
@@ -144,12 +111,14 @@ namespace BrainCloud
         // Friend Service - Params
         public static readonly OperationParam FriendServiceEntityId                             = new OperationParam("entityId");
         public static readonly OperationParam FriendServiceExternalId                           = new OperationParam("externalId");
-        public static readonly OperationParam FriendServiceProfileId                           = new OperationParam("profileId");
+        public static readonly OperationParam FriendServiceProfileId                            = new OperationParam("profileId");
         public static readonly OperationParam FriendServiceFriendId                             = new OperationParam("friendId");
         public static readonly OperationParam FriendServiceAuthenticationType                   = new OperationParam("authenticationType");
         public static readonly OperationParam FriendServiceEntityType                           = new OperationParam("entityType");
         public static readonly OperationParam FriendServiceEntitySubtype                        = new OperationParam("entitySubtype");
         public static readonly OperationParam FriendServiceIncludeSummaryData                   = new OperationParam("includeSummaryData");
+        public static readonly OperationParam FriendServiceFriendPlatform                       = new OperationParam("friendPlatform");
+        public static readonly OperationParam FriendServiceProfileIds                           = new OperationParam("profileIds");
 
         // Friend Service operations
         //public static readonly Operation FriendServiceReadFriends = new Operation("READ_FRIENDS");
@@ -293,6 +262,7 @@ namespace BrainCloud
         public static readonly OperationParam MatchMakingServiceMinutes                          = new OperationParam("minutes");
         public static readonly OperationParam MatchMakingServiceRangeDelta                       = new OperationParam("rangeDelta");
         public static readonly OperationParam MatchMakingServiceNumMatches                       = new OperationParam("numMatches");
+        public static readonly OperationParam MatchMakingServiceAttributes                       = new OperationParam("attributes");
         public static readonly OperationParam MatchMakingServiceExtraParams                      = new OperationParam("extraParams");
         public static readonly OperationParam MatchMakingServicePlayerId                         = new OperationParam("playerId");
         public static readonly OperationParam MatchMakingServicePlaybackStreamId                 = new OperationParam("playbackStreamId");

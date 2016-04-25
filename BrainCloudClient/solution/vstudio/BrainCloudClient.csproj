@@ -156,8 +156,8 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\ACL.cs">
       <Link>BrainCloud\Common\ACL.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Constants.cs">
-      <Link>BrainCloud\Common\Constants.cs</Link>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
+      <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>

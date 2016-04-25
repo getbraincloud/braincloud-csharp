@@ -18,7 +18,7 @@ using JsonFx.Json;
 /// 
 /// Note that this class is *not* required to use brainCloud - you are free to reimplement the
 /// functionality as you see fit. It is simply used as a starting point to get developers off the
-/// ground - especially with anonymous authentications.
+/// ground - especially with authentications.
 /// 
 /// The meat of the BrainCloud api is available by using
 /// 
@@ -65,10 +65,30 @@ public class BrainCloudWrapper : MonoBehaviour
     private string m_lastSecretKey = "";
     private string m_lastGameId = "";
     private string m_lastGameVersion = "";
+
+    private bool m_alwaysAllowProfileSwitch = true;
+    public bool AlwaysAllowProfileSwitch
+    {
+        get
+        {
+            return m_alwaysAllowProfileSwitch;
+        }
+        set
+        {
+            m_alwaysAllowProfileSwitch = value;
+        }
+    }
     
     public static string AUTHENTICATION_ANONYMOUS = "anonymous";
-    public static string AUTHENTICATION_FACEBOOK = "facebook";
-    
+
+    // class handles bundling user-defined cb objects and callback methods
+    private class AuthCallbackObject
+    {
+        public object m_cbObject;
+        public SuccessCallback m_successCallback;
+        public FailureCallback m_failureCallback;
+    }
+
     public BrainCloudWrapper()
     {
         m_client = BrainCloudClient.Get ();
@@ -127,7 +147,12 @@ public class BrainCloudWrapper : MonoBehaviour
             m_client.Update();
         }
     }
-    
+
+    public void OnDestroy ()
+    {
+        s_applicationIsQuitting = true;
+    }
+
     /// <summary>
     /// Returns an instance of the BrainCloudClient. All brainCloud APIs are
     /// accessible through the client.
@@ -170,7 +195,427 @@ public class BrainCloudWrapper : MonoBehaviour
         bcw.m_lastGameVersion = in_gameVersion;
         bcw.m_client.Initialize(in_url, in_secretKey, in_gameId, in_gameVersion);
     }
-    
+
+    /// <summary>
+    /// If set to true, profile id is never sent along with non-anonymous authenticates
+    /// thereby ensuring that valid credentials always work but potentially cause a profile switch.
+    /// If set to false, profile id is passed to the server (if it has been stored) and a profile id
+    /// to non-anonymous credential mismatch will cause an error.
+    /// </summary>
+    /// <param name="in_enabled">True if we always allow profile switch</param>
+    public void SetAlwaysAllowProfileSwitch(bool in_enabled)
+    {
+        AlwaysAllowProfileSwitch = in_enabled;
+    }
+
+    /// <summary>
+    /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
+    /// the user to login, or for users who are sensitive to their privacy
+    /// 
+    /// Note that this method is special in that the anonymous id and profile id
+    /// are persisted to the Unity player prefs cache if authentication is successful.
+    /// Both pieces of information are required to successfully log into that account
+    /// once the player has been created. Failure to store the profile id and anonymous id
+    /// once the player has been created results in an inability to log into that account!
+    /// For this reason, using other recoverable authentication methods (like email/password, Facebook)
+    /// are encouraged.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateAnonymous(
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity(true);
+
+        m_client.AuthenticationService.AuthenticateAnonymous(
+            true, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user with a custom Email and Password.  Note that the client app
+    /// is responsible for collecting (and storing) the e-mail and potentially password
+    /// (for convenience) in the client data.  For the greatest security,
+    /// force the user to re-enter their password at each login.
+    /// (Or at least give them that option).
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    ///
+    /// Note that the password sent from the client to the server is protected via SSL.
+    /// </remarks>
+    /// <param name="in_email">
+    /// The e-mail address of the user
+    /// </param>
+    /// <param name="in_password">
+    /// The password of the user
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateEmailPassword(
+        string in_email,
+        string in_password,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateEmailPassword(
+            in_email, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+        
+    /// <summary>
+    /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
+    /// This allows the developer to extend brainCloud authentication to support other backend authentication systems.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_userid">
+    /// The user id
+    /// </param>
+    /// <param name="in_token">
+    /// The user token (password etc)
+    /// </param>
+    /// /// <param name="in_externalAuthName">
+    /// The name of the cloud script to call for external authentication
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateExternal(
+        string in_userid,
+        string in_token,
+        string in_externalAuthName,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateExternal(
+            in_userid, in_token, in_externalAuthName, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="externalId">
+    /// The facebook id of the user
+    /// </param>
+    /// <param name="authenticationToken">
+    /// The validated token from the Facebook SDK (that will be further
+    /// validated when sent to the bC service)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateFacebook(
+        string in_fbUserId,
+        string in_fbAuthToken,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateFacebook(
+            in_fbUserId, in_fbAuthToken, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using their Game Center id
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_gameCenterId">
+    /// The player's game center id  (use the playerID property from the local GKPlayer object)
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateGameCenter(
+        string in_gameCenterId,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateGameCenter(
+            in_gameCenterId, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using a google userid(email address) and google authentication token.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_userid">
+    /// String representation of google+ userid (email)
+    /// </param>
+    /// <param name="in_token">
+    /// The authentication token derived via the google apis.
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateGoogle(
+        string in_userid,
+        string in_token,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateGoogle(
+            in_userid, in_token, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_userid">
+    /// String representation of 64 bit steam id
+    /// </param>
+    /// <param name="in_sessionticket">
+    /// The session ticket of the user (hex encoded)
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateSteam(
+        string in_userid,
+        string in_sessionticket,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateSteam(
+            in_userid, in_sessionticket, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using a Twitter userid, authentication token, and secret from twitter.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_userid">
+    /// String representation of a Twitter user ID
+    /// </param>
+    /// <param name="in_token">
+    /// The authentication token derived via the Twitter apis
+    /// </param>
+    /// <param name="in_secret">
+    /// The secret given when attempting to link with Twitter
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateTwitter(
+        string in_userid,
+        string in_token,
+        string in_secret,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateTwitter(
+            in_userid, in_token, in_secret, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using a userid and password (without any validation on the userid).
+    /// Similar to AuthenticateEmailPassword - except that that method has additional features to
+    /// allow for e-mail validation, password resets, etc.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="in_email">
+    /// The e-mail address of the user
+    /// </param>
+    /// <param name="in_password">
+    /// The password of the user
+    /// </param>
+    /// <param name="in_forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="in_success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="in_failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="in_cbObject">
+    /// The user supplied callback object
+    /// </param> 
+    public void AuthenticateUniversal(
+        string in_username,
+        string in_password,
+        bool in_forceCreate,
+        SuccessCallback in_success = null,
+        FailureCallback in_failure = null,
+        object in_cbObject = null)
+    {
+        AuthCallbackObject aco = new AuthCallbackObject();
+        aco.m_successCallback = in_success;
+        aco.m_failureCallback = in_failure;
+        aco.m_cbObject = in_cbObject;
+
+        InitializeIdentity();
+
+        m_client.AuthenticationService.AuthenticateUniversal(
+            in_username, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+
     /// <summary>
     /// Method initializes the identity information from the Unity player prefs cache.
     /// This is specifically useful for an Anonymous authentication as Anonymous authentications
@@ -182,129 +627,29 @@ public class BrainCloudWrapper : MonoBehaviour
     /// Note that clients are free to implement this logic on their own as well if they 
     /// wish to store the information in another location and/or change the behaviour.
     /// </summary>
-    protected virtual void InitializeIdentity()
+    protected virtual void InitializeIdentity(bool in_isAnonymousAuth = false)
     {
         // retrieve profile and anonymous ids out of the cache
         string profileId = GetStoredProfileId();
         string anonymousId = GetStoredAnonymousId();
-        
+
         if ((anonymousId != "" && profileId == "") || anonymousId == "")
         {
             anonymousId = m_client.AuthenticationService.GenerateGUID();
+            profileId = "";
             SetStoredAnonymousId(anonymousId);
+            SetStoredProfileId(profileId);
         }
-        m_client.InitializeIdentity(profileId, anonymousId);
-    }
-    
-    /// <summary>
-    /// Provides a way to reauthenticate with the stored anonymous and profile id.
-    /// Only works for Anonymous authentications.
-    /// </summary>
-    protected virtual void Reauthenticate()
-    {
-        BrainCloudWrapper.Initialize(s_instance.m_lastUrl, s_instance.m_lastSecretKey, s_instance.m_lastGameId, s_instance.m_lastGameVersion);
-        string authType = GetStoredAuthenticationType();
-        if (authType == AUTHENTICATION_ANONYMOUS)
+        string profileIdToAuthenticateWith = profileId;
+        if (!in_isAnonymousAuth && m_alwaysAllowProfileSwitch)
         {
-            AuthenticateAnonymous(null, null);
+            profileIdToAuthenticateWith = "";
         }
+        SetStoredAuthenticationType(in_isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
+        m_client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
-    
-    /// <summary>
-    /// Method authenticates with brainCloud using Universal credentials
-    /// </summary>
-    /// <param name="in_username">The user name</param>
-    /// <param name="in_password">The password</param>
-    /// <param name="in_forceCreate">If set to <c>true</c>, attempt to create the user if they do not already exist.</param>
-    /// <param name="in_successCb">The success callback</param>
-    /// <param name="in_failureCb">The failure callback</param>
-    public void AuthenticateUniversal(string in_username, string in_password, bool in_forceCreate, SuccessCallback in_successCb, FailureCallback in_failureCb)
-    {
-        m_client.AuthenticationService.AuthenticateUniversal(in_username, in_password, in_forceCreate, in_successCb, in_failureCb);
-    }
-    
-    /// <summary>
-    /// Method authenticates with brainCloud using Email/Password credentials
-    /// </summary>
-    /// <param name="in_email">The email</param>
-    /// <param name="in_password">The password</param>
-    /// <param name="in_forceCreate">If set to <c>true</c>, attempt to create the user if they do not already exist.</param>
-    /// <param name="in_successCb">The success callback</param>
-    /// <param name="in_failureCb">The failure callback</param>
-    public void AuthenticateEmailPassword(string in_email, string in_password, bool in_forceCreate, SuccessCallback in_successCb, FailureCallback in_failureCb)
-    {
-        m_client.AuthenticationService.AuthenticateEmailPassword(in_email, in_password, in_forceCreate, in_successCb, in_failureCb);
-    }
-    
-    /// <summary>
-    /// Method authenticates with brainCloud using Facebook credentials
-    /// </summary>
-    /// <param name="in_fbUserId">The facebook user id</param>
-    /// <param name="in_fbAuthToken">The facebook authentication token</param>
-    /// <param name="in_forceCreate">If set to <c>true</c>, attempt to create the user if they do not already exist.</param>
-    /// <param name="in_successCb">The success callback</param>
-    /// <param name="in_failureCb">The failure callback</param>
-    public void AuthenticateFacebook(string in_fbUserId, string in_fbAuthToken, bool in_forceCreate, SuccessCallback in_successCb, FailureCallback in_failureCb)
-    {
-        m_client.AuthenticationService.AuthenticateFacebook(in_fbUserId, in_fbAuthToken, in_forceCreate, in_successCb, in_failureCb);
-    }
-    
-    /// <summary>
-    /// Method authenticates with brainCloud using Anonymous credentials.
-    /// 
-    /// Note that this method is special in that the anonymous id and profile id
-    /// are persisted to the Unity player prefs cache if authentication is successful.
-    /// Both pieces of information are required to successfully log into that account
-    /// once the player has been created. Failure to store the profile id and anonymous id
-    /// once the player has been created results in an inability to log into that account!
-    /// For this reason, using other recoverable authentication methods (like email/password, Facebook)
-    /// are encouraged.
-    /// </summary>
-    /// <param name="in_successCb">The success callback</param>
-    /// <param name="in_failureCb">The failure callback</param>
-    public void AuthenticateAnonymous(SuccessCallback in_successCb, FailureCallback in_failureCb)
-    {
-        InitializeIdentity();
-        SetStoredAuthenticationType(AUTHENTICATION_ANONYMOUS);
-        
-        m_client.AuthenticationService.AuthenticateAnonymous(true,
-                                                             // success
-                                                             (delegate(string json, object cbObject)
-         {
-            // suck in the profileId and save it in PlayerPrefs
-            Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(json);
-            Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
-            string profileId = "";
-            if (jsonData.ContainsKey("profileId"))
-            {
-                profileId = (string) jsonData["profileId"];   
-            }
-            if (profileId != "")
-            {
-                SetStoredProfileId(profileId);
-            }
-            if (in_successCb != null)
-            {
-                in_successCb(json, cbObject);
-            }
-        }),
-                                                             // failure
-                                                             (delegate(int statusCode, int reasonCode, string statusMessage, object cbObject)
-         {
-            if (in_failureCb != null)
-            {
-                in_failureCb(statusCode, reasonCode, statusMessage, cbObject);
-            }
-        })
-                                                             );
-    }
-    
-    
-    public void OnDestroy ()
-    {
-        s_applicationIsQuitting = true;
-    }
-    
+
+
     /// <summary>
     /// Gets the stored profile id from player prefs.
     /// </summary>
@@ -381,5 +726,68 @@ public class BrainCloudWrapper : MonoBehaviour
     public virtual void ResetStoredAuthenticationType()
     {
         SetStoredAuthenticationType("");
+    }
+
+
+    /// <summary>
+    /// Provides a way to reauthenticate with the stored anonymous and profile id.
+    /// Only works for Anonymous authentications.
+    /// </summary>
+    protected virtual void Reauthenticate()
+    {
+        BrainCloudWrapper.Initialize(s_instance.m_lastUrl, s_instance.m_lastSecretKey, s_instance.m_lastGameId, s_instance.m_lastGameVersion);
+        string authType = GetStoredAuthenticationType();
+        if (authType == AUTHENTICATION_ANONYMOUS)
+        {
+            AuthenticateAnonymous(null, null);
+        }
+    }
+
+    /// <summary>
+    /// Callback for authentication success using the BrainCloudWrapper class.
+    /// </summary>
+    /// <param name="json">The returned json</param>
+    /// <param name="cbObject">The returned callback object</param>
+    protected virtual void AuthSuccessCallback(string json, object cbObject)
+    {
+        // grab the profileId and save it in PlayerPrefs
+        Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(json);
+        Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage["data"];
+        string profileId = "";
+        if (jsonData.ContainsKey("profileId"))
+        {
+            profileId = (string) jsonData["profileId"];   
+        }
+        if (profileId != "")
+        {
+            SetStoredProfileId(profileId);
+        }
+        if (cbObject != null)
+        {
+            AuthCallbackObject aco = (AuthCallbackObject) cbObject;
+            if (aco.m_successCallback != null)
+            {
+                aco.m_successCallback(json, aco.m_cbObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Callback for authentication failure using the BrainCloudWrapper class.
+    /// </summary>
+    /// <param name="statusCode">The status code</param>
+    /// <param name="reasonCode">The reason code</param>
+    /// <param name="errorJson">The error json</param>
+    /// <param name="cbObject">The returned callback object</param>
+    protected virtual void AuthFailureCallback (int statusCode, int reasonCode, string errorJson, object cbObject)
+    {
+        if (cbObject != null)
+        {
+            AuthCallbackObject aco = (AuthCallbackObject)cbObject;
+            if (aco.m_failureCallback != null)
+            {
+                aco.m_failureCallback(statusCode, reasonCode, errorJson, aco.m_cbObject);
+            }
+        }
     }
 }
