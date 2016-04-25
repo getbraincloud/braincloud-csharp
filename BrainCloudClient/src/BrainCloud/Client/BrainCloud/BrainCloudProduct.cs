@@ -362,7 +362,7 @@ namespace BrainCloud
             {
                 data[OperationParam.ProductServiceGetInventoryCategory.Value] = in_category;
             }
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetInventory, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
@@ -403,8 +403,8 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void StartSteamTransaction(
-            String in_language,
-            String in_itemId,
+            string in_language,
+            string in_itemId,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
@@ -621,7 +621,7 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void VerifyItunesReceipt(
-            String in_base64EncReceiptData,
+            string in_base64EncReceiptData,
             SuccessCallback in_callback = null,
             FailureCallback in_failure = null,
             object in_cbObject = null)
