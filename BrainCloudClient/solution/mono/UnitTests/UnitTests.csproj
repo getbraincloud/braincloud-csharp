@@ -173,5 +173,8 @@
     <Compile Include="..\..\..\tests\TestLeaderboard.cs">
       <Link>TestLeaderboard.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestACL.cs">
+      <Link>TestACL.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

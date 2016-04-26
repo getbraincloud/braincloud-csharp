@@ -66,6 +66,9 @@
     <Compile Include="..\..\..\tests\Helpers.cs">
       <Link>Helpers.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestACL.cs">
+      <Link>TestACL.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestAsyncMatch.cs">
       <Link>TestAsyncMatch.cs</Link>
     </Compile>
