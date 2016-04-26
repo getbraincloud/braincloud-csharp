@@ -3,10 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BrainCloud.Internal
 {

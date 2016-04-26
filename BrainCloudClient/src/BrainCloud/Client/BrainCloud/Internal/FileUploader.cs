@@ -7,12 +7,12 @@
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
-using JsonFx.Json;
 using System;
 using System.IO;
 
 #if !DOT_NET
 using UnityEngine;
+using JsonFx.Json;
 #if USE_WEB_REQUEST
 using UnityEngine.Experimental.Networking;
 #endif
@@ -203,7 +203,7 @@ namespace BrainCloud.Internal
 #if DOT_NET
         private void UploadProgress(object sender, UploadProgressChangedEventArgs e)
         {
-            Progress = (double)e.BytesSent / e.TotalBytesToSend; 
+            Progress = (double)e.BytesSent / e.TotalBytesToSend;
         }
 
         private void UploadComplete(object sender, UploadDataCompletedEventArgs e)

@@ -4,32 +4,26 @@
 //----------------------------------------------------
 #if (DOT_NET)
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using System.Web;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-//using fastJSON;
-
 
 namespace BrainCloud.Internal
 {
-
-
     internal class AsynchRequestAndResponse
     {
 
         #region Properties
 
-        public String JsonRequestString;
-        public String JsonResponseString;
-        public String ErrorMessage;
+        public string JsonRequestString;
+        public string JsonResponseString;
+        public string ErrorMessage;
 
-        private String authenticationToken = "";
+        private string authenticationToken = "";
         private int packetIncrementer;
-        private Boolean requestInProgress = false;
+        private bool requestInProgress = false;
         private static ManualResetEvent allDone = new ManualResetEvent(false);
 
         #endregion
@@ -47,7 +41,7 @@ namespace BrainCloud.Internal
         #region PublicMethods
 
 
-        public string PerformAuthenticationRequestResponse(String serverURl, String authToken, String incomingJsonRequestString)
+        public string PerformAuthenticationRequestResponse(string serverURl, string authToken, string incomingJsonRequestString)
         {
             authenticationToken = authToken; //This will be required for subsequent calls !
             string returnThis = PerformRequestResponse(serverURl, incomingJsonRequestString, null, ServiceOperation.Authenticate.Value);
@@ -56,7 +50,7 @@ namespace BrainCloud.Internal
         }
 
 
-        public string PerformRequestResponse(String serverURl, String incomingJsonRequestString, String sessionId, String callingParameter)
+        public string PerformRequestResponse(string serverURl, string incomingJsonRequestString, string sessionId, string callingParameter)
         {
 
             Console.WriteLine("\n\nBrainCloud - AsynchRequestAndResponse - PerformRequestResponse - START !\n");

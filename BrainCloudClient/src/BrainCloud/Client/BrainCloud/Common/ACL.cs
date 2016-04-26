@@ -3,8 +3,6 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using LitJson;
 
@@ -70,13 +68,13 @@ namespace BrainCloud.Common
 
         public void ReadFromJson(JsonData in_json)
         {
-            m_other = (Access) (int) in_json["other"];
+            m_other = (Access)(int)in_json["other"];
         }
 
         public string ToJsonString()
         {
             JsonData acl = new JsonData();
-            acl["other"] = new JsonData((int) m_other);
+            acl["other"] = new JsonData((int)m_other);
 
             StringBuilder sb = new StringBuilder();
             JsonWriter writer = new JsonWriter(sb);

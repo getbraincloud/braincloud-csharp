@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-public delegate void ElapsedEventHandler();
+﻿public delegate void ElapsedEventHandler();
 
 public interface ITimer
 {

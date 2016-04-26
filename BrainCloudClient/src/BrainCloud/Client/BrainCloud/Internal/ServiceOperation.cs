@@ -4,15 +4,11 @@
 //----------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BrainCloud.Internal
 {
     /**
      * List of all available service operations. The values are mapped to server keys which represent that operation.
-     *
-     * @see "link to server docs..."
      */
     internal class ServiceOperation
     {
@@ -158,7 +154,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadQuestsByCategory = new ServiceOperation("READ_QUESTS_BY_CATEGORY");
         public static readonly ServiceOperation ResetMilestones = new ServiceOperation("RESET_MILESTONES");
 
-		public static readonly ServiceOperation ReadForCategory = new ServiceOperation("READ_FOR_CATEGORY");
+        public static readonly ServiceOperation ReadForCategory = new ServiceOperation("READ_FOR_CATEGORY");
 
         public static readonly ServiceOperation ReadMilestones = new ServiceOperation("READ_MILESTONES");
         public static readonly ServiceOperation ReadMilestonesByCategory = new ServiceOperation("READ_MILESTONES_BY_CATEGORY");
