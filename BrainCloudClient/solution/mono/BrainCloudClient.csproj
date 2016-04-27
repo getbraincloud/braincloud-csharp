@@ -51,6 +51,7 @@
     <Folder Include="LitJson\" />
     <Folder Include="BrainCloud\" />
     <Folder Include="JsonFx\" />
+    <Folder Include="BrainCloud\Unity\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\BrainCloud\LitJson\AssemblyInfo.cs.in">
@@ -332,7 +333,7 @@
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
-      <Link>BrainCloud\BrainCloudSettings.cs</Link>
+      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
