@@ -3,6 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
+#if !XAMARIN
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -88,3 +89,5 @@ namespace BrainCloud.Entity
         }
     }
 }
+
+#endif

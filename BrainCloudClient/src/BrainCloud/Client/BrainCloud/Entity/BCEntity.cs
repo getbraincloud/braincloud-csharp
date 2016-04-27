@@ -3,6 +3,7 @@
 // Copyright 2015 bitHeads, inc.
 //----------------------------------------------------
 
+#if !XAMARIN
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace BrainCloud.Entity
         //protected JsonData m_cachedServerObject;
 
 
-        #region properties
+#region properties
         public string EntityId
         {
             get
@@ -132,15 +133,15 @@ namespace BrainCloud.Entity
                 m_braincloud = value;
             }
         }
-        #endregion
+#endregion
 
 
-        #region abstractMethods
+#region abstractMethods
         protected abstract void CreateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         protected abstract void UpdateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         protected abstract void UpdateSharedEntity(string in_targetPlayerId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         protected abstract void DeleteEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
-        #endregion
+#endregion
 
 
         public BCEntity()
@@ -544,3 +545,5 @@ namespace BrainCloud.Entity
         }
     }
 }
+
+#endif

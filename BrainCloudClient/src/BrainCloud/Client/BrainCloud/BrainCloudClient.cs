@@ -6,7 +6,10 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+
+#if !XAMARIN
 using BrainCloud.Entity;
+#endif
 
 #if !(DOT_NET)
 using UnityEngine;
@@ -118,7 +121,9 @@ namespace BrainCloud
 
         private LogCallback m_logDelegate;
 
+#if !XAMARIN
         private BCEntityFactory m_entityFactory;
+#endif
         private BrainCloudComms m_comms;
         private BrainCloudEntity m_entityService;
         private BrainCloudGlobalEntity m_globalEntityService;
@@ -182,7 +187,9 @@ namespace BrainCloud
         {
             m_comms = new BrainCloudComms(this);
             m_entityService = new BrainCloudEntity(this);
+#if !XAMARIN
             m_entityFactory = new BCEntityFactory(m_entityService);
+#endif
             m_globalEntityService = new BrainCloudGlobalEntity(this);
 
             m_globalAppService = new BrainCloudGlobalApp(this);
@@ -219,7 +226,7 @@ namespace BrainCloud
 
         //---------------------------------------------------------------
 
-        #endregion        
+        #endregion
 
         #region Properties
 
@@ -287,10 +294,12 @@ namespace BrainCloud
             get { return m_entityService; }
         }
 
+#if !XAMARIN
         public BCEntityFactory EntityFactory
         {
             get { return m_entityFactory; }
         }
+#endif
 
         public BrainCloudGlobalEntity GlobalEntityService
         {
@@ -434,10 +443,12 @@ namespace BrainCloud
             return EntityService;
         }
 
+#if !XAMARIN
         public BCEntityFactory GetEntityFactory()
         {
             return EntityFactory;
         }
+#endif
 
         public BrainCloudGlobalApp GetGlobalAppService()
         {
@@ -637,7 +648,7 @@ namespace BrainCloud
             //setup region/country code
             if (Util.GetCurrentCountryCode() == string.Empty)
             {
-#if(DOT_NET)
+#if (DOT_NET)
                 Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
 #else
                 Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);
@@ -770,7 +781,7 @@ namespace BrainCloud
         {
             m_comms.DeregisterNetworkErrorCallback();
         }
-            
+
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
@@ -1006,7 +1017,7 @@ namespace BrainCloud
                     {
 #if !(DOT_NET)
                         Debug.Log(formattedLog);
-#else
+#elif !XAMARIN
                         Console.WriteLine(formattedLog);
 #endif
                     }
