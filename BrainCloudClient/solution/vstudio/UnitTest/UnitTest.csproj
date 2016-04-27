@@ -165,6 +165,9 @@
     <Compile Include="..\..\..\tests\TestTime.cs">
       <Link>TestTime.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestWrapper.cs">
+      <Link>TestWrapper.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

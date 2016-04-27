@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if !DOT_NET
+
+using UnityEngine;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -170,3 +172,5 @@ public class BrainCloudSettings : ScriptableObject
     }
 
 }
+
+#endif

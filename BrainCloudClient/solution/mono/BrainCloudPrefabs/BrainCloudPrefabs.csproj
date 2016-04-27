@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{56086F30-F5AF-4503-BCDA-63E445F7C1BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -48,55 +48,8 @@
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\.DS_Store">
-      <Link>Scripts\.DS_Store</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudLoginPF.cs.meta">
-      <Link>Scripts\BrainCloudLoginPF.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs.meta">
-      <Link>Scripts\BrainCloudSettings.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudWrapper.cs.meta">
-      <Link>Scripts\BrainCloudWrapper.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD.meta">
-      <Link>Scripts\HUD.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\.DS_Store">
-      <Link>Scripts\HUD\.DS_Store</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\BrainCloudHUD.cs.meta">
-      <Link>Scripts\HUD\BrainCloudHUD.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\HUDGlobalStats.cs.meta">
-      <Link>Scripts\HUD\HUDGlobalStats.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\HUDInfo.cs.meta">
-      <Link>Scripts\HUD\HUDInfo.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\HUDLeaderboard.cs.meta">
-      <Link>Scripts\HUD\HUDLeaderboard.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\HUDPlayer.cs.meta">
-      <Link>Scripts\HUD\HUDPlayer.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\HUDPlayerStats.cs.meta">
-      <Link>Scripts\HUD\HUDPlayerStats.cs.meta</Link>
-    </None>
-    <None Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\IHUDElement.cs.meta">
-      <Link>Scripts\HUD\IHUDElement.cs.meta</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudLoginPF.cs">
       <Link>Scripts\BrainCloudLoginPF.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
-      <Link>Scripts\BrainCloudSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\src\BrainCloud\Unity\Scripts\BrainCloudWrapper.cs">
-      <Link>Scripts\BrainCloudWrapper.cs</Link>
     </Compile>
     <Compile Include="..\..\..\src\BrainCloud\Unity\Scripts\HUD\BrainCloudHUD.cs">
       <Link>Scripts\HUD\BrainCloudHUD.cs</Link>
@@ -130,8 +83,8 @@
     <Reference Include="UnityEngine">
       <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
-	<Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

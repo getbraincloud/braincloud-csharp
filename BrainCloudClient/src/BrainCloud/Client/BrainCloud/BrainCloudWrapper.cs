@@ -1,7 +1,13 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BrainCloud;
 using JsonFx.Json;
+
+#if !DOT_NET
+using UnityEngine;
+#else
+using System.IO;
+using System.IO.IsolatedStorage;
+#endif
 
 /// <summary>
 /// The BrainCloudWrapper class provides some glue between the Unity environment and the
@@ -32,7 +38,11 @@ using JsonFx.Json;
 /// 
 /// See http://getbraincloud.com/apidocs/ for the full list of brainCloud APIs.
 /// </summary>
+#if !DOT_NET
 public class BrainCloudWrapper : MonoBehaviour
+#else
+public class BrainCloudWrapper
+#endif
 {
     /// <summary>
     /// The key for the player prefs profile id
@@ -64,6 +74,8 @@ public class BrainCloudWrapper : MonoBehaviour
     private string _lastGameId = "";
     private string _lastGameVersion = "";
 
+    private WrapperData _wrapperData = new WrapperData();
+
     public bool AlwaysAllowProfileSwitch { get; set; }
 
     public static string AUTHENTICATION_ANONYMOUS = "anonymous";
@@ -81,7 +93,7 @@ public class BrainCloudWrapper : MonoBehaviour
         _client = BrainCloudClient.Get();
     }
 
-    public BrainCloudWrapper Instance { get { return GetInstance(); } }
+    public static BrainCloudWrapper Instance { get { return GetInstance(); } }
 
     public BrainCloudClient Client { get { return Instance._client; } }
 
@@ -98,6 +110,7 @@ public class BrainCloudWrapper : MonoBehaviour
         }
         if (_instance == null)
         {
+#if !DOT_NET
             _instance = (BrainCloudWrapper)FindObjectOfType(typeof(BrainCloudWrapper));
             if (_instance != null)
             {
@@ -118,11 +131,15 @@ public class BrainCloudWrapper : MonoBehaviour
                 _instance = go.AddComponent<BrainCloudWrapper>();
                 DontDestroyOnLoad(go);
             }
+#else
+            _instance = new BrainCloudWrapper();
+            _instance.LoadData();
+#endif
         }
         return _instance;
     }
 
-    void Update()
+    public void Update()
     {
         if (_client != null)
         {
@@ -130,10 +147,12 @@ public class BrainCloudWrapper : MonoBehaviour
         }
     }
 
+#if !DOT_NET
     public void OnDestroy()
     {
         _applicationIsQuitting = true;
     }
+#endif
 
     /// <summary>
     /// Returns an instance of the BrainCloudClient. All brainCloud APIs are
@@ -145,6 +164,7 @@ public class BrainCloudWrapper : MonoBehaviour
         return GetInstance()._client;
     }
 
+#if !DOT_NET
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
@@ -159,6 +179,7 @@ public class BrainCloudWrapper : MonoBehaviour
 
         GetBC().EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
+#endif
 
     /// <summary>
     /// Initialize the brainCloud client with the passed in parameters. This version of Initialize
@@ -176,6 +197,8 @@ public class BrainCloudWrapper : MonoBehaviour
         bcw._lastGameId = in_gameId;
         bcw._lastGameVersion = in_gameVersion;
         bcw._client.Initialize(in_url, in_secretKey, in_gameId, in_gameVersion);
+
+        _instance.LoadData();
     }
 
     /// <summary>
@@ -189,6 +212,8 @@ public class BrainCloudWrapper : MonoBehaviour
     {
         AlwaysAllowProfileSwitch = in_enabled;
     }
+
+    #region Authenticate Methods
 
     /// <summary>
     /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
@@ -631,6 +656,7 @@ public class BrainCloudWrapper : MonoBehaviour
         _client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
 
+    #endregion
 
     /// <summary>
     /// Gets the stored profile id from player prefs.
@@ -638,7 +664,7 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <returns>The stored profile id.</returns>
     public virtual string GetStoredProfileId()
     {
-        return PlayerPrefs.GetString(PREFS_PROFILE_ID);
+        return _wrapperData.ProfileId;
     }
 
     /// <summary>
@@ -647,7 +673,8 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <param name="in_profileId">Profile id.</param>
     public virtual void SetStoredProfileId(string in_profileId)
     {
-        PlayerPrefs.SetString(PREFS_PROFILE_ID, in_profileId);
+        _wrapperData.ProfileId = in_profileId;
+        SaveData();
     }
 
     /// <summary>
@@ -655,7 +682,8 @@ public class BrainCloudWrapper : MonoBehaviour
     /// </summary>
     public virtual void ResetStoredProfileId()
     {
-        SetStoredProfileId("");
+        _wrapperData.ProfileId = "";
+        SaveData();
     }
 
     /// <summary>
@@ -664,7 +692,7 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <returns>The stored anonymous id.</returns>
     public virtual string GetStoredAnonymousId()
     {
-        return PlayerPrefs.GetString(PREFS_ANONYMOUS_ID);
+        return _wrapperData.AnonymousId;
     }
 
     /// <summary>
@@ -673,7 +701,8 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <param name="in_anonymousId">Anonymous id</param>
     public virtual void SetStoredAnonymousId(string in_anonymousId)
     {
-        PlayerPrefs.SetString(PREFS_ANONYMOUS_ID, in_anonymousId);
+        _wrapperData.AnonymousId = in_anonymousId;
+        SaveData();
     }
 
     /// <summary>
@@ -681,7 +710,8 @@ public class BrainCloudWrapper : MonoBehaviour
     /// </summary>
     public virtual void ResetStoredAnonymousId()
     {
-        SetStoredAnonymousId("");
+        _wrapperData.AnonymousId = "";
+        SaveData();
     }
 
     /// <summary>
@@ -690,7 +720,7 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <returns>The stored authentication type.</returns>
     public virtual string GetStoredAuthenticationType()
     {
-        return PlayerPrefs.GetString(PREFS_AUTHENTICATION_TYPE);
+        return _wrapperData.AuthenticationType;
     }
 
     /// <summary>
@@ -699,7 +729,8 @@ public class BrainCloudWrapper : MonoBehaviour
     /// <param name="in_authenticationType">Authentication type.</param>
     public virtual void SetStoredAuthenticationType(string in_authenticationType)
     {
-        PlayerPrefs.SetString(PREFS_AUTHENTICATION_TYPE, in_authenticationType);
+        _wrapperData.AuthenticationType = in_authenticationType;
+        SaveData();
     }
 
     /// <summary>
@@ -707,9 +738,9 @@ public class BrainCloudWrapper : MonoBehaviour
     /// </summary>
     public virtual void ResetStoredAuthenticationType()
     {
-        SetStoredAuthenticationType("");
+        _wrapperData.AuthenticationType = "";
+        SaveData();
     }
-
 
     /// <summary>
     /// Provides a way to reauthenticate with the stored anonymous and profile id.
@@ -717,7 +748,7 @@ public class BrainCloudWrapper : MonoBehaviour
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        BrainCloudWrapper.Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastGameId, _instance._lastGameVersion);
+        Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastGameId, _instance._lastGameVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {
@@ -771,5 +802,61 @@ public class BrainCloudWrapper : MonoBehaviour
                 aco._failureCallback(statusCode, reasonCode, errorJson, aco._cbObject);
             }
         }
+    }
+
+    private void SaveData()
+    {
+#if DOT_NET
+        IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+
+        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(WrapperData.FileName, FileMode.OpenOrCreate, isoStore))
+        {
+            using (StreamWriter writer = new StreamWriter(isoStream))
+            {
+                string file = JsonWriter.Serialize(_wrapperData);
+                writer.WriteLine(file);
+            }
+        }
+#else
+        PlayerPrefs.SetString(PREFS_PROFILE_ID, _wrapperData.ProfileId);
+        PlayerPrefs.SetString(PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
+        PlayerPrefs.SetString(PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
+#endif
+    }
+
+    private void LoadData()
+    {
+#if DOT_NET
+        IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+
+        if (isoStore.FileExists(WrapperData.FileName))
+        {
+            string file;
+
+            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(WrapperData.FileName, FileMode.Open, isoStore))
+            {
+                using (StreamReader reader = new StreamReader(isoStream))
+                {
+                    file = reader.ReadToEnd();
+                }
+            }
+
+            //parse
+            _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+        }
+#else
+        _wrapperData.ProfileId = PlayerPrefs.GetString(PREFS_PROFILE_ID);
+        _wrapperData.AnonymousId = PlayerPrefs.GetString(PREFS_ANONYMOUS_ID);
+        _wrapperData.AuthenticationType = PlayerPrefs.GetString(PREFS_AUTHENTICATION_TYPE);
+#endif
+    }
+
+    private class WrapperData
+    {
+        public string ProfileId = "";
+        public string AnonymousId = "";
+        public string AuthenticationType = "";
+
+        public static readonly string FileName = "BrainCloudWrapper.json";
     }
 }

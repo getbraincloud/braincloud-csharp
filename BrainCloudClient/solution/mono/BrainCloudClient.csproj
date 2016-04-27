@@ -328,6 +328,12 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
+      <Link>BrainCloud\BrainCloudWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
+      <Link>BrainCloud\BrainCloudSettings.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
