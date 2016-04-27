@@ -8,20 +8,22 @@ using UnityEditor;
 [InitializeOnLoad]
 #endif
 
-public class BrainCloudSettings : ScriptableObject
+namespace BrainCloudUnity
 {
-    private static BrainCloudSettings s_instance;
-    public static BrainCloudSettings Instance
+    public class BrainCloudSettings : ScriptableObject
     {
-        get
+        private static BrainCloudSettings s_instance;
+        public static BrainCloudSettings Instance
         {
-            if (s_instance) return s_instance;
-
-            s_instance = Resources.Load("BrainCloudSettings") as BrainCloudSettings;
-            if (s_instance == null)
+            get
             {
-                // If not found, autocreate the asset object.
-                s_instance = CreateInstance<BrainCloudSettings>();
+                if (s_instance) return s_instance;
+
+                s_instance = Resources.Load("BrainCloudSettings") as BrainCloudSettings;
+                if (s_instance == null)
+                {
+                    // If not found, autocreate the asset object.
+                    s_instance = CreateInstance<BrainCloudSettings>();
 
 #if UNITY_EDITOR
                 string properPath = Path.Combine(Application.dataPath, "BrainCloud");
@@ -37,11 +39,11 @@ public class BrainCloudSettings : ScriptableObject
                 string fullPath = "Assets/BrainCloud/Resources/BrainCloudSettings.asset";
                 AssetDatabase.CreateAsset(s_instance, fullPath);
 #endif
+                }
+                s_instance.name = "BrainCloudSettings";
+                return s_instance;
             }
-            s_instance.name = "BrainCloudSettings";
-            return s_instance;
         }
-    }
 
 #if UNITY_EDITOR
     // Menu Bar
@@ -71,106 +73,106 @@ public class BrainCloudSettings : ScriptableObject
 #endif
 
 
-    public string DispatcherURL
-    {
-        get { return m_serverURL + "/dispatcherv2"; }
-    }
-    public string PortalURL
-    {
-        get { return "https://portal.braincloudservers.com"; }
-    }
-    public string ApiDocsURL
-    {
-        get { return "http://getbraincloud.com/apidocs"; }
-    }
-
-    // Settings
-    public const string DEFAULT_BRAINCLOUD_URL = "https://sharedprod.braincloudservers.com";
-    [SerializeField]
-    private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
-    public string ServerURL
-    {
-        get { return m_serverURL; }
-        set
+        public string DispatcherURL
         {
-            if (m_serverURL != value)
+            get { return m_serverURL + "/dispatcherv2"; }
+        }
+        public string PortalURL
+        {
+            get { return "https://portal.braincloudservers.com"; }
+        }
+        public string ApiDocsURL
+        {
+            get { return "http://getbraincloud.com/apidocs"; }
+        }
+
+        // Settings
+        public const string DEFAULT_BRAINCLOUD_URL = "https://sharedprod.braincloudservers.com";
+        [SerializeField]
+        private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
+        public string ServerURL
+        {
+            get { return m_serverURL; }
+            set
             {
-                m_serverURL = value;
+                if (m_serverURL != value)
+                {
+                    m_serverURL = value;
 #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
 #endif
+                }
             }
         }
-    }
 
-    [SerializeField]
-    private string m_secretKey = "";
-    public string SecretKey
-    {
-        get { return m_secretKey; }
-        set
+        [SerializeField]
+        private string m_secretKey = "";
+        public string SecretKey
         {
-            if (m_secretKey != value)
+            get { return m_secretKey; }
+            set
             {
-                m_secretKey = value;
+                if (m_secretKey != value)
+                {
+                    m_secretKey = value;
 #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
 #endif
+                }
             }
         }
-    }
 
-    [SerializeField]
-    private string m_gameId = "";
-    public string GameId
-    {
-        get { return m_gameId; }
-        set
+        [SerializeField]
+        private string m_gameId = "";
+        public string GameId
         {
-            if (m_gameId != value)
+            get { return m_gameId; }
+            set
             {
-                m_gameId = value;
+                if (m_gameId != value)
+                {
+                    m_gameId = value;
 #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
 #endif
+                }
             }
         }
-    }
 
-    [SerializeField]
-    private string m_gameVersion = "1.0.0";
-    public string GameVersion
-    {
-        get { return m_gameVersion; }
-        set
+        [SerializeField]
+        private string m_gameVersion = "1.0.0";
+        public string GameVersion
         {
-            if (m_gameVersion != value)
+            get { return m_gameVersion; }
+            set
             {
-                m_gameVersion = value;
+                if (m_gameVersion != value)
+                {
+                    m_gameVersion = value;
 #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
 #endif
+                }
             }
         }
-    }
 
-    [SerializeField]
-    private bool m_enableLogging = false;
-    public bool EnableLogging
-    {
-        get { return m_enableLogging; }
-        set
+        [SerializeField]
+        private bool m_enableLogging = false;
+        public bool EnableLogging
         {
-            if (m_enableLogging != value)
+            get { return m_enableLogging; }
+            set
             {
-                m_enableLogging = value;
+                if (m_enableLogging != value)
+                {
+                    m_enableLogging = value;
 #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
 #endif
+                }
             }
         }
     }
-
 }
 
 #endif
