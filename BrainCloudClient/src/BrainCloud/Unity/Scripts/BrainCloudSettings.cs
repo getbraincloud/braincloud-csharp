@@ -5,11 +5,13 @@ using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
-[InitializeOnLoad]
 #endif
 
 namespace BrainCloudUnity
 {
+#if UNITY_EDITOR
+	[InitializeOnLoad]
+#endif
     public class BrainCloudSettings : ScriptableObject
     {
         private static BrainCloudSettings s_instance;
