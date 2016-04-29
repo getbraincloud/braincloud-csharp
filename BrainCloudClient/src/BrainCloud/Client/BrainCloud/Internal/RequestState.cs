@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 #if (DOT_NET)
 using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 #else
 using UnityEngine;
 #endif
@@ -36,212 +39,55 @@ namespace BrainCloud.Internal
             STATUS_ERROR = 2
         }
 
+        public long PacketId { get; set; }
 
-        private long m_packetId;
-        public long PacketId
-        {
-            get
-            {
-                return m_packetId;
-            }
-            set
-            {
-                m_packetId = value;
-            }
-        }
+        public DateTime TimeSent { get; set; }
 
-        private DateTime m_timeSent;
-        public DateTime TimeSent
-        {
-            get
-            {
-                return m_timeSent;
-            }
-            set
-            {
-                m_timeSent = value;
-            }
-        }
-
-        private int m_retries;
-        public int Retries
-        {
-            get
-            {
-                return m_retries;
-            }
-            set
-            {
-                m_retries = value;
-            }
-        }
+        public int Retries { get; set; }
 
         // we process the signature on the background thread
-        private string m_sig = "";
-        public string Signature
-        {
-            get
-            {
-                return m_sig;
-            }
-            set
-            {
-                m_sig = value;
-            }
-        }
+        public string Signature { get; set; }
 
         // we also process the byte array on the background thread
-        private byte[] m_byteArray = null;
-        public byte[] ByteArray
-        {
-            get
-            {
-                return m_byteArray;
-            }
-            set
-            {
-                m_byteArray = value;
-            }
-        }
+        public byte[] ByteArray { get; set; }
 
 #if !(DOT_NET)
         // unity uses WWW objects to make http calls cross platform
-        private WWW request;
-        public WWW WebRequest
+        public WWW WebRequest { get; set; }
 #else
         // while .net projects can use the WebRequest Object
-        private IAsyncResult m_asyncResult;
-        public IAsyncResult AsyncResult
-        {
-            get
-            {
-                return m_asyncResult;
-            }
-            set
-            {
-                m_asyncResult = value;
-            }
-        }
+        public IAsyncResult AsyncResult { get; set; }
 
-        private WebRequest request;
-
-        private bool m_isCancelled = false;
-        public bool IsCancelled
-        {
-            get
-            {
-                return m_isCancelled;
-            }
-        }
-        public WebRequest WebRequest
+        public bool IsCancelled { get; private set; }
+        public Task<HttpResponseMessage> WebRequest { get; set; }
 #endif
-        {
-            get
-            {
-                return request;
-            }
-            set
-            {
-                request = value;
-            }
-        }
 
-        private string m_requestString = "";
-        public string RequestString
-        {
-            get
-            {
-                return m_requestString;
-            }
-            set
-            {
-                m_requestString = value;
-            }
-        }
+        public string RequestString { get; set; }
 
 #if DOT_NET
-        private string m_dotNetesponseString = "";
-        public string DotNetResponseString
-        {
-            get
-            {
-                return m_dotNetesponseString;
-            }
-            set
-            {
-                m_dotNetesponseString = value;
-            }
-        }
+        public CancellationTokenSource CancelToken { get; set; }
+
+        public string DotNetResponseString { get; set; }
 
         private eWebRequestStatus m_dotNetRequestStatus = eWebRequestStatus.STATUS_PENDING;
         internal eWebRequestStatus DotNetRequestStatus
         {
-            get
-            {
-                return m_dotNetRequestStatus;
-            }
-            set
-            {
-                m_dotNetRequestStatus = value;
-            }
+            get { return m_dotNetRequestStatus; }
+            set { m_dotNetRequestStatus = value; }
         }
 #endif
 
-        private List<object> m_messageList;
-        public List<object> MessageList
-        {
-            get
-            {
-                return m_messageList;
-            }
-            set
-            {
-                m_messageList = value;
-            }
-        }
+        public List<object> MessageList { get; set; }
 
-        private bool m_loseThisPacket;
-        public bool LoseThisPacket
-        {
-            get
-            {
-                return m_loseThisPacket;
-            }
-            set
-            {
-                m_loseThisPacket = value;
-            }
-        }
+        public bool LoseThisPacket { get; set; }
 
-        private bool m_packetRequiresLongTimeout = false;
-        public bool PacketRequiresLongTimeout
-        {
-            get
-            {
-                return m_packetRequiresLongTimeout;
-            }
-            set
-            {
-                m_packetRequiresLongTimeout = value;
-            }
-        }
+        public bool PacketRequiresLongTimeout { get; set; }
 
-        private bool m_packetNoRetry = false;
-        public bool PacketNoRetry
-        {
-            get
-            {
-                return m_packetNoRetry;
-            }
-            set
-            {
-                m_packetNoRetry = value;
-            }
-        }
+        public bool PacketNoRetry { get; set; }
 
         public RequestState()
         {
-            request = null;
+            WebRequest = null;
         }
 
         public void CancelRequest()
@@ -250,11 +96,10 @@ namespace BrainCloud.Internal
             {
 #if DOT_NET
                 // kill the task - we've timed out
-                m_isCancelled = true;
+                IsCancelled = true;
                 if (WebRequest != null)
                 {
-
-                    WebRequest.Abort();
+                    CancelToken.Cancel();
                 }
 #else
                 /* disposing of the www class causes unity editor to lock up
