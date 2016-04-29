@@ -1364,17 +1364,14 @@ namespace BrainCloud.Internal
 #if (DOT_NET)
         private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult, RequestState requestState)
         {
-            if (requestState.IsCancelled)
-            {
-                // Release the HttpResponseMessage
-                asyncResult.Dispose();
-                return;
-            }
+            if (asyncResult.IsCanceled) return;
+
+            HttpResponseMessage message = null;
 
             //a callback method to end receiving the data
             try
             {
-                HttpResponseMessage message = asyncResult.Result;
+                message = asyncResult.Result;
                 HttpContent content = message.Content;
 
                 // End the operation
@@ -1394,7 +1391,7 @@ namespace BrainCloud.Internal
             }
 
             // Release the HttpResponseMessage
-            asyncResult.Dispose();
+            if (message != null) message.Dispose();
         }
 #endif
 
