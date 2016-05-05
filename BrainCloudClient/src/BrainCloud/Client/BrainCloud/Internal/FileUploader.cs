@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2015 bitHeads, inc.
+// Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
 #if UNITY_5_3 && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)

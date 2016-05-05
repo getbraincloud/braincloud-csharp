@@ -1,3 +1,8 @@
+//----------------------------------------------------
+// brainCloud client source code
+// Copyright 2016 bitHeads, inc.
+//----------------------------------------------------
+
 using System.Collections.Generic;
 
 namespace BrainCloud.Common

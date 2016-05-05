@@ -1,4 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿//----------------------------------------------------
+// brainCloud client source code
+// Copyright 2016 bitHeads, inc.
+//----------------------------------------------------
+
+using System.Runtime.InteropServices;
 #if !DOT_NET
 using UnityEngine;
 #endif
