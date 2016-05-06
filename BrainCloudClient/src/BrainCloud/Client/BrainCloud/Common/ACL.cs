@@ -10,9 +10,9 @@ using System.Collections.Generic;
 
 namespace BrainCloud.Common
 {
-    public class ACL : AclBase
+    public class ACL
     {
-        new public enum Access : int
+        public enum Access : int
         {
             None = 0,
             ReadOnly = 1,
@@ -42,13 +42,13 @@ namespace BrainCloud.Common
             return acl;
         }
 
-        public override void ReadFromJson(string in_json)
+        public void ReadFromJson(string in_json)
         {
             Dictionary<string, object> jsonObj = JsonFx.Json.JsonReader.Deserialize<Dictionary<string, object>>(in_json);
             Other = (Access)(int)jsonObj["other"];
         }
 
-        public override string ToJsonString()
+        public string ToJsonString()
         {
             Dictionary<string, object> jsonObj = new Dictionary<string, object> { { "other", (int)Other } };
             return JsonFx.Json.JsonWriter.Serialize(jsonObj);

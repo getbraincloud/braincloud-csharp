@@ -8,8 +8,15 @@ using System.Collections.Generic;
 
 namespace BrainCloud.Common
 {
-    public class GroupACL : AclBase
+    public class GroupACL
     {
+        public enum Access : int
+        {
+            None = 0,
+            ReadOnly = 1,
+            ReadWrite = 2
+        }
+
         public Access Other { get; set; }
         public Access Member { get; set; }
 
@@ -28,14 +35,14 @@ namespace BrainCloud.Common
             return acl;
         }
 
-        public override void ReadFromJson(string in_json)
+        public void ReadFromJson(string in_json)
         {
             Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(in_json);
             Other = (Access)jsonObj["other"];
             Member = (Access)jsonObj["member"];
         }
 
-        public override string ToJsonString()
+        public string ToJsonString()
         {
             Dictionary<string, object> jsonObj = new Dictionary<string, object>
             { { "other", (int)Other }, { "member", (int)Member } };

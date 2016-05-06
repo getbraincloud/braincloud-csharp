@@ -341,9 +341,6 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
       <Link>BrainCloud\BrainCloudGroup.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AclBase.cs">
-      <Link>BrainCloud\Common\AclBase.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
       <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>

@@ -597,7 +597,7 @@ namespace BrainCloudTests
                 "testGroup",
                 _groupType,
                 isOpen,
-                new GroupACL(AclBase.Access.ReadWrite, AclBase.Access.ReadWrite),
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
                 Helpers.CreateJsonPair("testInc", 123),
                 Helpers.CreateJsonPair("test", "test"),
                 Helpers.CreateJsonPair("test", "test"),
@@ -617,7 +617,7 @@ namespace BrainCloudTests
                 _groupId,
                 _entityType,
                 false,
-                new GroupACL(AclBase.Access.ReadWrite, AclBase.Access.ReadWrite),
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
                 Helpers.CreateJsonPair("testInc", 123),
                 tr.ApiSuccess, tr.ApiError);
 
