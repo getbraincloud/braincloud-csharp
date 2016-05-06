@@ -152,6 +152,7 @@ namespace BrainCloud
         private BrainCloudDataStream m_dataStreamService;
         private BrainCloudProfanity m_profanityService;
         private BrainCloudFile m_fileService;
+        private BrainCloudGroup m_groupService;
 
         #endregion Private Data
 
@@ -222,6 +223,7 @@ namespace BrainCloud
             m_dataStreamService = new BrainCloudDataStream(this);
             m_profanityService = new BrainCloudProfanity(this);
             m_fileService = new BrainCloudFile(this);
+            m_groupService = new BrainCloudGroup(this);
         }
 
         //---------------------------------------------------------------
@@ -308,10 +310,7 @@ namespace BrainCloud
 
         public BrainCloudGlobalApp GlobalAppService
         {
-            get
-            {
-                return m_globalAppService;
-            }
+            get { return m_globalAppService; }
         }
 
         public BrainCloudProduct ProductService
@@ -432,6 +431,11 @@ namespace BrainCloud
         public BrainCloudFile FileService
         {
             get { return m_fileService; }
+        }
+
+        public BrainCloudGroup GroupService
+        {
+            get { return m_groupService; }
         }
 
         #endregion
@@ -578,6 +582,11 @@ namespace BrainCloud
         public BrainCloudFile GetFileService
         {
             get { return m_fileService; }
+        }
+
+        public BrainCloudGroup GetGroupService
+        {
+            get { return m_groupService; }
         }
 
         #endregion

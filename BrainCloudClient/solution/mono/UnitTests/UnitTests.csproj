@@ -45,9 +45,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="tests\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BrainCloudClient.csproj">
       <Project>{719A9484-6259-4D3C-A904-6958C03B02F7}</Project>
       <Name>BrainCloudClient</Name>
@@ -179,6 +176,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestWrapper.cs">
       <Link>TestWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGroup.cs">
+      <Link>TestGroup.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

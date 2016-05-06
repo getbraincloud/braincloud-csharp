@@ -119,6 +119,9 @@
     <Compile Include="..\..\..\tests\TestGlobalStatistics.cs">
       <Link>TestGlobalStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestGroup.cs">
+      <Link>TestGroup.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestIdentity.cs">
       <Link>TestIdentity.cs</Link>
     </Compile>

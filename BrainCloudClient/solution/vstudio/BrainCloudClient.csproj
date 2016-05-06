@@ -106,6 +106,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGlobalStatistics.cs">
       <Link>BrainCloud\BrainCloudGlobalStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
+      <Link>BrainCloud\BrainCloudGroup.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
       <Link>BrainCloud\BrainCloudIdentity.cs</Link>
     </Compile>
@@ -160,8 +163,14 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\ACL.cs">
       <Link>BrainCloud\Common\ACL.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AclBase.cs">
+      <Link>BrainCloud\Common\AclBase.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
+      <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>

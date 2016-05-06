@@ -236,6 +236,37 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation DeleteUserFile = new ServiceOperation("DELETE_USER_FILE");
         public static readonly ServiceOperation DeleteUserFiles = new ServiceOperation("DELETE_USER_FILES");
 
+        //group
+        public static readonly ServiceOperation AcceptGroupInvitation = new ServiceOperation("ACCEPT_GROUP_INVITATION");
+        public static readonly ServiceOperation AddGroupMember = new ServiceOperation("ADD_MEMBER_TO_GROUP");
+        public static readonly ServiceOperation ApproveGroupJoinRequest = new ServiceOperation("APPROVE_GROUP_JOIN_REQUEST");
+        public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
+        public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
+        public static readonly ServiceOperation CreateGroupEntity = new ServiceOperation("CREATE_GROUP_ENTITY");
+        public static readonly ServiceOperation DeleteGroup = new ServiceOperation("DELETE_GROUP");
+        public static readonly ServiceOperation DeleteGroupEntity = new ServiceOperation("DELETE_GROUP_ENTITY");
+        public static readonly ServiceOperation DeleteGroupMemeber = new ServiceOperation("DELETE_MEMBER_FROM_GROUP");
+        public static readonly ServiceOperation GetMyGroups = new ServiceOperation("GET_MY_GROUPS");
+        public static readonly ServiceOperation IncrementGroupData = new ServiceOperation("INCREMENT_GROUP_DATA");
+        public static readonly ServiceOperation IncrementGroupEntityData = new ServiceOperation("INCREMENT_GROUP_ENTITY_DATA");
+        public static readonly ServiceOperation InviteGroupMember = new ServiceOperation("INVITE_GROUP_MEMBER");
+        public static readonly ServiceOperation JoinGroup = new ServiceOperation("JOIN_GROUP");
+        public static readonly ServiceOperation LeaveGroup = new ServiceOperation("LEAVE_GROUP");
+        public static readonly ServiceOperation ListGroupsPage = new ServiceOperation("LIST_GROUPS_PAGE");
+        public static readonly ServiceOperation ListGroupsPageByOffset = new ServiceOperation("LIST_GROUPS_PAGE_BY_OFFSET");
+        public static readonly ServiceOperation ListGroupsWithMember = new ServiceOperation("LIST_GROUPS_WITH_MEMBER");
+        public static readonly ServiceOperation ReadGroup = new ServiceOperation("READ_GROUP");
+        public static readonly ServiceOperation ReadGroupEntitiesPage = new ServiceOperation("READ_GROUP_ENTITIES_PAGE");
+        public static readonly ServiceOperation ReadGroupEntitiesPageByOffset = new ServiceOperation("READ_GROUP_ENTITIES_PAGE_BY_OFFSET");
+        public static readonly ServiceOperation ReadGroupEntity = new ServiceOperation("READ_GROUP_ENTITY");
+        public static readonly ServiceOperation ReadGroupMembers = new ServiceOperation("READ_GROUP_MEMBERS");
+        public static readonly ServiceOperation RejectGroupInvitation = new ServiceOperation("REJECT_GROUP_INVITATION");
+        public static readonly ServiceOperation RejectGroupJoinRequest = new ServiceOperation("REJECT_GROUP_JOIN_REQUEST");
+        public static readonly ServiceOperation RemoveGroupMember = new ServiceOperation("REMOVE_GROUP_MEMBER");
+        public static readonly ServiceOperation UpdateGroupData = new ServiceOperation("UPDATE_GROUP_DATA");
+        public static readonly ServiceOperation UpdateGroupEntity = new ServiceOperation("UPDATE_GROUP_ENTITY_DATA");
+        public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
+        public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
 
         private ServiceOperation(string value)
         {
