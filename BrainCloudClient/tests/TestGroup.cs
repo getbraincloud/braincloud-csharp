@@ -505,7 +505,7 @@ namespace BrainCloudTests
             string id = CreateGroupEntity();
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.UpdateGroupEntity(
+            BrainCloudClient.Instance.GroupService.UpdateGroupEntityData(
                 _groupId,
                 id,
                 1,

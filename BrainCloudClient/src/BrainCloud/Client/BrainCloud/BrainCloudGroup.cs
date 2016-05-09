@@ -17,7 +17,8 @@ namespace BrainCloud
         {
             OWNER,
             ADMIN,
-            MEMBER
+            MEMBER,
+            OTHER
         }
 
         private BrainCloudClient _bcClient;
@@ -432,7 +433,7 @@ namespace BrainCloud
             SendRequest(ServiceOperation.UpdateGroupData, success, failure, cbObject, data);
         }
 
-        public void UpdateGroupEntity(
+        public void UpdateGroupEntityData(
             string groupId,
             string entityId,
             long version,
