@@ -258,7 +258,7 @@ namespace BrainCloud
         /// </returns>
         public void CreateGroup(
             string name,
-            string type,
+            string groupType,
             bool? isOpenGroup,
             GroupACL acl,
             string jsonData,
@@ -271,7 +271,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             if (!string.IsNullOrEmpty(name)) data[OperationParam.GroupName.Value] = name;
-            data[OperationParam.GroupType.Value] = type;
+            data[OperationParam.GroupType.Value] = groupType;
             if (isOpenGroup.HasValue) data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup.Value;
             if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
             if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
@@ -656,7 +656,7 @@ namespace BrainCloud
         /// Service Name - group
         /// Service Operation - LIST_GROUPS_PAGE
         /// </remarks>
-        /// <param name="context">
+        /// <param name="jsonContext">
         /// Query context.
         /// <param name="callback">
         /// The method to be invoked when the server response is received
@@ -710,10 +710,10 @@ namespace BrainCloud
         /// Service Name - group
         /// Service Operation - LIST_GROUPS_PAGE_BY_OFFSET
         /// </remarks>
-        /// <param name="encodedContext">
+        /// <param name="context">
         /// Encoded reference query context.
         /// </param>
-        /// <param name="offset">
+        /// <param name="pageOffset">
         /// Number of pages by which to offset the query.
         /// </param>
         /// <param name="callback">
@@ -866,7 +866,7 @@ namespace BrainCloud
         /// Service Name - group
         /// Service Operation - READ_GROUP_ENTITIES_PAGE
         /// </remarks>
-        /// <param name="context">
+        /// <param name="jsonContext">
         /// Query context.
         /// </param>
         /// <param name="callback">
@@ -922,7 +922,7 @@ namespace BrainCloud
         /// <param name="encodedContext">
         /// Encoded reference query context.
         /// </param>
-        /// <param name="offset">
+        /// <param name="pageOffset">
         /// Number of pages by which to offset the query.
         /// </param>
         /// <param name="callback">
@@ -958,14 +958,14 @@ namespace BrainCloud
         /// }
         /// </returns>
         public void ReadGroupEntitiesPageByOffset(
-            string context,
+            string encodedContext,
             int pageOffset,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GroupContext.Value] = context;
+            data[OperationParam.GroupContext.Value] = encodedContext;
             data[OperationParam.GroupPageOffset.Value] = pageOffset;
 
             SendRequest(ServiceOperation.ReadGroupEntitiesPageByOffset, success, failure, cbObject, data);

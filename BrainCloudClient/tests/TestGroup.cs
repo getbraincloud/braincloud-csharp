@@ -57,6 +57,24 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestAddGroupMember()
+        {
+            Authenticate(Users.UserA);
+            CreateGroup();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.GroupService.AddGroupMember(
+                _groupId,
+                GetUser(Users.UserB).ProfileId,
+                BrainCloudGroup.Role.ADMIN,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+        }
+
+        [Test]
         public void TestApproveGroupJoinRequest()
         {
             CreateGroupAsUserA();

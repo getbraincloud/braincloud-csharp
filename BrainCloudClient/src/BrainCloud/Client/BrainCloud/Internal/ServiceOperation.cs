@@ -238,7 +238,7 @@ namespace BrainCloud.Internal
 
         //group
         public static readonly ServiceOperation AcceptGroupInvitation = new ServiceOperation("ACCEPT_GROUP_INVITATION");
-        public static readonly ServiceOperation AddGroupMember = new ServiceOperation("ADD_MEMBER_TO_GROUP");
+        public static readonly ServiceOperation AddGroupMember = new ServiceOperation("ADD_GROUP_MEMBER");
         public static readonly ServiceOperation ApproveGroupJoinRequest = new ServiceOperation("APPROVE_GROUP_JOIN_REQUEST");
         public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
         public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
