@@ -229,30 +229,33 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "gameId": "20595",
-        ///     "groupId": "211559ef-234a-4aef-a643-48a90a6036c2",
-        ///     "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///     "name": "my-group-name",
-        ///     "groupType": "TestGroup",
-        ///     "createdAt": 1461613090251,
-        ///     "updatedAt": 1461613090251,
-        ///     "members": {
-        ///         "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///             "role": "OWNER",
-        ///             "attributes": {}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "gameId": "20595",
+        ///         "groupId": "211559ef-234a-4aef-a643-48a90a6036c2",
+        ///         "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
+        ///         "name": "my-group-name",
+        ///         "groupType": "TestGroup",
+        ///         "createdAt": 1461613090251,
+        ///         "updatedAt": 1461613090251,
+        ///         "members": {
+        ///             "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
+        ///                 "role": "OWNER",
+        ///                 "attributes": {}
+        ///             }
+        ///         },
+        ///         "pendingMembers": {},
+        ///         "version": 1,
+        ///         "data": {},
+        ///         "isOpenGroup": false,
+        ///         "defaultMemberAttributes": {},
+        ///         "memberCount": 1,
+        ///         "invitedPendingMemberCount": 0,
+        ///         "requestingPendingMemberCount": 0,
+        ///         "acl": {
+        ///             "member": 2,
+        ///             "other": 1
         ///         }
-        ///     },
-        ///     "pendingMembers": {},
-        ///     "version": 1,
-        ///     "data": {},
-        ///     "isOpenGroup": false,
-        ///     "defaultMemberAttributes": {},
-        ///     "memberCount": 1,
-        ///     "invitedPendingMemberCount": 0,
-        ///     "requestingPendingMemberCount": 0,
-        ///     "acl": {
-        ///         "member": 2,
-        ///         "other": 1
         ///     }
         /// }
         /// </returns>
@@ -310,18 +313,21 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "gameId": "20595",
-        ///     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///     "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///     "ownerId": null,
-        ///     "entityType": "BLUE",
-        ///     "createdAt": 1462812680359,
-        ///     "updatedAt": 1462812680359,
-        ///     "version": 1,
-        ///     "data": {},
-        ///     "acl": {
-        ///         "member": 2,
-        ///         "other": 1
+        ///     "status": 200,
+        ///     "data": {
+        ///         "gameId": "20595",
+        ///         "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
+        ///         "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
+        ///         "ownerId": null,
+        ///         "entityType": "BLUE",
+        ///         "createdAt": 1462812680359,
+        ///         "updatedAt": 1462812680359,
+        ///         "version": 1,
+        ///         "data": {},
+        ///         "acl": {
+        ///             "member": 2,
+        ///             "other": 1
+        ///         }
         ///     }
         /// }
         /// </returns>
@@ -428,32 +434,37 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "groups": [{
-        ///         "gameId": "20595",
-        ///         "groupId": "4f176781-e65e-42ce-b24f-9d39449380d5",
-        ///         "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///         "name": "temp-group-name",
-        ///         "groupType": "test2",
-        ///         "createdAt": 1462222320554,
-        ///         "updatedAt": 1462222320554,
-        ///         "members": {
-        ///             "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///                 "role": "OWNER",
-        ///                 "attributes": {}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "groups": [
+        ///             {
+        ///                 "gameId": "20595",
+        ///                 "groupId": "4f176781-e65e-42ce-b24f-9d39449380d5",
+        ///                 "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
+        ///                 "name": "temp-group-name",
+        ///                 "groupType": "test2",
+        ///                 "createdAt": 1462222320554,
+        ///                 "updatedAt": 1462222320554,
+        ///                 "members": {
+        ///                     "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
+        ///                         "role": "OWNER",
+        ///                         "attributes": {}
+        ///                     }
+        ///                 },
+        ///                 "pendingMembers": {},
+        ///                 "version": 1,
+        ///                 "data": {},
+        ///                 "isOpenGroup": false,
+        ///                 "defaultMemberAttributes": {},
+        ///                 "memberCount": 1,
+        ///                 "invitedPendingMemberCount": 0,
+        ///                 "requestingPendingMemberCount": 0,
+        ///                 "acl": {
+        ///                     "other": 1
+        ///                 }
         ///             }
-        ///         },
-        ///         "pendingMembers": {},
-        ///         "version": 1,
-        ///         "data": {},
-        ///         "isOpenGroup": false,
-        ///         "defaultMemberAttributes": {},
-        ///         "memberCount": 1,
-        ///         "invitedPendingMemberCount": 0,
-        ///         "requestingPendingMemberCount": 0,
-        ///         "acl": {
-        ///             "other": 1
-        ///         }
-        ///     }]
+        ///         ]
+        ///     }
         /// }
         /// </returns>
         public void GetMyGroups(
@@ -650,7 +661,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Read a page of group information.
+        /// Retrieve a page of group summary information based on the specified context.
         /// </summary>
         /// <remarks>
         /// Service Name - group
@@ -663,32 +674,28 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "results": {
-        ///         "moreBefore": false,
-        ///         "count": 4,
-        ///         "items": [{
-        ///             "groupType": "test2",
-        ///             "groupId": "4f176781-e65e-42ce-b24f-9d39449380d5",
-        ///             "isOpenGroup": false,
-        ///             "requestingPendingMemberCount": 0,
-        ///             "invitedPendingMemberCount": 0,
-        ///             "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///             "name": "temp-group-name",
-        ///             "memberCount": 1
-        ///         }, {
-        ///             "groupType": "test2",
-        ///             "groupId": "bcdaa4b3-f26e-47ad-813f-6506a1f4949d",
-        ///             "isOpenGroup": false,
-        ///             "requestingPendingMemberCount": 0,
-        ///             "invitedPendingMemberCount": 0,
-        ///             "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///             "name": "group-1",
-        ///             "memberCount": 1
-        ///         }],
-        ///         "page": 1,
-        ///         "moreAfter": true
-        ///     },
-        ///     "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJnYW1lSWQiOiIyMDU5NSJ9LCJz"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": false,
+        ///             "count": 1,
+        ///             "items": [
+        ///                 {
+        ///                     "groupType": "test",
+        ///                     "groupId": "1d1abb61-8825-4374-a52a-d8186f336775",
+        ///                     "isOpenGroup": false,
+        ///                     "requestingPendingMemberCount": 0,
+        ///                     "invitedPendingMemberCount": 0,
+        ///                     "ownerId": "29696ee1-82f6-4d6e-86de-b68c3a5c347e",
+        ///                     "name": "test",
+        ///                     "memberCount": 1
+        ///                 }
+        ///             ],
+        ///             "page": 1,
+        ///             "moreAfter": false
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cFR5cGUiOiJ0ZXN0IiwiZ2FtZUlk"
+        ///     }
         /// }
         /// </returns>
         public void ListGroupsPage(
@@ -704,7 +711,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Read a page of group information.
+        /// Retrieve a page of group summary information based on the encoded context 
+        /// and specified page offset.
         /// </summary>
         /// <remarks>
         /// Service Name - group
@@ -721,23 +729,28 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "results": {
-        ///         "moreBefore": true,
-        ///         "count": 4,
-        ///         "items": [{
-        ///             "groupType": "test2",
-        ///             "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///             "isOpenGroup": false,
-        ///             "requestingPendingMemberCount": 0,
-        ///             "invitedPendingMemberCount": 0,
-        ///             "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///             "name": "group-1",
-        ///             "memberCount": 2
-        ///         }],
-        ///         "page": 2,
-        ///         "moreAfter": false
-        ///     },
-        ///     "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJnYW1lSWQiOiIyMDU5NSJ9LCJzb3J0Q3J"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": true,
+        ///             "count": 2,
+        ///             "items": [
+        ///                 {
+        ///                     "groupType": "test",
+        ///                     "groupId": "1d1abb61-8825-4374-a52a-d8186f336775",
+        ///                     "isOpenGroup": false,
+        ///                     "requestingPendingMemberCount": 0,
+        ///                     "invitedPendingMemberCount": 0,
+        ///                     "ownerId": "29696ee1-82f6-4d6e-86de-b68c3a5c347e",
+        ///                     "name": "test",
+        ///                     "memberCount": 1
+        ///                 }
+        ///             ],
+        ///             "page": 2,
+        ///             "moreAfter": false
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cFR5cGUiOiJ0ZXN0IiwiZ2FtZUlk"
+        ///     }
         /// }
         /// </returns>
         public void ListGroupsPageByOffset(
@@ -768,25 +781,21 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "groups": [{
-        ///         "groupType": "test2",
-        ///         "groupId": "4f176781-e65e-42ce-b24f-9d39449380d5",
-        ///         "isOpenGroup": false,
-        ///         "requestingPendingMemberCount": 0,
-        ///         "invitedPendingMemberCount": 0,
-        ///         "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///         "name": "temp-group-name",
-        ///         "memberCount": 1
-        ///     }, {
-        ///         "groupType": "test2",
-        ///         "groupId": "b2c49711-4e7f-4c18-92e1-cdf9634c2f89",
-        ///         "isOpenGroup": false,
-        ///         "requestingPendingMemberCount": 0,
-        ///         "invitedPendingMemberCount": 0,
-        ///         "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///         "name": "my-group-name",
-        ///         "memberCount": 1
-        ///     }]
+        ///     "status": 200,
+        ///     "data": {
+        ///         "groups": [
+        ///             {
+        ///                 "groupType": "test",
+        ///                 "groupId": "69191b48-0cb1-4538-9758-e2f5ef4c524b",
+        ///                 "isOpenGroup": false,
+        ///                 "requestingPendingMemberCount": 0,
+        ///                 "invitedPendingMemberCount": 0,
+        ///                 "ownerId": "b67b2d73-1e8c-42e9-9be5-9c1879a48555",
+        ///                 "name": "test22",
+        ///                 "memberCount": 1
+        ///             }
+        ///         ]
+        ///     }
         /// }
         /// </returns>
         public void ListGroupsWithMember(
@@ -816,34 +825,33 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "gameId": "20595",
-        ///     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///     "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///     "name": "group-1",
-        ///     "groupType": "test2",
-        ///     "createdAt": 1462223553243,
-        ///     "updatedAt": 1462223553243,
-        ///     "members": {
-        ///         "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///             "role": "OWNER",
-        ///             "attributes": {}
+        ///     "status": 200,
+        ///     "data": {
+        ///         "gameId": "123456",
+        ///         "groupId": "69191b48-0cb1-4538-9758-e2f5ef4c524b",
+        ///         "ownerId": "b67b2d73-1e8c-42e9-9be5-9c1879a48555",
+        ///         "name": "test22",
+        ///         "groupType": "test",
+        ///         "createdAt": 1462462308991,
+        ///         "updatedAt": 1462462308991,
+        ///         "members": {
+        ///             "b67b2d73-1e8c-42e9-9be5-9c1879a48555": {
+        ///                 "role": "OWNER",
+        ///                 "attributes": {}
+        ///             }
         ///         },
-        ///         "295c510f-507f-4bcf-80e1-ebc73708ec3c": {
-        ///             "role": "MEMBER",
-        ///             "attributes": {}
+        ///         "pendingMembers": {},
+        ///         "version": 1,
+        ///         "data": {},
+        ///         "isOpenGroup": false,
+        ///         "defaultMemberAttributes": {},
+        ///         "memberCount": 1,
+        ///         "invitedPendingMemberCount": 0,
+        ///         "requestingPendingMemberCount": 0,
+        ///         "acl": {
+        ///             "other": 1,
+        ///             "member": 1
         ///         }
-        ///     },
-        ///     "pendingMembers": {},
-        ///     "version": 1,
-        ///     "data": {},
-        ///     "isOpenGroup": false,
-        ///     "defaultMemberAttributes": {},
-        ///     "memberCount": 2,
-        ///     "invitedPendingMemberCount": 0,
-        ///     "requestingPendingMemberCount": 0,
-        ///     "acl": {
-        ///         "member": 2,
-        ///         "other": 1
         ///     }
         /// }
         /// </returns>
@@ -872,32 +880,35 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        ///
-        /// @return Object encapsulating the page of group entity information.
-        ///
+        /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "results": {
-        ///         "moreBefore": false,
-        ///         "count": 3,
-        ///         "items": [{
-        ///             "gameId": "20595",
-        ///             "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///             "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///             "ownerId": null,
-        ///             "entityType": "BLUE",
-        ///             "createdAt": 1462812680359,
-        ///             "updatedAt": 1462812680359,
-        ///             "version": 1,
-        ///             "data": {},
-        ///             "acl": {
-        ///                 "member": 2,
-        ///                 "other": 1
-        ///             }
-        ///         }],
-        ///         "page": 1,
-        ///         "moreAfter": true
-        ///     },
-        ///     "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzct"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": false,
+        ///             "count": 3,
+        ///             "items": [
+        ///                 {
+        ///                     "gameId": "20595",
+        ///                     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
+        ///                     "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
+        ///                     "ownerId": null,
+        ///                     "entityType": "BLUE",
+        ///                     "createdAt": 1462812680359,
+        ///                     "updatedAt": 1462812680359,
+        ///                     "version": 1,
+        ///                     "data": {},
+        ///                     "acl": {
+        ///                         "member": 2,
+        ///                         "other": 1
+        ///                     }
+        ///                 }
+        ///             ],
+        ///             "page": 1,
+        ///             "moreAfter": true
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzct"
+        ///     }
         /// }
         /// </returns>
         public void ReadGroupEntitiesPage(
@@ -928,33 +939,37 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        ///
-        /// @return Object encapsulating the page of group entity information.
+        /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "results": {
-        ///         "moreBefore": true,
-        ///         "count": 3,
-        ///         "items": [{
-        ///             "gameId": "20595",
-        ///             "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///             "entityId": "ccbf996c-9e96-4935-b570-eebaab81c75a",
-        ///             "ownerId": null,
-        ///             "entityType": "RED",
-        ///             "createdAt": 1462812845384,
-        ///             "updatedAt": 1462812845384,
-        ///             "version": 1,
-        ///             "data": {
-        ///                 "third": true
-        ///             },
-        ///             "acl": {
-        ///                 "member": 2,
-        ///                 "other": 1
-        ///             }
-        ///         }],
-        ///         "page": 2,
-        ///         "moreAfter": false
-        ///     },
-        ///     "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzctNWU4Ni00M2U4LTk"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "results": {
+        ///             "moreBefore": true,
+        ///             "count": 3,
+        ///             "items": [
+        ///                 {
+        ///                     "gameId": "20595",
+        ///                     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
+        ///                     "entityId": "ccbf996c-9e96-4935-b570-eebaab81c75a",
+        ///                     "ownerId": null,
+        ///                     "entityType": "RED",
+        ///                     "createdAt": 1462812845384,
+        ///                     "updatedAt": 1462812845384,
+        ///                     "version": 1,
+        ///                     "data": {
+        ///                         "third": true
+        ///                     },
+        ///                     "acl": {
+        ///                         "member": 2,
+        ///                         "other": 1
+        ///                     }
+        ///                 }
+        ///             ],
+        ///             "page": 2,
+        ///             "moreAfter": false
+        ///         },
+        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzctNWU4Ni00M2U4LTk"
+        ///     }
         /// }
         /// </returns>
         public void ReadGroupEntitiesPageByOffset(
@@ -989,18 +1004,21 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "gameId": "20595",
-        ///     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///     "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///     "ownerId": null,
-        ///     "entityType": "BLUE",
-        ///     "createdAt": 1462812680359,
-        ///     "updatedAt": 1462812680359,
-        ///     "version": 1,
-        ///     "data": {},
-        ///     "acl": {
-        ///         "member": 2,
-        ///         "other": 1
+        ///     "status": 200,
+        ///     "data": {
+        ///         "gameId": "20595",
+        ///         "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
+        ///         "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
+        ///         "ownerId": null,
+        ///         "entityType": "BLUE",
+        ///         "createdAt": 1462812680359,
+        ///         "updatedAt": 1462812680359,
+        ///         "version": 1,
+        ///         "data": {},
+        ///         "acl": {
+        ///             "member": 2,
+        ///             "other": 1
+        ///         }
         ///     }
         /// }
         /// </returns>
@@ -1033,17 +1051,20 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///         "role": "OWNER",
-        ///         "attributes": {},
-        ///         "playerName": "Peter",
-        ///         "emailAddress": "klug@bitheads.com"
-        ///     },
-        ///     "295c510f-507f-4bcf-80e1-ebc73708ec3c": {
-        ///         "role": "MEMBER",
-        ///         "attributes": {},
-        ///         "playerName": "Billy",
-        ///         "emailAddress": "billy@bitheads.com"
+        ///     "status": 200,
+        ///     "data": {
+        ///         "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
+        ///             "role": "OWNER",
+        ///             "attributes": {},
+        ///             "playerName": "Peter",
+        ///             "emailAddress": "klug@bitheads.com"
+        ///         },
+        ///         "295c510f-507f-4bcf-80e1-ebc73708ec3c": {
+        ///             "role": "MEMBER",
+        ///             "attributes": {},
+        ///             "playerName": "Billy",
+        ///             "emailAddress": "billy@bitheads.com"
+        ///         }
         ///     }
         /// }
         /// </returns>
@@ -1227,22 +1248,8 @@ namespace BrainCloud
         /// </param>
         /// <returns> The JSON returned in the callback is as follows:
         /// {
-        ///     "gameId": "20595",
-        ///     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///     "entityId": "84b36406-6cc5-4417-9143-3ee136e0586f",
-        ///     "ownerId": null,
-        ///     "entityType": "BLUE",
-        ///     "createdAt": 1462812827651,
-        ///     "updatedAt": 1462812827651,
-        ///     "version": 2,
-        ///     "data": {
-        ///         "second": true,
-        ///         "plus": "and then some"
-        ///     },
-        ///     "acl": {
-        ///         "member": 2,
-        ///         "other": 1
-        ///     }
+        ///     "status": 200,
+        ///     "data": null
         /// }
         /// </returns>
         public void UpdateGroupEntityData(
