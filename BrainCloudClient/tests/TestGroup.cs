@@ -197,6 +197,7 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.GroupService.IncrementGroupData(
                 _groupId,
                 Helpers.CreateJsonPair("testInc", 1),
+                false,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -216,6 +217,7 @@ namespace BrainCloudTests
                 _groupId,
                 id,
                 Helpers.CreateJsonPair("testInc", 1),
+                true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -649,6 +651,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.GroupService.DeleteGroup(
                 _groupId,
+                -1,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
             _groupId = null;

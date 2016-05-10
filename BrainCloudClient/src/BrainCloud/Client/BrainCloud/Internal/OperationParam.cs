@@ -335,6 +335,7 @@ namespace BrainCloud
         public static readonly OperationParam GroupVersion = new OperationParam("version");
         public static readonly OperationParam GroupContext = new OperationParam("context");
         public static readonly OperationParam GroupPageOffset = new OperationParam("pageOffset");
+        public static readonly OperationParam GroupReturnData = new OperationParam("returnData");
 
         private OperationParam(string value)
         {
