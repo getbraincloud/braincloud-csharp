@@ -276,6 +276,25 @@ namespace BrainCloudTests
             DeleteAllDefaultEntities();
         }
 
+        [Test]
+        public void TestGetSharedEntitiesListForPlayerId()
+        {
+            TestResult tr = new TestResult();
+
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            BrainCloudClient.Instance.EntityService.GetSharedEntitiesListForPlayerId(
+                GetUser(Users.UserA).ProfileId,
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
+                Helpers.CreateJsonPair("createdAt", 1),
+                1000,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
         #region Helper Functions
 
         /// <summary>

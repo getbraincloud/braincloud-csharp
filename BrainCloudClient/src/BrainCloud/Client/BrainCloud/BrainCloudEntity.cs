@@ -732,6 +732,63 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Method gets list of shared entities for the specified player based on type and/or where clause
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Entity
+        /// Service Operation - GET_LIST
+        /// </remarks>
+        /// <param name="playerId">
+        /// The player ID to retrieve shared entities for
+        /// </param>
+        /// <param name="whereJson">
+        /// Mongo style query string
+        /// </param>
+        /// <param name="orderByJson">
+        /// Sort order
+        /// </param>
+        /// <param name="maxReturn">
+        /// The maximum number of entities to return
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetSharedEntitiesListForPlayerId(
+            string playerId,
+            string whereJson,
+            string orderByJson,
+            int maxReturn,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+
+            data[OperationParam.EntityServiceTargetPlayerId.Value] = playerId;
+            if (Util.IsOptionalParameterValid(whereJson))
+            {
+                var where = JsonReader.Deserialize<Dictionary<string, object>>(whereJson);
+                data[OperationParam.GlobalEntityServiceWhere.Value] = where;
+            }
+            if (Util.IsOptionalParameterValid(orderByJson))
+            {
+                var orderBy = JsonReader.Deserialize<Dictionary<string, object>>(orderByJson);
+                data[OperationParam.GlobalEntityServiceOrderBy.Value] = orderBy;
+            }
+            data[OperationParam.GlobalEntityServiceMaxReturn.Value] = maxReturn;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSharedEntitiesList, data, callback);
+            _brainCloudClient.SendRequest(serverCall);
+        }
+
+        /// <summary>
         /// Method gets a count of entities based on the where clause
         /// </summary>
         /// <remarks>

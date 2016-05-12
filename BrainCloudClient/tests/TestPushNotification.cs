@@ -94,5 +94,47 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestSendTemplatedPushNotificationToGroup()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var groupId = (string)data["groupId"];
+
+            BrainCloudClient.Instance.PushNotificationService.SendTemplatedPushNotificationToGroup(
+                groupId,
+                1,
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Instance.GroupService.DeleteGroup(groupId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSendNormalizedPushNotificationToGroup()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var groupId = (string)data["groupId"];
+
+            BrainCloudClient.Instance.PushNotificationService.SendNormalizedPushNotificationToGroup(
+                groupId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Instance.GroupService.DeleteGroup(groupId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
