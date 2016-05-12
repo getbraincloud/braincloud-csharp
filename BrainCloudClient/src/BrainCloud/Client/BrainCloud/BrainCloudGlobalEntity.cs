@@ -893,6 +893,10 @@ namespace BrainCloud
         /// <summary>
         /// Partial increment of global entity data field items. Partial set of items incremented as specified.
         /// </summary>
+        /// <remarks>
+        /// Service Name - globalEntity
+        /// Service Operation - INCREMENT_GLOBAL_ENTITY_DATA
+        /// </remarks>
         /// <param name="entityId">The entity to increment</param>
         /// <param name="jsonData">The subset of data to increment</param>
         /// <param name="returnData">Should the entity be returned in the response?</param>

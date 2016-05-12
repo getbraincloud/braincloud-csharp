@@ -914,6 +914,10 @@ namespace BrainCloud
         /// <summary>
         /// Partial increment of entity data field items. Partial set of items incremented as specified.
         /// </summary>
+        /// <remarks>
+        /// Service Name - entity
+        /// Service Operation - INCREMENT_USER_ENTITY_DATA
+        /// </remarks>
         /// <param name="entityId">The entity to increment</param>
         /// <param name="targetPlayerId">Profile ID of the entity owner</param>
         /// <param name="jsonData">The subset of data to increment</param>
