@@ -55,10 +55,10 @@ namespace BrainCloud
 
             if (token != null || token.Length < 1)
             {
-                byte[] token = token;
+                byte[] tokenData = token;
 
                 Platform platform = Platform.FromUnityRuntime();
-                string hexToken = System.BitConverter.ToString(token).Replace("-","").ToLower();
+                string hexToken = BitConverter.ToString(tokenData).Replace("-","").ToLower();
                 RegisterPushNotificationDeviceToken(platform,
                         hexToken,
                         success,
