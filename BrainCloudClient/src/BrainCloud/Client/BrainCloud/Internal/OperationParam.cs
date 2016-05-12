@@ -67,6 +67,7 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceVersion = new OperationParam("version");
         public static readonly OperationParam EntityServiceUpdateOps = new OperationParam("updateOps");
         public static readonly OperationParam EntityServiceTargetPlayerId = new OperationParam("targetPlayerId");
+        public static readonly OperationParam EntityServiceReturnData = new OperationParam("returnData");
 
         // Global Entity Service - Params
         public static readonly OperationParam GlobalEntityServiceEntityId = new OperationParam("entityId");
@@ -81,6 +82,7 @@ namespace BrainCloud
         public static readonly OperationParam GlobalEntityServiceOrderBy = new OperationParam("orderBy");
         public static readonly OperationParam GlobalEntityServiceContext = new OperationParam("context");
         public static readonly OperationParam GlobalEntityServicePageOffset = new OperationParam("pageOffset");
+        public static readonly OperationParam GlobalEntityServiceReturnData = new OperationParam("returnData");
 
         // Event Service - Send Params
         public static readonly OperationParam EventServiceSendToId = new OperationParam("toId");
@@ -199,6 +201,7 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceIncludeLeaderboardSize = new OperationParam("includeLeaderboardSize");
         public static readonly OperationParam SocialLeaderboardServiceVersionId = new OperationParam("versionId");
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardResultCount = new OperationParam("leaderboardResultCount");
+        public static readonly OperationParam SocialLeaderboardServiceGroupId = new OperationParam("groupId");
 
 
         // Social Leaderboard Service - Reset Score Params

@@ -2,6 +2,7 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
+using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -31,19 +32,19 @@ namespace BrainCloudTests
         {
             PostScoreToNonDynamicLeaderboard();
             PostScoreToDynamicLeaderboardHighValue();
-                
+
             TestResult tr = new TestResult();
 
             List<string> lbIds = new List<string>();
-            lbIds.Add (_globalLeaderboardId);
-            lbIds.Add (_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+            lbIds.Add(_globalLeaderboardId);
+            lbIds.Add(_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
 
             BrainCloudClient.Instance.SocialLeaderboardService.GetMultiSocialLeaderboard(
                 lbIds,
                 10,
                 true,
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
@@ -56,13 +57,13 @@ namespace BrainCloudTests
         public void PostScoreToNonDynamicLeaderboard()
         {
             TestResult tr = new TestResult();
-            
+
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToLeaderboard(
                 _globalLeaderboardId,
                 1000,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
@@ -224,7 +225,7 @@ namespace BrainCloudTests
         public void PostScoreToDynamicLeaderboardHighValue()
         {
             TestResult tr = new TestResult();
-            
+
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString(),
                 100,
@@ -234,7 +235,7 @@ namespace BrainCloudTests
                 System.DateTime.Now.AddDays(5),
                 5,
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
@@ -307,6 +308,27 @@ namespace BrainCloudTests
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGroupSocialLeaderboard()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
+
+            BrainCloudClient.Instance.SocialLeaderboardService.GetGroupSocialLeaderboard(
+                _socialLeaderboardId,
+                id,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            BrainCloudClient.Instance.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }
