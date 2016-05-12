@@ -213,6 +213,31 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestIncrementGlobalEntityData()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GlobalEntityService.CreateEntity(
+                _defaultEntityType,
+                0,
+                null,
+                Helpers.CreateJsonPair("test", 1234),
+                tr.ApiSuccess,
+                tr.ApiError);
+            tr.Run();
+
+            string id = GetEntityId(tr.m_response);
+
+            BrainCloudClient.Instance.GlobalEntityService.IncrementGlobalEntityData(
+                id,
+                Helpers.CreateJsonPair("test", 1),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         #region Helper Functions
 
         /// <summary>

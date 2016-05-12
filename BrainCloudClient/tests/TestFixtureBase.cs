@@ -29,11 +29,12 @@ namespace BrainCloudTests
             if (ShouldAuthenticate())
             {
                 TestResult tr = new TestResult();
-                BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(GetUser(Users.UserA).Id, GetUser(Users.UserA).Password, true, tr.ApiSuccess, tr.ApiError);
-                if (!tr.Run())
-                {
-                    // what do we do on error?
-                }
+                BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                    GetUser(Users.UserA).Id, 
+                    GetUser(Users.UserA).Password, 
+                    true, 
+                    tr.ApiSuccess, tr.ApiError);
+                tr.Run();
             }
         }
 

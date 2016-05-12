@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using UnityEditor;
+using BrainCloudUnity;
 
 [CustomEditor(typeof(BrainCloudSettings))]
 public class BrainCloudSettingsEditor : Editor

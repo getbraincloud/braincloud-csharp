@@ -62,7 +62,7 @@ namespace BrainCloudTests
                 tr.ApiError);
 
             tr.Run();
-            DeleteAllDefaultEntities(2);
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteAllDefaultEntities(2);
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteAllDefaultEntities(1);
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            DeleteAllDefaultEntities(1);
+            DeleteAllDefaultEntities();
         }
 
         [Test]
@@ -258,6 +258,43 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestIncrementEntityData()
+        {
+            TestResult tr = new TestResult();
+
+            string id = CreateEntity(_defaultEntityType, "test", 10);
+
+            BrainCloudClient.Instance.EntityService.IncrementUserEntityData(
+                id,
+                GetUser(Users.UserA).ProfileId,
+                Helpers.CreateJsonPair("test", 1),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
+        public void TestGetSharedEntitiesListForPlayerId()
+        {
+            TestResult tr = new TestResult();
+
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+            CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            BrainCloudClient.Instance.EntityService.GetSharedEntitiesListForPlayerId(
+                GetUser(Users.UserA).ProfileId,
+                Helpers.CreateJsonPair("entityType", _defaultEntityType),
+                Helpers.CreateJsonPair("createdAt", 1),
+                1000,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
         #region Helper Functions
 
         /// <summary>
@@ -296,10 +333,26 @@ namespace BrainCloudTests
             return entityId;
         }
 
+        private string CreateEntity(string type, string key, int value)
+        {
+            TestResult tr = new TestResult();
+            string entityId = "";
+            //Create entity
+            BrainCloudClient.Instance.EntityService.CreateEntity(
+                _defaultEntityType,
+                Helpers.CreateJsonPair(key, value),
+                null,
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            if (tr.Run()) entityId = GetEntityId(tr.m_response);
+            return entityId;
+        }
+
         /// <summary>
         /// Deletes all defualt entities
         /// </summary>
-        private void DeleteAllDefaultEntities(int version = 1)
+        private void DeleteAllDefaultEntities()
         {
             TestResult tr = new TestResult();
 
@@ -326,7 +379,7 @@ namespace BrainCloudTests
             for (int i = 0; i < entityIds.Count; i++)
             {
                 tr.Reset();
-                BrainCloudClient.Instance.EntityService.DeleteEntity(entityIds[i], version, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Instance.EntityService.DeleteEntity(entityIds[i], -1, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
         }

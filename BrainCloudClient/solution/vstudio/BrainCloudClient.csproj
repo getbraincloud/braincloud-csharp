@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BrainCloud</RootNamespace>
     <AssemblyName>BrainCloudClient</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -55,6 +55,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -105,6 +106,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGlobalStatistics.cs">
       <Link>BrainCloud\BrainCloudGlobalStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
+      <Link>BrainCloud\BrainCloudGroup.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
       <Link>BrainCloud\BrainCloudIdentity.cs</Link>
     </Compile>
@@ -153,11 +157,17 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTwitter.cs">
       <Link>BrainCloud\BrainCloudTwitter.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
+      <Link>BrainCloud\BrainCloudWrapper.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\ACL.cs">
       <Link>BrainCloud\Common\ACL.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
+      <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>
@@ -209,6 +219,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
+      <Link>BrainCloud\Internal\ProgressStream.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
       <Link>BrainCloud\Internal\RequestState.cs</Link>
@@ -335,6 +348,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\LitJson\ParserToken.cs">
       <Link>LitJson\ParserToken.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
+      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,12 +1,12 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2015 bitHeads, inc.
+// Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+#if !XAMARIN
 using LitJson;
+#endif
+using System.Collections.Generic;
 
 namespace BrainCloud.Common
 {
@@ -19,43 +19,23 @@ namespace BrainCloud.Common
             ReadWrite = 2
         }
 
-        private Access m_other;
+        public Access Other { get; set; }
 
-        public ACL()
-        {
-        }
+        public ACL() { }
 
         public ACL(Access access)
         {
-            m_other = access;
-        }
-
-        public Access Other
-        {
-            get
-            {
-                return m_other;
-            }
-            set
-            {
-                m_other = value;
-            }
+            Other = access;
         }
 
         public static ACL ReadOnlyOther()
         {
             ACL acl = new ACL();
-            acl.m_other = Access.ReadOnly;
+            acl.Other = Access.ReadOnly;
             return acl;
         }
 
         public static ACL CreateFromJson(string in_json)
-        {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
-            return CreateFromJson(jsonObj);
-        }
-
-        public static ACL CreateFromJson(JsonData in_json)
         {
             ACL acl = new ACL();
             acl.ReadFromJson(in_json);
@@ -64,29 +44,28 @@ namespace BrainCloud.Common
 
         public void ReadFromJson(string in_json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
-            ReadFromJson(jsonObj);
-        }
-
-        public void ReadFromJson(JsonData in_json)
-        {
-            m_other = (Access) (int) in_json["other"];
+            Dictionary<string, object> jsonObj = JsonFx.Json.JsonReader.Deserialize<Dictionary<string, object>>(in_json);
+            Other = (Access)(int)jsonObj["other"];
         }
 
         public string ToJsonString()
         {
-            JsonData acl = new JsonData();
-            acl["other"] = new JsonData((int) m_other);
-
-            StringBuilder sb = new StringBuilder();
-            JsonWriter writer = new JsonWriter(sb);
-            JsonMapper.ToJson(acl, writer);
-            return sb.ToString();
+            Dictionary<string, object> jsonObj = new Dictionary<string, object> { { "other", (int)Other } };
+            return JsonFx.Json.JsonWriter.Serialize(jsonObj);
         }
 
-        public override string ToString()
+#if !XAMARIN
+        public static ACL CreateFromJson(JsonData in_json)
         {
-            return ToJsonString();
+            ACL acl = new ACL();
+            acl.ReadFromJson(in_json);
+            return acl;
         }
+
+        public void ReadFromJson(JsonData in_json)
+        {
+            Other = (Access)(int)in_json["other"];
+        }
+#endif
     }
 }

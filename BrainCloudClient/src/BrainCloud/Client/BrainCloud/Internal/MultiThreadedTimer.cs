@@ -1,7 +1,6 @@
 ﻿#if (DOT_NET)
 
-    using System;
-using System.Collections;
+using System;
 using System.Timers;
 
 public class MultiThreadedTimer : ITimer

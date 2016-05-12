@@ -1,6 +1,6 @@
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2015 bitHeads, inc.
+// Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
 using System;
@@ -9,32 +9,24 @@ using System.Text;
 
 #if (DOT_NET)
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Threading;
 #else
 using UnityEngine;
 #endif
 
-using System.IO;
 using JsonFx.Json;
 
 namespace BrainCloud.Internal
 {
-
     #region Processed Server Call Class
     public class ServerCallProcessed
     {
-        internal ServerCall ServerCall
-        {
-            get;
-            set;
-        }
-        public string Data
-        {
-            get;
-            set;
-        }
+        internal ServerCall ServerCall { get; set; }
+        public string Data { get; set; }
     }
     #endregion
-
 
     internal sealed class BrainCloudComms
     {
@@ -130,6 +122,10 @@ namespace BrainCloud.Internal
         private NetworkErrorCallback _networkErrorCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
+
+#if DOT_NET
+        private HttpClient _httpClient = new HttpClient();
+#endif
 
         //For handling local session errors
         private int _cachedStatusCode;
@@ -268,7 +264,7 @@ namespace BrainCloud.Internal
         public BrainCloudComms(BrainCloudClient client)
         {
 #if (DOT_NET)
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
+            //ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
 #endif
             _brainCloudClientRef = client;
             ResetErrorCache();
@@ -589,7 +585,7 @@ namespace BrainCloud.Internal
             // and then dump the comms layer
             ResetCommunication();
         }
-            
+
         // see BrainCloudClient.RetryCachedMessages() docs
         public void RetryCachedMessages()
         {
@@ -787,8 +783,13 @@ namespace BrainCloud.Internal
                             string localPath = (string)fileData["localPath"];
                             //int fileSize = (int)fileData["fileSize"];
 
-                            _fileUploads.Add(new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
-                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold));
+                            var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
+                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold);
+#if DOT_NET
+                            uploader.HttpClient = _httpClient;
+#endif
+                            _fileUploads.Add(uploader);
+                            uploader.Start();
                         }
 
                         // // only process callbacks that are real
@@ -983,7 +984,7 @@ namespace BrainCloud.Internal
                     _serviceCallsInProgress.InsertRange(0, _serviceCallsInTimeoutQueue);
                     _serviceCallsInTimeoutQueue.Clear();
                 }
-                else 
+                else
                 {
                     if (_serviceCallsWaiting.Count > 0)
                     {
@@ -1142,29 +1143,34 @@ namespace BrainCloud.Internal
                 formTable["Content-Type"] = "application/json; charset=utf-8";
                 formTable["X-SIG"] = sig;
                 WWW request = new WWW(_serverURL, byteArray, formTable);
+                requestState.WebRequest = request;
 #else
-                WebRequest request = WebRequest.Create(_serverURL);
-                request.ContentType = "application/json; charset=utf-8";
-                request.Method = "POST";
-                request.Headers.Add("X-SIG", sig);
-                request.ContentLength = byteArray.Length;
-                request.Timeout = (int)GetPacketTimeout(requestState).TotalMilliseconds;
 
-                // TODO: Convert to using a task as BeginGetRequestStream can block for minutes
-                requestState.AsyncResult = request.BeginGetRequestStream(new AsyncCallback(GetRequestCallback), requestState);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(_serverURL));
+                req.Content = new ByteArrayContent(byteArray);
+                req.Headers.Add("X-SIG", sig);
+                req.Method = HttpMethod.Post;
+
+                CancellationTokenSource source = new CancellationTokenSource();
+                requestState.CancelToken = source;
+
+                Task<HttpResponseMessage> httpRequest = _httpClient.SendAsync(req, HttpCompletionOption.ResponseContentRead, source.Token);
+                requestState.WebRequest = httpRequest;
+                httpRequest.ContinueWith(async (t) =>
+                {
+                    await AsyncHttpTaskCallback(t, requestState);
+                });
 #endif
 
-                requestState.WebRequest = request;
+                requestState.RequestString = jsonRequestString;
+                requestState.TimeSent = DateTime.Now;
+
+                ResetIdleTimer();
+
+                _brainCloudClientRef.Log("OUTGOING "
+                                          + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
+                                          + jsonRequestString);
             }
-            requestState.RequestString = jsonRequestString;
-            requestState.TimeSent = DateTime.Now;
-
-            ResetIdleTimer();
-
-            _brainCloudClientRef.Log("OUTGOING "
-                                      + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
-                                      + jsonRequestString);
-
         }
 
         /// <summary>
@@ -1303,15 +1309,15 @@ namespace BrainCloud.Internal
         }
 
 #if UNITY_WP8 || DOT_NET
-        private bool AcceptAllCertifications(object sender,
-                                             System.Security.Cryptography.X509Certificates.X509Certificate certification,
-                                             System.Security.Cryptography.X509Certificates.X509Chain chain,
-                                             System.Net.Security.SslPolicyErrors sslPolicyErrors)
-        {
-            // TODO: we should only be accepting certificates from places we deem safe [smrj]
-            // right now accepting all! - not that secure!
-            return true;
-        }
+        //private bool AcceptAllCertifications(object sender,
+        //                                     System.Security.Cryptography.X509Certificates.X509Certificate certification,
+        //                                     System.Security.Cryptography.X509Certificates.X509Chain chain,
+        //                                     System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        //{
+        //    // TODO: we should only be accepting certificates from places we deem safe [smrj]
+        //    // right now accepting all! - not that secure!
+        //    return true;
+        //}
 #endif
 
         /// <summary>
@@ -1356,66 +1362,22 @@ namespace BrainCloud.Internal
 
 
 #if (DOT_NET)
-        private void GetRequestCallback(IAsyncResult asynchronousResult)
+        private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult, RequestState requestState)
         {
-            RequestState requestState = (RequestState)asynchronousResult.AsyncState;
-            if (requestState.IsCancelled)
-            {
-                return;
-            }
-            WebRequest webRequest = (WebRequest)requestState.WebRequest;
+            if (asyncResult.IsCanceled) return;
 
-            try
-            {
-                // End the operation
-
-                Stream postStream = webRequest.EndGetRequestStream(asynchronousResult);
-                //_brainCloudClientRef.Log("GetRequestStreamCallback - JsonRequeststring GOING OUT: " + requestState.JsonRequestString);
-
-                // Convert the string into a byte array.
-                byte[] byteArray = Encoding.UTF8.GetBytes(requestState.RequestString);
-
-                // Write to the request stream.
-                postStream.Write(byteArray, 0, requestState.RequestString.Length);
-                postStream.Close();
-
-                // Start the asynchronous operation to get the response
-                webRequest.BeginGetResponse(new AsyncCallback(GetResponseCallback), requestState);
-            }
-            catch (Exception ex)
-            {
-                _brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
-                requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-            }
-        }
-
-        private void GetResponseCallback(IAsyncResult asynchronousResult)
-        {
-            RequestState requestState = (RequestState)asynchronousResult.AsyncState;
-            if (requestState.IsCancelled)
-            {
-                return;
-            }
+            HttpResponseMessage message = null;
 
             //a callback method to end receiving the data
             try
             {
-                WebRequest webRequest = requestState.WebRequest;
+                message = asyncResult.Result;
+                HttpContent content = message.Content;
 
                 // End the operation
-                HttpWebResponse response = (HttpWebResponse)webRequest.EndGetResponse(asynchronousResult);
-                Stream streamResponse = response.GetResponseStream();
-                StreamReader streamRead = new StreamReader(streamResponse);
-
-                requestState.DotNetResponseString = streamRead.ReadToEnd();
-                requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_DONE;
-
-                // Close the stream object
-                streamResponse.Close();
-                streamRead.Close();
-
-                // Release the HttpWebResponse
-                response.Close();
+                requestState.DotNetResponseString = await content.ReadAsStringAsync();
+                requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
+                    RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
             }
             catch (WebException wex)
             {
@@ -1427,6 +1389,9 @@ namespace BrainCloud.Internal
                 _brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
+
+            // Release the HttpResponseMessage
+            if (message != null) message.Dispose();
         }
 #endif
 
@@ -1438,7 +1403,11 @@ namespace BrainCloud.Internal
             byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input); // UTF8, not ASCII
             byte[] hash = md5.ComputeHash(inputBytes);
 #else
+#if UWP
+            Windows.Security.Cryptography.MD5 md5 = Windows.Security.Cryptography.MD5.Create();
+#else
             System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+#endif
             byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input); // UTF8, not ASCII
             byte[] hash = md5.ComputeHash(inputBytes);
 #endif

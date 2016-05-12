@@ -71,7 +71,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            FileInfo info = new FileInfo(CreateFile(12*1024));
+            FileInfo info = new FileInfo(CreateFile(12 * 1024));
 
             BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
@@ -166,25 +166,26 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            FileInfo info = new FileInfo(CreateFile(4096));
+            FileInfo info1 = new FileInfo(CreateFile(4096, "multiUpload1.dat"));
+            FileInfo info2 = new FileInfo(CreateFile(4096, "multiUpload2.dat"));
 
             BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
-                info.Name + "_multi_1",
+                info1.Name,
                 true,
                 true,
-                info.FullName,
+                info1.FullName,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-            string id1 = GetUploadId(tr.m_response);            
+            string id1 = GetUploadId(tr.m_response);
 
             BrainCloudClient.Instance.FileService.UploadFile(
                 _cloudPath,
-                info.Name + "_multi_2",
+                info2.Name,
                 true,
                 true,
-                info.FullName,
+                info2.FullName,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -268,9 +269,9 @@ namespace BrainCloudTests
         /// </summary>
         /// <param name="size">Size of the file in KB</param>
         /// <returns>Full path to the file</returns>
-        private string CreateFile(int size)
+        private string CreateFile(int size, string name = "testFile.dat")
         {
-            string path = Path.Combine(Path.GetTempPath() + "testFile.dat");
+            string path = Path.Combine(Path.GetTempPath() + name);
 
             using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
             {

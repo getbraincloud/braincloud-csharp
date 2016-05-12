@@ -1,3 +1,8 @@
+//----------------------------------------------------
+// brainCloud client source code
+// Copyright 2016 bitHeads, inc.
+//----------------------------------------------------
+
 using System.Collections.Generic;
 
 namespace BrainCloud.Common
@@ -19,6 +24,7 @@ namespace BrainCloud.Common
         public static readonly Platform Roku = new Platform("ROKU");
         public static readonly Platform Tizen = new Platform("TIZEN");
         public static readonly Platform Unknown = new Platform("UNKNOWN");
+        public static readonly Platform WatchOS = new Platform("WATCH_OS");
         public static readonly Platform Web = new Platform("WEB");
         public static readonly Platform Wii = new Platform("WII");
         public static readonly Platform WindowsPhone = new Platform("WINP");
@@ -41,6 +47,7 @@ namespace BrainCloud.Common
             { Roku.value, Roku },
             { Tizen.value, Tizen },
             { Unknown.value, Unknown },
+            { WatchOS.value, WatchOS },
             { Web.value, Web },
             { Wii.value, Wii },
             { WindowsPhone.value, WindowsPhone },

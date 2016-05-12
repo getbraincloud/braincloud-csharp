@@ -1,12 +1,15 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2015 bitHeads, inc.
+// Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+
+#if !XAMARIN
 using BrainCloud.Entity;
+#endif
 
 #if !(DOT_NET)
 using UnityEngine;
@@ -118,7 +121,9 @@ namespace BrainCloud
 
         private LogCallback m_logDelegate;
 
+#if !XAMARIN
         private BCEntityFactory m_entityFactory;
+#endif
         private BrainCloudComms m_comms;
         private BrainCloudEntity m_entityService;
         private BrainCloudGlobalEntity m_globalEntityService;
@@ -147,6 +152,7 @@ namespace BrainCloud
         private BrainCloudDataStream m_dataStreamService;
         private BrainCloudProfanity m_profanityService;
         private BrainCloudFile m_fileService;
+        private BrainCloudGroup m_groupService;
 
         #endregion Private Data
 
@@ -182,7 +188,9 @@ namespace BrainCloud
         {
             m_comms = new BrainCloudComms(this);
             m_entityService = new BrainCloudEntity(this);
+#if !XAMARIN
             m_entityFactory = new BCEntityFactory(m_entityService);
+#endif
             m_globalEntityService = new BrainCloudGlobalEntity(this);
 
             m_globalAppService = new BrainCloudGlobalApp(this);
@@ -215,11 +223,12 @@ namespace BrainCloud
             m_dataStreamService = new BrainCloudDataStream(this);
             m_profanityService = new BrainCloudProfanity(this);
             m_fileService = new BrainCloudFile(this);
+            m_groupService = new BrainCloudGroup(this);
         }
 
         //---------------------------------------------------------------
 
-        #endregion        
+        #endregion
 
         #region Properties
 
@@ -287,10 +296,12 @@ namespace BrainCloud
             get { return m_entityService; }
         }
 
+#if !XAMARIN
         public BCEntityFactory EntityFactory
         {
             get { return m_entityFactory; }
         }
+#endif
 
         public BrainCloudGlobalEntity GlobalEntityService
         {
@@ -299,10 +310,7 @@ namespace BrainCloud
 
         public BrainCloudGlobalApp GlobalAppService
         {
-            get
-            {
-                return m_globalAppService;
-            }
+            get { return m_globalAppService; }
         }
 
         public BrainCloudProduct ProductService
@@ -425,6 +433,11 @@ namespace BrainCloud
             get { return m_fileService; }
         }
 
+        public BrainCloudGroup GroupService
+        {
+            get { return m_groupService; }
+        }
+
         #endregion
 
         #region Service Getters
@@ -434,10 +447,12 @@ namespace BrainCloud
             return EntityService;
         }
 
+#if !XAMARIN
         public BCEntityFactory GetEntityFactory()
         {
             return EntityFactory;
         }
+#endif
 
         public BrainCloudGlobalApp GetGlobalAppService()
         {
@@ -569,6 +584,11 @@ namespace BrainCloud
             get { return m_fileService; }
         }
 
+        public BrainCloudGroup GetGroupService
+        {
+            get { return m_groupService; }
+        }
+
         #endregion
 
         #region Getters
@@ -637,7 +657,7 @@ namespace BrainCloud
             //setup region/country code
             if (Util.GetCurrentCountryCode() == string.Empty)
             {
-#if(DOT_NET)
+#if (DOT_NET)
                 Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
 #else
                 Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);
@@ -770,7 +790,7 @@ namespace BrainCloud
         {
             m_comms.DeregisterNetworkErrorCallback();
         }
-            
+
         /// <summary> Enable logging of braincloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
@@ -1006,7 +1026,7 @@ namespace BrainCloud
                     {
 #if !(DOT_NET)
                         Debug.Log(formattedLog);
-#else
+#elif !XAMARIN
                         Console.WriteLine(formattedLog);
 #endif
                     }

@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>UnitTests</RootNamespace>
     <AssemblyName>UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -45,9 +45,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="tests\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BrainCloudClient.csproj">
       <Project>{719A9484-6259-4D3C-A904-6958C03B02F7}</Project>
       <Name>BrainCloudClient</Name>
@@ -55,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core.interfaces">
       <HintPath>..\..\..\tests\NUnit\lib\nunit.core.interfaces.dll</HintPath>
@@ -69,6 +66,7 @@
     <Reference Include="nunit.core">
       <HintPath>..\..\..\tests\NUnit\lib\nunit.core.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\tests\TestAuthenticate.cs">
@@ -172,6 +170,15 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestLeaderboard.cs">
       <Link>TestLeaderboard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestACL.cs">
+      <Link>TestACL.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestWrapper.cs">
+      <Link>TestWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGroup.cs">
+      <Link>TestGroup.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

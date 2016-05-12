@@ -22,7 +22,7 @@ namespace BrainCloudTests
         public int m_statusCode;
         public int m_reasonCode;
         public string m_statusMessage;
-        public int m_timeToWaitSecs = 30;
+        public int m_timeToWaitSecs = 120;
         public int m_globalErrorCount;
         public int m_networkErrorCount;
 

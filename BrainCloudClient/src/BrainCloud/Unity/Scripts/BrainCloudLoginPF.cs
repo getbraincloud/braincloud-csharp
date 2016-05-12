@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using BrainCloudUnity.HUD;
 
 #if UNITY_EDITOR

@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>BrainCloudClient</RootNamespace>
     <AssemblyName>BrainCloudClient</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -51,6 +51,7 @@
     <Folder Include="LitJson\" />
     <Folder Include="BrainCloud\" />
     <Folder Include="JsonFx\" />
+    <Folder Include="BrainCloud\Unity\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\BrainCloud\LitJson\AssemblyInfo.cs.in">
@@ -328,12 +329,29 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
+      <Link>BrainCloud\BrainCloudWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
+      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
+      <Link>BrainCloud\Internal\ProgressStream.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
+      <Link>BrainCloud\BrainCloudGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
+      <Link>BrainCloud\Common\GroupACL.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 </Project>
