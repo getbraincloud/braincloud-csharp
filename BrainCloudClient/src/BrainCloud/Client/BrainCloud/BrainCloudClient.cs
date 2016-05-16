@@ -62,28 +62,6 @@ namespace BrainCloud
     /// Method called when a file upload has completed.
     /// </summary>
     /// <param name="fileUploadId">The file upload id</param>
-    /// <param name="jsonResponse">The json response describing the file details similar to this</param>
-    /// <returns> The JSON returned in the callback is as follows: 
-    /// { 
-    /// 	"status": 200,
-    /// 	"data": { 
-    /// 		"fileList": [{   
-    /// 			"updatedAt": 1452603368201,
-    /// 			"uploadedAt": null,
-    /// 			"fileSize": 85470,
-    /// 			"shareable": true,
-    /// 			"createdAt": 1452603368201,
-    /// 			"profileId": "bf8a1433-62d2-448e-b396-f3dbffff44",
-    /// 			"gameId": "99999",
-    /// 			"path": "test2",
-    /// 			"filename": "testup.dat",
-    /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a14-ff44/f/test2/...",
-    /// 			"cloudLocation": "bc/g/99999/u/bf8a1433-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"   
-    /// 
-    ///         }] 
-    /// 	}
-    /// }
-    /// </returns>
     public delegate void FileUploadSuccessCallback(string fileUploadId, string jsonResponse);
 
     /// <summary>
@@ -94,14 +72,6 @@ namespace BrainCloud
     /// <param name="reasonCode">The reason code of the operation</param>
     /// <param name="jsonResponse">The json response describing the failure. This uses the 
     /// usual brainCloud error format similar to this:</param>
-    /// <returns> The JSON returned in the callback is as follows:
-    /// {
-    /// 	"status": 403,
-    /// 	"reason_code": 40300,
-    /// 	"status_message": "Message describing failure",
-    /// 	"severity": "ERROR"
-    /// }
-    /// </returns>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
 
     #endregion
