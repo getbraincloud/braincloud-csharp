@@ -42,12 +42,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback:
-        /// {
-        ///   "status":200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void CustomPageEvent(
             string in_eventName,
             string in_jsonEventProperties,
@@ -91,12 +85,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback:
-        /// {
-        ///   "status":200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void CustomScreenEvent(
             string in_eventName,
             string in_jsonEventProperties,
@@ -140,12 +128,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback:
-        /// {
-        ///   "status":200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void CustomTrackEvent(
             string in_eventName,
             string in_jsonEventProperties,

@@ -40,24 +40,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data": {
-        ///     "updatedAt": 1395693676208,
-        ///     "currencyMap": {
-        ///       "gold": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 0,
-        ///         "awarded": 0
-        ///       }
-        ///     },
-        ///     "playerId": "6ea79853-4025-4159-8014-60a6f17ac4e6",
-        ///     "createdAt": 1395693676208
-        ///   }
-        /// }
-        /// </returns>
         public void GetCurrency(
             string in_currencyType,
             SuccessCallback in_success = null,
@@ -95,30 +77,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data": {
-        ///     "updatedAt": 1395693913234,
-        ///     "currencyMap": {
-        ///       "gems": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 0,
-        ///         "awarded": 0
-        ///       },
-        ///       "gold": {
-        ///         "purchased": 0,
-        ///         "balance": 123,
-        ///         "consumed": 0,
-        ///         "awarded": 123
-        ///       }
-        ///     },
-        ///     "playerId": "acf11847-055f-470d-abb7-b93052201491",
-        ///     "createdAt": 1395693907421
-        ///   }
-        /// }
-        /// </returns>
         public void AwardCurrency(
             string in_currencyType,
             ulong in_amount,
@@ -157,30 +115,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data": {
-        ///     "updatedAt": 1395693913234,
-        ///     "currencyMap": {
-        ///       "gems": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 0,
-        ///         "awarded": 0
-        ///       },
-        ///       "gold": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 123,
-        ///         "awarded": 123
-        ///       }
-        ///     },
-        ///     "playerId": "acf11847-055f-470d-abb7-b93052201491",
-        ///     "createdAt": 1395693907421
-        ///   }
-        /// }
-        /// </returns>
         public void ConsumeCurrency(
             string in_currencyType,
             ulong in_amount,
@@ -213,12 +147,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void ResetCurrency(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -260,26 +188,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///      "product_inventory":[
-        ///          {
-        ///              "gameId":"com.roger.football",
-        ///              "itemId":"0000001",
-        ///              "title":"Item 0000001",
-        ///              "description":"Buy 5 footballs",
-        ///              "imageUrl":"http:",
-        ///              "fbUrl":"http:",
-        ///              "currency":{"footballs":5},
-        ///              "priceData":{"currency":"USD","price":1000}
-        ///           }
-        ///       ],
-        ///       "server_time":1398960658981
-        ///    }
-        /// }
-        /// </returns>
         public void GetSalesInventory(
             string in_platform,
             string in_userCurrency,
@@ -324,26 +232,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///      "product_inventory":[
-        ///          {
-        ///              "gameId":"com.roger.football",
-        ///              "itemId":"0000001",
-        ///              "title":"Item 0000001",
-        ///              "description":"Buy 5 footballs",
-        ///              "imageUrl":"http:",
-        ///              "fbUrl":"http:",
-        ///              "currency":{"footballs":5},
-        ///              "priceData":{"currency":"USD","price":1000}
-        ///           }
-        ///       ],
-        ///       "server_time":1398960658981
-        ///    }
-        /// }
-        /// </returns>
         public void GetSalesInventoryByCategory(
             string in_platform,
             string in_userCurrency,
@@ -390,18 +278,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "steamStatus" : 200,
-        ///      "steamData" :
-        ///      {
-        ///      }
-        ///   }
-        /// }
-        /// </returns>
         public void StartSteamTransaction(
             string in_language,
             string in_itemId,
@@ -438,18 +314,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "steamStatus" : 200,
-        ///      "steamData" :
-        ///      {
-        ///      }
-        ///   }
-        /// }
-        /// </returns>
         public void FinalizeSteamTransaction(
             string in_transId,
             SuccessCallback in_success = null,
@@ -484,15 +348,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "result" : "OK"
-        ///   }
-        /// }
-        /// </returns>
         public void VerifyMicrosoftReceipt(
             string in_receipt,
             SuccessCallback in_success = null,
@@ -523,43 +378,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        /// "promotions": [
-        ///  {
-        ///   "gameId": "10019",
-        ///   "promotionId": 9,
-        ///   "type": "SCHEDULED",
-        ///   "name": "session >= 2",
-        ///   "message": "test1",
-        ///   "enabled": true,
-        ///   "targetAllUsers": false,
-        ///   "segments": [
-        ///    5
-        ///   ],
-        ///   "prices": [
-        ///    {
-        ///     "itemId": "regGems150",
-        ///     "priceId": 1
-        ///    }
-        ///   ],
-        ///   "notifications": [
-        ///    {
-        ///     "trigger": "ACTIVATED",
-        ///     "notificationTemplateId": 10
-        ///    }
-        ///   ],
-        ///   "startAt": 1415374185745,
-        ///   "endAt": 1415806185745,
-        ///   "createdAt": 0,
-        ///   "updatedAt": 1415729753294
-        ///  }
-        /// ]
-        /// }
-        /// }
-        /// </returns>
         public void GetEligiblePromotions(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -590,36 +408,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "playerCurrency" : {
-        ///         "playerId" : "sfhsjdfhfjhf",
-        ///         "currencyMap" : {
-        ///             "coin" : {
-        ///                 "purchased" : NumberLong(0),
-        ///                 "balance" : NumberLong(5000),
-        ///                 "consumed" : NumberLong(0),
-        ///                 "awarded" : NumberLong(5000)
-        ///             },
-        ///             "bar" : {
-        ///                 "purchased" : NumberLong(0),
-        ///                 "balance" : NumberLong(2),
-        ///                 "consumed" : NumberLong(0),
-        ///                 "awarded" : NumberLong(2)
-        ///             }
-        ///         },
-        ///         "createdAt" : 763578645786,
-        ///         "updatedAt" : 8692486255764,
-        ///       },
-        ///       "appleReceipt" : "gsgsfvgvg",
-        ///       "status" : 0,
-        ///       "server_time" : 987490827457
-        ///   }
-        /// }
-        /// </returns>
         public void VerifyItunesReceipt(
             string in_base64EncReceiptData,
             SuccessCallback in_callback = null,
@@ -654,15 +442,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "result" : "OK"
-        ///   }
-        /// }
-        /// </returns>
         public void ConfirmFacebookPurchase(
             string in_signedRequest,
             SuccessCallback in_success = null,
@@ -703,15 +482,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data":
-        ///   {
-        ///      "result" : "OK"
-        ///   }
-        /// }
-        /// </returns>
         public void ConfirmGooglePlayPurchase(
             string in_orderId,
             string in_productId,
@@ -743,30 +513,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
         /// <param name="in_cbObject">The user object sent to the callback</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "updatedAt": 1441990173583,
-        ///         "currencyMap": {
-        ///             "credits": {
-        ///                 "purchased": 0,
-        ///                 "balance": 123,
-        ///                 "consumed": 24,
-        ///                 "awarded": 147
-        ///             },
-        ///             "gold": {
-        ///                 "purchased": 0,
-        ///                 "balance": 100,
-        ///                 "consumed": 0,
-        ///                 "awarded": 100
-        ///             }
-        ///         },
-        ///         "playerId": "5b33nje0-89a5-4b29-b130-effg3s451fa9",
-        ///         "createdAt": 1441990131453
-        ///     }
-        /// }
-        /// </returns>
         public void AwardParentCurrency(
             string in_currencyType,
             int in_amount,
@@ -798,30 +544,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
         /// <param name="in_cbObject">The user object sent to the callback</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "updatedAt": 1441990173583,
-        ///         "currencyMap": {
-        ///             "credits": {
-        ///                 "purchased": 0,
-        ///                 "balance": 123,
-        ///                 "consumed": 24,
-        ///                 "awarded": 147
-        ///             },
-        ///             "gold": {
-        ///                 "purchased": 0,
-        ///                 "balance": 100,
-        ///                 "consumed": 0,
-        ///                 "awarded": 100
-        ///             }
-        ///         },
-        ///         "playerId": "5b33nje0-89a5-4b29-b130-effg3s451fa9",
-        ///         "createdAt": 1441990131453
-        ///     }
-        /// }
-        /// </returns>
         public void ConsumeParentCurrency(
             string in_currencyType,
             int in_amount,
@@ -853,24 +575,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
         /// <param name="in_cbObject">The user object sent to the callback</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "updatedAt": 1441990173583,
-        ///         "currencyMap": {
-        ///             "credits": {
-        ///                 "purchased": 0,
-        ///                 "balance": 123,
-        ///                 "consumed": 24,
-        ///                 "awarded": 147
-        ///             }
-        ///         },
-        ///         "playerId": "5b33nje0-89a5-4b29-b130-effg3s451fa9",
-        ///         "createdAt": 1441990131453
-        ///     }
-        /// }
-        /// </returns>
         public void GetParentCurrency(
             string in_currencyType,
             string in_parentLevel,
@@ -902,12 +606,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback</param>
         /// <param name="in_failure">The failure callback</param>
         /// <param name="in_cbObject">The user object sent to the callback</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void ResetParentCurrency(
             string in_parentLevel,
             SuccessCallback in_success = null,

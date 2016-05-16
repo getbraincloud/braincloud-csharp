@@ -40,12 +40,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the new value of the statistics and any rewards that were triggered:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public bool RegisterPushNotificationDeviceToken(
             byte[] token,
             SuccessCallback success = null,
@@ -87,12 +81,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void DeregisterAllPushNotificationDeviceTokens(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -124,12 +112,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void DeregisterPushNotificationDeviceToken(
             Platform platform,
             string token,
@@ -167,12 +149,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void RegisterPushNotificationDeviceToken(
             Platform platform,
             string token,
@@ -209,12 +185,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void SendSimplePushNotification(
             string toPlayerId,
             string message,
@@ -250,12 +220,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void SendRichPushNotification(
             string toPlayerId,
             int notificationTemplateId,
@@ -290,12 +254,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the result
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void SendRichPushNotificationWithParams(
             string toPlayerId,
             int notificationTemplateId,

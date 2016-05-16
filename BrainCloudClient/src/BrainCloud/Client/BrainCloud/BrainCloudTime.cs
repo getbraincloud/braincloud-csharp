@@ -33,14 +33,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> A JSON string such as:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "server_time":1396378241893
-        ///   }
-        /// }
-        /// </returns>
         public void ReadServerTime(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,

@@ -42,42 +42,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "vcPurchased": null,
-        ///     "id": "210ee817-d555-40c3-b109-c24a84c84dc7",
-        ///     "experiencePoints": 10,
-        ///     "sent_events": [],
-        ///     "vcClaimed": null,
-        ///     "server_time": 1395950294285,
-        ///     "experienceLevel": 1,
-        ///     "incoming_events": [],
-        ///     "currency": {
-        ///       "gems": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 0,
-        ///         "awarded": 0
-        ///       },
-        ///       "gold": {
-        ///         "purchased": 0,
-        ///         "balance": 0,
-        ///         "consumed": 0,
-        ///         "awarded": 0
-        ///       }
-        ///     },
-        ///     "statistics": {
-        ///       "minions": 0,
-        ///       "wood": 50,
-        ///       "pantelons": 3,
-        ///       "iron": 0
-        ///     },
-        ///     "abTestingId": 60
-        ///   }
-        /// }
-        /// </returns>
         public void ReadPlayerState(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -107,12 +71,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void DeletePlayer(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -143,12 +101,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void ResetPlayer(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -175,12 +127,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void Logout(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -210,15 +156,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///     "playerName": "someName"
-        ///   }
-        /// }
-        /// </returns>
         public void UpdatePlayerName(
             string playerName,
             SuccessCallback success = null,
@@ -265,12 +202,6 @@ namespace BrainCloud
         /// The user object sent to the callback.
         ///
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void UpdateSummaryFriendData(
             string jsonSummaryData,
             SuccessCallback success = null,
@@ -305,17 +236,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "attributes": {
-        ///          "key1": "value1",
-        ///          "key2": "value2"
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void GetAttributes(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -348,11 +268,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        /// }
-        /// </returns>
         public void UpdateAttributes(
             string jsonAttributes,
             bool wipeExisting,
@@ -390,11 +305,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        /// }
-        /// </returns>
         public void RemoveAttributes(
             IList<string> attributeNames,
             SuccessCallback success = null,
@@ -428,14 +338,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "playerPictureUrl": "https://some.domain.com/mypicture.jpg"
-        ///      }
-        /// }
-        /// </returns>
         public void UpdatePlayerPictureUrl(
             string pictureUrl,
             SuccessCallback success = null,
@@ -470,14 +372,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "contactEmail": "someName@somedomain.com"
-        ///     }
-        /// }
-        /// </returns>
         public void UpdateContactEmail(
             string contactEmail,
             SuccessCallback success = null,

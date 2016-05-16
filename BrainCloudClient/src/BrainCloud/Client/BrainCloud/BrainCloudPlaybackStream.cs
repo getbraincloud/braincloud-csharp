@@ -43,26 +43,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": {
-        ///     "playbackStreamId": "b8da4619-2ddc-4184-b654-cd11d12a3275",
-        ///     "gameId": "10000",
-        ///     "initiatingPlayerId": "198bcafcd-6e84-4c30-9f6e-3f9f016440c6",
-        ///     "targetPlayerId": "a6943c74-6655-4245-8b2b-13bb908d3f88",
-        ///     "status": "STARTED",
-        ///     "summary": {},
-        ///     "initialSharedData": {
-        ///      "entities": [],
-        ///      "statistics": {}
-        ///     },
-        ///     "events": [],
-        ///     "createdAt": 1425481184200,
-        ///     "updatedAt": 1425481184200
-        ///    }
-        ///   }
-        /// </returns>
         public void StartStream(
             string in_targetPlayerId,
             bool in_includeSharedData,
@@ -98,26 +78,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": {
-        ///     "playbackStreamId": "b8da4619-2ddc-4184-b654-cd11d12a3275",
-        ///     "gameId": "10000",
-        ///     "initiatingPlayerId": "198bcafcd-6e84-4c30-9f6e-3f9f016440c6",
-        ///     "targetPlayerId": "a6943c74-6655-4245-8b2b-13bb908d3f88",
-        ///     "status": "COMPLETE",
-        ///     "summary": { total : 5 },
-        ///     "initialSharedData": {
-        ///      "entities": [ {entry : 3}, {entry : 2 }],
-        ///      "statistics": {}
-        ///     },
-        ///     "events": [],
-        ///     "createdAt": 1425481184200,
-        ///     "updatedAt": 1425481184200
-        ///    }
-        ///   }
-        /// </returns>
         public void ReadStream(
             string in_playbackStreamId,
             SuccessCallback in_success = null,
@@ -151,12 +111,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": null
-        /// }
-        /// </returns>
         public void EndStream(
             string in_playbackStreamId,
             SuccessCallback in_success = null,
@@ -190,12 +144,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": null
-        /// }
-        /// </returns>
         public void DeleteStream(
             string in_playbackStreamId,
             SuccessCallback in_success = null,
@@ -235,12 +183,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": null
-        /// }
-        /// </returns>
         public void AddEvent(
             string in_playbackStreamId,
             string in_eventData,
@@ -288,27 +230,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "streams": [
-        ///    {
-        ///     "playbackStreamId": "b8da4619-2ddc-4184-b654-cd11d12a3275",
-        ///     "gameId": "10000",
-        ///     "initiatingPlayerId": "198bcadb-6e84-4c30-9f6e-3f9f016440c6",
-        ///     "targetPlayerId": "a6943c74-6636-4245-8b2b-13bb908d3f88",
-        ///     "status": "IN_PROGRESS",
-        ///     "summary": {
-        ///      "total": 5
-        ///     },
-        ///     "createdAt": 1425481184200,
-        ///     "updatedAt": 1425484485139
-        ///    }
-        ///   ]
-        ///  }
-        /// }
-        /// </returns>
         public void GetStreamSummariesForInitiatingPlayer(
             string in_initiatingPlayerId,
             SuccessCallback in_success = null,
@@ -342,27 +263,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "streams": [
-        ///    {
-        ///     "playbackStreamId": "b8da4619-2ddc-4184-b654-cd11d12a3275",
-        ///     "gameId": "10000",
-        ///     "initiatingPlayerId": "198bcadb-6e84-4c30-9f6e-3f9f016440c6",
-        ///     "targetPlayerId": "a6943c74-6636-4245-8b2b-13bb908d3f88",
-        ///     "status": "IN_PROGRESS",
-        ///     "summary": {
-        ///      "total": 5
-        ///     },
-        ///     "createdAt": 1425481184200,
-        ///     "updatedAt": 1425484485139
-        ///    }
-        ///   ]
-        ///  }
-        /// }
-        /// </returns>
         public void GetStreamSummariesForTargetPlayer(
             string in_targetPlayerId,
             SuccessCallback in_success = null,

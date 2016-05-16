@@ -58,33 +58,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "gameId": "16245",
-        ///     "ownerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///     "matchId": "b55d12d6-f01f-45c5-827c-ded706374524",
-        ///     "version": 0,
-        ///     "players": [
-        ///         {
-        ///             "playerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///             "playerName": "UserB",
-        ///             "pictureUrl": null
-        ///         },
-        ///         {
-        ///             "playerId": "4693ec75-3a99-4577-aef7-0f41d299339c",
-        ///             "playerName": "Presto1",
-        ///             "pictureUrl": null
-        ///         }
-        ///     ],
-        ///     "status": {
-        ///         "status": "NOT_STARTED",
-        ///         "currentPlayer": "0df9f282-183b-4d67-866e-670fb35a2376"
-        ///     },
-        ///     "summary": null,
-        ///     "createdAt": 1415641372974,
-        ///     "updatedAt": 1415641372974
-        /// }
-        /// </returns>
         public void CreateMatch(
             string in_jsonOpponentIds,
             string in_pushNotificationMessage,
@@ -155,35 +128,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "gameId": "145677",
-        ///     "ownerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///     "matchId": "b55d12d6-f01f-45c5-827c-ded706374524",
-        ///     "version": 1,
-        ///     "players": [
-        ///         {
-        ///             "playerId": "0df9f282-183b-4d67-866e-670fb35a2376",
-        ///             "playerName": "UserB",
-        ///             "pictureUrl": null
-        ///         },
-        ///         {
-        ///             "playerId": "4693ec75-3a99-4577-aef7-0f41d299339c",
-        ///             "playerName": "Presto1",
-        ///             "pictureUrl": null
-        ///         }
-        ///     ],
-        ///     "status": {
-        ///         "status": "PENDING",
-        ///         "currentPlayer": "4693ec75-3a99-4577-aef7-0f41d299339c"
-        ///     },
-        ///         "summary": {
-        ///         "currentMap": "asdf"
-        ///     },
-        ///     "createdAt": 1415641372974,
-        ///     "updatedAt": 1415641372974
-        /// }                                                                     
-        /// </returns>
         public void CreateMatchWithInitialTurn(
             string in_jsonOpponentIds,
             string in_jsonMatchState,
@@ -267,38 +211,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "145677",
-        ///         "ownerId": "2bd7abc6-c2ec-4946-a1a8-02bad38540ad",
-        ///         "matchId": "1aac24b2-7976-4fd7-b7c6-44dere6d26a4",
-        ///         "version": 1,
-        ///         "players": [
-        ///             {
-        ///                 "playerId": "2bd7abc6-c2ec-4946-a1a8-02bad38540ad",
-        ///                 "playerName": "UserB",
-        ///                 "pictureUrl": null
-        ///             },
-        ///             {
-        ///                 "playerId": "11c9dd4d-9ed1-416d-baw2-5228c1efafac",
-        ///                 "playerName": "UserA",
-        ///                 "pictureUrl": null
-        ///             }
-        ///         ],
-        ///         "status": {
-        ///             "status": "PENDING",
-        ///             "currentPlayer": "11c9dd4d-9ed1-416d-baw2-5228c1efafac"
-        ///         },
-        ///         "summary": {
-        ///             "resources": 1234
-        ///         },
-        ///         "createdAt": 1442507219609,
-        ///         "updatedAt": 1442507319700
-        ///     }
-        /// }
-        /// </returns>
         public void SubmitTurn(
             string in_ownerId,
             string in_matchId,
@@ -374,38 +286,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "145677",
-        ///         "ownerId": "2bd723c6-c2ec-4946-a1a8-02b7a38540ad",
-        ///         "matchId": "1aac24b2-7976-4fd7-b7c6-44d7ae6d26a4",
-        ///         "version": 2,
-        ///         "players": [
-        ///             {
-        ///                 "playerId": "2bd723c6-c2ec-4946-a1a8-02b7a38540ad",
-        ///                 "playerName": "UserA",
-        ///                 "pictureUrl": null
-        ///             },
-        ///             {
-        ///                 "playerId": "11c2dd4d-9ed1-416d-bd04-5228c1efafac",
-        ///                 "playerName": "UserB",
-        ///                 "pictureUrl": null
-        ///             }
-        ///         ],
-        ///         "status": {
-        ///             "status": "PENDING",
-        ///             "currentPlayer": "11c2dd4d-9ed1-416d-bd04-5228c1efafac"
-        ///         },
-        ///         "summary": {
-        ///             "resources": 2564
-        ///         },
-        ///         "createdAt": 1442507219609,
-        ///         "updatedAt": 1442507550372
-        ///     }
-        /// }
-        /// </returns>
         public void UpdateMatchSummaryData(
             string in_ownerId,
             string in_matchId,
@@ -453,12 +333,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {}
-        /// }
-        /// </returns>
         public void CompleteMatch(
             string in_ownerId,
             string in_matchId,
@@ -498,38 +372,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "10299",
-        ///         "ownerId": "11c9dd4d-9ed1-416d-bd04-5228c1efafac",
-        ///         "matchId": "0d4c1803-887a-4f20-a2e4-73eeedba411e",
-        ///         "version": 1,
-        ///         "players": [
-        ///             {
-        ///                 "playerId": "11c9dd4d-9ed1-416d-bd04-5228c1efafac",
-        ///                 "playerName": "UserB",
-        ///                 "pictureUrl": null
-        ///             },
-        ///             {
-        ///                 "playerId": "2bd7abc6-c2ec-4946-a1a8-02b7a38540ad",
-        ///                 "playerName": "UserA",
-        ///                 "pictureUrl": null
-        ///             }
-        ///         ],
-        ///         "status": {
-        ///             "status": "PENDING",
-        ///             "currentPlayer": "2bd7abc6-c2ec-4946-a1a8-02b7a38540ad"
-        ///         },
-        ///         "summary": null,
-        ///         "statistics": {},
-        ///         "matchState": {},
-        ///         "createdAt": 1442508171624,
-        ///         "updatedAt": 1442508171632
-        ///     }
-        /// }
-        /// </returns>
         public void ReadMatch(
             string in_ownerId,
             string in_matchId,
@@ -569,30 +411,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "14577",
-        ///         "ownerId": "2bd32bc6-c2ec-4916-a1a8-02b7a38540ad",
-        ///         "matchId": "1aac24b2-7976-4fd7-b7c6-44d32e6d26a4",
-        ///         "turns": [
-        ///             {
-        ///                 "playerId": "2bd32bc6-c2ec-4916-a1a8-02b7a38540ad",
-        ///                 "matchState": {
-        ///                     "color": "red"
-        ///                 },
-        ///                 "createdAt": 1442507319697
-        ///             },
-        ///             {
-        ///                 "playerId": "11c9324d-9ed1-416d-b124-5228c1efafac",
-        ///                 "matchState": {},
-        ///                 "createdAt": 1442507703667
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void ReadMatchHistory(
             string in_ownerId,
             string in_matchId,
@@ -626,45 +444,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": [
-        ///             {
-        ///                 "gameId": "123456",
-        ///                 "ownerId": "7630f98e-1236-4ead-88ee-27ce63b2db2c",
-        ///                 "matchId": "97c8d087-40d8-45c2-aa2b-6d0d83424ec5",
-        ///                 "version": 1,
-        ///                 "players": [
-        ///                     {
-        ///                         "playerId": "7630f98e-13b6-4ead-88ee-27ce63b2db2c",
-        ///                         "playerName": "UserA-122217922",
-        ///                         "pictureUrl": null
-        ///                     },
-        ///                     {
-        ///                         "playerId": "efab2d0b-90a1-48cf-8678-ae81d7aaed89",
-        ///                         "playerName": "UserB-122217922",
-        ///                         "pictureUrl": null
-        ///                     },
-        ///                     {
-        ///                         "playerId": "b28ff14a-364a-40b3-ac4e-d2b23983519c",
-        ///                         "playerName": "UserC-338593317",
-        ///                         "pictureUrl": null
-        ///                     }
-        ///                 ],
-        ///                 "status": {
-        ///                     "status": "PENDING",
-        ///                     "currentPlayer": "efab2d0b-90a1-48cf-8678-ae81d7aaed89"
-        ///                 },
-        ///                 "summary": null,
-        ///                 "createdAt": 1442586020180,
-        ///                 "updatedAt": 1442586020188
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindMatches(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -691,40 +470,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.e is received.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": [
-        ///             {
-        ///                 "gameId": "10170",
-        ///                 "ownerId": "9ad4f990-5466-4d00-a334-de834e1ac4ec",
-        ///                 "matchId": "877dd25d-ea21-4857-ba2a-2134d0f5ace2",
-        ///                 "version": 2,
-        ///                 "players": [
-        ///                     {
-        ///                         "playerId": "9ad4f990-5466-4d00-a334-de834e1ac4ec",
-        ///                         "playerName": "",
-        ///                         "pictureUrl": null
-        ///                     },
-        ///                     {
-        ///                         "playerId": "963a2079-6e7a-48de-a4f2-8ab16c811975",
-        ///                         "playerName": "",
-        ///                         "pictureUrl": null
-        ///                     }
-        ///                 ],
-        ///                 "status": {
-        ///                     "status": "COMPLETE",
-        ///                     "currentPlayer": "963a2079-6e7a-48de-a4f2-8ab16c811975"
-        ///                 },
-        ///                 "summary": null,
-        ///                 "createdAt": 1442586358023,
-        ///                 "updatedAt": 1442586374787
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindCompleteMatches(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -757,12 +502,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {}
-        /// }
-        /// </returns>
         public void AbandonMatch(
             string in_ownerId,
             string in_matchId,
@@ -782,7 +521,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Removes the match and match history from the server. DEBUG ONLY, in production it is recommended
-        ///	the user leave it as completed.
+        /// the user leave it as completed.
         /// </summary>
         /// <remarks>
         /// Service Name - AsyncMatch
@@ -803,12 +542,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {}
-        /// }
-        /// </returns>
         public void DeleteMatch(
             string in_ownerId,
             string in_matchId,

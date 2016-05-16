@@ -42,101 +42,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "milestones": [
-        ///    {
-        ///     "id": "milestone02",
-        ///     "category": "general",
-        ///     "title": "Level 2 milestone",
-        ///     "status": "SATISFIED",
-        ///     "description": "Awarded when you get to level 2",
-        ///     "gameId": "10068",
-        ///     "rewards": {
-        ///      "currency": {
-        ///       "gold": 1000
-        ///      }
-        ///     },
-        ///     "extraData": null,
-        ///     "questId": null,
-        ///     "milestoneId": "milestone02"
-        ///    },
-        ///    {
-        ///     "id": "milestone01",
-        ///     "thresholds": {
-        ///      "playerStatistics": {
-        ///       "experiencePoints": 0
-        ///      }
-        ///     },
-        ///     "category": "general",
-        ///     "title": "Level 1 milestone",
-        ///     "status": "SATISFIED",
-        ///     "description": "Awarded when you get to player level 1",
-        ///     "gameId": "10068",
-        ///     "rewards": {
-        ///      "currency": {
-        ///       "gems": 10
-        ///      }
-        ///     },
-        ///     "extraData": null,
-        ///     "questId": null,
-        ///     "milestoneId": "milestone01"
-        ///    }
-        ///   ],
-        ///   "achievements": [
-        ///    {
-        ///     "fbEnabled": true,
-        ///     "imageUrl": null,
-        ///     "status": "NOT_AWARDED",
-        ///     "gameId": "10068",
-        ///     "steamEnabled": false,
-        ///     "extraData": null,
-        ///     "achievementId": "ach01",
-        ///     "invisibleUntilEarned": false,
-        ///     "steamAchievementId": "",
-        ///     "id": "ach01",
-        ///     "appleEnabled": false,
-        ///     "title": "Finish Tutorial",
-        ///     "fbGamePoints": 10,
-        ///     "description": "Achievement awarded when you finish the tutorial",
-        ///     "appleAchievementId": ""
-        ///    },
-        ///    {
-        ///     "fbEnabled": true,
-        ///     "imageUrl": null,
-        ///     "status": "NOT_AWARDED",
-        ///     "gameId": "10068",
-        ///     "steamEnabled": false,
-        ///     "extraData": null,
-        ///     "achievementId": "ach02",
-        ///     "invisibleUntilEarned": false,
-        ///     "steamAchievementId": "",
-        ///     "id": "ach02",
-        ///     "appleEnabled": false,
-        ///     "title": "Level up",
-        ///     "fbGamePoints": 10,
-        ///     "description": "Awarded when you level up for the first time!",
-        ///     "appleAchievementId": ""
-        ///    }
-        ///   ],
-        ///   "quests": [],
-        ///   "xp": {
-        ///    "xpCapped": false,
-        ///    "experiencePoints": 0,
-        ///    "xpLevel": {
-        ///     "gameId": "10068",
-        ///     "level": 0,
-        ///     "statusTitle": "Lesser",
-        ///     "experience": 0,
-        ///     "fbAction": ""
-        ///    },
-        ///    "experienceLevel": 0
-        ///   }
-        ///  }
-        /// }
-        /// </returns>
         public void ReadAllGamification(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -167,57 +72,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "milestones": [
-        ///       {
-        ///         "gameId": "com.bitheads.unityexample",
-        ///         "milestoneId": "milestone01",
-        ///         "playerStatistics": {
-        ///           "experiencePoints": null,
-        ///           "experienceLevel": null,
-        ///           "empty": true,
-        ///           "statistics": {}
-        ///         },
-        ///         "globalStatistics": {
-        ///           "statistics": {},
-        ///           "empty": true
-        ///         },
-        ///         "playerStatisticsUnlockThresholds": {
-        ///           "experiencePoints": null,
-        ///           "experienceLevel": null,
-        ///           "empty": true,
-        ///           "statistics": {}
-        ///         },
-        ///         "globalStatisticsUnlockThresholds": {
-        ///           "statistics": {},
-        ///           "empty": true
-        ///         },
-        ///         "reward": {
-        ///           "experiencePoints": null,
-        ///           "playerStatistics": null,
-        ///           "currencies": {
-        ///             "gems": 10
-        ///           },
-        ///           "globalGameStatistics": null,
-        ///           "achievement": null
-        ///         },
-        ///         "title": "Level 1 milestone",
-        ///         "extraData": null,
-        ///         "description": "Awarded when you get to player level 1",
-        ///         "category": "general",
-        ///         "key": {
-        ///           "gameId": "com.bitheads.unityexample",
-        ///           "milestoneId": "milestone01",
-        ///           "primaryKey": true
-        ///         }
-        ///       }
-        ///     ]
-        ///   }
-        /// }
-        /// </returns>
         public void ReadMilestones(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -248,47 +102,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "achievements": [
-        ///       {
-        ///         "gameId": "com.bitheads.unityexample",
-        ///         "achievementId": "ach01",
-        ///         "facebookUrl": "http://someurl.com",
-        ///         "title": "Finish Tutorial",
-        ///         "imageUrl": "http://someurl.com",
-        ///         "facebookGamePoints": 10,
-        ///         "extraData": null,
-        ///         "invisibleUntilEarned": null,
-        ///         "description": "Achievement awarded when you finish the tutorial",
-        ///         "key": {
-        ///           "gameId": "com.bitheads.unityexample",
-        ///           "achievementId": "ach01",
-        ///           "primaryKey": true
-        ///         }
-        ///       },
-        ///       {
-        ///         "gameId": "com.bitheads.unityexample",
-        ///         "achievementId": "ach02",
-        ///         "facebookUrl": "http://someurl.com",
-        ///         "title": "Level up",
-        ///         "imageUrl": "http://someurl.com",
-        ///         "facebookGamePoints": 10,
-        ///         "extraData": null,
-        ///         "invisibleUntilEarned": null,
-        ///         "description": "Awarded when you level up for the first time.",
-        ///         "key": {
-        ///           "gameId": "com.bitheads.unityexample",
-        ///           "achievementId": "ach02",
-        ///           "primaryKey": true
-        ///         }
-        ///       }
-        ///     ]
-        ///   }
-        /// }
-        /// </returns>
         public void ReadAchievements(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -320,32 +133,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "xp_levels": [
-        ///    {
-        ///     "level": 1,
-        ///     "statusTitle": "Peon",
-        ///     "experience": 0,
-        ///     "fbAction": ""
-        ///    },
-        ///    {
-        ///     "level": 2,
-        ///     "statusTitle": "Small Fry",
-        ///     "experience": 1000,
-        ///     "fbAction": "",
-        ///     "reward": {
-        ///      "currency": {
-        ///       "gold": 500
-        ///      }
-        ///     }
-        ///    }
-        ///   ]
-        ///  }
-        /// }
-        /// </returns>
         public void ReadXpLevelsMetaData(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -372,14 +159,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "achievements": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadAchievedAchievements(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -411,14 +190,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "milestones": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadCompletedMilestones(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -449,14 +220,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "milestones": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadInProgressMilestones(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -490,14 +253,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "milestones": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadMilestonesByCategory(
             string in_category,
             bool in_includeMetaData = false,
@@ -535,12 +290,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void AwardAchievements(
             IList<string> in_achievementIds,
             SuccessCallback in_success = null,
@@ -571,14 +320,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadQuests(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -610,14 +351,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadCompletedQuests(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -648,14 +381,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadInProgressQuests(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -686,14 +411,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadNotStartedQuests(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -724,14 +441,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadQuestsWithStatus(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -762,14 +471,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadQuestsWithBasicPercentage(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -800,14 +501,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///  {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "quests": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadQuestsWithComplexPercentage(
             bool in_includeMetaData = false,
             SuccessCallback in_success = null,
@@ -841,12 +534,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void ReadQuestsByCategory(
             string in_category,
             bool in_includeMetaData = false,
@@ -882,12 +569,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows.
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void ResetMilestones(
             IList<string> in_milestoneIds,
             SuccessCallback in_success = null,

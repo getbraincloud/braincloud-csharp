@@ -35,19 +35,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statistics":{
-        ///       "minions":0,
-        ///       "wood":50,
-        ///       "pantelons":3,
-        ///       "iron":0
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void ReadAllPlayerStats(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -77,19 +64,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON with the subset of global statistics:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statisticsExceptions":{
-        ///     },
-        ///     "statistics":{
-        ///       "wood":11,
-        ///       "minions":1
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void ReadPlayerStatsSubset(
             IList<string> in_playerStats,
             SuccessCallback in_success = null,
@@ -123,14 +97,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "playerStatistics": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadPlayerStatsForCategory(
             string in_category,
             SuccessCallback in_success = null,
@@ -163,12 +129,6 @@ namespace BrainCloud
         /// The callback object
         ///
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void ResetAllPlayerStats(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -213,55 +173,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the new value of the statistics and any rewards that were triggered:
-        ///  {
-        ///    "status":200,
-        ///    "data":{
-        ///      "experiencePoints":10,
-        ///      "xpCapped":false,
-        ///      "rewardDetails":{
-        ///        "xp":{
-        ///          "experienceLevels":[
-        ///            {
-        ///              "level":1,
-        ///              "rewards":{
-        ///                "currency":{
-        ///                  "gold":1000
-        ///                }
-        ///              }
-        ///            }
-        ///          ]
-        ///        }
-        ///      },
-        ///      "rewards":{
-        ///        "experienceLevels":[
-        ///          1
-        ///        ],
-        ///        "currency":{
-        ///          "gold":1000
-        ///        }
-        ///      },
-        ///      "experienceLevel":1,
-        ///      "statistics":{
-        ///        "LIVES":1
-        ///      },
-        ///      "currency":{
-        ///        "gems":{
-        ///          "purchased":0,
-        ///          "balance":10,
-        ///          "consumed":0,
-        ///          "awarded":10
-        ///        },
-        ///        "gold":{
-        ///          "purchased":0,
-        ///          "balance":2000,
-        ///          "consumed":0,
-        ///          "awarded":2000
-        ///        }
-        ///      }
-        ///    }
-        ///  }
-        /// </returns>
         public void IncrementPlayerStats(
             string in_jsonData,
             SuccessCallback in_success = null,
@@ -313,55 +224,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the new value of the statistics and any rewards that were triggered:
-        ///  {
-        ///    "status":200,
-        ///    "data":{
-        ///      "experiencePoints":10,
-        ///      "xpCapped":false,
-        ///      "rewardDetails":{
-        ///        "xp":{
-        ///          "experienceLevels":[
-        ///            {
-        ///              "level":1,
-        ///              "rewards":{
-        ///                "currency":{
-        ///                  "gold":1000
-        ///                }
-        ///              }
-        ///            }
-        ///          ]
-        ///        }
-        ///      },
-        ///      "rewards":{
-        ///        "experienceLevels":[
-        ///          1
-        ///        ],
-        ///        "currency":{
-        ///          "gold":1000
-        ///        }
-        ///      },
-        ///      "experienceLevel":1,
-        ///      "statistics":{
-        ///        "LIVES":1
-        ///      },
-        ///      "currency":{
-        ///        "gems":{
-        ///          "purchased":0,
-        ///          "balance":10,
-        ///          "consumed":0,
-        ///          "awarded":10
-        ///        },
-        ///        "gold":{
-        ///          "purchased":0,
-        ///          "balance":2000,
-        ///          "consumed":0,
-        ///          "awarded":2000
-        ///        }
-        ///      }
-        ///    }
-        ///  }
-        /// </returns>
         public void IncrementPlayerStats(
             Dictionary<string, object> in_dictData,
             SuccessCallback in_success = null,
@@ -392,35 +254,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the next experience level for the player.
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "xp_level":{
-        ///       "gameId":"com.bitheads.unityexample",
-        ///       "numericLevel":2,
-        ///       "experience":20,
-        ///       "rewards":{
-        ///         "globalGameStatistics":null,
-        ///         "experiencePoints":null,
-        ///         "playerStatistics":null,
-        ///         "achievement":null,
-        ///         "currencies":{
-        ///           "gems":10,
-        ///           "gold":2000
-        ///         }
-        ///       },
-        ///       "facebookAction":"",
-        ///       "statusTitle":"Jester",
-        ///       "key":{
-        ///         "gameId":"com.bitheads.unityexample",
-        ///         "numericLevel":2,
-        ///         "primaryKey":true
-        ///       }
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void GetNextExperienceLevel(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -451,27 +284,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the player's .
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statisticsExceptions":{
-        ///     },
-        ///     "milestones":{
-        ///     },
-        ///     "experiencePoints":110,
-        ///     "quests":{
-        ///     },
-        ///     "experienceLevel":1,
-        ///     "statistics":{
-        ///       "minions":0,
-        ///       "wood":50,
-        ///       "pantelons":3,
-        ///       "iron":0
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void IncrementExperiencePoints(
             int in_xpValue,
             SuccessCallback in_success = null,
@@ -507,12 +319,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows.
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void SetExperiencePoints(
             int in_xpValue,
             SuccessCallback in_success = null,

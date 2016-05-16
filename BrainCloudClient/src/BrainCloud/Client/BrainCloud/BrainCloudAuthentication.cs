@@ -28,8 +28,6 @@ namespace BrainCloud
         /// generates unique ids per client device).
         ///<c/summary>
         /// </param>
-        /// <returns> the id
-        /// </returns>
         public string GenerateGUID()
         {
             Guid newID = Guid.NewGuid();
@@ -475,16 +473,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {}
-        /// }
-        /// 
-        /// Note the follow error reason codes:
-        /// 
-        /// SECURITY_ERROR (40209) - If the email address cannot be found.
-        /// </returns>
         public void ResetEmailPassword(
             string externalId,
             SuccessCallback success = null,

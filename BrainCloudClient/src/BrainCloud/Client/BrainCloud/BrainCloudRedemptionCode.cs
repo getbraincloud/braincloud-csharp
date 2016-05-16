@@ -43,27 +43,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "123456",
-        ///         "scanCode": "1200347",
-        ///         "codeType": "default",
-        ///         "version": 2,
-        ///         "codeState": "Redeemed",
-        ///         "customCodeInfo": {},
-        ///         "customRedemptionInfo": {},
-        ///         "redeemedByProfileId": "28adw61e-5634-49ae-9b09-f61930ce6e43",
-        ///         "redeemedByProfileName": "",
-        ///         "invalidationReason": null,
-        ///         "createdAt": 0,
-        ///         "activatedAt": null,
-        ///         "redeemedAt": 1445875694706,
-        ///         "invalidatedAt": null
-        ///     }
-        /// }
-        /// </returns>
         public void RedeemCode(
             string in_scanCode,
             string in_codeType,
@@ -106,31 +85,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "codes": [
-        ///             {
-        ///                 "gameId": "123456",
-        ///                 "scanCode": "999999",
-        ///                 "codeType": "default",
-        ///                 "version": 2,
-        ///                 "codeState": "Redeemed",
-        ///                 "customCodeInfo": {},
-        ///                 "customRedemptionInfo": {},
-        ///                 "redeemedByProfileId": "28d0745e-5634-49ae-9b09-f61930ce6e43",
-        ///                 "redeemedByProfileName": "",
-        ///                 "invalidationReason": null,
-        ///                 "createdAt": 0,
-        ///                 "activatedAt": null,
-        ///                 "redeemedAt": 1445456503428,
-        ///                 "invalidatedAt": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void GetRedeemedCodes(
             string in_codeType,
             SuccessCallback in_success,

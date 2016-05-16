@@ -257,7 +257,6 @@ namespace BrainCloud
         }
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
-        /// <returns>The sessionId or empty string if no session present.</returns>
         public string SessionID
         {
             get { return m_comms != null ? m_comms.SessionID : ""; }
@@ -594,7 +593,6 @@ namespace BrainCloud
         #region Getters
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
-        /// <returns>The sessionId or empty string if no session present.</returns>
         public string GetSessionId()
         {
             return SessionID;
@@ -605,7 +603,6 @@ namespace BrainCloud
         /// If a session time out or session invalidation is returned from executing a
         /// sever api call, this flag will reset back to false.
         /// </summary>
-        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
         public bool IsAuthenticated()
         {
             return Authenticated;
@@ -614,7 +611,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns true if brainCloud has been initialized.
         /// </summary>
-        /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
         public bool IsInitialized()
         {
             return Initialized;
@@ -857,7 +853,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the list of packet timeouts.
         /// </summary>
-        /// <returns>The packet timeouts.</returns>
         public List<int> GetPacketTimeouts()
         {
             return m_comms.PacketTimeouts;
@@ -883,7 +878,6 @@ namespace BrainCloud
         /// wait to receive a reply to an authentication api call. By default
         /// this timeout is set to 15 seconds.
         /// </summary>
-        /// <returns>The authentication packet timeoutin seconds.</returns>
         public int GetAuthenticationPacketTimeout()
         {
             return m_comms.AuthenticationPacketTimeoutSecs;
@@ -903,7 +897,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the low transfer rate timeout in secs
         /// </summary>
-        /// <returns>The low transfer rate timeout in secs</returns>
         public int GetUploadLowTransferRateTimeout()
         {
             return m_comms.UploadLowTransferRateTimeout;
@@ -925,7 +918,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
-        /// <returns>The low transfer rate threshold in bytes/sec</returns>
         public int GetUploadLowTransferRateThreshold()
         {
             return m_comms.UploadLowTransferRateThreshold;
