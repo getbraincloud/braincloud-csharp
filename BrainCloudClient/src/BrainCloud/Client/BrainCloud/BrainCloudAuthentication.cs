@@ -32,10 +32,9 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Initialize - initializes the identity service with the saved
+        /// Initialize - initializes the identity service with a saved
         /// anonymous installation id and most recently used profile id
         /// </summary>
-        /// </param>
         /// <param name="profileId">
         /// The id of the profile id that was most recently used by the app (on this device)
         /// </param>
