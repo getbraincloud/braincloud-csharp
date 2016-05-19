@@ -22,7 +22,7 @@ namespace BrainCloud
         /// Attach the user's Facebook credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="facebookId">
@@ -56,7 +56,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="facebookId">
@@ -89,7 +89,7 @@ namespace BrainCloud
         /// Detach the Facebook identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="facebookId">
@@ -121,7 +121,7 @@ namespace BrainCloud
         /// Attach a Game Center identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="gameCenterId">
@@ -148,7 +148,7 @@ namespace BrainCloud
         /// <summary>Merge the profile associated with the specified Game Center identity with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="gameCenterId">
@@ -174,7 +174,7 @@ namespace BrainCloud
 
         /// <summary>Detach the Game Center identity from the current profile.</summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="gameCenterId">
@@ -206,7 +206,7 @@ namespace BrainCloud
         /// Attach a Email and Password identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="email">
@@ -238,7 +238,7 @@ namespace BrainCloud
         // Merge the profile associated with the provided e=mail with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="email">
@@ -269,7 +269,7 @@ namespace BrainCloud
         /// <summary>Detach the e-mail identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="email">
@@ -301,7 +301,7 @@ namespace BrainCloud
         /// Attach a Universal (userId + password) identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="userId">
@@ -333,7 +333,7 @@ namespace BrainCloud
         /// Merge the profile associated with the provided e=mail with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="userId">
@@ -364,7 +364,7 @@ namespace BrainCloud
         /// <summary>Detach the universal identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="userId">
@@ -396,7 +396,7 @@ namespace BrainCloud
         /// Attach a Steam (userId + steamsessionticket) identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="steamId">
@@ -428,7 +428,7 @@ namespace BrainCloud
         /// Merge the profile associated with the provided steam userId with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="steamId">
@@ -459,7 +459,7 @@ namespace BrainCloud
         /// <summary>Detach the steam identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="steamId">
@@ -491,7 +491,7 @@ namespace BrainCloud
         /// Attach the user's Google credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="googleId">
@@ -525,7 +525,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="googleId">
@@ -558,7 +558,7 @@ namespace BrainCloud
         /// Detach the Google identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="googleId">
@@ -590,7 +590,7 @@ namespace BrainCloud
         /// Attach the user's Twitter credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="twitterId">
@@ -627,7 +627,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="twitterId">
@@ -663,7 +663,7 @@ namespace BrainCloud
         /// Detach the Twitter identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="twitterId">
@@ -695,7 +695,7 @@ namespace BrainCloud
         /// Attach the user's Parse credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="parseId">
@@ -729,7 +729,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="parseId">
@@ -762,7 +762,7 @@ namespace BrainCloud
         /// Detach the Parse identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="parseId">
@@ -794,7 +794,7 @@ namespace BrainCloud
         /// Switch to a Child Profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="childProfileId">
@@ -832,7 +832,7 @@ namespace BrainCloud
         /// If multiple profiles exist this returns an error
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="childGameId">
@@ -864,7 +864,7 @@ namespace BrainCloud
         /// Switch to a Parent Profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_PARENT_PROFILE
         /// </remarks>
         /// <param name="parentLevelName">
@@ -897,7 +897,7 @@ namespace BrainCloud
         /// Returns a list of all child profiles in child Apps
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - GET_CHILD_PROFILES
         /// </remarks>
         /// <param name="includeSummaryData">
@@ -925,6 +925,31 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetChildProfiles, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Retrieve list of identities
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_IDENTITIES
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetIdentities(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetIdentities, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        #region Private Methods
 
         private void AttachIdentity(string externalId, string authenticationToken, AuthenticationType authenticationType, SuccessCallback success, FailureCallback failure,
             object cbObject)
@@ -988,5 +1013,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        #endregion
     }
 }
