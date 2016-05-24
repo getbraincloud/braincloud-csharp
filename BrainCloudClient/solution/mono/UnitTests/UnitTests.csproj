@@ -67,6 +67,7 @@
       <HintPath>..\..\..\tests\NUnit\lib\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\tests\TestAuthenticate.cs">

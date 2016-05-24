@@ -8,10 +8,7 @@
 // conversion classes required by JsonFx
 
 #if !DOT_NET
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace BrainCloud.Internal
 {
@@ -22,7 +19,7 @@ namespace BrainCloud.Internal
 
         private JsonFxAOT()
         {
-            System.ComponentModel.TypeConverter c;
+            TypeConverter c;
 
             c = new ArrayConverter();
             m_fakeFlag = c.Equals(c);
@@ -76,7 +73,7 @@ namespace BrainCloud.Internal
         {
             return m_fakeFlag;
         }
-        private JsonFxAOT GetAOT() 
+        private JsonFxAOT GetAOT()
         {
             return m_aot;
         }

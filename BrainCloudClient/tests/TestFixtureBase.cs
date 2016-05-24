@@ -19,6 +19,8 @@ namespace BrainCloudTests
         protected string ChildAppId = "";
         protected string ParentLevel = "";
 
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
+
         [SetUp]
         public void Setup()
         {
@@ -86,14 +88,13 @@ namespace BrainCloudTests
                 {
                     var data = JsonReader.Deserialize(message);
                     var sb = new StringBuilder();
-                    var settings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
-                    var writer = new JsonWriter(sb, settings);
+                    var writer = new JsonWriter(sb, _writerSettings);
                     writer.Write(data);
                     message = sb.ToString();
                 }
                 catch (JsonDeserializationException e)
                 {
-
+                    Console.WriteLine(e.Message);
                 }
 
                 message = string.Format("\r\n{0}\r\n{1}", prefix, message);
