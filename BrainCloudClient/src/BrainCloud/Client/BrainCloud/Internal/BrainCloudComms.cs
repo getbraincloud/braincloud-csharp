@@ -1095,7 +1095,7 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            _brainCloudClientRef.Log("OUTGOING "
+            _brainCloudClientRef.Log("OUTGOING"
                           + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
                           + jsonRequestString);
 
@@ -1167,7 +1167,7 @@ namespace BrainCloud.Internal
 
                 ResetIdleTimer();
 
-                _brainCloudClientRef.Log("OUTGOING "
+                _brainCloudClientRef.Log("OUTGOING"
                                           + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
                                           + jsonRequestString);
             }

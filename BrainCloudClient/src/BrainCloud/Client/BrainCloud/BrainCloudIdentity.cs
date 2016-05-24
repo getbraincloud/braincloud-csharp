@@ -949,6 +949,29 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Retrieve list of expired identities
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_EXPIRED_IDENTITIES
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetExpiredIdentities(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetExpiredIdentities, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         #region Private Methods
 
         private void AttachIdentity(string externalId, string authenticationToken, AuthenticationType authenticationType, SuccessCallback success, FailureCallback failure,

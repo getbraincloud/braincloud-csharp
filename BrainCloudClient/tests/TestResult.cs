@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Threading;
-using System;
-using NUnit.Core;
 using NUnit.Framework;
 using JsonFx.Json;
 using BrainCloud;
@@ -14,10 +12,10 @@ namespace BrainCloudTests
         public bool m_done;
         public bool m_result;
         public int m_apiCountExpected;
-        
+
         // if success
         public Dictionary<string, object> m_response;
-        
+
         // if error
         public int m_statusCode;
         public int m_reasonCode;
@@ -27,7 +25,7 @@ namespace BrainCloudTests
         public int m_networkErrorCount;
 
         public TestResult()
-        {}
+        { }
 
         public void Reset()
         {
@@ -53,9 +51,9 @@ namespace BrainCloudTests
             m_apiCountExpected = in_apiCount;
 
             Spin();
-            
+
             Assert.True(m_result);
-            
+
             return m_result;
         }
 
@@ -92,7 +90,7 @@ namespace BrainCloudTests
         public void ApiError(int statusCode, int reasonCode, string jsonError, object cb)
         {
             m_statusCode = statusCode;
-            m_reasonCode = reasonCode; 
+            m_reasonCode = reasonCode;
             m_statusMessage = jsonError;
             m_result = false;
             --m_apiCountExpected;
@@ -138,10 +136,10 @@ namespace BrainCloudTests
         private void Spin()
         {
             long maxWait = m_timeToWaitSecs * 1000;
-            while(!m_done && maxWait > 0)
+            while (!m_done && maxWait > 0)
             {
-                BrainCloudClient.Get ().Update();
-                Thread.Sleep (10);
+                BrainCloudClient.Get().Update();
+                Thread.Sleep(10);
                 maxWait -= 10;
             }
         }

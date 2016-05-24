@@ -78,5 +78,13 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+
+        [Test]
+        public void TestGetExpiredIdentites()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.GetExpiredIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
