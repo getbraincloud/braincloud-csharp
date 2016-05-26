@@ -48,32 +48,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"matchedCount": 20,
-        /// 		"matches": [{
-        /// 			"profileId": "17c7ee96-1b73-43d0-8817-cba1953bbf57",
-        /// 			"profileName": "Donald Trump",
-        /// 			"playerSummaryData": {}
-        /// }, {
-        /// 			"profileId": "19d7ee96-2x73-43d0-8817-cba1953bbf57",
-        /// 			"profileName": "Donald Duck",
-        /// 			"playerSummaryData": {}
-        /// 		}]
-        /// 	}
-        /// }
-        /// 
-        /// Alternatively, if there are too many results: 
-        /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"matchedCount": 2059,
-        /// 		"message": "Too many results to return."
-        /// 	}
-        /// }
-        /// </returns>
         public void FindPlayerByUniversalId(
             string searchText,
             int maxResults,
@@ -112,17 +86,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// {
-        ///   "status":200,
-        ///   "data": {
-        ///     "playerId" : "17c7ee96-1b73-43d0-8817-cba1953bbf57",
-        ///     "playerName" : "Donald Trump",
-        ///     "email" : "donald@trumpcastle.com",
-        ///     "playerSummaryData" : {},
-        ///   }
-        /// }
-        /// </returns>
         public void GetFriendProfileInfoForExternalId(
             string in_externalId,
             string in_authenticationType,
@@ -161,14 +124,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"externalId": "19e1c0cf-9a2d-4d5c-9a71-1b0f6b309b4b"
-        /// 	}
-        /// }
-        /// </returns>
         public void GetExternalIdForProfileId(
             string in_profileId,
             string in_authenticationType,
@@ -207,8 +162,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// </returns>
         public void ReadFriendEntity(
             string in_entityId,
             string in_friendId,
@@ -244,8 +197,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// </returns>
         public void ReadFriendsEntities(
             string in_entityType,
             SuccessCallback in_success = null,
@@ -294,8 +245,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback
-        /// </returns>
         public void ReadFriendPlayerState(
             string friendId,
             SuccessCallback in_success = null,
@@ -333,21 +282,6 @@ namespace BrainCloud
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
         /// 
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "matches": [
-        ///             {
-        ///                 "profileId": "63d1fdbd-2971-4791-a248-f8cda1a79bba",
-        ///                 "playerSummaryData": null,
-        ///                 "profileName": "ABC"
-        ///             }
-        ///         ],
-        ///         "matchedCount": 1
-        ///     }
-        /// }
-        /// </returns>
         public void FindPlayerByName(
             string in_searchText,
             int in_maxResults,
@@ -377,79 +311,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// Example 1: for friendPlatform = All
-        /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"friends": [{
-        /// 			"externalData": {
-        /// 				"Facebook": {
-        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfp1/v/t1.0-1/p50x50/XXX.jpg?oh=YYY&oe=ZZZ",
-        /// 					"name": "scientist at large",
-        /// 					"externalId": "100003668521730"
-        /// 
-        ///                 },
-        /// 				"brainCloud": {}
-        /// 			},
-        /// 			"playerId": "1aa3428c-5877-4624-a909-f2b1af931f00",
-        /// 			"name": "Mr. Peabody",
-        /// 			"summaryFriendData": {
-        /// 				"LEVEL": -4
-        /// 			}
-        /// 		}, {
-        /// 			"externalData": {
-        /// 				"Facebook": {
-        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfa1/v/t1.0-1/c0.11.50.50/p50x50/3AAA.jpg?oh=BBBa&oe=CCC",
-        /// 					"name": "Aquaman",
-        /// 					"externalId": "100003509724516"
-        /// 				}
-        /// 			},
-        /// 			"playerId": "1598c5b6-1b09-431b-96bc-9c2c928cad3b",
-        /// 			"name": null,
-        /// 			"summaryFriendData": {
-        /// 				"LEVEL": 1
-        /// 			}
-        /// 		}],
-        /// 		"server_time": 1458224807855
-        /// 	}
-        /// }
-        /// 
-        /// Example 2: for friendPlatform = Facebook
-        /// {
-        /// 	"status": 200,
-        /// 	"data": {
-        /// 		"friends": [{
-        /// 			"externalData": {
-        /// 				"Facebook": {
-        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfp1/v/t1.0-1/p50x50/XXX.jpg?oh=YYY&oe=ZZZ",
-        /// 					"name": "scientist at large",
-        /// 					"externalId": "100003668521730"
-        /// 				}
-        /// 			},
-        /// 			"playerId": "1aa3428c-5877-4624-a909-f2b1af931f00",
-        /// 			"name": "Mr. Peabody",
-        /// 			"summaryFriendData": {
-        /// 				"LEVEL": -4
-        /// 			}
-        /// 		}, {
-        /// 			"externalData": {
-        /// 				"Facebook": {
-        /// 					"pictureUrl": "https://scontent.xx.fbcdn.net/hprofile-xfa1/v/t1.0-1/c0.11.50.50/p50x50/3AAA.jpg?oh=BBBa&oe=CCC",
-        /// 					"name": "Aquaman",
-        /// 					"externalId": "100003509724516"
-        /// 				}
-        /// 			},
-        /// 			"playerId": "1598c5b6-1b09-431b-96bc-9c2c928cad3b",
-        /// 			"name": null,
-        /// 			"summaryFriendData": {
-        /// 				"LEVEL": 1
-        /// 			}
-        /// 		}],
-        /// 		"server_time": 1458224807855
-        /// 	}
-        /// }
-        /// </returns>
         public void ListFriends(
             FriendPlatform friendPlatform,
             bool includeSummaryData,
@@ -478,12 +339,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        /// 	"status": 200,
-        /// 	"data": null
-        /// }
-        /// </returns>
         public void AddFriends(
             IList<string> profileIds,
             SuccessCallback in_success = null,
@@ -510,12 +365,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        /// 	"status": 200,
-        /// 	"data": null
-        /// }
-        /// </returns>
         public void RemoveFriends(
             IList<string> profileIds,
             SuccessCallback in_success = null,

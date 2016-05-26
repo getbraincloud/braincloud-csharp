@@ -199,23 +199,14 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\ListWrapperEnumerator.cs">
       <Link>BrainCloud\Entity\Internal\ListWrapperEnumerator.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\AsynchRequestAndResponse.cs">
-      <Link>BrainCloud\Internal\AsynchRequestAndResponse.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
       <Link>BrainCloud\Internal\FileUploader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ITimer.cs">
-      <Link>BrainCloud\Internal\ITimer.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
       <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\MultiThreadedTimer.cs">
-      <Link>BrainCloud\Internal\MultiThreadedTimer.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
@@ -234,9 +225,6 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
       <Link>BrainCloud\Internal\ServiceOperation.cs</Link>
-    </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\SingleThreadedTimer.cs">
-      <Link>BrainCloud\Internal\SingleThreadedTimer.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\MD5Unity.cs">
       <Link>BrainCloud\MD5Unity.cs</Link>

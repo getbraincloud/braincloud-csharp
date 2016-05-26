@@ -83,44 +83,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// Note that the friend summary data is returned for each record
-        /// in the leaderboard.
-        ///
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "social_leaderboard": [
-        ///       {
-        ///         "updatedAt": 1395840936348,
-        ///         "pictureUrl": null,
-        ///         "playerId": "26f8bb07-3e94-458b-8485-f9031c3a6ef1",
-        ///         "createdAt": 1395840936348,
-        ///         "name": "You",
-        ///         "otherData": null,
-        ///         "authenticationType": null,
-        ///         "externalId": null,
-        ///         "summaryFriendData": null,
-        ///         "score": 20000
-        ///       },
-        ///       {
-        ///         "updatedAt": 1395840936351,
-        ///         "pictureUrl": null,
-        ///         "playerId": "3ad8bc09-4a34-e324-1231-3b2c1c3a6bc6",
-        ///         "createdAt": 1395840936351,
-        ///         "name": "Jenny Goldsmith",
-        ///         "otherData": null,
-        ///         "authenticationType": null,
-        ///         "externalId": null,
-        ///         "summaryFriendData": null,
-        ///         "score": 10000
-        ///       }
-        ///     ],
-        ///     "timeBeforeReset": 588182412,
-        ///     "server_time": 1395840957588
-        ///   }
-        /// }
-        /// </returns>
         public void GetSocialLeaderboard(
             string leaderboardId,
             bool replaceName,
@@ -163,64 +125,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// Note that the friend summary data is returned for each record
-        /// in the leaderboard.
-        ///
-        /// {
-        ///   "server_time": 1445952203123,
-        ///   "leaderboards": [
-        ///    {
-        ///     "leaderboardId": "default",
-        ///     "leaderboard": [
-        ///      {
-        ///       "externalId": "pacer5",
-        ///       "name": "Rollo",
-        ///       "pictureUrl": "http://localhost:8080/gameserver/s3/portal/g/eggies/metadata/pacers/pacer5.png",
-        ///       "playerId": "pacer5",
-        ///       "authenticationType": null,
-        ///       "score": 100000,
-        ///       "data": {
-        ///        "pacerTag": null,
-        ///        "pacerLeaderboardTag": {}
-        ///       },
-        ///       "createdAt": null,
-        ///       "updatedAt": null
-        ///      },
-        ///      {
-        ///       "externalId": "pacer4",
-        ///       "name": "Chirp",
-        ///       "pictureUrl": "http://localhost:8080/gameserver/s3/portal/g/eggies/metadata/pacers/pacer4.png",
-        ///       "playerId": "pacer4",
-        ///       "authenticationType": null,
-        ///       "score": 80000,
-        ///       "data": {
-        ///        "pacerTag": null,
-        ///        "pacerLeaderboardTag": {}
-        ///       },
-        ///       "createdAt": null,
-        ///       "updatedAt": null
-        ///      }
-        ///     ],
-        ///     "self": {
-        ///      "externalId": null,
-        ///      "name": null,
-        ///      "pictureUrl": null,
-        ///      "playerId": "49390659-33bd-4812-b0c4-ab04e614ec98",
-        ///      "authenticationType": null,
-        ///      "score": 10,
-        ///      "data": {
-        ///       "nickname": "batman"
-        ///      },
-        ///      "createdAt": 1445952060607,
-        ///      "updatedAt": 1445952060607,
-        ///      "summaryFriendData": null
-        ///     },
-        ///     "selfIndex": 5
-        ///    }
-        ///   ]
-        ///  }
-        ////
         public void GetMultiSocialLeaderboard(IList<string> leaderboardIds,
                                               int leaderboardResultCount,
                                               bool replaceName,
@@ -274,52 +178,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// Note that the friend summary data is returned for each record
-        /// in the leaderboard.
-        ///
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "leaderboardId": "abc",
-        ///   "moreBefore": false,
-        ///   "timeBeforeReset": 48085996,
-        ///   "leaderboard": [
-        ///    {
-        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
-        ///     "score": 10,
-        ///     "data": {
-        ///      "nickname": "batman"
-        ///     },
-        ///     "createdAt": 1433863814394,
-        ///     "updatedAt": 1433863814394,
-        ///     "index": 0,
-        ///     "rank": 1,
-        ///     "name": "",
-        ///     "summaryFriendData": {
-        ///      "xp": 12,
-        ///      "favColour": "red"
-        ///     }
-        ///    },
-        ///    {
-        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
-        ///     "score": 8,
-        ///     "data": {
-        ///      "nickname": "robin"
-        ///     },
-        ///     "createdAt": 1433864253221,
-        ///     "updatedAt": 1433864253221,
-        ///     "index": 1,
-        ///     "rank": 2,
-        ///     "name": "",
-        ///     "summaryFriendData": null
-        ///    }
-        ///   ],
-        ///   "server_time": 1433864314004,
-        ///   "moreAfter": false
-        ///  }
-        /// }
-        /// </returns>
         public void GetGlobalLeaderboardPage(
             string leaderboardId,
             SortOrder sort,
@@ -378,10 +236,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// See GetGlobalLeaderboardPage documentation. Note that historial leaderboards do not
-        /// include the 'timeBeforeReset' parameter.
-        /// </returns>
         public void GetGlobalLeaderboardPageByVersion(
             string leaderboardId,
             SortOrder sort,
@@ -440,52 +294,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// Note that the friend summary data is returned for each record
-        /// in the leaderboard.
-        ///
-        /// {
-        ///  "status": 200,
-        ///  "data": {
-        ///   "leaderboardId": "abc",
-        ///   "moreBefore": false,
-        ///   "timeBeforeReset": 48085996,
-        ///   "leaderboard": [
-        ///    {
-        ///     "playerId": "8c86f306-73ea-4536-9c92-aba086064d2c",
-        ///     "score": 10,
-        ///     "data": {
-        ///      "nickname": "batman"
-        ///     },
-        ///     "createdAt": 1433863814394,
-        ///     "updatedAt": 1433863814394,
-        ///     "index": 0,
-        ///     "rank": 1,
-        ///     "name": "",
-        ///     "summaryFriendData": {
-        ///      "xp": 12,
-        ///      "favColour": "red"
-        ///     }
-        ///    },
-        ///    {
-        ///     "playerId": "ab21c0af-9d3e-4a81-b3c8-ddc1fb77d9a1",
-        ///     "score": 8,
-        ///     "data": {
-        ///      "nickname": "robin"
-        ///     },
-        ///     "createdAt": 1433864253221,
-        ///     "updatedAt": 1433864253221,
-        ///     "index": 1,
-        ///     "rank": 2,
-        ///     "name": "",
-        ///     "summaryFriendData": null
-        ///    }
-        ///   ],
-        ///   "server_time": 1433864314004,
-        ///   "moreAfter": false
-        ///  }
-        /// }
-        /// </returns>
         public void GetGlobalLeaderboardView(
             string leaderboardId,
             SortOrder sort,
@@ -544,10 +352,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON string representing the entries in the leaderboard.
-        /// See GetGlobalLeaderboardView documentation. Note that historial leaderboards do not
-        /// include the 'timeBeforeReset' parameter.
-        /// </returns>
         public void GetGlobalLeaderboardViewByVersion(
             string leaderboardId,
             SortOrder sort,
@@ -586,30 +390,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-        /// <returns> JSON string representing the leaderboard versions.
-        /// {
-        ///   "status": 200, 
-        ///   "data": {
-        ///     "leaderboardId":"L1",
-        ///     "leaderboardType":"HIGH_VALUE",
-        ///     "rotationType":"WEEKLY",
-        ///     "retainedCount":2,
-        ///     "versions":[  
-        ///        {  
-        ///         "versionId":27,
-        ///         "startingAt":1434499200000,
-        ///         "endingAt":1435104000000
-        ///        },
-        ///        {  
-        ///         "versionId":26,
-        ///         "startingAt":1433894400000,
-        ///         "endingAt":1434499200000
-        ///        }
-        ///        ]
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void GetGlobalLeaderboardVersions(
             string leaderboardId,
             SuccessCallback success = null,
@@ -684,12 +464,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void PostScoreToLeaderboard(
             string leaderboardId,
             long score,
@@ -753,13 +527,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///   }
-        /// }
-        /// </returns>
         public void PostScoreToDynamicLeaderboard(
             string leaderboardId,
             long score,
@@ -812,12 +579,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void ResetLeaderboardScore(
             string leaderboardId,
             SuccessCallback success = null,
@@ -868,14 +629,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///   //same as GetLeaderboard
-        ///   }
-        /// }
-        /// </returns>
         public void GetCompletedLeaderboardTournament(
             string leaderboardId,
             bool replaceName,
@@ -919,13 +672,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///   }
-        /// }
-        /// </returns>
         public void TriggerSocialLeaderboardTournamentReward(
             string leaderboardId,
             string eventName,

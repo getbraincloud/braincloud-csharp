@@ -32,29 +32,6 @@ namespace BrainCloud
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        /// <returns> A bool which is false if the file cannot be found, or file size cannot be determind.
-        /// Otherwise the JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileDetails": {
-        ///             "updatedAt": 1452616408147,
-        ///             "fileSize": 100,
-        ///             "fileType": "User",
-        ///             "expiresAt": 1452702808146,
-        ///             "shareable": true,
-        ///             "uploadId": "cf9a075c-587e-4bd1-af0b-eab1a79b958f",
-        ///             "createdAt": 1452616408147,
-        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        ///             "gameId": "99999",
-        ///             "path": "dir1/dir2",
-        ///             "fileName": "fileName",
-        ///             "replaceIfExists": true,
-        ///             "cloudPath": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/dir1/dir2/fileName"
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public bool UploadFile(
             string cloudPath,
             string cloudFilename,
@@ -109,7 +86,6 @@ namespace BrainCloud
         /// NOTE: This will always return 1 on Unity mobile platforms.
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
-        /// <returns></returns>
         public double GetUploadProgress(string uploadId)
         {
             return m_brainCloudClientRef.Comms.GetUploadProgress(uploadId);
@@ -120,7 +96,6 @@ namespace BrainCloud
         /// NOTE: This will always return the total bytes to transfer on Unity mobile platforms.
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
-        /// <returns>Total bytes transfered</returns>
         public long GetUploadBytesTransferred(string uploadId)
         {
             return m_brainCloudClientRef.Comms.GetUploadBytesTransferred(uploadId);
@@ -130,7 +105,6 @@ namespace BrainCloud
         /// Returns the total number of bytes that will be uploaded or -1 if upload not found.
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
-        /// <returns>Total bytes to transfer</returns>
         public long GetUploadTotalBytesToTransfer(string uploadId)
         {
             return m_brainCloudClientRef.Comms.GetUploadTotalBytesToTransfer(uploadId);
@@ -142,27 +116,6 @@ namespace BrainCloud
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileList": [{
-        ///             "updatedAt": 1452603368201,
-        ///             "uploadedAt": null,
-        ///             "fileSize": 85470,
-        ///             "shareable": true,
-        ///             "createdAt": 1452603368201,
-        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        ///             "gameId": "99999",
-        ///             "path": "test2",
-        ///             "fileName": "testup.dat",
-        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        ///
-        ///         }]
-        ///     }
-        /// }
-        /// </returns>
         public void ListUserFiles(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -179,27 +132,6 @@ namespace BrainCloud
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileList": [{
-        ///             "updatedAt": 1452603368201,
-        ///             "uploadedAt": null,
-        ///             "fileSize": 85470,
-        ///             "shareable": true,
-        ///             "createdAt": 1452603368201,
-        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        ///             "gameId": "99999",
-        ///             "path": "test2",
-        ///             "fileName": "testup.dat",
-        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        ///
-        ///         }]
-        ///     }
-        /// }
-        /// </returns>
         public void ListUserFiles(
             string cloudPath,
             bool? recurse,
@@ -227,26 +159,6 @@ namespace BrainCloud
         /// <param name="success"></param>
         /// <param name="failure"></param>
         /// <param name="cbObject"></param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileDetails": {
-        ///             "updatedAt": 1452603368201,
-        ///             "uploadedAt": null,
-        ///             "fileSize": 85470,
-        ///             "shareable": true,
-        ///             "createdAt": 1452603368201,
-        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        ///             "gameId": "99999",
-        ///             "path": "test2",
-        ///             "fileName": "testup.dat",
-        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void DeleteUserFile(
             string cloudPath,
             string cloudFileName,
@@ -272,26 +184,6 @@ namespace BrainCloud
         /// <param name="success"></param>
         /// <param name="failure"></param>
         /// <param name="cbObject"></param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileList": [{
-        ///             "updatedAt": 1452603368201,
-        ///             "uploadedAt": null,
-        ///             "fileSize": 85470,
-        ///             "shareable": true,
-        ///             "createdAt": 1452603368201,
-        ///             "profileId": "bf8a8733-62d2-448e-b396-f3dbffff44",
-        ///             "gameId": "99999",
-        ///             "path": "test2",
-        ///             "fileName": "testup.dat",
-        ///             "downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat",
-        ///             "cloudLocation": "bc/g/99999/u/bf8a8733-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"
-        ///         }]
-        ///     }
-        /// }
-        /// </returns>
         public void DeleteUserFiles(
             string cloudPath,
             bool recurse,

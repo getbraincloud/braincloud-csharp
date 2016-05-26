@@ -32,25 +32,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///    "status": 200,
-        ///    "data": {
-        ///        "playbackStreamId": "d18719db-9d02-2341-b62f-8e2f013369be",
-        ///        "initiatingPlayerId": "d175f6ac-9221-4adc-aea4-f25f2426ff62",
-        ///        "targetPlayerId": "07a0d23e-996b-4488-90ae-cb438342423a54",
-        ///        "status": "STARTED",
-        ///        "summary": {},
-        ///        "initialSharedData": {
-        ///            "entities": [],
-        ///            "statistics": {}
-        ///        },
-        ///        "events": [],
-        ///        "createdAt": 1437419496282,
-        ///        "updatedAt": 1437419496282
-        ///    }
-        /// }
-        /// </returns>
         public void StartMatch(
             string in_otherPlayerId,
             long in_rangeDelta,
@@ -86,12 +67,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void CancelMatch(
             string in_playbackStreamId,
             SuccessCallback in_success = null,
@@ -125,12 +100,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void CompleteMatch(
             string in_playbackStreamId,
             SuccessCallback in_success = null,

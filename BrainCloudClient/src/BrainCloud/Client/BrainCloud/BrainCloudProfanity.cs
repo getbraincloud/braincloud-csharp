@@ -33,22 +33,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback.</param>
         /// <param name="in_failure">The failure callback.</param>
         /// <param name="in_cbObject">The user object sent to the callback.</param>
-        /// <returns>The JSON returned is as follows:
-        /// {
-        ///     "status" : 200,
-        ///     "data" :
-        ///     {
-        ///          "foundCount": "1"
-        ///     }
-        /// }
-        ///
-        /// Significant error codes:
-        ///
-        /// 40421 - WebPurify not configured
-        /// 40422 - General exception occurred
-        /// 40423 - WebPurify returned an error (Http status != 200)
-        /// 40424 - WebPurify not enabled
-        /// </returns>
         public void ProfanityCheck(
             string in_text,
             string in_languages,
@@ -91,23 +75,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback.</param>
         /// <param name="in_failure">The failure callback.</param>
         /// <param name="in_cbObject">The user object sent to the callback.</param>
-        /// <returns>The JSON returned is as follows:
-        /// {
-        ///     "status" : 200,
-        ///     "data" :
-        ///     {
-        ///          "foundCount": "2",
-        ///          "replaceString: "****** hello ****"
-        ///     }
-        /// }
-        ///
-        /// Significant error codes:
-        ///
-        /// 40421 - WebPurify not configured
-        /// 40422 - General exception occurred
-        /// 40423 - WebPurify returned an error (Http status != 200)
-        /// 40424 - WebPurify not enabled
-        /// </returns>
         public void ProfanityReplaceText(
             string in_text,
             string in_replaceSymbol,
@@ -151,23 +118,6 @@ namespace BrainCloud
         /// <param name="in_success">The success callback.</param>
         /// <param name="in_failure">The failure callback.</param>
         /// <param name="in_cbObject">The user object sent to the callback.</param>
-        /// <returns>The JSON returned is as follows:
-        /// {
-        ///     "status" : 200,
-        ///     "data" :
-        ///     {
-        ///          "foundCount": "2",
-        ///          "foundList" : [ "bubby", "poop" ]
-        ///     }
-        /// }
-        ///
-        /// Significant error codes:
-        ///
-        /// 40421 - WebPurify not configured
-        /// 40422 - General exception occurred
-        /// 40423 - WebPurify returned an error (Http status != 200)
-        /// 40424 - WebPurify not enabled
-        /// </returns>
         public void ProfanityIdentifyBadWords(
             string in_text,
             string in_languages,

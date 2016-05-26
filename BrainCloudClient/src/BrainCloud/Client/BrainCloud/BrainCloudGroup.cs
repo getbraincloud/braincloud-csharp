@@ -41,12 +41,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void AcceptGroupInvitation(
             string groupId,
             SuccessCallback success = null,
@@ -81,12 +75,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void AddGroupMember(
             string groupId,
             string profileId,
@@ -131,12 +119,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void ApproveGroupJoinRequest(
             string groupId,
             string profileId,
@@ -176,12 +158,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void CancelGroupInvitation(
             string groupId,
             string profileId,
@@ -227,38 +203,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "20595",
-        ///         "groupId": "211559ef-234a-4aef-a643-48a90a6036c2",
-        ///         "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///         "name": "my-group-name",
-        ///         "groupType": "TestGroup",
-        ///         "createdAt": 1461613090251,
-        ///         "updatedAt": 1461613090251,
-        ///         "members": {
-        ///             "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///                 "role": "OWNER",
-        ///                 "attributes": {}
-        ///             }
-        ///         },
-        ///         "pendingMembers": {},
-        ///         "version": 1,
-        ///         "data": {},
-        ///         "isOpenGroup": false,
-        ///         "defaultMemberAttributes": {},
-        ///         "memberCount": 1,
-        ///         "invitedPendingMemberCount": 0,
-        ///         "requestingPendingMemberCount": 0,
-        ///         "acl": {
-        ///             "member": 2,
-        ///             "other": 1
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void CreateGroup(
             string name,
             string groupType,
@@ -311,26 +255,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "20595",
-        ///         "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///         "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///         "ownerId": null,
-        ///         "entityType": "BLUE",
-        ///         "createdAt": 1462812680359,
-        ///         "updatedAt": 1462812680359,
-        ///         "version": 1,
-        ///         "data": {},
-        ///         "acl": {
-        ///             "member": 2,
-        ///             "other": 1
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void CreateGroupEntity(
             string groupId,
             string entityType,
@@ -367,12 +291,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void DeleteGroup(
             string groupId,
             long version,
@@ -406,12 +324,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void DeleteGroupEntity(
             string groupId,
             string entityId,
@@ -437,41 +349,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "groups": [
-        ///             {
-        ///                 "gameId": "20595",
-        ///                 "groupId": "4f176781-e65e-42ce-b24f-9d39449380d5",
-        ///                 "ownerId": "ee8cad26-16f2-4ef8-9045-3aab84ce6362",
-        ///                 "name": "temp-group-name",
-        ///                 "groupType": "test2",
-        ///                 "createdAt": 1462222320554,
-        ///                 "updatedAt": 1462222320554,
-        ///                 "members": {
-        ///                     "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///                         "role": "OWNER",
-        ///                         "attributes": {}
-        ///                     }
-        ///                 },
-        ///                 "pendingMembers": {},
-        ///                 "version": 1,
-        ///                 "data": {},
-        ///                 "isOpenGroup": false,
-        ///                 "defaultMemberAttributes": {},
-        ///                 "memberCount": 1,
-        ///                 "invitedPendingMemberCount": 0,
-        ///                 "requestingPendingMemberCount": 0,
-        ///                 "acl": {
-        ///                     "other": 1
-        ///                 }
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void GetMyGroups(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -499,12 +376,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void IncrementGroupData(
             string groupId,
             string jsonData,
@@ -543,12 +414,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void IncrementGroupEntityData(
             string groupId,
             string entityId,
@@ -589,12 +454,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void InviteGroupMember(
             string groupId,
             string profileId,
@@ -626,12 +485,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void JoinGroup(
             string groupId,
             SuccessCallback success = null,
@@ -657,12 +510,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void LeaveGroup(
             string groupId,
             SuccessCallback success = null,
@@ -687,32 +534,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": false,
-        ///             "count": 1,
-        ///             "items": [
-        ///                 {
-        ///                     "groupType": "test",
-        ///                     "groupId": "1d1abb61-8825-4374-a52a-d8186f336775",
-        ///                     "isOpenGroup": false,
-        ///                     "requestingPendingMemberCount": 0,
-        ///                     "invitedPendingMemberCount": 0,
-        ///                     "ownerId": "29696ee1-82f6-4d6e-86de-b68c3a5c347e",
-        ///                     "name": "test",
-        ///                     "memberCount": 1
-        ///                 }
-        ///             ],
-        ///             "page": 1,
-        ///             "moreAfter": false
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cFR5cGUiOiJ0ZXN0IiwiZ2FtZUlk"
-        ///     }
-        /// }
-        /// </returns>
         public void ListGroupsPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -742,32 +563,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": true,
-        ///             "count": 2,
-        ///             "items": [
-        ///                 {
-        ///                     "groupType": "test",
-        ///                     "groupId": "1d1abb61-8825-4374-a52a-d8186f336775",
-        ///                     "isOpenGroup": false,
-        ///                     "requestingPendingMemberCount": 0,
-        ///                     "invitedPendingMemberCount": 0,
-        ///                     "ownerId": "29696ee1-82f6-4d6e-86de-b68c3a5c347e",
-        ///                     "name": "test",
-        ///                     "memberCount": 1
-        ///                 }
-        ///             ],
-        ///             "page": 2,
-        ///             "moreAfter": false
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cFR5cGUiOiJ0ZXN0IiwiZ2FtZUlk"
-        ///     }
-        /// }
-        /// </returns>
         public void ListGroupsPageByOffset(
             string context,
             int pageOffset,
@@ -794,25 +589,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "groups": [
-        ///             {
-        ///                 "groupType": "test",
-        ///                 "groupId": "69191b48-0cb1-4538-9758-e2f5ef4c524b",
-        ///                 "isOpenGroup": false,
-        ///                 "requestingPendingMemberCount": 0,
-        ///                 "invitedPendingMemberCount": 0,
-        ///                 "ownerId": "b67b2d73-1e8c-42e9-9be5-9c1879a48555",
-        ///                 "name": "test22",
-        ///                 "memberCount": 1
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void ListGroupsWithMember(
             string profileId,
             SuccessCallback success = null,
@@ -838,38 +614,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "123456",
-        ///         "groupId": "69191b48-0cb1-4538-9758-e2f5ef4c524b",
-        ///         "ownerId": "b67b2d73-1e8c-42e9-9be5-9c1879a48555",
-        ///         "name": "test22",
-        ///         "groupType": "test",
-        ///         "createdAt": 1462462308991,
-        ///         "updatedAt": 1462462308991,
-        ///         "members": {
-        ///             "b67b2d73-1e8c-42e9-9be5-9c1879a48555": {
-        ///                 "role": "OWNER",
-        ///                 "attributes": {}
-        ///             }
-        ///         },
-        ///         "pendingMembers": {},
-        ///         "version": 1,
-        ///         "data": {},
-        ///         "isOpenGroup": false,
-        ///         "defaultMemberAttributes": {},
-        ///         "memberCount": 1,
-        ///         "invitedPendingMemberCount": 0,
-        ///         "requestingPendingMemberCount": 0,
-        ///         "acl": {
-        ///             "other": 1,
-        ///             "member": 1
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void ReadGroup(
             string groupId,
             SuccessCallback success = null,
@@ -895,37 +639,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": false,
-        ///             "count": 3,
-        ///             "items": [
-        ///                 {
-        ///                     "gameId": "20595",
-        ///                     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///                     "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///                     "ownerId": null,
-        ///                     "entityType": "BLUE",
-        ///                     "createdAt": 1462812680359,
-        ///                     "updatedAt": 1462812680359,
-        ///                     "version": 1,
-        ///                     "data": {},
-        ///                     "acl": {
-        ///                         "member": 2,
-        ///                         "other": 1
-        ///                     }
-        ///                 }
-        ///             ],
-        ///             "page": 1,
-        ///             "moreAfter": true
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzct"
-        ///     }
-        /// }
-        /// </returns>
         public void ReadGroupEntitiesPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -954,39 +667,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": true,
-        ///             "count": 3,
-        ///             "items": [
-        ///                 {
-        ///                     "gameId": "20595",
-        ///                     "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///                     "entityId": "ccbf996c-9e96-4935-b570-eebaab81c75a",
-        ///                     "ownerId": null,
-        ///                     "entityType": "RED",
-        ///                     "createdAt": 1462812845384,
-        ///                     "updatedAt": 1462812845384,
-        ///                     "version": 1,
-        ///                     "data": {
-        ///                         "third": true
-        ///                     },
-        ///                     "acl": {
-        ///                         "member": 2,
-        ///                         "other": 1
-        ///                     }
-        ///                 }
-        ///             ],
-        ///             "page": 2,
-        ///             "moreAfter": false
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJncm91cElkIjoiZmVlNTVhMzctNWU4Ni00M2U4LTk"
-        ///     }
-        /// }
-        /// </returns>
         public void ReadGroupEntitiesPageByOffset(
             string encodedContext,
             int pageOffset,
@@ -1017,26 +697,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "gameId": "20595",
-        ///         "groupId": "fee55a37-5e86-43e8-942e-06bcbe1b701e",
-        ///         "entityId": "91cfece7-debb-4698-ba6b-cd2cb432458d",
-        ///         "ownerId": null,
-        ///         "entityType": "BLUE",
-        ///         "createdAt": 1462812680359,
-        ///         "updatedAt": 1462812680359,
-        ///         "version": 1,
-        ///         "data": {},
-        ///         "acl": {
-        ///             "member": 2,
-        ///             "other": 1
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void ReadGroupEntity(
             string groupId,
             string entityId,
@@ -1064,25 +724,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "ee8cad26-16f2-4ef8-9045-3aab84ce6362": {
-        ///             "role": "OWNER",
-        ///             "attributes": {},
-        ///             "playerName": "Peter",
-        ///             "emailAddress": "klug@bitheads.com"
-        ///         },
-        ///         "295c510f-507f-4bcf-80e1-ebc73708ec3c": {
-        ///             "role": "MEMBER",
-        ///             "attributes": {},
-        ///             "playerName": "Billy",
-        ///             "emailAddress": "billy@bitheads.com"
-        ///         }
-        ///     }
-        /// }
-        /// </returns>
         public void ReadGroupMembers(
             string groupId,
             SuccessCallback success = null,
@@ -1108,12 +749,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void RejectGroupInvitation(
             string groupId,
             SuccessCallback success = null,
@@ -1142,12 +777,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void RejectGroupJoinRequest(
             string groupId,
             string profileId,
@@ -1178,12 +807,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void RemoveGroupMember(
             string groupId,
             string profileId,
@@ -1217,12 +840,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void UpdateGroupData(
             string groupId,
             long version,
@@ -1261,12 +878,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void UpdateGroupEntityData(
             string groupId,
             string entityId,
@@ -1307,12 +918,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void UpdateGroupMember(
             string groupId,
             string profileId,
@@ -1347,12 +952,6 @@ namespace BrainCloud
         /// <param name="callback">
         /// The method to be invoked when the server response is received
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": null
-        /// }
-        /// </returns>
         public void UpdateGroupName(
             string groupId,
             string name,

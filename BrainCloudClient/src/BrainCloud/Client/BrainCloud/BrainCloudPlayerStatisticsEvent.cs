@@ -45,60 +45,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        ///     {
-        ///      "status": 200,
-        ///      "data": {
-        ///        "experiencePoints": 25,
-        ///        "achievementsGranted": [
-        ///          "ach01"
-        ///        ],
-        ///        "currencyAwarded": {
-        ///          "gems": {
-        ///            "purchased": 0,
-        ///            "balance": 10,
-        ///            "consumed": 0,
-        ///            "awarded": 10
-        ///          },
-        ///          "gold": {
-        ///            "purchased": 0,
-        ///            "balance": 2000,
-        ///            "consumed": 0,
-        ///            "awarded": 2000
-        ///          }
-        ///        },
-        ///        "totalPlayerStatistics": {
-        ///          "minions": 100,
-        ///          "wood": 55,
-        ///          "iron": 5
-        ///        },
-        ///        "experienceLevel": 2,
-        ///        "experienceLevelsAwarded": [
-        ///          2
-        ///        ],
-        ///        "playerStatisticsAwarded": {
-        ///          "minions": 100,
-        ///          "wood": 5,
-        ///          "iron": 5
-        ///        },
-        ///        "experiencePointsAwarded": 15,
-        ///        "currency": {
-        ///          "gems": {
-        ///            "purchased": 0,
-        ///            "balance": 20,
-        ///            "consumed": 0,
-        ///            "awarded": 20
-        ///          },
-        ///          "gold": {
-        ///            "purchased": 0,
-        ///            "balance": 3000,
-        ///            "consumed": 0,
-        ///            "awarded": 3000
-        ///          }
-        ///        }
-        ///      }
-        ///    }
-        /// </returns>
         public void TriggerPlayerStatisticsEvent(
             string in_eventName,
             int in_eventMultiplier,

@@ -62,28 +62,6 @@ namespace BrainCloud
     /// Method called when a file upload has completed.
     /// </summary>
     /// <param name="fileUploadId">The file upload id</param>
-    /// <param name="jsonResponse">The json response describing the file details similar to this</param>
-    /// <returns> The JSON returned in the callback is as follows: 
-    /// { 
-    /// 	"status": 200,
-    /// 	"data": { 
-    /// 		"fileList": [{   
-    /// 			"updatedAt": 1452603368201,
-    /// 			"uploadedAt": null,
-    /// 			"fileSize": 85470,
-    /// 			"shareable": true,
-    /// 			"createdAt": 1452603368201,
-    /// 			"profileId": "bf8a1433-62d2-448e-b396-f3dbffff44",
-    /// 			"gameId": "99999",
-    /// 			"path": "test2",
-    /// 			"filename": "testup.dat",
-    /// 			"downloadUrl": "https://sharedprod.braincloudservers.com/s3/bc/g/99999/u/bf8a14-ff44/f/test2/...",
-    /// 			"cloudLocation": "bc/g/99999/u/bf8a1433-62d2-448e-b396-f3dbffff44/f/test2/testup.dat"   
-    /// 
-    ///         }] 
-    /// 	}
-    /// }
-    /// </returns>
     public delegate void FileUploadSuccessCallback(string fileUploadId, string jsonResponse);
 
     /// <summary>
@@ -94,14 +72,6 @@ namespace BrainCloud
     /// <param name="reasonCode">The reason code of the operation</param>
     /// <param name="jsonResponse">The json response describing the failure. This uses the 
     /// usual brainCloud error format similar to this:</param>
-    /// <returns> The JSON returned in the callback is as follows:
-    /// {
-    /// 	"status": 403,
-    /// 	"reason_code": 40300,
-    /// 	"status_message": "Message describing failure",
-    /// 	"severity": "ERROR"
-    /// }
-    /// </returns>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
 
     #endregion
@@ -257,7 +227,6 @@ namespace BrainCloud
         }
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
-        /// <returns>The sessionId or empty string if no session present.</returns>
         public string SessionID
         {
             get { return m_comms != null ? m_comms.SessionID : ""; }
@@ -594,7 +563,6 @@ namespace BrainCloud
         #region Getters
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
-        /// <returns>The sessionId or empty string if no session present.</returns>
         public string GetSessionId()
         {
             return SessionID;
@@ -605,7 +573,6 @@ namespace BrainCloud
         /// If a session time out or session invalidation is returned from executing a
         /// sever api call, this flag will reset back to false.
         /// </summary>
-        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
         public bool IsAuthenticated()
         {
             return Authenticated;
@@ -614,7 +581,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns true if brainCloud has been initialized.
         /// </summary>
-        /// <returns><c>true</c> if brainCloud is initialized; otherwise, <c>false</c>.</returns>
         public bool IsInitialized()
         {
             return Initialized;
@@ -857,7 +823,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the list of packet timeouts.
         /// </summary>
-        /// <returns>The packet timeouts.</returns>
         public List<int> GetPacketTimeouts()
         {
             return m_comms.PacketTimeouts;
@@ -883,7 +848,6 @@ namespace BrainCloud
         /// wait to receive a reply to an authentication api call. By default
         /// this timeout is set to 15 seconds.
         /// </summary>
-        /// <returns>The authentication packet timeoutin seconds.</returns>
         public int GetAuthenticationPacketTimeout()
         {
             return m_comms.AuthenticationPacketTimeoutSecs;
@@ -903,7 +867,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the low transfer rate timeout in secs
         /// </summary>
-        /// <returns>The low transfer rate timeout in secs</returns>
         public int GetUploadLowTransferRateTimeout()
         {
             return m_comms.UploadLowTransferRateTimeout;
@@ -925,7 +888,6 @@ namespace BrainCloud
         /// <summary>
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
-        /// <returns>The low transfer rate threshold in bytes/sec</returns>
         public int GetUploadLowTransferRateThreshold()
         {
             return m_comms.UploadLowTransferRateThreshold;

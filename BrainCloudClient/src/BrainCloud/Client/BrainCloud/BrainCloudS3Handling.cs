@@ -45,27 +45,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>  The JSON returned in the callback is as follows. 
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileDetails": [{
-        ///             "gameId": "12311331",
-        ///             "fileId": "3780516b-14f8-4055-8899-8eaab6ac7e82",
-        ///             "shortName": "Test Doc",
-        ///             "fileName": "testDoc.txt",
-        ///             "type": "g",
-        ///             "subType": "cust",
-        ///             "category": null,
-        ///             "fileSize": 4,
-        ///             "dateUploaded": 1437154770000,
-        ///             "relativeUrl": "/cust/testDoc.txt",
-        ///             "absoluteUrl": "http://internal.braincloudservers.com/s3/portal/g/12311331/cust/testDoc.txt",
-        ///             "md5Hash": "d41d8cd98f00b204e9800998ecf8427e"
-        ///         }]
-        ///     }
-        /// }
-        /// </returns>
         public void GetUpdatedFiles(
             string in_category,
             string in_fileDetailsJson,
@@ -106,27 +85,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>  The JSON returned in the callback is as follows. 
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "fileDetails": [{
-        ///             "gameId": "12311331",
-        ///             "fileId": "3780516b-14f8-4055-8899-8eaab6ac7e82",
-        ///             "shortName": "Test Doc",
-        ///             "fileName": "testDoc.txt",
-        ///             "type": "g",
-        ///             "subType": "cust",
-        ///             "category": null,
-        ///             "fileSize": 4,
-        ///             "dateUploaded": 1437154770000,
-        ///             "relativeUrl": "/cust/testDoc.txt",
-        ///             "absoluteUrl": "http://internal.braincloudservers.com/s3/portal/g/12311331/cust/testDoc.txt",
-        ///             "md5Hash": "d41d8cd98f00b204e9800998ecf8427e"
-        ///         }]
-        ///     }
-        /// }
-        /// </returns>
         public void GetFileList(
             string in_category,
             SuccessCallback in_success = null,

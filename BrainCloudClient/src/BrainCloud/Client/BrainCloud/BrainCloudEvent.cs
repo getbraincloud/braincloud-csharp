@@ -58,15 +58,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback includes the server generated
-        /// event id and is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "eventId":3824
-        ///   }
-        /// }
-        /// </returns>
         public void SendEvent(
             string in_toPlayerId,
             string in_eventType,
@@ -119,12 +110,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void UpdateIncomingEventData(
             string in_fromPlayerId,
             ulong in_eventId,
@@ -170,12 +155,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void DeleteIncomingEvent(
             string in_fromPlayerId,
             ulong in_eventId,
@@ -217,12 +196,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null
-        /// }
-        /// </returns>
         public void DeleteSentEvent(
             string in_toPlayerId,
             ulong in_eventId,

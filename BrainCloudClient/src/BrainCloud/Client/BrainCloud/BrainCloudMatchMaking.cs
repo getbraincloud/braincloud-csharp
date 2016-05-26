@@ -33,20 +33,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "lastMatch": 0,
-        ///         "matchAttackExpiry": 0,
-        ///         "matchEnabled": false,
-        ///         "sharedAPIToken": null,
-        ///         "shieldExpiry": 0,
-        ///         "playerRating": 100,
-        ///         "matchesPlayed": 0
-        ///     }
-        /// }
-        /// </returns>
         public void Read(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -76,12 +62,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void SetPlayerRating(
             long playerRating,
             SuccessCallback success = null,
@@ -112,12 +92,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void ResetPlayerRating(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -147,12 +121,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void IncrementPlayerRating(
             long increment,
             SuccessCallback success = null,
@@ -186,12 +154,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void DecrementPlayerRating(
             long decrement,
             SuccessCallback success = null,
@@ -222,12 +184,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void TurnShieldOn(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -257,12 +213,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void TurnShieldOnFor(
             int minutes,
             SuccessCallback success = null,
@@ -293,12 +243,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void TurnShieldOff(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -330,13 +274,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {
-        ///     "shieldExpiry": 1433259734956
-        ///   }
-        /// }
         public void GetShieldExpiry(
             string playerId,
             SuccessCallback success = null,
@@ -376,29 +313,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "matchesFound": [
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserC-1239941736",
-        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             },
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserA-914307852",
-        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindPlayers(
             long rangeDelta,
             long numMatches,
@@ -434,29 +348,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "matchesFound": [
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserC-1239941736",
-        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             },
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserA-914307852",
-        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindPlayersWithAttributes(
             long rangeDelta,
             long numMatches,
@@ -505,29 +396,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "matchesFound": [
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserC-1239941736",
-        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             },
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserA-914307852",
-        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindPlayersUsingFilter(
             long rangeDelta,
             long numMatches,
@@ -568,29 +436,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "matchesFound": [
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserC-1239941736",
-        ///                 "playerId": "c2b88d3f-2s32-43a6-9a71-0f0157e46505",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             },
-        ///             {
-        ///                 "pictureUrl": null,
-        ///                 "playerName": "UserA-914307852",
-        ///                 "playerId": "96afefc7-02b2-4148-8d36-c62855d917b6",
-        ///                 "playerRating": 0,
-        ///                 "summaryFriendData": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void FindPlayersWithAttributesUsingFilter(
             long rangeDelta,
             long numMatches,
@@ -637,12 +482,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void EnableMatchMaking(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -669,12 +508,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": null
-        /// }
-        /// </returns>
         public void DisableMatchMaking(
             SuccessCallback success = null,
             FailureCallback failure = null,

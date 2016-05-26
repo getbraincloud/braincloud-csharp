@@ -36,18 +36,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> JSON describing the global properties:
-        /// {
-        ///   "status":200,
-        ///   "data": {
-        ///     "pName": {
-        ///       "name": "pName",
-        ///	      "description": "pValue",
-        ///	      "value": "pDescription"
-        ///	    }
-        ///   }
-        /// }
-        /// </returns>
         public void ReadProperties(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,

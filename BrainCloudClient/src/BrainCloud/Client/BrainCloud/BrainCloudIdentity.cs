@@ -22,7 +22,7 @@ namespace BrainCloud
         /// Attach the user's Facebook credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="facebookId">
@@ -41,13 +41,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Facebook identity you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateFacebook().
-        /// </returns>
         public void AttachFacebookIdentity(
             string facebookId,
             string authenticationToken,
@@ -63,7 +56,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="facebookId">
@@ -96,7 +89,7 @@ namespace BrainCloud
         /// Detach the Facebook identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="facebookId">
@@ -114,11 +107,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachFacebookIdentity(
             string facebookId,
             bool continueAnon,
@@ -133,7 +121,7 @@ namespace BrainCloud
         /// Attach a Game Center identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="gameCenterId">
@@ -148,13 +136,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Facebook identity you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call this method again.
-        /// </returns>
         public void AttachGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success,
@@ -167,7 +148,7 @@ namespace BrainCloud
         /// <summary>Merge the profile associated with the specified Game Center identity with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="gameCenterId">
@@ -193,7 +174,7 @@ namespace BrainCloud
 
         /// <summary>Detach the Game Center identity from the current profile.</summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="gameCenterId">
@@ -211,11 +192,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachGameCenterIdentity(
             string gameCenterId,
             bool continueAnon,
@@ -230,7 +206,7 @@ namespace BrainCloud
         /// Attach a Email and Password identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="email">
@@ -248,13 +224,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateEmailPassword().
-        /// </returns>
         public void AttachEmailIdentity(
             string email,
             string password,
@@ -269,7 +238,7 @@ namespace BrainCloud
         // Merge the profile associated with the provided e=mail with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="email">
@@ -300,7 +269,7 @@ namespace BrainCloud
         /// <summary>Detach the e-mail identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="email">
@@ -318,11 +287,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachEmailIdentity(
             string email,
             bool continueAnon,
@@ -337,7 +301,7 @@ namespace BrainCloud
         /// Attach a Universal (userId + password) identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="userId">
@@ -355,13 +319,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateEmailPassword().
-        /// </returns>
         public void AttachUniversalIdentity(
             string userId,
             string password,
@@ -376,7 +333,7 @@ namespace BrainCloud
         /// Merge the profile associated with the provided e=mail with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="userId">
@@ -407,7 +364,7 @@ namespace BrainCloud
         /// <summary>Detach the universal identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="userId">
@@ -425,11 +382,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachUniversalIdentity(
             string userId,
             bool continueAnon,
@@ -444,7 +396,7 @@ namespace BrainCloud
         /// Attach a Steam (userId + steamsessionticket) identity to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="steamId">
@@ -462,13 +414,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the email address you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and then call AuthenticateSteam().
-        /// </returns>
         public void AttachSteamIdentity(
             string steamId,
             string sessionTicket,
@@ -483,7 +428,7 @@ namespace BrainCloud
         /// Merge the profile associated with the provided steam userId with the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="steamId">
@@ -514,7 +459,7 @@ namespace BrainCloud
         /// <summary>Detach the steam identity from the current profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="steamId">
@@ -532,11 +477,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachSteamIdentity(
             string steamId,
             bool continueAnon,
@@ -551,7 +491,7 @@ namespace BrainCloud
         /// Attach the user's Google credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="googleId">
@@ -570,13 +510,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Google identity you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateGoogle().
-        /// </returns>
         public void AttachGoogleIdentity(
             string googleId,
             string authenticationToken,
@@ -592,7 +525,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="googleId">
@@ -625,7 +558,7 @@ namespace BrainCloud
         /// Detach the Google identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="googleId">
@@ -643,11 +576,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachGoogleIdentity(
             string googleId,
             bool continueAnon,
@@ -662,7 +590,7 @@ namespace BrainCloud
         /// Attach the user's Twitter credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="twitterId">
@@ -683,13 +611,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Twitter identity you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateTwitter().
-        /// </returns>
         public void AttachTwitterIdentity(
             string twitterId,
             string authenticationToken,
@@ -706,7 +627,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="twitterId">
@@ -742,7 +663,7 @@ namespace BrainCloud
         /// Detach the Twitter identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="twitterId">
@@ -760,11 +681,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachTwitterIdentity(
             string twitterId,
             bool continueAnon,
@@ -779,7 +695,7 @@ namespace BrainCloud
         /// Attach the user's Parse credentials to the current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="parseId">
@@ -798,13 +714,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Google identity you provided
-        /// already points to a different profile.  You will likely want to offer the player the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateParse().
-        /// </returns>
         public void AttachParseIdentity(
             string parseId,
             string authenticationToken,
@@ -820,7 +729,7 @@ namespace BrainCloud
         /// current profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="parseId">
@@ -853,7 +762,7 @@ namespace BrainCloud
         /// Detach the Parse identity from this profile.
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="parseId">
@@ -871,11 +780,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        /// </returns>
         public void DetachParseIdentity(
             string parseId,
             bool continueAnon,
@@ -890,7 +794,7 @@ namespace BrainCloud
         /// Switch to a Child Profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="childProfileId">
@@ -912,44 +816,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "vcPurchased": 0,
-        ///         "experiencePoints": 0,
-        ///         "xpCapped": false,
-        ///         "playerName": "TestUser",
-        ///         "vcClaimed": 0,
-        ///         "rewards": {
-        ///             "rewardDetails": {},
-        ///             "rewards": {},
-        ///             "currency": {
-        ///                 "credits": {
-        ///                     "purchased": 0,
-        ///                     "balance": 0,
-        ///                     "consumed": 0,
-        ///                     "awarded": 0
-        ///                 },
-        ///                 "gold": {
-        ///                     "purchased": 0,
-        ///                     "balance": 0,
-        ///                     "consumed": 0,
-        ///                     "awarded": 0
-        ///                 }
-        ///             }
-        ///         },
-        ///         "loginCount": 1,
-        ///         "server_time": 1441901094386,
-        ///         "experienceLevel": 0,
-        ///         "currency": {},
-        ///         "statistics": {},
-        ///         "id": "a17b347b-695b-431f-b1e7-5f783a562310",
-        ///         "profileId": "a17t347b-692b-43ef-b1e7-5f783a566310",
-        ///         "newUser": false
-        ///     }
-        /// }
-        /// </returns>
         public void SwitchToChildProfile(
             string childProfileId,
             string childGameId,
@@ -966,7 +832,7 @@ namespace BrainCloud
         /// If multiple profiles exist this returns an error
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
         /// <param name="childGameId">
@@ -984,44 +850,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "vcPurchased": 0,
-        ///         "experiencePoints": 0,
-        ///         "xpCapped": false,
-        ///         "playerName": "TestUser",
-        ///         "vcClaimed": 0,
-        ///         "rewards": {
-        ///             "rewardDetails": {},
-        ///             "rewards": {},
-        ///             "currency": {
-        ///                 "credits": {
-        ///                     "purchased": 0,
-        ///                     "balance": 0,
-        ///                     "consumed": 0,
-        ///                     "awarded": 0
-        ///                 },
-        ///                 "gold": {
-        ///                     "purchased": 0,
-        ///                     "balance": 0,
-        ///                     "consumed": 0,
-        ///                     "awarded": 0
-        ///                 }
-        ///             }
-        ///         },
-        ///         "loginCount": 1,
-        ///         "server_time": 1441901094386,
-        ///         "experienceLevel": 0,
-        ///         "currency": {},
-        ///         "statistics": {},
-        ///         "id": "a17b347b-695b-431f-b1e7-5f783a562310",
-        ///         "profileId": "a17t347b-692b-43ef-b1e7-5f783a566310",
-        ///         "newUser": false
-        ///     }
-        /// }
-        /// </returns>
         public void SwitchToSingletonChildProfile(
             string childGameId,
             bool forceCreate,
@@ -1036,7 +864,7 @@ namespace BrainCloud
         /// Switch to a Parent Profile
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - SWITCH_TO_PARENT_PROFILE
         /// </remarks>
         /// <param name="parentLevelName">
@@ -1051,15 +879,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns>
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "profileId": "1d1h32aa-4c41-404f-bc18-29b3fg5wab8a",
-        ///         "gameId": "123456"
-        ///     }
-        /// }
-        /// </returns>
         public void SwitchToParentProfile(
             string parentLevelName,
             SuccessCallback success,
@@ -1078,7 +897,7 @@ namespace BrainCloud
         /// Returns a list of all child profiles in child Apps
         /// </summary>
         /// <remarks>
-        /// Service Name - Identity
+        /// Service Name - identity
         /// Service Operation - GET_CHILD_PROFILES
         /// </remarks>
         /// <param name="includeSummaryData">
@@ -1093,27 +912,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "children": [
-        ///             {
-        ///                 "appId": "123456",
-        ///                 "profileId": "b7h4c751-befd-4a89-b6da-cd55hs3b2a86",
-        ///                 "profileName": "Child1",
-        ///                 "summaryFriendData": null
-        ///             },
-        ///             {
-        ///                 "appId": "123456",
-        ///                 "profileId": "a17b347b-195b-45hf-b1e7-5f78g3462310",
-        ///                 "profileName": "Child2",
-        ///                 "summaryFriendData": null
-        ///             }
-        ///         ]
-        ///     }
-        /// }
-        /// </returns>
         public void GetChildProfiles(
             bool includeSummaryData,
             SuccessCallback success = null,
@@ -1128,12 +926,60 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Retrieve list of identities
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_IDENTITIES
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetIdentities(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetIdentities, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve list of expired identities
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_EXPIRED_IDENTITIES
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetExpiredIdentities(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetExpiredIdentities, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        #region Private Methods
+
         private void AttachIdentity(string externalId, string authenticationToken, AuthenticationType authenticationType, SuccessCallback success, FailureCallback failure,
             object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1146,7 +992,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1159,7 +1005,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
-			data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1190,5 +1036,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToChildProfile, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        #endregion
     }
 }

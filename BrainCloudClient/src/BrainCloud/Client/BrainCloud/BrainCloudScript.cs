@@ -41,13 +41,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":null //// this value depends on what the script returns
-        /// }
-        /// @see The API documentation site for more details on cloud code
-        /// </returns>
         public void RunScript(
             string in_scriptName,
             string in_jsonScriptData,
@@ -82,26 +75,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "result": {},
-        ///         "scriptName": "testScript",
-        ///         "jobId": "48266b95-d197-464d-bb6b-da70aa1e22a9",
-        ///         "runState": "Scheduled",
-        ///         "description": null,
-        ///         "gameId": "10170",
-        ///         "runEndTime": 0,
-        ///         "parameters": {
-        ///             "testParm1": 1
-        ///         },
-        ///         "runStartTime": 0,
-        ///         "scheduledStartTime": 1437576422378
-        ///     }
-        /// }
-        /// @see The API documentation site for more details on cloud code
-        /// </returns>
         public void ScheduleRunScriptUTC(
             string in_scriptName,
             string in_jsonScriptData,
@@ -139,26 +112,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "result": {},
-        ///         "scriptName": "testScript",
-        ///         "jobId": "48266b95-d197-464d-bb6b-da70aa1e22a9",
-        ///         "runState": "Scheduled",
-        ///         "description": null,
-        ///         "gameId": "10170",
-        ///         "runEndTime": 0,
-        ///         "parameters": {
-        ///             "testParm1": 1
-        ///         },
-        ///         "runStartTime": 0,
-        ///         "scheduledStartTime": 1437576422378
-        ///     }
-        /// }
-        /// @see The API documentation site for more details on cloud code
-        /// </returns>
         public void ScheduleRunScriptMinutes(
             string in_scriptName,
             string in_jsonScriptData,
@@ -196,18 +149,6 @@ namespace BrainCloud
         /// <param name="in_success"> The success callback. </param>
         /// <param name="in_failure"> The failure callback. </param>
         /// <param name="in_cbObject"> The user object sent to the callback. </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "response": {
-        ///             "success": true
-        ///         },
-        ///         "success": true
-        ///     }
-        /// }
-        /// @see The API documentation site for more details on cloud code
-        /// </returns>
         public void RunParentScript(
             string in_scriptName,
             string in_jsonScriptData,

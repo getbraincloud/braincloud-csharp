@@ -1,10 +1,11 @@
 using System;
 using System.IO;
-using System.Reflection;
+using JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
+using System.Text;
 
 namespace BrainCloudTests
 {
@@ -18,6 +19,8 @@ namespace BrainCloudTests
         protected string ChildAppId = "";
         protected string ParentLevel = "";
 
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
+
         [SetUp]
         public void Setup()
         {
@@ -25,14 +28,15 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.Initialize(ServerUrl, Secret, AppId, Version);
             BrainCloudClient.Instance.EnableLogging(true);
+            BrainCloudClient.Instance.RegisterLogDelegate(HandleLog);
 
             if (ShouldAuthenticate())
             {
                 TestResult tr = new TestResult();
                 BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id, 
-                    GetUser(Users.UserA).Password, 
-                    true, 
+                    GetUser(Users.UserA).Id,
+                    GetUser(Users.UserA).Password,
+                    true,
                     tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
@@ -54,6 +58,49 @@ namespace BrainCloudTests
         public virtual bool ShouldAuthenticate()
         {
             return true;
+        }
+
+        /// <summary>
+        /// Pretty prints outgoing and incoming log messages
+        /// </summary>
+        /// <param name="message">Log message</param>
+        private void HandleLog(string message)
+        {
+            if (message.StartsWith("#BCC"))
+            {
+                string outPrefix = "#BCC OUTGOING: ";
+                string inPrefix = "#BCC INCOMING: ";
+
+                string prefix = "";
+
+                if (message.StartsWith(outPrefix))
+                {
+                    prefix = outPrefix;
+                    message = message.Substring(outPrefix.Length);
+                }
+                else if (message.StartsWith(inPrefix))
+                {
+                    prefix = inPrefix;
+                    message = message.Substring(inPrefix.Length);
+                }
+
+                try
+                {
+                    var data = JsonReader.Deserialize(message);
+                    var sb = new StringBuilder();
+                    var writer = new JsonWriter(sb, _writerSettings);
+                    writer.Write(data);
+                    message = sb.ToString();
+                }
+                catch (JsonDeserializationException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                message = string.Format("\r\n{0}\r\n{1}", prefix, message);
+            }
+
+            Console.WriteLine(message);
         }
 
         /// <summary>

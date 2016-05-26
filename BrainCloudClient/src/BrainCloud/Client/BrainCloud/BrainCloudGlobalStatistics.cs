@@ -35,21 +35,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the global statistics:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statisticsExceptions":{
-        ///     },
-        ///     "statistics":{
-        ///       "Level02_TimesBeaten":11,
-        ///       "Level01_TimesBeaten":1,
-        ///       "GameLogins":376,
-        ///       "PlayersWhoLikePirateClothing":12
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void ReadAllGlobalStats(
             SuccessCallback in_success,
             FailureCallback in_failure,
@@ -80,19 +65,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON with the subset of global statistics:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statisticsExceptions":{
-        ///     },
-        ///     "statistics":{
-        ///       "Level02_TimesBeaten":11,
-        ///       "Level01_TimesBeaten":1
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void ReadGlobalStatsSubset(
             IList<string> in_globalStats,
             SuccessCallback in_success,
@@ -126,14 +98,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "gameStatistics": []
-        ///   }
-        /// }
-        /// </returns>
         public void ReadGlobalStatsForCategory(
             string in_category,
             SuccessCallback in_success = null,
@@ -179,18 +143,6 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The callback object
         /// </param>
-        /// <returns> JSON describing the new value of the statistics incremented (similar to ReadAll):
-        /// {
-        ///   "status":200,
-        ///   "data":{
-        ///     "statisticsExceptions":{
-        ///     },
-        ///     "statistics":{
-        ///       "Level02_TimesBeaten":11,
-        ///     }
-        ///   }
-        /// }
-        /// </returns>
         public void IncrementGlobalStats(
             string in_jsonData,
             SuccessCallback in_success,

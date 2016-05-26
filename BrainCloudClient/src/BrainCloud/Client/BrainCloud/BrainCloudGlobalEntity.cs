@@ -46,33 +46,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "",
-        ///      version : 1,
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      data :
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void CreateEntity(
             string entityType,
             long timeToLive,
@@ -131,33 +104,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "hhjdyjghjd",
-        ///      version : 1,
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      data :
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void CreateEntityWithIndexedId(
             string entityType,
             string indexedId,
@@ -212,33 +158,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "",
-        ///      version : 1,
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      data :
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void UpdateEntity(
             string entityId,
             int version,
@@ -284,33 +203,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "",
-        ///      version : 1,
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      data :
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void UpdateEntityAcl(
             string entityId,
             int version,
@@ -359,33 +251,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "",
-        ///      version : 1,
-        ///      data :
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void UpdateEntityTimeToLive(
             string entityId,
             int version,
@@ -426,14 +291,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///   }
-        /// }
-        /// </returns>
         public void DeleteEntity(
             string entityId,
             int version,
@@ -469,33 +326,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      gameId : "game",
-        ///      entityId : "hucfshugvgvfhug",
-        ///      ownerId : "ubfcbvfbsdvbb",
-        ///      entityType : "",
-        ///      entityIndexedId : "",
-        ///      version : 1,
-        ///      timeToLive: 0,
-        ///      expiresAt : 9947395735758975,
-        ///      data :
-        ///      {
-        ///          field : "value"
-        ///      },
-        ///      acl :
-        ///      {
-        ///          other, 1
-        ///      },
-        ///      createdAt : 74889479874,
-        ///      updatedAt : 73847474897487
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void ReadEntity(
             string entityId,
             SuccessCallback success = null,
@@ -535,56 +365,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      entities : [
-        ///          {
-        ///              gameId : "game",
-        ///              entityId : "hucfshugvgvfhug",
-        ///              ownerId : "ubfcbvfbsdvbb",
-        ///              entityType : "",
-        ///              entityIndexedId : "",
-        ///              version : 1,
-        ///              timeToLive: 0,
-        ///              expiresAt : 9947395735758975,
-        ///              data :
-        ///              {
-        ///                  field : "value"
-        ///              },
-        ///              acl :
-        ///              {
-        ///                  other, 1
-        ///              },
-        ///              createdAt : 74889479874,
-        ///              updatedAt : 73847474897487
-        ///          },
-        ///          {
-        ///              gameId : "game",
-        ///              entityId : "dgdgg",
-        ///              ownerId : "ubfcbvfbsdvbb",
-        ///              entityType : "",
-        ///              entityIndexedId : "",
-        ///              version : 1,
-        ///              timeToLive: 0,
-        ///              expiresAt : 9947395735758975,
-        ///              data :
-        ///              {
-        ///                  field : "value2"
-        ///              },
-        ///              acl :
-        ///              {
-        ///                  other, 1
-        ///              },
-        ///              createdAt : 74889479874,
-        ///              updatedAt : 73847474897487
-        ///          }
-        ///       ]
-        ///   }
-        /// }
-        /// </returns>
         public void GetList(
             string whereJson,
             string orderByJson,
@@ -634,56 +414,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      entities : [
-        ///          {
-        ///              gameId : "game",
-        ///              entityId : "hucfshugvgvfhug",
-        ///              ownerId : "ubfcbvfbsdvbb",
-        ///              entityType : "",
-        ///              entityIndexedId : "",
-        ///              version : 1,
-        ///              timeToLive: 0,
-        ///              expiresAt : 9947395735758975,
-        ///              data :
-        ///              {
-        ///                  field : "value"
-        ///              },
-        ///              acl :
-        ///              {
-        ///                  other, 1
-        ///              },
-        ///              createdAt : 74889479874,
-        ///              updatedAt : 73847474897487
-        ///          },
-        ///          {
-        ///              gameId : "game",
-        ///              entityId : "dgdgg",
-        ///              ownerId : "ubfcbvfbsdvbb",
-        ///              entityType : "",
-        ///              entityIndexedId : "",
-        ///              version : 1,
-        ///              timeToLive: 0,
-        ///              expiresAt : 9947395735758975,
-        ///              data :
-        ///              {
-        ///                  field : "value2"
-        ///              },
-        ///              acl :
-        ///              {
-        ///                  other, 1
-        ///              },
-        ///              createdAt : 74889479874,
-        ///              updatedAt : 73847474897487
-        ///          }
-        ///
-        ///   }
-        /// }
-        /// </returns>
         public void GetListByIndexedId(
             string entityIndexedId,
             int maxReturn,
@@ -719,15 +449,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status":200,
-        ///   "data":
-        ///   {
-        ///      "entityListCount":5
-        ///   }
-        /// }
-        /// </returns>
         public void GetListCount(
             string whereJson,
             SuccessCallback success = null,
@@ -762,43 +483,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         /// 
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": false,
-        ///             "count": 200,
-        ///             "items": [
-        ///                 {
-        ///                     "entityId": "00edfd8e-5028-45d5-95d4-b1869cf2afaa",
-        ///                     "ownerId": "153a5ac3-582e-42d7-9e7d-aa80ca7e6689",
-        ///                     "entityType": "testGlobalEntity",
-        ///                     "entityIndexedId": null,
-        ///                     "version": 1,
-        ///                     "data": {
-        ///                         "globalTestName": "Test Name 01"
-        ///                     },
-        ///                     "acl": {
-        ///                         "other": 2
-        ///                     },
-        ///                     "expiresAt": 9223372036854776000,
-        ///                     "timeToLive": 0,
-        ///                     "createdAt": 1437505537168,
-        ///                     "updatedAt": 1437505537168
-        ///              }],
-        ///              "page": 1,
-        ///              "moreAfter": true
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
-        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
-        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
-        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
-        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
-        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
-        ///     }
-        /// }
-        /// </returns>
         public void GetPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -835,43 +519,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         /// 
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///     "status": 200,
-        ///     "data": {
-        ///         "results": {
-        ///             "moreBefore": true,
-        ///             "count": 200,
-        ///             "items": [
-        ///                 {
-        ///                     "entityId": "00edfd8e-5028-45d5-95d4-b1869cf2afaa",
-        ///                     "ownerId": "153a5ac3-582e-42d7-9e7d-aa80ca7e6689",
-        ///                     "entityType": "testGlobalEntity",
-        ///                     "entityIndexedId": null,
-        ///                     "version": 1,
-        ///                     "data": {
-        ///                         "globalTestName": "Test Name 01"
-        ///                     },
-        ///                     "acl": {
-        ///                         "other": 2
-        ///                     },
-        ///                     "expiresAt": 9223372036854776000,
-        ///                     "timeToLive": 0,
-        ///                     "createdAt": 1437505537168,
-        ///                     "updatedAt": 1437505537168
-        ///              }],
-        ///              "page": 2,
-        ///              "moreAfter": false
-        ///         },
-        ///         "context": "eyJzZWFyY2hDcml0ZXJpYSI6eyJlbnRpdHlUeXBlIjoiYnVpbGRpbmci
-        ///              LCJnYW1lSWQiOiIxMDI4NyIsIiRvciI6W3sib3duZXJJZCI6Ijk5MjM4ZmFiLTd
-        ///              12TItNDdiYy1iMDExLWJjMThhN2IyOWY3NiJ9LHsiYWNsLm90aGVyIjp7IiRuZS
-        ///              I6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjEsInVwZGF0ZWRBd
-        ///              CI6LTF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjo1MCwicGFnZU51bWJl
-        ///              ciI6NH0sIm9wdGlvbnMiOm51bGx9"
-        ///     }
-        /// }
-        /// </returns>
         public void GetPageOffset(
             string context,
             int pageOffset,

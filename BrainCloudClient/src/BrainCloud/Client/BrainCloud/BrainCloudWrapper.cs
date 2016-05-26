@@ -648,7 +648,7 @@ public class BrainCloudWrapper
 
         if ((anonymousId != "" && profileId == "") || anonymousId == "")
         {
-            anonymousId = _client.AuthenticationService.GenerateGUID();
+            anonymousId = _client.AuthenticationService.GenerateAnonymousId();
             profileId = "";
             SetStoredAnonymousId(anonymousId);
             SetStoredProfileId(profileId);

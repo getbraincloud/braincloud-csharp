@@ -23,31 +23,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Generates a GUID for use as an anonymous installation id for brainCloud.  This method is provided as a convenience to the
-        /// client application - but clients can override this id with a scheme of their own if they'd like (as long as the scheme in place
-        /// generates unique ids per client device).
-        ///<c/summary>
-        /// </param>
-        /// <returns> the id
-        /// </returns>
-        public string GenerateGUID()
+        /// Used to create the anonymous installation id for the brainCloud profile.
+        /// </summary>
+        /// <returns>A unique Anonymous ID</returns>
+        public string GenerateAnonymousId()
         {
-            Guid newID = Guid.NewGuid();
-
-            // ensure that we do not create an empty GUID
-            while (newID == Guid.Empty)
-            {
-                newID = Guid.NewGuid();
-            }
-
-            return newID.ToString();
+            return Guid.NewGuid().ToString();
         }
 
         /// <summary>
-        /// Initialize - initializes the identity service with the saved
+        /// Initialize - initializes the identity service with a saved
         /// anonymous installation id and most recently used profile id
         /// </summary>
-        /// </param>
         /// <param name="profileId">
         /// The id of the profile id that was most recently used by the app (on this device)
         /// </param>
@@ -59,16 +46,6 @@ namespace BrainCloud
             AnonymousId = anonymousId;
             ProfileId = profileId;
         }
-
-        /// <summary>
-        /// Used to create the anonymous installation id for the brainCloud profile.
-        /// Normally only called once when the application starts for the first time.
-        ///</summary>
-        public void GenerateNewAnonymousID()
-        {
-            AnonymousId = GenerateGUID();
-        }
-
 
         /// <summary>
         /// Used to clear the saved profile id - to use in cases when the user is
@@ -475,16 +452,6 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
-        /// <returns> The JSON returned in the callback is as follows:
-        /// {
-        ///   "status": 200,
-        ///   "data": {}
-        /// }
-        /// 
-        /// Note the follow error reason codes:
-        /// 
-        /// SECURITY_ERROR (40209) - If the email address cannot be found.
-        /// </returns>
         public void ResetEmailPassword(
             string externalId,
             SuccessCallback success = null,
@@ -539,6 +506,26 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        [Obsolete("Use GenerateAnonymousId instead. Removal after August 17 2016")]
+        public string GenerateGUID()
+        {
+            Guid newID = Guid.NewGuid();
+
+            // ensure that we do not create an empty GUID
+            while (newID == Guid.Empty)
+            {
+                newID = Guid.NewGuid();
+            }
+
+            return newID.ToString();
+        }
+
+        [Obsolete("Use GenerateAnonymousId and Initialize instead. Removal after August 17 2016")]
+        public void GenerateNewAnonymousID()
+        {
+            AnonymousId = GenerateGUID();
         }
     }
 }
