@@ -1,8 +1,7 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
+  <Settings activeconfig="Debug" processModel="Default" domainUsage="Default" />
   <Config name="Debug" binpathtype="Auto">
-    <assembly path="..\..\solution\vstudio\UnitTests\bin\Debug\UnitTests.dll" />
-    <assembly path="..\..\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" />
+    <assembly path="C:\Users\bradleyh\Documents\Git\Unity-Csharp\BrainCloudClient\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

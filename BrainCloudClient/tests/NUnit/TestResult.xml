@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\Project1.nunit" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2015-06-30" time="12:56:06">
-  <environment nunit-version="2.6.4.14350" clr-version="2.0.50727.5485" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit" machine-name="CAPH" user="bradleyh" user-domain="BITHEADSINC" />
+<test-results name="C:\Users\bradleyh\Documents\Git\Unity-Csharp\BrainCloudClient\tests\NUnit\UnitTests.nunit" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2016-06-01" time="12:11:39">
+  <environment nunit-version="2.6.4.14350" clr-version="2.0.50727.8689" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\Users\bradleyh\Documents\Git\Unity-Csharp\BrainCloudClient\tests\NUnit" machine-name="CAPH" user="bradleyh" user-domain="BITHEADSINC" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="Project" name="C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\Project1.nunit" executed="True" result="Success" success="True" time="1.875" asserts="0">
+  <test-suite type="Project" name="C:\Users\bradleyh\Documents\Git\Unity-Csharp\BrainCloudClient\tests\NUnit\UnitTests.nunit" executed="True" result="Success" success="True" time="3.627" asserts="0">
     <results>
-      <test-suite type="Assembly" name="C:\Users\bradleyh\Documents\GitHub\Unity-Csharp\BrainCloudClient\tests\NUnit\..\..\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" executed="True" result="Success" success="True" time="1.874" asserts="0">
+      <test-suite type="Assembly" name="C:\Users\bradleyh\Documents\Git\Unity-Csharp\BrainCloudClient\tests\NUnit\..\..\solution\vstudio\UnitTest\bin\Debug\UnitTest.dll" executed="True" result="Success" success="True" time="3.621" asserts="0">
         <results>
-          <test-suite type="Namespace" name="BrainCloudTests" executed="True" result="Success" success="True" time="1.873" asserts="0">
+          <test-suite type="Namespace" name="BrainCloudTests" executed="True" result="Success" success="True" time="3.621" asserts="0">
             <results>
-              <test-suite type="TestFixture" name="TestEntity" executed="True" result="Success" success="True" time="1.872" asserts="0">
+              <test-suite type="TestFixture" name="TestIdentity" executed="True" result="Success" success="True" time="3.620" asserts="0">
                 <results>
-                  <test-case name="BrainCloudTests.TestEntity.TestCreateEntity" executed="True" result="Success" success="True" time="1.871" asserts="4" />
+                  <test-case name="BrainCloudTests.TestIdentity.TestRefreshIdentity" executed="True" result="Success" success="True" time="3.615" asserts="16" />
                 </results>
               </test-suite>
             </results>

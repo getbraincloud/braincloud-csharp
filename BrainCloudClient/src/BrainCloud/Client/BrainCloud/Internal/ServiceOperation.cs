@@ -212,6 +212,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetChildProfiles = new ServiceOperation("GET_CHILD_PROFILES");
         public static readonly ServiceOperation GetIdentities = new ServiceOperation("GET_IDENTITIES");
         public static readonly ServiceOperation GetExpiredIdentities = new ServiceOperation("GET_EXPIRED_IDENTITIES");
+        public static readonly ServiceOperation RefreshIdentity = new ServiceOperation("REFRESH_IDENTITY");
 
         public static readonly ServiceOperation FbConfirmPurchase = new ServiceOperation("FB_CONFIRM_PURCHASE");
         public static readonly ServiceOperation GooglePlayConfirmPurchase = new ServiceOperation("CONFIRM_GOOGLEPLAY_PURCHASE");
