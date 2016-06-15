@@ -272,10 +272,41 @@ namespace BrainCloudTests
             Assert.AreEqual(_globalErrorCount, 2);
         }
 
+        [Test]
+        public void TestMessageBundleMarker()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
+
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+                tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
+
+            // to make sure it doesn't die on first message being marker
+            BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
+
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+                tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+                tr.ApiSuccess, tr.ApiError);
+            
+            // should result in three packets
+            tr.Run();
+            tr.Run();
+            tr.Run();
+        }
+
+
         private void GlobalErrorHandler(int status, int reasonCode, string jsonError, object cbObject)
         {
             _globalErrorCount++;
             Console.Out.WriteLine("Global error: " + jsonError);
         }
     }
+
 }

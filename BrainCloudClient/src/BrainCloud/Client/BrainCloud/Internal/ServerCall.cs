@@ -17,9 +17,6 @@ namespace BrainCloud.Internal
             m_operation = operation.Value;
             m_jsonData = jsonData;
             m_callback = callback;
-
-            //string jsonData2 = JsonMapper.ToJson(m_jsonData);
-            //Console.WriteLine("\n ServerCall::ServerCall -- json data -- " + jsonData2);
         }
 
         #endregion
