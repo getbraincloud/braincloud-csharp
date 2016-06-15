@@ -206,6 +206,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
+      <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
     </Compile>

@@ -959,6 +959,25 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Inserts a marker which will tell the brainCloud comms layer
+        /// to close the message bundle off at this point. Any messages queued
+        /// before this method was called will likely be bundled together in 
+        /// the next send to the server.
+        /// 
+        /// To ensure that only a single message is sent to the server you would 
+        /// do something like this:
+        /// 
+        /// InsertEndOfMessageBundleMarker()
+        /// SomeApiCall()
+        /// InsertEndOfMessageBundleMarker()
+        /// 
+        /// </summary>
+        public void InsertEndOfMessageBundleMarker()
+        {
+            m_comms.InsertEndOfMessageBundleMarker();
+        }
+
+        /// <summary>
         /// Normally not needed as the brainCloud SDK sends heartbeats automatically.
         /// Regardless, this is a manual way to send a heartbeat.
         /// </summary>
