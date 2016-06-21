@@ -143,6 +143,23 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateEntitySummary()
+        {
+            TestResult tr = new TestResult();
+
+            string entityId = CreateDefaultGlobalEntity();
+
+            BrainCloudClient.Instance.GlobalEntityService.UpdateEntity(
+                entityId,
+                1,
+                Helpers.CreateJsonPair(_defaultEntityValueName, "Test Name 02 Changed"),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestUpdateEntityAcl()
         {
             TestResult tr = new TestResult();
@@ -159,6 +176,23 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateEntityAclSummary()
+        {
+            TestResult tr = new TestResult();
+
+            string entityId = CreateDefaultGlobalEntity();
+
+            BrainCloudClient.Instance.GlobalEntityService.UpdateEntityAcl(
+                entityId,
+                1,
+                new ACL { Other = ACL.Access.ReadWrite }.ToJsonString(),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestUpdateEntityTimeToLive()
         {
             TestResult tr = new TestResult();
@@ -169,6 +203,23 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 1000,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestUpdateEntityTimeToLiveSummary()
+        {
+            TestResult tr = new TestResult();
+
+            string entityId = CreateDefaultGlobalEntity();
+
+            BrainCloudClient.Instance.GlobalEntityService.UpdateEntityTimeToLive(
+                entityId,
+                1,
+                1000,
+                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -232,6 +283,32 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.GlobalEntityService.IncrementGlobalEntityData(
                 id,
                 Helpers.CreateJsonPair("test", 1),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestIncrementGlobalEntityDataSummary()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GlobalEntityService.CreateEntity(
+                _defaultEntityType,
+                0,
+                null,
+                Helpers.CreateJsonPair("test", 1234),
+                tr.ApiSuccess,
+                tr.ApiError);
+            tr.Run();
+
+            string id = GetEntityId(tr.m_response);
+
+            BrainCloudClient.Instance.GlobalEntityService.IncrementGlobalEntityData(
+                id,
+                Helpers.CreateJsonPair("test", 1),
+                true,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 

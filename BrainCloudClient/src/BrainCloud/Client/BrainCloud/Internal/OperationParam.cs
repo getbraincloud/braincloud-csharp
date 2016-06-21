@@ -72,6 +72,8 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceTargetPlayerId = new OperationParam("targetPlayerId");
         public static readonly OperationParam EntityServiceReturnData = new OperationParam("returnData");
 
+        public static readonly OperationParam SummarizeOutput = new OperationParam("summarizeOutput");
+
         // Global Entity Service - Params
         public static readonly OperationParam GlobalEntityServiceEntityId = new OperationParam("entityId");
         public static readonly OperationParam GlobalEntityServiceEntityType = new OperationParam("entityType");
@@ -259,6 +261,7 @@ namespace BrainCloud
         public static readonly OperationParam ScriptServiceStartDateUTC = new OperationParam("startDateUTC");
         public static readonly OperationParam ScriptServiceStartMinutesFromNow = new OperationParam("minutesFromNow");
         public static readonly OperationParam ScriptServiceParentLevel = new OperationParam("parentLevel");
+        public static readonly OperationParam ScriptServiceJobId = new OperationParam("jobId");
 
         public static readonly OperationParam MatchMakingServicePlayerRating = new OperationParam("playerRating");
         public static readonly OperationParam MatchMakingServiceMinutes = new OperationParam("minutes");

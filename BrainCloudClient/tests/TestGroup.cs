@@ -226,6 +226,27 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestIncrementGroupEntityDataSummary()
+        {
+            Authenticate(Users.UserA);
+            CreateGroup();
+            string id = CreateGroupEntity();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.GroupService.IncrementGroupEntityData(
+                _groupId,
+                id,
+                Helpers.CreateJsonPair("testInc", 1),
+                true,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+            Logout();
+        }
+
+        [Test]
         public void TestInviteGroupMember()
         {
             Authenticate(Users.UserA);
@@ -343,6 +364,22 @@ namespace BrainCloudTests
 
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.GroupService.ReadGroup(
+                _groupId,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+            Logout();
+        }
+
+        [Test]
+        public void TestReadGroupData()
+        {
+            Authenticate(Users.UserA);
+            CreateGroup();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.GroupService.ReadGroupData(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

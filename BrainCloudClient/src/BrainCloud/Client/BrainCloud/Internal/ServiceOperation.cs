@@ -61,6 +61,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadFriendsEntities = new ServiceOperation("READ_FRIENDS_ENTITIES");
         public static readonly ServiceOperation ReadFriendsWithApplication = new ServiceOperation("READ_FRIENDS_WITH_APPLICATION");
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
+        public static readonly ServiceOperation GetSummaryDataForProfileId = new ServiceOperation("GET_SUMMARY_DATA_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
@@ -224,6 +225,7 @@ namespace BrainCloud.Internal
 
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
         public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
+        public static readonly ServiceOperation CancelScheduledScript = new ServiceOperation("CANCEL_SCHEDULED_SCRIPT");
 
         //RedemptionCode
         public static readonly ServiceOperation GetRedeemedCodes = new ServiceOperation("GET_REDEEMED_CODES");
@@ -265,6 +267,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ListGroupsPageByOffset = new ServiceOperation("LIST_GROUPS_PAGE_BY_OFFSET");
         public static readonly ServiceOperation ListGroupsWithMember = new ServiceOperation("LIST_GROUPS_WITH_MEMBER");
         public static readonly ServiceOperation ReadGroup = new ServiceOperation("READ_GROUP");
+        public static readonly ServiceOperation ReadGroupData = new ServiceOperation("READ_GROUP_DATA");
         public static readonly ServiceOperation ReadGroupEntitiesPage = new ServiceOperation("READ_GROUP_ENTITIES_PAGE");
         public static readonly ServiceOperation ReadGroupEntitiesPageByOffset = new ServiceOperation("READ_GROUP_ENTITIES_PAGE_BY_OFFSET");
         public static readonly ServiceOperation ReadGroupEntity = new ServiceOperation("READ_GROUP_ENTITY");

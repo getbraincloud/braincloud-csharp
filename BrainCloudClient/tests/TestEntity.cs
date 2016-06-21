@@ -66,6 +66,29 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateEntitySummary()
+        {
+            TestResult tr = new TestResult();
+            string entityId = CreateDefaultAddressEntity(ACL.Access.None);
+
+            //Update entity
+            string updatedAddress = "1609 Bank St";
+
+            BrainCloudClient.Instance.EntityService.UpdateEntity(
+                entityId,
+                _defaultEntityType,
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
+                null,
+                1,
+                true,
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
         public void TestGetEntity()
         {
             TestResult tr = new TestResult();
@@ -142,6 +165,28 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateSharedEntitySummary()
+        {
+            TestResult tr = new TestResult();
+            string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            string updatedAddress = "1609 Bank St";
+
+            //UpdateSharedEntity
+            BrainCloudClient.Instance.EntityService.UpdateSharedEntity(
+                entityId,
+                BrainCloudClient.Instance.AuthenticationService.ProfileId,
+                _defaultEntityType,
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
+                1,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
         public void TestUpdateSingleton()
         {
             TestResult tr = new TestResult();
@@ -155,6 +200,27 @@ namespace BrainCloudTests
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 new ACL() { Other = ACL.Access.ReadWrite }.ToJsonString(),
                 1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
+        public void TestUpdateSingletonSummary()
+        {
+            TestResult tr = new TestResult();
+            //CreateDefaultAddressEntity(ACL.Access.ReadWrite);
+
+            string updatedAddress = "1609 Bank St";
+
+            //UpdateSharedEntity          
+            BrainCloudClient.Instance.EntityService.UpdateSingleton(
+                _defaultEntityType,
+                Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
+                new ACL() { Other = ACL.Access.ReadWrite }.ToJsonString(),
+                1,
+                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -269,6 +335,25 @@ namespace BrainCloudTests
                 id,
                 GetUser(Users.UserA).ProfileId,
                 Helpers.CreateJsonPair("test", 1),
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            DeleteAllDefaultEntities();
+        }
+
+        [Test]
+        public void TestIncrementEntityDataSummary()
+        {
+            TestResult tr = new TestResult();
+
+            string id = CreateEntity(_defaultEntityType, "test", 10);
+
+            BrainCloudClient.Instance.EntityService.IncrementUserEntityData(
+                id,
+                GetUser(Users.UserA).ProfileId,
+                Helpers.CreateJsonPair("test", 1),
+                true,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 

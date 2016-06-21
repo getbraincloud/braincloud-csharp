@@ -14,9 +14,9 @@ namespace BrainCloud
     public class BrainCloudScript
     {
         private BrainCloudClient m_brainCloudClientRef;
-        public BrainCloudScript(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudScript(BrainCloudClient brainCloudClientRef)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            m_brainCloudClientRef = brainCloudClientRef;
         }
 
         /// <summary>
@@ -26,38 +26,38 @@ namespace BrainCloud
         /// Service Name - Script
         /// Service Operation - Run
         /// </remarks>
-        /// <param name="in_scriptName">
+        /// <param name="scriptName">
         /// The name of the script to be run
         /// </param>
-        /// <param name="in_jsonScriptData">
+        /// <param name="jsonScriptData">
         /// Data to be sent to the script in json format
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void RunScript(
-            string in_scriptName,
-            string in_jsonScriptData,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string scriptName,
+            string jsonScriptData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
+            data[OperationParam.ScriptServiceRunScriptName.Value] = scriptName;
 
-            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            if (Util.IsOptionalParameterValid(jsonScriptData))
             {
-                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(jsonScriptData);
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.Run, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -69,32 +69,32 @@ namespace BrainCloud
         /// Service Name - Script
         /// Service Operation - ScheduleCloudScript
         /// </remarks>
-        /// <param name="in_scriptName"> Name of script </param>
-        /// <param name="in_jsonScriptData"> JSON bundle to pass to script </param>
-        /// <param name="in_startDateInUTC">  The start date as a DateTime object </param>
-        /// <param name="in_success"> The success callback. </param>
-        /// <param name="in_failure"> The failure callback. </param>
-        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <param name="scriptName"> Name of script </param>
+        /// <param name="jsonScriptData"> JSON bundle to pass to script </param>
+        /// <param name="startDateInUTC">  The start date as a DateTime object </param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
         public void ScheduleRunScriptUTC(
-            string in_scriptName,
-            string in_jsonScriptData,
-            DateTime in_startDateInUTC,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string scriptName,
+            string jsonScriptData,
+            DateTime startDateInUTC,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
+            data[OperationParam.ScriptServiceRunScriptName.Value] = scriptName;
 
-            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            if (Util.IsOptionalParameterValid(jsonScriptData))
             {
-                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(jsonScriptData);
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceStartDateUTC.Value] = Util.DateTimeToBcTimestamp(in_startDateInUTC);
+            data[OperationParam.ScriptServiceStartDateUTC.Value] = Util.DateTimeToBcTimestamp(startDateInUTC);
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -106,32 +106,32 @@ namespace BrainCloud
         /// Service Name - Script
         /// Service Operation - ScheduleCloudScript
         /// </remarks>
-        /// <param name="in_scriptName"> Name of script </param>
-        /// <param name="in_jsonScriptData"> JSON bundle to pass to script </param>
-        /// <param name="in_minutesFromNow"> Number of minutes from now to run script </param>
-        /// <param name="in_success"> The success callback. </param>
-        /// <param name="in_failure"> The failure callback. </param>
-        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <param name="scriptName"> Name of script </param>
+        /// <param name="jsonScriptData"> JSON bundle to pass to script </param>
+        /// <param name="minutesFromNow"> Number of minutes from now to run script </param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
         public void ScheduleRunScriptMinutes(
-            string in_scriptName,
-            string in_jsonScriptData,
-            long in_minutesFromNow,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string scriptName,
+            string jsonScriptData,
+            long minutesFromNow,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
+            data[OperationParam.ScriptServiceRunScriptName.Value] = scriptName;
 
-            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            if (Util.IsOptionalParameterValid(jsonScriptData))
             {
-                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(jsonScriptData);
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceStartMinutesFromNow.Value] = in_minutesFromNow;
+            data[OperationParam.ScriptServiceStartMinutesFromNow.Value] = minutesFromNow;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
@@ -143,33 +143,58 @@ namespace BrainCloud
         /// Service Name - Script
         /// Service Operation - RUN_PARENT_SCRIPT
         /// </remarks>
-        /// <param name="in_scriptName"> Name of script </param>
-        /// <param name="in_jsonScriptData"> JSON bundle to pass to script </param>
-        /// <param name="in_parentLevel"> The level name of the parent to run the script from </param>
-        /// <param name="in_success"> The success callback. </param>
-        /// <param name="in_failure"> The failure callback. </param>
-        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <param name="scriptName"> Name of script </param>
+        /// <param name="jsonScriptData"> JSON bundle to pass to script </param>
+        /// <param name="parentLevel"> The level name of the parent to run the script from </param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
         public void RunParentScript(
-            string in_scriptName,
-            string in_jsonScriptData,
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string scriptName,
+            string jsonScriptData,
+            string parentLevel,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ScriptServiceRunScriptName.Value] = in_scriptName;
+            data[OperationParam.ScriptServiceRunScriptName.Value] = scriptName;
 
-            if (Util.IsOptionalParameterValid(in_jsonScriptData))
+            if (Util.IsOptionalParameterValid(jsonScriptData))
             {
-                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonScriptData);
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(jsonScriptData);
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceParentLevel.Value] = in_parentLevel;
+            data[OperationParam.ScriptServiceParentLevel.Value] = parentLevel;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.RunParentScript, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Cancels a scheduled cloud code script
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Script
+        /// Service Operation - CANCEL_SCHEDULED_SCRIPT
+        /// </remarks>
+        /// <param name="jobId"> ID of script job to cancel </param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
+        public void CancelScheduledScript(
+            string jobId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ScriptServiceJobId.Value] = jobId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.CancelScheduledScript, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
