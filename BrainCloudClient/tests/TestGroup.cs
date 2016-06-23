@@ -100,6 +100,25 @@ namespace BrainCloudTests
             DeleteGroup();
         }
 
+
+        [Test]
+        public void TestAutoJoinGroup()
+        {
+            CreateGroupAsUserA(true);
+            Authenticate(Users.UserB);
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.GroupService.AutoJoinGroup(
+                _groupType,
+                BrainCloudGroup.AutoJoinStrategy.JoinFirstGroup,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            Logout();
+            DeleteGroupAsUserA();
+        }
+
         [Test]
         public void TestCancelGroupInvitation()
         {

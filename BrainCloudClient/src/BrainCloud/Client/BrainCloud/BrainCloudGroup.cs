@@ -21,6 +21,12 @@ namespace BrainCloud
             OTHER
         }
 
+        public enum AutoJoinStrategy
+        {
+            JoinFirstGroup,
+            JoinRandomGroup
+        }
+
         private BrainCloudClient _bcClient;
 
         public BrainCloudGroup(BrainCloudClient brainCloudClientRef)
@@ -140,6 +146,43 @@ namespace BrainCloud
             }
 
             SendRequest(ServiceOperation.ApproveGroupJoinRequest, success, failure, cbObject, data);
+        }
+
+        /// <summary>
+        /// Automatically join an open group that matches the search criteria and has space available.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - AUTO_JOIN_GROUP
+        /// </remarks>
+        /// <param name="groupType">
+        /// Name of the associated group type.
+        /// </param>
+        /// <param name="autoJoinStrategy">
+        /// Selection strategy to employ when there are multiple matches
+        /// </param>
+        /// <param name="dataQueryJson">
+        /// Query parameters (optional)
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void AutoJoinGroup(
+            string groupType,
+            AutoJoinStrategy autoJoinStrategy,
+            string dataQueryJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupType.Value] = groupType;
+            data[OperationParam.GroupAutoJoinStrategy.Value] = autoJoinStrategy.ToString();
+
+            if (Util.IsOptionalParameterValid(dataQueryJson))
+                data[OperationParam.GroupWhere.Value] = dataQueryJson;
+
+            SendRequest(ServiceOperation.AutoJoinGroup, success, failure, cbObject, data);
         }
 
         /// <summary>
@@ -392,28 +435,7 @@ namespace BrainCloud
             SendRequest(ServiceOperation.IncrementGroupData, success, failure, cbObject, data);
         }
 
-        /// <summary>
-        /// Increment elements for the group entity's data field.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - group
-        /// Service Operation - INCREMENT_GROUP_ENTITY_DATA
-        /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="entityId">
-        /// ID of the entity.
-        /// </param>
-        /// <param name="jsonData">
-        /// Partial data map with incremental values.
-        /// </param>
-        /// <param name="returnData">
-        /// Should the group entity be returned in the response?
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void IncrementGroupEntityData(
             string groupId,
             string entityId,

@@ -295,6 +295,7 @@ namespace BrainCloud
         //S3 Service
         public static readonly OperationParam S3HandlingServiceFileCategory = new OperationParam("category");
         public static readonly OperationParam S3HandlingServiceFileDetails = new OperationParam("fileDetails");
+        public static readonly OperationParam S3HandlingServiceFileId = new OperationParam("fileId");
 
         //Shared Identity
         public static readonly OperationParam IdentityServiceForceSingleton = new OperationParam("forceSingleton");
@@ -345,6 +346,8 @@ namespace BrainCloud
         public static readonly OperationParam GroupContext = new OperationParam("context");
         public static readonly OperationParam GroupPageOffset = new OperationParam("pageOffset");
         public static readonly OperationParam GroupReturnData = new OperationParam("returnData");
+        public static readonly OperationParam GroupAutoJoinStrategy = new OperationParam("autoJoinStrategy");
+        public static readonly OperationParam GroupWhere = new OperationParam("where");
 
         private OperationParam(string value)
         {

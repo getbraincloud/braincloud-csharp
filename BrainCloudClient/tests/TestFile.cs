@@ -130,6 +130,37 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+
+        [Test]
+        public void TestGetCdnUrl()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+
+            FileInfo info = new FileInfo(CreateFile(1024));
+
+            BrainCloudClient.Instance.FileService.UploadFile(
+                _cloudPath,
+                info.Name,
+                true,
+                true,
+                info.FullName,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            WaitForReturn(new[] { GetUploadId(tr.m_response) });
+
+            Assert.IsFalse(_failCount > 0);
+
+            BrainCloudClient.Instance.FileService.GetCDNUrl(
+                GetCloudPath(tr.m_response),
+                info.Name,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         [Test]
         public void TestDeleteUserFiles()
         {

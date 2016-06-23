@@ -156,9 +156,9 @@ namespace BrainCloud
         /// </summary>
         /// <param name="cloudPath">File path</param>
         /// <param name="cloudFileName"></param>
-        /// <param name="success"></param>
-        /// <param name="failure"></param>
-        /// <param name="cbObject"></param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
         public void DeleteUserFile(
             string cloudPath,
             string cloudFileName,
@@ -181,9 +181,9 @@ namespace BrainCloud
         /// </summary>
         /// <param name="cloudPath">File path</param>
         /// <param name="recurse">Whether to recurse down the path</param>
-        /// <param name="success"></param>
-        /// <param name="failure"></param>
-        /// <param name="cbObject"></param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
         public void DeleteUserFiles(
             string cloudPath,
             bool recurse,
@@ -198,6 +198,31 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.DeleteUserFiles, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns the CDN URL for a file object.
+        /// </summary>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="cloudFilename">Name of file</param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void GetCDNUrl(
+            string cloudPath,
+            string cloudFilename,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.UploadCloudPath.Value] = cloudPath;
+            data[OperationParam.UploadCloudFilename.Value] = cloudFilename;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.GetCdnUrl, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }

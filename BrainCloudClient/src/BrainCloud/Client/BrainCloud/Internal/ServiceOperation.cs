@@ -246,11 +246,13 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ListUserFiles = new ServiceOperation("LIST_USER_FILES");
         public static readonly ServiceOperation DeleteUserFile = new ServiceOperation("DELETE_USER_FILE");
         public static readonly ServiceOperation DeleteUserFiles = new ServiceOperation("DELETE_USER_FILES");
+        public static readonly ServiceOperation GetCdnUrl = new ServiceOperation("GET_CDN_URL");
 
         //group
         public static readonly ServiceOperation AcceptGroupInvitation = new ServiceOperation("ACCEPT_GROUP_INVITATION");
         public static readonly ServiceOperation AddGroupMember = new ServiceOperation("ADD_GROUP_MEMBER");
         public static readonly ServiceOperation ApproveGroupJoinRequest = new ServiceOperation("APPROVE_GROUP_JOIN_REQUEST");
+        public static readonly ServiceOperation AutoJoinGroup = new ServiceOperation("AUTO_JOIN_GROUP");
         public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
         public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
         public static readonly ServiceOperation CreateGroupEntity = new ServiceOperation("CREATE_GROUP_ENTITY");

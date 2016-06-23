@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using JsonFx.Json;
+using System;
 
 namespace BrainCloud
 {
@@ -103,41 +104,7 @@ namespace BrainCloud
         }
 
 
-        /// <summary>
-        /// Method updates a new entity on the server. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Update
-        /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity to update
-        /// </param>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// permissions which make the entity readable/writeable by only the player.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        /// entity on the server does not match the version passed in, the
-        /// server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateEntity(
             string entityId,
             string entityType,
@@ -236,40 +203,7 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Method updates a shared entity owned by another player. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - UpdateShared
-        /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity to update
-        /// </param>
-        /// <param name="targetPlayerId">
-        /// The id of the entity's owner
-        /// </param>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateSharedEntity(
             string entityId,
             string targetPlayerId,
@@ -400,37 +334,7 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Method updates a singleton entity on the server. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string. If the entity doesn't exist it is created.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Update_Singleton
-        /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateSingleton(
             string entityType,
             string jsonEntityData,
@@ -927,39 +831,28 @@ namespace BrainCloud
         /// Service Operation - INCREMENT_USER_ENTITY_DATA
         /// </remarks>
         /// <param name="entityId">The entity to increment</param>
-        /// <param name="targetPlayerId">Profile ID of the entity owner</param>
         /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="returnData">Should the entity be returned in the response?</param>     
+        /// <param name="returnData">Should the entity be returned in the response?</param>        
+        /// <param name="summarizeOutput">
+        /// Should only the entity summary be returned in the response?
+        /// </param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         public void IncrementUserEntityData(
             string entityId,
-            string targetPlayerId,
             string jsonData,
             bool? returnData,
+            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            var data = new Dictionary<string, object>();
-
-            data[OperationParam.EntityServiceEntityId.Value] = entityId;
-            data[OperationParam.EntityServiceTargetPlayerId.Value] = targetPlayerId;
-            if (Util.IsOptionalParameterValid(jsonData))
-            {
-                var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-                data[OperationParam.EntityServiceData.Value] = where;
-            }
-            if (returnData.HasValue) data[OperationParam.EntityServiceReturnData.Value] = returnData.Value;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            IncrementSharedUserEntityData(entityId, jsonData, null, returnData, summarizeOutput, success, failure, cbObject);
         }
 
         /// <summary>
-        /// Partial increment of entity data field items. Partial set of items incremented as specified.
+        /// Partial increment of shared entity data field items. Partial set of items incremented as specified.
         /// </summary>
         /// <remarks>
         /// Service Name - entity
@@ -975,7 +868,7 @@ namespace BrainCloud
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        public void IncrementUserEntityData(
+        public void IncrementSharedUserEntityData(
             string entityId,
             string targetPlayerId,
             string jsonData,

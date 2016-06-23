@@ -325,16 +325,17 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestIncrementEntityData()
+        public void TestIncrementSharedEntityData()
         {
             TestResult tr = new TestResult();
 
             string id = CreateEntity(_defaultEntityType, "test", 10);
 
-            BrainCloudClient.Instance.EntityService.IncrementUserEntityData(
+            BrainCloudClient.Instance.EntityService.IncrementSharedUserEntityData(
                 id,
                 GetUser(Users.UserA).ProfileId,
                 Helpers.CreateJsonPair("test", 1),
+                true,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -343,7 +344,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestIncrementEntityDataSummary()
+        public void TestIncrementEntityData()
         {
             TestResult tr = new TestResult();
 
@@ -351,7 +352,6 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.EntityService.IncrementUserEntityData(
                 id,
-                GetUser(Users.UserA).ProfileId,
                 Helpers.CreateJsonPair("test", 1),
                 true,
                 true,

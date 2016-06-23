@@ -133,31 +133,7 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(serverCall);
         }
 
-        /// <summary>
-        /// Method updates an existing entity on the server.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - GlobalEntity
-        /// Service Operation - Update
-        /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateEntity(
             string entityId,
             int version,
@@ -229,31 +205,7 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(serverCall);
         }
 
-        /// <summary>
-        /// Method updates an existing entity's Acl on the server.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - GlobalEntity
-        /// Service Operation - UpdateAcl
-        /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateEntityAcl(
             string entityId,
             int version,
@@ -330,31 +282,7 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(serverCall);
         }
 
-        /// <summary>
-        /// Method updates an existing entity's time to live on the server.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - GlobalEntity
-        /// Service Operation - UpdateTimeToLive
-        /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="timeToLive">
-        /// Sets expiry time for entity in milliseconds if > 0
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void UpdateEntityTimeToLive(
             string entityId,
             int version,
@@ -689,19 +617,7 @@ namespace BrainCloud
         }
 
 
-        /// <summary>
-        /// Partial increment of global entity data field items. Partial set of items incremented as specified.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - globalEntity
-        /// Service Operation - INCREMENT_GLOBAL_ENTITY_DATA
-        /// </remarks>
-        /// <param name="entityId">The entity to increment</param>
-        /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="returnData">Should the entity be returned in the response?</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
         public void IncrementGlobalEntityData(
             string entityId,
             string jsonData,

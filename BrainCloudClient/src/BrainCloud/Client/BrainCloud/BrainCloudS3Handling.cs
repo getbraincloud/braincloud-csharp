@@ -102,5 +102,26 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetFileList, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Returns the CDN URL for a file
+        /// </summary>
+        /// <param name="fileId">ID of file</param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void GetCDNUrl(
+            string fileId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.S3HandlingServiceFileId.Value] = fileId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetCdnUrl, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }
