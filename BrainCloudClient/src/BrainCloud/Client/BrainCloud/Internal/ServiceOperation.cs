@@ -130,12 +130,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetShieldExpiry = new ServiceOperation("GET_SHIELD_EXPIRY");
         public static readonly ServiceOperation FindPlayers = new ServiceOperation("FIND_PLAYERS");
         public static readonly ServiceOperation FindPlayersUsingFilter = new ServiceOperation("FIND_PLAYERS_USING_FILTER");
-
-        [Obsolete]
-        public static readonly ServiceOperation GetOneWayPlayers = new ServiceOperation("GET_ONEWAY_PLAYERS");
-        [Obsolete]
-        public static readonly ServiceOperation GetOneWayPlayersFilter = new ServiceOperation("GET_ONEWAY_PLAYERS_FILTER");
-
+        
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");

@@ -211,21 +211,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Use ListFriends method instead - removal after June 21 2016")]
-        public void ReadFriendsWithApplication(
-            bool includeSummaryData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.FriendServiceIncludeSummaryData.Value] = includeSummaryData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriendsWithApplication, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Returns player state of a particular friend.
         /// </summary>

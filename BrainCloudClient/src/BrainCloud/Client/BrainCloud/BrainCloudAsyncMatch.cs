@@ -68,18 +68,6 @@ namespace BrainCloud
             CreateMatchInternal(in_jsonOpponentIds, null, in_pushNotificationMessage, null, null, null, in_success, in_failure, in_cbObject);
         }
 
-        [Obsolete("Deprecated. Use method without in_matchId parameter instead.  Will be removed after May 10 2016.")]
-        public void CreateMatch(
-            string in_jsonOpponentIds,
-            string in_pushNotificationMessage,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            CreateMatchInternal(in_jsonOpponentIds, null, in_pushNotificationMessage, in_matchId, null, null, in_success, in_failure, in_cbObject);
-        }
-
         /// <summary>
         /// Creates an instance of an asynchronous match with an initial turn.
         /// </summary>
@@ -143,28 +131,6 @@ namespace BrainCloud
                 in_jsonMatchState == null ? "{}" : in_jsonMatchState,
                 in_pushNotificationMessage,
                 null,
-                in_nextPlayer,
-                in_jsonSummary,
-                in_success, in_failure, in_cbObject);
-        }
-
-        [Obsolete("Deprecated. Use method without in_matchId parameter instead.  Will be removed after May 10 2016.")]
-        public void CreateMatchWithInitialTurn(
-            string in_jsonOpponentIds,
-            string in_jsonMatchState,
-            string in_pushNotificationMessage,
-            string in_matchId,
-            string in_nextPlayer,
-            string in_jsonSummary,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            CreateMatchInternal(
-                in_jsonOpponentIds,
-                in_jsonMatchState == null ? "{}" : in_jsonMatchState,
-                in_pushNotificationMessage,
-                in_matchId,
                 in_nextPlayer,
                 in_jsonSummary,
                 in_success, in_failure, in_cbObject);
