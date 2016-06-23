@@ -848,7 +848,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            IncrementSharedUserEntityData(entityId, jsonData, null, returnData, summarizeOutput, success, failure, cbObject);
+            IncrementSharedUserEntityData(entityId, null, jsonData, returnData, summarizeOutput, success, failure, cbObject);
         }
 
         /// <summary>
@@ -856,7 +856,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - entity
-        /// Service Operation - INCREMENT_USER_ENTITY_DATA
+        /// Service Operation - INCREMENT_SHARED_USER_ENTITY_DATA
         /// </remarks>
         /// <param name="entityId">The entity to increment</param>
         /// <param name="targetPlayerId">Profile ID of the entity owner</param>
@@ -891,7 +891,7 @@ namespace BrainCloud
             data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementSharedUserEntityData, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
     }

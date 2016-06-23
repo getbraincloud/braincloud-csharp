@@ -58,6 +58,7 @@ namespace BrainCloudTests
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 null,
                 1,
+                true,
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -158,6 +159,7 @@ namespace BrainCloudTests
                 _defaultEntityType,
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 1,
+                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -200,6 +202,7 @@ namespace BrainCloudTests
                 Helpers.CreateJsonPair(_defaultEntityValueName, updatedAddress),
                 new ACL() { Other = ACL.Access.ReadWrite }.ToJsonString(),
                 1,
+                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
