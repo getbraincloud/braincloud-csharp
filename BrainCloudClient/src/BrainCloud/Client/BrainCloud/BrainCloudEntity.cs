@@ -19,6 +19,32 @@ namespace BrainCloud
             _brainCloudClient = brainCloudClient;
         }
 
+        [Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
+        public void CreateEntity(
+            string entityType,
+            string jsonEntityData,
+            string jsonEntityAcl,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.EntityServiceEntityType.Value] = entityType;
+
+            var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
+            data[OperationParam.EntityServiceData.Value] = entityData;
+
+            if (Util.IsOptionalParameterValid(jsonEntityAcl))
+            {
+                var acl = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityAcl);
+                data[OperationParam.EntityServiceAcl.Value] = acl;
+            }
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.Create, data, callback);
+            _brainCloudClient.SendRequest(serverCall);
+        }
+
         /// <summary>
         /// Method creates a new entity on the server.
         /// </summary>
@@ -35,6 +61,9 @@ namespace BrainCloud
         /// <param name="jsonEntityAcl">
         /// The entity's access control list as json. A null acl implies default
         /// permissions which make the entity readable/writeable by only the player.
+        /// </param>       
+        /// <param name="summarizeOutput">
+        /// Should only the entity summary be returned in the response?
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -49,6 +78,7 @@ namespace BrainCloud
             string entityType,
             string jsonEntityData,
             string jsonEntityAcl,
+            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -58,6 +88,7 @@ namespace BrainCloud
 
             var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
             data[OperationParam.EntityServiceData.Value] = entityData;
+            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             if (Util.IsOptionalParameterValid(jsonEntityAcl))
             {
@@ -848,7 +879,20 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            IncrementSharedUserEntityData(entityId, null, jsonData, returnData, summarizeOutput, success, failure, cbObject);
+            var data = new Dictionary<string, object>();
+
+            data[OperationParam.EntityServiceEntityId.Value] = entityId;
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.EntityServiceData.Value] = where;
+            }
+            if (returnData.HasValue) data[OperationParam.EntityServiceReturnData.Value] = returnData.Value;
+            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
+            _brainCloudClient.SendRequest(serverCall);
         }
 
         /// <summary>
