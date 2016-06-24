@@ -70,9 +70,6 @@ namespace BrainCloud
         public static readonly OperationParam EntityServiceVersion = new OperationParam("version");
         public static readonly OperationParam EntityServiceUpdateOps = new OperationParam("updateOps");
         public static readonly OperationParam EntityServiceTargetPlayerId = new OperationParam("targetPlayerId");
-        public static readonly OperationParam EntityServiceReturnData = new OperationParam("returnData");
-
-        public static readonly OperationParam SummarizeOutput = new OperationParam("summarizeOutput");
 
         // Global Entity Service - Params
         public static readonly OperationParam GlobalEntityServiceEntityId = new OperationParam("entityId");
@@ -87,7 +84,6 @@ namespace BrainCloud
         public static readonly OperationParam GlobalEntityServiceOrderBy = new OperationParam("orderBy");
         public static readonly OperationParam GlobalEntityServiceContext = new OperationParam("context");
         public static readonly OperationParam GlobalEntityServicePageOffset = new OperationParam("pageOffset");
-        public static readonly OperationParam GlobalEntityServiceReturnData = new OperationParam("returnData");
 
         // Event Service - Send Params
         public static readonly OperationParam EventServiceSendToId = new OperationParam("toId");
@@ -345,7 +341,6 @@ namespace BrainCloud
         public static readonly OperationParam GroupVersion = new OperationParam("version");
         public static readonly OperationParam GroupContext = new OperationParam("context");
         public static readonly OperationParam GroupPageOffset = new OperationParam("pageOffset");
-        public static readonly OperationParam GroupReturnData = new OperationParam("returnData");
         public static readonly OperationParam GroupAutoJoinStrategy = new OperationParam("autoJoinStrategy");
         public static readonly OperationParam GroupWhere = new OperationParam("where");
 

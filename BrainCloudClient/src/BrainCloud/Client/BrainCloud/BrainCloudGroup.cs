@@ -413,16 +413,12 @@ namespace BrainCloud
         /// <param name="jsonData">
         /// Partial data map with incremental values.
         /// </param>
-        /// <param name="returnData">
-        /// Should the group data be returned in the response?
-        /// </param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         public void IncrementGroupData(
             string groupId,
             string jsonData,
-            bool? returnData,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -430,28 +426,8 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GroupId.Value] = groupId;
             if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
-            if (returnData.HasValue) data[OperationParam.GroupReturnData.Value] = returnData.Value;
 
             SendRequest(ServiceOperation.IncrementGroupData, success, failure, cbObject, data);
-        }
-
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void IncrementGroupEntityData(
-            string groupId,
-            string entityId,
-            string jsonData,
-            bool? returnData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GroupId.Value] = groupId;
-            data[OperationParam.GroupEntityId.Value] = entityId;
-            if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
-            if (returnData.HasValue) data[OperationParam.GroupReturnData.Value] = returnData.Value;
-
-            SendRequest(ServiceOperation.IncrementGroupEntityData, success, failure, cbObject, data);
         }
 
         /// <summary>
@@ -469,13 +445,7 @@ namespace BrainCloud
         /// </param>
         /// <param name="jsonData">
         /// Partial data map with incremental values.
-        /// </param>
-        /// <param name="returnData">
-        /// Should the group entity be returned in the response?
-        /// </param>        
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
+        /// </param> 
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
@@ -483,8 +453,6 @@ namespace BrainCloud
             string groupId,
             string entityId,
             string jsonData,
-            bool? returnData,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -493,8 +461,6 @@ namespace BrainCloud
             data[OperationParam.GroupId.Value] = groupId;
             data[OperationParam.GroupEntityId.Value] = entityId;
             if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
-            if (returnData.HasValue) data[OperationParam.GroupReturnData.Value] = returnData.Value;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             SendRequest(ServiceOperation.IncrementGroupEntityData, success, failure, cbObject, data);
         }

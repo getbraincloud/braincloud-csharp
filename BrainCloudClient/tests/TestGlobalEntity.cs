@@ -24,7 +24,6 @@ namespace BrainCloudTests
                 0,
                 null,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
-                true,
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -42,7 +41,6 @@ namespace BrainCloudTests
                 0,
                 null,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
-                true,
                 tr.ApiSuccess,
                 tr.ApiError);
 
@@ -139,7 +137,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 Helpers.CreateJsonPair(_defaultEntityValueName, "Test Name 02 Changed"),
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -156,7 +153,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 Helpers.CreateJsonPair(_defaultEntityValueName, "Test Name 02 Changed"),
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -173,7 +169,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 new ACL { Other = ACL.Access.ReadWrite }.ToJsonString(),
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -190,7 +185,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 new ACL { Other = ACL.Access.ReadWrite }.ToJsonString(),
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -207,7 +201,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 1000,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -224,7 +217,6 @@ namespace BrainCloudTests
                 entityId,
                 1,
                 1000,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -279,7 +271,6 @@ namespace BrainCloudTests
                 0,
                 null,
                 Helpers.CreateJsonPair("test", 1234),
-                true,
                 tr.ApiSuccess,
                 tr.ApiError);
             tr.Run();
@@ -289,8 +280,6 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.GlobalEntityService.IncrementGlobalEntityData(
                 id,
                 Helpers.CreateJsonPair("test", 1),
-                true,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -306,7 +295,6 @@ namespace BrainCloudTests
                 0,
                 null,
                 Helpers.CreateJsonPair("test", 1234),
-                true,
                 tr.ApiSuccess,
                 tr.ApiError);
             tr.Run();
@@ -316,8 +304,6 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.GlobalEntityService.IncrementGlobalEntityData(
                 id,
                 Helpers.CreateJsonPair("test", 1),
-                true,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -356,7 +342,6 @@ namespace BrainCloudTests
                  0,
                  access.ToJsonString(),
                  Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
-                 true,
                  tr.ApiSuccess,
                  tr.ApiError);
             }
@@ -368,7 +353,6 @@ namespace BrainCloudTests
                 0,
                 access.ToJsonString(),
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
-                true,
                 tr.ApiSuccess,
                 tr.ApiError);
             }

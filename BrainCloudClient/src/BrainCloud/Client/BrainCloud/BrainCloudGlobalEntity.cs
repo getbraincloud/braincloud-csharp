@@ -18,34 +18,6 @@ namespace BrainCloud
             _brainCloudClient = brainCloudClient;
         }
 
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void CreateEntity(
-            string entityType,
-            long timeToLive,
-            string jsonEntityAcl,
-            string jsonEntityData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.GlobalEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.GlobalEntityServiceTimeToLive.Value] = timeToLive;
-
-            var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
-            data[OperationParam.GlobalEntityServiceData.Value] = entityData;
-
-            if (Util.IsOptionalParameterValid(jsonEntityAcl))
-            {
-                var acl = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityAcl);
-                data[OperationParam.GlobalEntityServiceAcl.Value] = acl;
-            }
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.Create, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
         /// <summary>
         /// Method creates a new entity on the server.
         /// </summary>
@@ -65,9 +37,6 @@ namespace BrainCloud
         /// <param name="jsonEntityData">
         /// The entity's data as a json string
         /// </param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -82,44 +51,12 @@ namespace BrainCloud
             long timeToLive,
             string jsonEntityAcl,
             string jsonEntityData,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             var data = new Dictionary<string, object>();
             data[OperationParam.GlobalEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.GlobalEntityServiceTimeToLive.Value] = timeToLive;
-
-            var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
-            data[OperationParam.GlobalEntityServiceData.Value] = entityData;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
-
-            if (Util.IsOptionalParameterValid(jsonEntityAcl))
-            {
-                var acl = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityAcl);
-                data[OperationParam.GlobalEntityServiceAcl.Value] = acl;
-            }
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.Create, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void CreateEntityWithIndexedId(
-            string entityType,
-            string indexedId,
-            long timeToLive,
-            string jsonEntityAcl,
-            string jsonEntityData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.GlobalEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.GlobalEntityServiceIndexedId.Value] = indexedId;
             data[OperationParam.GlobalEntityServiceTimeToLive.Value] = timeToLive;
 
             var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
@@ -132,7 +69,7 @@ namespace BrainCloud
             }
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.CreateWithIndexedId, data, callback);
+            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.Create, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
 
@@ -158,9 +95,6 @@ namespace BrainCloud
         /// <param name="jsonEntityData">
         /// The entity's data as a json string
         /// </param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -176,7 +110,6 @@ namespace BrainCloud
             long timeToLive,
             string jsonEntityAcl,
             string jsonEntityData,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -188,7 +121,6 @@ namespace BrainCloud
 
             var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
             data[OperationParam.GlobalEntityServiceData.Value] = entityData;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             if (Util.IsOptionalParameterValid(jsonEntityAcl))
             {
@@ -200,28 +132,6 @@ namespace BrainCloud
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.CreateWithIndexedId, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
-
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void UpdateEntity(
-            string entityId,
-            int version,
-            string jsonEntityData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
-            data[OperationParam.GlobalEntityServiceVersion.Value] = version;
-
-            var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
-            data[OperationParam.GlobalEntityServiceData.Value] = entityData;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.Update, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
 
         /// <summary>
         /// Method updates an existing entity on the server.
@@ -239,9 +149,6 @@ namespace BrainCloud
         /// <param name="jsonEntityData">
         /// The entity's data as a json string
         /// </param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -255,7 +162,6 @@ namespace BrainCloud
             string entityId,
             int version,
             string jsonEntityData,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -266,34 +172,9 @@ namespace BrainCloud
 
             var entityData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityData);
             data[OperationParam.GlobalEntityServiceData.Value] = entityData;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.Update, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void UpdateEntityAcl(
-            string entityId,
-            int version,
-            string jsonEntityAcl,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
-            data[OperationParam.GlobalEntityServiceVersion.Value] = version;
-
-            if (Util.IsOptionalParameterValid(jsonEntityAcl))
-            {
-                var acl = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityAcl);
-                data[OperationParam.GlobalEntityServiceAcl.Value] = acl;
-            }
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.UpdateAcl, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
 
@@ -313,9 +194,6 @@ namespace BrainCloud
         /// <param name="jsonEntityAcl">
         /// The entity's access control list as json.
         /// </param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -329,7 +207,6 @@ namespace BrainCloud
             string entityId,
             int version,
             string jsonEntityAcl,
-            bool returnData,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -343,29 +220,9 @@ namespace BrainCloud
                 var acl = JsonReader.Deserialize<Dictionary<string, object>>(jsonEntityAcl);
                 data[OperationParam.GlobalEntityServiceAcl.Value] = acl;
             }
-            data[OperationParam.SummarizeOutput.Value] = returnData;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.UpdateAcl, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void UpdateEntityTimeToLive(
-            string entityId,
-            int version,
-            long timeToLive,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
-            data[OperationParam.GlobalEntityServiceVersion.Value] = version;
-            data[OperationParam.GlobalEntityServiceTimeToLive.Value] = timeToLive;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.UpdateTimeToLive, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
 
@@ -385,9 +242,6 @@ namespace BrainCloud
         /// <param name="timeToLive">
         /// Sets expiry time for entity in milliseconds if > 0
         /// </param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -401,7 +255,6 @@ namespace BrainCloud
             string entityId,
             int version,
             long timeToLive,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -410,7 +263,6 @@ namespace BrainCloud
             data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
             data[OperationParam.GlobalEntityServiceVersion.Value] = version;
             data[OperationParam.GlobalEntityServiceTimeToLive.Value] = timeToLive;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.UpdateTimeToLive, data, callback);
@@ -685,30 +537,6 @@ namespace BrainCloud
         }
 
 
-        [System.Obsolete("Use method with summarizeOutput parameter. Removal after September 21 2016.")]
-        public void IncrementGlobalEntityData(
-            string entityId,
-            string jsonData,
-            bool? returnData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-
-            data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
-            if (Util.IsOptionalParameterValid(jsonData))
-            {
-                var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-                data[OperationParam.GlobalEntityServiceData.Value] = where;
-            }
-            if (returnData.HasValue) data[OperationParam.GlobalEntityServiceReturnData.Value] = returnData.Value;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.IncrementGlobalEntityData, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
-        }
-
         /// <summary>
         /// Partial increment of global entity data field items. Partial set of items incremented as specified.
         /// </summary>
@@ -718,18 +546,12 @@ namespace BrainCloud
         /// </remarks>
         /// <param name="entityId">The entity to increment</param>
         /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="returnData">Should the entity be returned in the response?</param>
-        /// <param name="summarizeOutput">
-        /// Should only the entity summary be returned in the response?
-        /// </param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         public void IncrementGlobalEntityData(
             string entityId,
             string jsonData,
-            bool? returnData,
-            bool summarizeOutput,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -742,8 +564,6 @@ namespace BrainCloud
                 var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
                 data[OperationParam.GlobalEntityServiceData.Value] = where;
             }
-            if (returnData.HasValue) data[OperationParam.GlobalEntityServiceReturnData.Value] = returnData.Value;
-            data[OperationParam.SummarizeOutput.Value] = summarizeOutput;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.IncrementGlobalEntityData, data, callback);
