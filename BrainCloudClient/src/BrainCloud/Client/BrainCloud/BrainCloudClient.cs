@@ -114,7 +114,6 @@ namespace BrainCloud
         private BrainCloudAsyncMatch m_asyncMatchService;
         private BrainCloudTime m_timeService;
         private BrainCloudAuthentication m_authenticationService;
-        private BrainCloudTwitter m_twitterService;
         private BrainCloudPushNotification m_pushNotificationService;
         private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
         private BrainCloudS3Handling m_s3HandlingService;
@@ -184,7 +183,6 @@ namespace BrainCloud
             m_timeService = new BrainCloudTime(this);
 
             m_authenticationService = new BrainCloudAuthentication(this);
-            m_twitterService = new BrainCloudTwitter(this);
             m_pushNotificationService = new BrainCloudPushNotification(this);
             m_playerStatisticsEventService = new BrainCloudPlayerStatisticsEvent(this);
 
@@ -362,11 +360,6 @@ namespace BrainCloud
             get { return m_authenticationService; }
         }
 
-        public BrainCloudTwitter TwitterService
-        {
-            get { return m_twitterService; }
-        }
-
         public BrainCloudPushNotification PushNotificationService
         {
             get { return m_pushNotificationService; }
@@ -511,11 +504,6 @@ namespace BrainCloud
         public BrainCloudAuthentication GetAuthenticationService()
         {
             return m_authenticationService;
-        }
-
-        public BrainCloudTwitter GetTwitterService()
-        {
-            return m_twitterService;
         }
 
         public BrainCloudPushNotification GetPushNotificationService()

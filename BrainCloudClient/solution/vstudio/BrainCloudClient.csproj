@@ -154,9 +154,6 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTime.cs">
       <Link>BrainCloud\BrainCloudTime.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTwitter.cs">
-      <Link>BrainCloud\BrainCloudTwitter.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
     </Compile>
