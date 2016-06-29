@@ -36,6 +36,28 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestGetCdnUrl()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.S3HandlingService.GetFileList(
+                _category,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            object[] files = (object[])((Dictionary<string, object>)(tr.m_response["data"]))["fileDetails"];
+            Dictionary<string, object> file = (Dictionary<string, object>)files[0];
+            string fileId = file["fileId"] as string;
+
+            BrainCloudClient.Instance.S3HandlingService.GetCDNUrl(
+                fileId,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         private string GetModifiedFileDetails()
         {
             TestResult tr = new TestResult();

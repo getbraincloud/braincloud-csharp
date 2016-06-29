@@ -1,6 +1,7 @@
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
+using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -85,6 +86,18 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.IdentityService.GetExpiredIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
+        }
+
+        [Test]
+        public void TestRefreshIdentity()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.RefreshIdentity(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                AuthenticationType.Universal,
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(400, 40464);
         }
     }
 }

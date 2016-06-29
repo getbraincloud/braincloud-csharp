@@ -739,17 +739,48 @@ namespace BrainCloud
         /// Service Operation - INCREMENT_USER_ENTITY_DATA
         /// </remarks>
         /// <param name="entityId">The entity to increment</param>
-        /// <param name="targetPlayerId">Profile ID of the entity owner</param>
         /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="returnData">Should the entity be returned in the response?</param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         public void IncrementUserEntityData(
             string entityId,
+            string jsonData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+
+            data[OperationParam.EntityServiceEntityId.Value] = entityId;
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.EntityServiceData.Value] = where;
+            }
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
+            _brainCloudClient.SendRequest(serverCall);
+        }
+
+        /// <summary>
+        /// Partial increment of shared entity data field items. Partial set of items incremented as specified.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - entity
+        /// Service Operation - INCREMENT_SHARED_USER_ENTITY_DATA
+        /// </remarks>
+        /// <param name="entityId">The entity to increment</param>
+        /// <param name="targetPlayerId">Profile ID of the entity owner</param>
+        /// <param name="jsonData">The subset of data to increment</param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void IncrementSharedUserEntityData(
+            string entityId,
             string targetPlayerId,
             string jsonData,
-            bool? returnData,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -763,10 +794,9 @@ namespace BrainCloud
                 var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
                 data[OperationParam.EntityServiceData.Value] = where;
             }
-            if (returnData.HasValue) data[OperationParam.EntityServiceReturnData.Value] = returnData.Value;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
+            var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementSharedUserEntityData, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
     }

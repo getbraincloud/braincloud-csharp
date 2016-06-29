@@ -546,14 +546,12 @@ namespace BrainCloud
         /// </remarks>
         /// <param name="entityId">The entity to increment</param>
         /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="returnData">Should the entity be returned in the response?</param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
         public void IncrementGlobalEntityData(
             string entityId,
             string jsonData,
-            bool? returnData,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -566,7 +564,6 @@ namespace BrainCloud
                 var where = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
                 data[OperationParam.GlobalEntityServiceData.Value] = where;
             }
-            if (returnData.HasValue) data[OperationParam.GlobalEntityServiceReturnData.Value] = returnData.Value;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.IncrementGlobalEntityData, data, callback);

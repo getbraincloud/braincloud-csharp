@@ -34,6 +34,18 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetSummaryDataForProfileId()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.GetSummaryDataForProfileId(
+                GetUser(Users.UserA).ProfileId,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestFindPlayerByUniversalId()
         {
             TestResult tr = new TestResult();

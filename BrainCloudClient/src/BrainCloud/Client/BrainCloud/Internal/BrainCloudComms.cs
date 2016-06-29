@@ -665,6 +665,12 @@ namespace BrainCloud.Internal
             }
         }
 
+
+        internal void InsertEndOfMessageBundleMarker()
+        {
+            this.AddToQueue(new EndOfBundleMarker());
+        }
+
         /// <summary>
         /// Resets the idle timer.
         /// </summary>
@@ -992,6 +998,32 @@ namespace BrainCloud.Internal
                         if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
                         {
                             numMessagesWaiting = MAX_MESSAGES_BUNDLE;
+                        }
+
+                        // check for end of bundle markers
+                        for (int i = 0; i < numMessagesWaiting; ++i)
+                        {
+                            if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
+                            {
+                                // if the first message is marker, just throw it away
+                                if (i == 0)
+                                {
+                                    _serviceCallsWaiting.RemoveAt(0);
+                                    --i;
+                                    --numMessagesWaiting;
+                                }
+                                else // otherwise cut off the bundle at the marker and toss marker away
+                                {
+                                    numMessagesWaiting = i;
+                                    _serviceCallsWaiting.RemoveAt(i);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (numMessagesWaiting <= 0)
+                        {
+                            return null;
                         }
 
                         if (_serviceCallsInProgress.Count > 0)

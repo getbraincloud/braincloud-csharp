@@ -114,7 +114,6 @@ namespace BrainCloud
         private BrainCloudAsyncMatch m_asyncMatchService;
         private BrainCloudTime m_timeService;
         private BrainCloudAuthentication m_authenticationService;
-        private BrainCloudTwitter m_twitterService;
         private BrainCloudPushNotification m_pushNotificationService;
         private BrainCloudPlayerStatisticsEvent m_playerStatisticsEventService;
         private BrainCloudS3Handling m_s3HandlingService;
@@ -184,7 +183,6 @@ namespace BrainCloud
             m_timeService = new BrainCloudTime(this);
 
             m_authenticationService = new BrainCloudAuthentication(this);
-            m_twitterService = new BrainCloudTwitter(this);
             m_pushNotificationService = new BrainCloudPushNotification(this);
             m_playerStatisticsEventService = new BrainCloudPlayerStatisticsEvent(this);
 
@@ -362,11 +360,6 @@ namespace BrainCloud
             get { return m_authenticationService; }
         }
 
-        public BrainCloudTwitter TwitterService
-        {
-            get { return m_twitterService; }
-        }
-
         public BrainCloudPushNotification PushNotificationService
         {
             get { return m_pushNotificationService; }
@@ -511,11 +504,6 @@ namespace BrainCloud
         public BrainCloudAuthentication GetAuthenticationService()
         {
             return m_authenticationService;
-        }
-
-        public BrainCloudTwitter GetTwitterService()
-        {
-            return m_twitterService;
         }
 
         public BrainCloudPushNotification GetPushNotificationService()
@@ -956,6 +944,25 @@ namespace BrainCloud
         public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
         {
             m_comms.FlushCachedMessages(in_sendApiErrorCallbacks);
+        }
+
+        /// <summary>
+        /// Inserts a marker which will tell the brainCloud comms layer
+        /// to close the message bundle off at this point. Any messages queued
+        /// before this method was called will likely be bundled together in 
+        /// the next send to the server.
+        /// 
+        /// To ensure that only a single message is sent to the server you would 
+        /// do something like this:
+        /// 
+        /// InsertEndOfMessageBundleMarker()
+        /// SomeApiCall()
+        /// InsertEndOfMessageBundleMarker()
+        /// 
+        /// </summary>
+        public void InsertEndOfMessageBundleMarker()
+        {
+            m_comms.InsertEndOfMessageBundleMarker();
         }
 
         /// <summary>

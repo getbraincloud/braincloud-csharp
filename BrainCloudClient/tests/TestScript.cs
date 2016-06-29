@@ -54,6 +54,29 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestCancelJob()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptMinutes(
+                _scriptName,
+                Helpers.CreateJsonPair("testParm1", 1),
+                60,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            var data = (Dictionary<string, object>)tr.m_response["data"];
+            string jobId = data["jobId"] as string;
+
+            BrainCloudClient.Instance.ScriptService.CancelScheduledScript(
+                jobId,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestRunParentScript()
         {
             GoToChildProfile();

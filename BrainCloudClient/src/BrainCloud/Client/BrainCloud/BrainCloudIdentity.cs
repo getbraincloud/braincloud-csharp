@@ -972,6 +972,49 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Refreshes an identity for this player
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - REFRESH_IDENTITY
+        /// </remarks>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="authenticationToken">
+        /// Password or client side token
+        /// </param>
+        /// <param name="authenticationType">
+        /// Type of authentication
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void RefreshIdentity(
+            string externalId,
+            string authenticationToken,
+            AuthenticationType authenticationType,
+            SuccessCallback success,
+            FailureCallback failure,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.RefreshIdentity, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         #region Private Methods
 
         private void AttachIdentity(string externalId, string authenticationToken, AuthenticationType authenticationType, SuccessCallback success, FailureCallback failure,

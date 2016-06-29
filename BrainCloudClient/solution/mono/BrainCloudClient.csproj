@@ -155,9 +155,6 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTime.cs">
       <Link>BrainCloud\BrainCloudTime.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTwitter.cs">
-      <Link>BrainCloud\BrainCloudTwitter.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\MD5Unity.cs">
       <Link>BrainCloud\MD5Unity.cs</Link>
     </Compile>
@@ -205,6 +202,9 @@
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
+      <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
     </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
