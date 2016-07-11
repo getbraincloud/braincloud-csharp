@@ -93,6 +93,21 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestGetPlayersOnlineStatus()
+        {
+            TestResult tr = new TestResult();
+
+            string[] friends = { GetUser(Users.UserB).ProfileId };
+
+            BrainCloudClient.Instance.FriendService.GetPlayersOnlineStatus(
+                friends,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        //Helpers
         private void AddFriends()
         {
             TestResult tr = new TestResult();

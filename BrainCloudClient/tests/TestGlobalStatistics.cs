@@ -57,5 +57,19 @@ namespace BrainCloudTests
             
             tr.Run();
         }
+
+        [Test]
+        public void TestProcessStats()
+        {
+            TestResult tr = new TestResult();
+
+            Dictionary<string, object> stats = new Dictionary<string, object> { { "TestStat", "RESET" } };
+
+            BrainCloudClient.Instance.GlobalStatisticsService.ProcessStatistics(
+                stats,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }

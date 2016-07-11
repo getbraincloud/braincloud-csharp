@@ -42,6 +42,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
 
+        public static readonly ServiceOperation ProcessStatistics = new ServiceOperation("PROCESS_STATISTICS");
         public static readonly ServiceOperation Update = new ServiceOperation("UPDATE");
         public static readonly ServiceOperation UpdateShared = new ServiceOperation("UPDATE_SHARED");
         public static readonly ServiceOperation UpdateAcl = new ServiceOperation("UPDATE_ACL");
@@ -66,6 +67,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
+        public static readonly ServiceOperation GetPlayersOnlineStatus = new ServiceOperation("GET_PLAYERS_ONLINE_STATUS");
         public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetMultiSocialLeaderboard = new ServiceOperation("GET_MULTI_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
@@ -130,7 +132,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetShieldExpiry = new ServiceOperation("GET_SHIELD_EXPIRY");
         public static readonly ServiceOperation FindPlayers = new ServiceOperation("FIND_PLAYERS");
         public static readonly ServiceOperation FindPlayersUsingFilter = new ServiceOperation("FIND_PLAYERS_USING_FILTER");
-        
+
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");
