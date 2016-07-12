@@ -399,13 +399,13 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Get players online status
+        /// Get users online status
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
         /// Service Operation - GET_USERS_ONLINE_STATUS
         /// </remarks>
-        /// <param name="profileIds">Collection of player IDs.</param>
+        /// <param name="profileIds">Collection of profile IDs.</param>
         /// <param name="success"> The success callback. </param>
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
