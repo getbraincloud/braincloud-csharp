@@ -397,6 +397,32 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.RemoveFriends, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Get users online status
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_USERS_ONLINE_STATUS
+        /// </remarks>
+        /// <param name="profileIds">Collection of profile IDs.</param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
+        public void GetUsersOnlineStatus(
+            IList<string> profileIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceProfileIds.Value] = profileIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetUsersOnlineStatus, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
     }
 }
 

@@ -72,6 +72,20 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestProcessStats()
+        {
+            TestResult tr = new TestResult();
+
+            Dictionary<string, object> stats = new Dictionary<string, object> { { "highestScore", "RESET" } };
+
+            BrainCloudClient.Instance.PlayerStatisticsService.ProcessStatistics(
+                stats,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         #endregion
 
         #region XP System

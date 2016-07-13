@@ -24,7 +24,7 @@
 ehthumbs.db
 Thumbs.db
 
-BrainCloudClient/solution/mono/UnitTests/test-results/
-BrainCloudClient/tests/ids.txt
-BrainCloudClient/tests/NUnit/Project1.VisualState.xml
-BrainCloudClient/tests/NUnit/TestResult.xml
+/BrainCloudClient/solution/mono/UnitTests/test-results/
+/BrainCloudClient/tests/ids.txt
+/BrainCloudClient/tests/NUnit/TestResult.xml
+/BrainCloudClient/tests/NUnit/UnitTests.VisualState.xml
