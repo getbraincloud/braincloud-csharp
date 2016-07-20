@@ -123,6 +123,7 @@ namespace BrainCloud.Internal
 
         public void Start()
         {
+#if !UNITY_WEBPLAYER
 #if !DOT_NET
             byte[] file = File.ReadAllBytes(_localPath);
             WWWForm postForm = new WWWForm();
@@ -166,6 +167,7 @@ namespace BrainCloud.Internal
             Status = FileUploaderStatus.Uploading;
             BrainCloudClient.Instance.Log("Started upload of " + _fileName);
             _lastTime = DateTime.Now;
+#endif
         }
 
 #if (DOT_NET)
