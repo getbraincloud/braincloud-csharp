@@ -3,7 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-#if UNITY_5_3 && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#if (UNITY_5_3 || UNITY_5_4) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
@@ -14,7 +14,11 @@ using System.IO;
 using UnityEngine;
 using JsonFx.Json;
 #if USE_WEB_REQUEST
+#if UNITY_5_3
 using UnityEngine.Experimental.Networking;
+#else
+using UnityEngine.Networking;
+#endif
 #endif
 #else
 using System.Net;
