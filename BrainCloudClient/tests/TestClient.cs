@@ -8,7 +8,7 @@ namespace BrainCloudTests
 {
     [TestFixture]
     public class TestClient : TestFixtureBase
-    {      
-        
+    {
+       
     }
 }

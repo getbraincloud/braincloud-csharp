@@ -478,9 +478,9 @@ namespace BrainCloud
             FailureCallback failure,
             object cbObject)
         {
-            string languageCode = Util.GetIsoCodeForCurrentLanguage();
+            string languageCode = m_brainCloudClientRef.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
-            string countryCode = Util.GetCurrentCountryCode();
+            string countryCode = m_brainCloudClientRef.CountryCode;
 
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;

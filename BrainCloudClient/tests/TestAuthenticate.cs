@@ -1,12 +1,20 @@
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
+using System.Collections.Generic;
 
 namespace BrainCloudTests
 {
     [TestFixture]
     public class TestAuthenticate : TestFixtureNoAuth
     {
+        [TearDown]
+        public void Cleanup()
+        {
+            BrainCloudClient.Instance.SetCountryCode(null);
+            BrainCloudClient.Instance.SetLanguageCode(null);
+        }
+
         [Test]
         public void TestAuthenticateUniversal()
         {
@@ -79,6 +87,50 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+        }
+
+        [Test]
+        public void TestSetCountryCode()
+        {
+            TestResult tr = new TestResult();
+
+            string countryCode = "ru";
+
+            BrainCloudClient.Instance.SetCountryCode(countryCode);
+
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            string code = data["countryCode"] as string;
+            Assert.AreEqual(countryCode, code);
+        }
+
+        [Test]
+        public void TestSetLanguageCode()
+        {
+            TestResult tr = new TestResult();
+
+            string languageCode = "ru";
+
+            BrainCloudClient.Instance.SetLanguageCode(languageCode);
+
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            string code = data["languageCode"] as string;
+            Assert.AreEqual(languageCode, code);
         }
     }
 }
