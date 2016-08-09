@@ -507,25 +507,5 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        [Obsolete("Use GenerateAnonymousId instead. Removal after August 17 2016")]
-        public string GenerateGUID()
-        {
-            Guid newID = Guid.NewGuid();
-
-            // ensure that we do not create an empty GUID
-            while (newID == Guid.Empty)
-            {
-                newID = Guid.NewGuid();
-            }
-
-            return newID.ToString();
-        }
-
-        [Obsolete("Use GenerateAnonymousId and Initialize instead. Removal after August 17 2016")]
-        public void GenerateNewAnonymousID()
-        {
-            AnonymousId = GenerateGUID();
-        }
     }
 }
