@@ -11,8 +11,8 @@ namespace BrainCloudTests
         [TearDown]
         public void Cleanup()
         {
-            BrainCloudClient.Instance.SetCountryCode(null);
-            BrainCloudClient.Instance.SetLanguageCode(null);
+            BrainCloudClient.Instance.OverrideCountryCode(null);
+            BrainCloudClient.Instance.OverrideLanguageCode(null);
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace BrainCloudTests
 
             string countryCode = "ru";
 
-            BrainCloudClient.Instance.SetCountryCode(countryCode);
+            BrainCloudClient.Instance.OverrideCountryCode(countryCode);
 
             BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
@@ -118,7 +118,7 @@ namespace BrainCloudTests
 
             string languageCode = "ru";
 
-            BrainCloudClient.Instance.SetLanguageCode(languageCode);
+            BrainCloudClient.Instance.OverrideLanguageCode(languageCode);
 
             BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,

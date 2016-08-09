@@ -984,7 +984,7 @@ namespace BrainCloud
         /// Will override any auto detected country.
         /// </summary>
         /// <param name="countryCode">ISO 3166-1 two-letter country code</param>
-        public void SetCountryCode(string countryCode)
+        public void OverrideCountryCode(string countryCode)
         {
             _countryCode = countryCode;
         }
@@ -995,7 +995,7 @@ namespace BrainCloud
         /// Will override any auto detected language.
         /// </summary>
         /// <param name="languageCode">ISO 639-1 two-letter language code</param>
-        public void SetLanguageCode(string languageCode)
+        public void OverrideLanguageCode(string languageCode)
         {
             _languageCode = languageCode;
         }
