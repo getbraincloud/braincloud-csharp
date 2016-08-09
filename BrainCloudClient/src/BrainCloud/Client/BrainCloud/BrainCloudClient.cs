@@ -980,9 +980,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sets the language code sent to brainCloud when a user authenticates.
-        /// If the language is set to a non-ISO 639-1 standard value the game default will be used instead.
-        /// Will override any auto detected language.
+        /// Sets the country code sent to brainCloud when a user authenticates.
+        /// Will override any auto detected country.
         /// </summary>
         /// <param name="countryCode">ISO 3166-1 two-letter country code</param>
         public void SetCountryCode(string countryCode)
@@ -995,10 +994,10 @@ namespace BrainCloud
         /// If the language is set to a non-ISO 639-1 standard value the game default will be used instead.
         /// Will override any auto detected language.
         /// </summary>
-        /// <param name="language">ISO 639-1 two-letter language code</param>
-        public void SetLanguageCode(string language)
+        /// <param name="languageCode">ISO 639-1 two-letter language code</param>
+        public void SetLanguageCode(string languageCode)
         {
-            _languageCode = language;
+            _languageCode = languageCode;
         }
 
         /// <summary>
