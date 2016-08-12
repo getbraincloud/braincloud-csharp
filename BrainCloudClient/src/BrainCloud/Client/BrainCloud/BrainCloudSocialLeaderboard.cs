@@ -689,6 +689,44 @@ namespace BrainCloud
             var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.RewardTournament, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Retrieve the social leaderboard for a list of players.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - socialLeaderboard
+        /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="profileIds">
+        /// The IDs of the players
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayersSocialLeaderboard(
+            string leaderboardId,
+            IList<string> profileIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceProfileIds.Value] = profileIds;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
+            _brainCloudClient.SendRequest(sc);
+        }
     }
 }
 

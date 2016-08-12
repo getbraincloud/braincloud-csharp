@@ -38,6 +38,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation SendRich = new ServiceOperation("SEND_RICH");
         public static readonly ServiceOperation SendTemplatedToGroup = new ServiceOperation("SEND_TEMPLATED_TO_GROUP");
         public static readonly ServiceOperation SendNormalizedToGroup = new ServiceOperation("SEND_NORMALIZED_TO_GROUP");
+        public static readonly ServiceOperation SendNormalized = new ServiceOperation("SEND_NORMALIZED");
+        public static readonly ServiceOperation SendNormalizedBatch = new ServiceOperation("SEND_NORMALIZED_BATCH");
 
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
@@ -79,6 +81,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
 
         public static readonly ServiceOperation ReadFriendsPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
 

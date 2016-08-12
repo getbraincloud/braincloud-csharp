@@ -331,5 +331,18 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+
+        [Test]
+        public void TestGetPlayersSocialLeaderboard()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.SocialLeaderboardService.GetPlayersSocialLeaderboard(
+                _socialLeaderboardId,
+                new [] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }

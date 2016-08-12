@@ -16,6 +16,7 @@ namespace BrainCloud
         public static readonly OperationParam PushNotificationSendParamMessage = new OperationParam("message");
         public static readonly OperationParam PushNotificationSendParamNotificationTemplateId = new OperationParam("notificationTemplateId");
         public static readonly OperationParam PushNotificationSendParamSubstitutions = new OperationParam("substitutions");
+        public static readonly OperationParam PushNotificationSendParamProfileIds = new OperationParam("profileIds");
 
         public static readonly OperationParam AlertContent = new OperationParam("alertContent");
         public static readonly OperationParam CustomData = new OperationParam("customData");
@@ -203,6 +204,7 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceVersionId = new OperationParam("versionId");
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardResultCount = new OperationParam("leaderboardResultCount");
         public static readonly OperationParam SocialLeaderboardServiceGroupId = new OperationParam("groupId");
+        public static readonly OperationParam SocialLeaderboardServiceProfileIds = new OperationParam("profileIds");
 
 
         // Social Leaderboard Service - Reset Score Params
