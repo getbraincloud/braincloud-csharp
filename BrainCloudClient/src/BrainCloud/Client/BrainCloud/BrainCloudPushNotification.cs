@@ -8,6 +8,10 @@ using JsonFx.Json;
 using BrainCloud.Common;
 using BrainCloud.Internal;
 
+#if !(DOT_NET)
+using System;
+#endif
+
 namespace BrainCloud
 {
     public class BrainCloudPushNotification
@@ -434,7 +438,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        #region Private
+#region Private
 
         private void SendRichPushNotification(
             string toPlayerId,
@@ -458,6 +462,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        #endregion
+#endregion
     }
 }
