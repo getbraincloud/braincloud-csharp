@@ -127,7 +127,7 @@ public class BrainCloudWrapper
             {
                 Debug.LogError("[Singleton] Something went really wrong " +
                                " - there should never be more than 1 singleton!" +
-                               " Reopenning the scene might fix it.");
+                               " Reopening the scene might fix it.");
                 return _instance;
             }
 
@@ -139,8 +139,8 @@ public class BrainCloudWrapper
             }
 #else
             _instance = new BrainCloudWrapper();
-            _instance.LoadData();
 #endif
+            _instance.LoadData();
         }
         return _instance;
     }
