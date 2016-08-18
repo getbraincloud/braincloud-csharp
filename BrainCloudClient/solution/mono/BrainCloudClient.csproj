@@ -329,6 +329,7 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
       <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>
+    <Compile Include="BrainCloud\Internal\WrapperAuthCallbackObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using BrainCloud;
+using BrainCloud.Internal;
 using JsonFx.Json;
 
 #if !DOT_NET
@@ -86,13 +87,6 @@ public class BrainCloudWrapper
 
     public static string AUTHENTICATION_ANONYMOUS = "anonymous";
 
-    // class handles bundling user-defined cb objects and callback methods
-    private class AuthCallbackObject
-    {
-        public object _cbObject;
-        public SuccessCallback _successCallback;
-        public FailureCallback _failureCallback;
-    }
 
     public BrainCloudWrapper()
     {
@@ -251,7 +245,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -301,7 +295,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -350,7 +344,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -395,7 +389,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -435,7 +429,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -479,7 +473,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -523,7 +517,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -571,7 +565,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -617,7 +611,7 @@ public class BrainCloudWrapper
         FailureCallback in_failure = null,
         object in_cbObject = null)
     {
-        AuthCallbackObject aco = new AuthCallbackObject();
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
         aco._successCallback = in_success;
         aco._failureCallback = in_failure;
         aco._cbObject = in_cbObject;
@@ -783,7 +777,7 @@ public class BrainCloudWrapper
         }
         if (cbObject != null)
         {
-            AuthCallbackObject aco = (AuthCallbackObject)cbObject;
+            WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
             if (aco._successCallback != null)
             {
                 aco._successCallback(json, aco._cbObject);
@@ -802,7 +796,7 @@ public class BrainCloudWrapper
     {
         if (cbObject != null)
         {
-            AuthCallbackObject aco = (AuthCallbackObject)cbObject;
+            WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
             if (aco._failureCallback != null)
             {
                 aco._failureCallback(statusCode, reasonCode, errorJson, aco._cbObject);

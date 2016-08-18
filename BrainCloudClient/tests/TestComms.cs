@@ -273,6 +273,17 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGlobalErrorCallbackUsingWrapper()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudWrapper.GetInstance().AuthenticateUniversal("", "zzz", true, tr.ApiSuccess, tr.ApiError, this);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+
+            Assert.AreEqual(_globalErrorCount, 1);
+        }
+
+        [Test]
         public void TestMessageBundleMarker()
         {
             TestResult tr = new TestResult();
@@ -304,8 +315,18 @@ namespace BrainCloudTests
 
         private void GlobalErrorHandler(int status, int reasonCode, string jsonError, object cbObject)
         {
+            if (cbObject != null)
+            {
+                if (cbObject.GetType().ToString() == "BrainCloud.Internal.WrapperAuthCallbackObject")
+                {
+                    Console.WriteLine("GlobalErrorHandler received internal WrapperAuthCallbackObject object: " + cbObject.GetType().ToString());
+                    throw new Exception("GlobalErrorHandler received internal WrapperAuthCallbackObject object");
+                }
+            }
+
             _globalErrorCount++;
             Console.Out.WriteLine("Global error: " + jsonError);
+            Console.Out.WriteLine("Callback object: " + cbObject);
         }
     }
 
