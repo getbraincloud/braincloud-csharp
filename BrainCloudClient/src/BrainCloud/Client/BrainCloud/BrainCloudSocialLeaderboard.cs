@@ -516,7 +516,7 @@ namespace BrainCloud
         /// Date to reset the leaderboard
         /// </param>
         /// <param name="retainedCount">
-        /// Hpw many rotations to keep
+        /// How many rotations to keep
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -551,7 +551,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
 
             if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationReset.Value] = rotationReset.Value.ToString("dd-MM-yyyy HH:mm");
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = DateTimeToUnixTimestamp(rotationReset.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
@@ -726,6 +726,12 @@ namespace BrainCloud
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
             _brainCloudClient.SendRequest(sc);
+        }
+
+        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        {
+            return (long)((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalMilliseconds);
         }
     }
 }

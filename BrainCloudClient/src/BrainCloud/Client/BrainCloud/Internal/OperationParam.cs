@@ -205,6 +205,7 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardResultCount = new OperationParam("leaderboardResultCount");
         public static readonly OperationParam SocialLeaderboardServiceGroupId = new OperationParam("groupId");
         public static readonly OperationParam SocialLeaderboardServiceProfileIds = new OperationParam("profileIds");
+        public static readonly OperationParam SocialLeaderboardServiceRotationResetTime = new OperationParam("rotationResetTime");
 
 
         // Social Leaderboard Service - Reset Score Params

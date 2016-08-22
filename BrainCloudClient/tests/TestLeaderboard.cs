@@ -2,7 +2,7 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
-using BrainCloud.Common;
+using System;
 
 namespace BrainCloudTests
 {
@@ -13,6 +13,8 @@ namespace BrainCloudTests
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
         private readonly string _dynamicLeaderboardId = "testDynamicLeaderboard";
         private readonly string _eventId = "tournamentRewardTest";
+
+        private static Random _random = new Random();
 
         [Test]
         public void TestGetSocialLeaderboard()
@@ -227,7 +229,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString(),
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
@@ -245,7 +247,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString(),
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
@@ -263,7 +265,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString(),
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE,
@@ -281,7 +283,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
@@ -299,7 +301,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
-                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString(),
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
@@ -339,7 +341,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.SocialLeaderboardService.GetPlayersSocialLeaderboard(
                 _socialLeaderboardId,
-                new [] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
