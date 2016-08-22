@@ -21,6 +21,32 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void FindUsersByExactName()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.FindUsersByExactName(
+                "search",
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestFindUsersBySubstrName()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.FindUsersBySubstrName(
+                "search",
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetExternalIdForProfileId()
         {
             TestResult tr = new TestResult();

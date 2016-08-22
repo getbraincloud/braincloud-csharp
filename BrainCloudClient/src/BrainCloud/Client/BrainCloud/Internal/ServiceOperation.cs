@@ -66,6 +66,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
         public static readonly ServiceOperation GetSummaryDataForProfileId = new ServiceOperation("GET_SUMMARY_DATA_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
+        public static readonly ServiceOperation FindUsersByExactName = new ServiceOperation("FIND_USERS_BY_EXACT_NAME");
+        public static readonly ServiceOperation FindUsersBySubstrName = new ServiceOperation("FIND_USERS_BY_SUBSTR_NAME");
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
