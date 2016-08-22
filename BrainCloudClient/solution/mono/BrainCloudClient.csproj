@@ -218,6 +218,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
       <Link>BrainCloud\Internal\ServiceOperation.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
+      <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Version.cs">
       <Link>BrainCloud\Version.cs</Link>
     </Compile>
