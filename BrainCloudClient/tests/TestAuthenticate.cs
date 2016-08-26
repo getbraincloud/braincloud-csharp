@@ -94,7 +94,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            string countryCode = "ru";
+            string countryCode = "RU";
 
             BrainCloudClient.Instance.OverrideCountryCode(countryCode);
 
