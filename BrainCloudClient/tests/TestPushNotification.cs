@@ -14,10 +14,10 @@ namespace BrainCloudTests
         public void DeregisterAllPushNotificationDeviceTokens()
         {
             TestResult tr = new TestResult();
-            
+
             BrainCloudClient.Instance.PushNotificationService.DeregisterAllPushNotificationDeviceTokens(
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
@@ -25,20 +25,20 @@ namespace BrainCloudTests
         public void DeregisterPushNotificationDeviceToken()
         {
             TestResult tr = new TestResult();
-            
+
             BrainCloudClient.Instance.PushNotificationService.RegisterPushNotificationDeviceToken(
                 Platform.iOS,
                 "GARBAGE_TOKEN",
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
 
-            tr.Reset ();
+            tr.Reset();
             BrainCloudClient.Instance.PushNotificationService.DeregisterPushNotificationDeviceToken(
                 Platform.iOS,
                 "GARBAGE_TOKEN",
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
@@ -111,6 +111,7 @@ namespace BrainCloudTests
                 1,
                 Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
                 tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
             BrainCloudClient.Instance.GroupService.DeleteGroup(groupId, -1, tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -132,8 +133,35 @@ namespace BrainCloudTests
                 "{ \"body\": \"content of message\", \"title\": \"message title\" }",
                 Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
                 tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
             BrainCloudClient.Instance.GroupService.DeleteGroup(groupId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSendNormalizedPushNotification()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.PushNotificationService.SendNormalizedPushNotification(
+                GetUser(Users.UserA).ProfileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSendNormalizedPushNotificationBatch()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.PushNotificationService.SendNormalizedPushNotificationBatch(
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

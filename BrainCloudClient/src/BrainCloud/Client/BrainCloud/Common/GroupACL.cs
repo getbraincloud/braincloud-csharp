@@ -25,7 +25,7 @@ namespace BrainCloud.Common
         public GroupACL(Access otherAccess, Access memberAccess)
         {
             Other = otherAccess;
-            Member = otherAccess;
+            Member = memberAccess;
         }
 
         public static GroupACL CreateFromJson(string in_json)

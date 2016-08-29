@@ -478,9 +478,9 @@ namespace BrainCloud
             FailureCallback failure,
             object cbObject)
         {
-            string languageCode = Util.GetIsoCodeForCurrentLanguage();
+            string languageCode = m_brainCloudClientRef.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
-            string countryCode = Util.GetCurrentCountryCode();
+            string countryCode = m_brainCloudClientRef.CountryCode;
 
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
@@ -506,26 +506,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Use GenerateAnonymousId instead. Removal after August 17 2016")]
-        public string GenerateGUID()
-        {
-            Guid newID = Guid.NewGuid();
-
-            // ensure that we do not create an empty GUID
-            while (newID == Guid.Empty)
-            {
-                newID = Guid.NewGuid();
-            }
-
-            return newID.ToString();
-        }
-
-        [Obsolete("Use GenerateAnonymousId and Initialize instead. Removal after August 17 2016")]
-        public void GenerateNewAnonymousID()
-        {
-            AnonymousId = GenerateGUID();
         }
     }
 }

@@ -277,29 +277,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Finds a list of players matching the search text by performing a substring
-        /// search of all player names.
-        /// If the number of results exceeds maxResults the message
-        /// "Too many results to return." is received and no players are returned
-        /// </summary>
-        /// 
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - FindPlayerByName
-        /// </remarks>
-        /// 
-        /// <param name="searchText"> 
-        /// The substring to search for. Minimum length of 3 characters.
-        /// </param>
-        /// <param name="maxResults"> 
-        /// Maximum number of results to return. If there are more the message 
-        /// "Too many results to return." is sent back instead of the players.
-        /// </param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
-        /// 
+        [Obsolete("Use FindUsersByExactName and FindUsersBySubstrName instead - removal after Nov 22 2016")]
         public void FindPlayerByName(
             string searchText,
             int maxResults,
@@ -314,6 +292,74 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByName, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Finds a list of players matching the search text by performing an exact
+        /// search of all player names.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_USERS_BY_EXACT_NAME
+        /// </remarks>
+        /// <param name="searchText"> 
+        /// The string to search for.
+        /// </param>
+        /// <param name="maxResults"> 
+        /// Maximum number of results to return.
+        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void FindUsersByExactName(
+            string searchText,
+            int maxResults,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindUsersByExactName, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Finds a list of players matching the search text by performing a substring
+        /// search of all player names.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_USERS_BY_EXACT_NAME
+        /// </remarks>
+        /// <param name="searchText"> 
+        /// The substring to search for. Minimum length of 3 characters.
+        /// </param>
+        /// <param name="maxResults"> 
+        /// Maximum number of results to return.
+        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void FindUsersBySubstrName(
+            string searchText,
+            int maxResults,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindUsersBySubstrName, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 

@@ -3,14 +3,14 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
 using JsonFx.Json;
 using BrainCloud.Common;
 using BrainCloud.Internal;
+
+#if !(DOT_NET)
+using System;
+#endif
 
 namespace BrainCloud
 {
@@ -354,7 +354,92 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        //Internal
+        /// <summary>
+        /// Sends a notification to a user consisting of alert content and custom data.
+        /// </param>
+        /// <param name="toPlayerId">
+        /// The playerId of the user to receive the notification
+        /// </param>
+        /// <param name="alertContentJson">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="customDataJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void SendNormalizedPushNotification(
+            string toPlayerId,
+            string alertContentJson,
+            string customDataJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toPlayerId;
+            data[OperationParam.AlertContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(alertContentJson);
+            if (Util.IsOptionalParameterValid(customDataJson))
+            {
+                data[OperationParam.CustomData.Value] = JsonReader.Deserialize<Dictionary<string, object>>(customDataJson);
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendNormalized, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Sends a notification to multiple users consisting of alert content and custom data.
+        /// </param>
+        /// <param name="profileIds">
+        /// Collection of profile IDs to send the notification to
+        /// </param>
+        /// <param name="alertContentJson">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="customDataJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void SendNormalizedPushNotificationBatch(
+            IList<string> profileIds,
+            string alertContentJson,
+            string customDataJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamProfileIds.Value] = profileIds;
+            data[OperationParam.AlertContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(alertContentJson);
+            if (Util.IsOptionalParameterValid(customDataJson))
+            {
+                data[OperationParam.CustomData.Value] = JsonReader.Deserialize<Dictionary<string, object>>(customDataJson);
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendNormalizedBatch, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+#region Private
+
         private void SendRichPushNotification(
             string toPlayerId,
             int notificationTemplateId,
@@ -376,5 +461,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+#endregion
     }
 }

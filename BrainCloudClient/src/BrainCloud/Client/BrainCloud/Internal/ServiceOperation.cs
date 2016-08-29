@@ -38,6 +38,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation SendRich = new ServiceOperation("SEND_RICH");
         public static readonly ServiceOperation SendTemplatedToGroup = new ServiceOperation("SEND_TEMPLATED_TO_GROUP");
         public static readonly ServiceOperation SendNormalizedToGroup = new ServiceOperation("SEND_NORMALIZED_TO_GROUP");
+        public static readonly ServiceOperation SendNormalized = new ServiceOperation("SEND_NORMALIZED");
+        public static readonly ServiceOperation SendNormalizedBatch = new ServiceOperation("SEND_NORMALIZED_BATCH");
 
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
@@ -64,6 +66,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ReadFriendPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
         public static readonly ServiceOperation GetSummaryDataForProfileId = new ServiceOperation("GET_SUMMARY_DATA_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByName = new ServiceOperation("FIND_PLAYER_BY_NAME");
+        public static readonly ServiceOperation FindUsersByExactName = new ServiceOperation("FIND_USERS_BY_EXACT_NAME");
+        public static readonly ServiceOperation FindUsersBySubstrName = new ServiceOperation("FIND_USERS_BY_SUBSTR_NAME");
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
@@ -79,6 +83,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
 
         public static readonly ServiceOperation ReadFriendsPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
 
