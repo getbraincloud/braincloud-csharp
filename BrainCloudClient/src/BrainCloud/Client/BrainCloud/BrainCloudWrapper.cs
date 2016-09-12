@@ -95,7 +95,7 @@ public class BrainCloudWrapper
 
     public static BrainCloudWrapper Instance { get { return GetInstance(); } }
 
-    public BrainCloudClient Client { get { return Instance._client; } }
+    public static BrainCloudClient Client { get { return Instance._client; } }
 
     /// <summary>
     /// Gets the singleton instance of the BrainCloudWrapper.
@@ -185,18 +185,18 @@ public class BrainCloudWrapper
     /// Initialize the brainCloud client with the passed in parameters. This version of Initialize
     /// overrides the parameters configured in the Unity brainCloud Settings window.
     /// </summary>
-    /// <param name="in_url">The brainCloud server url</param>
-    /// <param name="in_secretKey">The game's secret</param>
-    /// <param name="in_gameId">The game's id</param>
-    /// <param name="in_gameVersion">The game's version</param>
-    public static void Initialize(string in_url, string in_secretKey, string in_gameId, string in_gameVersion)
+    /// <param name="url">The brainCloud server url</param>
+    /// <param name="secretKey">The game's secret</param>
+    /// <param name="gameId">The game's id</param>
+    /// <param name="gameVersion">The game's version</param>
+    public static void Initialize(string url, string secretKey, string gameId, string gameVersion)
     {
         BrainCloudWrapper bcw = GetInstance();
-        bcw._lastUrl = in_url;
-        bcw._lastSecretKey = in_secretKey;
-        bcw._lastGameId = in_gameId;
-        bcw._lastGameVersion = in_gameVersion;
-        bcw._client.Initialize(in_url, in_secretKey, in_gameId, in_gameVersion);
+        bcw._lastUrl = url;
+        bcw._lastSecretKey = secretKey;
+        bcw._lastGameId = gameId;
+        bcw._lastGameVersion = gameVersion;
+        bcw._client.Initialize(url, secretKey, gameId, gameVersion);
 
         _instance.LoadData();
     }
@@ -207,10 +207,10 @@ public class BrainCloudWrapper
     /// If set to false, profile id is passed to the server (if it has been stored) and a profile id
     /// to non-anonymous credential mismatch will cause an error.
     /// </summary>
-    /// <param name="in_enabled">True if we always allow profile switch</param>
-    public void SetAlwaysAllowProfileSwitch(bool in_enabled)
+    /// <param name="enabled">True if we always allow profile switch</param>
+    public void SetAlwaysAllowProfileSwitch(bool enabled)
     {
-        AlwaysAllowProfileSwitch = in_enabled;
+        AlwaysAllowProfileSwitch = enabled;
     }
 
     #region Authenticate Methods
@@ -231,24 +231,24 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateAnonymous(
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity(true);
 
@@ -269,41 +269,41 @@ public class BrainCloudWrapper
     ///
     /// Note that the password sent from the client to the server is protected via SSL.
     /// </remarks>
-    /// <param name="in_email">
+    /// <param name="email">
     /// The e-mail address of the user
     /// </param>
-    /// <param name="in_password">
+    /// <param name="password">
     /// The password of the user
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateEmailPassword(
-        string in_email,
-        string in_password,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string email,
+        string password,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateEmailPassword(
-            in_email, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            email, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -314,45 +314,45 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_userid">
+    /// <param name="userid">
     /// The user id
     /// </param>
-    /// <param name="in_token">
+    /// <param name="token">
     /// The user token (password etc)
     /// </param>
-    /// /// <param name="in_externalAuthName">
+    /// /// <param name="externalAuthName">
     /// The name of the cloud script to call for external authentication
     /// </param>
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateExternal(
-        string in_userid,
-        string in_token,
-        string in_externalAuthName,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string userid,
+        string token,
+        string externalAuthName,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateExternal(
-            in_userid, in_token, in_externalAuthName, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, externalAuthName, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -372,32 +372,32 @@ public class BrainCloudWrapper
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateFacebook(
-        string in_fbUserId,
-        string in_fbAuthToken,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string fbUserId,
+        string fbAuthToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateFacebook(
-            in_fbUserId, in_fbAuthToken, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -407,37 +407,37 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_gameCenterId">
+    /// <param name="gameCenterId">
     /// The player's game center id  (use the playerID property from the local GKPlayer object)
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateGameCenter(
-        string in_gameCenterId,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string gameCenterId,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateGameCenter(
-            in_gameCenterId, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -447,41 +447,41 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_userid">
+    /// <param name="userid">
     /// String representation of google+ userid (email)
     /// </param>
-    /// <param name="in_token">
+    /// <param name="token">
     /// The authentication token derived via the google apis.
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateGoogle(
-        string in_userid,
-        string in_token,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string userid,
+        string token,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateGoogle(
-            in_userid, in_token, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -491,41 +491,41 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_userid">
+    /// <param name="userid">
     /// String representation of 64 bit steam id
     /// </param>
-    /// <param name="in_sessionticket">
+    /// <param name="sessionticket">
     /// The session ticket of the user (hex encoded)
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateSteam(
-        string in_userid,
-        string in_sessionticket,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string userid,
+        string sessionticket,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateSteam(
-            in_userid, in_sessionticket, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, sessionticket, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -535,45 +535,45 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_userid">
+    /// <param name="userid">
     /// String representation of a Twitter user ID
     /// </param>
-    /// <param name="in_token">
+    /// <param name="token">
     /// The authentication token derived via the Twitter apis
     /// </param>
-    /// <param name="in_secret">
+    /// <param name="secret">
     /// The secret given when attempting to link with Twitter
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
     public void AuthenticateTwitter(
-        string in_userid,
-        string in_token,
-        string in_secret,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string userid,
+        string token,
+        string secret,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateTwitter(
-            in_userid, in_token, in_secret, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, secret, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -585,43 +585,62 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="in_email">
+    /// <param name="email">
     /// The e-mail address of the user
     /// </param>
-    /// <param name="in_password">
+    /// <param name="password">
     /// The password of the user
     /// </param>
-    /// <param name="in_forceCreate">
+    /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
     /// </param>
-    /// <param name="in_success">
+    /// <param name="success">
     /// The method to call in event of successful login
     /// </param>
-    /// <param name="in_failure">
+    /// <param name="failure">
     /// The method to call in the event of an error during authentication
     /// </param>
-    /// <param name="in_cbObject">
+    /// <param name="cbObject">
     /// The user supplied callback object
     /// </param> 
     public void AuthenticateUniversal(
-        string in_username,
-        string in_password,
-        bool in_forceCreate,
-        SuccessCallback in_success = null,
-        FailureCallback in_failure = null,
-        object in_cbObject = null)
+        string username,
+        string password,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = in_success;
-        aco._failureCallback = in_failure;
-        aco._cbObject = in_cbObject;
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
         InitializeIdentity();
 
         _client.AuthenticationService.AuthenticateUniversal(
-            in_username, in_password, in_forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
+    /// <summary>
+    /// Re-authenticates the user with brainCloud
+    /// </summary>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void Reconnect(
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        AuthenticateAnonymous(success, failure, cbObject);
+    }
 
     /// <summary>
     /// Method initializes the identity information from the Unity player prefs cache.
@@ -634,7 +653,7 @@ public class BrainCloudWrapper
     /// Note that clients are free to implement this logic on their own as well if they 
     /// wish to store the information in another location and/or change the behaviour.
     /// </summary>
-    protected virtual void InitializeIdentity(bool in_isAnonymousAuth = false)
+    protected virtual void InitializeIdentity(bool isAnonymousAuth = false)
     {
         // retrieve profile and anonymous ids out of the cache
         string profileId = GetStoredProfileId();
@@ -648,11 +667,11 @@ public class BrainCloudWrapper
             SetStoredProfileId(profileId);
         }
         string profileIdToAuthenticateWith = profileId;
-        if (!in_isAnonymousAuth && AlwaysAllowProfileSwitch)
+        if (!isAnonymousAuth && AlwaysAllowProfileSwitch)
         {
             profileIdToAuthenticateWith = "";
         }
-        SetStoredAuthenticationType(in_isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
+        SetStoredAuthenticationType(isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
         _client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
 
@@ -670,10 +689,10 @@ public class BrainCloudWrapper
     /// <summary>
     /// Sets the stored profile id to player prefs.
     /// </summary>
-    /// <param name="in_profileId">Profile id.</param>
-    public virtual void SetStoredProfileId(string in_profileId)
+    /// <param name="profileId">Profile id.</param>
+    public virtual void SetStoredProfileId(string profileId)
     {
-        _wrapperData.ProfileId = in_profileId;
+        _wrapperData.ProfileId = profileId;
         SaveData();
     }
 
@@ -698,10 +717,10 @@ public class BrainCloudWrapper
     /// <summary>
     /// Sets the stored anonymous id to player prefs.
     /// </summary>
-    /// <param name="in_anonymousId">Anonymous id</param>
-    public virtual void SetStoredAnonymousId(string in_anonymousId)
+    /// <param name="anonymousId">Anonymous id</param>
+    public virtual void SetStoredAnonymousId(string anonymousId)
     {
-        _wrapperData.AnonymousId = in_anonymousId;
+        _wrapperData.AnonymousId = anonymousId;
         SaveData();
     }
 
@@ -726,10 +745,10 @@ public class BrainCloudWrapper
     /// <summary>
     /// Sets the type of the stored authentication.
     /// </summary>
-    /// <param name="in_authenticationType">Authentication type.</param>
-    public virtual void SetStoredAuthenticationType(string in_authenticationType)
+    /// <param name="authenticationType">Authentication type.</param>
+    public virtual void SetStoredAuthenticationType(string authenticationType)
     {
-        _wrapperData.AuthenticationType = in_authenticationType;
+        _wrapperData.AuthenticationType = authenticationType;
         SaveData();
     }
 
