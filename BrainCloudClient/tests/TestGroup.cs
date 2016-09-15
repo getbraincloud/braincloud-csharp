@@ -407,8 +407,9 @@ namespace BrainCloudTests
         public void TestReadGroupEntitiesPage()
         {
             Authenticate(Users.UserA);
+            CreateGroup();
 
-            string context = CreateContext(10, 1, "entityType", _entityType);
+            string context = CreateContext(10, 1, "groupId", _groupId);
 
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.GroupService.ReadGroupEntitiesPage(
@@ -416,6 +417,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
+            DeleteGroup();
             Logout();
         }
 
