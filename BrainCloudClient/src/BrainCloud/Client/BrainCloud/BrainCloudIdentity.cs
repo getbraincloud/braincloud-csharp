@@ -1063,7 +1063,7 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(childProfileId))
             {
-                data[OperationParam.ServiceMessageProfileId.Value] = childProfileId;
+                data[OperationParam.ProfileId.Value] = childProfileId;
             }
 
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = childGameId;

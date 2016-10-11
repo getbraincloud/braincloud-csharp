@@ -21,7 +21,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetSocialLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.GetSocialLeaderboard(
                 _globalLeaderboardId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -41,7 +41,7 @@ namespace BrainCloudTests
             lbIds.Add(_globalLeaderboardId);
             lbIds.Add(_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetMultiSocialLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.GetMultiSocialLeaderboard(
                 lbIds,
                 10,
                 true,
@@ -60,7 +60,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToLeaderboard(
                 _globalLeaderboardId,
                 1000,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -74,7 +74,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.ResetLeaderboardScore(
+            BrainCloudClient.Instance.LeaderboardService.ResetLeaderboardScore(
                 _globalLeaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -86,7 +86,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardPage(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
@@ -102,7 +102,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardPage(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
@@ -118,7 +118,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPage(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardPage(
                 "thisDoesNotExistLeaderboard",
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
@@ -134,7 +134,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetCompletedLeaderboardTournament(
+            BrainCloudClient.Instance.LeaderboardService.GetCompletedLeaderboardTournament(
                 _socialLeaderboardId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -147,7 +147,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardPageByVersion(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardPageByVersion(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
@@ -164,7 +164,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardVersions(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardVersions(
                 _globalLeaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -176,7 +176,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardView(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardView(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
@@ -192,7 +192,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGlobalLeaderboardViewByVersion(
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardViewByVersion(
                 _globalLeaderboardId,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
@@ -209,7 +209,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.TriggerSocialLeaderboardTournamentReward(
+            BrainCloudClient.Instance.LeaderboardService.TriggerSocialLeaderboardTournamentReward(
                 _socialLeaderboardId,
                 _eventId,
                 1,
@@ -228,7 +228,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -246,7 +246,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -264,7 +264,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -282,7 +282,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -300,7 +300,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.PostScoreToDynamicLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboard(
                 _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "-" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -324,7 +324,7 @@ namespace BrainCloudTests
             var data = tr.m_response["data"] as Dictionary<string, object>;
             var id = (string)data["groupId"];
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetGroupSocialLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.GetGroupSocialLeaderboard(
                 _socialLeaderboardId,
                 id,
                 tr.ApiSuccess, tr.ApiError);
@@ -339,11 +339,19 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.SocialLeaderboardService.GetPlayersSocialLeaderboard(
+            BrainCloudClient.Instance.LeaderboardService.GetPlayersSocialLeaderboard(
                 _socialLeaderboardId,
                 new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
                 tr.ApiSuccess, tr.ApiError);
 
+            tr.Run();
+        }
+
+        [Test]
+        public void TestListAllLeaderboards()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.ListLeaderboards( tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

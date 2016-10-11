@@ -64,7 +64,7 @@ namespace BrainCloud
         /// will contain NULL.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_SOCIAL_LEADERBOARD
         /// </remarks>
         /// <param name="leaderboardId">
@@ -95,7 +95,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetSocialLeaderboard, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboard, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -103,7 +103,7 @@ namespace BrainCloud
         /// Reads multiple social leaderboards.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_MULTI_SOCIAL_LEADERBOARD
         /// </remarks>
         /// <param name="leaderboardIds">
@@ -138,7 +138,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetMultiSocialLeaderboard, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetMultiSocialLeaderboard, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -151,7 +151,7 @@ namespace BrainCloud
         /// Note: This method allows the client to retrieve pages from within the global leaderboard list
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetGlobalLeaderboardPage
         /// </remarks>
         /// <param name="leaderboardId">
@@ -196,7 +196,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = includeLeaderboardSize;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -206,7 +206,7 @@ namespace BrainCloud
         /// to retrieve the version id.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetGlobalLeaderboardPage
         /// </remarks>
         /// <param name="leaderboardId">
@@ -256,7 +256,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -267,7 +267,7 @@ namespace BrainCloud
         /// data associated with the score.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetGlobalLeaderboardView
         /// </remarks>
         /// <param name="leaderboardId">
@@ -312,7 +312,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = includeLeaderboardSize;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -322,7 +322,7 @@ namespace BrainCloud
         /// See GetGlobalLeaderboardVersions method to retrieve the version id.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetGlobalLeaderboardView
         /// </remarks>
         /// <param name="leaderboardId">
@@ -375,7 +375,7 @@ namespace BrainCloud
             }
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -383,7 +383,7 @@ namespace BrainCloud
         /// Gets the global leaderboard versions.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetGlobalLeaderboardVersions
         /// </remarks>
         /// <param name="leaderboardId">In_leaderboard identifier.</param>
@@ -400,7 +400,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetGlobalLeaderboardVersions, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardVersions, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -443,7 +443,7 @@ namespace BrainCloud
         /// the player's best score.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - PostScore
         /// </remarks>
         /// <param name="leaderboardId">
@@ -482,7 +482,7 @@ namespace BrainCloud
             }
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.PostScore, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScore, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -494,7 +494,7 @@ namespace BrainCloud
         /// relevant to the posted score.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - PostScoreDynamic
         /// </remarks>
         /// <param name="leaderboardId">
@@ -556,7 +556,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.PostScoreDynamic, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -564,7 +564,7 @@ namespace BrainCloud
         /// Reset the player's score for the given social leaderboard id.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - Reset
         /// </remarks>
         /// <param name="leaderboardId">
@@ -589,7 +589,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.Reset, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.Reset, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -611,7 +611,7 @@ namespace BrainCloud
         /// tournament does not apply.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GetCompletedTournament
         /// </remarks>
         /// <param name="leaderboardId">
@@ -641,7 +641,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetCompletedTournament, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetCompletedTournament, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -651,7 +651,7 @@ namespace BrainCloud
         /// completion of a tournament.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - RewardTournament
         /// </remarks>
         /// <param name="leaderboardId">
@@ -686,7 +686,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceEventMultiplier.Value] = eventMultiplier;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.RewardTournament, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RewardTournament, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
@@ -694,7 +694,7 @@ namespace BrainCloud
         /// Retrieve the social leaderboard for a list of players.
         /// </summary>
         /// <remarks>
-        /// Service Name - socialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD
         /// </remarks>
         /// <param name="leaderboardId">
@@ -724,14 +724,40 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceProfileIds.Value] = profileIds;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.SocialLeaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
+            _brainCloudClient.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve a list of all leaderboards
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - LIST_LEADERBOARDS
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ListLeaderboards(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.ListAllLeaderboards, null, callback);
             _brainCloudClient.SendRequest(sc);
         }
 
         public static long DateTimeToUnixTimestamp(DateTime dateTime)
         {
             return (long)((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
-                   new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalMilliseconds);
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
         }
     }
 }

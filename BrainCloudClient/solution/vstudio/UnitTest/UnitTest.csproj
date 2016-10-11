@@ -129,6 +129,9 @@
     <Compile Include="..\..\..\tests\TestLeaderboard.cs">
       <Link>TestLeaderboard.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestMail.cs">
+      <Link>TestMail.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestMatchMaking.cs">
       <Link>TestMatchMaking.cs</Link>
     </Compile>

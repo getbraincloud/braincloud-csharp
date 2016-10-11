@@ -124,6 +124,7 @@ namespace BrainCloud
         private BrainCloudProfanity _profanityService;
         private BrainCloudFile _fileService;
         private BrainCloudGroup _groupService;
+        private BrainCloudMail _mailService;
 
         #endregion Private Data
 
@@ -194,6 +195,7 @@ namespace BrainCloud
             _profanityService = new BrainCloudProfanity(this);
             _fileService = new BrainCloudFile(this);
             _groupService = new BrainCloudGroup(this);
+            _mailService = new BrainCloudMail(this);
         }
 
         //---------------------------------------------------------------
@@ -359,6 +361,11 @@ namespace BrainCloud
             get { return _leaderboardService; }
         }
 
+        public BrainCloudSocialLeaderboard LeaderboardService
+        {
+            get { return _leaderboardService; }
+        }
+
         public BrainCloudAsyncMatch AsyncMatchService
         {
             get { return _asyncMatchService; }
@@ -412,6 +419,11 @@ namespace BrainCloud
         public BrainCloudGroup GroupService
         {
             get { return _groupService; }
+        }
+
+        public BrainCloudMail MailService
+        {
+            get { return _mailService; }
         }
 
         #endregion

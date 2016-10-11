@@ -243,10 +243,10 @@ namespace BrainCloud
 
         // data bundle creation parms
         public static readonly OperationParam ServiceMessagePacketId = new OperationParam("packetId");
-        public static readonly OperationParam ServiceMessageProfileId = new OperationParam("profileId");
         public static readonly OperationParam ServiceMessageSessionId = new OperationParam("sessionId");
         public static readonly OperationParam ServiceMessageGameId = new OperationParam("gameId");
         public static readonly OperationParam ServiceMessageMessages = new OperationParam("messages");
+        public static readonly OperationParam ProfileId = new OperationParam("profileId");
 
         // Error Params
         public static readonly OperationParam ServiceMessageReasonCode = new OperationParam("reason_code");
@@ -346,6 +346,11 @@ namespace BrainCloud
         public static readonly OperationParam GroupPageOffset = new OperationParam("pageOffset");
         public static readonly OperationParam GroupAutoJoinStrategy = new OperationParam("autoJoinStrategy");
         public static readonly OperationParam GroupWhere = new OperationParam("where");
+
+        //mail
+        public static readonly OperationParam Subject = new OperationParam("subject");
+        public static readonly OperationParam Body = new OperationParam("body");
+        public static readonly OperationParam ServiceParams = new OperationParam("serviceParams");
 
         private OperationParam(string value)
         {
