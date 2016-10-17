@@ -57,6 +57,9 @@ namespace BrainCloud
         public const int MERGE_PROFILES = 40212;
         public const int INVALID_PROPERTY_NAME = 40213;
         public const int EMAIL_NOT_VALIDATED = 40214;
+        public const int DATABASE_ERROR = 40215;
+        public const int PROPERTY_NOT_OVERRIDEABLE = 40216;
+        public const int UNKNOWN_AUTH_ERROR = 40217;
 
         public const int UNABLE_TO_GET_FRIENDS_FROM_FACEBOOK = 40300;
         public const int BAD_SIGNATURE = 40301;
