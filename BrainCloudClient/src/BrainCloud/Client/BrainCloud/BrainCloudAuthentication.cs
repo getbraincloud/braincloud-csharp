@@ -495,6 +495,12 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
+#if DOT_NET
+            data["clientLib"] = "csharp";
+#else
+            data["clientLib"] = "csharp-unity";
+#endif
+
             if (Util.IsOptionalParameterValid(externalAuthName))
             {
                 data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;

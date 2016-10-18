@@ -249,6 +249,8 @@ namespace BrainCloudTests
                 tr.Run();
                 BrainCloudClient.Instance.PlayerStateService.UpdatePlayerName(Id, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
+                BrainCloudClient.Instance.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
+                tr.Run();
             }
 
             BrainCloudClient.Instance.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);

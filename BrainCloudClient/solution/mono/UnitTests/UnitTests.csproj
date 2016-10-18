@@ -181,5 +181,8 @@
     <Compile Include="..\..\..\tests\TestGroup.cs">
       <Link>TestGroup.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestMail.cs">
+      <Link>TestMail.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

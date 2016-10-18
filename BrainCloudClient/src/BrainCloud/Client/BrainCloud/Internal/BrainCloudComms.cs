@@ -751,9 +751,9 @@ namespace BrainCloud.Internal
                             }
 
                             // save the profile ID
-                            if (GetJsonString(responseData, OperationParam.ServiceMessageProfileId.Value, null) != null)
+                            if (GetJsonString(responseData, OperationParam.ProfileId.Value, null) != null)
                             {
-                                _brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ServiceMessageProfileId.Value];
+                                _brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ProfileId.Value];
                             }
                         }
                         catch (Exception e)

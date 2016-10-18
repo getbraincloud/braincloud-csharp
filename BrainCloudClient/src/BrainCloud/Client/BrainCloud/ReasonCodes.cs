@@ -57,6 +57,9 @@ namespace BrainCloud
         public const int MERGE_PROFILES = 40212;
         public const int INVALID_PROPERTY_NAME = 40213;
         public const int EMAIL_NOT_VALIDATED = 40214;
+        public const int DATABASE_ERROR = 40215;
+        public const int PROPERTY_NOT_OVERRIDEABLE = 40216;
+        public const int UNKNOWN_AUTH_ERROR = 40217;
 
         public const int UNABLE_TO_GET_FRIENDS_FROM_FACEBOOK = 40300;
         public const int BAD_SIGNATURE = 40301;
@@ -230,6 +233,59 @@ namespace BrainCloud
         public const int UPLOAD_JOB_EXPIRED = 40435;
         public const int UPLOADER_EXCEPTION = 40436;
         public const int UPLOADER_FILESIZE_MISMATCH = 40437;
+        public const int PUSH_NOTIFICATIONS_NOT_CONFIGURED = 40438;
+        public const int MATCHMAKING_FILTER_SCRIPT_FAILURE = 40439;
+        public const int ACCOUNT_ALREADY_EXISTS = 40440;
+        public const int PROFILE_ALREADY_EXISTS = 40441;
+        public const int MISSING_NOTIFICATION_BODY = 40442;
+        public const int INVALID_SERVICE_CODE = 40443;
+        public const int IP_ADDRESS_BLOCKED = 40444;
+        public const int UNAPPROVED_SERVICE_CODE = 40445;
+        public const int PROFILE_NOT_FOUND = 40446;
+        public const int ENTITY_NOT_SHARED = 40447;
+        public const int SELF_FRIEND = 40448;
+        public const int PARSE_NOT_CONFIGURED = 40449;
+        public const int PARSE_NOT_ENABLED = 40450;
+        public const int PARSE_REQUEST_ERROR = 40451;
+        public const int GROUP_CANNOT_ADD_OWNER = 40452;
+        public const int NOT_GROUP_MEMBER = 40453;
+        public const int INVALID_GROUP_ROLE = 40454;
+        public const int GROUP_OWNER_DELETE = 40455;
+        public const int NOT_INVITED_GROUP_MEMBER = 40456;
+        public const int GROUP_IS_FULL = 40457;
+        public const int GROUP_OWNER_CANNOT_LEAVE = 40458;
+        public const int INVALID_INCREMENT_VALUE = 40459;
+        public const int GROUP_VERSION_MISMATCH = 40460;
+        public const int GROUP_ENTITY_VERSION_MISMATCH = 40461;
+        public const int INVALID_GROUP_ID = 40462;
+        public const int INVALID_FIELD_NAME = 40463;
+        public const int UNSUPPORTED_AUTH_TYPE = 40464;
+        public const int CLOUDCODE_JOB_NOT_FOUND = 40465;
+        public const int CLOUDCODE_JOB_NOT_SCHEDULED = 40466;
+        public const int GROUP_TYPE_NOT_FOUND = 40467;
+        public const int MATCHING_GROUPS_NOT_FOUND = 40468;
+        public const int GENERATE_CDN_URL_ERROR = 40469;
+        public const int INVALID_PROFILE_IDS = 40470;
+        public const int MAX_PROFILE_IDS_EXCEEDED = 40471;
+        public const int PROFILE_ID_MISMATCH = 40472;
+        public const int LEADERBOARD_DOESNOT_EXIST = 40473;
+        public const int APP_LICENSING_EXCEEDED = 40474;
+        public const int SENDGRID_NOT_INSTALLED = 40475;
+        public const int SENDGRID_EMAIL_SEND_ERROR = 40476;
+        public const int SENDGRID_NOT_ENABLED_FOR_APP = 40477;
+        public const int SENDGRID_GET_TEMPLATES_ERROR = 40478;
+        public const int SENDGRID_INVALID_API_KEY = 40479;
+        public const int EMAIL_SERVICE_NOT_CONFIGURED = 40480;
+        public const int INVALID_EMAIL_TEMPLATE_TYPE = 40481;
+        public const int SENDGRID_KEY_EMPTY_OR_NULL = 40482;
+        public const int BODY_TEMPLATE_CANNOT_COEXIST = 40483;
+        public const int SUBSTITUTION_BODY_CANNOT_COEXIST = 40484;
+        public const int INVALID_FROM_ADDRESS = 40485;
+        public const int INVALID_FROM_NAME = 40486;
+        public const int INVALID_REPLY_TO_ADDRESS = 40487;
+        public const int INVALID_REPLY_TO_NAME = 40488;
+        public const int FROM_NAME_WITHOUT_FROM_ADDRESS = 40489;
+        public const int REPLY_TO_NAME_WITHOUT_REPLY_TO_ADDRESS = 40490;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
@@ -242,6 +298,8 @@ namespace BrainCloud
         public const int FACEBOOK_AUTHENTICATION_ERROR = 500012;
         public const int FACEBOOK_APPLICATION_TOKEN_REQUEST_ERROR = 500013;
         public const int FACEBOOK_BAD_APPLICATION_TOKEN_SIGNATURE = 500014;
+
+        public const int MONGO_DB_EXCEPTION = 600001;
 
         /// <summary>
         /// Client defined value for a timeout detected client-side.
