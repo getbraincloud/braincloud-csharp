@@ -61,6 +61,9 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceAuthenticationType = new OperationParam("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous = new OperationParam("confirmAnonymous");
 
+        // Peer
+        public static readonly OperationParam Peer = new OperationParam("peer");
+
         // Entity Service 
         public static readonly OperationParam EntityServiceEntityId = new OperationParam("entityId");
         public static readonly OperationParam EntityServiceEntityType = new OperationParam("entityType");

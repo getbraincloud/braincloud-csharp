@@ -277,24 +277,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Use FindUsersByExactName and FindUsersBySubstrName instead - removal after Nov 22 2016")]
-        public void FindPlayerByName(
-            string searchText,
-            int maxResults,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            data[OperationParam.FriendServiceSearchText.Value] = searchText;
-            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByName, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Finds a list of players matching the search text by performing an exact
         /// search of all player names.

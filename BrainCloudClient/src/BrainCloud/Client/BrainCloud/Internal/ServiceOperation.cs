@@ -19,6 +19,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ResetEmailPassword = new ServiceOperation("RESET_EMAIL_PASSWORD");
         public static readonly ServiceOperation SwitchToChildProfile = new ServiceOperation("SWITCH_TO_CHILD_PROFILE");
         public static readonly ServiceOperation SwitchToParentProfile = new ServiceOperation("SWITCH_TO_PARENT_PROFILE");
+        public static readonly ServiceOperation DetachParent = new ServiceOperation("DETACH_PARENT");
 
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
@@ -85,6 +86,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation ListAllLeaderboards = new ServiceOperation("LIST_ALL_LEADERBOARDS");
+        public static readonly ServiceOperation GetGlobalLeaderboardEntryCount = new ServiceOperation("GET_GLOBAL_LEADERBOARD_ENTRY_COUNT");
 
         public static readonly ServiceOperation ReadFriendsPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
 
@@ -289,6 +291,10 @@ namespace BrainCloud.Internal
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");
         public static readonly ServiceOperation SendAdvancedEmail = new ServiceOperation("SEND_ADVANCED_EMAIL");
+
+        //peer
+        public static readonly ServiceOperation AttachPeerProfile = new ServiceOperation("ATTACH_PEER_PROFILE");
+        public static readonly ServiceOperation DetachPeer = new ServiceOperation("DETACH_PEER");
 
         private ServiceOperation(string value)
         {

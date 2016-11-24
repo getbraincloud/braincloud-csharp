@@ -8,19 +8,6 @@ namespace BrainCloudTests
     public class TestFriend : TestFixtureBase
     {
         [Test]
-        public void TestFindPlayerByName()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.FriendService.FindPlayerByName(
-                "search",
-                10,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
         public void FindUsersByExactName()
         {
             TestResult tr = new TestResult();

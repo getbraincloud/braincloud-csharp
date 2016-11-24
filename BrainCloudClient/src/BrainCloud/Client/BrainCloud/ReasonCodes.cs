@@ -286,6 +286,7 @@ namespace BrainCloud
         public const int INVALID_REPLY_TO_NAME = 40488;
         public const int FROM_NAME_WITHOUT_FROM_ADDRESS = 40489;
         public const int REPLY_TO_NAME_WITHOUT_REPLY_TO_ADDRESS = 40490;
+        public const int CURRENCY_SECURITY_ERROR = 40491;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;

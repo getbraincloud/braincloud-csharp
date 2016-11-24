@@ -18,6 +18,7 @@ namespace BrainCloudTests
         protected string Version = "1.0.0";
         protected string ChildAppId = "";
         protected string ParentLevel = "";
+        protected string PeerName = "";
 
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
@@ -176,6 +177,11 @@ namespace BrainCloudTests
                     {
                         ParentLevel = line.Substring(("parentLevelName=").Length);
                         ParentLevel.Trim();
+                    }
+                    else if (line.StartsWith("peerName="))
+                    {
+                        PeerName = line.Substring(("peerName=").Length);
+                        PeerName.Trim();
                     }
                 }
             }

@@ -52,6 +52,21 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestDetachParent()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.SwitchToSingletonChildProfile(
+                ChildAppId,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            BrainCloudClient.Instance.IdentityService.DetachParent(
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetChildProfiles()
         {
             TestResult tr = new TestResult();
@@ -98,6 +113,50 @@ namespace BrainCloudTests
                 AuthenticationType.Universal,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, 40464);
+        }
+
+        [Test]
+        public void TestAttachPeerProfile()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(
+                GetUser(Users.UserA).Id + "_peer",
+                GetUser(Users.UserA).Password,
+                AuthenticationType.Universal,
+                null,
+                PeerName,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DetachPeer();
+        }
+
+        [Test]
+        public void TestDetachPeer()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(
+                GetUser(Users.UserA).Id + "_peer",
+                GetUser(Users.UserA).Password,
+                AuthenticationType.Universal,
+                null,
+                PeerName,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DetachPeer();
+        }
+
+
+        private void DetachPeer()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.DetachPeer(
+                PeerName,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
     }
 }

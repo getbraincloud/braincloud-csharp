@@ -11,7 +11,7 @@ namespace BrainCloudTests
     {
         private readonly string _globalLeaderboardId = "testLeaderboard";
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
-        private readonly string _dynamicLeaderboardId = "testDynamicLeaderboard";
+        private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
         private readonly string _eventId = "tournamentRewardTest";
 
         private static Random _random = new Random();
@@ -126,7 +126,7 @@ namespace BrainCloudTests
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 0);
+            tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 40499);
         }
 
         [Test]
@@ -181,7 +181,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -197,7 +196,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
-                true,
                 1,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -352,6 +350,22 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.LeaderboardService.ListLeaderboards( tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardEntryCount()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardEntryCount(_globalLeaderboardId, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardEntryCountByVersion()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardEntryCountByVersion(_globalLeaderboardId, 1, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

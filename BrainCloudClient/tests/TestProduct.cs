@@ -21,7 +21,7 @@ namespace BrainCloudTests
                 200,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
+            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace BrainCloudTests
                 100,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
+            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.ProductService.GetCurrency(
-                _currencytype,
+                null,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -95,35 +95,7 @@ namespace BrainCloudTests
             BrainCloudClient.Instance.ProductService.ResetCurrency(
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
-        }
-
-        [Test]
-        public void TestAwardParentCurrency()
-        {
-            GoToChildProfile();
-
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ProductService.AwardParentCurrency(
-                _currencytype,
-                1000,
-                ParentLevel,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void TestConsumeParentCurrency()
-        {
-            GoToChildProfile();
-
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ProductService.ConsumeParentCurrency(
-                _currencytype,
-                200,
-                ParentLevel,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
         }
 
         [Test]
@@ -134,18 +106,6 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.ProductService.GetParentCurrency(
                 _currencytype,
-                ParentLevel,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void TestResetParentCurrency()
-        {
-            GoToChildProfile();
-
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ProductService.ResetParentCurrency(
                 ParentLevel,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
