@@ -130,19 +130,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestGetCompletedLeaderboardTournament()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.GetCompletedLeaderboardTournament(
-                _socialLeaderboardId,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
         public void TestGetGlobalLeaderboardPageByVersion()
         {
             TestResult tr = new TestResult();
@@ -196,20 +183,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
-                1,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
-        public void TestTriggerSocialLeaderboardTournamentReward()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.TriggerSocialLeaderboardTournamentReward(
-                _socialLeaderboardId,
-                _eventId,
                 1,
                 tr.ApiSuccess, tr.ApiError);
 

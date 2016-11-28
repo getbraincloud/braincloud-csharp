@@ -97,18 +97,5 @@ namespace BrainCloudTests
 
             tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
         }
-
-        [Test]
-        public void TestGetParentCurrency()
-        {
-            GoToChildProfile();
-
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ProductService.GetParentCurrency(
-                _currencytype,
-                ParentLevel,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
     }
 }

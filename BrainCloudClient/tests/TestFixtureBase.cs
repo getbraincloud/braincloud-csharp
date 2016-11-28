@@ -6,6 +6,7 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
 using System.Text;
+using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -107,7 +108,7 @@ namespace BrainCloudTests
         /// <summary>
         /// Convenience method to switch to the child profile
         /// </summary>
-        /// <returns>If the swtich was successful</returns>
+        /// <returns>If the switch was successful</returns>
         protected bool GoToChildProfile()
         {
             TestResult tr = new TestResult();
@@ -118,11 +119,36 @@ namespace BrainCloudTests
         /// <summary>
         /// Convenience method to switch to the parent profile
         /// </summary>
-        /// <returns>If the swtich was successful</returns>
+        /// <returns>If the switch was successful</returns>
         protected bool GoToParentProfile()
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.IdentityService.SwitchToParentProfile(ParentLevel, tr.ApiSuccess, tr.ApiError);
+            return tr.Run();
+        }
+
+        /// <summary>
+        /// Attaches a peer profile
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="authType"></param>
+        /// <returns>Success</returns>
+        protected bool AttachPeer(Users user, AuthenticationType authType)
+        {
+            TestUser testUser = GetUser(user);
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(testUser.Id + "_peer", testUser.Password, authType, null, PeerName, true, tr.ApiSuccess, tr.ApiError);
+            return tr.Run();
+        }
+
+        /// <summary>
+        /// Detaches a peer profile
+        /// </summary>
+        /// <returns>Success</returns>
+        protected bool DetachPeer()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.DetachPeer(PeerName, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 

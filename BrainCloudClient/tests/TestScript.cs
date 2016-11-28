@@ -4,6 +4,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using JsonFx.Json;
 using System;
+using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -11,6 +12,7 @@ namespace BrainCloudTests
     public class TestScript : TestFixtureBase
     {
         private readonly string _scriptName = "testScript";
+        private readonly string _peerScriptName = "TestPeerScriptPublic";
 
         [Test]
         public void TestRunScript()
@@ -88,6 +90,40 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+        }
+
+        [Test]
+        public void TestRunPeerScript()
+        {
+            AttachPeer(Users.UserA, AuthenticationType.Universal);
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.ScriptService.RunPeerScript(
+                _peerScriptName,
+                Helpers.CreateJsonPair("testParm1", 1), 
+                PeerName,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            DetachPeer();
+        }
+
+        [Test]
+        public void TestRunPeerScriptAsync()
+        {
+            AttachPeer(Users.UserA, AuthenticationType.Universal);
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.ScriptService.RunPeerScriptAsync(
+                _peerScriptName,
+                Helpers.CreateJsonPair("testParm1", 1), 
+                PeerName,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            DetachPeer();
         }
     }
 }

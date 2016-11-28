@@ -20,6 +20,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation SwitchToChildProfile = new ServiceOperation("SWITCH_TO_CHILD_PROFILE");
         public static readonly ServiceOperation SwitchToParentProfile = new ServiceOperation("SWITCH_TO_PARENT_PROFILE");
         public static readonly ServiceOperation DetachParent = new ServiceOperation("DETACH_PARENT");
+        public static readonly ServiceOperation AttachParentWithIdentity = new ServiceOperation("ATTACH_PARENT_WITH_IDENTITY");
 
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
@@ -232,6 +233,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
         public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
         public static readonly ServiceOperation CancelScheduledScript = new ServiceOperation("CANCEL_SCHEDULED_SCRIPT");
+        public static readonly ServiceOperation RunPeerScript = new ServiceOperation("RUN_PEER_SCRIPT");
+        public static readonly ServiceOperation RunPeerScriptAsync = new ServiceOperation("RUN_PEER_SCRIPT_ASYNC");
 
         //RedemptionCode
         public static readonly ServiceOperation GetRedeemedCodes = new ServiceOperation("GET_REDEEMED_CODES");
@@ -295,6 +298,7 @@ namespace BrainCloud.Internal
         //peer
         public static readonly ServiceOperation AttachPeerProfile = new ServiceOperation("ATTACH_PEER_PROFILE");
         public static readonly ServiceOperation DetachPeer = new ServiceOperation("DETACH_PEER");
+        public static readonly ServiceOperation GetPeerProfiles = new ServiceOperation("GET_PEER_PROFILES");
 
         private ServiceOperation(string value)
         {

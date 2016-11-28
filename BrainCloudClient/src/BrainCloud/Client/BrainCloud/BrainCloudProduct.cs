@@ -441,26 +441,5 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GooglePlayConfirmPurchase, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        [Obsolete("All currencies are now returned in the GetCurrency method - removal after March 22 2016")]
-        public void GetParentCurrency(
-            string in_currencyType,
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            if (Util.IsOptionalParameterValid(in_currencyType))
-            {
-                data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            }
-            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetParentCurrency, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
     }
 }
