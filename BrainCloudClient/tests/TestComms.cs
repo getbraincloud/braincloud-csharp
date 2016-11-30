@@ -12,12 +12,6 @@ namespace BrainCloudTests
     {
         private int _globalErrorCount;
 
-        [SetUp]
-        public void RegisterCallbacks()
-        {
-            BrainCloudClient.Instance.RegisterGlobalErrorCallback(GlobalErrorHandler);
-        }
-
         [TearDown]
         public void Cleanup()
         {
@@ -244,6 +238,7 @@ namespace BrainCloudTests
         [Test]
         public void TestGlobalErrorCallback()
         {
+            BrainCloudClient.Instance.RegisterGlobalErrorCallback(GlobalErrorHandler);
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
@@ -275,6 +270,7 @@ namespace BrainCloudTests
         [Test]
         public void TestGlobalErrorCallbackUsingWrapper()
         {
+            BrainCloudClient.Instance.RegisterGlobalErrorCallback(GlobalErrorHandler);
             TestResult tr = new TestResult();
 
             BrainCloudWrapper.GetInstance().AuthenticateUniversal("", "zzz", true, tr.ApiSuccess, tr.ApiError, this);
@@ -308,6 +304,32 @@ namespace BrainCloudTests
             
             // should result in three packets
             tr.Run();
+            tr.Run();
+            tr.Run();
+        }
+
+        [Test]
+        public void TestAuthFirst()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+                tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
+
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+                tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false, tr.ApiSuccess, tr.ApiError);
+
+
+
+            // should result in two packets
+            tr.RunExpectFail(403, ReasonCodes.NO_SESSION);
             tr.Run();
             tr.Run();
         }

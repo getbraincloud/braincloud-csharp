@@ -1006,7 +1006,29 @@ namespace BrainCloud.Internal
                 {
                     if (_serviceCallsWaiting.Count > 0)
                     {
+
                         int numMessagesWaiting = _serviceCallsWaiting.Count;
+
+                        //put auth first
+                        for (int i = 0; i < numMessagesWaiting; ++i)
+                        {
+                            if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
+                                break;
+
+                            if (_serviceCallsWaiting[i].GetOperation() == ServiceOperation.Authenticate.Value)
+                            {
+                                if(i != 0)
+                                {
+                                    var call = _serviceCallsWaiting[i];
+                                    _serviceCallsWaiting.RemoveAt(i);
+                                    _serviceCallsWaiting.Insert(0, call);
+                                }
+
+                                numMessagesWaiting = 1;
+                                break;
+                            }
+                        }
+
                         if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
                         {
                             numMessagesWaiting = MAX_MESSAGES_BUNDLE;
