@@ -742,23 +742,17 @@ namespace BrainCloud.Internal
                         data = JsonWriter.Serialize(response);
 
                         // save the session ID
-                        try
+                        string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
+                        if (sessionId != null)
                         {
-                            if (GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null) != null)
-                            {
-                                _sessionID = (string)responseData[OperationParam.ServiceMessageSessionId.Value];
-                                _isAuthenticated = true;  // TODO confirm authentication
-                            }
-
-                            // save the profile ID
-                            if (GetJsonString(responseData, OperationParam.ProfileId.Value, null) != null)
-                            {
-                                _brainCloudClientRef.AuthenticationService.ProfileId = (string)responseData[OperationParam.ProfileId.Value];
-                            }
+                            _sessionID = sessionId;
+                            _isAuthenticated = true;
                         }
-                        catch (Exception e)
+
+                        string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
+                        if (sessionId != null)
                         {
-                            _brainCloudClientRef.Log("SessionId or ProfileId do not exist " + e.ToString());
+                            _brainCloudClientRef.AuthenticationService.ProfileId = profileId;
                         }
                     }
 
@@ -952,7 +946,7 @@ namespace BrainCloud.Internal
                             // callback object instead
                             if (cbObject != null && cbObject is WrapperAuthCallbackObject)
                             {
-                                cbObject = ((WrapperAuthCallbackObject) cbObject)._cbObject;
+                                cbObject = ((WrapperAuthCallbackObject)cbObject)._cbObject;
                             }
                         }
 
@@ -1006,7 +1000,29 @@ namespace BrainCloud.Internal
                 {
                     if (_serviceCallsWaiting.Count > 0)
                     {
+
                         int numMessagesWaiting = _serviceCallsWaiting.Count;
+
+                        //put auth first
+                        for (int i = 0; i < numMessagesWaiting; ++i)
+                        {
+                            if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
+                                break;
+
+                            if (_serviceCallsWaiting[i].GetOperation() == ServiceOperation.Authenticate.Value)
+                            {
+                                if (i != 0)
+                                {
+                                    var call = _serviceCallsWaiting[i];
+                                    _serviceCallsWaiting.RemoveAt(i);
+                                    _serviceCallsWaiting.Insert(0, call);
+                                }
+
+                                numMessagesWaiting = 1;
+                                break;
+                            }
+                        }
+
                         if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
                         {
                             numMessagesWaiting = MAX_MESSAGES_BUNDLE;
@@ -1485,32 +1501,24 @@ namespace BrainCloud.Internal
 
         private static string GetJsonString(Dictionary<string, object> jsonData, string key, string defaultReturn)
         {
-            try
-            {
-                return (string)jsonData[key];
-            }
-            catch (KeyNotFoundException)
-            {
-                return defaultReturn;
-            }
+            object retVal = null;
+            jsonData.TryGetValue(key, out retVal);
+            return retVal != null ? retVal as string : defaultReturn;
         }
 
 
         private static long GetJsonLong(Dictionary<string, object> jsonData, string key, long defaultReturn)
         {
-            try
+            object outObj = null;
+            if (jsonData.TryGetValue(key, out outObj))
             {
-                object value = jsonData[key];
-                if (value is System.Int64)
-                    return (long)value;
-                if (value is System.Int32)
-                    return (int)value;
-                return defaultReturn;
+                if (outObj is long)
+                    return (long)outObj;
+                if (outObj is int)
+                    return (int)outObj;
             }
-            catch (KeyNotFoundException)
-            {
-                return defaultReturn;
-            }
+
+            return defaultReturn;
         }
 
         /// <summary>

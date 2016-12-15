@@ -177,7 +177,7 @@ public class BrainCloudWrapper
             BrainCloudSettings.Instance.GameId,
             BrainCloudSettings.Instance.GameVersion);
 
-        GetBC().EnableLogging(BrainCloudSettings.Instance.EnableLogging);
+        Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
 #endif
 
