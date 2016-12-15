@@ -622,6 +622,26 @@ namespace BrainCloud
         /// <param name="anonymousId The anonymous Id</param>
         public void Initialize(string serverURL, string secretKey, string gameId, string gameVersion)
         {
+            string error = null;
+            if (string.IsNullOrEmpty(serverURL))
+                error = "serverURL was null or empty";
+            else if (string.IsNullOrEmpty(secretKey))
+                error = "secretKey was null or empty";
+            else if (string.IsNullOrEmpty(gameId))
+                error = "gameId was null or empty";
+            else if (string.IsNullOrEmpty(gameVersion))
+                error = "gameVersion was null or empty";
+
+            if (error != null)
+            {
+#if !(DOT_NET)
+                Debug.LogError("ERROR | Failed to initialize - " + error);
+#elif !XAMARIN
+                Console.WriteLine("ERROR | Failed to initialize - " + error);
+#endif
+                return;
+            }
+
             // TODO: what is our default c# platform?
             Platform platform = Platform.Windows;
 #if !(DOT_NET)
