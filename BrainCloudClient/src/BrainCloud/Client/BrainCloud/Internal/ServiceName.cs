@@ -39,6 +39,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Leaderboard = new ServiceName("leaderboard");
         public static readonly ServiceName Twitter = new ServiceName("twitter");
         public static readonly ServiceName Time = new ServiceName("time");
+        public static readonly ServiceName Tournament = new ServiceName("tournament");
 
         private ServiceName(string value)
         {

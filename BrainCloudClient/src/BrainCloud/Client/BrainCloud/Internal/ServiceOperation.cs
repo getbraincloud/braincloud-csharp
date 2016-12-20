@@ -300,6 +300,15 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation DetachPeer = new ServiceOperation("DETACH_PEER");
         public static readonly ServiceOperation GetPeerProfiles = new ServiceOperation("GET_PEER_PROFILES");
 
+        //tournament
+        public static readonly ServiceOperation GetTournamentStatus = new ServiceOperation("GET_TOURNAMENT_STATUS");
+        public static readonly ServiceOperation JoinTournament = new ServiceOperation("JOIN_TOURNAMENT");
+        public static readonly ServiceOperation LeaveTournament = new ServiceOperation("LEAVE_TOURNAMENT");
+        public static readonly ServiceOperation PostTournamentScore = new ServiceOperation("POST_TOURNAMENT_SCORE");
+        public static readonly ServiceOperation ViewCurrentReward = new ServiceOperation("VIEW_CURRENT_REWARD");
+        public static readonly ServiceOperation ViewReward = new ServiceOperation("VIEW_REWARD");
+        public static readonly ServiceOperation ClaimTournamentReward = new ServiceOperation("CLAIM_TOURNAMENT_REWARD");
+
         private ServiceOperation(string value)
         {
             Value = value;
