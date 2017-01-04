@@ -3,10 +3,6 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace BrainCloud
 {
     public static class ReasonCodes
@@ -35,7 +31,7 @@ namespace BrainCloud
         public const int SWITCHING_PROFILES = 40207;
 
         /// <summary>This means that you provide a blank profile id and the
-        /// identity doesn’t exist and forecCreate is false.
+        /// identity doesn't exist and forecCreate is false.
         ///</summary>
         public const int MISSING_PROFILE_ERROR = 40208;
 
@@ -287,6 +283,45 @@ namespace BrainCloud
         public const int FROM_NAME_WITHOUT_FROM_ADDRESS = 40489;
         public const int REPLY_TO_NAME_WITHOUT_REPLY_TO_ADDRESS = 40490;
         public const int CURRENCY_SECURITY_ERROR = 40491;
+        public const int INVALID_PEER_CODE = 40492;
+        public const int PEER_NO_LONGER_EXISTS = 40493;
+
+        public const int CANNOT_MODIFY_TOURNAMENT_WITH_LEADERBOARD_SERVICE = 40494;
+        public const int NO_TOURNAMENT_ASSOCIATED_WITH_LEADERBOARD = 40495;
+        public const int TOURNAMENT_NOT_ASSOCIATED_WITH_LEADERBOARD = 40496;
+        public const int PLAYER_ALREADY_TOURNAMENT_FOR_LEADERBOARD = 40497;
+        public const int PLAYER_EARLY_FOR_JOINING_TOURNAMENT = 40498;
+        public const int NO_LEADERBOARD_FOUND = 40499;
+        public const int PLAYER_NOT_IN_TIME_RANGE_FOR_POSTSCORE_TOURNAMENT = 40500;
+        public const int LEADERBOARD_ID_BAD = 40501;
+        public const int SCORE_INPUT_BAD = 40502;
+        public const int ROUND_STARTED_EPOCH_INPUT_BAD = 40503;
+        public const int TOURNAMENT_CODE_INPUT_BAD = 40504;
+        public const int PLAYER_NOT_ENROLLED_IN_TOURNAMENT = 40505;
+        public const int LEADERBOARD_VERSION_ID_INVALID = 40506;
+        public const int NOT_ENOUGH_BALANCE_TO_JOIN_TOURNAMENT = 40507;
+        public const int PARENT_ALREADY_ATTACHED = 40508;
+        public const int PEER_ALREADY_ATTACHED = 40509;
+        public const int IDENTITY_NOT_ATTACHED_WITH_PARENT = 40510;
+        public const int IDENTITY_NOT_ATTACHED_WITH_PEER = 40511;
+        public const int LEADERBOARD_SCORE_UPDATE_ERROR = 40512;
+        public const int ERROR_CLAIMING_REWARD = 40513;
+        public const int NOT_ENOUGH_PARENT_BALANCE_TO_JOIN_TOURNAMENT = 40514;
+        public const int NOT_ENOUGH_PEER_BALANCE_TO_JOIN_TOURNAMENT = 40515;
+        public const int PLAYER_LATE_FOR_JOINING_TOURNAMENT = 40516;
+        public const int VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS = 40517;
+        public const int NO_REWARD_ASSOCIATED_WITH_LEADERBOARD = 40518;
+        public const int PROFILE_PEER_NOT_FOUND = 40519;
+        public const int LEADERBOARD_IN_ACTIVE_STATE = 40520;
+        public const int LEADERBOARD_IN_CALCULATING_STATE = 40521;
+        public const int TOURNAMENT_RESULT_PROCESSING_FAILED = 40522;
+        public const int TOURNAMENT_REWARDS_ALREADY_CLAIMED = 40523;
+        public const int NO_TOURNAMENT_FOUND = 40524;
+        public const int UNEXPECTED_ERROR_RANK_ZERO_AFTER_PROCESSING = 40525;
+        public const int UNEXPECTED_ERROR_DELETING_TOURNAMENT_LEADERBOARD_SCORE = 40526;
+        public const int INVALID_RUN_STATE = 40527;
+        public const int LEADERBOARD_SCORE_DOESNOT_EXIST = 40528;
+        public const int INITIAL_SCORE_NULL = 40529;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
