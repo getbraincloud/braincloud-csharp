@@ -91,7 +91,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -107,7 +106,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -123,7 +121,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 40499);
@@ -139,7 +136,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
                 10,
-                true,
                 1,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -207,6 +203,24 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
                 System.DateTime.Now.AddDays(5),
                 5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardDays()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboardDays(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "-" + _random.Next(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
+                null,
+                5,
+                3,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
