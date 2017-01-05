@@ -115,7 +115,7 @@ namespace BrainCloudTests
                 -1,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
+            tr.RunExpectFail(400, ReasonCodes.PLAYER_NOT_ENROLLED_IN_TOURNAMENT);
 
             LeaveTestTournament();
         }
@@ -137,7 +137,7 @@ namespace BrainCloudTests
 
             BrainCloudClient.Instance.TournamentService.GetTournamentStatus(
                 _leaderboardId,
-                1,
+                -1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
