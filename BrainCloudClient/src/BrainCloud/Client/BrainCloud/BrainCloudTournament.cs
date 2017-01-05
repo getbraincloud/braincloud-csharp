@@ -96,7 +96,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Get tournament status associated with a leaderboard
+        /// Join the specified tournament.
+        /// Any entry fees will be automatically collected.
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
@@ -187,7 +188,7 @@ namespace BrainCloud
         /// <param name="jsonData">
         /// Optional data attached to the leaderboard entry
         /// </param>
-        /// <param name="roundStartedEpoch">
+        /// <param name="roundStartedTime">
         /// Time the user started the match resulting in the score
         /// being posted.  
         /// </param>

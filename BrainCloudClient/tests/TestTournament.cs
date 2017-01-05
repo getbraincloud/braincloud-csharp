@@ -25,7 +25,7 @@ namespace BrainCloudTests
                 version,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, ReasonCodes.PLAYER_NOT_ENROLLED_IN_TOURNAMENT);
+            tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
 
             LeaveTestTournament();
         }
