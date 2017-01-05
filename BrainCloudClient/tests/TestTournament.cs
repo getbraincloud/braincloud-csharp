@@ -11,7 +11,18 @@ namespace BrainCloudTests
     {
         private readonly string _tournamentCode = "testTournament";
         private readonly string _leaderboardId = "testTournamentLeaderboard";
+
         private Random _rand = new Random();
+        private bool _didJoin;
+
+        [TearDown]
+        public void Cleanup()
+        {
+            if (_didJoin)
+            {
+                LeaveTestTournament();
+            }
+        }
 
         [Test]
         public void ClaimTournamentReward()
@@ -26,8 +37,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
-
-            LeaveTestTournament();
         }
 
         [Test]
@@ -43,8 +52,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-
-            LeaveTestTournament();
         }
 
         [Test]
@@ -126,6 +133,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+            _didJoin = true;
 
             BrainCloudClient.Instance.TournamentService.GetTournamentStatus(
                 _leaderboardId,
@@ -146,6 +154,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+            _didJoin = false;
         }
     }
 }
