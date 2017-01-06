@@ -647,9 +647,9 @@ namespace BrainCloud
             if (error != null)
             {
 #if !(DOT_NET)
-                Debug.LogError("ERROR | Failed to initialize - " + error);
+                Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
 #elif !XAMARIN
-                Console.WriteLine("ERROR | Failed to initialize - " + error);
+                Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
 #endif
                 return;
             }
