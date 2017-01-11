@@ -29,14 +29,7 @@ namespace BrainCloud.Internal
     #endregion
 
     internal sealed class BrainCloudComms
-    {
-        /// <summary>
-        /// The maximum number of messages in a bundle.
-        /// Note that this is somewhat arbitrary - using the size
-        /// of the packet would be a more appropriate measuring stick.
-        /// </summary>
-        private static int MAX_MESSAGES_BUNDLE = 50;
-
+    {      
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
         /// </summary>
@@ -97,6 +90,12 @@ namespace BrainCloud.Internal
         /// This value is set to a percentage of the heartbeat timeout sent by the authenticate response.
         /// </summary>
         private TimeSpan _idleTimeout = TimeSpan.FromSeconds(5 * 60);
+
+        /// <summary>
+        /// The maximum number of messages in a bundle.
+        /// This is set to a value from the server on authenticate
+        /// </summary>
+        private int _maxBundleMessages = 10;
 
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
@@ -1023,9 +1022,9 @@ namespace BrainCloud.Internal
                             }
                         }
 
-                        if (numMessagesWaiting > MAX_MESSAGES_BUNDLE)
+                        if (numMessagesWaiting > _maxBundleMessages)
                         {
-                            numMessagesWaiting = MAX_MESSAGES_BUNDLE;
+                            numMessagesWaiting = _maxBundleMessages;
                         }
 
                         // check for end of bundle markers
@@ -1493,6 +1492,10 @@ namespace BrainCloud.Internal
             long idleTimeout = (long)(playerSessionExpiry * 0.85);
 
             _idleTimeout = TimeSpan.FromSeconds(idleTimeout);
+
+            object bundleMsgs = null;
+            jsonData.TryGetValue("maxBundleMsgs", out bundleMsgs);
+            if (bundleMsgs != null) _maxBundleMessages = (int)bundleMsgs;
 
             ResetErrorCache();
             _isAuthenticated = true;
