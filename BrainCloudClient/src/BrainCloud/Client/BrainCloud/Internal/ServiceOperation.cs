@@ -84,7 +84,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetGlobalLeaderboardVersions = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VERSIONS");
         public static readonly ServiceOperation PostScore = new ServiceOperation("POST_SCORE");
         public static readonly ServiceOperation PostScoreDynamic = new ServiceOperation("POST_SCORE_DYNAMIC");
-        public static readonly ServiceOperation RemoveScore = new ServiceOperation("REMOVE_SCORE");
+        public static readonly ServiceOperation RemovePlayerScore = new ServiceOperation("REMOVE_PLAYER_SCORE");
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");

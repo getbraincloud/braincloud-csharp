@@ -553,7 +553,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
-        /// Service Operation - REMOVE_SCORE
+        /// Service Operation - REMOVE_PLAYER_SCORE
         /// </remarks>
         /// <param name="leaderboardId">
         /// The ID of the leaderboard
@@ -570,7 +570,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void RemoveScore(
+        public void RemovePlayerScore(
             string leaderboardId,
             int versionId,
             SuccessCallback success = null,
@@ -582,7 +582,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RemoveScore, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RemovePlayerScore, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
 

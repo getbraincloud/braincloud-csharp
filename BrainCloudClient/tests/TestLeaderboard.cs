@@ -57,13 +57,13 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestRemoveScore()
+        public void TestRemovePlayerScore()
         {
             PostScoreToGlobalLeaderboard();
 
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.LeaderboardService.RemoveScore(
+            BrainCloudClient.Instance.LeaderboardService.RemovePlayerScore(
                 _globalLeaderboardId,
                 -1,
                 tr.ApiSuccess, tr.ApiError);
