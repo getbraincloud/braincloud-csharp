@@ -82,12 +82,15 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetGlobalLeaderboardVersions = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VERSIONS");
         public static readonly ServiceOperation PostScore = new ServiceOperation("POST_SCORE");
         public static readonly ServiceOperation PostScoreDynamic = new ServiceOperation("POST_SCORE_DYNAMIC");
+        public static readonly ServiceOperation RemoveScore = new ServiceOperation("REMOVE_SCORE");
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation ListAllLeaderboards = new ServiceOperation("LIST_ALL_LEADERBOARDS");
         public static readonly ServiceOperation GetGlobalLeaderboardEntryCount = new ServiceOperation("GET_GLOBAL_LEADERBOARD_ENTRY_COUNT");
+        public static readonly ServiceOperation GetPlayerScore = new ServiceOperation("GET_PLAYER_SCORE");
+        public static readonly ServiceOperation GetPlayerScoresFromLeaderboards = new ServiceOperation("GET_PLAYER_SCORES_FROM_LEADERBOARDS");
 
         public static readonly ServiceOperation ReadFriendsPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
 
@@ -305,6 +308,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation JoinTournament = new ServiceOperation("JOIN_TOURNAMENT");
         public static readonly ServiceOperation LeaveTournament = new ServiceOperation("LEAVE_TOURNAMENT");
         public static readonly ServiceOperation PostTournamentScore = new ServiceOperation("POST_TOURNAMENT_SCORE");
+        public static readonly ServiceOperation PostTournamentScoreWithResults = new ServiceOperation("POST_TOURNAMENT_SCORE_WITH_RESULTS");
         public static readonly ServiceOperation ViewCurrentReward = new ServiceOperation("VIEW_CURRENT_REWARD");
         public static readonly ServiceOperation ViewReward = new ServiceOperation("VIEW_REWARD");
         public static readonly ServiceOperation ClaimTournamentReward = new ServiceOperation("CLAIM_TOURNAMENT_REWARD");
@@ -319,6 +323,5 @@ namespace BrainCloud.Internal
             get;
             private set;
         }
-
     }
 }
