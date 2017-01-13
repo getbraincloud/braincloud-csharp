@@ -32,7 +32,7 @@ namespace BrainCloudTests
         [Test]
         public void TestGetMultiSocialLeaderboard()
         {
-            PostScoreToNonDynamicLeaderboard();
+            PostScoreToGlobalLeaderboard();
             PostScoreToDynamicLeaderboardHighValue();
 
             TestResult tr = new TestResult();
@@ -53,10 +53,25 @@ namespace BrainCloudTests
         [Test]
         public void TestPostScoreToLeaderboard()
         {
-            PostScoreToNonDynamicLeaderboard();
+            PostScoreToGlobalLeaderboard();
         }
 
-        public void PostScoreToNonDynamicLeaderboard()
+        [Test]
+        public void TestRemoveScore()
+        {
+            PostScoreToGlobalLeaderboard();
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.LeaderboardService.RemoveScore(
+                _globalLeaderboardId,
+                -1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        public void PostScoreToGlobalLeaderboard()
         {
             TestResult tr = new TestResult();
 
@@ -353,6 +368,33 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardEntryCountByVersion(_globalLeaderboardId, 1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayerScore()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetPlayerScore(_globalLeaderboardId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayerScoresFromLeaderboards()
+        {
+            PostScoreToGlobalLeaderboard();
+            PostScoreToDynamicLeaderboardHighValue();
+
+            TestResult tr = new TestResult();
+
+            List<string> lbIds = new List<string>();
+            lbIds.Add(_globalLeaderboardId);
+            lbIds.Add(_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+
+            BrainCloudClient.Instance.LeaderboardService.GetPlayerScoresFromLeaderboards(
+                lbIds,
+                tr.ApiSuccess, tr.ApiError);
+
             tr.Run();
         }
     }

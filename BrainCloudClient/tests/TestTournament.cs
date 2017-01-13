@@ -88,6 +88,28 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void PostTournamentScoreWithResults()
+        {
+            JoinTestTournament();
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.TournamentService.PostTournamentScoreWithResults(
+                _leaderboardId,
+                _rand.Next(1000),
+                null,
+                DateTime.Now,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                10,
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            LeaveTestTournament();
+        }
+
+        [Test]
         public void ViewCurrentReward()
         {
             JoinTestTournament();

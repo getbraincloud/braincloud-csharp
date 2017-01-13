@@ -549,6 +549,44 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Removes a player's score from the leaderboard
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - REMOVE_SCORE
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="versionId">
+        /// The version of the leaderboard
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void RemoveScore(
+            string leaderboardId,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RemoveScore, data, callback);
+            _brainCloudClient.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Post the players score to the given social leaderboard.
         /// Pass leaderboard config data to dynamically create if necessary.
         /// You can optionally send a user-defined json string of data
@@ -575,7 +613,7 @@ namespace BrainCloud
         /// Type of rotation
         /// </param>
         /// <param name="rotationReset">
-        /// Date to reset the leaderboard
+        /// Date to reset the leaderboard UTC
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep
@@ -613,7 +651,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
 
             if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = DateTimeToUnixTimestamp(rotationReset.Value);
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationReset.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
@@ -646,7 +684,7 @@ namespace BrainCloud
         /// leaderboard type
         /// </param>
         /// <param name="rotationReset">
-        /// Date to reset the leaderboard
+        /// Date to reset the leaderboard UTC
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep
@@ -687,7 +725,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = "DAYS";
 
             if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = DateTimeToUnixTimestamp(rotationReset.Value);
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationReset.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
             data[OperationParam.NumDaysToRotate.Value] = numDaysToRotate;
@@ -862,10 +900,78 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(sc);
         }
 
-        public static long DateTimeToUnixTimestamp(DateTime dateTime)
+        /// <summary>
+        /// Gets a player's score from a leaderboard
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYER_SCORE
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="versionId">
+        /// The version of the leaderboard. Use -1 for current.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayerScore(
+            string leaderboardId,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            return (long)((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
-                   new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScore, data, callback);
+            _brainCloudClient.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets a player's score from multiple leaderboards
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYER_SCORES_FROM_LEADERBOARDS
+        /// </remarks>
+        /// <param name="leaderboardIds">
+        /// A collection of leaderboardIds to retrieve scores from
+        /// </param>
+        /// <param name="versionId">
+        /// The version of the leaderboard. Use -1 for current.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayerScoresFromLeaderboards(
+            IList<string> leaderboardIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardIds.Value] = leaderboardIds;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScoresFromLeaderboards, data, callback);
+            _brainCloudClient.SendRequest(sc);
         }
     }
 }
