@@ -102,6 +102,7 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 10,
                 10,
+                0,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
