@@ -286,6 +286,7 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
             data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+            data[OperationParam.InitialScore.Value] = initialScore;
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
