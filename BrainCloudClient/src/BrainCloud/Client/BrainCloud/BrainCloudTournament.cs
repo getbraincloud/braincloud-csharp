@@ -110,7 +110,8 @@ namespace BrainCloud
         /// Tournament to join
         /// </param>
         /// <param name="initialScore">
-        /// Initial score for the user
+        /// The initial score for players first joining a tournament
+        /// Usually 0, unless leaderboard is LOW_VALUE
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -255,6 +256,10 @@ namespace BrainCloud
         /// <param name="afterCount">
         /// The count of number of players after the current player to include.
         /// </param>
+        /// <param name="initialScore">
+        /// The initial score for players first joining a tournament
+        /// Usually 0, unless leaderboard is LOW_VALUE
+        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -272,6 +277,7 @@ namespace BrainCloud
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
+             int initialScore,
              SuccessCallback success = null,
              FailureCallback failure = null,
              object cbObject = null)
