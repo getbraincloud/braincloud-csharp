@@ -125,7 +125,7 @@ namespace BrainCloud
         public void JoinTournament(
             string leaderboardId,
             string tournamentCode,
-            int initialScore,
+            long initialScore,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -204,7 +204,7 @@ namespace BrainCloud
         /// </param>
         public void PostTournamentScore(
             string leaderboardId,
-            int score,
+            long score,
             string jsonData,
             DateTime roundStartedTime,
             SuccessCallback success = null,
@@ -271,13 +271,13 @@ namespace BrainCloud
         /// </param>
         public void PostTournamentScoreWithResults(
              string leaderboardId,
-             int score,
+             long score,
              string jsonData,
              DateTime roundStartedTime,
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
-             int initialScore,
+             long initialScore,
              SuccessCallback success = null,
              FailureCallback failure = null,
              object cbObject = null)
