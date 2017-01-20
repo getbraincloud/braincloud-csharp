@@ -85,18 +85,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestResetLeaderboardScore()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.ResetLeaderboardScore(
-                _globalLeaderboardId,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
         public void TestGetGlobalLeaderboardPageHigh()
         {
             TestResult tr = new TestResult();

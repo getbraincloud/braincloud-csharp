@@ -734,26 +734,8 @@ namespace BrainCloud
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
-
-        /// <summary>
-        /// Reset the player's score for the given social leaderboard id.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - leaderboard
-        /// Service Operation - Reset
-        /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard to post to
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        
+        [Obsolete("Use RemovePlayerScore - removal after March 22 2016")]
         public void ResetLeaderboardScore(
             string leaderboardId,
             SuccessCallback success = null,
