@@ -137,7 +137,7 @@ namespace BrainCloudTests
         {
             TestUser testUser = GetUser(user);
             TestResult tr = new TestResult();
-            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(testUser.Id + "_peer", testUser.Password, authType, null, PeerName, true, tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(PeerName, testUser.Id + "_peer", testUser.Password, authType, null, true, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 

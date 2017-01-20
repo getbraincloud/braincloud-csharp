@@ -1098,6 +1098,9 @@ namespace BrainCloud
         /// <summary>
         /// Attaches a peer identity to this player's profile
         /// </summary>
+        /// <param name="peer">
+        /// Name of the peer to connect to
+        /// </param>
         /// <param name="externalId">
         /// User ID
         /// </param>
@@ -1109,9 +1112,6 @@ namespace BrainCloud
         /// </param>
         /// <param name="externalAuthName">
         /// Optional - if using AuthenticationType of external
-        /// </param>
-        /// <param name="peer">
-        /// Name of the peer to connect to
         /// </param>
         /// <param name="forceCreate">
         /// If the profile does not exist, should it be created?
@@ -1126,11 +1126,11 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         public void AttachPeerProfile(
+            string peer,
             string externalId,
             string authenticationToken,
             AuthenticationType authenticationType,
             string externalAuthName,
-            string peer,
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,

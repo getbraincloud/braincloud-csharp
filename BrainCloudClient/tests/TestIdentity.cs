@@ -137,11 +137,11 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.IdentityService.AttachPeerProfile(
+                PeerName,
                 GetUser(Users.UserA).Id + "_peer",
                 GetUser(Users.UserA).Password,
                 AuthenticationType.Universal,
                 null,
-                PeerName,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
