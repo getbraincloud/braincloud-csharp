@@ -1,6 +1,7 @@
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
+using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -44,6 +45,32 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+        }
+
+        [Test]
+        public void TestGetProfileInfoForCredential()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.GetProfileInfoForCredential(
+                GetUser(Users.UserA).Id,
+                AuthenticationType.Universal,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetProfileInfoForExternalAuthId()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.FriendService.GetProfileInfoForExternalAuthId(
+                GetUser(Users.UserA).Id,
+                "test",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.RunExpectFail(400, ReasonCodes.INVALID_CREDENTIAL);
         }
 
         [Test]

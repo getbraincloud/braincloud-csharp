@@ -119,6 +119,7 @@ namespace BrainCloud
         public static readonly OperationParam FriendServiceProfileId = new OperationParam("profileId");
         public static readonly OperationParam FriendServiceFriendId = new OperationParam("friendId");
         public static readonly OperationParam FriendServiceAuthenticationType = new OperationParam("authenticationType");
+        public static readonly OperationParam ExternalAuthType = new OperationParam("externalAuthType");
         public static readonly OperationParam FriendServiceEntityType = new OperationParam("entityType");
         public static readonly OperationParam FriendServiceEntitySubtype = new OperationParam("entitySubtype");
         public static readonly OperationParam FriendServiceIncludeSummaryData = new OperationParam("includeSummaryData");

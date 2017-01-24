@@ -322,6 +322,11 @@ namespace BrainCloud
         public const int INVALID_RUN_STATE = 40527;
         public const int LEADERBOARD_SCORE_DOESNOT_EXIST = 40528;
         public const int INITIAL_SCORE_NULL = 40529;
+        public const int TOURNAMENT_NOTIFICATIONS_PROCESSING_FAILED = 40530;
+        public const int ACL_NOT_READABLE = 40531;
+        public const int INVALID_OWNER_ID = 40532;
+        public const int IMPORT_MISSING_PEERS_DATA = 40533;
+        public const int INVALID_CREDENTIAL = 40534;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
