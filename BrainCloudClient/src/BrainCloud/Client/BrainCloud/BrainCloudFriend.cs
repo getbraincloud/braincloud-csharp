@@ -87,7 +87,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
-        /// Service Operation - GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID
+        /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL
         /// </remarks>
         /// <param name="externalId">
         /// External id of the user to find
