@@ -309,6 +309,41 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestUpdateEntityOwnerAndAcl()
+        {
+            string entityId = CreateDefaultGlobalEntity();
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GlobalEntityService.UpdateEntityOwnerAndAcl(
+                entityId,
+                -1,
+                GetUser(Users.UserB).ProfileId,
+                new ACL(ACL.Access.ReadWrite),
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestMakeSystemEntity()
+        {
+            string entityId = CreateDefaultGlobalEntity();
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.GlobalEntityService.MakeSystemEntity(
+                entityId,
+                -1,
+                new ACL(ACL.Access.ReadWrite),
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+        }
+
         #region Helper Functions
 
         /// <summary>
@@ -327,7 +362,7 @@ namespace BrainCloudTests
         /// </summary>
         /// <param name="accessLevel"> accessLevel for entity </param>
         /// <returns> The ID of the entity </returns>
-        private string CreateDefaultGlobalEntity(ACL.Access accessLevel = ACL.Access.None, string indexedId = "")
+        private string CreateDefaultGlobalEntity(ACL.Access accessLevel = ACL.Access.None, string indexedId = null)
         {
             TestResult tr = new TestResult();
 
@@ -335,7 +370,7 @@ namespace BrainCloudTests
             string entityId = "";
 
             //Create entity
-            if (indexedId.Length <= 0)
+            if (string.IsNullOrEmpty(indexedId))
             {
                 BrainCloudClient.Instance.GlobalEntityService.CreateEntity(
                  _defaultEntityType,

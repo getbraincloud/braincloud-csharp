@@ -115,6 +115,7 @@ namespace BrainCloud
         private BrainCloudSocialLeaderboard _leaderboardService;
         private BrainCloudAsyncMatch _asyncMatchService;
         private BrainCloudTime _timeService;
+        private BrainCloudTournament _tournamentService;
         private BrainCloudAuthentication _authenticationService;
         private BrainCloudPushNotification _pushNotificationService;
         private BrainCloudPlayerStatisticsEvent _playerStatisticsEventService;
@@ -184,6 +185,7 @@ namespace BrainCloud
             _leaderboardService = new BrainCloudSocialLeaderboard(this);
             _asyncMatchService = new BrainCloudAsyncMatch(this);
             _timeService = new BrainCloudTime(this);
+            _tournamentService = new BrainCloudTournament(this);
 
             _authenticationService = new BrainCloudAuthentication(this);
             _pushNotificationService = new BrainCloudPushNotification(this);
@@ -376,6 +378,11 @@ namespace BrainCloud
             get { return _timeService; }
         }
 
+        public BrainCloudTournament TournamentService
+        {
+            get { return _tournamentService; }
+        }
+
         public BrainCloudAuthentication AuthenticationService
         {
             get { return _authenticationService; }
@@ -527,6 +534,11 @@ namespace BrainCloud
             return _timeService;
         }
 
+        public BrainCloudTournament GetTournamentService()
+        {
+            return _tournamentService;
+        }
+
         public BrainCloudAuthentication GetAuthenticationService()
         {
             return _authenticationService;
@@ -635,9 +647,9 @@ namespace BrainCloud
             if (error != null)
             {
 #if !(DOT_NET)
-                Debug.LogError("ERROR | Failed to initialize - " + error);
+                Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
 #elif !XAMARIN
-                Console.WriteLine("ERROR | Failed to initialize - " + error);
+                Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
 #endif
                 return;
             }

@@ -19,7 +19,7 @@ namespace BrainCloudTests
         public void TestSendEvent()
         {
             TestResult tr = new TestResult();
-            ulong eventId = 0;
+            string eventId = "";
 
             BrainCloudClient.Instance.RegisterEventCallback(EventCallback);
 
@@ -27,12 +27,11 @@ namespace BrainCloudTests
                 GetUser(Users.UserA).ProfileId,
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
-                eventId = Convert.ToUInt64(((Dictionary<string, object>)(tr.m_response["data"]))["eventId"]);
+                eventId = (((Dictionary<string, object>)(tr.m_response["data"]))["evId"]) as string;
             }
 
             Assert.IsTrue(_callbackRan);
@@ -82,33 +81,15 @@ namespace BrainCloudTests
 
             _callbackRan = true;
         }
-
-        [Test]
-        public void TestDeleteSentEvent()
-        {
-            TestResult tr = new TestResult();
-
-            ulong eventId = SendDefaultMessage(true);
-
-            BrainCloudClient.Instance.EventService.DeleteSentEvent(
-                GetUser(Users.UserA).ProfileId,
-                eventId,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-
-            CleanupIncomingEvent(eventId);
-        }
-
+        
         [Test]
         public void TestDeleteIncomingEvent()
         {
             TestResult tr = new TestResult();
 
-            ulong eventId = SendDefaultMessage(false);
+            string eventId = SendDefaultMessage();
 
             BrainCloudClient.Instance.EventService.DeleteIncomingEvent(
-                GetUser(Users.UserA).ProfileId,
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -120,10 +101,9 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            ulong eventId = SendDefaultMessage(false);
+            string eventId = SendDefaultMessage();
 
             BrainCloudClient.Instance.EventService.UpdateIncomingEventData(
-                GetUser(Users.UserA).ProfileId,
                 eventId,
                 Helpers.CreateJsonPair(_eventDataKey, 343),
                 tr.ApiSuccess, tr.ApiError);
@@ -138,11 +118,9 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            ulong eventId = SendDefaultMessage(true);
+            string eventId = SendDefaultMessage();
 
             BrainCloudClient.Instance.EventService.GetEvents(
-                true,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -152,32 +130,30 @@ namespace BrainCloudTests
 
         #region Helpers
 
-        private ulong SendDefaultMessage(bool recordLocally = false)
+        private string SendDefaultMessage()
         {
             TestResult tr = new TestResult();
-            ulong eventId = 0;
+            string eventId = "";
 
             BrainCloudClient.Instance.EventService.SendEvent(
                 GetUser(Users.UserA).ProfileId,
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
-                recordLocally,
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
-                eventId = System.Convert.ToUInt64(((Dictionary<string, object>)(tr.m_response["data"]))["eventId"]);
+                eventId = (((Dictionary<string, object>)(tr.m_response["data"]))["evId"]) as string;
             }
 
             return eventId;
         }
 
-        private void CleanupIncomingEvent(ulong eventId)
+        private void CleanupIncomingEvent(string eventId)
         {
             TestResult tr = new TestResult();
 
             BrainCloudClient.Instance.EventService.DeleteIncomingEvent(
-                GetUser(Users.UserA).ProfileId,
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 

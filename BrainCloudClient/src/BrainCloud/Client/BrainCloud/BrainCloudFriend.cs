@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using JsonFx.Json;
 using BrainCloud.Internal;
+using BrainCloud.Common;
 
 namespace BrainCloud
 {
@@ -64,28 +65,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Retrieves profile information for the specified user.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - GetFriendProfileInfoForExternalId
-        /// </remarks>
-        /// <param name="externalId">
-        /// External id of the friend to find
-        /// </param>
-        /// <param name="authenticationType">
-        /// The authentication type used for this friend's external id e.g. Facebook
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Use GetProfileInfoForCredential instead - removal after March 22 2017")]
         public void GetFriendProfileInfoForExternalId(
             string externalId,
             string authenticationType,
@@ -99,6 +79,82 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetFriendProfileInfoForExternalId, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves profile information of the specified user.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL
+        /// </remarks>
+        /// <param name="externalId">
+        /// External id of the user to find
+        /// </param>
+        /// <param name="authenticationType">
+        /// The authentication type used for the user's ID
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetProfileInfoForCredential(
+            string externalId,
+            AuthenticationType authenticationType,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceExternalId.Value] = externalId;
+            data[OperationParam.FriendServiceAuthenticationType.Value] = authenticationType.ToString();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetProfileInfoForCredential, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves profile information for the specified external auth user.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID
+        /// </remarks>
+        /// <param name="externalId">
+        /// External id of the friend to find
+        /// </param>
+        /// <param name="externalAuthType">
+        /// The external authentication type used for this friend's external id
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetProfileInfoForExternalAuthId(
+            string externalId,
+            string externalAuthType,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceExternalId.Value] = externalId;
+            data[OperationParam.ExternalAuthType.Value] = externalAuthType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetProfileInfoForExternalAuthId, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
@@ -274,24 +330,6 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetSummaryDataForProfileId, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Use FindUsersByExactName and FindUsersBySubstrName instead - removal after Nov 22 2016")]
-        public void FindPlayerByName(
-            string searchText,
-            int maxResults,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            data[OperationParam.FriendServiceSearchText.Value] = searchText;
-            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByName, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 

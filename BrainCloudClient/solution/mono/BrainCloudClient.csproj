@@ -335,6 +335,9 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudMail.cs">
       <Link>BrainCloud\BrainCloudMail.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
+      <Link>BrainCloud\BrainCloudTournament.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

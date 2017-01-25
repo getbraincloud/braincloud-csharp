@@ -52,6 +52,38 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestDetachParent()
+        {
+            GoToChildProfile();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.DetachParent(
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void AttachParentWithIdentity()
+        {
+            GoToChildProfile();
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.DetachParent(
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            TestUser user = GetUser(Users.UserA);
+            BrainCloudClient.Instance.IdentityService.AttachParentWithIdentity(
+                user.Id,
+                user.Password,
+                AuthenticationType.Universal,
+                null,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetChildProfiles()
         {
             TestResult tr = new TestResult();
@@ -98,6 +130,43 @@ namespace BrainCloudTests
                 AuthenticationType.Universal,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, 40464);
+        }
+
+        [Test]
+        public void TestAttachPeerProfile()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(
+                PeerName,
+                GetUser(Users.UserA).Id + "_peer",
+                GetUser(Users.UserA).Password,
+                AuthenticationType.Universal,
+                null,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DetachPeer();
+        }
+
+        [Test]
+        public void TestDetachPeer()
+        {
+            AttachPeer(Users.UserA, AuthenticationType.Universal);
+
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.DetachPeer(
+                PeerName,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPeerProfiles()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.IdentityService.GetPeerProfiles(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
     }
 }

@@ -861,6 +861,59 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Attach a new identity to a parent app
+        /// </summary>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="authenticationToken">
+        /// Password or client side token
+        /// </param>
+        /// <param name="authenticationType">
+        /// Type of authentication
+        /// </param>
+        /// <param name="externalAuthName">
+        /// Optional - if using AuthenticationType of external
+        /// </param>
+        /// <param name="forceCreate">
+        /// If the profile does not exist, should it be created?
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachParentWithIdentity(
+            string externalId,
+            string authenticationToken,
+            AuthenticationType authenticationType,
+            string externalAuthName,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+
+            if (Util.IsOptionalParameterValid(externalAuthName))
+                data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
+            
+            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachParentWithIdentity, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Switch to a Parent Profile
         /// </summary>
         /// <remarks>
@@ -890,6 +943,32 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.SwitchToParentProfile, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Detaches parent from this player's profile
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - DETACH_PARENT
+        /// </remarks>
+        /// <param name="success">
+        /// The method to call in event of successful switch
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error while switching
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachParent(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachParent, null, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
@@ -1014,6 +1093,118 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.RefreshIdentity, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
+
+
+        /// <summary>
+        /// Attaches a peer identity to this player's profile
+        /// </summary>
+        /// <param name="peer">
+        /// Name of the peer to connect to
+        /// </param>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="authenticationToken">
+        /// Password or client side token
+        /// </param>
+        /// <param name="authenticationType">
+        /// Type of authentication
+        /// </param>
+        /// <param name="externalAuthName">
+        /// Optional - if using AuthenticationType of external
+        /// </param>
+        /// <param name="forceCreate">
+        /// If the profile does not exist, should it be created?
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachPeerProfile(
+            string peer,
+            string externalId,
+            string authenticationToken,
+            AuthenticationType authenticationType,
+            string externalAuthName,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+
+            if(Util.IsOptionalParameterValid(externalAuthName))
+                data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
+
+            data[OperationParam.Peer.Value] = peer;
+            data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachPeerProfile, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Detaches a peer identity from this player's profile
+        /// </summary>
+        /// <param name="peer">
+        /// Name of the peer to connect to
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachPeer(
+            string peer,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.Peer.Value] = peer;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachPeer, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves a list of attached peer profiles
+        /// </summary>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPeerProfiles(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetPeerProfiles, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
 
         #region Private Methods
 

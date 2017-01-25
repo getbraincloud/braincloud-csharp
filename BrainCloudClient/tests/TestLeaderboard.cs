@@ -11,7 +11,7 @@ namespace BrainCloudTests
     {
         private readonly string _globalLeaderboardId = "testLeaderboard";
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
-        private readonly string _dynamicLeaderboardId = "testDynamicLeaderboard";
+        private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
         private readonly string _eventId = "tournamentRewardTest";
 
         private static Random _random = new Random();
@@ -32,7 +32,7 @@ namespace BrainCloudTests
         [Test]
         public void TestGetMultiSocialLeaderboard()
         {
-            PostScoreToNonDynamicLeaderboard();
+            PostScoreToGlobalLeaderboard();
             PostScoreToDynamicLeaderboardHighValue();
 
             TestResult tr = new TestResult();
@@ -53,10 +53,25 @@ namespace BrainCloudTests
         [Test]
         public void TestPostScoreToLeaderboard()
         {
-            PostScoreToNonDynamicLeaderboard();
+            PostScoreToGlobalLeaderboard();
         }
 
-        public void PostScoreToNonDynamicLeaderboard()
+        [Test]
+        public void TestRemovePlayerScore()
+        {
+            PostScoreToGlobalLeaderboard();
+
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.LeaderboardService.RemovePlayerScore(
+                _globalLeaderboardId,
+                -1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        public void PostScoreToGlobalLeaderboard()
         {
             TestResult tr = new TestResult();
 
@@ -64,18 +79,6 @@ namespace BrainCloudTests
                 _globalLeaderboardId,
                 1000,
                 Helpers.CreateJsonPair("testDataKey", 400),
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
-        public void TestResetLeaderboardScore()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.ResetLeaderboardScore(
-                _globalLeaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -91,7 +94,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -107,7 +109,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -123,23 +124,9 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
                 0,
                 10,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 0);
-        }
-
-        [Test]
-        public void TestGetCompletedLeaderboardTournament()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.GetCompletedLeaderboardTournament(
-                _socialLeaderboardId,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
+            tr.RunExpectFail(StatusCodes.INTERNAL_SERVER_ERROR, 40499);
         }
 
         [Test]
@@ -152,7 +139,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
                 10,
-                true,
                 1,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -181,7 +167,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
-                true,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -197,21 +182,6 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
-                true,
-                1,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
-        public void TestTriggerSocialLeaderboardTournamentReward()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.LeaderboardService.TriggerSocialLeaderboardTournamentReward(
-                _socialLeaderboardId,
-                _eventId,
                 1,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -236,6 +206,24 @@ namespace BrainCloudTests
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
                 System.DateTime.Now.AddDays(5),
                 5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardDays()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.LeaderboardService.PostScoreToDynamicLeaderboardDays(
+                _dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "-" + _random.Next(),
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
+                null,
+                5,
+                3,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -352,6 +340,49 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
             BrainCloudClient.Instance.LeaderboardService.ListLeaderboards( tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardEntryCount()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardEntryCount(_globalLeaderboardId, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardEntryCountByVersion()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetGlobalLeaderboardEntryCountByVersion(_globalLeaderboardId, 1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayerScore()
+        {
+            TestResult tr = new TestResult();
+            BrainCloudClient.Instance.LeaderboardService.GetPlayerScore(_globalLeaderboardId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayerScoresFromLeaderboards()
+        {
+            PostScoreToGlobalLeaderboard();
+            PostScoreToDynamicLeaderboardHighValue();
+
+            TestResult tr = new TestResult();
+
+            List<string> lbIds = new List<string>();
+            lbIds.Add(_globalLeaderboardId);
+            lbIds.Add(_dynamicLeaderboardId + "-" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+
+            BrainCloudClient.Instance.LeaderboardService.GetPlayerScoresFromLeaderboards(
+                lbIds,
+                tr.ApiSuccess, tr.ApiError);
+
             tr.Run();
         }
     }

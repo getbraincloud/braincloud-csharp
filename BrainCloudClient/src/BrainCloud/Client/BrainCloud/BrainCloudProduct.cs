@@ -3,9 +3,9 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
+using System;
 
 namespace BrainCloud
 {
@@ -54,29 +54,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Award player the passed-in amount of currency. Returns
-        /// JSON representing the new currency values.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Product
-        /// Service Operation - AwardVC
-        /// </remarks>
-        /// <param name="in_currencyType">
-        /// The currency type to award.
-        /// </param>
-        /// <param name="in_amount">
-        /// The amount of currency to award.
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Method is now available in Cloud Code only for security - removal after March 22 2016")]
         public void AwardCurrency(
             string in_currencyType,
             ulong in_amount,
@@ -93,28 +71,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Consume the passed-in amount of currency from the player.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Product
-        /// Service Operation - ConsumePlayerVC
-        /// </remarks>
-        /// <param name="in_currencyType">
-        /// The currency type to consume.
-        /// </param>
-        /// <param name="in_amount">
-        /// The amount of currency to consume.
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Method is now available in Cloud Code only for security - removal after March 22 2016")]
         public void ConsumeCurrency(
             string in_currencyType,
             ulong in_amount,
@@ -131,22 +88,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Resets the player's currency back to zero.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Product
-        /// Service Operation - ResetPlayerVC
-        /// </remarks>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("Method is now available in Cloud Code only for security - removal after March 22 2016")]
         public void ResetCurrency(
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
@@ -497,126 +439,6 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GooglePlayConfirmPurchase, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Awards currency in a parent app
-        /// </summary>
-        /// <remarks>
-        /// Service Name - product
-        /// Service Operation - AWARD_PARENT_VC
-        /// </remarks>
-        /// <param name="in_currencyType">The ID of the parent currency</param>
-        /// <param name="in_amount">The amount of currency to award</param>
-        /// <param name="in_parentLevel">The level of the parent containing the currency</param>
-        /// <param name="in_success">The success callback</param>
-        /// <param name="in_failure">The failure callback</param>
-        /// <param name="in_cbObject">The user object sent to the callback</param>
-        public void AwardParentCurrency(
-            string in_currencyType,
-            int in_amount,
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
-            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.AwardParentCurrency, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Consumes currency in a parent app
-        /// </summary>
-        /// <remarks>
-        /// Service Name - product
-        /// Service Operation - CONSUME_PARENT_VC
-        /// </remarks>
-        /// <param name="in_currencyType">The ID of the parent currency</param>
-        /// <param name="in_amount">The amount of currency to consume</param>
-        /// <param name="in_parentLevel">The level of the parent containing the currency</param>
-        /// <param name="in_success">The success callback</param>
-        /// <param name="in_failure">The failure callback</param>
-        /// <param name="in_cbObject">The user object sent to the callback</param>
-        public void ConsumeParentCurrency(
-            string in_currencyType,
-            int in_amount,
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
-            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ConsumeParentCurrency, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Gets information on a single currency in a parent app
-        /// or all currency types if a null type is passed in.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - product
-        /// Service Operation - GET_PARENT_VC
-        /// </remarks>
-        /// <param name="in_currencyType">The ID of the parent currency or null to get all currencies</param>
-        /// <param name="in_parentLevel">The level of the parent containing the currency</param>
-        /// <param name="in_success">The success callback</param>
-        /// <param name="in_failure">The failure callback</param>
-        /// <param name="in_cbObject">The user object sent to the callback</param>
-        public void GetParentCurrency(
-            string in_currencyType,
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            if (Util.IsOptionalParameterValid(in_currencyType))
-            {
-                data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            }
-            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetParentCurrency, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Resets all currencies in a parent app
-        /// </summary>
-        /// <remarks>
-        /// Service Name - product
-        /// Service Operation - RESET_PARENT_VC
-        /// </remarks>
-        /// <param name="in_parentLevel">The level of the parent containing the currencies</param>
-        /// <param name="in_success">The success callback</param>
-        /// <param name="in_failure">The failure callback</param>
-        /// <param name="in_cbObject">The user object sent to the callback</param>
-        public void ResetParentCurrency(
-            string in_parentLevel,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.AuthenticateServiceAuthenticateLevelName.Value] = in_parentLevel;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ResetParentCurrency, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
     }
