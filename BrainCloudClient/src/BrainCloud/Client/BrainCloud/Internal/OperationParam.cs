@@ -101,7 +101,7 @@ namespace BrainCloud
         public static readonly OperationParam EventServiceUpdateEventDataFromId = new OperationParam("fromId");
         public static readonly OperationParam EventServiceUpdateEventDataEventId = new OperationParam("eventId");
         public static readonly OperationParam EventServiceUpdateEventDataData = new OperationParam("eventData");
-        public static readonly OperationParam EventId = new OperationParam("evId");
+        public static readonly OperationParam EvId = new OperationParam("evId");
 
         // Event Service - Delete Incoming Params
         public static readonly OperationParam EventServiceDeleteIncomingEventId = new OperationParam("eventId");

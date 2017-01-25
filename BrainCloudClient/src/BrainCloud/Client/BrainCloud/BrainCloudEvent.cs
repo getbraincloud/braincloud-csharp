@@ -131,7 +131,7 @@ namespace BrainCloud
         /// Service Name - Event
         /// Service Operation - UpdateEventData
         /// </remarks>
-        /// <param name="eventId">
+        /// <param name="evId">
         /// The event id
         /// </param>
         /// <param name="jsonEventData">
@@ -147,14 +147,14 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         public void UpdateIncomingEventData(
-            string eventId,
+            string evId,
             string jsonEventData,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventId.Value] = eventId;
+            data[OperationParam.EvId.Value] = evId;
 
             if (Util.IsOptionalParameterValid(jsonEventData))
             {
@@ -191,7 +191,7 @@ namespace BrainCloud
         /// Service Name - Event
         /// Service Operation - DeleteIncoming
         /// </remarks>
-        /// <param name="eventId">
+        /// <param name="evId">
         /// The event id
         /// </param>
         /// <param name="success">
@@ -204,13 +204,13 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         public void DeleteIncomingEvent(
-            string eventId,
+            string evId,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventId.Value] = eventId;
+            data[OperationParam.EvId.Value] = evId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncoming, data, callback);
