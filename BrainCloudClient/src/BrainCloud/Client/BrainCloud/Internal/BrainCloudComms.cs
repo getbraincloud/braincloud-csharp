@@ -703,6 +703,12 @@ namespace BrainCloud.Internal
         {
             _brainCloudClientRef.Log("INCOMING: " + jsonData);
 
+            if(string.IsNullOrEmpty(jsonData))
+            {
+                _brainCloudClientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
+                return;
+            }
+
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             long receivedPacketId = (long)bundleObj.packetId;
             if (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId)
@@ -1551,6 +1557,10 @@ namespace BrainCloud.Internal
             object bundleMsgs = null;
             jsonData.TryGetValue("maxBundleMsgs", out bundleMsgs);
             if (bundleMsgs != null) _maxBundleMessages = (int)bundleMsgs;
+
+            object killCount = null;
+            jsonData.TryGetValue("maxKillCount", out killCount);
+            if (killCount != null) _killSwitchThreshold = (int)killCount;
 
             ResetErrorCache();
             _isAuthenticated = true;
