@@ -970,7 +970,7 @@ namespace BrainCloud.Internal
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
 
-                    UpdateKillSwitch(sc.Service, sc.Operation);
+                    UpdateKillSwitch(sc.Service, sc.Operation, statusCode);
                 }
             }
 
@@ -1000,8 +1000,10 @@ namespace BrainCloud.Internal
             }
         }
 
-        private void UpdateKillSwitch(string service, string operation)
+        private void UpdateKillSwitch(string service, string operation, int statusCode)
         {
+            if (statusCode == StatusCodes.CLIENT_NETWORK_ERROR) return;
+
             if (_killSwitchService == null)
             {
                 _killSwitchService = service;
