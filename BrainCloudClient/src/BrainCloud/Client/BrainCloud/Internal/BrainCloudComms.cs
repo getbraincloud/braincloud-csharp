@@ -29,7 +29,7 @@ namespace BrainCloud.Internal
     #endregion
 
     internal sealed class BrainCloudComms
-    {      
+    {
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
         /// </summary>
@@ -98,6 +98,12 @@ namespace BrainCloud.Internal
         private int _maxBundleMessages = 10;
 
         /// <summary>
+        /// The maximum number of sequential errors before client lockout
+        /// This is set to a value from the server on authenticate
+        /// </summary>
+        private int _killSwitchThreshold = 11;
+
+        /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
         /// </summary>
         private double _debugPacketLossRate = 0;
@@ -130,6 +136,12 @@ namespace BrainCloud.Internal
         private int _cachedStatusCode;
         private int _cachedReasonCode;
         private string _cachedStatusMessage;
+
+        //For kill switch
+        private bool _killSwitchEngaged;
+        private int _killSwitchErrorCount;
+        private string _killSwitchService;
+        private string _killSwitchOperation;
 
         private bool _isAuthenticated = false;
         public bool Authenticated
@@ -457,6 +469,8 @@ namespace BrainCloud.Internal
             RunFileUploadCallbacks();
         }
 
+        #region File Upload
+
         /// <summary>
         /// Checks the status of active file uploads
         /// </summary>
@@ -520,6 +534,8 @@ namespace BrainCloud.Internal
             BrainCloudClient.Get().Log("GetUploadProgress could not find upload ID " + uploadId);
             return null;
         }
+
+        #endregion
 
         /// <summary>
         /// Method fakes a json error from the server and sends
@@ -732,6 +748,8 @@ namespace BrainCloud.Internal
                 // its a success response
                 if (statusCode == 200)
                 {
+                    ResetKillSwitch();
+
                     Dictionary<string, object> responseData = null;
                     if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
@@ -869,7 +887,7 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
-                else
+                else //if non-200
                 {
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
@@ -951,6 +969,8 @@ namespace BrainCloud.Internal
 
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
+
+                    UpdateKillSwitch(sc.Service, sc.Operation);
                 }
             }
 
@@ -980,6 +1000,30 @@ namespace BrainCloud.Internal
             }
         }
 
+        private void UpdateKillSwitch(string service, string operation)
+        {
+            if (_killSwitchService == null)
+            {
+                _killSwitchService = service;
+                _killSwitchOperation = operation;
+                _killSwitchErrorCount++;
+            }
+            else if (service == _killSwitchService && operation == _killSwitchOperation)
+                _killSwitchErrorCount++;
+
+            if (!_killSwitchEngaged && _killSwitchErrorCount >= _killSwitchThreshold)
+            {
+                _killSwitchEngaged = true;
+                _brainCloudClientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
+            }
+        }
+
+        private void ResetKillSwitch()
+        {
+            _killSwitchErrorCount = 0;
+            _killSwitchService = null;
+            _killSwitchOperation = null;
+        }
 
         /// <summary>
         /// Creates the request state object and sends the message bundle
@@ -1125,11 +1169,20 @@ namespace BrainCloud.Internal
                     requestState.MessageList = messageList;
                     ++_packetId;
 
-                    if (_isAuthenticated || isAuth)
-                        InternalSendMessage(requestState);
+                    if (!_killSwitchEngaged)
+                    {
+                        if (_isAuthenticated || isAuth)
+                            InternalSendMessage(requestState);
+                        else
+                        {
+                            FakeErrorResponse(requestState, _cachedStatusCode, _cachedReasonCode, _cachedStatusMessage);
+                            requestState = null;
+                        }
+                    }
                     else
                     {
-                        HandleNoAuth(requestState);
+                        FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
+                            "Client has been disabled due to repeated errors from a single API call");
                         requestState = null;
                     }
                 }
@@ -1141,7 +1194,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Creates a fake response to stop packets being sent to the server without a valid session.
         /// </summary>
-        private void HandleNoAuth(RequestState requestState)
+        private void FakeErrorResponse(RequestState requestState, int statusCode, int reasonCode, string statusMessage)
         {
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
@@ -1160,7 +1213,7 @@ namespace BrainCloud.Internal
 
             ResetIdleTimer();
 
-            TriggerCommsError(_cachedStatusCode, _cachedReasonCode, _cachedStatusMessage);
+            TriggerCommsError(statusCode, reasonCode, statusMessage);
             _activeRequest = null;
         }
 

@@ -349,5 +349,6 @@ namespace BrainCloud
         public const int CLIENT_UPLOAD_FILE_CANCELLED = 90100;
         public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
         public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
+        public const int CLIENT_DISABLED = 90200;
     }
 }
