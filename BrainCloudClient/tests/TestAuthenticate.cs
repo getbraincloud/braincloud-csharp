@@ -132,5 +132,22 @@ namespace BrainCloudTests
             string code = data["languageCode"] as string;
             Assert.AreEqual(languageCode, code);
         }
+
+        [Test]
+        public void TestAuthFirst()
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.PlayerStateService.ReadPlayerState(tr.ApiSuccess, tr.ApiError);
+
+            BrainCloudClient.Instance.AuthenticationService.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            tr.Run();
+        }
     }
 }
