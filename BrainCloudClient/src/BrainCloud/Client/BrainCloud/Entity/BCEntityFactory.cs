@@ -47,6 +47,19 @@ namespace BrainCloud.Entity
             return e;
         }
 
+        public IList<BCUserEntity> NewUserEntitiesFromGetList(string in_json)
+        {
+            JsonData jsonObj = JsonMapper.ToObject(in_json);
+            try
+            {
+                return NewUserEntitiesFromJsonString(in_json, jsonObj["data"]["entityList"]);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new List<BCUserEntity>();
+            }
+        }
+
         public IList<BCUserEntity> NewUserEntitiesFromReadPlayerState(string in_json)
         {
             JsonData jsonObj = JsonMapper.ToObject(in_json);
