@@ -65,23 +65,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Use GetProfileInfoForCredential instead - removal after March 22 2017")]
-        public void GetFriendProfileInfoForExternalId(
-            string externalId,
-            string authenticationType,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.FriendServiceExternalId.Value] = externalId;
-            data[OperationParam.FriendServiceAuthenticationType.Value] = authenticationType;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetFriendProfileInfoForExternalId, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Retrieves profile information of the specified user.
         /// </summary>

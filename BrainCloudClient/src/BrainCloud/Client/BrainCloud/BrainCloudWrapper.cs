@@ -186,17 +186,17 @@ public class BrainCloudWrapper
     /// overrides the parameters configured in the Unity brainCloud Settings window.
     /// </summary>
     /// <param name="url">The brainCloud server url</param>
-    /// <param name="secretKey">The game's secret</param>
-    /// <param name="gameId">The game's id</param>
-    /// <param name="gameVersion">The game's version</param>
-    public static void Initialize(string url, string secretKey, string gameId, string gameVersion)
+    /// <param name="secretKey">The app's secret</param>
+    /// <param name="appId">The app's id</param>
+    /// <param name="version">The app's version</param>
+    public static void Initialize(string url, string secretKey, string appId, string version)
     {
         BrainCloudWrapper bcw = GetInstance();
         bcw._lastUrl = url;
         bcw._lastSecretKey = secretKey;
-        bcw._lastGameId = gameId;
-        bcw._lastGameVersion = gameVersion;
-        bcw._client.Initialize(url, secretKey, gameId, gameVersion);
+        bcw._lastGameId = appId;
+        bcw._lastGameVersion = version;
+        bcw._client.Initialize(url, secretKey, appId, version);
 
         _instance.LoadData();
     }

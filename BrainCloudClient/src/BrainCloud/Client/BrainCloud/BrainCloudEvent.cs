@@ -19,34 +19,6 @@ namespace BrainCloud
             m_brainCloudClientRef = brainCloudClientRef;
         }
 
-        [Obsolete("Use new method signature - removal after March 22 2016")]
-        public void SendEvent(
-            string toPlayerId,
-            string eventType,
-            string jsonEventData,
-            bool recordLocally,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            data[OperationParam.EventServiceSendToId.Value] = toPlayerId;
-            data[OperationParam.EventServiceSendEventType.Value] = eventType;
-
-            if (Util.IsOptionalParameterValid(jsonEventData))
-            {
-                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
-                data[OperationParam.EventServiceSendEventData.Value] = eventData;
-            }
-
-            data[OperationParam.EventServiceSendRecordLocally.Value] = recordLocally;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.Send, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Sends an event to the designated player id with the attached json data.
         /// Any events that have been sent to a player will show up in their
@@ -100,30 +72,6 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        [Obsolete("Use new method signature - removal after March 22 2016")]
-        public void UpdateIncomingEventData(
-            string fromPlayerId,
-            ulong eventId,
-            string jsonEventData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventServiceUpdateEventDataFromId.Value] = fromPlayerId;
-            data[OperationParam.EventServiceUpdateEventDataEventId.Value] = eventId;
-
-            if (Util.IsOptionalParameterValid(jsonEventData))
-            {
-                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
-                data[OperationParam.EventServiceUpdateEventDataData.Value] = eventData;
-            }
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.UpdateEventData, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
         /// <summary>
         /// Updates an event in the player's incoming event mailbox.
         /// </summary>
@@ -166,24 +114,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.UpdateEventData, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-
-        [Obsolete("Use new method signature - removal after March 22 2016")]
-        public void DeleteIncomingEvent(
-            string fromPlayerId,
-            ulong eventId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventServiceDeleteIncomingFromId.Value] = fromPlayerId;
-            data[OperationParam.EventServiceDeleteIncomingEventId.Value] = eventId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncoming, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
+        
         /// <summary>
         /// Delete an event out of the player's incoming mailbox.
         /// </summary>
@@ -214,40 +145,6 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncoming, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Removal after March 22 2016")]
-        public void DeleteSentEvent(
-            string toPlayerId,
-            ulong eventId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventServiceDeleteSentToId.Value] = toPlayerId;
-            data[OperationParam.EventServiceDeleteSentEventId.Value] = eventId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteSent, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Use new method signature - removal after March 22 2016")]
-        public void GetEvents(
-            bool includeIncomingEvents,
-            bool includeSentEvents,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.EventServiceIncludeIncomingEvents.Value] = includeIncomingEvents;
-            data[OperationParam.EventServiceIncludeSentEvents.Value] = includeSentEvents;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.GetEvents, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
 
