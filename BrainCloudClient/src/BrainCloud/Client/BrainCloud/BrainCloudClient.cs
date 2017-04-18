@@ -615,34 +615,34 @@ namespace BrainCloud
         #endregion
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
-        /// <param name="secretKey">The secret key for your game
-        /// <param name="gameId ">The game id</param>
-        /// <param name="gameVersion The game version</param>
+        /// <param name="secretKey">The secret key for your app
+        /// <param name="appId ">The app id</param>
+        /// <param name="version The version</param>
         /// <param name="cachedProfileId The profile Id</param>
         /// <param name="anonymousId The anonymous Id</param>
-        public void Initialize(string secretKey, string gameId, string gameVersion)
+        public void Initialize(string secretKey, string appId, string version)
         {
-            Initialize(s_defaultServerURL, secretKey, gameId, gameVersion);
+            Initialize(s_defaultServerURL, secretKey, appId, version);
         }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The URL to the brainCloud server</param>
-        /// <param name="secretKey">The secret key for your game
-        /// <param name="gameId ">The game id</param>
-        /// <param name="gameVersion The game version</param>
-        /// <param name="cachedProfileId The profile Id</param>
-        /// <param name="anonymousId The anonymous Id</param>
-        public void Initialize(string serverURL, string secretKey, string gameId, string gameVersion)
+        /// <param name="secretKey">The secret key for your app
+        /// <param name="appId">The app id</param>
+        /// <param name="version">The version</param>
+        /// <param name="cachedProfileId">The profile Id</param>
+        /// <param name="anonymousId">The anonymous Id</param>
+        public void Initialize(string serverURL, string secretKey, string appId, string version)
         {
             string error = null;
             if (string.IsNullOrEmpty(serverURL))
                 error = "serverURL was null or empty";
             else if (string.IsNullOrEmpty(secretKey))
                 error = "secretKey was null or empty";
-            else if (string.IsNullOrEmpty(gameId))
-                error = "gameId was null or empty";
-            else if (string.IsNullOrEmpty(gameVersion))
-                error = "gameVersion was null or empty";
+            else if (string.IsNullOrEmpty(appId))
+                error = "appId was null or empty";
+            else if (string.IsNullOrEmpty(version))
+                error = "verson was null or empty";
 
             if (error != null)
             {
@@ -661,9 +661,9 @@ namespace BrainCloud
 #endif
 
             // set up braincloud which does the message handling
-            _comms.Initialize(serverURL, gameId, secretKey);
+            _comms.Initialize(serverURL, appId, secretKey);
 
-            _gameVersion = gameVersion;
+            _gameVersion = version;
             _platform = platform;
 
             //setup region/country code

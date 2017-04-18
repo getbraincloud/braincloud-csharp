@@ -36,7 +36,7 @@ namespace BrainCloudUnity.HUD
 			m_lb.Clear ();
 			
 			BrainCloudWrapper.GetBC ().SocialLeaderboardService.GetGlobalLeaderboardPage(
-				leaderboardId, BrainCloud.BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW, 0, 100, false,
+				leaderboardId, BrainCloud.BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW, 0, 100,
 				ReadLeaderboardSuccess, ReadLeaderboardFailure);
 		}
 

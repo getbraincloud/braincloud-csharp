@@ -7,36 +7,9 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestProduct : TestFixtureBase
     {
-        private readonly string _currencytype = "credits";
         private readonly string _platform = "windows";
         private readonly string _productCatagory = "Test";
-
-        [Test]
-        public void TestAwardCurrency()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.ProductService.AwardCurrency(
-                _currencytype,
-                200,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
-        }
-
-        [Test]
-        public void TestConsumeCurrency()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.ProductService.ConsumeCurrency(
-                _currencytype,
-                100,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
-        }
-
+        
         [Test]
         public void TestGetCurrency()
         {
@@ -85,17 +58,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-        }
-
-        [Test]
-        public void TestResetCurrency()
-        {
-            TestResult tr = new TestResult();
-
-            BrainCloudClient.Instance.ProductService.ResetCurrency(
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
         }
     }
 }

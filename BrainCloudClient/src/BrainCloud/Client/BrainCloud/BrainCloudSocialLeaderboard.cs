@@ -142,29 +142,6 @@ namespace BrainCloud
             _brainCloudClient.SendRequest(sc);
         }
 
-        [Obsolete("Use method without includeLeaderboardSize parameter - removal after March 22 2016")]
-        public void GetGlobalLeaderboardPage(
-            string leaderboardId,
-            SortOrder sort,
-            int startIndex,
-            int endIndex,
-            bool includeLeaderboardSize,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
-            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = startIndex;
-            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = endIndex;
-            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = includeLeaderboardSize;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
-            _brainCloudClient.SendRequest(sc);
-        }
-
         /// <summary>
         /// Method returns a page of global leaderboard results.
         ///
@@ -212,31 +189,6 @@ namespace BrainCloud
             data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
             data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = startIndex;
             data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = endIndex;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
-            _brainCloudClient.SendRequest(sc);
-        }
-
-        [Obsolete("Use method without includeLeaderboardSize parameter - removal after March 22 2016")]
-        public void GetGlobalLeaderboardPageByVersion(
-            string leaderboardId,
-            SortOrder sort,
-            int startIndex,
-            int endIndex,
-            bool includeLeaderboardSize,
-            int versionId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
-            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = startIndex;
-            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = endIndex;
-            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = includeLeaderboardSize;
-            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
@@ -297,21 +249,7 @@ namespace BrainCloud
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
-
-        [Obsolete("Use method without includeLeaderboardSize parameter - removal after March 22 2016")]
-        public void GetGlobalLeaderboardView(
-            string leaderboardId,
-            SortOrder sort,
-            int beforeCount,
-            int afterCount,
-            bool includeLeaderboardSize,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            GetGlobalLeaderboardViewByVersion(leaderboardId, sort, beforeCount, afterCount, includeLeaderboardSize, -1, success, failure, cbObject);
-        }
-
+        
         /// <summary>
         /// Method returns a view of global leaderboard results that centers on the current player.
         ///
@@ -353,34 +291,6 @@ namespace BrainCloud
             object cbObject = null)
         {
             GetGlobalLeaderboardViewByVersion(leaderboardId, sort, beforeCount, afterCount, -1, success, failure, cbObject);
-        }
-
-        [Obsolete("Use method without includeLeaderboardSize parameter - removal after March 22 2016")]
-        public void GetGlobalLeaderboardViewByVersion(
-           string leaderboardId,
-           SortOrder sort,
-           int beforeCount,
-           int afterCount,
-           bool includeLeaderboardSize,
-           int versionId,
-           SuccessCallback success = null,
-           FailureCallback failure = null,
-           object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
-            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
-            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
-            data[OperationParam.SocialLeaderboardServiceIncludeLeaderboardSize.Value] = includeLeaderboardSize;
-            if (versionId != -1)
-            {
-                data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
-            }
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
-            _brainCloudClient.SendRequest(sc);
         }
 
         /// <summary>
@@ -734,22 +644,7 @@ namespace BrainCloud
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
             _brainCloudClient.SendRequest(sc);
         }
-        
-        [Obsolete("Use RemovePlayerScore - removal after March 22 2016")]
-        public void ResetLeaderboardScore(
-            string leaderboardId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.Reset, data, callback);
-            _brainCloudClient.SendRequest(sc);
-        }
-
+     
         /// <summary>
         /// Retrieve the social leaderboard for a list of players.
         /// </summary>
