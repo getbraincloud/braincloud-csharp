@@ -214,7 +214,7 @@ namespace BrainCloud
         /// Service Operation - Authenticate
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// The user's game center id  (use the profileID property from the local GKPlayer object)
         /// </param>
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?

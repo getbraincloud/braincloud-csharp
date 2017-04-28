@@ -52,17 +52,17 @@ public class BrainCloudWrapper
 #endif
 {
     /// <summary>
-    /// The key for the player prefs profile id
+    /// The key for the user prefs profile id
     /// </summary>
     public static string PREFS_PROFILE_ID = "brainCloud.profileId";
 
     /// <summary>
-    /// The key for the player prefs anonymous id
+    /// The key for the user prefs anonymous id
     /// </summary>
     public static string PREFS_ANONYMOUS_ID = "brainCloud.anonymousId";
 
     /// <summary>
-    /// The key for the player prefs authentication type
+    /// The key for the user prefs authentication type
     /// </summary>
     public static string PREFS_AUTHENTICATION_TYPE = "brainCloud.authenticationType";
 
@@ -222,7 +222,7 @@ public class BrainCloudWrapper
     /// Note that this method is special in that the anonymous id and profile id
     /// are persisted to the Unity player prefs cache if authentication is successful.
     /// Both pieces of information are required to successfully log into that account
-    /// once the player has been created. Failure to store the profile id and anonymous id
+    /// once the user has been created. Failure to store the profile id and anonymous id
     /// once the player has been created results in an inability to log into that account!
     /// For this reason, using other recoverable authentication methods (like email/password, Facebook)
     /// are encouraged.
@@ -408,7 +408,7 @@ public class BrainCloudWrapper
     /// Service Operation - Authenticate
     /// </remarks>
     /// <param name="gameCenterId">
-    /// The player's game center id  (use the playerID property from the local GKPlayer object)
+    /// The user's game center id  (use the playerID property from the local GKPlayer object)
     /// </param>
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
@@ -678,7 +678,7 @@ public class BrainCloudWrapper
     #endregion
 
     /// <summary>
-    /// Gets the stored profile id from player prefs.
+    /// Gets the stored profile id from user prefs.
     /// </summary>
     /// <returns>The stored profile id.</returns>
     public virtual string GetStoredProfileId()
@@ -687,7 +687,7 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
-    /// Sets the stored profile id to player prefs.
+    /// Sets the stored profile id to user prefs.
     /// </summary>
     /// <param name="profileId">Profile id.</param>
     public virtual void SetStoredProfileId(string profileId)
@@ -706,7 +706,7 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
-    /// Gets the stored anonymous id from player prefs.
+    /// Gets the stored anonymous id from user prefs.
     /// </summary>
     /// <returns>The stored anonymous id.</returns>
     public virtual string GetStoredAnonymousId()
@@ -715,7 +715,7 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
-    /// Sets the stored anonymous id to player prefs.
+    /// Sets the stored anonymous id to user prefs.
     /// </summary>
     /// <param name="anonymousId">Anonymous id</param>
     public virtual void SetStoredAnonymousId(string anonymousId)

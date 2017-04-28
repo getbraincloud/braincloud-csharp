@@ -70,7 +70,7 @@ namespace BrainCloud
 #endif
 
         /// <summary>
-        /// Deregisters all device tokens currently registered to the player.
+        /// Deregisters all device tokens currently registered to the user.
         /// </param>
         /// <param name="success">
         /// The success callback
@@ -170,8 +170,8 @@ namespace BrainCloud
         /// Sends a simple push notification based on the passed in message.
         /// NOTE: It is possible to send a push notification to oneself.
         /// </param>
-        /// <param name="toPlayerId">
-        /// The braincloud playerId of the user to receive the notification
+        /// <param name="toProfileId">
+        /// The braincloud profileId of the user to receive the notification
         /// </param>
         /// <param name="message">
         /// Text of the push notification
@@ -186,14 +186,14 @@ namespace BrainCloud
         /// The callback object
         /// </param>
         public void SendSimplePushNotification(
-            string toPlayerId,
+            string toProfileId,
             string message,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toPlayerId;
+            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toProfileId;
             data[OperationParam.PushNotificationSendParamMessage.Value] = message;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -205,8 +205,8 @@ namespace BrainCloud
         /// Sends a notification to a user based on a brainCloud portal configured notification template.
         /// NOTE: It is possible to send a push notification to oneself.
         /// </param>
-        /// <param name="toPlayerId">
-        /// The braincloud playerId of the user to receive the notification
+        /// <param name="toProfileId">
+        /// The braincloud profileId of the user to receive the notification
         /// </param>
         /// <param name="notificationTemplateId">
         /// Id of the notification template
@@ -221,13 +221,13 @@ namespace BrainCloud
         /// The callback object
         /// </param>
         public void SendRichPushNotification(
-            string toPlayerId,
+            string toProfileId,
             int notificationTemplateId,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            SendRichPushNotification(toPlayerId, notificationTemplateId, null, success, failure, cbObject);
+            SendRichPushNotification(toProfileId, notificationTemplateId, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -236,8 +236,8 @@ namespace BrainCloud
         /// See the Portal documentation for more info.
         /// NOTE: It is possible to send a push notification to oneself.
         /// </param>
-        /// <param name="toPlayerId">
-        /// The braincloud playerId of the user to receive the notification
+        /// <param name="toProfileId">
+        /// The braincloud profileId of the user to receive the notification
         /// </param>
         /// <param name="notificationTemplateId">
         /// Id of the notification template
@@ -255,14 +255,14 @@ namespace BrainCloud
         /// The callback object
         /// </param>
         public void SendRichPushNotificationWithParams(
-            string toPlayerId,
+            string toProfileId,
             int notificationTemplateId,
             string substitutionJson,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            SendRichPushNotification(toPlayerId, notificationTemplateId, substitutionJson, success, failure, cbObject);
+            SendRichPushNotification(toProfileId, notificationTemplateId, substitutionJson, success, failure, cbObject);
         }
 
         /// <summary>
@@ -357,8 +357,8 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a user consisting of alert content and custom data.
         /// </param>
-        /// <param name="toPlayerId">
-        /// The playerId of the user to receive the notification
+        /// <param name="toProfileId">
+        /// The profileId of the user to receive the notification
         /// </param>
         /// <param name="alertContentJson">
         /// Body and title of alert
@@ -376,7 +376,7 @@ namespace BrainCloud
         /// The callback object
         /// </param>
         public void SendNormalizedPushNotification(
-            string toPlayerId,
+            string toProfileId,
             string alertContentJson,
             string customDataJson,
             SuccessCallback success = null,
@@ -384,7 +384,7 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toPlayerId;
+            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toProfileId;
             data[OperationParam.AlertContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(alertContentJson);
             if (Util.IsOptionalParameterValid(customDataJson))
             {
@@ -441,7 +441,7 @@ namespace BrainCloud
 #region Private
 
         private void SendRichPushNotification(
-            string toPlayerId,
+            string toProfileId,
             int notificationTemplateId,
             string substitutionJson,
             SuccessCallback success = null,
@@ -449,7 +449,7 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toPlayerId;
+            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toProfileId;
             data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = notificationTemplateId;
 
             if (Util.IsOptionalParameterValid(substitutionJson))

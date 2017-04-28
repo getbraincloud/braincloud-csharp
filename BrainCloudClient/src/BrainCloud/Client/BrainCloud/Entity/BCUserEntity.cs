@@ -37,10 +37,10 @@ namespace BrainCloud.Entity
             m_braincloud.UpdateEntity(m_entityId, m_entityType, jsonData, jsonAcl, m_version, CbUpdateSuccess + in_cbSuccess, CbUpdateFailure + in_cbFailure, this);
         }
 
-        protected override void UpdateSharedEntity(string in_targetPlayerId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
+        protected override void UpdateSharedEntity(string in_targetProfileId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
         {
             string jsonData = ToJsonString();
-            m_braincloud.UpdateSharedEntity(m_entityId, in_targetPlayerId, m_entityType, jsonData, m_version, CbUpdateSuccess + in_cbSuccess, CbUpdateFailure + in_cbFailure, this);
+            m_braincloud.UpdateSharedEntity(m_entityId, in_targetProfileId, m_entityType, jsonData, m_version, CbUpdateSuccess + in_cbSuccess, CbUpdateFailure + in_cbFailure, this);
         }
 
         protected override void DeleteEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)

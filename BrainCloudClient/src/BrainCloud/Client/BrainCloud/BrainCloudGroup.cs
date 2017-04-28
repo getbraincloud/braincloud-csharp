@@ -235,7 +235,7 @@ namespace BrainCloud
         /// The group's access control list. A null ACL implies default.
         /// </param>
         /// <param name="jsonOwnerAttributes">
-        /// Attributes for the group owner (current player).
+        /// Attributes for the group owner (current user).
         /// </param>
         /// <param name="jsonDefaultMemberAttributes">
         /// Default attributes for group members.
@@ -384,7 +384,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Read information on groups to which the current player belongs.
+        /// Read information on groups to which the current user belongs.
         /// </summary>
         /// <remarks>
         /// Service Name - group
@@ -531,7 +531,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Leave a group in which the player is a member.
+        /// Leave a group in which the user is a member.
         /// </summary>
         /// <remarks>
         /// Service Name - group
