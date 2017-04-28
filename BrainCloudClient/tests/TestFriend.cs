@@ -86,7 +86,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestFindPlayerByUniversalId()
+        public void TestFindUserByUniversalId()
         {
             TestResult tr = new TestResult();
 

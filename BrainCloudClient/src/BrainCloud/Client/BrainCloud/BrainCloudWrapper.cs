@@ -78,8 +78,8 @@ public class BrainCloudWrapper
 
     private string _lastUrl = "";
     private string _lastSecretKey = "";
-    private string _lastGameId = "";
-    private string _lastGameVersion = "";
+    private string _lastAppId = "";
+    private string _lastAppVersion = "";
 
     private WrapperData _wrapperData = new WrapperData();
 
@@ -194,8 +194,8 @@ public class BrainCloudWrapper
         BrainCloudWrapper bcw = GetInstance();
         bcw._lastUrl = url;
         bcw._lastSecretKey = secretKey;
-        bcw._lastGameId = appId;
-        bcw._lastGameVersion = version;
+        bcw._lastAppId = appId;
+        bcw._lastAppVersion = version;
         bcw._client.Initialize(url, secretKey, appId, version);
 
         _instance.LoadData();
@@ -223,7 +223,7 @@ public class BrainCloudWrapper
     /// are persisted to the Unity player prefs cache if authentication is successful.
     /// Both pieces of information are required to successfully log into that account
     /// once the user has been created. Failure to store the profile id and anonymous id
-    /// once the player has been created results in an inability to log into that account!
+    /// once the user has been created results in an inability to log into that account!
     /// For this reason, using other recoverable authentication methods (like email/password, Facebook)
     /// are encouraged.
     /// </summary>
@@ -767,7 +767,7 @@ public class BrainCloudWrapper
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastGameId, _instance._lastGameVersion);
+        Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {

@@ -101,7 +101,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestGetSharedEntitiesForPlayerId()
+        public void TestGetSharedEntitiesForProfileId()
         {
             TestResult tr = new TestResult();
             CreateDefaultAddressEntity(ACL.Access.ReadWrite);
@@ -114,7 +114,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestGetSharedEntityForPlayerId()
+        public void TestGetSharedEntityForProfileId()
         {
             TestResult tr = new TestResult();
             string entityId = CreateDefaultAddressEntity(ACL.Access.ReadWrite);
@@ -355,7 +355,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestGetSharedEntitiesListForPlayerId()
+        public void TestGetSharedEntitiesListForProfileId()
         {
             TestResult tr = new TestResult();
 

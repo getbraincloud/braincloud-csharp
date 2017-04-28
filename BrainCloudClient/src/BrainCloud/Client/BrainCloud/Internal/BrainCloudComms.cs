@@ -152,12 +152,22 @@ namespace BrainCloud.Internal
             }
         }
 
-        private string _gameId = null;
+        private string _appId = null;
+
+        [Obsolete("This has been deprecated. Use AppId instead - removal after September 1 2017")]
         public string GameId
         {
             get
             {
-                return _gameId;
+                return _appId;
+            }
+        }
+
+        public string AppId
+        {
+            get
+            {
+                return _appId;
             }
         }
 
@@ -298,7 +308,7 @@ namespace BrainCloud.Internal
             _uploadURL = _serverURL.EndsWith(suffix) ? _serverURL.Substring(0, _serverURL.Length - suffix.Length) : _serverURL;
             _uploadURL += @"/uploader";
 
-            _gameId = gameId;
+            _appId = gameId;
             _secretKey = secretKey;
 
             _blockingQueue = false;
@@ -1207,9 +1217,9 @@ namespace BrainCloud.Internal
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
             packet[OperationParam.ServiceMessageSessionId.Value] = _sessionID;
-            if (_gameId != null && _gameId.Length > 0)
+            if (_appId != null && _appId.Length > 0)
             {
-                packet[OperationParam.ServiceMessageGameId.Value] = _gameId;
+                packet[OperationParam.ServiceMessageGameId.Value] = _appId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
@@ -1237,9 +1247,9 @@ namespace BrainCloud.Internal
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
             packet[OperationParam.ServiceMessageSessionId.Value] = _sessionID;
-            if (_gameId != null && _gameId.Length > 0)
+            if (_appId != null && _appId.Length > 0)
             {
-                packet[OperationParam.ServiceMessageGameId.Value] = _gameId;
+                packet[OperationParam.ServiceMessageGameId.Value] = _appId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 

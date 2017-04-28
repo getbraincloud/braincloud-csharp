@@ -49,7 +49,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Used to clear the saved profile id - to use in cases when the user is
-        /// attempting to switch to a different game profile.
+        /// attempting to switch to a different app profile.
         /// </summary>
         public void ClearSavedProfileID()
         {
@@ -460,7 +460,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPassword, data, callback);
@@ -490,9 +490,9 @@ namespace BrainCloud
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
             data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
-            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
+            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.Version;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
 #if DOT_NET

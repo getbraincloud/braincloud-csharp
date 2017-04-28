@@ -9,6 +9,7 @@ using BrainCloud.Common;
 
 #if !XAMARIN
 using BrainCloud.Entity;
+using System;
 #endif
 
 #if !(DOT_NET)
@@ -83,7 +84,7 @@ namespace BrainCloud
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
         private static BrainCloudClient s_instance;
 
-        private string _gameVersion = "";
+        private string _version = "";
         private Platform _platform;
         private string _languageCode;
         private string _countryCode;
@@ -236,18 +237,30 @@ namespace BrainCloud
             get { return _comms != null ? _comms.SessionID : ""; }
         }
 
+        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
         public string GameId
         {
-            get { return _comms != null ? _comms.GameId : ""; }
+            get { return _comms != null ? _comms.AppId : ""; }
         }
 
+        public string AppId
+        {
+            get { return _comms != null ? _comms.AppId : ""; }
+        }
+
+        [Obsolete("This has been deprecated. Use Version instead - removal after September 1 2017")]
         public string GameVersion
         {
-            get { return _gameVersion; }
+            get { return _version; }
+        }
+
+        public string Version
+        {
+            get { return _version; }
         }
         public string BrainCloudClientVersion
         {
-            get { return Version.GetVersion(); }
+            get { return BrainCloud.Version.GetVersion(); }
         }
 
         public Platform ReleasePlatform
@@ -663,7 +676,7 @@ namespace BrainCloud
             // set up braincloud which does the message handling
             _comms.Initialize(serverURL, appId, secretKey);
 
-            _gameVersion = version;
+            _version = version;
             _platform = platform;
 
             //setup region/country code
