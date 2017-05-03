@@ -354,6 +354,207 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+
+        /// <summary>
+        /// Schedules a normalized push notification to a user
+        /// 
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="alertContentJson">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="customDataJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="startTime">
+        /// Start time of sending the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        private void scheduleNormalizedPushNotificationUTC(
+            string profileId,
+            string alertContentJson,
+            string customDataJson,
+            int startTime,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
+            data[OperationParam.AlertContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(alertContentJson);
+
+            if (Util.IsOptionalParameterValid(customDataJson))
+            {
+                data[OperationParam.CustomData.Value] = JsonReader.Deserialize<Dictionary<string, object>>(customDataJson);
+            }
+
+            data[OperationParam.StartDateUTC.Value] = startTime;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleNormalizedNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Schedules a normalized push notification to a user
+        /// 
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="alertContentJson">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="customDataJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="minutesFromNow">
+        /// Minutes from now to send the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        private void scheduleNormalizedPushNotificationMinutes(
+            string profileId,
+            string alertContentJson,
+            string customDataJson,
+            int minutesFromNow,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
+            data[OperationParam.AlertContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(alertContentJson);
+
+            if (Util.IsOptionalParameterValid(customDataJson))
+            {
+                data[OperationParam.CustomData.Value] = JsonReader.Deserialize<Dictionary<string, object>>(customDataJson);
+            }
+
+            data[OperationParam.MinutesFromNow.Value] = minutesFromNow;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleNormalizedNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Schedules a rich push notification to a user
+        /// 
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="notificationTemplateId">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="substitutionsJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="startTime">
+        /// Start time of sending the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        private void scheduleRichPushNotificationUTC(
+            string profileId,
+            string notificationTemplateId,
+            string substitutionsJson,
+            int startTime,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
+            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = JsonReader.Deserialize<Dictionary<string, object>>(notificationTemplateId);
+
+            if (Util.IsOptionalParameterValid(substitutionsJson))
+            {
+                data[OperationParam.PushNotificationSendParamSubstitutions.Value] = JsonReader.Deserialize<Dictionary<string, object>>(substitutionsJson);
+            }
+
+            data[OperationParam.StartDateUTC.Value] = startTime;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRichNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Schedules a rich push notification to a user
+        /// 
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="notificationTemplateId">
+        /// Body and title of alert
+        /// </param>
+        /// <param name="substitutionsJson">
+        /// Optional custom data
+        /// </param>
+        /// <param name="minutesFromNow">
+        /// Minutes from now to send the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        private void scheduleRichPushNotificationMinutes(
+            string profileId,
+            string notificationTemplateId,
+            string substitutionsJson,
+            int minutesFromNow,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
+            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = JsonReader.Deserialize<Dictionary<string, object>>(notificationTemplateId);
+
+            if (Util.IsOptionalParameterValid(substitutionsJson))
+            {
+                data[OperationParam.PushNotificationSendParamSubstitutions.Value] = JsonReader.Deserialize<Dictionary<string, object>>(substitutionsJson);
+            }
+
+            data[OperationParam.MinutesFromNow.Value] = minutesFromNow;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRichNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
         /// Sends a notification to a user consisting of alert content and custom data.
         /// </param>
