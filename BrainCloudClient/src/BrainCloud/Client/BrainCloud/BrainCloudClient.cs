@@ -84,7 +84,7 @@ namespace BrainCloud
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
         private static BrainCloudClient s_instance;
 
-        private string _version = "";
+        private string _appVersion = "";
         private Platform _platform;
         private string _languageCode;
         private string _countryCode;
@@ -248,16 +248,22 @@ namespace BrainCloud
             get { return _comms != null ? _comms.AppId : ""; }
         }
 
-        [Obsolete("This has been deprecated. Use Version instead - removal after September 1 2017")]
+        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
         public string GameVersion
         {
-            get { return _version; }
+            get { return _appVersion; }
         }
-
+        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
         public string Version
         {
-            get { return _version; }
+            get { return _appVersion; }
         }
+
+        public string AppVersion
+        {
+            get { return _appVersion; }
+        }
+
         public string BrainCloudClientVersion
         {
             get { return BrainCloud.Version.GetVersion(); }
@@ -630,22 +636,22 @@ namespace BrainCloud
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app
         /// <param name="appId ">The app id</param>
-        /// <param name="version The version</param>
+        /// <param name="appVersion The app version</param>
         /// <param name="cachedProfileId The profile Id</param>
         /// <param name="anonymousId The anonymous Id</param>
-        public void Initialize(string secretKey, string appId, string version)
+        public void Initialize(string secretKey, string appId, string appVersion)
         {
-            Initialize(s_defaultServerURL, secretKey, appId, version);
+            Initialize(s_defaultServerURL, secretKey, appId, appVersion);
         }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The URL to the brainCloud server</param>
         /// <param name="secretKey">The secret key for your app
         /// <param name="appId">The app id</param>
-        /// <param name="version">The version</param>
+        /// <param name="appVersion">The app version</param>
         /// <param name="cachedProfileId">The profile Id</param>
         /// <param name="anonymousId">The anonymous Id</param>
-        public void Initialize(string serverURL, string secretKey, string appId, string version)
+        public void Initialize(string serverURL, string secretKey, string appId, string appVersion)
         {
             string error = null;
             if (string.IsNullOrEmpty(serverURL))
@@ -654,8 +660,8 @@ namespace BrainCloud
                 error = "secretKey was null or empty";
             else if (string.IsNullOrEmpty(appId))
                 error = "appId was null or empty";
-            else if (string.IsNullOrEmpty(version))
-                error = "verson was null or empty";
+            else if (string.IsNullOrEmpty(appVersion))
+                error = "appVerson was null or empty";
 
             if (error != null)
             {
@@ -676,7 +682,7 @@ namespace BrainCloud
             // set up braincloud which does the message handling
             _comms.Initialize(serverURL, appId, secretKey);
 
-            _version = version;
+            _appVersion = appVersion;
             _platform = platform;
 
             //setup region/country code
