@@ -380,7 +380,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        private void scheduleNormalizedPushNotificationUTC(
+        public void ScheduleNormalizedPushNotificationUTC(
             string profileId,
             string alertContentJson,
             string customDataJson,
@@ -430,7 +430,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        private void scheduleNormalizedPushNotificationMinutes(
+        public void ScheduleNormalizedPushNotificationMinutes(
             string profileId,
             string alertContentJson,
             string customDataJson,
@@ -480,7 +480,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        private void scheduleRichPushNotificationUTC(
+        public void ScheduleRichPushNotificationUTC(
             string profileId,
             string notificationTemplateId,
             string substitutionsJson,
@@ -530,7 +530,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        private void scheduleRichPushNotificationMinutes(
+        public void ScheduleRichPushNotificationMinutes(
             string profileId,
             string notificationTemplateId,
             string substitutionsJson,
