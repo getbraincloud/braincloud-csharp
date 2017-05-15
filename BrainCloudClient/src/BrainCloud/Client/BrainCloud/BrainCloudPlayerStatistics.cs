@@ -19,8 +19,19 @@ namespace BrainCloud
             m_brainCloudClientRef = brainCloudClientRef;
         }
 
+        [Obsolete("This has been deprecated. Use ReadAllUserStats instead - removal after September 1 2017")]
+        public void ReadAllPlayerStats(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Read, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
-        /// Read all available player statistics.
+        /// Read all available user statistics.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
@@ -35,7 +46,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public void ReadAllPlayerStats(
+        public void ReadAllUserStats(
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -45,14 +56,24 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use ReadUserStatsSubset instead - removal after September 1 2017")]
+        public void ReadPlayerStatsSubset(
+            IList<string> playerStats,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ReadUserStatsSubset(playerStats, success, failure, cbObject);
+        }
+
         /// <summary>
-        /// Reads a subset of player statistics as defined by the input JSON.
+        /// Reads a subset of user statistics as defined by the input JSON.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
         /// Service Operation - ReadSubset
         /// </remarks>
-        /// <param name="playerStats">
+        /// <param name="userStats">
         /// A list containing the subset of statistics to read.
         /// </param>
         /// <param name="success">
@@ -64,7 +85,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public void ReadPlayerStatsSubset(
+        public void ReadUserStatsSubset(
             IList<string> playerStats,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -78,15 +99,25 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use ReadUserStatsForCategory instead - removal after September 1 2017")]
+        public void ReadPlayerStatsForCategory(
+            string category,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ReadUserStatsForCategory(category, success, failure, cbObject);
+        }
+
         /// <summary>
-        /// Method retrieves the player statistics for the given category.
+        /// Method retrieves the user statistics for the given category.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
         /// Service Operation - READ_FOR_CATEGORY
         /// </remarks>
         /// <param name="category">
-        /// The player statistics category
+        /// The user statistics category
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -97,7 +128,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void ReadPlayerStatsForCategory(
+        public void ReadUserStatsForCategory(
             string category,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -111,8 +142,17 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use ResetAllUserStats instead - removal after September 1 2017")]
+        public void ResetAllPlayerStats(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ResetAllUserStats(success, failure, cbObject);
+        }
+
         /// <summary>
-        /// Reset all of the statistics for this player back to their initial value.
+        /// Reset all of the statistics for this user back to their initial value.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
@@ -129,7 +169,7 @@ namespace BrainCloud
         /// The callback object
         ///
         /// </param>
-        public void ResetAllPlayerStats(
+        public void ResetAllUserStats(
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -139,12 +179,28 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use IncrementUserStats instead - removal after September 1 2017")]
+        public void IncrementPlayerStats(
+            string jsonData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
-        /// Atomically increment (or decrement) player statistics.
-        /// Any rewards that are triggered from player statistic increments
-        /// will be considered. Player statistics are defined through the brainCloud portal.
+        /// Atomically increment (or decrement) user statistics.
+        /// Any rewards that are triggered from user statistic increments
+        /// will be considered. User statistics are defined through the brainCloud portal.
         /// Note also that the "xpCapped" property is returned (true/false depending on whether
-        /// the xp cap is turned on and whether the player has hit it).
+        /// the xp cap is turned on and whether the user has hit it).
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
@@ -173,7 +229,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public void IncrementPlayerStats(
+        public void IncrementUserStats(
             string jsonData,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -188,13 +244,27 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use IncrementUserStats instead - removal after September 1 2017")]
+        public void IncrementPlayerStats(
+            Dictionary<string, object> dictData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = dictData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
 
         /// <summary>
-        /// Atomically increment (or decrement) player statistics.
-        /// Any rewards that are triggered from player statistic increments
-        /// will be considered. Player statistics are defined through the brainCloud portal.
+        /// Atomically increment (or decrement) user statistics.
+        /// Any rewards that are triggered from user statistic increments
+        /// will be considered. User statistics are defined through the brainCloud portal.
         /// Note also that the "xpCapped" property is returned (true/false depending on whether
-        /// the xp cap is turned on and whether the player has hit it).
+        /// the xp cap is turned on and whether the user has hit it).
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
@@ -224,7 +294,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public void IncrementPlayerStats(
+        public void IncrementUserStats(
             Dictionary<string, object> dictData,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -279,7 +349,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Returns JSON representing the next experience level for the player.
+        /// Returns JSON representing the next experience level for the user.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerStatistics
@@ -305,7 +375,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Increments the player's experience. If the player goes up a level,
+        /// Increments the user's experience. If the user goes up a level,
         /// the new level details will be returned along with a list of rewards.
         /// </summary>
         /// <remarks>
@@ -313,7 +383,7 @@ namespace BrainCloud
         /// Service Operation - Update
         /// </remarks>
         /// <param name="xpValue">
-        /// The amount to increase the player's experience by
+        /// The amount to increase the user's experience by
         /// </param>
         /// <param name="success">
         /// The success callback
@@ -339,8 +409,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sets the player's experience to an absolute value. Note that this
-        /// is simply a set and will not reward the player if their level changes
+        /// Sets the user's experience to an absolute value. Note that this
+        /// is simply a set and will not reward the user if their level changes
         /// as a result.
         /// </summary>
         /// <remarks>

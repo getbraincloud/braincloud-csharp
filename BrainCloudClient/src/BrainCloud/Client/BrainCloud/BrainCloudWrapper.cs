@@ -39,7 +39,7 @@ using System.IO.IsolatedStorage;
 /// to grab an instance of the BrainCloudClient. From here you have access to all of the brainCloud
 /// API service. So for instance, to execute a read player statistics API you would do the following:
 /// 
-/// BrainCloudWrapper.GetBC().PlayerStatisticsService.ReadAllPlayerStats()
+/// BrainCloudWrapper.GetBC().PlayerStatisticsService.ReadAllUserStats()
 /// 
 /// Similar services exist for other APIs.
 /// 

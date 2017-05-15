@@ -138,7 +138,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStateService.ReadPlayerState(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.PlayerStateService.ReadUserState(tr.ApiSuccess, tr.ApiError);
 
             BrainCloudClient.Instance.AuthenticationService.AuthenticateEmailPassword(
                 GetUser(Users.UserA).Email,

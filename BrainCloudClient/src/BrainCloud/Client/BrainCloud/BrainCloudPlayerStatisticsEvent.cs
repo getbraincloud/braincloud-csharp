@@ -20,9 +20,26 @@ namespace BrainCloud
             m_brainCloudClientRef = in_brainCloud;
         }
 
+        [Obsolete("This has been deprecated. Use TriggerStatsEvent instead - removal after September 1 2017")]
+        public void TriggerPlayerStatisticsEvent(
+            string in_eventName,
+            int in_eventMultiplier,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStatisticEventServiceEventName.Value] = in_eventName;
+            data[OperationParam.PlayerStatisticEventServiceEventMultiplier.Value] = in_eventMultiplier;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatisticsEvent, ServiceOperation.Trigger, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
-        /// Trigger an event server side that will increase the players statistics.
-        /// This may cause one or more awards to be sent back to the player -
+        /// Trigger an event server side that will increase the user statistics.
+        /// This may cause one or more awards to be sent back to the user -
         /// could be achievements, experience, etc. Achievements will be sent by this
         /// client library to the appropriate awards service (Apple Game Center, etc).
         ///
@@ -45,7 +62,7 @@ namespace BrainCloud
         /// <param name="in_cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void TriggerPlayerStatisticsEvent(
+        public void TriggerStatsEvent(
             string in_eventName,
             int in_eventMultiplier,
             SuccessCallback in_success = null,
@@ -61,8 +78,24 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated. Use TriggerStatsEvents instead - removal after September 1 2017")]
+        public void TriggerPlayerStatisticsEvents(
+            string in_jsonData,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            object[] events = JsonReader.Deserialize<object[]>(in_jsonData);
+            data[OperationParam.PlayerStatisticEventServiceEvents.Value] = events;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatisticsEvent, ServiceOperation.TriggerMultiple, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
-        /// See documentation for TriggerPlayerStatisticsEvent for more
+        /// See documentation for TriggerStatsEvent for more
         /// documentation.
         /// </summary>
         /// <remarks>
@@ -82,7 +115,7 @@ namespace BrainCloud
         ///     }
         ///   ]
         /// </param>
-        public void TriggerPlayerStatisticsEvents(
+        public void TriggerStatsEvents(
             string in_jsonData,
             SuccessCallback in_success = null,
             FailureCallback in_failure = null,
