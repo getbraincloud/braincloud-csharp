@@ -125,7 +125,7 @@ namespace BrainCloud
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// The user's game center id  (use the playerID property from the local GKPlayer object)
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -152,7 +152,7 @@ namespace BrainCloud
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// The user's game center id  (use the playerID property from the local GKPlayer object)
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -178,7 +178,7 @@ namespace BrainCloud
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// The user's game center id  (use the playerID property from the local GKPlayer object)
         /// </param>
         /// <param name="continueAnon">
         /// Proceed even if the profile will revert to anonymous?
@@ -210,10 +210,10 @@ namespace BrainCloud
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="email">
-        /// The player's e-mail address
+        /// The user's e-mail address
         /// </param>
         /// <param name="password">
-        /// The player's password
+        /// The user's password
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -242,10 +242,10 @@ namespace BrainCloud
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="email">
-        /// The player's e-mail address
+        /// The user's e-mail address
         /// </param>
         /// <param name="password">
-        /// The player's password
+        /// The user's password
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -273,7 +273,7 @@ namespace BrainCloud
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="email">
-        /// The player's e-mail address
+        /// The user's e-mail address
         /// </param>
         /// <param name="continueAnon">
         /// Proceed even if the profile will revert to anonymous?
@@ -305,10 +305,10 @@ namespace BrainCloud
         /// Service Operation - Attach
         /// </remarks>
         /// <param name="userId">
-        /// The player's userId
+        /// The user's userId
         /// </param>
         /// <param name="password">
-        /// The player's password
+        /// The user's password
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -337,10 +337,10 @@ namespace BrainCloud
         /// Service Operation - Merge
         /// </remarks>
         /// <param name="userId">
-        /// The player's userId
+        /// The user's userId
         /// </param>
         /// <param name="password">
-        /// The player's password
+        /// The user's password
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -368,7 +368,7 @@ namespace BrainCloud
         /// Service Operation - Detach
         /// </remarks>
         /// <param name="userId">
-        /// The player's userId
+        /// The user's userId
         /// </param>
         /// <param name="continueAnon">
         /// Proceed even if the profile will revert to anonymous?
@@ -403,7 +403,7 @@ namespace BrainCloud
         /// String representation of 64 bit steam id
         /// </param>
         /// <param name="sessionTicket">
-        /// The player's session ticket (hex encoded)
+        /// The user's session ticket (hex encoded)
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -435,7 +435,7 @@ namespace BrainCloud
         /// String representation of 64 bit steam id
         /// </param>
         /// <param name="sessionTicket">
-        /// The player's session ticket (hex encoded)
+        /// The user's session ticket (hex encoded)
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -801,7 +801,7 @@ namespace BrainCloud
         /// The profileId of the child profile to switch to
         /// If null and forceCreate is true a new profile will be created
         /// </param>
-        /// <param name="childGameId">
+        /// <param name="childAppId">
         /// The appId of the child game to switch to
         /// </param>
         /// <param name="forceCreate">
@@ -818,13 +818,13 @@ namespace BrainCloud
         /// </param>
         public void SwitchToChildProfile(
             string childProfileId,
-            string childGameId,
+            string childAppId,
             bool forceCreate,
             SuccessCallback success,
             FailureCallback failure,
             object cbObject = null)
         {
-            SwitchToChildProfile(childProfileId, childGameId, forceCreate, false, success, failure, cbObject);
+            SwitchToChildProfile(childProfileId, childAppId, forceCreate, false, success, failure, cbObject);
         }
 
         /// <summary>
@@ -835,7 +835,7 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
-        /// <param name="childGameId">
+        /// <param name="childAppId">
         /// The App ID of the child game to switch to
         /// </param>
         /// <param name="forceCreate">
@@ -851,13 +851,13 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         public void SwitchToSingletonChildProfile(
-            string childGameId,
+            string childAppId,
             bool forceCreate,
             SuccessCallback success,
             FailureCallback failure,
             object cbObject = null)
         {
-            SwitchToChildProfile(null, childGameId, forceCreate, true, success, failure, cbObject);
+            SwitchToChildProfile(null, childAppId, forceCreate, true, success, failure, cbObject);
         }
 
         /// <summary>
@@ -947,7 +947,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Detaches parent from this player's profile
+        /// Detaches parent from this user's profile
         /// </summary>
         /// <remarks>
         /// Service Name - identity
@@ -1052,7 +1052,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Refreshes an identity for this player
+        /// Refreshes an identity for this user
         /// </summary>
         /// <remarks>
         /// Service Name - identity
@@ -1096,7 +1096,7 @@ namespace BrainCloud
 
 
         /// <summary>
-        /// Attaches a peer identity to this player's profile
+        /// Attaches a peer identity to this user's profile
         /// </summary>
         /// <param name="peer">
         /// Name of the peer to connect to
@@ -1154,7 +1154,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Detaches a peer identity from this player's profile
+        /// Detaches a peer identity from this user's profile
         /// </summary>
         /// <param name="peer">
         /// Name of the peer to connect to
@@ -1247,7 +1247,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        private void SwitchToChildProfile(string childProfileId, string childGameId, bool forceCreate, bool forceSingleton, SuccessCallback success, FailureCallback failure,
+        private void SwitchToChildProfile(string childProfileId, string childAppd, bool forceCreate, bool forceSingleton, SuccessCallback success, FailureCallback failure,
             object cbObject)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -1257,7 +1257,7 @@ namespace BrainCloud
                 data[OperationParam.ProfileId.Value] = childProfileId;
             }
 
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = childGameId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = childAppd;
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
             data[OperationParam.IdentityServiceForceSingleton.Value] = forceSingleton;
 

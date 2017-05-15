@@ -44,6 +44,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation SendNormalizedToGroup = new ServiceOperation("SEND_NORMALIZED_TO_GROUP");
         public static readonly ServiceOperation SendNormalized = new ServiceOperation("SEND_NORMALIZED");
         public static readonly ServiceOperation SendNormalizedBatch = new ServiceOperation("SEND_NORMALIZED_BATCH");
+        public static readonly ServiceOperation ScheduleRichNotification = new ServiceOperation("SCHEDULE_RICH_NOTIFICATION");
+        public static readonly ServiceOperation ScheduleNormalizedNotification = new ServiceOperation("SCHEDULE_NORMALIZED_NOTIFICATION");
 
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");

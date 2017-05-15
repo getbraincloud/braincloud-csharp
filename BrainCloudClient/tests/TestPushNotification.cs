@@ -140,6 +140,78 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestScheduleNormalizedPushNotificationUTC() 
+        {
+            TestResult tr = new TestResult();
+            
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var profileId = (string)data["profileId"];
+
+            BrainCloudClient.Instance.PushNotificationService.ScheduleNormalizedPushNotificationUTC(
+                profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                42,
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleNormalizedPushNotificationMinutes() 
+        {
+            TestResult tr = new TestResult();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var profileId = (string)data["profileId"];
+
+            BrainCloudClient.Instance.PushNotificationService.ScheduleNormalizedPushNotificationUTC(
+                profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleRichPushNotificationUTC() 
+        {
+            TestResult tr = new TestResult();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var profileId = (string)data["profileId"];
+
+            BrainCloudClient.Instance.PushNotificationService.ScheduleNormalizedPushNotificationMinutes(
+                profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleRichPushNotificationMinutes()
+        {
+            TestResult tr = new TestResult();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var profileId = (string)data["profileId"];
+
+            BrainCloudClient.Instance.PushNotificationService.ScheduleRichPushNotificationMinutes(
+                profileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                42,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestSendNormalizedPushNotification()
         {
             TestResult tr = new TestResult();

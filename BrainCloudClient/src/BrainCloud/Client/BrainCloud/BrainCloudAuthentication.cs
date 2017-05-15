@@ -49,7 +49,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Used to clear the saved profile id - to use in cases when the user is
-        /// attempting to switch to a different game profile.
+        /// attempting to switch to a different app profile.
         /// </summary>
         public void ClearSavedProfileID()
         {
@@ -214,7 +214,7 @@ namespace BrainCloud
         /// Service Operation - Authenticate
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The player's game center id  (use the playerID property from the local GKPlayer object)
+        /// The user's game center id  (use the profileID property from the local GKPlayer object)
         /// </param>
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
@@ -460,7 +460,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPassword, data, callback);
@@ -490,9 +490,9 @@ namespace BrainCloud
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.GameId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
             data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
-            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.GameVersion;
+            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.AppVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
 #if DOT_NET

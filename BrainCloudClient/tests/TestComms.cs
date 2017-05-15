@@ -290,16 +290,16 @@ namespace BrainCloudTests
                 false, tr.ApiSuccess, tr.ApiError);
             BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
 
-            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
             BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
 
             // to make sure it doesn't die on first message being marker
             BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
 
-            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
-            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
             
             // should result in three packets
@@ -313,12 +313,12 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
 
             BrainCloudClient.Instance.InsertEndOfMessageBundleMarker();
 
-            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllPlayerStats(
+            BrainCloudClient.Instance.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
 
             BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(

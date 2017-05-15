@@ -140,7 +140,7 @@ namespace BrainCloud.Entity
         #region abstractMethods
         protected abstract void CreateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         protected abstract void UpdateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
-        protected abstract void UpdateSharedEntity(string in_targetPlayerId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
+        protected abstract void UpdateSharedEntity(string in_targetProfileId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         protected abstract void DeleteEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
         #endregion
 
@@ -225,7 +225,7 @@ namespace BrainCloud.Entity
         /// <param name="in_cbFailure">
         /// A callback to run when store operation fails.
         /// </param>
-        public void StoreAsyncShared(string in_targetPlayerId, SuccessCallback in_cbSuccess = null, FailureCallback in_cbFailure = null)
+        public void StoreAsyncShared(string in_targetProfileId, SuccessCallback in_cbSuccess = null, FailureCallback in_cbFailure = null)
         {
             if (m_state == EntityState.Deleting || m_state == EntityState.Deleted)
             {
@@ -249,7 +249,7 @@ namespace BrainCloud.Entity
             }
             else
             {
-                UpdateSharedEntity(in_targetPlayerId, in_cbSuccess, in_cbFailure);
+                UpdateSharedEntity(in_targetProfileId, in_cbSuccess, in_cbFailure);
                 // we don't currently need a state to say an update is in progress... and if we add this state we
                 // need to keep track of how many updates are queued in order to set the state back to ready when *all*
                 // updates have completed. So just removing the state for now... an update queued should not have any impact

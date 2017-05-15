@@ -20,7 +20,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sends a simple text email to the specified player
+        /// Sends a simple text email to the specified user
         /// </summary>
         /// <remarks>
         /// Service Name - mail
@@ -62,7 +62,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sends an advanced email to the specified player
+        /// Sends an advanced email to the specified user
         /// </summary>
         /// <remarks>
         /// Service Name - mail

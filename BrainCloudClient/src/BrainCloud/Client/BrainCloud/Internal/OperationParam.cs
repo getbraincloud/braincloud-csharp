@@ -13,6 +13,7 @@ namespace BrainCloud
 
         //Push Notification Service - Send Params
         public static readonly OperationParam PushNotificationSendParamToPlayerId = new OperationParam("toPlayerId");
+        public static readonly OperationParam PushNotificationSendParamProfileId = new OperationParam("profileId");
         public static readonly OperationParam PushNotificationSendParamMessage = new OperationParam("message");
         public static readonly OperationParam PushNotificationSendParamNotificationTemplateId = new OperationParam("notificationTemplateId");
         public static readonly OperationParam PushNotificationSendParamSubstitutions = new OperationParam("substitutions");
@@ -20,6 +21,9 @@ namespace BrainCloud
 
         public static readonly OperationParam AlertContent = new OperationParam("alertContent");
         public static readonly OperationParam CustomData = new OperationParam("customData");
+
+        public static readonly OperationParam StartDateUTC = new OperationParam("startDateUTC");
+        public static readonly OperationParam MinutesFromNow = new OperationParam("minutesFromNow");
 
         // Twitter Service - Verify Params
         public static readonly OperationParam TwitterServiceVerifyToken = new OperationParam("token");

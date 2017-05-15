@@ -19,7 +19,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.PlayerStateService.DeletePlayer(
+            BrainCloudClient.Instance.PlayerStateService.DeleteUser(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
