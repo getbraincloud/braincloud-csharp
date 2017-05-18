@@ -482,7 +482,7 @@ namespace BrainCloud
         /// </param>
         public void ScheduleRichPushNotificationUTC(
             string profileId,
-            string notificationTemplateId,
+            int notificationTemplateId,
             string substitutionsJson,
             int startTime,
             SuccessCallback success = null,
@@ -491,7 +491,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
-            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = JsonReader.Deserialize<Dictionary<string, object>>(notificationTemplateId);
+            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = notificationTemplateId;
 
             if (Util.IsOptionalParameterValid(substitutionsJson))
             {
@@ -532,7 +532,7 @@ namespace BrainCloud
         /// </param>
         public void ScheduleRichPushNotificationMinutes(
             string profileId,
-            string notificationTemplateId,
+            int notificationTemplateId,
             string substitutionsJson,
             int minutesFromNow,
             SuccessCallback success = null,
@@ -541,7 +541,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PushNotificationSendParamProfileId.Value] = profileId;
-            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = JsonReader.Deserialize<Dictionary<string, object>>(notificationTemplateId);
+            data[OperationParam.PushNotificationSendParamNotificationTemplateId.Value] = notificationTemplateId;
 
             if (Util.IsOptionalParameterValid(substitutionsJson))
             {
