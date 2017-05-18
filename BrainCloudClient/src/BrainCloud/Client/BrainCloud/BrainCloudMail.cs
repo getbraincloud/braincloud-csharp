@@ -99,6 +99,44 @@ namespace BrainCloud
             SendMessage(ServiceOperation.SendAdvancedEmail, data, success, failure, cbObject);
         }
 
+        /// <summary>
+        /// Sends an advanced email to the specified email address
+        /// </summary>
+        /// <remarks>
+        /// Service Name - mail
+        /// Service Operation - SEND_ADVANCED_EMAIL_BY_EMAIL
+        /// </remarks>
+        /// <param name="emailAddress">
+        /// The address to send the email to
+        /// </param>
+        /// <param name="jsonServiceParams">
+        /// Parameters to send to the email service. See the documentation for
+        /// a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void SendAdvancedEmailByAddress(
+            string emailAddress,
+            string jsonServiceParams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.EmailAddress.Value] = emailAddress;
+            data[OperationParam.ServiceParams.Value] = JsonReader.Deserialize<Dictionary<string, object>>(jsonServiceParams);
+
+            SendMessage(ServiceOperation.SendAdvancedEmailByAddress, data, success, failure, cbObject);
+        }
+
         // Private
         private void SendMessage(
             ServiceOperation operation,

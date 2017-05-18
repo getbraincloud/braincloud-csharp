@@ -362,7 +362,8 @@ namespace BrainCloud
         public static readonly OperationParam Subject = new OperationParam("subject");
         public static readonly OperationParam Body = new OperationParam("body");
         public static readonly OperationParam ServiceParams = new OperationParam("serviceParams");
-        
+        public static readonly OperationParam EmailAddress = new OperationParam("emailAddress");
+
         public static readonly OperationParam LeaderboardId = new OperationParam("leaderboardId");
         public static readonly OperationParam VersionId = new OperationParam("versionId");
         public static readonly OperationParam TournamentCode = new OperationParam("tournamentCode");
