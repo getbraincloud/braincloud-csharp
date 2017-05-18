@@ -303,6 +303,7 @@ namespace BrainCloud.Internal
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");
         public static readonly ServiceOperation SendAdvancedEmail = new ServiceOperation("SEND_ADVANCED_EMAIL");
+        public static readonly ServiceOperation SendAdvancedEmailByAddress = new ServiceOperation("SEND_ADVANCED_EMAIL_BY_ADDRESS");
 
         //peer
         public static readonly ServiceOperation AttachPeerProfile = new ServiceOperation("ATTACH_PEER_PROFILE");
