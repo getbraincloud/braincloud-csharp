@@ -88,7 +88,7 @@ namespace BrainCloudUnity.HUD
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button ("Reset Player"))
 			{
-				BrainCloudWrapper.GetBC ().PlayerStateService.ResetPlayer (ResetPlayerSuccess, Failure);
+				BrainCloudWrapper.GetBC ().PlayerStateService.ResetUser (ResetPlayerSuccess, Failure);
 			}
 			GUILayout.EndHorizontal ();
 
@@ -97,7 +97,7 @@ namespace BrainCloudUnity.HUD
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button ("Delete Player"))
 			{
-				BrainCloudWrapper.GetBC ().PlayerStateService.DeletePlayer (DeletePlayerSuccess, Failure);
+				BrainCloudWrapper.GetBC ().PlayerStateService.DeleteUser (DeletePlayerSuccess, Failure);
 			}
 			GUILayout.EndHorizontal ();
 
