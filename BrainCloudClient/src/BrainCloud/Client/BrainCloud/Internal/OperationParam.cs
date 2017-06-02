@@ -288,6 +288,7 @@ namespace BrainCloud
 
         public static readonly OperationParam PlaybackStreamServiceTargetPlayerId = new OperationParam("targetPlayerId");
         public static readonly OperationParam PlaybackStreamServiceInitiatingPlayerId = new OperationParam("initiatingPlayerId");
+        public static readonly OperationParam PlaybackStreamServiceMaxNumberOfStreams = new OperationParam("maxNumStreams");
         public static readonly OperationParam PlaybackStreamServiceIncludeSharedData = new OperationParam("includeSharedData");
         public static readonly OperationParam PlaybackStreamServicePlaybackStreamId = new OperationParam("playbackStreamId");
         public static readonly OperationParam PlaybackStreamServiceEventData = new OperationParam("eventData");
