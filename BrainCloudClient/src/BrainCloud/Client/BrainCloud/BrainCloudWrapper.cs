@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Internal;
 using JsonFx.Json;
+using System;
 
 #if !DOT_NET
 using UnityEngine;
@@ -65,6 +66,21 @@ public class BrainCloudWrapper
     /// The key for the user prefs authentication type
     /// </summary>
     public static string PREFS_AUTHENTICATION_TYPE = "brainCloud.authenticationType";
+
+    /// <summary>
+    /// The key for the user prefs recent session id
+    /// </summary>
+    public static string PREFS_RECENT_SESSION_ID = "brainCloud.recentSessionId";
+
+    /// <summary>
+    /// The key for the user prefs recent session UTC timestamp
+    /// </summary>
+    public static string PREFS_RECENT_SESSION_UTC = "brainCloud.recentSessionUTC";
+
+	/// <summary>
+	/// The key for the user prefs last session timeout length
+	/// </summary>
+	public static string PREFS_LAST_SESSION_TIMEOUT_LENGTH = "brainCloud.lastSessionTimeoutLength";
 
     /// <summary>
     /// The name of the singleton brainCloud game object
@@ -198,9 +214,14 @@ public class BrainCloudWrapper
         bcw._lastAppVersion = version;
         bcw._client.Initialize(url, secretKey, appId, version);
 
+		bcw._client.RegisterGlobalSuccessCallback(successCallback);
+
         _instance.LoadData();
     }
 
+	public static SuccessCallback successCallback = new SuccessCallback (delegate(string jsonResponse, object cbObject) {
+		_instance.RefreshRecentSessionUTC ();
+	});
     /// <summary>
     /// If set to true, profile id is never sent along with non-anonymous authenticates
     /// thereby ensuring that valid credentials always work but potentially cause a profile switch.
@@ -697,6 +718,37 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
+    /// Sets the stored recent session id to user prefs.
+    /// </summary>
+    /// <param name="recentSessionId">Recent Session id.</param>
+    private void SetStoredRecentSessionId(string recentSessionId)
+    {
+        _wrapperData.RecentSessionId = recentSessionId;
+		_wrapperData.RecentSessionUTC = DateTime.UtcNow.ToString ();
+        SaveData();
+    }
+
+	/// <summary>
+	/// Sets the stored last session max timeout length to user prefs.
+	/// </summary>
+	/// <param name="lastSessionTimeout">Last Session Timeout</param>
+	private void SetLastSessionTimeout(int lastSessionTimeout)
+	{
+		_wrapperData.LastSessionTimeoutLength = lastSessionTimeout;
+		SaveData();
+	}
+
+	/// <summary>
+	/// Refresh the current UTC session timestamp to user prefs.
+	/// </summary>
+	/// <param name="lastSessionTimeout">Last Session Timeout</param>
+	private void RefreshRecentSessionUTC()
+	{
+		_wrapperData.RecentSessionUTC = DateTime.UtcNow.ToString ();
+		SaveData();
+	}
+
+    /// <summary>
     /// Resets the stored profile id to empty string.
     /// </summary>
     public virtual void ResetStoredProfileId()
@@ -776,6 +828,39 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
+    /// The brainCloud client considers itself reauthenticated
+    /// with the previous session, unless the previous session is more than
+    /// two hours old. 
+    /// 
+    /// Note: ensure the user is within your session expiry (set on the dashboard)
+    /// before using this call. This method exists to reduce
+    /// authentication calls in the event the user needs to restart the app 
+    /// in rapid succession.
+    /// </summary>
+    public bool RestoreRecentSession()
+    {
+		if (_wrapperData.RecentSessionUTC.Equals ("")) 
+		{
+			// No Previous UTC Session timestamp could be loaded
+			return false;
+		}
+
+		DateTime sessionMaxTimeout = DateTime.UtcNow.AddSeconds(-_wrapperData.LastSessionTimeoutLength);
+        DateTime recentSessionTime = DateTime.Parse(_wrapperData.RecentSessionUTC);
+
+		if(recentSessionTime.CompareTo(sessionMaxTimeout) > 0)
+        {
+			_client.Comms.setSessionId(_wrapperData.RecentSessionId);
+			_client.Comms.setAuthenticated ();
+
+            return true;
+        }
+
+		// Session is too old
+        return false;
+    }
+
+    /// <summary>
     /// Callback for authentication success using the BrainCloudWrapper class.
     /// </summary>
     /// <param name="json">The returned json</param>
@@ -789,11 +874,37 @@ public class BrainCloudWrapper
         if (jsonData.ContainsKey("profileId"))
         {
             profileId = (string)jsonData["profileId"];
+
+            if (profileId != "")
+            {
+                SetStoredProfileId(profileId);
+            }
         }
-        if (profileId != "")
+
+        string recentSessionId = "";
+		if (jsonData.ContainsKey(OperationParam.ServiceMessageSessionId.Value))
         {
-            SetStoredProfileId(profileId);
+			recentSessionId = (string)jsonData[OperationParam.ServiceMessageSessionId.Value];
+            
+            if (recentSessionId != "")
+            {
+                SetStoredRecentSessionId(recentSessionId);
+				RefreshRecentSessionUTC ();
+
+            }
         }
+
+		int recentSessionExpiriy = 0;
+		if (jsonData.ContainsKey(OperationParam.AuthenticateServicePlayerSessionExpiry.Value))
+		{
+			recentSessionExpiriy = (int)jsonData[OperationParam.AuthenticateServicePlayerSessionExpiry.Value];
+
+			if (recentSessionExpiriy != 0)
+			{
+				SetLastSessionTimeout(recentSessionExpiriy);
+			}
+		}
+
         if (cbObject != null)
         {
             WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
@@ -840,6 +951,9 @@ public class BrainCloudWrapper
         PlayerPrefs.SetString(PREFS_PROFILE_ID, _wrapperData.ProfileId);
         PlayerPrefs.SetString(PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
         PlayerPrefs.SetString(PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
+        PlayerPrefs.SetString(PREFS_RECENT_SESSION_ID, _wrapperData.RecentSessionId);
+        PlayerPrefs.SetString(PREFS_RECENT_SESSION_UTC, _wrapperData.RecentSessionUTC);
+		PlayerPrefs.SetInt(PREFS_LAST_SESSION_TIMEOUT_LENGTH, _wrapperData.LastSessionTimeoutLength);
 #endif
     }
 
@@ -867,6 +981,9 @@ public class BrainCloudWrapper
         _wrapperData.ProfileId = PlayerPrefs.GetString(PREFS_PROFILE_ID);
         _wrapperData.AnonymousId = PlayerPrefs.GetString(PREFS_ANONYMOUS_ID);
         _wrapperData.AuthenticationType = PlayerPrefs.GetString(PREFS_AUTHENTICATION_TYPE);
+        _wrapperData.RecentSessionId = PlayerPrefs.GetString(PREFS_RECENT_SESSION_ID);
+        _wrapperData.RecentSessionUTC = PlayerPrefs.GetString(PREFS_RECENT_SESSION_UTC);
+		_wrapperData.LastSessionTimeoutLength = PlayerPrefs.GetInt(PREFS_LAST_SESSION_TIMEOUT_LENGTH);
 #endif
     }
 
@@ -875,7 +992,10 @@ public class BrainCloudWrapper
         public string ProfileId = "";
         public string AnonymousId = "";
         public string AuthenticationType = "";
-
+        public string RecentSessionId = "";
+        public string RecentSessionUTC = "";
+        public int LastSessionTimeoutLength = 0;
+        
         public static readonly string FileName = "BrainCloudWrapper.json";
     }
 }

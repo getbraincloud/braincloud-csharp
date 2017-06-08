@@ -741,36 +741,52 @@ namespace BrainCloud
         ///    }],
         ///    ]
         ///  }
-        public void RegisterEventCallback(EventCallback cb)
+        public void RegisterEventCallback(EventCallback callback)
         {
-            _comms.RegisterEventCallback(cb);
+			_comms.RegisterEventCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the event callback.
+        /// Deregisters all event callbacks.
         /// </summary>
         public void DeregisterEventCallback()
         {
             _comms.DeregisterEventCallback();
         }
 
+		// <summary>
+		/// Deregisters the event callback.
+		/// </summary>
+		public void DeregisterEventCallback(EventCallback callback)
+		{
+			_comms.DeregisterEventCallback(callback);
+		}
+
         /// <summary>
         /// Sets a reward handler for any API call results that return rewards.
         /// </summary>
         /// <param name="cb">The reward callback handler.</param>
         /// <see cref="http://getbraincloud.com/apidocs">The brainCloud API docs site for more information on the return JSON</see>
-        public void RegisterRewardCallback(RewardCallback cb)
+		public void RegisterRewardCallback(RewardCallback callback)
         {
-            _comms.RegisterRewardCallback(cb);
+			_comms.RegisterRewardCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the reward callback.
+		/// Deregisters all reward callbacks.
         /// </summary>
         public void DeregisterRewardCallback()
         {
             _comms.DeregisterRewardCallback();
         }
+
+		/// <summary>
+		/// Deregisters the reward callback.
+		/// </summary>
+		public void DeregisterRewardCallback(RewardCallback callback)
+		{
+			_comms.DeregisterRewardCallback(callback);
+		}
 
         /// <summary>
         /// Registers the file upload callbacks.
@@ -781,12 +797,44 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// De-registers the file upload callbacks.
+        /// Deregisters all the file upload callbacks.
         /// </summary>
         public void DeregisterFileUploadCallbacks()
         {
             _comms.DeregisterFileUploadCallbacks();
         }
+
+		/// <summary>
+		/// Deregisters the file upload callbacks.
+		/// </summary>
+		public void DeregisterFileUploadCallbacks(FileUploadSuccessCallback successCallback, FileUploadFailedCallback failedCallback)
+		{
+			_comms.DeregisterFileUploadCallbacks(successCallback, failedCallback);
+		}
+
+		/// <summary>
+		/// Success callback invoked for successful callbacks
+		/// </summary>
+		public void RegisterGlobalSuccessCallback(SuccessCallback callback)
+		{
+			_comms.RegisterGlobalSuccessCallback(callback);
+		}
+
+		/// <summary>
+		/// Deregisters all global success callbacks.
+		/// </summary>
+		public void DeregisterGlobalSuccessCallback()
+		{
+			_comms.DeregisterGlobalSuccessCallback();
+		}
+
+		/// <summary>
+		/// Deregisters the global success callback.
+		/// </summary>
+		public void DeregisterGlobalSuccessCallback(SuccessCallback callback)
+		{
+			_comms.DeregisterGlobalSuccessCallback(callback);
+		}
 
         /// <summary>
         /// Failure callback invoked for all errors generated
@@ -797,12 +845,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// De-registers the global error callback.
+        /// Deregisters all global error callbacks.
         /// </summary>
         public void DeregisterGlobalErrorCallback()
         {
             _comms.DeregisterGlobalErrorCallback();
         }
+
+		/// <summary>
+		/// Deregisters the global error callback.
+		/// </summary>
+		public void DeregisterGlobalErrorCallback(FailureCallback callback)
+		{
+			_comms.DeregisterGlobalErrorCallback(callback);
+		}
 
         /// <summary>
         /// Registers a callback that is invoked for network errors.
@@ -815,12 +871,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// De-registers the network error callback.
+        /// Deregisters all network error callbacks.
         /// </summary>
         public void DeregisterNetworkErrorCallback()
         {
             _comms.DeregisterNetworkErrorCallback();
         }
+
+		/// <summary>
+		/// Deregisters the network error callback.
+		/// </summary>
+		public void DeregisterNetworkErrorCallback(NetworkErrorCallback callback)
+		{
+			_comms.DeregisterNetworkErrorCallback(callback);
+		}
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>

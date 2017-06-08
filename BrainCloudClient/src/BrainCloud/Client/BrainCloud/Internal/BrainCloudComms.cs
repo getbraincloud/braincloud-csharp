@@ -111,20 +111,22 @@ namespace BrainCloud.Internal
         /// <summary>
         /// The event handler callback method
         /// </summary>
-        private EventCallback _eventCallback;
+		private List<EventCallback> _eventCallbacks = new List<EventCallback>();
 
         /// <summary>
         /// The reward handler callback method
         /// </summary>
-        private RewardCallback _rewardCallback;
+		private List<RewardCallback> _rewardCallbacks = new List<RewardCallback>();
 
-        private FileUploadSuccessCallback _fileUploadSuccessCallback;
+		private List<FileUploadSuccessCallback> _fileUploadSuccessCallbacks = new List<FileUploadSuccessCallback>();
 
-        private FileUploadFailedCallback _fileUploadFailedCallback;
+		private List<FileUploadFailedCallback> _fileUploadFailedCallbacks = new List<FileUploadFailedCallback>();
 
-        private FailureCallback _globalErrorCallback;
+		private List<SuccessCallback> _globalSuccessCallbacks = new List<SuccessCallback>();
 
-        private NetworkErrorCallback _networkErrorCallback;
+		private List<FailureCallback> _globalErrorCallbacks = new List<FailureCallback>();
+
+		private List<NetworkErrorCallback> _networkErrorCallbacks =  new List<NetworkErrorCallback>();
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
@@ -151,6 +153,10 @@ namespace BrainCloud.Internal
                 return _isAuthenticated;
             }
         }
+
+		internal void setAuthenticated() {
+			_isAuthenticated = true;
+		}
 
         private string _appId = null;
 
@@ -179,6 +185,9 @@ namespace BrainCloud.Internal
                 return _sessionID;
             }
         }
+		internal void setSessionId(String sessionId) {
+			_sessionID = sessionId;
+		}
 
         private string _serverURL = "";
         public string ServerURL
@@ -315,57 +324,142 @@ namespace BrainCloud.Internal
             _initialized = true;
         }
 
-        public void RegisterEventCallback(EventCallback cb)
+		public void RegisterEventCallback(EventCallback callback)
         {
-            _eventCallback = cb;
+			if (!_eventCallbacks.Contains (callback)) 
+			{
+				_eventCallbacks.Add(callback);
+			}
         }
 
         public void DeregisterEventCallback()
         {
-            _eventCallback = null;
+			_eventCallbacks.Clear ();
         }
 
-        public void RegisterRewardCallback(RewardCallback cb)
+		public void DeregisterEventCallback(EventCallback callback)
+		{
+			if (_eventCallbacks.Contains (callback)) 
+			{
+				_eventCallbacks.Remove (callback);
+			}
+		}
+
+		public void RegisterRewardCallback(RewardCallback callback)
         {
-            _rewardCallback = cb;
+			if (!_rewardCallbacks.Contains (callback)) 
+			{
+				_rewardCallbacks.Add (callback);
+			}
         }
 
-        public void DeregisterRewardCallback()
+		public void DeregisterRewardCallback()
+		{
+			_rewardCallbacks.Clear();
+		}
+
+		public void DeregisterRewardCallback(RewardCallback callback)
         {
-            _rewardCallback = null;
+			if (_rewardCallbacks.Contains (callback)) 
+			{
+				_rewardCallbacks.Remove (callback);
+			}
         }
 
         public void RegisterFileUploadCallbacks(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
         {
-            _fileUploadSuccessCallback = success;
-            _fileUploadFailedCallback = failure;
+			if (!_fileUploadSuccessCallbacks.Contains (success)) 
+			{
+				_fileUploadSuccessCallbacks.Add (success);
+			}
+
+			if (!_fileUploadFailedCallbacks.Contains (failure)) 
+			{
+				_fileUploadFailedCallbacks.Add (failure);
+			}
         }
 
         public void DeregisterFileUploadCallbacks()
         {
-            _fileUploadSuccessCallback = null;
-            _fileUploadFailedCallback = null;
+			_fileUploadSuccessCallbacks.Clear();
+			_fileUploadFailedCallbacks.Clear();
         }
+
+		public void DeregisterFileUploadCallbacks(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
+		{
+			if (success != null && _fileUploadSuccessCallbacks.Contains (success)) 
+			{
+				_fileUploadSuccessCallbacks.Remove (success);
+			}
+
+			if (failure != null && _fileUploadFailedCallbacks.Contains (failure)) 
+			{
+				_fileUploadFailedCallbacks.Remove (failure);
+			}
+		}
+
+		public void RegisterGlobalSuccessCallback(SuccessCallback callback)
+		{
+			if (!_globalSuccessCallbacks.Contains (callback)) 
+			{
+				_globalSuccessCallbacks.Add (callback);
+			}
+		}
+
+		public void DeregisterGlobalSuccessCallback()
+		{
+			_globalSuccessCallbacks.Clear();
+		}
+
+		public void DeregisterGlobalSuccessCallback(SuccessCallback callback)
+		{
+			if (_globalSuccessCallbacks.Contains (callback)) 
+			{
+				_globalSuccessCallbacks.Remove (callback);
+			}
+		}
 
         public void RegisterGlobalErrorCallback(FailureCallback callback)
         {
-            _globalErrorCallback = callback;
+			if (!_globalErrorCallbacks.Contains (callback)) 
+			{
+				_globalErrorCallbacks.Add (callback);
+			}
         }
 
         public void DeregisterGlobalErrorCallback()
         {
-            _globalErrorCallback = null;
+			_globalErrorCallbacks.Clear();
         }
+
+		public void DeregisterGlobalErrorCallback(FailureCallback callback)
+		{
+			if (_globalErrorCallbacks.Contains (callback)) 
+			{
+				_globalErrorCallbacks.Remove (callback);
+			}
+		}
 
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
-            _networkErrorCallback = callback;
+			if (!_networkErrorCallbacks.Contains (callback)) 
+			{
+				_networkErrorCallbacks.Add (callback);
+			}
         }
 
         public void DeregisterNetworkErrorCallback()
         {
-            _networkErrorCallback = null;
+			_networkErrorCallbacks.Clear();
         }
+
+		public void DeregisterNetworkErrorCallback(NetworkErrorCallback callback)
+		{
+			if (_networkErrorCallbacks.Contains (callback)) 
+			{
+				_networkErrorCallbacks.Remove (callback);
+			}
+		}
 
         /// <summary>
         /// The update method needs to be called periodically to send/receive responses
@@ -440,7 +534,7 @@ namespace BrainCloud.Internal
                         _activeRequest = null;
 
                         // if we're doing caching of messages on timeout, kick it in now!
-                        if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
+                        if (_cacheMessagesOnNetworkError && _networkErrorCallbacks != null)
                         {
                             _brainCloudClientRef.Log("Caching messages");
                             _blockingQueue = true;
@@ -452,7 +546,10 @@ namespace BrainCloud.Internal
                                 _serviceCallsInProgress.Clear();
                             }
 
-                            _networkErrorCallback();
+							foreach (NetworkErrorCallback networkErrorCallback in _networkErrorCallbacks) 
+							{
+								networkErrorCallback();
+							}
                         }
                         else
                         {
@@ -491,16 +588,20 @@ namespace BrainCloud.Internal
                 _fileUploads[i].Update();
                 if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteSuccess)
                 {
-                    if (_fileUploadSuccessCallback != null)
-                        _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
+					foreach (FileUploadSuccessCallback uploadSuccessCallback in _fileUploadSuccessCallbacks) 
+					{
+						uploadSuccessCallback (_fileUploads [i].UploadId, _fileUploads [i].Response);
+					}
 
                     BrainCloudClient.Get().Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
                 {
-                    if (_fileUploadFailedCallback != null)
-                        _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
+					foreach (FileUploadFailedCallback uploadFailedCallback in _fileUploadFailedCallbacks) 
+					{
+						uploadFailedCallback (_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
+					}
 
                     BrainCloudClient.Get().Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
@@ -778,7 +879,7 @@ namespace BrainCloud.Internal
                         string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
                         if (sessionId != null)
                         {
-                            _sessionID = sessionId;
+							_sessionID = sessionId;
                             _isAuthenticated = true;
                         }
 
@@ -837,10 +938,15 @@ namespace BrainCloud.Internal
                                 _brainCloudClientRef.Log(e.StackTrace);
                                 exceptions.Add(e);
                             }
+
+							foreach(SuccessCallback successCallback in _globalSuccessCallbacks)
+							{
+								successCallback(data, null);
+							}
                         }
 
                         // now deal with rewards
-                        if (_rewardCallback != null && responseData != null)
+						if (_rewardCallbacks.Count > 0 && responseData != null)
                         {
                             try
                             {
@@ -892,7 +998,11 @@ namespace BrainCloud.Internal
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
-                                    _rewardCallback(rewardsAsJson);
+
+									foreach(RewardCallback rewardCallback in _rewardCallbacks)
+									{
+										rewardCallback(rewardsAsJson);
+									}
                                 }
                             }
                             catch (Exception e)
@@ -969,7 +1079,7 @@ namespace BrainCloud.Internal
                         }
                     }
 
-                    if (_globalErrorCallback != null)
+                    if (_globalErrorCallbacks != null)
                     {
                         object cbObject = null;
                         if (sc != null && sc.GetCallback() != null)
@@ -983,27 +1093,34 @@ namespace BrainCloud.Internal
                             }
                         }
 
-                        _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
+						foreach (FailureCallback failureCallback in _globalErrorCallbacks) 
+						{
+							failureCallback(statusCode, reasonCode, errorJson, cbObject);
+						}
                     }
 
                     UpdateKillSwitch(sc.Service, sc.Operation, statusCode);
                 }
             }
 
-            if (bundleObj.events != null && _eventCallback != null)
-            {
-                Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
-                eventsJsonObj["events"] = bundleObj.events;
-                string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
-                try
-                {
-                    _eventCallback(eventsAsJson);
-                }
-                catch (Exception e)
-                {
-                    _brainCloudClientRef.Log(e.StackTrace);
-                    exceptions.Add(e);
-                }
+			if (bundleObj.events != null && _eventCallbacks.Count > 0)
+			{
+				Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
+				eventsJsonObj["events"] = bundleObj.events;
+				string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
+				try
+				{
+					foreach (EventCallback eventCallback in _eventCallbacks) 
+					{
+						eventCallback(eventsAsJson);
+					}
+				}
+				catch (Exception e)
+				{
+					_brainCloudClientRef.Log(e.StackTrace);
+					exceptions.Add(e);
+				}
+
             }
 
             if (exceptions.Count > 0)
