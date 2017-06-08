@@ -724,6 +724,28 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// The brainCloud client considers itself reauthenticated
+        /// with the given session
+        ///
+        /// Warning: ensure the user is within your session expiry (set on the dashboard)
+        /// before using this call. This optional method exists to reduce
+        /// authentication calls, in event the user needs to restart the app
+        /// in rapid succession.
+        /// </summary>
+        public void RestoreRecentSession(String sessionId)
+        {
+            if (sessionId == null || sessionId.Equals(""))
+            {
+                // Cannot use a blank session Id. Authenticate once,
+                // and save that session for short-term use
+                return;
+            }
+
+            Comms.setSessionId(sessionId);
+            Comms.setAuthenticated();
+        }
+
+        /// <summary>
         /// Sets a callback handler for any out of band event messages that come from
         /// brainCloud.
         /// </summary>
