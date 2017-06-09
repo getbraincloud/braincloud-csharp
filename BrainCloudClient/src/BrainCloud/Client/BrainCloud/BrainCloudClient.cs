@@ -724,28 +724,6 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// The brainCloud client considers itself reauthenticated
-        /// with the given session
-        ///
-        /// Warning: ensure the user is within your session expiry (set on the dashboard)
-        /// before using this call. This optional method exists to reduce
-        /// authentication calls, in event the user needs to restart the app
-        /// in rapid succession.
-        /// </summary>
-        public void RestoreRecentSession(String sessionId)
-        {
-            if (sessionId == null || sessionId.Equals(""))
-            {
-                // Cannot use a blank session Id. Authenticate once,
-                // and save that session for short-term use
-                return;
-            }
-
-            Comms.setSessionId(sessionId);
-            Comms.setAuthenticated();
-        }
-
-        /// <summary>
         /// Sets a callback handler for any out of band event messages that come from
         /// brainCloud.
         /// </summary>
@@ -763,52 +741,36 @@ namespace BrainCloud
         ///    }],
         ///    ]
         ///  }
-        public void RegisterEventCallback(EventCallback callback)
+        public void RegisterEventCallback(EventCallback cb)
         {
-			_comms.RegisterEventCallback(callback);
+            _comms.RegisterEventCallback(cb);
         }
 
         /// <summary>
-        /// Deregisters all event callbacks.
+        /// De-registers the event callback.
         /// </summary>
         public void DeregisterEventCallback()
         {
             _comms.DeregisterEventCallback();
         }
 
-		// <summary>
-		/// Deregisters the event callback.
-		/// </summary>
-		public void DeregisterEventCallback(EventCallback callback)
-		{
-			_comms.DeregisterEventCallback(callback);
-		}
-
         /// <summary>
         /// Sets a reward handler for any API call results that return rewards.
         /// </summary>
         /// <param name="cb">The reward callback handler.</param>
         /// <see cref="http://getbraincloud.com/apidocs">The brainCloud API docs site for more information on the return JSON</see>
-		public void RegisterRewardCallback(RewardCallback callback)
+        public void RegisterRewardCallback(RewardCallback cb)
         {
-			_comms.RegisterRewardCallback(callback);
+            _comms.RegisterRewardCallback(cb);
         }
 
         /// <summary>
-		/// Deregisters all reward callbacks.
+        /// De-registers the reward callback.
         /// </summary>
         public void DeregisterRewardCallback()
         {
             _comms.DeregisterRewardCallback();
         }
-
-		/// <summary>
-		/// Deregisters the reward callback.
-		/// </summary>
-		public void DeregisterRewardCallback(RewardCallback callback)
-		{
-			_comms.DeregisterRewardCallback(callback);
-		}
 
         /// <summary>
         /// Registers the file upload callbacks.
@@ -819,44 +781,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deregisters all the file upload callbacks.
+        /// De-registers the file upload callbacks.
         /// </summary>
         public void DeregisterFileUploadCallbacks()
         {
             _comms.DeregisterFileUploadCallbacks();
         }
-
-		/// <summary>
-		/// Deregisters the file upload callbacks.
-		/// </summary>
-		public void DeregisterFileUploadCallbacks(FileUploadSuccessCallback successCallback, FileUploadFailedCallback failedCallback)
-		{
-			_comms.DeregisterFileUploadCallbacks(successCallback, failedCallback);
-		}
-
-		/// <summary>
-		/// Success callback invoked for successful callbacks
-		/// </summary>
-		public void RegisterGlobalSuccessCallback(SuccessCallback callback)
-		{
-			_comms.RegisterGlobalSuccessCallback(callback);
-		}
-
-		/// <summary>
-		/// Deregisters all global success callbacks.
-		/// </summary>
-		public void DeregisterGlobalSuccessCallback()
-		{
-			_comms.DeregisterGlobalSuccessCallback();
-		}
-
-		/// <summary>
-		/// Deregisters the global success callback.
-		/// </summary>
-		public void DeregisterGlobalSuccessCallback(SuccessCallback callback)
-		{
-			_comms.DeregisterGlobalSuccessCallback(callback);
-		}
 
         /// <summary>
         /// Failure callback invoked for all errors generated
@@ -867,20 +797,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deregisters all global error callbacks.
+        /// De-registers the global error callback.
         /// </summary>
         public void DeregisterGlobalErrorCallback()
         {
             _comms.DeregisterGlobalErrorCallback();
         }
-
-		/// <summary>
-		/// Deregisters the global error callback.
-		/// </summary>
-		public void DeregisterGlobalErrorCallback(FailureCallback callback)
-		{
-			_comms.DeregisterGlobalErrorCallback(callback);
-		}
 
         /// <summary>
         /// Registers a callback that is invoked for network errors.
@@ -893,20 +815,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deregisters all network error callbacks.
+        /// De-registers the network error callback.
         /// </summary>
         public void DeregisterNetworkErrorCallback()
         {
             _comms.DeregisterNetworkErrorCallback();
         }
-
-		/// <summary>
-		/// Deregisters the network error callback.
-		/// </summary>
-		public void DeregisterNetworkErrorCallback(NetworkErrorCallback callback)
-		{
-			_comms.DeregisterNetworkErrorCallback(callback);
-		}
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
