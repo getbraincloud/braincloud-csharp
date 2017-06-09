@@ -152,6 +152,10 @@ namespace BrainCloud.Internal
             }
         }
 
+		internal void setAuthenticated() {
+			_isAuthenticated = true;
+		}
+
         private string _appId = null;
 
         [Obsolete("This has been deprecated. Use AppId instead - removal after September 1 2017")]
@@ -179,6 +183,9 @@ namespace BrainCloud.Internal
                 return _sessionID;
             }
         }
+		internal void setSessionId(String sessionId) {
+			_sessionID = sessionId;
+		}
 
         private string _serverURL = "";
         public string ServerURL
