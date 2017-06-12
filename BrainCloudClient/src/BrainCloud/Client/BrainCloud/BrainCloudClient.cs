@@ -253,11 +253,6 @@ namespace BrainCloud
         {
             get { return _appVersion; }
         }
-        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
-        public string Version
-        {
-            get { return _appVersion; }
-        }
 
         public string AppVersion
         {
