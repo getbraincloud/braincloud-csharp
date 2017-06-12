@@ -18,7 +18,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerPlayerStatisticsEvent(
+            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerStatsEvent(
                 _eventId01,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -36,7 +36,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1, event2 };
 
-            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerPlayerStatisticsEvents(
+            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -49,14 +49,14 @@ namespace BrainCloudTests
             m_rewardCallbackHitCount = 0;
 
             TestResult tr = new TestResult();
-            BrainCloudClient.Instance.PlayerStateService.ResetPlayer(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1 };
 
             BrainCloudClient.Get ().RegisterRewardCallback(rewardCallback);
-            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerPlayerStatisticsEvents(
+            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -72,7 +72,7 @@ namespace BrainCloudTests
             m_rewardCallbackHitCount = 0;
             
             TestResult tr = new TestResult();
-            BrainCloudClient.Instance.PlayerStateService.ResetPlayer(tr.ApiSuccess, tr.ApiError);
+            BrainCloudClient.Instance.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
             tr.Run();
             
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
@@ -81,10 +81,10 @@ namespace BrainCloudTests
             Dictionary<string, object>[] jsonData2 = new Dictionary<string, object>[] { event2 };
             
             BrainCloudClient.Get ().RegisterRewardCallback(rewardCallback);
-            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerPlayerStatisticsEvents(
+            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData1),
                 tr.ApiSuccess, tr.ApiError);
-            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerPlayerStatisticsEvents(
+            BrainCloudClient.Instance.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData2),
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectCount(2);

@@ -33,7 +33,7 @@ namespace BrainCloudUnity.HUD
 		{
 			m_stats.Clear ();
 
-			BrainCloudWrapper.GetBC ().PlayerStatisticsService.ReadAllPlayerStats(
+			BrainCloudWrapper.GetBC ().PlayerStatisticsService.ReadAllUserStats(
 				ReadPlayerStatsSuccess, ReadPlayerStatsFailure);
 		}
 
@@ -90,7 +90,7 @@ namespace BrainCloudUnity.HUD
 					if (long.TryParse(ps.increment, out valueAsLong)
 					    || double.TryParse(ps.increment, out valueAsDouble))
 					{
-						BrainCloudWrapper.GetBC().PlayerStatisticsService.IncrementPlayerStats(
+						BrainCloudWrapper.GetBC().PlayerStatisticsService.IncrementUserStats(
 							"{ '" + ps.name +"':" + ps.increment +"}",
 							ReadPlayerStatsSuccess, ReadPlayerStatsFailure);
 					}

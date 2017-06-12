@@ -140,6 +140,67 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestScheduleNormalizedPushNotificationUTC() 
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Instance.PushNotificationService.ScheduleNormalizedPushNotificationUTC(
+                 GetUser(Users.UserA).ProfileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                42,
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleNormalizedPushNotificationMinutes() 
+        {
+
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Instance.PushNotificationService.ScheduleNormalizedPushNotificationUTC(
+                GetUser(Users.UserA).ProfileId,
+                "{ \"body\": \"content of message\", \"title\": \"message title\" }",
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleRichPushNotificationUTC() 
+        {
+            TestResult tr = new TestResult();
+
+            BrainCloudClient.Instance.PushNotificationService.ScheduleRichPushNotificationUTC(
+                GetUser(Users.UserA).ProfileId,
+                1,
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestScheduleRichPushNotificationMinutes()
+        {
+            TestResult tr = new TestResult();
+            
+            BrainCloudClient.Instance.PushNotificationService.ScheduleRichPushNotificationMinutes(
+                GetUser(Users.UserA).ProfileId,
+                1,
+                Helpers.CreateJsonPair("1", GetUser(Users.UserA).Id),
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestSendNormalizedPushNotification()
         {
             TestResult tr = new TestResult();

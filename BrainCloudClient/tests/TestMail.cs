@@ -41,5 +41,24 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestSendAdvancedEmailByAddressSendGrid()
+        {
+            TestResult tr = new TestResult();
+
+            var data = new Dictionary<string, object>();
+            data["subject"] = "Test Subject - TestSendAdvancedEmailSendGrid";
+            data["body"] = "Test body";
+            //data["substitutions"] = new Dictionary<string, object>() { { "*replace*", "test" } };
+            data["categories"] = new string[] { "unit-test" };
+
+            BrainCloudClient.Instance.MailService.SendAdvancedEmailByAddress(
+                GetUser(Users.UserB).Email,
+                JsonWriter.Serialize(data),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }

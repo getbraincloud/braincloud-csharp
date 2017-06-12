@@ -86,11 +86,11 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestFindPlayerByUniversalId()
+        public void TestFindUserByUniversalId()
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.FriendService.FindPlayerByUniversalId(
+            BrainCloudClient.Instance.FriendService.FindUserByUniversalId(
                 "search",
                 10,
                 tr.ApiSuccess, tr.ApiError);

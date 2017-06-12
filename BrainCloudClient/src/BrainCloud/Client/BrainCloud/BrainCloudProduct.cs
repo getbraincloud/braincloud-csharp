@@ -54,6 +54,51 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void AwardCurrency(
+            string in_currencyType,
+            ulong in_amount,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
+            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
+ 
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.AwardVC, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+ 
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void ConsumeCurrency(
+            string in_currencyType,
+            ulong in_amount,
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
+            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
+ 
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ConsumePlayerVC, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+ 
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void ResetCurrency(
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
+            object in_cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ResetPlayerVC, null, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
         /// <summary>
         /// Method gets the active sales inventory for the passed-in
         /// currency type.

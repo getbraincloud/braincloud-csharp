@@ -23,7 +23,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.PlayerStateService.DeletePlayer(
+            BrainCloudClient.Instance.PlayerStateService.DeleteUser(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -65,7 +65,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStateService.ReadPlayerState(
+            BrainCloudClient.Instance.PlayerStateService.ReadUserState(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -88,7 +88,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStateService.ResetPlayer(
+            BrainCloudClient.Instance.PlayerStateService.ResetUser(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -114,7 +114,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStateService.UpdatePlayerName(
+            BrainCloudClient.Instance.PlayerStateService.UpdateUserName(
                 "ABC",
                 tr.ApiSuccess, tr.ApiError);
 
@@ -139,7 +139,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult();
 
-            BrainCloudClient.Instance.PlayerStateService.UpdatePlayerPictureUrl(
+            BrainCloudClient.Instance.PlayerStateService.UpdateUserPictureUrl(
                 @"https://some.domain.com/mypicture.jpg",
                 tr.ApiSuccess, tr.ApiError);
 
