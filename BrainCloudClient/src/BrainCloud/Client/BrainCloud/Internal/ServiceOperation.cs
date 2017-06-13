@@ -40,6 +40,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Register = new ServiceOperation("REGISTER");
         public static readonly ServiceOperation SendSimple = new ServiceOperation("SEND_SIMPLE");
         public static readonly ServiceOperation SendRich = new ServiceOperation("SEND_RICH");
+        public static readonly ServiceOperation SendRaw = new ServiceOperation("SEND_RAW");
+        public static readonly ServiceOperation SendRawBatch = new ServiceOperation("SEND_RAW_BATCH");
+        public static readonly ServiceOperation SendRawToGroup = new ServiceOperation("SEND_RAW_TO_GROUP");
         public static readonly ServiceOperation SendTemplatedToGroup = new ServiceOperation("SEND_TEMPLATED_TO_GROUP");
         public static readonly ServiceOperation SendNormalizedToGroup = new ServiceOperation("SEND_NORMALIZED_TO_GROUP");
         public static readonly ServiceOperation SendNormalized = new ServiceOperation("SEND_NORMALIZED");
@@ -47,6 +50,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ScheduleRichNotification = new ServiceOperation("SCHEDULE_RICH_NOTIFICATION");
         public static readonly ServiceOperation ScheduleNormalizedNotification = new ServiceOperation("SCHEDULE_NORMALIZED_NOTIFICATION");
 
+        public static readonly ServiceOperation ScheduleRawNotification = new ServiceOperation("SCHEDULE_RAW_NOTIFICATIONS");
+        
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
 

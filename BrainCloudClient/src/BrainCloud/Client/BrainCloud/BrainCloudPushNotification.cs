@@ -354,6 +354,299 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Schedules raw notifications based on user local time.
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="fcmContent">
+        /// Valid Fcm data content
+        /// </param>
+        /// <param name="iosContent">
+        /// Valid ios data content
+        /// </param>
+        /// <param name="facebookContent">
+        /// Facebook template string
+        /// </param>
+        /// <param name="startTime">
+        /// Start time of sending the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void ScheduleRawPushNotificationUTC(
+            string profileId,
+            string fcmContent,
+            string iosContent,
+            string facebookContent,
+            int startTime,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProfileId.Value] = profileId;
+
+            if (Util.IsOptionalParameterValid(fcmContent))
+            {
+                data[OperationParam.PushNotificationSendParamFcmContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fcmContent);
+            }
+
+            if (Util.IsOptionalParameterValid(iosContent))
+            {
+                data[OperationParam.PushNotificationSendParamIosContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(iosContent);
+            }
+
+            if (Util.IsOptionalParameterValid(facebookContent))
+            {
+                data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
+            }
+
+            data[OperationParam.StartDateUTC.Value] = startTime;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRawNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Schedules raw notifications based on user local time.
+        /// </param>
+        /// <param name="profileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="fcmContent">
+        /// Valid Fcm data content
+        /// </param>
+        /// <param name="iosContent">
+        /// Valid ios data content
+        /// </param>
+        /// <param name="facebookContent">
+        /// Facebook template string
+        /// </param>
+        /// <param name="minutesFromNow">
+        /// Minutes from now to send the push notification
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void ScheduleRawPushNotificationMinutes(
+            string profileId,
+            string fcmContent,
+            string iosContent,
+            string facebookContent,
+            int minutesFromNow,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProfileId.Value] = profileId;
+
+            if (Util.IsOptionalParameterValid(fcmContent))
+            {
+                data[OperationParam.PushNotificationSendParamFcmContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fcmContent);
+            }
+
+            if (Util.IsOptionalParameterValid(iosContent))
+            {
+                data[OperationParam.PushNotificationSendParamIosContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(iosContent);
+            }
+
+            if (Util.IsOptionalParameterValid(facebookContent))
+            {
+                data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
+            }
+
+            data[OperationParam.MinutesFromNow.Value] = minutesFromNow;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRawNotification, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Sends a raw push notification to a target user.
+        /// </param>
+        /// <param name="toProfileId">
+        /// The profileId of the user to receive the notification
+        /// </param>
+        /// <param name="fcmContent">
+        /// Valid Fcm data content
+        /// </param>
+        /// <param name="iosContent">
+        /// Valid ios data content
+        /// </param>
+        /// <param name="facebookContent">
+        /// Facebook template string
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void SendRawPushNotification(
+            string toProfileId,
+            string fcmContent,
+            string iosContent,
+            string facebookContent,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PushNotificationSendParamToProfileId.Value] = toProfileId;
+            
+            if (Util.IsOptionalParameterValid(fcmContent))
+            {
+                data[OperationParam.PushNotificationSendParamFcmContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fcmContent);
+            }
+
+            if (Util.IsOptionalParameterValid(iosContent))
+            {
+                data[OperationParam.PushNotificationSendParamIosContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(iosContent);
+            }
+
+            if (Util.IsOptionalParameterValid(facebookContent))
+            {
+                data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRaw, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Sends a raw push notification to a target list of users.
+        /// </param>
+        /// <param name="profileIds">
+        /// Collection of profile IDs to send the notification to
+        /// </param>
+        /// <param name="fcmContent">
+        /// Valid Fcm data content
+        /// </param>
+        /// <param name="iosContent">
+        /// Valid ios data content
+        /// </param>
+        /// <param name="facebookContent">
+        /// Facebook template string
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void SendRawPushNotificationBatch(
+            IList<string> profileIds,
+            string fcmContent,
+            string iosContent,
+            string facebookContent,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.PushNotificationSendParamProfileIds.Value] = profileIds;
+            
+            if (Util.IsOptionalParameterValid(fcmContent))
+            {
+                data[OperationParam.PushNotificationSendParamFcmContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fcmContent);
+            }
+
+            if (Util.IsOptionalParameterValid(iosContent))
+            {
+                data[OperationParam.PushNotificationSendParamIosContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(iosContent);
+            }
+
+            if (Util.IsOptionalParameterValid(facebookContent))
+            {
+                data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRawBatch, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Sends a raw push notification to a target group.
+        /// </param>
+        /// <param name="groupId">
+        /// Target group
+        /// </param>
+        /// <param name="fcmContent">
+        /// Valid Fcm data content
+        /// </param>
+        /// <param name="iosContent">
+        /// Valid ios data content
+        /// </param>
+        /// <param name="facebookContent">
+        /// Facebook template string
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void SendRawPushNotificationToGroup(
+            string groupId,
+            string fcmContent,
+            string iosContent,
+            string facebookContent,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+
+            if (Util.IsOptionalParameterValid(fcmContent))
+            {
+                data[OperationParam.PushNotificationSendParamFcmContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fcmContent);
+            }
+
+            if (Util.IsOptionalParameterValid(iosContent))
+            {
+                data[OperationParam.PushNotificationSendParamIosContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(iosContent);
+            }
+
+            if (Util.IsOptionalParameterValid(facebookContent))
+            {
+                data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRawToGroup, data, callback);
+            m_brainCloudClientRef.SendRequest(sc);
+        }
+
 
         /// <summary>
         /// Schedules a normalized push notification to a user
