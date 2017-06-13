@@ -13,7 +13,6 @@ namespace BrainCloud
 
         //Push Notification Service - Send Params
         public static readonly OperationParam PushNotificationSendParamToPlayerId = new OperationParam("toPlayerId");
-        public static readonly OperationParam PushNotificationSendParamToProfileId = new OperationParam("toProfileId");
         public static readonly OperationParam PushNotificationSendParamProfileId = new OperationParam("profileId");
         public static readonly OperationParam PushNotificationSendParamMessage = new OperationParam("message");
         public static readonly OperationParam PushNotificationSendParamNotificationTemplateId = new OperationParam("notificationTemplateId");

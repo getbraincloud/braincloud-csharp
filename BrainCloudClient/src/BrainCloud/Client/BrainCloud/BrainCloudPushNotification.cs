@@ -512,7 +512,7 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PushNotificationSendParamToProfileId.Value] = toProfileId;
+            data[OperationParam.PushNotificationSendParamToPlayerId.Value] = toProfileId;
             
             if (Util.IsOptionalParameterValid(fcmContent))
             {
