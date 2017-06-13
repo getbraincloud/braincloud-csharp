@@ -40,11 +40,18 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Register = new ServiceOperation("REGISTER");
         public static readonly ServiceOperation SendSimple = new ServiceOperation("SEND_SIMPLE");
         public static readonly ServiceOperation SendRich = new ServiceOperation("SEND_RICH");
+        public static readonly ServiceOperation SendRaw = new ServiceOperation("SEND_RAW");
+        public static readonly ServiceOperation SendRawBatch = new ServiceOperation("SEND_RAW_BATCH");
+        public static readonly ServiceOperation SendRawToGroup = new ServiceOperation("SEND_RAW_TO_GROUP");
         public static readonly ServiceOperation SendTemplatedToGroup = new ServiceOperation("SEND_TEMPLATED_TO_GROUP");
         public static readonly ServiceOperation SendNormalizedToGroup = new ServiceOperation("SEND_NORMALIZED_TO_GROUP");
         public static readonly ServiceOperation SendNormalized = new ServiceOperation("SEND_NORMALIZED");
         public static readonly ServiceOperation SendNormalizedBatch = new ServiceOperation("SEND_NORMALIZED_BATCH");
+        public static readonly ServiceOperation ScheduleRichNotification = new ServiceOperation("SCHEDULE_RICH_NOTIFICATION");
+        public static readonly ServiceOperation ScheduleNormalizedNotification = new ServiceOperation("SCHEDULE_NORMALIZED_NOTIFICATION");
 
+        public static readonly ServiceOperation ScheduleRawNotification = new ServiceOperation("SCHEDULE_RAW_NOTIFICATION");
+        
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
 
@@ -198,7 +205,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation AddEvent = new ServiceOperation("ADD_EVENT");
         public static readonly ServiceOperation GetStreamSummariesForInitiatingPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_INITIATING_PLAYER");
         public static readonly ServiceOperation GetStreamSummariesForTargetPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_TARGET_PLAYER");
-
+        public static readonly ServiceOperation GetRecentStreamsForInitiatingPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_INITIATING_PLAYER");
+        public static readonly ServiceOperation GetRecentStreamsForTargetPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_TARGET_PLAYER");
+        
         public static readonly ServiceOperation GetUserInfo = new ServiceOperation("GET_USER_INFO");
         public static readonly ServiceOperation InitializeTransaction = new ServiceOperation("INITIALIZE_TRANSACTION");
         public static readonly ServiceOperation FinalizeTransaction = new ServiceOperation("FINALIZE_TRANSACTION");
@@ -301,6 +310,7 @@ namespace BrainCloud.Internal
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");
         public static readonly ServiceOperation SendAdvancedEmail = new ServiceOperation("SEND_ADVANCED_EMAIL");
+        public static readonly ServiceOperation SendAdvancedEmailByAddress = new ServiceOperation("SEND_ADVANCED_EMAIL_BY_ADDRESS");
 
         //peer
         public static readonly ServiceOperation AttachPeerProfile = new ServiceOperation("ATTACH_PEER_PROFILE");
