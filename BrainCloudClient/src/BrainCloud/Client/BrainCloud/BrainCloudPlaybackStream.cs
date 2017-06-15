@@ -211,25 +211,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Gets stream summaries for initiating player
-        /// </summary>
-        /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - GetStreamSummariesForInitiatingPlayer
-        /// </remarks>
-        /// <param name="in_initiatingPlayerId">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("This has been deprecated. Use GetRecentStreamsForInitiatingPlayer instead - removal after September 1 2017")]
         public void GetStreamSummariesForInitiatingPlayer(
             string in_initiatingPlayerId,
             SuccessCallback in_success = null,
@@ -244,25 +226,7 @@ namespace BrainCloud
             m_brainCloudClientRef.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Gets stream summaries for target player
-        /// </summary>
-        /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - GetStreamSummariesForTargetPlayer
-        /// </remarks>
-        /// <param name="in_targetPlayerId">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="in_success">
-        /// The success callback.
-        /// </param>
-        /// <param name="in_failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="in_cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        [Obsolete("This has been deprecated. Use GetRecentStreamsForTargetPlayer instead - removal after September 1 2017")]
         public void GetStreamSummariesForTargetPlayer(
             string in_targetPlayerId,
             SuccessCallback in_success = null,
