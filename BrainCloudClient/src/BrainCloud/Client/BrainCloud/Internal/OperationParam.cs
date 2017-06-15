@@ -13,13 +13,22 @@ namespace BrainCloud
 
         //Push Notification Service - Send Params
         public static readonly OperationParam PushNotificationSendParamToPlayerId = new OperationParam("toPlayerId");
+        public static readonly OperationParam PushNotificationSendParamProfileId = new OperationParam("profileId");
         public static readonly OperationParam PushNotificationSendParamMessage = new OperationParam("message");
         public static readonly OperationParam PushNotificationSendParamNotificationTemplateId = new OperationParam("notificationTemplateId");
         public static readonly OperationParam PushNotificationSendParamSubstitutions = new OperationParam("substitutions");
         public static readonly OperationParam PushNotificationSendParamProfileIds = new OperationParam("profileIds");
 
+        public static readonly OperationParam PushNotificationSendParamFcmContent = new OperationParam("fcmContent");
+        public static readonly OperationParam PushNotificationSendParamIosContent = new OperationParam("iosContent");
+        public static readonly OperationParam PushNotificationSendParamFacebookContent = new OperationParam("facebookContent");
+
+
         public static readonly OperationParam AlertContent = new OperationParam("alertContent");
         public static readonly OperationParam CustomData = new OperationParam("customData");
+
+        public static readonly OperationParam StartDateUTC = new OperationParam("startDateUTC");
+        public static readonly OperationParam MinutesFromNow = new OperationParam("minutesFromNow");
 
         // Twitter Service - Verify Params
         public static readonly OperationParam TwitterServiceVerifyToken = new OperationParam("token");
@@ -274,7 +283,7 @@ namespace BrainCloud
         public static readonly OperationParam MatchMakingServiceRangeDelta = new OperationParam("rangeDelta");
         public static readonly OperationParam MatchMakingServiceNumMatches = new OperationParam("numMatches");
         public static readonly OperationParam MatchMakingServiceAttributes = new OperationParam("attributes");
-        public static readonly OperationParam MatchMakingServiceExtraParams = new OperationParam("extraParams");
+        public static readonly OperationParam MatchMakingServiceExtraParams = new OperationParam("extraParms");
         public static readonly OperationParam MatchMakingServicePlayerId = new OperationParam("playerId");
         public static readonly OperationParam MatchMakingServicePlaybackStreamId = new OperationParam("playbackStreamId");
 
@@ -284,6 +293,7 @@ namespace BrainCloud
 
         public static readonly OperationParam PlaybackStreamServiceTargetPlayerId = new OperationParam("targetPlayerId");
         public static readonly OperationParam PlaybackStreamServiceInitiatingPlayerId = new OperationParam("initiatingPlayerId");
+        public static readonly OperationParam PlaybackStreamServiceMaxNumberOfStreams = new OperationParam("maxNumStreams");
         public static readonly OperationParam PlaybackStreamServiceIncludeSharedData = new OperationParam("includeSharedData");
         public static readonly OperationParam PlaybackStreamServicePlaybackStreamId = new OperationParam("playbackStreamId");
         public static readonly OperationParam PlaybackStreamServiceEventData = new OperationParam("eventData");
@@ -358,7 +368,8 @@ namespace BrainCloud
         public static readonly OperationParam Subject = new OperationParam("subject");
         public static readonly OperationParam Body = new OperationParam("body");
         public static readonly OperationParam ServiceParams = new OperationParam("serviceParams");
-        
+        public static readonly OperationParam EmailAddress = new OperationParam("emailAddress");
+
         public static readonly OperationParam LeaderboardId = new OperationParam("leaderboardId");
         public static readonly OperationParam VersionId = new OperationParam("versionId");
         public static readonly OperationParam TournamentCode = new OperationParam("tournamentCode");

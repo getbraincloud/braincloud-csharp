@@ -279,7 +279,7 @@ namespace BrainCloudTests
             {
                 BrainCloudClient.Instance.MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                BrainCloudClient.Instance.PlayerStateService.UpdatePlayerName(Id, tr.ApiSuccess, tr.ApiError);
+                BrainCloudClient.Instance.PlayerStateService.UpdateUserName(Id, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
                 BrainCloudClient.Instance.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
                 tr.Run();

@@ -20,18 +20,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sends an event to the designated player id with the attached json data.
-        /// Any events that have been sent to a player will show up in their
+        /// Sends an event to the designated profile id with the attached json data.
+        /// Any events that have been sent to a user will show up in their
         /// incoming event mailbox. If the recordLocally flag is set to true,
         /// a copy of this event (with the exact same event id) will be stored
-        /// in the sending player's "sent" event mailbox.
+        /// in the sending user's "sent" event mailbox.
         /// </summary>
         /// <remarks>
         /// Service Name - Event
         /// Service Operation - Send
         /// </remarks>
-        /// <param name="toPlayerId">
-        /// The id of the player who is being sent the event
+        /// <param name="toProfileId">
+        /// The id of the user who is being sent the event
         /// </param>
         /// <param name="eventType">
         /// The user-defined type of the event.
@@ -49,7 +49,7 @@ namespace BrainCloud
         /// The user object sent to the callback.
         /// </param>
         public void SendEvent(
-            string toPlayerId,
+            string toProfileId,
             string eventType,
             string jsonEventData,
             SuccessCallback success = null,
@@ -58,7 +58,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data[OperationParam.EventServiceSendToId.Value] = toPlayerId;
+            data[OperationParam.EventServiceSendToId.Value] = toProfileId;
             data[OperationParam.EventServiceSendEventType.Value] = eventType;
 
             if (Util.IsOptionalParameterValid(jsonEventData))
@@ -73,7 +73,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Updates an event in the player's incoming event mailbox.
+        /// Updates an event in the user's incoming event mailbox.
         /// </summary>
         /// <remarks>
         /// Service Name - Event
@@ -114,9 +114,9 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.UpdateEventData, data, callback);
             m_brainCloudClientRef.SendRequest(sc);
         }
-        
+
         /// <summary>
-        /// Delete an event out of the player's incoming mailbox.
+        /// Delete an event out of the user's incoming mailbox.
         /// </summary>
         /// <remarks>
         /// Service Name - Event
@@ -149,7 +149,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Get the events currently queued for the player.
+        /// Get the events currently queued for the user.
         /// </summary>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>

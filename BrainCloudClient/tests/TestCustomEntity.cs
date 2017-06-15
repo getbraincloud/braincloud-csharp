@@ -53,7 +53,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult();
             Player playerEntity = null;
 
-            BrainCloudClient.Instance.PlayerStateService.ReadPlayerState(
+            BrainCloudClient.Instance.PlayerStateService.ReadUserState(
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
