@@ -762,7 +762,7 @@ namespace JsonFx.Json
 						default:
 						{
 							this.Writer.Write("\\u");
-							this.Writer.Write(Char.ConvertToUtf32(value, i).ToString("X4"));
+							this.Writer.Write(ConvertToUtf32(value, i).ToString("X4"));
 							continue;
 						}
 					}
@@ -776,6 +776,31 @@ namespace JsonFx.Json
 
 			this.Writer.Write(JsonReader.OperatorStringDelim);
 		}
+		
+		//Emoji Hotfix: https://github.com/jsonfx/jsonfx/commit/6b684b776a830f99b4d8beb33169c106767112ce
+		/// <summary>
+		/// Converts the value of a UTF-16 encoded character or surrogate pair at a specified
+		/// position in a string into a Unicode code point.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="i"></param>
+		/// <returns></returns>
+		public static int ConvertToUtf32(string value, int index)
+		{
+#if SILVERLIGHT
+			return (int)value[index];
+#else
+			if (char.IsSurrogate(value, index))
+			{
+				return ((int)value[index]);
+			}
+			else
+			{
+				return Char.ConvertToUtf32(value, index);
+			}
+#endif
+		}
+
 
 		#endregion Public Methods
 
