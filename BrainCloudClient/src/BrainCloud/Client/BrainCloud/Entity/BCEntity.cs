@@ -379,6 +379,7 @@ namespace BrainCloud.Entity
         private bool IsBasicType(object in_obj)
         {
             return (in_obj is int
+                    || in_obj is bool
                     || in_obj is long
                     || in_obj is float
                     || in_obj is double
