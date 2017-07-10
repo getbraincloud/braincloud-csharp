@@ -703,26 +703,46 @@ namespace JsonFx.Json
 						{
 							// Unicode escape sequence
 							// e.g. Copyright: "\u00A9"
+							try
+							{
+								// unicode ordinal
+								int utf16;
+								if (this.index + 4 < this.SourceLength &&
+								    Int32.TryParse(
+									    this.Source.Substring(this.index + 1, 4),
+									    NumberStyles.AllowHexSpecifier,
+									    NumberFormatInfo.InvariantInfo,
+									    out utf16))
+								{
+									builder.Append(Char.ConvertFromUtf32(utf16));
+									this.index += 4;
+								}
+								else
+								{
+									// using FireFox style recovery, if not a valid hex
+									// escape sequence then treat as single escaped 'u'
+									// followed by rest of string
+									builder.Append(this.Source[this.index]);
+								}
+							}
+                            //Adding emoji support on reading.
+							catch (ArgumentOutOfRangeException exception)
+							{
+								String cleanHex = Source.Substring(index - 1, 12).Replace("\\u", "");
+			
+								var stringBuilder = new StringBuilder();
+								for (int i = 0; i < cleanHex.Length; i+=4)
+								{
+									string temp = cleanHex.Substring(i, 4);
+									char character = (char)Convert.ToInt16(temp, 16);
+									stringBuilder.Append(character);
+								}
+								
+								builder.Append(stringBuilder);
 
-							// unicode ordinal
-							int utf16;
-							if (this.index+4 < this.SourceLength &&
-								Int32.TryParse(
-									this.Source.Substring(this.index+1, 4),
-									NumberStyles.AllowHexSpecifier,
-									NumberFormatInfo.InvariantInfo,
-									out utf16))
-							{
-								builder.Append(Char.ConvertFromUtf32(utf16));
-								this.index += 4;
+								index += 10;
 							}
-							else
-							{
-								// using FireFox style recovery, if not a valid hex
-								// escape sequence then treat as single escaped 'u'
-								// followed by rest of string
-								builder.Append(this.Source[this.index]);
-							}
+
 							break;
 						}
 						default:
