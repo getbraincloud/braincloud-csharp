@@ -408,7 +408,7 @@ namespace BrainCloud.Internal
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
-                    ResetIdleTimer();
+                     ResetIdleTimer();
 
                     // note that active request is set to null if exception is to be thrown
                     HandleResponseBundle(GetWebRequestResponse(_activeRequest));
@@ -1345,7 +1345,7 @@ namespace BrainCloud.Internal
             }
 
 #if !(DOT_NET)
-            if (_activeRequest.WebRequest.error != null)
+			if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
@@ -1369,7 +1369,7 @@ namespace BrainCloud.Internal
         {
             string response = "";
 #if !(DOT_NET)
-            if (_activeRequest.WebRequest.error != null)
+			if (!string.IsNullOrEmpty( _activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
             }
