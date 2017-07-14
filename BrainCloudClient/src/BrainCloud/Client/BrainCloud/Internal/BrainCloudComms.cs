@@ -1279,6 +1279,7 @@ namespace BrainCloud.Internal
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
                 formTable["Content-Type"] = "application/json; charset=utf-8";
                 formTable["X-SIG"] = sig;
+                formTable["X-APPID"] = _appId;
                 WWW request = new WWW(_serverURL, byteArray, formTable);
                 requestState.WebRequest = request;
 #else
@@ -1286,6 +1287,7 @@ namespace BrainCloud.Internal
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(_serverURL));
                 req.Content = new ByteArrayContent(byteArray);
                 req.Headers.Add("X-SIG", sig);
+                req.Headers.Add("X-APPID", _appId);
                 req.Method = HttpMethod.Post;
 
                 CancellationTokenSource source = new CancellationTokenSource();
