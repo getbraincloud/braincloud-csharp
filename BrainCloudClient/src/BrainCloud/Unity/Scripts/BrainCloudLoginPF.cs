@@ -31,6 +31,9 @@ namespace BrainCloudUnity
 
             BrainCloudWrapper.Initialize();
 
+            // Clearing current profile
+            BrainCloudWrapper.GetInstance().ResetStoredProfileId();
+            
             ///////////////////////////////////////////////////////////////////
 
             _username = PlayerPrefs.GetString("username");
