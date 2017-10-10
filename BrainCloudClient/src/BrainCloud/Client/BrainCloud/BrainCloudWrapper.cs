@@ -3,6 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Internal;
@@ -795,13 +796,17 @@ public class BrainCloudWrapper
             SetStoredProfileId(profileId);
         }
         if (cbObject != null)
-        {
+        {            
             WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
             if (aco._successCallback != null)
             {
                 aco._successCallback(json, aco._cbObject);
             }
         }
+        
+#if UNITY_EDITOR
+        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateSuccess(json);
+#endif
     }
 
     /// <summary>
@@ -821,6 +826,10 @@ public class BrainCloudWrapper
                 aco._failureCallback(statusCode, reasonCode, errorJson, aco._cbObject);
             }
         }
+        
+#if UNITY_EDITOR
+        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
+#endif
     }
 
     private void SaveData()

@@ -112,18 +112,10 @@ namespace BrainCloud.Entity
         private IList<BCUserEntity> NewUserEntitiesFromJsonString(string in_json, JsonData in_entities)
         {
             List<BCUserEntity> entities = new List<BCUserEntity>();
-            /*
-            IDictionary d = jsonObj["data"] as IDictionary;
-            if (d == null || !d.Contains("entities"))
+            JsonData child = null;
+            for (int i = 0; i < in_entities.Count; ++i)
             {
-                return entities;
-            }
-            */
-            try
-            {
-                //foreach (JsonData child in in_entities)
-                JsonData child = null;
-                for (int i = 0; i < in_entities.Count; ++i)
+                try
                 {
                     child = in_entities[i];
                     BCUserEntity entity = null;
@@ -131,12 +123,11 @@ namespace BrainCloud.Entity
                     entity.ReadFromJson(child);
                     entities.Add(entity);
                 }
+                catch (System.Exception)
+                {
+                    /* do nadda */
+                }
             }
-            catch (System.Exception)
-            {
-                /* do nadda */
-            }
-
             return entities;
         }
     }

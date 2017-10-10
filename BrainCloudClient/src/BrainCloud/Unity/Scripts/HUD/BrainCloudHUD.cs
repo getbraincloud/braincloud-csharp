@@ -86,8 +86,8 @@ namespace BrainCloudUnity.HUD
 				if (GUILayout.Button ("bC Debug"))
 				{
 					Minimized = false;
-				}*/
-				
+				}
+				*/
 				GUILayout.EndHorizontal ();
 				GUILayout.EndVertical ();
 			}

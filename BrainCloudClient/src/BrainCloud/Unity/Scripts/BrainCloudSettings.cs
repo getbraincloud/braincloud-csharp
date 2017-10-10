@@ -2,19 +2,20 @@
 
 using UnityEngine;
 using System.IO;
-
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 namespace BrainCloudUnity
 {
 #if UNITY_EDITOR
-	[InitializeOnLoad]
+    [InitializeOnLoad]
 #endif
     public class BrainCloudSettings : ScriptableObject
     {
         private static BrainCloudSettings s_instance;
+
         public static BrainCloudSettings Instance
         {
             get
@@ -28,18 +29,18 @@ namespace BrainCloudUnity
                     s_instance = CreateInstance<BrainCloudSettings>();
 
 #if UNITY_EDITOR
-                string properPath = Path.Combine(Application.dataPath, "BrainCloud");
-                if (!Directory.Exists(properPath))
-                {
-                    AssetDatabase.CreateFolder("Assets", "BrainCloud");
-                }
-                properPath = Path.Combine(Application.dataPath, "BrainCloud/Resources");
-                if (!Directory.Exists(properPath))
-                {
-                    AssetDatabase.CreateFolder("Assets/BrainCloud", "Resources");
-                }
-                string fullPath = "Assets/BrainCloud/Resources/BrainCloudSettings.asset";
-                AssetDatabase.CreateAsset(s_instance, fullPath);
+                    string properPath = Path.Combine(Application.dataPath, "BrainCloud");
+                    if (!Directory.Exists(properPath))
+                    {
+                        AssetDatabase.CreateFolder("Assets", "BrainCloud");
+                    }
+                    properPath = Path.Combine(Application.dataPath, "BrainCloud/Resources");
+                    if (!Directory.Exists(properPath))
+                    {
+                        AssetDatabase.CreateFolder("Assets/BrainCloud", "Resources");
+                    }
+                    string fullPath = "Assets/BrainCloud/Resources/BrainCloudSettings.asset";
+                    AssetDatabase.CreateAsset(s_instance, fullPath);
 #endif
                 }
                 s_instance.name = "BrainCloudSettings";
@@ -47,42 +48,24 @@ namespace BrainCloudUnity
             }
         }
 
-#if UNITY_EDITOR
-    // Menu Bar
-    [MenuItem("Window/brainCloud/Settings", false, 0)]
-    public static void GoSettings()
-    {
-        Selection.activeObject = BrainCloudSettings.Instance;
-    }
-
-    [MenuItem("Window/brainCloud/Launch Portal...", false, 100)]
-    public static void GoPortal()
-    {
-        Help.BrowseURL(Instance.PortalURL);
-    }
-
-    [MenuItem("Window/brainCloud/View API Documentation...", false, 101)]
-    public static void GoAPIDoc()
-    {
-        Help.BrowseURL(Instance.ApiDocsURL);
-    }
-
-    [MenuItem("Window/brainCloud/View Tutorials...", false, 102)]
-    public static void GoTutorials()
-    {
-        Help.BrowseURL(Instance.ApiDocsURL + "/tutorials/unity-tutorials/");
-    }
-#endif
-
-
         public string DispatcherURL
         {
-            get { return m_serverURL + "/dispatcherv2"; }
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    return m_serverURL + "/dispatcherv2";
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
+            }
         }
+
         public string PortalURL
         {
             get { return "https://portal.braincloudservers.com"; }
         }
+
         public string ApiDocsURL
         {
             get { return "http://getbraincloud.com/apidocs"; }
@@ -90,76 +73,109 @@ namespace BrainCloudUnity
 
         // Settings
         public const string DEFAULT_BRAINCLOUD_URL = "https://sharedprod.braincloudservers.com";
-        [SerializeField]
-        private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
+
+        [SerializeField] private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
+
         public string ServerURL
         {
-            get { return m_serverURL; }
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    return m_serverURL;
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl;
+            }
             set
             {
                 if (m_serverURL != value)
                 {
                     m_serverURL = value;
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
 #endif
                 }
             }
         }
 
-        [SerializeField]
-        private string m_secretKey = "";
+        [SerializeField] private string m_secretKey = "";
+
         public string SecretKey
         {
-            get { return m_secretKey; }
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    return m_secretKey;
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppSecret();
+            }
             set
             {
                 if (m_secretKey != value)
                 {
                     m_secretKey = value;
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
 #endif
                 }
             }
         }
 
-        [SerializeField]
-        private string m_gameId = "";
+        [SerializeField] private string m_gameId = "";
+
         public string GameId
         {
-            get { return m_gameId; }
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    return m_gameId;
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppId();
+            }
             set
             {
                 if (m_gameId != value)
                 {
                     m_gameId = value;
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
 #endif
                 }
             }
         }
 
-        [SerializeField]
-        private string m_gameVersion = "1.0.0";
+        [SerializeField] private string m_gameVersion = "1.0.0";
+
         public string GameVersion
         {
-            get { return m_gameVersion; }
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    return m_gameVersion;
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppId();
+            }
             set
             {
                 if (m_gameVersion != value)
                 {
                     m_gameVersion = value;
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
 #endif
                 }
             }
         }
 
-        [SerializeField]
-        private bool m_enableLogging = false;
+        [SerializeField] private bool m_enableLogging = false;
+
         public bool EnableLogging
         {
             get { return m_enableLogging; }
@@ -169,11 +185,12 @@ namespace BrainCloudUnity
                 {
                     m_enableLogging = value;
 #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+                    EditorUtility.SetDirty(this);
 #endif
                 }
             }
         }
+        
     }
 }
 

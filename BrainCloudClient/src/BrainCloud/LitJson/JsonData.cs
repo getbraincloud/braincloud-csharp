@@ -347,6 +347,13 @@ namespace LitJson
                 inst_double = (double) obj;
                 return;
             }
+            
+            if (obj is float)
+            {
+                type = JsonType.Double;
+                inst_double = (double)(float)obj;
+                return;
+            }
 
             if (obj is Int32) {
                 type = JsonType.Int;
