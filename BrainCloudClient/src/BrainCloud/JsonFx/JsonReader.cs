@@ -726,7 +726,7 @@ namespace JsonFx.Json
 								}
 							}
                             //Adding emoji support on reading.
-							catch (ArgumentOutOfRangeException exception)
+							catch (ArgumentOutOfRangeException)
 							{
 								String cleanHex = Source.Substring(index - 1, 12).Replace("\\u", "");
 			

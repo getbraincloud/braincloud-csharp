@@ -31,9 +31,6 @@ namespace BrainCloudUnity
 
             BrainCloudWrapper.Initialize();
 
-            // Clearing current profile
-            BrainCloudWrapper.GetInstance().ResetStoredProfileId();
-            
             ///////////////////////////////////////////////////////////////////
 
             _username = PlayerPrefs.GetString("username");
@@ -41,6 +38,10 @@ namespace BrainCloudUnity
             // Stores the password in plain text directly in the unity store.
             // This is obviously not secure but speeds up debugging/testing.
             _password = PlayerPrefs.GetString("password");
+            
+            // Clearing current profile
+            BrainCloudWrapper.GetInstance().ResetStoredAnonymousId();
+            BrainCloudWrapper.GetInstance().ResetStoredProfileId();
         }
 
         void OnGUI()

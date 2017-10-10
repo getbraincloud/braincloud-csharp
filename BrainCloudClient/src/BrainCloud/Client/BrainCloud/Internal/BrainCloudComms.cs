@@ -458,6 +458,10 @@ namespace BrainCloud.Internal
                                 _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
                                 _serviceCallsInProgress.Clear();
                             }
+                            
+                            #if UNITY_EDITOR
+                            BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnNetworkError("NetworkError");
+                            #endif
 
                             _networkErrorCallback();
                         }
@@ -499,16 +503,29 @@ namespace BrainCloud.Internal
                 if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteSuccess)
                 {
                     if (_fileUploadSuccessCallback != null)
+                    {
+                        #if UNITY_EDITOR
+                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
+                        #endif
+                        
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
-
+                    }
+                    
                     BrainCloudClient.Get().Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
                 {
                     if (_fileUploadFailedCallback != null)
+                    {
+                        #if UNITY_EDITOR
+                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
+                        #endif
+                        
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
 
+                    }
+                        
                     BrainCloudClient.Get().Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
@@ -718,7 +735,7 @@ namespace BrainCloud.Internal
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
-            _brainCloudClientRef.Log("INCOMING: " + jsonData);
+            _brainCloudClientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
 
             if(string.IsNullOrEmpty(jsonData))
             {
@@ -837,6 +854,10 @@ namespace BrainCloud.Internal
                         {
                             try
                             {
+#if UNITY_EDITOR
+                                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSuccess(data);
+#endif
+                                
                                 sc.GetCallback().OnSuccessCallback(data);
                             }
                             catch (Exception e)
@@ -899,6 +920,11 @@ namespace BrainCloud.Internal
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
+                                    
+                                    #if UNITY_EDITOR
+                                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnReward(rewardsAsJson);
+                                    #endif
+                                    
                                     _rewardCallback(rewardsAsJson);
                                 }
                             }
@@ -990,6 +1016,10 @@ namespace BrainCloud.Internal
                             }
                         }
 
+                        #if UNITY_EDITOR
+                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(errorJson);
+                        #endif
+                        
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
 
@@ -997,6 +1027,27 @@ namespace BrainCloud.Internal
                 }
             }
 
+            #if UNITY_EDITOR
+            //Send Events to the Unity Plugin
+            if (bundleObj.events != null)
+            {
+                try
+                {
+                    Dictionary<string, Dictionary<string, object>[]> eventsJsonObjUnity =
+                        new Dictionary<string, Dictionary<string, object>[]>();
+                    eventsJsonObjUnity["events"] = bundleObj.events;
+                    string eventsAsJsonUnity = JsonWriter.Serialize(eventsJsonObjUnity);
+
+                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnEvent(eventsAsJsonUnity);
+                }
+                catch (Exception)
+                {
+                    //Ignored
+                }
+            }
+            #endif
+                    
+            
             if (bundleObj.events != null && _eventCallback != null)
             {
                 Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
@@ -1232,9 +1283,7 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            _brainCloudClientRef.Log("OUTGOING"
-                          + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
-                          + jsonRequestString);
+            _brainCloudClientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
 
             ResetIdleTimer();
 
@@ -1262,6 +1311,35 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + _secretKey);
+            
+            
+#if UNITY_EDITOR
+            //Sending Data to the Unity Debug Plugin for ease of developer debugging when in the Editor
+            try
+            {
+                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.ClearLastSentRequest();
+                Dictionary<string, object> requestData =
+                    JsonReader.Deserialize<Dictionary<string, object>>(jsonRequestString);
+                Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[]) requestData["messages"];
+
+                foreach (var messagesData in messagesDataList)
+                {
+                    var serviceValue = messagesData["service"];
+                    var operationValue = messagesData["operation"];
+                    var dataList = messagesData["data"];
+                    var dataValue = JsonWriter.Serialize(dataList);
+
+                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSentRequest(
+                        string.Format("{0} {1}", serviceValue, operationValue), dataValue);
+                }
+            }
+            catch (Exception)
+            {
+                //Ignored
+            }
+#endif
+            
+            
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
             requestState.Signature = sig;
@@ -1304,9 +1382,9 @@ namespace BrainCloud.Internal
 
                 ResetIdleTimer();
 
-                _brainCloudClientRef.Log("OUTGOING"
-                                          + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + "): " : ": ")
-                                          + jsonRequestString);
+                
+                _brainCloudClientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
+                
             }
         }
 

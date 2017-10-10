@@ -570,7 +570,41 @@ namespace BrainCloud
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.IncrementGlobalEntityData, data, callback);
             _brainCloudClient.SendRequest(serverCall);
         }
+        
+        /// <summary>
+        /// Gets a list of up to randomCount randomly selected entities from the server based on the where condition and specified maximum return count.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - globalEntity
+        /// Service Operation - GET_RANDOM_ENTITIES_MATCHING
+        /// </remarks>
+        /// <param name="where">Mongo style query string</param>
+        /// <param name="maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void GetRandomEntitiesMatching(
+            string whereJson,
+            int maxReturn,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
 
+            if (Util.IsOptionalParameterValid(whereJson))
+            {
+                var where = JsonReader.Deserialize<Dictionary<string, object>>(whereJson);
+                data[OperationParam.GlobalEntityServiceWhere.Value] = where;
+            }
+            
+            data[OperationParam.GlobalEntityServiceMaxReturn.Value] = maxReturn;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.GetRandomEntitiesMatching, data, callback);
+            _brainCloudClient.SendRequest(serverCall);
+        }
+        
         /// <summary>
         /// Method updates an existing entity's Owner and Acl on the server.
         /// </summary>

@@ -224,6 +224,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetPage = new ServiceOperation("GET_PAGE");
         public static readonly ServiceOperation GetPageOffset = new ServiceOperation("GET_PAGE_BY_OFFSET");
         public static readonly ServiceOperation IncrementGlobalEntityData = new ServiceOperation("INCREMENT_GLOBAL_ENTITY_DATA");
+        public static readonly ServiceOperation GetRandomEntitiesMatching = new ServiceOperation("GET_RANDOM_ENTITIES_MATCHING");
         public static readonly ServiceOperation IncrementUserEntityData = new ServiceOperation("INCREMENT_USER_ENTITY_DATA");
         public static readonly ServiceOperation IncrementSharedUserEntityData = new ServiceOperation("INCREMENT_SHARED_USER_ENTITY_DATA");
 

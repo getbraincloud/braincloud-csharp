@@ -1075,6 +1075,10 @@ namespace BrainCloud
         /// <summary>Method writes log if logging is enabled</summary>
         internal void Log(string log)
         {
+#if UNITY_EDITOR
+            BrainCloudUnity.BrainCloudPlugin.ResponseEvent.AppendLog(log);
+#endif
+            
             if (_loggingEnabled)
             {
                 string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
