@@ -17,8 +17,18 @@ To install the brainCloud library simply copy these two folders into the Assets 
 
 Once installed, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
-- Open brainCloud | Settings
-- Configure your Game Id and Game Secret to the values in the brainCloud Portal **Application Ids** section
+- Open brainCloud | Select Settings
+- Login or Signup to brainCloud. Click Disable to switch to Old System
+	- If using old system, configure your Game Id and Game Secret to the values in the brainCloud Portal **Application Ids** section
+- Select your team
+- Select your app
+- With your app selected, debug information will now appear in the debug tab when the game is running
+
+![alt text](screenshots/1_EditorSelectSettings.png "Select brainCloud Settings")
+![alt text](screenshots/2_Login.png "Login or Signup")
+![alt text](screenshots/3_SelectTeamAndApp.png "Select Team and App")
+![alt text](screenshots/4_ViewDebugContent.png "Viewable Debug Information")
+
 
 ## First run
 To check that everything is working, try running the default scene which is located here:
