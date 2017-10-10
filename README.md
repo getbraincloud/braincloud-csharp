@@ -20,8 +20,8 @@ Once installed, you will need to configure a few settings from the brainCloud me
 - Open brainCloud | Select Settings. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/1_EditorSelectSettings.png)
 - Login or Signup to brainCloud. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/2_Login.png) | Click Disable to switch to Old System
 	- If using old system, configure your Game Id and Game Secret to the values in the brainCloud Portal **Application Ids** section
-- Select your team and your app. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/3_SelectTeamAndApp.pn)
-- With your app selected, debug information will now appear in the debug tab when the game is running. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/4_ViewDebugContent.pn)
+- Select your team and your app. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/3_SelectTeamAndApp.png)
+- With your app selected, debug information will now appear in the debug tab when the game is running. [screenshot](https://raw.githubusercontent.com/getbraincloud/Unity-Csharp/development/screenshots/4_ViewDebugContent.png)
 
 
 ## First run
