@@ -160,7 +160,7 @@ namespace BrainCloudUnity
                     return m_gameVersion;
                 }
 
-                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppId();
+                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppVersion();
             }
             set
             {
