@@ -11,31 +11,23 @@ namespace BrainCloudUnity
 {
     namespace BrainCloudPlugin
     {
+        /// <inheritdoc />
         /// <summary>
-        /// BrainCloud Plugin Data, for those using the Embedded Editor Login
-        /// 
+        /// Contains the debug data for the newer brainCloud Plugin - BrainCloudPluginSettings
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
 #if UNITY_EDITOR
         [InitializeOnLoad]
 #endif
-        public class BrainCloudPluginSettings : BaseBrainCloudPluginSettings
+        public class BrainCloudDebugInfo : BaseBrainCloudDebugInfo
         {
-            public static bool IsLegacyPluginEnabled()
-            {
-                return Instance.PluginState == BrainCloudPluginState.INTRO ||
-                       Instance.PluginState == BrainCloudPluginState.DISABLED;
-            }
-
-            public static BrainCloudDebugInfo DebugInstance;
-
-            public new static BaseBrainCloudPluginSettings Instance
+            public new static BaseBrainCloudDebugInfo Instance
             {
                 get
                 {
                     if (_instance) return _instance;
 
-                    _instance = Resources.Load("BrainCloudPluginSettings") as BrainCloudPluginSettings;
+                    _instance = Resources.Load("Debug/BrainCloudPluginDebugInfo") as BrainCloudDebugInfo;
 
                     // If not found, autocreate the asset object.
                     if (_instance == null)
@@ -43,7 +35,7 @@ namespace BrainCloudUnity
                         CreatePluginAsset();
                     }
 
-                    DebugInstance = (BrainCloudDebugInfo)BrainCloudDebugInfo.Instance;
+                    _instance.name = "BrainCloudPluginDebugInfo";
 
                     return _instance;
                 }
@@ -51,7 +43,7 @@ namespace BrainCloudUnity
 
             private static void CreatePluginAsset()
             {
-                _instance = CreateInstance<BrainCloudPluginSettings>();
+                _instance = CreateInstance<BrainCloudDebugInfo>();
 
 #if UNITY_EDITOR
                 string properPath = Path.Combine(Application.dataPath, "BrainCloud");
@@ -64,20 +56,33 @@ namespace BrainCloudUnity
                 {
                     AssetDatabase.CreateFolder("Assets/BrainCloud", "Resources");
                 }
+                properPath = Path.Combine(Application.dataPath, "BrainCloud/Resources/Debug");
+                if (!Directory.Exists(properPath))
+                {
+                    AssetDatabase.CreateFolder("Assets/BrainCloud/Resources", "Debug");
+                }
 
 
-                const string fullPath = "Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset";
+                const string fullPath = "Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset";
                 AssetDatabase.CreateAsset(_instance, fullPath);
 #endif
             }
 
 
-            public override void Refresh()
+            public void Refresh()
             {
+                _instance = Resources.Load("Debug/BrainCloudPluginDebugInfo") as BrainCloudDebugInfo;
+
                 if (_instance != null)
                 {
                     _instance.ClearPluginData();
+
+                    Resources.UnloadAsset(_instance);
+
+                    _instance = null;
                 }
+
+                CreatePluginAsset();
             }
         }
     }
