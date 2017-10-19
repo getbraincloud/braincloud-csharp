@@ -23,13 +23,17 @@ namespace BrainCloudUnity
         private Vector2 _scrollPosition;
         private string _authStatus = "Welcome to brainCloud";
 
+        public static BrainCloudWrapper BCWrapper;
+        
         void Start()
         {
             ///////////////////////////////////////////////////////////////////
             // brainCloud game configuration
             ///////////////////////////////////////////////////////////////////
-
-            BrainCloudWrapper.Initialize();
+            
+            
+            BCWrapper = BrainCloudWrapper.GetInstance(); // gameObject.AddComponent<BrainCloudWrapper>();
+            BCWrapper.Init("PLAYER_ONE");
 
             ///////////////////////////////////////////////////////////////////
 
@@ -40,13 +44,13 @@ namespace BrainCloudUnity
             _password = PlayerPrefs.GetString("password");
             
             // Clearing current profile
-            BrainCloudWrapper.GetInstance().ResetStoredAnonymousId();
-            BrainCloudWrapper.GetInstance().ResetStoredProfileId();
+            BCWrapper.ResetStoredAnonymousId();
+            BCWrapper.ResetStoredProfileId();
         }
 
         void OnGUI()
         {
-            if (!BrainCloudWrapper.GetBC().IsAuthenticated())
+            if (!BCWrapper.client.IsAuthenticated())
             {
                 int width = Screen.width / 2 - 125;
                 if (width < 500) width = 500;
@@ -94,7 +98,7 @@ namespace BrainCloudUnity
                     // brainCloud authentication
                     ///////////////////////////////////////////////////////////////////
 
-                    BrainCloudWrapper.GetInstance().AuthenticateUniversal(_username, _password, true, OnSuccess_Authenticate, OnError_Authenticate);
+                    BCWrapper.AuthenticateUniversal(_username, _password, true, OnSuccess_Authenticate, OnError_Authenticate);
 
                     ///////////////////////////////////////////////////////////////////
                 }
