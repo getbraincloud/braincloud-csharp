@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
-
+using UnityEngine.Assertions;
 #if !XAMARIN
 using BrainCloud.Entity;
 using System;
@@ -79,6 +79,12 @@ namespace BrainCloud
 
     public class BrainCloudClient
     {
+        /// <summary>Enable the usage of the BrainCloudWrapper singleton.</summary>
+        public const bool enableSingletonMode = true;
+        public const string singletonUseErrorMessage =
+            "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
+        
+       
         #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
@@ -132,8 +138,15 @@ namespace BrainCloud
 
         #region Public Static
         /// <summary>A way to get a Singleton instance of brainCloud.</summary>
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
         public static BrainCloudClient Get()
         {
+            if (!enableSingletonMode)
+            {
+                throw new Exception(singletonUseErrorMessage);
+            }
+            
+            
             // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
             // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
             if (s_instance == null)
@@ -207,10 +220,16 @@ namespace BrainCloud
 
         #region Properties
 
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
         public static BrainCloudClient Instance
         {
             get
             {
+                if (!enableSingletonMode)
+                {
+                    throw new Exception(singletonUseErrorMessage);
+                }
+                
                 // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
                 // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
                 if (s_instance == null)

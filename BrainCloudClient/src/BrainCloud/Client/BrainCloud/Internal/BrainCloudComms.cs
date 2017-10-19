@@ -511,7 +511,7 @@ namespace BrainCloud.Internal
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
                     }
                     
-                    BrainCloudClient.Get().Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    _brainCloudClientRef.Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
@@ -526,7 +526,7 @@ namespace BrainCloud.Internal
 
                     }
                         
-                    BrainCloudClient.Get().Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    _brainCloudClientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
             }
@@ -565,7 +565,7 @@ namespace BrainCloud.Internal
             {
                 if (_fileUploads[i].UploadId == uploadId) return _fileUploads[i];
             }
-            BrainCloudClient.Get().Log("GetUploadProgress could not find upload ID " + uploadId);
+            _brainCloudClientRef.Log("GetUploadProgress could not find upload ID " + uploadId);
             return null;
         }
 
