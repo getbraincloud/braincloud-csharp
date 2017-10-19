@@ -133,9 +133,11 @@ public class BrainCloudWrapper
     public static BrainCloudWrapper GetInstance()
     {
         if (!BrainCloudClient.enableSingletonMode)
+#pragma warning disable 162
         {
             throw new Exception(BrainCloudClient.singletonUseErrorMessage);
         }
+#pragma warning restore 162
         
         if (_applicationIsQuitting)
         {
@@ -163,7 +165,9 @@ public class BrainCloudWrapper
                 GameObject go = new GameObject(GAMEOBJECT_BRAINCLOUD);
                 
                 _instance = go.AddComponent<BrainCloudWrapper>();
+#pragma warning disable 618
                 _instance.client = BrainCloudClient.Get();
+#pragma warning restore 618
                 
                 DontDestroyOnLoad(go);
             }
@@ -843,7 +847,7 @@ public class BrainCloudWrapper
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
+        Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion, _wrapperName);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {

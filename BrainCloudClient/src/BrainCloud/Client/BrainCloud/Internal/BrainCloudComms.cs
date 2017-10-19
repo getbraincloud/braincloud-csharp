@@ -841,7 +841,7 @@ namespace BrainCloud.Internal
                             //int fileSize = (int)fileData["fileSize"];
 
                             var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
-                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold);
+                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _brainCloudClientRef);
 #if DOT_NET
                             uploader.HttpClient = _httpClient;
 #endif

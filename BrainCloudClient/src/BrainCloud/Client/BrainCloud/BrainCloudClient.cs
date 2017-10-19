@@ -142,9 +142,11 @@ namespace BrainCloud
         public static BrainCloudClient Get()
         {
             if (!enableSingletonMode)
+#pragma warning disable 162
             {
                 throw new Exception(singletonUseErrorMessage);
             }
+#pragma warning restore 162
             
             
             // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
@@ -226,9 +228,11 @@ namespace BrainCloud
             get
             {
                 if (!enableSingletonMode)
+#pragma warning disable 162
                 {
                     throw new Exception(singletonUseErrorMessage);
                 }
+#pragma warning restore 162
                 
                 // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
                 // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
