@@ -92,7 +92,7 @@ namespace BrainCloud.Internal
         private CancellationTokenSource _cancelToken;
 #endif
 
-        private BrainCloudClient client;
+        private BrainCloudClient _client;
 
         public FileUploader(
             string uploadId,
@@ -101,9 +101,9 @@ namespace BrainCloud.Internal
             string sessionId,
             int timeout,
             int timeoutThreshold,
-            BrainCloudClient bcClient)
+            BrainCloudClient client)
         {
-            client = bcClient;
+            _client = client;
             
 #if UNITY_WEBPLAYER || UNITY_WEBGL
             throw new Exception("File upload API is not supported on Web builds");
@@ -174,7 +174,7 @@ namespace BrainCloud.Internal
             });
 #endif
             Status = FileUploaderStatus.Uploading;
-            client.Log("Started upload of " + _fileName);
+            _client.Log("Started upload of " + _fileName);
             _lastTime = DateTime.Now;
 #endif
         }
@@ -238,7 +238,7 @@ namespace BrainCloud.Internal
             StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
             ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_CANCELLED;
             Response = CreateErrorString(StatusCode, ReasonCode, "Upload of " + _fileName + " cancelled by user");
-            client.Log("Upload of " + _fileName + " cancelled by user");
+            _client.Log("Upload of " + _fileName + " cancelled by user");
         }
 
         public void Update()
@@ -297,7 +297,7 @@ namespace BrainCloud.Internal
                 JsonErrorMessage resp = null;
 
                 try { resp = JsonReader.Deserialize<JsonErrorMessage>(Response); }
-                catch (JsonDeserializationException e) { client.Log(e.Message); }
+                catch (JsonDeserializationException e) { _client.Log(e.Message); }
 
                 if (resp != null)
                     ReasonCode = resp.reason_code;
@@ -316,7 +316,7 @@ namespace BrainCloud.Internal
 #else
                 Response = _request.text;
 #endif
-                client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
 
 #if USE_WEB_REQUEST

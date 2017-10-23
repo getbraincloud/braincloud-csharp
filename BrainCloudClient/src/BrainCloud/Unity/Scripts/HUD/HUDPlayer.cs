@@ -12,7 +12,7 @@ namespace BrainCloudUnity.HUD
 
 		public void OnHUDActivate()
 		{
-			BrainCloudLoginPF.BCWrapper.client.PlayerStateService.GetAttributes (GetAttributesSuccess, Failure);
+			BrainCloudLoginPF.BCWrapper.BCClient.PlayerStateService.GetAttributes (GetAttributesSuccess, Failure);
 		}
 		
 		public void OnHUDDeactivate()
@@ -88,7 +88,7 @@ namespace BrainCloudUnity.HUD
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button ("Reset Player"))
 			{
-				BrainCloudLoginPF.BCWrapper.client.PlayerStateService.ResetUser (ResetPlayerSuccess, Failure);
+				BrainCloudLoginPF.BCWrapper.BCClient.PlayerStateService.ResetUser (ResetPlayerSuccess, Failure);
 			}
 			GUILayout.EndHorizontal ();
 
@@ -97,7 +97,7 @@ namespace BrainCloudUnity.HUD
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button ("Delete Player"))
 			{
-				BrainCloudLoginPF.BCWrapper.client.PlayerStateService.DeleteUser (DeletePlayerSuccess, Failure);
+				BrainCloudLoginPF.BCWrapper.BCClient.PlayerStateService.DeleteUser (DeletePlayerSuccess, Failure);
 			}
 			GUILayout.EndHorizontal ();
 

@@ -34,7 +34,7 @@ namespace BrainCloudUnity.HUD
 		{
 			m_stats.Clear ();
 
-			BrainCloudLoginPF.BCWrapper.client.GlobalStatisticsService.ReadAllGlobalStats(
+			BrainCloudLoginPF.BCWrapper.BCClient.GlobalStatisticsService.ReadAllGlobalStats(
 				ReadGlobalStatsSuccess, ReadGlobalStatsFailure);
 		}
 		
@@ -91,7 +91,7 @@ namespace BrainCloudUnity.HUD
 					if (long.TryParse(ps.increment, out valueAsLong)
 					    || double.TryParse(ps.increment, out valueAsDouble))
 					{
-						BrainCloudLoginPF.BCWrapper.client.GlobalStatisticsService.IncrementGlobalStats(
+						BrainCloudLoginPF.BCWrapper.BCClient.GlobalStatisticsService.IncrementGlobalStats(
 							"{ '" + ps.name +"':" + ps.increment +"}",
 							ReadGlobalStatsSuccess, ReadGlobalStatsFailure);
 					}

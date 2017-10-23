@@ -80,8 +80,8 @@ namespace BrainCloud
     public class BrainCloudClient
     {
         /// <summary>Enable the usage of the BrainCloudWrapper singleton.</summary>
-        public const bool enableSingletonMode = true;
-        public const string singletonUseErrorMessage =
+        public const bool EnableSingletonMode = true;
+        public const string SingletonUseErrorMessage =
             "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
         
        
@@ -141,10 +141,10 @@ namespace BrainCloud
         [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
         public static BrainCloudClient Get()
         {
-            if (!enableSingletonMode)
+            if (!EnableSingletonMode)
 #pragma warning disable 162
             {
-                throw new Exception(singletonUseErrorMessage);
+                throw new Exception(SingletonUseErrorMessage);
             }
 #pragma warning restore 162
             
@@ -227,10 +227,10 @@ namespace BrainCloud
         {
             get
             {
-                if (!enableSingletonMode)
+                if (!EnableSingletonMode)
 #pragma warning disable 162
                 {
-                    throw new Exception(singletonUseErrorMessage);
+                    throw new Exception(SingletonUseErrorMessage);
                 }
 #pragma warning restore 162
                 

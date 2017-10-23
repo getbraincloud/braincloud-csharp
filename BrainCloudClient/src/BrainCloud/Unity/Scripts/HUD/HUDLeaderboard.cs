@@ -35,14 +35,14 @@ namespace BrainCloudUnity.HUD
 		{
 			m_lb.Clear ();
 			
-			BrainCloudLoginPF.BCWrapper.client.SocialLeaderboardService.GetGlobalLeaderboardPage(
+			BrainCloudLoginPF.BCWrapper.BCClient.SocialLeaderboardService.GetGlobalLeaderboardPage(
 				leaderboardId, BrainCloud.BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW, 0, 100,
 				ReadLeaderboardSuccess, ReadLeaderboardFailure);
 		}
 
 		void PostScore(string lbId, long score)
 		{
-			BrainCloudLoginPF.BCWrapper.client.SocialLeaderboardService.PostScoreToLeaderboard(
+			BrainCloudLoginPF.BCWrapper.BCClient.SocialLeaderboardService.PostScoreToLeaderboard(
 				lbId, score, null, PostScoreSuccess, PostScoreFailure);
 		}
 

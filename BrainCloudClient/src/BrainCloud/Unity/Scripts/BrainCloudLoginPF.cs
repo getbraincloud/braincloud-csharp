@@ -32,7 +32,7 @@ namespace BrainCloudUnity
             ///////////////////////////////////////////////////////////////////
             
             
-            BCWrapper = BrainCloudWrapper.GetInstance(); // gameObject.AddComponent<BrainCloudWrapper>();
+            BCWrapper = gameObject.AddComponent<BrainCloudWrapper>();
             BCWrapper.Init("PLAYER_ONE");
 
             ///////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ namespace BrainCloudUnity
 
         void OnGUI()
         {
-            if (!BCWrapper.client.IsAuthenticated())
+            if (!BCWrapper.BCClient.IsAuthenticated())
             {
                 int width = Screen.width / 2 - 125;
                 if (width < 500) width = 500;
