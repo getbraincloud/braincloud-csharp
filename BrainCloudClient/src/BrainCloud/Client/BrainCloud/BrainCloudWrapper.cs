@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using BrainCloud;
+using BrainCloud.Entity;
 using BrainCloud.Internal;
 using JsonFx.Json;
 
@@ -974,6 +975,172 @@ public class BrainCloudWrapper
         _wrapperData.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
 #endif
     }
+    
+    #region Client Service Properties
+
+        internal BrainCloudComms Comms
+        {
+            get { return BCClient.Comms; }
+        }
+
+        public BrainCloudEntity EntityService
+        {
+            get { return BCClient.EntityService; }
+        }
+
+#if !XAMARIN
+        public BCEntityFactory EntityFactory
+        {
+            get { return BCClient.EntityFactory; }
+        }
+#endif
+
+        public BrainCloudGlobalEntity GlobalEntityService
+        {
+            get { return BCClient.GlobalEntityService; }
+        }
+
+        public BrainCloudGlobalApp GlobalAppService
+        {
+            get { return BCClient.GlobalAppService; }
+        }
+
+        public BrainCloudProduct ProductService
+        {
+            get { return BCClient.ProductService; }
+        }
+
+        public BrainCloudPlayerStatistics PlayerStatisticsService
+        {
+            get { return BCClient.PlayerStatisticsService; }
+        }
+
+        public BrainCloudGlobalStatistics GlobalStatisticsService
+        {
+            get { return BCClient.GlobalStatisticsService; }
+        }
+
+        public BrainCloudIdentity IdentityService
+        {
+            get { return BCClient.IdentityService; }
+        }
+
+        public BrainCloudScript ScriptService
+        {
+            get { return BCClient.ScriptService; }
+        }
+
+        public BrainCloudMatchMaking MatchMakingService
+        {
+            get { return BCClient.MatchMakingService; }
+        }
+
+        public BrainCloudOneWayMatch OneWayMatchService
+        {
+            get { return BCClient.OneWayMatchService; }
+        }
+
+        public BrainCloudPlaybackStream PlaybackStreamService
+        {
+            get { return BCClient.PlaybackStreamService; }
+        }
+
+        public BrainCloudGamification GamificationService
+        {
+            get { return BCClient.GamificationService; }
+        }
+
+        public BrainCloudPlayerState PlayerStateService
+        {
+            get { return BCClient.PlayerStateService; }
+        }
+
+        public BrainCloudFriend FriendService
+        {
+            get { return BCClient.FriendService; }
+        }
+
+        public BrainCloudEvent EventService
+        {
+            get { return BCClient.EventService; }
+        }
+
+        public BrainCloudSocialLeaderboard SocialLeaderboardService
+        {
+            get { return BCClient.SocialLeaderboardService; }
+        }
+
+        public BrainCloudSocialLeaderboard LeaderboardService
+        {
+            get { return BCClient.LeaderboardService; }
+        }
+
+        public BrainCloudAsyncMatch AsyncMatchService
+        {
+            get { return BCClient.AsyncMatchService; }
+        }
+
+        public BrainCloudTime TimeService
+        {
+            get { return BCClient.TimeService; }
+        }
+
+        public BrainCloudTournament TournamentService
+        {
+            get { return BCClient.TournamentService; }
+        }
+
+        public BrainCloudAuthentication AuthenticationService
+        {
+            get { return BCClient.AuthenticationService; }
+        }
+
+        public BrainCloudPushNotification PushNotificationService
+        {
+            get { return BCClient.PushNotificationService; }
+        }
+
+        public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
+        {
+            get { return BCClient.PlayerStatisticsEventService; }
+        }
+
+        public BrainCloudS3Handling S3HandlingService
+        {
+            get { return BCClient.S3HandlingService; }
+        }
+
+        public BrainCloudRedemptionCode RedemptionCodeService
+        {
+            get { return BCClient.RedemptionCodeService; }
+        }
+
+        public BrainCloudDataStream DataStreamService
+        {
+            get { return BCClient.DataStreamService; }
+        }
+
+        public BrainCloudProfanity ProfanityService
+        {
+            get { return BCClient.ProfanityService; }
+        }
+
+        public BrainCloudFile FileService
+        {
+            get { return BCClient.FileService; }
+        }
+
+        public BrainCloudGroup GroupService
+        {
+            get { return BCClient.GroupService; }
+        }
+
+        public BrainCloudMail MailService
+        {
+            get { return BCClient.MailService; }
+        }
+
+        #endregion
 
     private class WrapperData
     {

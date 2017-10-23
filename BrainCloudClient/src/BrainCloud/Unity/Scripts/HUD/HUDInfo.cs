@@ -22,7 +22,7 @@ namespace BrainCloudUnity.HUD
 		{
 			GUILayout.BeginVertical ();
 			
-			BrainCloudClient bcc = BrainCloudLoginPF.BCWrapper.BCClient;
+			BrainCloudClient bcc = BrainCloudLoginPF.BrainCloud.BCClient;
 			GUILayout.Box ("Connection Details");
 			GUILayout.BeginHorizontal();
 			GUILayout.BeginVertical();
