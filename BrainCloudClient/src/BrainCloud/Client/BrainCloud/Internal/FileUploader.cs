@@ -62,6 +62,7 @@ namespace BrainCloud.Internal
 #endif
         #endregion
 
+        private BrainCloudClient _client;
         private string _sessionId;
         private string _localPath;
         private string _serverUrl;
@@ -91,8 +92,6 @@ namespace BrainCloud.Internal
 #else
         private CancellationTokenSource _cancelToken;
 #endif
-
-        private BrainCloudClient _client;
 
         public FileUploader(
             string uploadId,
@@ -197,7 +196,7 @@ namespace BrainCloud.Internal
                 Response = await content.ReadAsStringAsync();
                 StatusCode = (int)message.StatusCode;
                 Status = FileUploaderStatus.CompleteSuccess;
-                client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
             catch (WebException wex)
             {
