@@ -137,27 +137,6 @@ namespace BrainCloud
         #endregion Private Data
 
         #region Public Static
-        /// <summary>A way to get a Singleton instance of brainCloud.</summary>
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
-        public static BrainCloudClient Get()
-        {
-            if (!EnableSingletonMode)
-#pragma warning disable 162
-            {
-                throw new Exception(SingletonUseErrorMessage);
-            }
-#pragma warning restore 162
-            
-            
-            // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
-            // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
-            if (s_instance == null)
-            {
-                s_instance = new BrainCloudClient();
-            }
-            return s_instance;
-        }
-
         public static ServerCallback CreateServerCallback(SuccessCallback success, FailureCallback failure, object cbObject = null)
         {
             ServerCallback newCallback = null;
@@ -222,28 +201,6 @@ namespace BrainCloud
 
         #region Properties
 
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
-        public static BrainCloudClient Instance
-        {
-            get
-            {
-                if (!EnableSingletonMode)
-#pragma warning disable 162
-                {
-                    throw new Exception(SingletonUseErrorMessage);
-                }
-#pragma warning restore 162
-                
-                // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
-                // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
-                if (s_instance == null)
-                {
-                    s_instance = new BrainCloudClient();
-                }
-                return s_instance;
-            }
-        }
-
         public bool Authenticated
         {
             get { return _comms.Authenticated; }
@@ -260,21 +217,9 @@ namespace BrainCloud
             get { return _comms != null ? _comms.SessionID : ""; }
         }
 
-        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
-        public string GameId
-        {
-            get { return _comms != null ? _comms.AppId : ""; }
-        }
-
         public string AppId
         {
             get { return _comms != null ? _comms.AppId : ""; }
-        }
-
-        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
-        public string GameVersion
-        {
-            get { return _appVersion; }
         }
 
         public string AppVersion
@@ -284,7 +229,7 @@ namespace BrainCloud
 
         public string BrainCloudClientVersion
         {
-            get { return BrainCloud.Version.GetVersion(); }
+            get { return Version.GetVersion(); }
         }
 
         public Platform ReleasePlatform
@@ -1131,5 +1076,64 @@ namespace BrainCloud
             // which will add it to its queue and send back responses accordingly
             _comms.AddToQueue(serviceMessage);
         }
+        
+        #region Deprecated
+        /// <summary>A way to get a Singleton instance of brainCloud.</summary>
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        public static BrainCloudClient Get()
+        {
+            if (!EnableSingletonMode)
+#pragma warning disable 162
+            {
+                throw new Exception(SingletonUseErrorMessage);
+            }
+#pragma warning restore 162
+            
+            
+            // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
+            // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
+            if (s_instance == null)
+            {
+                s_instance = new BrainCloudClient();
+            }
+            return s_instance;
+        }
+
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        public static BrainCloudClient Instance
+        {
+            get
+            {
+                if (!EnableSingletonMode)
+#pragma warning disable 162
+                {
+                    throw new Exception(SingletonUseErrorMessage);
+                }
+#pragma warning restore 162
+                
+                // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
+                // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
+                if (s_instance == null)
+                {
+                    s_instance = new BrainCloudClient();
+                }
+                return s_instance;
+            }
+        }
+        
+        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
+        public string GameId
+        {
+            get { return _comms != null ? _comms.AppId : ""; }
+        }
+
+        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
+        public string GameVersion
+        {
+            get { return _appVersion; }
+        }
+
+        
+        #endregion
     }
 }

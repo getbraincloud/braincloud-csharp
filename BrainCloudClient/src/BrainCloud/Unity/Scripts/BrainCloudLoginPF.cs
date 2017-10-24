@@ -50,7 +50,7 @@ namespace BrainCloudUnity
 
         void OnGUI()
         {
-            if (!BrainCloud.BCClient.IsAuthenticated())
+            if (!BrainCloud.Client.IsAuthenticated())
             {
                 int width = Screen.width / 2 - 125;
                 if (width < 500) width = 500;
