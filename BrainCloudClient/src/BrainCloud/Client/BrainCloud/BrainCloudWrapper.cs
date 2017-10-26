@@ -87,6 +87,8 @@ public class BrainCloudWrapper
     private WrapperData _wrapperData = new WrapperData();
 
     
+    //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
+    //Switch to BrainCloudWrapper.GetBC();
     public BrainCloudClient Client { get; private set; }
     public bool AlwaysAllowProfileSwitch { get; set; }
 
