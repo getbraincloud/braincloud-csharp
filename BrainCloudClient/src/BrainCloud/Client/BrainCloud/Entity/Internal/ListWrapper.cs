@@ -23,9 +23,9 @@ namespace BrainCloud.Entity.Internal
         {
         }
 
-        public ListWrapper(IList<S> in_sourceList)
+        public ListWrapper(IList<S> sourceList)
         {
-            m_sourceList = in_sourceList;
+            m_sourceList = sourceList;
         }
 
         // IList interface

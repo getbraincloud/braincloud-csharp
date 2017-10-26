@@ -28,16 +28,16 @@ namespace BrainCloud.Common
             Member = memberAccess;
         }
 
-        public static GroupACL CreateFromJson(string in_json)
+        public static GroupACL CreateFromJson(string json)
         {
             GroupACL acl = new GroupACL();
-            acl.ReadFromJson(in_json);
+            acl.ReadFromJson(json);
             return acl;
         }
 
-        public void ReadFromJson(string in_json)
+        public void ReadFromJson(string json)
         {
-            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(in_json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             Other = (Access)jsonObj["other"];
             Member = (Access)jsonObj["member"];
         }

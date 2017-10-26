@@ -14,11 +14,11 @@ namespace BrainCloud
     public class BrainCloudPlaybackStream
     {
 
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudPlaybackStream(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudPlaybackStream(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -28,35 +28,35 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - StartStream
         /// </remarks>
-        /// <param name="in_targetPlayerId">
+        /// <param name="targetPlayerId">
         /// The player to start a stream with
         /// </param>
-        /// <param name="in_includeSharedData">
+        /// <param name="includeSharedData">
         /// Whether to include shared data in the stream
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void StartStream(
-            string in_targetPlayerId,
-            bool in_includeSharedData,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string targetPlayerId,
+            bool includeSharedData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = in_targetPlayerId;
-            data[OperationParam.PlaybackStreamServiceIncludeSharedData.Value] = in_includeSharedData;
+            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = targetPlayerId;
+            data[OperationParam.PlaybackStreamServiceIncludeSharedData.Value] = includeSharedData;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.StartStream, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -66,30 +66,30 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - ReadStream
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// Identifies the stream to read
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ReadStream(
-            string in_playbackStreamId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = playbackStreamId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.ReadStream, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -99,30 +99,30 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - EndStream
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// Identifies the stream to read
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void EndStream(
-            string in_playbackStreamId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = playbackStreamId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.EndStream, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -132,30 +132,30 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - DeleteStream
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// Identifies the stream to read
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void DeleteStream(
-            string in_playbackStreamId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = playbackStreamId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.DeleteStream, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -165,80 +165,80 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - AddEvent
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// Identifies the stream to read
         /// </param>
-        /// <param name="in_eventData">
+        /// <param name="eventData">
         /// Describes the event
         /// </param>
-        /// <param name="in_summary">
+        /// <param name="summary">
         /// Current summary data as of this event
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void AddEvent(
-            string in_playbackStreamId,
-            string in_eventData,
-            string in_summary,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            string eventData,
+            string summary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = playbackStreamId;
 
-            if (Util.IsOptionalParameterValid(in_eventData))
+            if (Util.IsOptionalParameterValid(eventData))
             {
-                Dictionary<string, object> jsonEventData = JsonReader.Deserialize<Dictionary<string, object>> (in_eventData);
+                Dictionary<string, object> jsonEventData = JsonReader.Deserialize<Dictionary<string, object>> (eventData);
                 data[OperationParam.PlaybackStreamServiceEventData.Value] = jsonEventData;
             }
 
-            if (Util.IsOptionalParameterValid(in_summary))
+            if (Util.IsOptionalParameterValid(summary))
             {
-                Dictionary<string, object> jsonSummary = JsonReader.Deserialize<Dictionary<string, object>> (in_summary);
+                Dictionary<string, object> jsonSummary = JsonReader.Deserialize<Dictionary<string, object>> (summary);
                 data[OperationParam.PlaybackStreamServiceSummary.Value] = jsonSummary;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.AddEvent, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         [Obsolete("This has been deprecated. Use GetRecentStreamsForInitiatingPlayer instead - removal after September 1 2017")]
         public void GetStreamSummariesForInitiatingPlayer(
-            string in_initiatingPlayerId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string initiatingPlayerId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = in_initiatingPlayerId;
+            data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = initiatingPlayerId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetStreamSummariesForInitiatingPlayer, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         [Obsolete("This has been deprecated. Use GetRecentStreamsForTargetPlayer instead - removal after September 1 2017")]
         public void GetStreamSummariesForTargetPlayer(
-            string in_targetPlayerId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string targetPlayerId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = in_targetPlayerId;
+            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = targetPlayerId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetStreamSummariesForTargetPlayer, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
         
         /// <summary>
@@ -248,35 +248,35 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - GetRecentSteamsForInitiatingPlayer
         /// </remarks>
-        /// <param name="in_initiatingPlayerId">
+        /// <param name="initiatingPlayerId">
         /// The player that started the stream
         /// </param>
-        /// <param name="in_maxNumStreams">
+        /// <param name="maxNumStreams">
         /// The player that started the stream
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetRecentStreamsForInitiatingPlayer(
-            string in_initiatingPlayerId,
-            int in_maxNumStreams,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string initiatingPlayerId,
+            int maxNumStreams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = in_initiatingPlayerId;
-            data[OperationParam.PlaybackStreamServiceMaxNumberOfStreams.Value] = in_maxNumStreams;
+            data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = initiatingPlayerId;
+            data[OperationParam.PlaybackStreamServiceMaxNumberOfStreams.Value] = maxNumStreams;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetRecentStreamsForInitiatingPlayer, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
         
         /// <summary>
@@ -286,35 +286,35 @@ namespace BrainCloud
         /// Service Name - PlaybackStream
         /// Service Operation - GetRecentSteamsForTargetPlayer
         /// </remarks>
-        /// <param name="in_targetPlayerId">
+        /// <param name="targetPlayerId">
         /// The player that started the stream
         /// </param>
-        /// <param name="in_maxNumStreams">
+        /// <param name="maxNumStreams">
         /// The player that started the stream
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetRecentStreamsForTargetPlayer(
-            string in_targetPlayerId,
-            int in_maxNumStreams,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string targetPlayerId,
+            int maxNumStreams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = in_targetPlayerId;
-            data[OperationParam.PlaybackStreamServiceMaxNumberOfStreams.Value] = in_maxNumStreams;
+            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = targetPlayerId;
+            data[OperationParam.PlaybackStreamServiceMaxNumberOfStreams.Value] = maxNumStreams;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetRecentStreamsForTargetPlayer, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

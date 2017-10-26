@@ -12,11 +12,11 @@ namespace BrainCloud
 
     public class BrainCloudProduct
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudProduct(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudProduct(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -27,76 +27,31 @@ namespace BrainCloud
         /// Service Name - Product
         /// Service Operation - GetPlayerVC
         /// </remarks>
-        /// <param name="in_currencyType">
+        /// <param name="currencyType">
         /// The currency type to retrieve or null
         /// if all currency types are being requested.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetCurrency(
-            string in_currencyType,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string currencyType,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
+            data[OperationParam.ProductServiceCurrencyId.Value] = currencyType;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetPlayerVC, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
-
-        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
-        public void AwardCurrency(
-            string in_currencyType,
-            ulong in_amount,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
- 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.AwardVC, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
- 
-        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
-        public void ConsumeCurrency(
-            string in_currencyType,
-            ulong in_amount,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = in_currencyType;
-            data[OperationParam.ProductServiceCurrencyAmount.Value] = in_amount;
- 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ConsumePlayerVC, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
-        }
- 
-        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
-        public void ResetCurrency(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ResetPlayerVC, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -107,7 +62,7 @@ namespace BrainCloud
         /// Service Name - Product
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="in_platform">
+        /// <param name="platform">
         /// The store platform. Valid stores are:
         /// - itunes
         /// - facebook
@@ -117,27 +72,27 @@ namespace BrainCloud
         /// - windowsPhone
         /// - googlePlay
         /// </param>
-        /// <param name="in_userCurrency">
+        /// <param name="userCurrency">
         /// The currency to retrieve the sales
         /// inventory for. This is only used for Steam and Facebook stores.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetSalesInventory(
-            string in_platform,
-            string in_userCurrency,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string platform,
+            string userCurrency,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            GetSalesInventoryByCategory(in_platform, in_userCurrency, null, in_success, in_failure, in_cbObject);
+            GetSalesInventoryByCategory(platform, userCurrency, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -148,7 +103,7 @@ namespace BrainCloud
         /// Service Name - Product
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="in_platform">
+        /// <param name="platform">
         /// The store platform. Valid stores are:
         /// - itunes
         /// - facebook
@@ -158,44 +113,44 @@ namespace BrainCloud
         /// - windowsPhone
         /// - googlePlay
         /// </param>
-        /// <param name="in_userCurrency">
+        /// <param name="userCurrency">
         /// The currency to retrieve the sales
         /// inventory for. This is only used for Steam and Facebook stores.
         /// </param>
-        /// <param name="in_category">
+        /// <param name="category">
         /// The product category
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetSalesInventoryByCategory(
-            string in_platform,
-            string in_userCurrency,
-            string in_category,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string platform,
+            string userCurrency,
+            string category,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceGetInventoryPlatform.Value] = in_platform;
-            if (Util.IsOptionalParameterValid(in_userCurrency))
+            data[OperationParam.ProductServiceGetInventoryPlatform.Value] = platform;
+            if (Util.IsOptionalParameterValid(userCurrency))
             {
-                data[OperationParam.ProductServiceGetInventoryUserCurrency.Value] = in_userCurrency;
+                data[OperationParam.ProductServiceGetInventoryUserCurrency.Value] = userCurrency;
             }
-            if (Util.IsOptionalParameterValid(in_category))
+            if (Util.IsOptionalParameterValid(category))
             {
-                data[OperationParam.ProductServiceGetInventoryCategory.Value] = in_category;
+                data[OperationParam.ProductServiceGetInventoryCategory.Value] = category;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetInventory, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -205,35 +160,35 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - INITIALIZE_STEAM_TRANSACTION
         /// </remarks>
-        /// <param name="in_language">
+        /// <param name="language">
         /// ISO 639-1 language code
         /// </param>
-        /// <param name="in_items">
+        /// <param name="items">
         /// Items to purchase
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void StartSteamTransaction(
-            string in_language,
-            string in_itemId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string language,
+            string itemId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceLanguage.Value] = in_language;
-            data[OperationParam.ProductServiceItemId.Value] = in_itemId;
+            data[OperationParam.ProductServiceLanguage.Value] = language;
+            data[OperationParam.ProductServiceItemId.Value] = itemId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.StartSteamTransaction, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -244,30 +199,30 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - FINALIZE_STEAM_TRANSACTION
         /// </remarks>
-        /// <param name="in_transId">
+        /// <param name="transId">
         /// Steam transaction id
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void FinalizeSteamTransaction(
-            string in_transId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string transId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceTransId.Value] = in_transId;
+            data[OperationParam.ProductServiceTransId.Value] = transId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.FinalizeSteamTransaction, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -278,30 +233,30 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - VERIFY_MICROSOFT_RECEIPT
         /// </remarks>
-        /// <param name="in_receipt">
+        /// <param name="receipt">
         /// Receipt XML
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void VerifyMicrosoftReceipt(
-            string in_receipt,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string receipt,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceReceipt.Value] = in_receipt;
+            data[OperationParam.ProductServiceReceipt.Value] = receipt;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.VerifyMicrosoftReceipt, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -311,23 +266,23 @@ namespace BrainCloud
         /// Service Name - Product
         /// Service Operation - EligiblePromotions
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetEligiblePromotions(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.EligiblePromotions, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -338,30 +293,30 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - OP_CASH_IN_RECEIPT
         /// </remarks>
-        /// <param name="in_base64EncReceiptData">
+        /// <param name="base64EncReceiptData">
         /// Base64 encoded receipt data
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void VerifyItunesReceipt(
-            string in_base64EncReceiptData,
-            SuccessCallback in_callback = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string base64EncReceiptData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> message = new Dictionary<string, object>();
-            message[OperationParam.ProductServiceOpCashInReceiptReceipt.Value] = in_base64EncReceiptData;
+            message[OperationParam.ProductServiceOpCashInReceiptReceipt.Value] = base64EncReceiptData;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_callback, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.CashInReceipt, message, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -372,30 +327,30 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - FB_CONFIRM_PURCHASE
         /// </remarks>
-        /// <param name="in_signedRequest">
+        /// <param name="signedRequest">
         /// signed_request object received from Facebook
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ConfirmFacebookPurchase(
-            string in_signedRequest,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string signedRequest,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceSignedRequest.Value] = in_signedRequest;
+            data[OperationParam.ProductServiceSignedRequest.Value] = signedRequest;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.FbConfirmPurchase, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -406,40 +361,89 @@ namespace BrainCloud
         /// Service Name - product
         /// Service Operation - CONFIRM_GOOGLEPLAY_PURCHASE
         /// </remarks>
-        /// <param name="in_orderId">
+        /// <param name="orderId">
         /// GooglePlay order id
         /// </param>
-        /// <param name="in_productId">
+        /// <param name="productId">
         /// GooglePlay product id
         /// </param>
-        /// <param name="in_token">
+        /// <param name="token">
         /// GooglePlay token string
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ConfirmGooglePlayPurchase(
-            string in_orderId,
-            string in_productId,
-            string in_token,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string orderId,
+            string productId,
+            string token,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceOrderId.Value] = in_orderId;
-            data[OperationParam.ProductServiceProductId.Value] = in_productId;
-            data[OperationParam.ProductServiceToken.Value] = in_token;
+            data[OperationParam.ProductServiceOrderId.Value] = orderId;
+            data[OperationParam.ProductServiceProductId.Value] = productId;
+            data[OperationParam.ProductServiceToken.Value] = token;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GooglePlayConfirmPurchase, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
+
+        #region Deprecated
+
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void AwardCurrency(
+            string currencyType,
+            ulong amount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProductServiceCurrencyId.Value] = currencyType;
+            data[OperationParam.ProductServiceCurrencyAmount.Value] = amount;
+ 
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.AwardVC, data, callback);
+            _client.SendRequest(sc);
+        }
+ 
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void ConsumeCurrency(
+            string currencyType,
+            ulong amount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ProductServiceCurrencyId.Value] = currencyType;
+            data[OperationParam.ProductServiceCurrencyAmount.Value] = amount;
+ 
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ConsumePlayerVC, data, callback);
+            _client.SendRequest(sc);
+        }
+ 
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void ResetCurrency(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ResetPlayerVC, null, callback);
+            _client.SendRequest(sc);
+        }
+        
+        #endregion
     }
 }

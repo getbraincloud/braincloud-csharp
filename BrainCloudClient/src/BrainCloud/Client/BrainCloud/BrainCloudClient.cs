@@ -928,10 +928,10 @@ namespace BrainCloud
         /// By default this is set to 50 bytes/sec. Note that this timeout method
         /// does not work on Unity mobile platforms.
         /// </summary>
-        /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
-        public void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
+        /// <param name="bytesPerSec">The low transfer rate threshold in bytes/sec</param>
+        public void SetUploadLowTransferRateThreshold(int bytesPerSec)
         {
-            _comms.UploadLowTransferRateThreshold = in_bytesPerSec;
+            _comms.UploadLowTransferRateThreshold = bytesPerSec;
         }
 
         /// <summary>
@@ -959,10 +959,10 @@ namespace BrainCloud
         /// for the brainCloud SDK to resume sending messages.
         /// ResetCommunication() will also clear the message cache.
         /// </summary>
-        /// <param name="in_enabled">True if message should be cached on timeout</param>
-        public void EnableNetworkErrorMessageCaching(bool in_enabled)
+        /// <param name="enabled">True if message should be cached on timeout</param>
+        public void EnableNetworkErrorMessageCaching(bool enabled)
         {
-            _comms.EnableNetworkErrorMessageCaching(in_enabled);
+            _comms.EnableNetworkErrorMessageCaching(enabled);
         }
 
         /// <summary>
@@ -978,12 +978,12 @@ namespace BrainCloud
         /// Flushes the cached messages to resume API call processing. This will dump
         /// all of the cached messages in the queue.
         /// </summary>
-        /// <param name="in_sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
+        /// <param name="sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
         /// be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.
         /// </param>
-        public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
+        public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
-            _comms.FlushCachedMessages(in_sendApiErrorCallbacks);
+            _comms.FlushCachedMessages(sendApiErrorCallbacks);
         }
 
         /// <summary>
@@ -1031,12 +1031,12 @@ namespace BrainCloud
         /// Regardless, this is a manual way to send a heartbeat.
         /// </summary>
         public void SendHeartbeat(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null,
-                new ServerCallback(in_success, in_failure, in_cbObject));
+                new ServerCallback(success, failure, cbObject));
             _comms.AddToQueue(sc);
         }
 

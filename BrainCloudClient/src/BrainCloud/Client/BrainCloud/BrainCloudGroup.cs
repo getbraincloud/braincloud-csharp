@@ -29,9 +29,9 @@ namespace BrainCloud
 
         private BrainCloudClient _bcClient;
 
-        public BrainCloudGroup(BrainCloudClient brainCloudClientRef)
+        public BrainCloudGroup(BrainCloudClient client)
         {
-            _bcClient = brainCloudClientRef;
+            _bcClient = client;
         }
 
         /// <summary>

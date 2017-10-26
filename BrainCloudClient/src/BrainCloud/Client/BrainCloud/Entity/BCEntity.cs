@@ -138,10 +138,10 @@ namespace BrainCloud.Entity
 
 
         #region abstractMethods
-        protected abstract void CreateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
-        protected abstract void UpdateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
-        protected abstract void UpdateSharedEntity(string in_targetProfileId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
-        protected abstract void DeleteEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure);
+        protected abstract void CreateEntity(SuccessCallback success, FailureCallback failure);
+        protected abstract void UpdateEntity(SuccessCallback success, FailureCallback failure);
+        protected abstract void UpdateSharedEntity(string targetProfileId, SuccessCallback success, FailureCallback failure);
+        protected abstract void DeleteEntity(SuccessCallback success, FailureCallback failure);
         #endregion
 
 
@@ -149,9 +149,9 @@ namespace BrainCloud.Entity
         {
         }
 
-        public BCEntity(BrainCloudEntity in_braincloud)
+        public BCEntity(BrainCloudEntity braincloud)
         {
-            m_braincloud = in_braincloud;
+            m_braincloud = braincloud;
         }
 
         /// <summary>
@@ -167,13 +167,13 @@ namespace BrainCloud.Entity
         /// If the entity fails to be created, the update failure callback will not be run.
         ///
         /// </param>
-        /// <param name="in_cbSuccess">
+        /// <param name="success">
         /// A callback to run when store operation is completed successfully.
         /// </param>
-        /// <param name="in_cbFailure">
+        /// <param name="failure">
         /// A callback to run when store operation fails.
         /// </param>
-        public void StoreAsync(SuccessCallback in_cbSuccess = null, FailureCallback in_cbFailure = null)
+        public void StoreAsync(SuccessCallback success = null, FailureCallback failure = null)
         {
             if (m_state == EntityState.Deleting || m_state == EntityState.Deleted)
             {
@@ -184,20 +184,20 @@ namespace BrainCloud.Entity
             {
                 // a store async call came in while we are waiting for the server to create the object... queue an update
                 m_updateWhenCreated = true;
-                m_updateWhenCreatedSuccessCb = in_cbSuccess;
-                m_updateWhenCreatedFailureCb = in_cbFailure;
+                m_updateWhenCreatedSuccessCb = success;
+                m_updateWhenCreatedFailureCb = failure;
                 return;
             }
 
             if (m_state == EntityState.New)
             {
-                CreateEntity(in_cbSuccess, in_cbFailure);
+                CreateEntity(success, failure);
 
                 m_state = EntityState.Creating;
             }
             else
             {
-                UpdateEntity(in_cbSuccess, in_cbFailure);
+                UpdateEntity(success, failure);
                 // we don't currently need a state to say an update is in progress... and if we add this state we
                 // need to keep track of how many updates are queued in order to set the state back to ready when *all*
                 // updates have completed. So just removing the state for now... an update queued should not have any impact
@@ -219,13 +219,13 @@ namespace BrainCloud.Entity
         /// If the entity fails to be created, the update failure callback will not be run.
         ///
         /// </param>
-        /// <param name="in_cbSuccess">
+        /// <param name="success">
         /// A callback to run when store operation is completed successfully.
         /// </param>
-        /// <param name="in_cbFailure">
+        /// <param name="failure">
         /// A callback to run when store operation fails.
         /// </param>
-        public void StoreAsyncShared(string in_targetProfileId, SuccessCallback in_cbSuccess = null, FailureCallback in_cbFailure = null)
+        public void StoreAsyncShared(string targetProfileId, SuccessCallback success = null, FailureCallback failure = null)
         {
             if (m_state == EntityState.Deleting || m_state == EntityState.Deleted)
             {
@@ -236,20 +236,20 @@ namespace BrainCloud.Entity
             {
                 // a store async call came in while we are waiting for the server to create the object... queue an update
                 m_updateWhenCreated = true;
-                m_updateWhenCreatedSuccessCb = in_cbSuccess;
-                m_updateWhenCreatedFailureCb = in_cbFailure;
+                m_updateWhenCreatedSuccessCb = success;
+                m_updateWhenCreatedFailureCb = failure;
                 return;
             }
 
             if (m_state == EntityState.New)
             {
-                CreateEntity(in_cbSuccess, in_cbFailure);
+                CreateEntity(success, failure);
 
                 m_state = EntityState.Creating;
             }
             else
             {
-                UpdateSharedEntity(in_targetProfileId, in_cbSuccess, in_cbFailure);
+                UpdateSharedEntity(targetProfileId, success, failure);
                 // we don't currently need a state to say an update is in progress... and if we add this state we
                 // need to keep track of how many updates are queued in order to set the state back to ready when *all*
                 // updates have completed. So just removing the state for now... an update queued should not have any impact
@@ -261,13 +261,13 @@ namespace BrainCloud.Entity
         /// <summary>
         /// Deletes an entity on the server. If an entity has already been deleted this method will do nothing.
         /// </param>
-        /// <param name="in_cbSuccess">
+        /// <param name="success">
         /// A callback to run when delete operation is completed successfully.
         /// </param>
-        /// <param name="in_cbFailure">
+        /// <param name="failure">
         /// A callback to run when delete operation fails.
         /// </param>
-        public void DeleteAsync(SuccessCallback in_cbSuccess = null, FailureCallback in_cbFailure = null)
+        public void DeleteAsync(SuccessCallback success = null, FailureCallback failure = null)
         {
             if (m_state == EntityState.New)
             {
@@ -282,34 +282,34 @@ namespace BrainCloud.Entity
                 return;
             }
 
-            DeleteEntity(in_cbSuccess, in_cbFailure);
+            DeleteEntity(success, failure);
             m_state = EntityState.Deleting;
         }
 
-        public bool Contains(string in_key)
+        public bool Contains(string key)
         {
-            return m_data.ContainsKey(in_key);
+            return m_data.ContainsKey(key);
         }
 
-        public void Remove(string in_key)
+        public void Remove(string key)
         {
-            if (m_data.ContainsKey(in_key))
+            if (m_data.ContainsKey(key))
             {
-                m_data.Remove(in_key);
+                m_data.Remove(key);
             }
         }
 
 
-        public T Get<T>(string in_key)
+        public T Get<T>(string key)
         {
-            return EntityUtil.GetObjectAsType<T>(m_data[in_key]);
+            return EntityUtil.GetObjectAsType<T>(m_data[key]);
         }
 
-        public object this[string in_key]
+        public object this[string key]
         {
             get
             {
-                return m_data[in_key]; // throws Exception if key doesn't exist
+                return m_data[key]; // throws Exception if key doesn't exist
             }
 
             set
@@ -324,7 +324,7 @@ namespace BrainCloud.Entity
 
                 if (value == null)
                 {
-                    Remove(in_key);
+                    Remove(key);
                     return;
                 }
 
@@ -335,11 +335,11 @@ namespace BrainCloud.Entity
                     // convert DateTime to string as it's not supported by JSON directly
                     if (value is DateTime)
                     {
-                        m_data[in_key] = value.ToString();
+                        m_data[key] = value.ToString();
                     }
                     else
                     {
-                        m_data[in_key] = value;
+                        m_data[key] = value;
                     }
                 }
                 //else if (value is BCEntity)
@@ -353,12 +353,12 @@ namespace BrainCloud.Entity
             }
         }
 
-        protected void UpdateTimeStamps(JsonData in_json)
+        protected void UpdateTimeStamps(JsonData json)
         {
             try
             {
-                m_createdAt = Util.BcTimeToDateTime((long)in_json["createdAt"]);
-                m_updatedAt = Util.BcTimeToDateTime((long)in_json["updatedAt"]);
+                m_createdAt = Util.BcTimeToDateTime((long)json["createdAt"]);
+                m_updatedAt = Util.BcTimeToDateTime((long)json["updatedAt"]);
             }
             catch (System.Exception)
             { }
@@ -376,27 +376,27 @@ namespace BrainCloud.Entity
             }
         }
 
-        private bool IsBasicType(object in_obj)
+        private bool IsBasicType(object obj)
         {
-            return (in_obj is int
-                    || in_obj is bool
-                    || in_obj is long
-                    || in_obj is float
-                    || in_obj is double
-                    || in_obj is string
-                    || in_obj is DateTime);
+            return (obj is int
+                    || obj is bool
+                    || obj is long
+                    || obj is float
+                    || obj is double
+                    || obj is string
+                    || obj is DateTime);
         }
 
-        private JsonData ToJsonObjectRecurse(object in_object)
+        private JsonData ToJsonObjectRecurse(object obj)
         {
-            if (IsBasicType(in_object))
+            if (IsBasicType(obj))
             {
-                return new JsonData(in_object);
+                return new JsonData(obj);
             }
-            else if (in_object is IList)
+            else if (obj is IList)
             {
                 JsonData listJson = new JsonData();
-                IList objectList = (IList)in_object;
+                IList objectList = (IList)obj;
                 for (int i = 0; i < objectList.Count; ++i)
                 {
                     listJson.Add(ToJsonObjectRecurse((object)objectList[i]));
@@ -404,20 +404,20 @@ namespace BrainCloud.Entity
                 return listJson;
             }
             /*
-            else if (in_object is IDictionary<string, object>)
+            else if (object is IDictionary<string, object>)
             {
                 JsonData dictJson = new JsonData();
-                foreach (KeyValuePair<string, object> kv in (IDictionary<string, object>) in_object)
+                foreach (KeyValuePair<string, object> kv in (IDictionary<string, object>) object)
                 {
                     dictJson[kv.Key] = ToJsonObjectRecurse(kv.Value);
                 }
                 return dictJson;
             }
              */
-            else if (in_object is IDictionary)
+            else if (obj is IDictionary)
             {
                 JsonData dictJson = new JsonData();
-                foreach (DictionaryEntry de in (IDictionary)in_object)
+                foreach (DictionaryEntry de in (IDictionary)obj)
                 {
                     dictJson[(string)de.Key] = ToJsonObjectRecurse(de.Value);
                 }
@@ -450,40 +450,40 @@ namespace BrainCloud.Entity
             return sb.ToString();
         }
 
-        protected static object JsonToBasicType(JsonData in_jsonObj)
+        protected static object JsonToBasicType(JsonData jsonObj)
         {
-            if (in_jsonObj.IsString)
+            if (jsonObj.IsString)
             {
-                return (string)in_jsonObj;
+                return (string)jsonObj;
             }
-            else if (in_jsonObj.IsLong)
+            else if (jsonObj.IsLong)
             {
-                return (long)in_jsonObj;
+                return (long)jsonObj;
             }
-            else if (in_jsonObj.IsInt)
+            else if (jsonObj.IsInt)
             {
-                return (int)in_jsonObj;
+                return (int)jsonObj;
             }
-            else if (in_jsonObj.IsDouble)
+            else if (jsonObj.IsDouble)
             {
-                return (double)in_jsonObj;
+                return (double)jsonObj;
             }
-            else if (in_jsonObj.IsBoolean)
+            else if (jsonObj.IsBoolean)
             {
-                return (bool)in_jsonObj;
+                return (bool)jsonObj;
             }
 
             throw new ArgumentException("Unexpected type");
         }
 
-        protected static IList<object> JsonToList(JsonData in_jsonObj)
+        protected static IList<object> JsonToList(JsonData jsonObj)
         {
             List<object> list = new List<object>();
-            //foreach (JsonData child in in_jsonObj)
+            //foreach (JsonData child in jsonObj)
             JsonData child = null;
-            for (int i = 0; i < in_jsonObj.Count; ++i)
+            for (int i = 0; i < jsonObj.Count; ++i)
             {
-                child = in_jsonObj[i];
+                child = jsonObj[i];
                 if (child.IsObject)
                 {
                     list.Add(JsonToDictionary(child));
@@ -500,10 +500,10 @@ namespace BrainCloud.Entity
             return list;
         }
 
-        protected static IDictionary<string, object> JsonToDictionary(JsonData in_jsonObj)
+        protected static IDictionary<string, object> JsonToDictionary(JsonData jsonObj)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
-            IOrderedDictionary json = in_jsonObj as IOrderedDictionary;
+            IOrderedDictionary json = jsonObj as IOrderedDictionary;
             var enumerator = json.GetEnumerator();
 
             while (enumerator.MoveNext())
@@ -530,20 +530,20 @@ namespace BrainCloud.Entity
             return dict;
         }
 
-        public void ReadFromJson(string in_json)
+        public void ReadFromJson(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
+            JsonData jsonObj = JsonMapper.ToObject(json);
             ReadFromJson(jsonObj);
         }
 
-        public void ReadFromJson(JsonData in_jsonObj)
+        public void ReadFromJson(JsonData jsonObj)
         {
             m_state = EntityState.Ready;
-            m_entityType = (string)in_jsonObj["entityType"];
-            m_entityId = (string)in_jsonObj["entityId"];
-            m_acl = ACL.CreateFromJson(in_jsonObj["acl"]);
-            UpdateTimeStamps(in_jsonObj);
-            m_data = JsonToDictionary(in_jsonObj["data"]);
+            m_entityType = (string)jsonObj["entityType"];
+            m_entityId = (string)jsonObj["entityId"];
+            m_acl = ACL.CreateFromJson(jsonObj["acl"]);
+            UpdateTimeStamps(jsonObj);
+            m_data = JsonToDictionary(jsonObj["data"]);
         }
 
         public override string ToString()

@@ -16,11 +16,11 @@ namespace BrainCloud
 {
     public class BrainCloudPushNotification
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudPushNotification(BrainCloudClient brainCloudClientRef)
+        public BrainCloudPushNotification(BrainCloudClient client)
         {
-            m_brainCloudClientRef = brainCloudClientRef;
+            _client = client;
         }
 
 #if !(DOT_NET)
@@ -90,7 +90,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.DeregisterAll, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Deregister, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 
@@ -163,7 +163,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Register, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendSimple, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendTemplatedToGroup, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendNormalizedToGroup, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRawNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRawNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -531,7 +531,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRaw, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRawBatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -644,7 +644,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRawToGroup, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 
@@ -695,7 +695,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleNormalizedNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -745,7 +745,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleNormalizedNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -795,7 +795,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRichNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -845,7 +845,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRichNotification, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -887,7 +887,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendNormalized, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -929,7 +929,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendNormalizedBatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 #region Private
@@ -953,7 +953,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 #endregion

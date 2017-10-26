@@ -12,11 +12,11 @@ namespace BrainCloud
 {
     public class BrainCloudFile
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudFile(BrainCloudClient brainCloudClientRef)
+        public BrainCloudFile(BrainCloudClient client)
         {
-            m_brainCloudClientRef = brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace BrainCloud
 
             if (!info.Exists)
             {
-                m_brainCloudClientRef.Log("File at " + localPath + " does not exist");
+                _client.Log("File at " + localPath + " does not exist");
                 return false;
             }
 
@@ -63,7 +63,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.PrepareUserUpload, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
 
             return true;
 #endif
@@ -78,7 +78,7 @@ namespace BrainCloud
         /// <param name="uploadId">Upload ID of the file to cancel</param>
         public void CancelUpload(string uploadId)
         {
-            m_brainCloudClientRef.Comms.CancelUpload(uploadId);
+            _client.Comms.CancelUpload(uploadId);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace BrainCloud
         /// <param name="uploadId">The id of the upload</param>
         public double GetUploadProgress(string uploadId)
         {
-            return m_brainCloudClientRef.Comms.GetUploadProgress(uploadId);
+            return _client.Comms.GetUploadProgress(uploadId);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace BrainCloud
         /// <param name="uploadId">The id of the upload</param>
         public long GetUploadBytesTransferred(string uploadId)
         {
-            return m_brainCloudClientRef.Comms.GetUploadBytesTransferred(uploadId);
+            return _client.Comms.GetUploadBytesTransferred(uploadId);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace BrainCloud
         /// <param name="uploadId">The id of the upload</param>
         public long GetUploadTotalBytesToTransfer(string uploadId)
         {
-            return m_brainCloudClientRef.Comms.GetUploadTotalBytesToTransfer(uploadId);
+            return _client.Comms.GetUploadTotalBytesToTransfer(uploadId);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.ListUserFiles, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.DeleteUserFile, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.DeleteUserFiles, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.GetCdnUrl, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

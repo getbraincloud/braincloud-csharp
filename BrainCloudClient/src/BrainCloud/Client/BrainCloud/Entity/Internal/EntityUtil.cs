@@ -25,7 +25,7 @@ namespace BrainCloud.Entity.Internal
          *
          * @see ListWrapper and DictionaryWrapper classes for more info on how this is accomplished.
          */
-        public static T GetObjectAsType<T>(object in_value)
+        public static T GetObjectAsType<T>(object value)
         {
             Type type = typeof(T);
 
@@ -36,17 +36,17 @@ namespace BrainCloud.Entity.Internal
                     // the generic types T & S for our ListWrapper<T,S>
                     Type[] listGenericTypes = new Type[2];
                     listGenericTypes[0] = type.GetGenericArguments()[0];
-                    listGenericTypes[1] = in_value.GetType().GetGenericArguments()[0];
+                    listGenericTypes[1] = value.GetType().GetGenericArguments()[0];
 
                     // the parameters to the ListWrapper constructor
                     object[] parameters = new object[1];
-                    parameters[0] = in_value;
+                    parameters[0] = value;
 
                     // now call the ListWrapper constructor through reflection
                     Type genericTypeOpen = typeof(ListWrapper<,>);
                     Type genericTypeClosed = genericTypeOpen.MakeGenericType(listGenericTypes);
                     Type[] constructorTypes = new Type[1];
-                    constructorTypes[0] = in_value.GetType();
+                    constructorTypes[0] = value.GetType();
                     ConstructorInfo ci = genericTypeClosed.GetConstructor(constructorTypes);
 
                     return (T)ci.Invoke(parameters);
@@ -56,17 +56,17 @@ namespace BrainCloud.Entity.Internal
                     // the generic types TValue & SValue for our DictionaryWrapper<TValue, SValue>
                     Type[] dictGenericTypes = new Type[2];
                     dictGenericTypes[0] = type.GetGenericArguments()[1];
-                    dictGenericTypes[1] = in_value.GetType().GetGenericArguments()[1];
+                    dictGenericTypes[1] = value.GetType().GetGenericArguments()[1];
 
                     // the parameters to the DictionaryWrapper constructor
                     object[] parameters = new object[1];
-                    parameters[0] = in_value;
+                    parameters[0] = value;
 
                     // now call the ListWrapper constructor through reflection
                     Type genericTypeOpen = typeof(DictionaryWrapper<,>);
                     Type genericTypeClosed = genericTypeOpen.MakeGenericType(dictGenericTypes);
                     Type[] constructorTypes = new Type[1];
-                    constructorTypes[0] = in_value.GetType();
+                    constructorTypes[0] = value.GetType();
                     ConstructorInfo ci = genericTypeClosed.GetConstructor(constructorTypes);
                     return (T)ci.Invoke(parameters);
                 }
@@ -75,11 +75,11 @@ namespace BrainCloud.Entity.Internal
             T castedValue;
             try
             { 
-                castedValue = (T) in_value;
+                castedValue = (T) value;
             }
             catch(InvalidCastException)
             {
-                castedValue = (T) Convert.ChangeType(in_value, typeof(T));
+                castedValue = (T) Convert.ChangeType(value, typeof(T));
             }
             return castedValue;
         }

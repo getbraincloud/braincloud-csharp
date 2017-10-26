@@ -11,10 +11,10 @@ namespace BrainCloud
 {
     public class BrainCloudMatchMaking
     {
-        private BrainCloudClient m_brainCloudClientRef;
-        public BrainCloudMatchMaking(BrainCloudClient brainCloudClientRef)
+        private BrainCloudClient _client;
+        public BrainCloudMatchMaking(BrainCloudClient client)
         {
-            m_brainCloudClientRef = brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.Read, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.SetPlayerRating, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ResetPlayerRating, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.IncrementPlayerRating, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.DecrementPlayerRating, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOn, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOnFor, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOff, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.GetShieldExpiry, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayers, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.FindPlayersUsingFilter, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -489,7 +489,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.EnableMatchMaking, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.DisableMatchMaking, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

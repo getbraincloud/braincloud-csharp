@@ -12,11 +12,11 @@ namespace BrainCloud
 {
     public class BrainCloudEntity
     {
-        private BrainCloudClient _brainCloudClient;
+        private BrainCloudClient _client;
 
         public BrainCloudEntity(BrainCloudClient brainCloudClient)
         {
-            _brainCloudClient = brainCloudClient;
+            _client = brainCloudClient;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.Create, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
 
@@ -100,7 +100,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadByType, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 
@@ -165,7 +165,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.Update, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.UpdateShared, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /*Unavailable for now...
@@ -273,7 +273,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.Delete, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.UpdateSingleton, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 
@@ -373,7 +373,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.DeleteSingleton, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -406,7 +406,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.Read, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSingleton, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         [Obsolete("This has been deprecated. Use GetSharedEntityForProfileId instead - removal after September 1 2017")]
@@ -456,7 +456,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSharedEntity, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -496,7 +496,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSharedEntity, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         [Obsolete("This has been deprecated. Use GetSharedEntitiesForProfileId instead - removal after September 1 2017")]
@@ -511,7 +511,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadShared, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -546,7 +546,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadShared, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -598,7 +598,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetList, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
         
         [Obsolete("This has been deprecated. Use GetSharedEntitiesListForProfileId instead - removal after September 1 2017")]
@@ -628,7 +628,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSharedEntitiesList, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -685,7 +685,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.ReadSharedEntitiesList, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -723,7 +723,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetListCount, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -754,7 +754,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetPage, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -791,7 +791,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.GetPageOffset, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -824,7 +824,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementUserEntityData, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -860,7 +860,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.IncrementSharedUserEntityData, data, callback);
-            _brainCloudClient.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
     }
 }

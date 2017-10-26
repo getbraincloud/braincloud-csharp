@@ -18,41 +18,41 @@ namespace BrainCloud.Entity
         {
         }
 
-        public BCUserEntity(BrainCloudEntity in_braincloud)
+        public BCUserEntity(BrainCloudEntity braincloud)
         {
-            m_braincloud = in_braincloud;
+            m_braincloud = braincloud;
         }
 
-        protected override void CreateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
+        protected override void CreateEntity(SuccessCallback success, FailureCallback failure)
         {
             string jsonData = ToJsonString();
             string jsonAcl = m_acl == null ? null : m_acl.ToJsonString();
-            m_braincloud.CreateEntity(m_entityType, jsonData, jsonAcl, CbCreateSuccess + in_cbSuccess, CbCreateFailure + in_cbFailure, this);
+            m_braincloud.CreateEntity(m_entityType, jsonData, jsonAcl, CbCreateSuccess + success, CbCreateFailure + failure, this);
         }
 
-        protected override void UpdateEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
+        protected override void UpdateEntity(SuccessCallback success, FailureCallback failure)
         {
             string jsonData = ToJsonString();
             string jsonAcl = m_acl == null ? null : m_acl.ToJsonString();
-            m_braincloud.UpdateEntity(m_entityId, m_entityType, jsonData, jsonAcl, m_version, CbUpdateSuccess + in_cbSuccess, CbUpdateFailure + in_cbFailure, this);
+            m_braincloud.UpdateEntity(m_entityId, m_entityType, jsonData, jsonAcl, m_version, CbUpdateSuccess + success, CbUpdateFailure + failure, this);
         }
 
-        protected override void UpdateSharedEntity(string in_targetProfileId, SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
+        protected override void UpdateSharedEntity(string targetProfileId, SuccessCallback success, FailureCallback failure)
         {
             string jsonData = ToJsonString();
-            m_braincloud.UpdateSharedEntity(m_entityId, in_targetProfileId, m_entityType, jsonData, m_version, CbUpdateSuccess + in_cbSuccess, CbUpdateFailure + in_cbFailure, this);
+            m_braincloud.UpdateSharedEntity(m_entityId, targetProfileId, m_entityType, jsonData, m_version, CbUpdateSuccess + success, CbUpdateFailure + failure, this);
         }
 
-        protected override void DeleteEntity(SuccessCallback in_cbSuccess, FailureCallback in_cbFailure)
+        protected override void DeleteEntity(SuccessCallback success, FailureCallback failure)
         {
-            m_braincloud.DeleteEntity(m_entityId, m_version, CbDeleteSuccess + in_cbSuccess, CbDeleteFailure + in_cbFailure, this);
+            m_braincloud.DeleteEntity(m_entityId, m_version, CbDeleteSuccess + success, CbDeleteFailure + failure, this);
         }
 
 
 
-        public void CbCreateSuccess(string in_json, object in_cbObject)
+        public void CbCreateSuccess(string jsonString, object cbObject)
         {
-            JsonData json = JsonMapper.ToObject(in_json);
+            JsonData json = JsonMapper.ToObject(jsonString);
             UpdateTimeStamps(json["data"]);
 
             m_entityId = (string) json["data"]["entityId"];
@@ -62,28 +62,28 @@ namespace BrainCloud.Entity
             QueueUpdates(); // important - kicks off any queued updates that happened before we retrieved an id from the server
         }
 
-        public void CbCreateFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
+        public void CbCreateFailure(int statusCode, int reasonCode, string statusMessage, object cbObject)
         {
 
         }
 
-        public void CbUpdateSuccess(string in_json, object in_cbObject)
+        public void CbUpdateSuccess(string jsonString, object cbObject)
         {
-            JsonData json = JsonMapper.ToObject(in_json);
+            JsonData json = JsonMapper.ToObject(jsonString);
             UpdateTimeStamps(json["data"]);
         }
 
-        public void CbUpdateFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
+        public void CbUpdateFailure(int statusCode, int reasonCode, string statusMessage, object cbObject)
         {
 
         }
 
-        public void CbDeleteSuccess(string in_json, object in_cbObject)
+        public void CbDeleteSuccess(string json, object cbObject)
         {
             State = EntityState.Deleted;
         }
 
-        public void CbDeleteFailure(int statusCode, int reasonCode, string statusMessage, object in_cbObject)
+        public void CbDeleteFailure(int statusCode, int reasonCode, string statusMessage, object cbObject)
         {
 
         }

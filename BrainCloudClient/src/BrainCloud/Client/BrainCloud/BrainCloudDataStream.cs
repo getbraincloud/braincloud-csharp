@@ -13,11 +13,11 @@ namespace BrainCloud
 {
     public class BrainCloudDataStream
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudDataStream(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudDataStream(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -27,40 +27,40 @@ namespace BrainCloud
         /// Service Name - DataStream
         /// Service Operation - CustomPageEvent
         /// </remarks>
-        /// <param name="in_eventName">
+        /// <param name="eventName">
         /// The name of the event
         /// </param>
-        /// <param name="in_jsonEventProperties">
+        /// <param name="jsonEventProperties">
         /// The properties of the event
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CustomPageEvent(
-            string in_eventName,
-            string in_jsonEventProperties,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string eventName,
+            string jsonEventProperties,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.DataStreamEventName.Value] = in_eventName;
+            data[OperationParam.DataStreamEventName.Value] = eventName;
 
-            if (Util.IsOptionalParameterValid(in_jsonEventProperties))
+            if (Util.IsOptionalParameterValid(jsonEventProperties))
             {
-                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEventProperties);
+                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventProperties);
                 data[OperationParam.DataStreamEventProperties.Value] = eventProperties;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall serverCall = new ServerCall(ServiceName.DataStream, ServiceOperation.CustomPageEvent, data, callback);
-            m_brainCloudClientRef.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -70,40 +70,40 @@ namespace BrainCloud
         /// Service Name - DataStream
         /// Service Operation - CustomScreenEvent
         /// </remarks>
-        /// <param name="in_eventName">
+        /// <param name="eventName">
         /// The name of the event
         /// </param>
-        /// <param name="in_jsonEventProperties">
+        /// <param name="jsonEventProperties">
         /// The properties of the event
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CustomScreenEvent(
-            string in_eventName,
-            string in_jsonEventProperties,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string eventName,
+            string jsonEventProperties,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.DataStreamEventName.Value] = in_eventName;
+            data[OperationParam.DataStreamEventName.Value] = eventName;
             
-            if (Util.IsOptionalParameterValid(in_jsonEventProperties))
+            if (Util.IsOptionalParameterValid(jsonEventProperties))
             {
-                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEventProperties);
+                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventProperties);
                 data[OperationParam.DataStreamEventProperties.Value] = eventProperties;
             }
             
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall serverCall = new ServerCall(ServiceName.DataStream, ServiceOperation.CustomScreenEvent, data, callback);
-            m_brainCloudClientRef.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
         /// <summary>
@@ -113,40 +113,40 @@ namespace BrainCloud
         /// Service Name - DataStream
         /// Service Operation - CustomTrackEvent
         /// </remarks>
-        /// <param name="in_eventName">
+        /// <param name="eventName">
         /// The name of the event
         /// </param>
-        /// <param name="in_jsonEventProperties">
+        /// <param name="jsonEventProperties">
         /// The properties of the event
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CustomTrackEvent(
-            string in_eventName,
-            string in_jsonEventProperties,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string eventName,
+            string jsonEventProperties,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.DataStreamEventName.Value] = in_eventName;
+            data[OperationParam.DataStreamEventName.Value] = eventName;
             
-            if (Util.IsOptionalParameterValid(in_jsonEventProperties))
+            if (Util.IsOptionalParameterValid(jsonEventProperties))
             {
-                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonEventProperties);
+                Dictionary<string, object> eventProperties = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventProperties);
                 data[OperationParam.DataStreamEventProperties.Value] = eventProperties;
             }
             
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall serverCall = new ServerCall(ServiceName.DataStream, ServiceOperation.CustomTrackEvent, data, callback);
-            m_brainCloudClientRef.SendRequest(serverCall);
+            _client.SendRequest(serverCall);
         }
 
     }

@@ -9,11 +9,11 @@ namespace BrainCloud
 {
     public class BrainCloudTime
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudTime (BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudTime (BrainCloudClient inBrainCloudClient)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = inBrainCloudClient;
         }
 
         /// <summary>
@@ -24,23 +24,23 @@ namespace BrainCloud
         /// Service Name - Time
         /// Service Operation - Read
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ReadServerTime(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Time, ServiceOperation.Read, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }
