@@ -11,11 +11,11 @@ namespace BrainCloud
 {
     public class BrainCloudRedemptionCode
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudRedemptionCode(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudRedemptionCode(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -25,45 +25,45 @@ namespace BrainCloud
         /// Service Name - redemptionCode
         /// Service Operation - REDEEM_CODE
         /// </remarks>
-        /// <param name="in_scanCode">
+        /// <param name="scanCode">
         /// The code to redeem
         /// </param>
-        /// <param name="in_codeType">
+        /// <param name="codeType">
         /// The type of code
         /// </param>
-        /// <param name="in_jsonCustomRedemptionInfo">
+        /// <param name="jsonCustomRedemptionInfo">
         /// Optional - A JSON string containing custom redemption data
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void RedeemCode(
-            string in_scanCode,
-            string in_codeType,
-            string in_jsonCustomRedemptionInfo,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
-            object in_cbObject = null)
+            string scanCode,
+            string codeType,
+            string jsonCustomRedemptionInfo,
+            SuccessCallback success,
+            FailureCallback failure,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.RedemptionCodeServiceScanCode.Value] = in_scanCode;
-            data[OperationParam.RedemptionCodeServiceCodeType.Value] = in_codeType;
+            data[OperationParam.RedemptionCodeServiceScanCode.Value] = scanCode;
+            data[OperationParam.RedemptionCodeServiceCodeType.Value] = codeType;
 
-            if (Util.IsOptionalParameterValid(in_jsonCustomRedemptionInfo))
+            if (Util.IsOptionalParameterValid(jsonCustomRedemptionInfo))
             {
-                Dictionary<string, object> customRedemptionInfo = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonCustomRedemptionInfo);
+                Dictionary<string, object> customRedemptionInfo = JsonReader.Deserialize<Dictionary<string, object>>(jsonCustomRedemptionInfo);
                 data[OperationParam.RedemptionCodeServiceCustomRedemptionInfo.Value] = customRedemptionInfo;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.RedemptionCode, ServiceOperation.RedeemCode, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -73,35 +73,35 @@ namespace BrainCloud
         /// Service Name - redemptionCode
         /// Service Operation - GET_REDEEMED_CODES
         /// </remarks>
-        /// <param name="in_codeType">
+        /// <param name="codeType">
         /// Optional - The type of codes to retrieve. Returns all codes if left unspecified.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetRedeemedCodes(
-            string in_codeType,
-            SuccessCallback in_success,
-            FailureCallback in_failure,
-            object in_cbObject = null)
+            string codeType,
+            SuccessCallback success,
+            FailureCallback failure,
+            object cbObject = null)
         {
             Dictionary<string, object> data = null;
 
-            if (Util.IsOptionalParameterValid(in_codeType))
+            if (Util.IsOptionalParameterValid(codeType))
             {
                 data = new Dictionary<string, object>();
-                data[OperationParam.RedemptionCodeServiceCodeType.Value] = in_codeType;
+                data[OperationParam.RedemptionCodeServiceCodeType.Value] = codeType;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.RedemptionCode, ServiceOperation.GetRedeemedCodes, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

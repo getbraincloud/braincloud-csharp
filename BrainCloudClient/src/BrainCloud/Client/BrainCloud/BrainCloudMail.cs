@@ -12,11 +12,11 @@ namespace BrainCloud
 {
     public class BrainCloudMail
     {
-        private BrainCloudClient _brainCloudClientRef;
+        private BrainCloudClient _clientRef;
 
-        public BrainCloudMail(BrainCloudClient brainCloudClientRef)
+        public BrainCloudMail(BrainCloudClient client)
         {
-            _brainCloudClientRef = brainCloudClientRef;
+            _clientRef = client;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace BrainCloud
             object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            _brainCloudClientRef.SendRequest(new ServerCall(ServiceName.Mail, operation, data, callback));
+            _clientRef.SendRequest(new ServerCall(ServiceName.Mail, operation, data, callback));
         }
     }
 }

@@ -12,14 +12,14 @@ namespace BrainCloud
 {
     public class BrainCloudAuthentication
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
         public string AnonymousId { get; set; }
         public string ProfileId { get; set; }
 
-        public BrainCloudAuthentication(BrainCloudClient brainCloudClientRef)
+        public BrainCloudAuthentication(BrainCloudClient client)
         {
-            m_brainCloudClientRef = brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -460,11 +460,11 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPassword, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
 
@@ -478,9 +478,9 @@ namespace BrainCloud
             FailureCallback failure,
             object cbObject)
         {
-            string languageCode = m_brainCloudClientRef.LanguageCode;
+            string languageCode = _client.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
-            string countryCode = m_brainCloudClientRef.CountryCode;
+            string countryCode = _client.CountryCode;
 
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
@@ -490,9 +490,9 @@ namespace BrainCloud
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
-            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = m_brainCloudClientRef.AppId;
-            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_brainCloudClientRef.ReleasePlatform.ToString();
-            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = m_brainCloudClientRef.AppVersion;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = _client.ReleasePlatform.ToString();
+            data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = _client.AppVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
 #if DOT_NET
@@ -511,7 +511,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

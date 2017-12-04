@@ -13,11 +13,11 @@ namespace BrainCloud
 {
     public class BrainCloudOneWayMatch
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudOneWayMatch(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudOneWayMatch(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -27,25 +27,25 @@ namespace BrainCloud
         /// Service Name - OneWayMatch
         /// Service Operation - StartMatch
         /// </remarks>
-        /// <param name="in_otherPlayerId"> The player to start a match with </param>
-        /// <param name="in_rangeDelta"> The range delta used for the initial match search </param>
-        /// <param name="in_success"> The success callback. </param>
-        /// <param name="in_failure"> The failure callback. </param>
-        /// <param name="in_cbObject"> The user object sent to the callback. </param>
+        /// <param name="otherPlayerId"> The player to start a match with </param>
+        /// <param name="rangeDelta"> The range delta used for the initial match search </param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
         public void StartMatch(
-            string in_otherPlayerId,
-            long in_rangeDelta,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string otherPlayerId,
+            long rangeDelta,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.OfflineMatchServicePlayerId.Value] = in_otherPlayerId;
-            data[OperationParam.OfflineMatchServiceRangeDelta.Value] = in_rangeDelta;
+            data[OperationParam.OfflineMatchServicePlayerId.Value] = otherPlayerId;
+            data[OperationParam.OfflineMatchServiceRangeDelta.Value] = rangeDelta;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.OneWayMatch, ServiceOperation.StartMatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -55,30 +55,30 @@ namespace BrainCloud
         /// Service Name - OneWayMatch
         /// Service Operation - CancelMatch
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// The playback stream id returned in the start match
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CancelMatch(
-            string in_playbackStreamId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.OfflineMatchServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.OfflineMatchServicePlaybackStreamId.Value] = playbackStreamId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.OneWayMatch, ServiceOperation.CancelMatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -88,30 +88,30 @@ namespace BrainCloud
         /// Service Name - OneWayMatch
         /// Service Operation - CompleteMatch
         /// </remarks>
-        /// <param name="in_playbackStreamId">
+        /// <param name="playbackStreamId">
         /// The playback stream id returned in the initial start match
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CompleteMatch(
-            string in_playbackStreamId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string playbackStreamId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.OfflineMatchServicePlaybackStreamId.Value] = in_playbackStreamId;
+            data[OperationParam.OfflineMatchServicePlaybackStreamId.Value] = playbackStreamId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.OneWayMatch, ServiceOperation.CompleteMatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

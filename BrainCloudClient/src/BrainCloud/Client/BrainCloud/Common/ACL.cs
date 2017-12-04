@@ -35,16 +35,16 @@ namespace BrainCloud.Common
             return acl;
         }
 
-        public static ACL CreateFromJson(string in_json)
+        public static ACL CreateFromJson(string json)
         {
             ACL acl = new ACL();
-            acl.ReadFromJson(in_json);
+            acl.ReadFromJson(json);
             return acl;
         }
 
-        public void ReadFromJson(string in_json)
+        public void ReadFromJson(string json)
         {
-            Dictionary<string, object> jsonObj = JsonFx.Json.JsonReader.Deserialize<Dictionary<string, object>>(in_json);
+            Dictionary<string, object> jsonObj = JsonFx.Json.JsonReader.Deserialize<Dictionary<string, object>>(json);
             Other = (Access)(int)jsonObj["other"];
         }
 
@@ -55,16 +55,16 @@ namespace BrainCloud.Common
         }
 
 #if !XAMARIN
-        public static ACL CreateFromJson(JsonData in_json)
+        public static ACL CreateFromJson(JsonData json)
         {
             ACL acl = new ACL();
-            acl.ReadFromJson(in_json);
+            acl.ReadFromJson(json);
             return acl;
         }
 
-        public void ReadFromJson(JsonData in_json)
+        public void ReadFromJson(JsonData json)
         {
-            Other = (Access)(int)in_json["other"];
+            Other = (Access)(int)json["other"];
         }
 #endif
     }

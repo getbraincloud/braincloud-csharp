@@ -12,11 +12,11 @@ namespace BrainCloud
 {
     public class BrainCloudAsyncMatch
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudAsyncMatch(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudAsyncMatch(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace BrainCloud
         /// Service Name - AsyncMatch
         /// Service Operation - Create
         /// </remarks>
-        /// <param name="in_jsonOpponentIds">
+        /// <param name="jsonOpponentIds">
         /// JSON string identifying the opponent platform and id for this match.
         ///
         /// Platforms are identified as:
@@ -45,27 +45,27 @@ namespace BrainCloud
         ///     }
         /// ]
         /// </param>
-        /// <param name="in_pushNotificationMessage">
+        /// <param name="pushNotificationMessage">
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CreateMatch(
-            string in_jsonOpponentIds,
-            string in_pushNotificationMessage,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string jsonOpponentIds,
+            string pushNotificationMessage,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            CreateMatchInternal(in_jsonOpponentIds, null, in_pushNotificationMessage, null, null, null, in_success, in_failure, in_cbObject);
+            CreateMatchInternal(jsonOpponentIds, null, pushNotificationMessage, null, null, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace BrainCloud
         /// Service Name - AsyncMatch
         /// Service Operation - Create
         /// </remarks>
-        /// <param name="in_jsonOpponentIds">
+        /// <param name="jsonOpponentIds">
         /// JSON string identifying the opponent platform and id for this match.
         ///
         /// Platforms are identified as:
@@ -94,46 +94,46 @@ namespace BrainCloud
         ///     }
         /// ]
         /// </param>
-        /// <param name="in_jsonMatchState">
+        /// <param name="jsonMatchState">
         /// JSON string blob provided by the caller
         /// </param>
-        /// <param name="in_pushNotificationMessage">
+        /// <param name="pushNotificationMessage">
         /// Optional push notification message to send to the other party.
         /// Refer to the Push Notification functions for the syntax required.
         /// </param>
-        /// <param name="in_nextPlayer">
+        /// <param name="nextPlayer">
         /// Optionally, force the next player player to be a specific player
         /// </param>
-        /// <param name="in_jsonSummary">
+        /// <param name="jsonSummary">
         /// Optional JSON string defining what the other player will see as a summary of the game when listing their games
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CreateMatchWithInitialTurn(
-            string in_jsonOpponentIds,
-            string in_jsonMatchState,
-            string in_pushNotificationMessage,
-            string in_nextPlayer,
-            string in_jsonSummary,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string jsonOpponentIds,
+            string jsonMatchState,
+            string pushNotificationMessage,
+            string nextPlayer,
+            string jsonSummary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             CreateMatchInternal(
-                in_jsonOpponentIds,
-                in_jsonMatchState == null ? "{}" : in_jsonMatchState,
-                in_pushNotificationMessage,
+                jsonOpponentIds,
+                jsonMatchState == null ? "{}" : jsonMatchState,
+                pushNotificationMessage,
                 null,
-                in_nextPlayer,
-                in_jsonSummary,
-                in_success, in_failure, in_cbObject);
+                nextPlayer,
+                jsonSummary,
+                success, failure, cbObject);
         }
 
         /// <summary>
@@ -168,60 +168,60 @@ namespace BrainCloud
         /// <param name="jsonStatistics">
         /// Optional JSON string blob provided by the caller
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void SubmitTurn(
-            string in_ownerId,
-            string in_matchId,
-            UInt64 in_version,
-            string in_jsonMatchState,
-            string in_pushNotificationMessage,
-            string in_nextPlayer,
-            string in_jsonSummary,
-            string in_jsonStatistics,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            UInt64 version,
+            string jsonMatchState,
+            string pushNotificationMessage,
+            string nextPlayer,
+            string jsonSummary,
+            string jsonStatistics,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
-            data["version"] = in_version;
-            data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonMatchState);
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
+            data["version"] = version;
+            data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonMatchState);
 
-            if (Util.IsOptionalParameterValid(in_nextPlayer))
+            if (Util.IsOptionalParameterValid(nextPlayer))
             {
                 Dictionary<string, object> status = new Dictionary<string, object>();
-                status["currentPlayer"] = in_nextPlayer;
+                status["currentPlayer"] = nextPlayer;
                 data["status"] = status;
             }
 
-            if (Util.IsOptionalParameterValid(in_jsonSummary))
+            if (Util.IsOptionalParameterValid(jsonSummary))
             {
-                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonSummary);
             }
 
-            if (Util.IsOptionalParameterValid(in_jsonStatistics))
+            if (Util.IsOptionalParameterValid(jsonStatistics))
             {
-                data["statistics"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonStatistics);
+                data["statistics"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonStatistics);
             }
 
-            if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
+            if (Util.IsOptionalParameterValid(pushNotificationMessage))
             {
-                data["pushContent"] = in_pushNotificationMessage;
+                data["pushContent"] = pushNotificationMessage;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.SubmitTurn, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -243,38 +243,38 @@ namespace BrainCloud
         /// <param name="jsonSummary">
         /// JSON string provided by the caller that other players will see as a summary of the game when listing their games
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void UpdateMatchSummaryData(
-            string in_ownerId,
-            string in_matchId,
-            UInt64 in_version,
-            string in_jsonSummary,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            UInt64 version,
+            string jsonSummary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
-            data["version"] = in_version;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
+            data["version"] = version;
 
-            if (Util.IsOptionalParameterValid(in_jsonSummary))
+            if (Util.IsOptionalParameterValid(jsonSummary))
             {
-                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonSummary);
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.UpdateMatchSummary, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -290,30 +290,30 @@ namespace BrainCloud
         /// <param name="matchId">
         /// Match identifier
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void CompleteMatch(
-            string in_ownerId,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Complete, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -329,30 +329,30 @@ namespace BrainCloud
         /// <param name="matchId">
         /// Match identifier
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ReadMatch(
-            string in_ownerId,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.ReadMatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -368,30 +368,30 @@ namespace BrainCloud
         /// <param name="matchId">
         /// Match identifier
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void ReadMatchHistory(
-            string in_ownerId,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.ReadMatchHistory, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -401,23 +401,23 @@ namespace BrainCloud
         /// Service Name - AsyncMatch
         /// Service Operation - FindMatches
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void FindMatches(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.FindMatches, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -427,23 +427,23 @@ namespace BrainCloud
         /// Service Name - AsyncMatch
         /// Service Operation - FindMatchesCompleted
         /// </remarks>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.e is received.
         /// </param>
         public void FindCompleteMatches(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.FindMatchesCompleted, null, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -459,30 +459,30 @@ namespace BrainCloud
         /// <param name="matchId">
         /// Match identifier
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void AbandonMatch(
-            string in_ownerId,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Abandon, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -499,76 +499,76 @@ namespace BrainCloud
         /// <param name="matchId">
         /// Match identifier
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void DeleteMatch(
-            string in_ownerId,
-            string in_matchId,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string ownerId,
+            string matchId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data["ownerId"] = in_ownerId;
-            data["matchId"] = in_matchId;
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.DeleteMatch, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         private void CreateMatchInternal(
-            string in_jsonOpponentIds,
-            string in_jsonMatchState,
-            string in_pushNotificationMessage,
-            string in_matchId,
-            string in_nextPlayer,
-            string in_jsonSummary,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string jsonOpponentIds,
+            string jsonMatchState,
+            string pushNotificationMessage,
+            string matchId,
+            string nextPlayer,
+            string jsonSummary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data["players"] = JsonReader.Deserialize<object[]>(in_jsonOpponentIds);
+            data["players"] = JsonReader.Deserialize<object[]>(jsonOpponentIds);
 
-            if (Util.IsOptionalParameterValid(in_jsonMatchState))
+            if (Util.IsOptionalParameterValid(jsonMatchState))
             {
-                data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonMatchState);
+                data["matchState"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonMatchState);
             }
 
-            if (Util.IsOptionalParameterValid(in_matchId))
+            if (Util.IsOptionalParameterValid(matchId))
             {
-                data["matchId"] = in_matchId;
+                data["matchId"] = matchId;
             }
 
-            if (Util.IsOptionalParameterValid(in_nextPlayer))
+            if (Util.IsOptionalParameterValid(nextPlayer))
             {
                 Dictionary<string, object> status = new Dictionary<string, object>();
-                status["currentPlayer"] = in_nextPlayer;
+                status["currentPlayer"] = nextPlayer;
                 data["status"] = status;
             }
 
-            if (Util.IsOptionalParameterValid(in_jsonSummary))
+            if (Util.IsOptionalParameterValid(jsonSummary))
             {
-                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSummary);
+                data["summary"] = JsonReader.Deserialize<Dictionary<string, object>>(jsonSummary);
             }
 
-            if (Util.IsOptionalParameterValid(in_pushNotificationMessage))
+            if (Util.IsOptionalParameterValid(pushNotificationMessage))
             {
-                data["pushContent"] = in_pushNotificationMessage;
+                data["pushContent"] = pushNotificationMessage;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Create, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

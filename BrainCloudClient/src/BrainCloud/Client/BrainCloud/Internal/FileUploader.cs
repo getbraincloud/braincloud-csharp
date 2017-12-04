@@ -62,6 +62,7 @@ namespace BrainCloud.Internal
 #endif
         #endregion
 
+        private BrainCloudClient _client;
         private string _sessionId;
         private string _localPath;
         private string _serverUrl;
@@ -98,8 +99,11 @@ namespace BrainCloud.Internal
             string serverUrl,
             string sessionId,
             int timeout,
-            int timeoutThreshold)
+            int timeoutThreshold,
+            BrainCloudClient client)
         {
+            _client = client;
+            
 #if UNITY_WEBPLAYER || UNITY_WEBGL
             throw new Exception("File upload API is not supported on Web builds");
 #else
@@ -169,7 +173,7 @@ namespace BrainCloud.Internal
             });
 #endif
             Status = FileUploaderStatus.Uploading;
-            BrainCloudClient.Instance.Log("Started upload of " + _fileName);
+            _client.Log("Started upload of " + _fileName);
             _lastTime = DateTime.Now;
 #endif
         }
@@ -192,7 +196,7 @@ namespace BrainCloud.Internal
                 Response = await content.ReadAsStringAsync();
                 StatusCode = (int)message.StatusCode;
                 Status = FileUploaderStatus.CompleteSuccess;
-                BrainCloudClient.Instance.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
             catch (WebException wex)
             {
@@ -233,7 +237,7 @@ namespace BrainCloud.Internal
             StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
             ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_CANCELLED;
             Response = CreateErrorString(StatusCode, ReasonCode, "Upload of " + _fileName + " cancelled by user");
-            BrainCloudClient.Instance.Log("Upload of " + _fileName + " cancelled by user");
+            _client.Log("Upload of " + _fileName + " cancelled by user");
         }
 
         public void Update()
@@ -292,7 +296,7 @@ namespace BrainCloud.Internal
                 JsonErrorMessage resp = null;
 
                 try { resp = JsonReader.Deserialize<JsonErrorMessage>(Response); }
-                catch (JsonDeserializationException e) { BrainCloudClient.Instance.Log(e.Message); }
+                catch (JsonDeserializationException e) { _client.Log(e.Message); }
 
                 if (resp != null)
                     ReasonCode = resp.reason_code;
@@ -311,7 +315,7 @@ namespace BrainCloud.Internal
 #else
                 Response = _request.text;
 #endif
-                BrainCloudClient.Instance.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
             }
 
 #if USE_WEB_REQUEST

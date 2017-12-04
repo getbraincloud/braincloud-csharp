@@ -12,11 +12,11 @@ namespace BrainCloud
 {
     public class BrainCloudSocialLeaderboard
     {
-        private BrainCloudClient _brainCloudClient;
+        private BrainCloudClient _client;
 
-        public BrainCloudSocialLeaderboard(BrainCloudClient brainCloudClient)
+        public BrainCloudSocialLeaderboard(BrainCloudClient client)
         {
-            _brainCloudClient = brainCloudClient;
+            _client = client;
         }
 
         public enum SocialLeaderboardType
@@ -96,7 +96,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboard, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetMultiSocialLeaderboard, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
         
         /// <summary>
@@ -348,7 +348,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardVersions, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupSocialLeaderboard, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScore, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -493,7 +493,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RemovePlayerScore, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -642,7 +642,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
      
         /// <summary>
@@ -680,7 +680,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -706,7 +706,7 @@ namespace BrainCloud
         {
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.ListAllLeaderboards, null, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -774,7 +774,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardEntryCount, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -812,7 +812,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScore, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -848,7 +848,7 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScoresFromLeaderboards, data, callback);
-            _brainCloudClient.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

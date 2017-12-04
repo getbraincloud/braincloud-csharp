@@ -14,9 +14,9 @@ namespace BrainCloud.Entity.Internal
     {
         IEnumerator<KeyValuePair<string, SValue>> m_sourceEnumerator;
 
-        public DictionaryWrapperEnumerator(IEnumerator<KeyValuePair<string, SValue>> in_sourceEnumerator)
+        public DictionaryWrapperEnumerator(IEnumerator<KeyValuePair<string, SValue>> sourceEnumerator)
         {
-            m_sourceEnumerator = in_sourceEnumerator;
+            m_sourceEnumerator = sourceEnumerator;
         }
 
         // IEnumerator<KeyValuePair<string, TValue>>

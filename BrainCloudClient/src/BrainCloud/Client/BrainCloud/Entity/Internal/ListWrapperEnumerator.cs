@@ -14,9 +14,9 @@ namespace BrainCloud.Entity.Internal
     {
         IEnumerator<S> m_sourceEnumerator;
 
-        public ListWrapperEnumerator(IEnumerator<S> in_sourceEnumerator)
+        public ListWrapperEnumerator(IEnumerator<S> sourceEnumerator)
         {
-            m_sourceEnumerator = in_sourceEnumerator;
+            m_sourceEnumerator = sourceEnumerator;
         }
 
         // IEnumerator<T>

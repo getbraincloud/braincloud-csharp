@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using BrainCloud;
+using BrainCloud.Entity;
 using BrainCloud.Internal;
 using JsonFx.Json;
 
@@ -71,12 +72,13 @@ public class BrainCloudWrapper
     /// The name of the singleton brainCloud game object
     /// </summary>
     public static string GAMEOBJECT_BRAINCLOUD = "BrainCloudWrapper";
+    
+    public static string AUTHENTICATION_ANONYMOUS = "anonymous";
 
     private static BrainCloudWrapper _instance = null;
     private static bool _applicationIsQuitting = false;
 
-    private BrainCloudClient _client = null;
-
+    
     private string _lastUrl = "";
     private string _lastSecretKey = "";
     private string _lastAppId = "";
@@ -84,67 +86,217 @@ public class BrainCloudWrapper
 
     private WrapperData _wrapperData = new WrapperData();
 
+    
+    //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
+    //Switch to BrainCloudWrapper.GetBC();
+    public BrainCloudClient Client { get; private set; }
     public bool AlwaysAllowProfileSwitch { get; set; }
 
-    public static string AUTHENTICATION_ANONYMOUS = "anonymous";
+    /// <summary>
+    /// Name of this wrapper instance. Used for data loading
+    /// </summary>
+    public string WrapperName { get; private set; }
+    
+    #region Client Service Properties
 
+        internal BrainCloudComms Comms
+        {
+            get { return Client.Comms; }
+        }
 
+        public BrainCloudEntity EntityService
+        {
+            get { return Client.EntityService; }
+        }
+
+#if !XAMARIN
+        public BCEntityFactory EntityFactory
+        {
+            get { return Client.EntityFactory; }
+        }
+#endif
+
+        public BrainCloudGlobalEntity GlobalEntityService
+        {
+            get { return Client.GlobalEntityService; }
+        }
+
+        public BrainCloudGlobalApp GlobalAppService
+        {
+            get { return Client.GlobalAppService; }
+        }
+
+        public BrainCloudProduct ProductService
+        {
+            get { return Client.ProductService; }
+        }
+
+        public BrainCloudPlayerStatistics PlayerStatisticsService
+        {
+            get { return Client.PlayerStatisticsService; }
+        }
+
+        public BrainCloudGlobalStatistics GlobalStatisticsService
+        {
+            get { return Client.GlobalStatisticsService; }
+        }
+
+        public BrainCloudIdentity IdentityService
+        {
+            get { return Client.IdentityService; }
+        }
+
+        public BrainCloudScript ScriptService
+        {
+            get { return Client.ScriptService; }
+        }
+
+        public BrainCloudMatchMaking MatchMakingService
+        {
+            get { return Client.MatchMakingService; }
+        }
+
+        public BrainCloudOneWayMatch OneWayMatchService
+        {
+            get { return Client.OneWayMatchService; }
+        }
+
+        public BrainCloudPlaybackStream PlaybackStreamService
+        {
+            get { return Client.PlaybackStreamService; }
+        }
+
+        public BrainCloudGamification GamificationService
+        {
+            get { return Client.GamificationService; }
+        }
+
+        public BrainCloudPlayerState PlayerStateService
+        {
+            get { return Client.PlayerStateService; }
+        }
+
+        public BrainCloudFriend FriendService
+        {
+            get { return Client.FriendService; }
+        }
+
+        public BrainCloudEvent EventService
+        {
+            get { return Client.EventService; }
+        }
+
+        public BrainCloudSocialLeaderboard SocialLeaderboardService
+        {
+            get { return Client.SocialLeaderboardService; }
+        }
+
+        public BrainCloudSocialLeaderboard LeaderboardService
+        {
+            get { return Client.LeaderboardService; }
+        }
+
+        public BrainCloudAsyncMatch AsyncMatchService
+        {
+            get { return Client.AsyncMatchService; }
+        }
+
+        public BrainCloudTime TimeService
+        {
+            get { return Client.TimeService; }
+        }
+
+        public BrainCloudTournament TournamentService
+        {
+            get { return Client.TournamentService; }
+        }
+
+        public BrainCloudAuthentication AuthenticationService
+        {
+            get { return Client.AuthenticationService; }
+        }
+
+        public BrainCloudPushNotification PushNotificationService
+        {
+            get { return Client.PushNotificationService; }
+        }
+
+        public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
+        {
+            get { return Client.PlayerStatisticsEventService; }
+        }
+
+        public BrainCloudS3Handling S3HandlingService
+        {
+            get { return Client.S3HandlingService; }
+        }
+
+        public BrainCloudRedemptionCode RedemptionCodeService
+        {
+            get { return Client.RedemptionCodeService; }
+        }
+
+        public BrainCloudDataStream DataStreamService
+        {
+            get { return Client.DataStreamService; }
+        }
+
+        public BrainCloudProfanity ProfanityService
+        {
+            get { return Client.ProfanityService; }
+        }
+
+        public BrainCloudFile FileService
+        {
+            get { return Client.FileService; }
+        }
+
+        public BrainCloudGroup GroupService
+        {
+            get { return Client.GroupService; }
+        }
+
+        public BrainCloudMail MailService
+        {
+            get { return Client.MailService; }
+        }
+
+        #endregion
+    
+    /// <summary>
+    /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
+    /// </summary>
     public BrainCloudWrapper()
     {
-        _client = BrainCloudClient.Get();
+        Client = new BrainCloudClient();
     }
-
-    public static BrainCloudWrapper Instance { get { return GetInstance(); } }
-
-    public static BrainCloudClient Client { get { return Instance._client; } }
-
+    
     /// <summary>
-    /// Gets the singleton instance of the BrainCloudWrapper.
-    /// The BrainCloudWrapper object is stored in a Unity Game Object.
+    /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
     /// </summary>
-    /// <returns>The instance</returns>
-    public static BrainCloudWrapper GetInstance()
+    /// <param name="client">set wrapper with a specfic brainCloud client</param>
+    private BrainCloudWrapper(BrainCloudClient client)
     {
-        if (_applicationIsQuitting)
-        {
-            return null;
-        }
-        if (_instance == null)
-        {
-#if !DOT_NET
-            _instance = (BrainCloudWrapper)FindObjectOfType(typeof(BrainCloudWrapper));
-            if (_instance != null)
-            {
-                _instance.Reauthenticate();
-            }
-
-            if (FindObjectsOfType(typeof(BrainCloudWrapper)).Length > 1)
-            {
-                Debug.LogError("[Singleton] Something went really wrong " +
-                               " - there should never be more than 1 singleton!" +
-                               " Reopening the scene might fix it.");
-                return _instance;
-            }
-
-            if (_instance == null)
-            {
-                GameObject go = new GameObject(GAMEOBJECT_BRAINCLOUD);
-                _instance = go.AddComponent<BrainCloudWrapper>();
-                DontDestroyOnLoad(go);
-            }
-#else
-            _instance = new BrainCloudWrapper();
-#endif
-            _instance.LoadData();
-        }
-        return _instance;
+        Client = client;
     }
+    
+    /// <summary>
+    /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
+    /// </summary>
+    /// <param name="wrapperName">string value used to differentiate saved wrapper data</param>
+    public BrainCloudWrapper(string wrapperName)
+    {
+        Client = new BrainCloudClient();
+        WrapperName = wrapperName;
+    }
+
+    
 
     public void Update()
     {
-        if (_client != null)
+        if (Client != null)
         {
-            _client.Update();
+            Client.Update();
         }
     }
 
@@ -155,28 +307,20 @@ public class BrainCloudWrapper
     }
 #endif
 
-    /// <summary>
-    /// Returns an instance of the BrainCloudClient. All brainCloud APIs are
-    /// accessible through the client.
-    /// </summary>
-    /// <returns>The brainCloud client object</returns>
-    public static BrainCloudClient GetBC()
-    {
-        return GetInstance()._client;
-    }
-
+   
 #if !DOT_NET
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
     /// </summary>
-    public static void Initialize()
+    public void Init(String wrapperName = "")
     {
-        Initialize(
+        Init(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
             BrainCloudSettings.Instance.GameId,
-            BrainCloudSettings.Instance.GameVersion);
+            BrainCloudSettings.Instance.GameVersion,
+            wrapperName);
 
         Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
@@ -190,16 +334,16 @@ public class BrainCloudWrapper
     /// <param name="secretKey">The app's secret</param>
     /// <param name="appId">The app's id</param>
     /// <param name="version">The app's version</param>
-    public static void Initialize(string url, string secretKey, string appId, string version)
+    public void Init(string url, string secretKey, string appId, string version, string wrapperName = "")
     {
-        BrainCloudWrapper bcw = GetInstance();
-        bcw._lastUrl = url;
-        bcw._lastSecretKey = secretKey;
-        bcw._lastAppId = appId;
-        bcw._lastAppVersion = version;
-        bcw._client.Initialize(url, secretKey, appId, version);
+        WrapperName = wrapperName;
+        _lastUrl = url;
+        _lastSecretKey = secretKey;
+        _lastAppId = appId;
+        _lastAppVersion = version;
+        Client.Initialize(url, secretKey, appId, version);
 
-        _instance.LoadData();
+        LoadData();
     }
 
     /// <summary>
@@ -253,7 +397,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity(true);
 
-        _client.AuthenticationService.AuthenticateAnonymous(
+        Client.AuthenticationService.AuthenticateAnonymous(
             true, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -303,7 +447,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateEmailPassword(
+        Client.AuthenticationService.AuthenticateEmailPassword(
             email, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -352,7 +496,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateExternal(
+        Client.AuthenticationService.AuthenticateExternal(
             userid, token, externalAuthName, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -397,7 +541,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateFacebook(
+        Client.AuthenticationService.AuthenticateFacebook(
             fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -437,7 +581,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateGameCenter(
+        Client.AuthenticationService.AuthenticateGameCenter(
             gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -481,7 +625,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateGoogle(
+        Client.AuthenticationService.AuthenticateGoogle(
             userid, token, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -525,7 +669,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateSteam(
+        Client.AuthenticationService.AuthenticateSteam(
             userid, sessionticket, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -573,7 +717,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateTwitter(
+        Client.AuthenticationService.AuthenticateTwitter(
             userid, token, secret, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -619,7 +763,7 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-        _client.AuthenticationService.AuthenticateUniversal(
+        Client.AuthenticationService.AuthenticateUniversal(
             username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
@@ -662,7 +806,7 @@ public class BrainCloudWrapper
 
         if ((anonymousId != "" && profileId == "") || anonymousId == "")
         {
-            anonymousId = _client.AuthenticationService.GenerateAnonymousId();
+            anonymousId = Client.AuthenticationService.GenerateAnonymousId();
             profileId = "";
             SetStoredAnonymousId(anonymousId);
             SetStoredProfileId(profileId);
@@ -673,7 +817,7 @@ public class BrainCloudWrapper
             profileIdToAuthenticateWith = "";
         }
         SetStoredAuthenticationType(isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
-        _client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
+        Client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
     }
 
     #endregion
@@ -768,7 +912,7 @@ public class BrainCloudWrapper
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        Initialize(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
+        Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion, WrapperName);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {
@@ -835,9 +979,12 @@ public class BrainCloudWrapper
     private void SaveData()
     {
 #if DOT_NET
+        string prefix = _instanceName.Equals("") ? "" : _instanceName + ".";
+        string fileName = prefix + WrapperData.FileName;
+        
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(WrapperData.FileName, FileMode.OpenOrCreate, isoStore))
+        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, isoStore))
         {
             using (StreamWriter writer = new StreamWriter(isoStream))
             {
@@ -846,22 +993,26 @@ public class BrainCloudWrapper
             }
         }
 #else
-        PlayerPrefs.SetString(PREFS_PROFILE_ID, _wrapperData.ProfileId);
-        PlayerPrefs.SetString(PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
-        PlayerPrefs.SetString(PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
+        string prefix = WrapperName.Equals("") ? "" : WrapperName + ".";
+        PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
+        PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
+        PlayerPrefs.SetString(prefix + PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
 #endif
     }
 
     private void LoadData()
     {
 #if DOT_NET
+        string prefix = _instanceName.Equals("") ? "" : _instanceName + ".";
+        string fileName = prefix + WrapperData.FileName;
+        
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        if (isoStore.FileExists(WrapperData.FileName))
+        if (isoStore.FileExists(fileName))
         {
             string file;
 
-            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(WrapperData.FileName, FileMode.Open, isoStore))
+            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.Open, isoStore))
             {
                 using (StreamReader reader = new StreamReader(isoStream))
                 {
@@ -873,9 +1024,10 @@ public class BrainCloudWrapper
             _wrapperData = JsonReader.Deserialize<WrapperData>(file);
         }
 #else
-        _wrapperData.ProfileId = PlayerPrefs.GetString(PREFS_PROFILE_ID);
-        _wrapperData.AnonymousId = PlayerPrefs.GetString(PREFS_ANONYMOUS_ID);
-        _wrapperData.AuthenticationType = PlayerPrefs.GetString(PREFS_AUTHENTICATION_TYPE);
+        string prefix = WrapperName.Equals("") ? "" : WrapperName + ".";
+        _wrapperData.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
+        _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
+        _wrapperData.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
 #endif
     }
 
@@ -887,4 +1039,115 @@ public class BrainCloudWrapper
 
         public static readonly string FileName = "BrainCloudWrapper.json";
     }
+    
+    #region Deprecated
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    public static BrainCloudWrapper Instance { get { return GetInstance(); } }
+
+    /// <summary>
+    /// Gets the singleton instance of the BrainCloudWrapper.
+    /// The BrainCloudWrapper object is stored in a Unity Game Object.
+    /// </summary>
+    /// <returns>The instance</returns>
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    public static BrainCloudWrapper GetInstance()
+    {
+        if (!BrainCloudClient.EnableSingletonMode)
+#pragma warning disable 162
+        {
+            throw new Exception(BrainCloudClient.SingletonUseErrorMessage);
+        }
+#pragma warning restore 162
+        
+        if (_applicationIsQuitting)
+        {
+            return null;
+        }
+        if (_instance == null)
+        {
+#if !DOT_NET
+            _instance = (BrainCloudWrapper)FindObjectOfType(typeof(BrainCloudWrapper));
+            if (_instance != null)
+            {
+                _instance.Reauthenticate();
+            }
+
+            if (FindObjectsOfType(typeof(BrainCloudWrapper)).Length > 1)
+            {
+                Debug.LogError("[Singleton] Something went really wrong " +
+                               " - there should never be more than 1 singleton!" +
+                               " Reopening the scene might fix it.");
+                return _instance;
+            }
+
+            if (_instance == null)
+            {
+                GameObject go = new GameObject(GAMEOBJECT_BRAINCLOUD);
+                
+                _instance = go.AddComponent<BrainCloudWrapper>();
+#pragma warning disable 618
+                _instance.Client = BrainCloudClient.Get();
+#pragma warning restore 618
+                
+                DontDestroyOnLoad(go);
+            }
+#else
+            _instance = new BrainCloudWrapper(BrainCloudClient.Get());
+#endif
+            _instance.LoadData();
+        }
+        return _instance;
+    }
+    
+    /// <summary>
+    /// Returns a singleton instance of the BrainCloudClient. All brainCloud APIs are
+    /// accessible through the client.
+    /// </summary>
+    /// <returns>The brainCloud client object</returns>
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    public static BrainCloudClient GetBC()
+    {
+        return GetInstance().Client;
+    }
+    
+#if !DOT_NET
+    /// <summary>
+    /// Initializes the brainCloud client. This method uses the parameters as configured
+    /// in the Unity brainCloud Settings window.
+    /// </summary>
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    public static void Initialize()
+    {
+        Initialize(
+            BrainCloudSettings.Instance.DispatcherURL,
+            BrainCloudSettings.Instance.SecretKey,
+            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.GameVersion);
+
+        Instance.Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
+    }
+#endif
+    
+    /// <summary>
+    /// Initialize the brainCloud client with the passed in parameters. This version of Initialize
+    /// overrides the parameters configured in the Unity brainCloud Settings window.
+    /// </summary>
+    /// <param name="url">The brainCloud server url</param>
+    /// <param name="secretKey">The app's secret</param>
+    /// <param name="appId">The app's id</param>
+    /// <param name="version">The app's version</param>
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    public static void Initialize(string url, string secretKey, string appId, string version)
+    {
+        BrainCloudWrapper bcw = GetInstance();
+        bcw._lastUrl = url;
+        bcw._lastSecretKey = secretKey;
+        bcw._lastAppId = appId;
+        bcw._lastAppVersion = version;
+        bcw.Client.Initialize(url, secretKey, appId, version);
+
+        _instance.LoadData();
+    }
+    
+    #endregion
 }

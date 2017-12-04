@@ -15,11 +15,11 @@ namespace BrainCloud
 {
     public class BrainCloudS3Handling
     {
-        private BrainCloudClient m_brainCloudClientRef;
+        private BrainCloudClient _client;
 
-        public BrainCloudS3Handling(BrainCloudClient in_brainCloudClientRef)
+        public BrainCloudS3Handling(BrainCloudClient client)
         {
-            m_brainCloudClientRef = in_brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
@@ -30,40 +30,40 @@ namespace BrainCloud
         /// Service Name - S3Handling
         /// Service Operation - GetUpdatedFiles
         /// </remarks>
-        /// <param name="in_category">  
+        /// <param name="category">  
         /// Category of files on server to compare against
         /// </param>
-        /// <param name="in_fileDetailsJson">  
+        /// <param name="fileDetailsJson">  
         /// An array of file details
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetUpdatedFiles(
-            string in_category,
-            string in_fileDetailsJson,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string category,
+            string fileDetailsJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            if (Util.IsOptionalParameterValid(in_category))
+            if (Util.IsOptionalParameterValid(category))
             {
-                data[OperationParam.S3HandlingServiceFileCategory.Value] = in_category;
+                data[OperationParam.S3HandlingServiceFileCategory.Value] = category;
             }
 
-            data[OperationParam.S3HandlingServiceFileDetails.Value] = JsonReader.Deserialize<object[]>(in_fileDetailsJson);
+            data[OperationParam.S3HandlingServiceFileDetails.Value] = JsonReader.Deserialize<object[]>(fileDetailsJson);
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetUpdatedFiles, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -73,34 +73,34 @@ namespace BrainCloud
         /// Service Name - S3Handling
         /// Service Operation - GetFileList
         /// </remarks>
-        /// <param name="in_category">  
+        /// <param name="category">  
         /// Category of files to retrieve
         /// </param>
-        /// <param name="in_success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
-        /// <param name="in_failure">
+        /// <param name="failure">
         /// The failure callback.
         /// </param>
-        /// <param name="in_cbObject">
+        /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
         public void GetFileList(
-            string in_category,
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            string category,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            if (Util.IsOptionalParameterValid(in_category))
+            if (Util.IsOptionalParameterValid(category))
             {
-                data[OperationParam.S3HandlingServiceFileCategory.Value] = in_category;
+                data[OperationParam.S3HandlingServiceFileCategory.Value] = category;
             }
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(in_success, in_failure, in_cbObject);
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetFileList, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.S3Handling, ServiceOperation.GetCdnUrl, data, callback);
-            m_brainCloudClientRef.SendRequest(sc);
+            _client.SendRequest(sc);
         }
     }
 }

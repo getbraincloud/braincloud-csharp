@@ -38,7 +38,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Reference to the brainCloud client object
         /// </summary>
-        private BrainCloudClient _brainCloudClientRef;
+        private BrainCloudClient _clientRef;
 
         /// <summary>
         /// Set to true once Initialize has been called.
@@ -275,9 +275,9 @@ namespace BrainCloud.Internal
         }
 
         private bool _cacheMessagesOnNetworkError = false;
-        public void EnableNetworkErrorMessageCaching(bool in_enabled)
+        public void EnableNetworkErrorMessageCaching(bool enabled)
         {
-            _cacheMessagesOnNetworkError = in_enabled;
+            _cacheMessagesOnNetworkError = enabled;
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace BrainCloud.Internal
 #if (DOT_NET)
             //ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
 #endif
-            _brainCloudClientRef = client;
+            _clientRef = client;
             ResetErrorCache();
         }
 
@@ -437,11 +437,11 @@ namespace BrainCloud.Internal
                         // we've reached the retry limit - send timeout error to all client callbacks
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
-                            _brainCloudClientRef.Log("Timeout with network error: " + errorResponse);
+                            _clientRef.Log("Timeout with network error: " + errorResponse);
                         }
                         else
                         {
-                            _brainCloudClientRef.Log("Timeout no reply from server");
+                            _clientRef.Log("Timeout no reply from server");
                         }
 
                         _activeRequest = null;
@@ -449,7 +449,7 @@ namespace BrainCloud.Internal
                         // if we're doing caching of messages on timeout, kick it in now!
                         if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
                         {
-                            _brainCloudClientRef.Log("Caching messages");
+                            _clientRef.Log("Caching messages");
                             _blockingQueue = true;
 
                             // and insert the inProgress messages into head of wait queue
@@ -511,7 +511,7 @@ namespace BrainCloud.Internal
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
                     }
                     
-                    BrainCloudClient.Get().Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    _clientRef.Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
@@ -526,7 +526,7 @@ namespace BrainCloud.Internal
 
                     }
                         
-                    BrainCloudClient.Get().Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    _clientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
             }
@@ -565,7 +565,7 @@ namespace BrainCloud.Internal
             {
                 if (_fileUploads[i].UploadId == uploadId) return _fileUploads[i];
             }
-            BrainCloudClient.Get().Log("GetUploadProgress could not find upload ID " + uploadId);
+            _clientRef.Log("GetUploadProgress could not find upload ID " + uploadId);
             return null;
         }
 
@@ -640,14 +640,14 @@ namespace BrainCloud.Internal
         {
             if (_blockingQueue)
             {
-                _brainCloudClientRef.Log("Retrying cached messages");
+                _clientRef.Log("Retrying cached messages");
 
                 if (_activeRequest != null)
                 {
                     // this is definitely an error in the comms lib if it happens. 
                     // we attempt to cancel it but this is uncharted territory.
 
-                    _brainCloudClientRef.Log("ERROR - retrying cached messages but there is an active request!");
+                    _clientRef.Log("ERROR - retrying cached messages but there is an active request!");
                     _activeRequest.CancelRequest();
                     _activeRequest = null;
                 }
@@ -659,11 +659,11 @@ namespace BrainCloud.Internal
         }
 
         // see BrainCloudClient.FlushCachedMessages() docs
-        public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
+        public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
             if (_blockingQueue)
             {
-                _brainCloudClientRef.Log("Flushing cached messages");
+                _clientRef.Log("Flushing cached messages");
 
                 // try to cancel if request is in progress (shouldn't happen)
                 if (_activeRequest != null)
@@ -696,7 +696,7 @@ namespace BrainCloud.Internal
                 }
 
                 // and send api error callbacks if required
-                if (in_sendApiErrorCallbacks)
+                if (sendApiErrorCallbacks)
                 {
                     for (int i = 0, isize = callsToProcess.Count; i < isize; ++i)
                     {
@@ -735,11 +735,11 @@ namespace BrainCloud.Internal
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
-            _brainCloudClientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
+            _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
 
             if(string.IsNullOrEmpty(jsonData))
             {
-                _brainCloudClientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
+                _clientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
                 return;
             }
 
@@ -747,7 +747,7 @@ namespace BrainCloud.Internal
             long receivedPacketId = (long)bundleObj.packetId;
             if (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId)
             {
-                _brainCloudClientRef.Log("Dropping duplicate packet");
+                _clientRef.Log("Dropping duplicate packet");
                 return;
             }
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
@@ -809,7 +809,7 @@ namespace BrainCloud.Internal
                         string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
                         if (sessionId != null)
                         {
-                            _brainCloudClientRef.AuthenticationService.ProfileId = profileId;
+                            _clientRef.AuthenticationService.ProfileId = profileId;
                         }
                     }
 
@@ -825,7 +825,7 @@ namespace BrainCloud.Internal
                             // we are no longer authenticated
                             _isAuthenticated = false;
                             _sessionID = "";
-                            _brainCloudClientRef.AuthenticationService.ClearSavedProfileID();
+                            _clientRef.AuthenticationService.ClearSavedProfileID();
                             ResetErrorCache();
                         }
                         else if (operation == ServiceOperation.Authenticate.Value)
@@ -841,7 +841,7 @@ namespace BrainCloud.Internal
                             //int fileSize = (int)fileData["fileSize"];
 
                             var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
-                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold);
+                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _clientRef);
 #if DOT_NET
                             uploader.HttpClient = _httpClient;
 #endif
@@ -862,7 +862,7 @@ namespace BrainCloud.Internal
                             }
                             catch (Exception e)
                             {
-                                _brainCloudClientRef.Log(e.StackTrace);
+                                _clientRef.Log(e.StackTrace);
                                 exceptions.Add(e);
                             }
                         }
@@ -930,7 +930,7 @@ namespace BrainCloud.Internal
                             }
                             catch (Exception e)
                             {
-                                _brainCloudClientRef.Log(e.StackTrace);
+                                _clientRef.Log(e.StackTrace);
                                 exceptions.Add(e);
                             }
                         }
@@ -965,7 +965,7 @@ namespace BrainCloud.Internal
                     {
                         _isAuthenticated = false;
                         _sessionID = "";
-                        _brainCloudClientRef.Log("Received session expired or not found, need to re-authenticate");
+                        _clientRef.Log("Received session expired or not found, need to re-authenticate");
 
                         // cache error if session related
                         _cachedStatusCode = statusCode;
@@ -984,7 +984,7 @@ namespace BrainCloud.Internal
                         {
                             _isAuthenticated = false;
                             _sessionID = "";
-                            _brainCloudClientRef.Log("Could not communicate with the server on logout due to network timeout");
+                            _clientRef.Log("Could not communicate with the server on logout due to network timeout");
                         }
                     }
 
@@ -997,7 +997,7 @@ namespace BrainCloud.Internal
                         }
                         catch (Exception e)
                         {
-                            _brainCloudClientRef.Log(e.StackTrace);
+                            _clientRef.Log(e.StackTrace);
                             exceptions.Add(e);
                         }
                     }
@@ -1059,7 +1059,7 @@ namespace BrainCloud.Internal
                 }
                 catch (Exception e)
                 {
-                    _brainCloudClientRef.Log(e.StackTrace);
+                    _clientRef.Log(e.StackTrace);
                     exceptions.Add(e);
                 }
             }
@@ -1090,7 +1090,7 @@ namespace BrainCloud.Internal
             if (!_killSwitchEngaged && _killSwitchErrorCount >= _killSwitchThreshold)
             {
                 _killSwitchEngaged = true;
-                _brainCloudClientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
+                _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
             }
         }
 
@@ -1176,7 +1176,7 @@ namespace BrainCloud.Internal
                         if (_serviceCallsInProgress.Count > 0)
                         {
                             // this should never happen
-                            _brainCloudClientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            _clientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
                             _serviceCallsInProgress.Clear();
                         }
 
@@ -1283,7 +1283,7 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            _brainCloudClientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
+            _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
 
             ResetIdleTimer();
 
@@ -1383,7 +1383,7 @@ namespace BrainCloud.Internal
                 ResetIdleTimer();
 
                 
-                _brainCloudClientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
+                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
                 
             }
         }
@@ -1570,7 +1570,7 @@ namespace BrainCloud.Internal
                 _serviceCallsInProgress.Clear();
                 _serviceCallsInTimeoutQueue.Clear();
                 _activeRequest = null;
-                _brainCloudClientRef.AuthenticationService.ProfileId = "";
+                _clientRef.AuthenticationService.ProfileId = "";
                 _sessionID = "";
             }
         }
@@ -1596,12 +1596,12 @@ namespace BrainCloud.Internal
             }
             catch (WebException wex)
             {
-                _brainCloudClientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
+                _clientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
             catch (Exception ex)
             {
-                _brainCloudClientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
+                _clientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
 

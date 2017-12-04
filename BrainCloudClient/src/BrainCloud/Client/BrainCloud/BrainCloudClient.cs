@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
-
+using UnityEngine.Assertions;
 #if !XAMARIN
 using BrainCloud.Entity;
 using System;
@@ -79,6 +79,12 @@ namespace BrainCloud
 
     public class BrainCloudClient
     {
+        /// <summary>Enable the usage of the BrainCloudWrapper singleton.</summary>
+        public const bool EnableSingletonMode = true;
+        public const string SingletonUseErrorMessage =
+            "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
+        
+       
         #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
@@ -131,18 +137,6 @@ namespace BrainCloud
         #endregion Private Data
 
         #region Public Static
-        /// <summary>A way to get a Singleton instance of brainCloud.</summary>
-        public static BrainCloudClient Get()
-        {
-            // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
-            // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
-            if (s_instance == null)
-            {
-                s_instance = new BrainCloudClient();
-            }
-            return s_instance;
-        }
-
         public static ServerCallback CreateServerCallback(SuccessCallback success, FailureCallback failure, object cbObject = null)
         {
             ServerCallback newCallback = null;
@@ -207,20 +201,6 @@ namespace BrainCloud
 
         #region Properties
 
-        public static BrainCloudClient Instance
-        {
-            get
-            {
-                // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
-                // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
-                if (s_instance == null)
-                {
-                    s_instance = new BrainCloudClient();
-                }
-                return s_instance;
-            }
-        }
-
         public bool Authenticated
         {
             get { return _comms.Authenticated; }
@@ -237,21 +217,9 @@ namespace BrainCloud
             get { return _comms != null ? _comms.SessionID : ""; }
         }
 
-        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
-        public string GameId
-        {
-            get { return _comms != null ? _comms.AppId : ""; }
-        }
-
         public string AppId
         {
             get { return _comms != null ? _comms.AppId : ""; }
-        }
-
-        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
-        public string GameVersion
-        {
-            get { return _appVersion; }
         }
 
         public string AppVersion
@@ -261,7 +229,7 @@ namespace BrainCloud
 
         public string BrainCloudClientVersion
         {
-            get { return BrainCloud.Version.GetVersion(); }
+            get { return Version.GetVersion(); }
         }
 
         public Platform ReleasePlatform
@@ -960,10 +928,10 @@ namespace BrainCloud
         /// By default this is set to 50 bytes/sec. Note that this timeout method
         /// does not work on Unity mobile platforms.
         /// </summary>
-        /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
-        public void SetUploadLowTransferRateThreshold(int in_bytesPerSec)
+        /// <param name="bytesPerSec">The low transfer rate threshold in bytes/sec</param>
+        public void SetUploadLowTransferRateThreshold(int bytesPerSec)
         {
-            _comms.UploadLowTransferRateThreshold = in_bytesPerSec;
+            _comms.UploadLowTransferRateThreshold = bytesPerSec;
         }
 
         /// <summary>
@@ -991,10 +959,10 @@ namespace BrainCloud
         /// for the brainCloud SDK to resume sending messages.
         /// ResetCommunication() will also clear the message cache.
         /// </summary>
-        /// <param name="in_enabled">True if message should be cached on timeout</param>
-        public void EnableNetworkErrorMessageCaching(bool in_enabled)
+        /// <param name="enabled">True if message should be cached on timeout</param>
+        public void EnableNetworkErrorMessageCaching(bool enabled)
         {
-            _comms.EnableNetworkErrorMessageCaching(in_enabled);
+            _comms.EnableNetworkErrorMessageCaching(enabled);
         }
 
         /// <summary>
@@ -1010,12 +978,12 @@ namespace BrainCloud
         /// Flushes the cached messages to resume API call processing. This will dump
         /// all of the cached messages in the queue.
         /// </summary>
-        /// <param name="in_sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
+        /// <param name="sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
         /// be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.
         /// </param>
-        public void FlushCachedMessages(bool in_sendApiErrorCallbacks)
+        public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
-            _comms.FlushCachedMessages(in_sendApiErrorCallbacks);
+            _comms.FlushCachedMessages(sendApiErrorCallbacks);
         }
 
         /// <summary>
@@ -1063,12 +1031,12 @@ namespace BrainCloud
         /// Regardless, this is a manual way to send a heartbeat.
         /// </summary>
         public void SendHeartbeat(
-            SuccessCallback in_success = null,
-            FailureCallback in_failure = null,
-            object in_cbObject = null)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             ServerCall sc = new ServerCall(ServiceName.HeartBeat, ServiceOperation.Read, null,
-                new ServerCallback(in_success, in_failure, in_cbObject));
+                new ServerCallback(success, failure, cbObject));
             _comms.AddToQueue(sc);
         }
 
@@ -1108,5 +1076,64 @@ namespace BrainCloud
             // which will add it to its queue and send back responses accordingly
             _comms.AddToQueue(serviceMessage);
         }
+        
+        #region Deprecated
+        /// <summary>A way to get a Singleton instance of brainCloud.</summary>
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        public static BrainCloudClient Get()
+        {
+            if (!EnableSingletonMode)
+#pragma warning disable 162
+            {
+                throw new Exception(SingletonUseErrorMessage);
+            }
+#pragma warning restore 162
+            
+            
+            // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
+            // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
+            if (s_instance == null)
+            {
+                s_instance = new BrainCloudClient();
+            }
+            return s_instance;
+        }
+
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        public static BrainCloudClient Instance
+        {
+            get
+            {
+                if (!EnableSingletonMode)
+#pragma warning disable 162
+                {
+                    throw new Exception(SingletonUseErrorMessage);
+                }
+#pragma warning restore 162
+                
+                // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
+                // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
+                if (s_instance == null)
+                {
+                    s_instance = new BrainCloudClient();
+                }
+                return s_instance;
+            }
+        }
+        
+        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
+        public string GameId
+        {
+            get { return _comms != null ? _comms.AppId : ""; }
+        }
+
+        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
+        public string GameVersion
+        {
+            get { return _appVersion; }
+        }
+
+        
+        #endregion
     }
 }

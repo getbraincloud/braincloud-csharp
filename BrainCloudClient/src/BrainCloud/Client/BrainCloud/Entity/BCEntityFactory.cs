@@ -18,41 +18,41 @@ namespace BrainCloud.Entity
         private BrainCloudEntity m_braincloud;
         private IDictionary<string, ConstructorInfo> m_registeredClasses;
 
-        public delegate BCUserEntity CreateUserEntityFromType(string in_type);
+        public delegate BCUserEntity CreateUserEntityFromType(string type);
 
 
-        public BCEntityFactory(BrainCloudEntity in_braincloud)
+        public BCEntityFactory(BrainCloudEntity braincloud)
         {
-            m_braincloud = in_braincloud;
+            m_braincloud = braincloud;
             m_registeredClasses  = new Dictionary<string, ConstructorInfo>();
         }
 
-        public T NewEntity<T> (string in_entityType) where T : BCEntity
+        public T NewEntity<T> (string entityType) where T : BCEntity
         {
-            T e = (T)CreateRegisteredEntityClass(in_entityType);
+            T e = (T)CreateRegisteredEntityClass(entityType);
             e.BrainCloud = m_braincloud;
-            e.EntityType = in_entityType;
+            e.EntityType = entityType;
             return e;
         }
 
-        public BCUserEntity NewUserEntity(string in_entityType)
+        public BCUserEntity NewUserEntity(string entityType)
         {
-            BCUserEntity e = (BCUserEntity) CreateRegisteredEntityClass(in_entityType);
+            BCUserEntity e = (BCUserEntity) CreateRegisteredEntityClass(entityType);
             if (e == null)
             {
                 e = new BCUserEntity();
             }
             e.BrainCloud = m_braincloud;
-            e.EntityType = in_entityType;
+            e.EntityType = entityType;
             return e;
         }
 
-        public IList<BCUserEntity> NewUserEntitiesFromGetList(string in_json)
+        public IList<BCUserEntity> NewUserEntitiesFromGetList(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
+            JsonData jsonObj = JsonMapper.ToObject(json);
             try
             {
-                return NewUserEntitiesFromJsonString(in_json, jsonObj["data"]["entityList"]);
+                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["entityList"]);
             }
             catch (KeyNotFoundException)
             {
@@ -60,12 +60,12 @@ namespace BrainCloud.Entity
             }
         }
 
-        public IList<BCUserEntity> NewUserEntitiesFromReadPlayerState(string in_json)
+        public IList<BCUserEntity> NewUserEntitiesFromReadPlayerState(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
+            JsonData jsonObj = JsonMapper.ToObject(json);
             try
             {
-                return NewUserEntitiesFromJsonString(in_json, jsonObj["data"]["entities"]);
+                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["entities"]);
             }
             catch (KeyNotFoundException)
             {
@@ -73,12 +73,12 @@ namespace BrainCloud.Entity
             }
         }
 
-        public IList<BCUserEntity> NewUserEntitiesFromStartMatch(string in_json)
+        public IList<BCUserEntity> NewUserEntitiesFromStartMatch(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(in_json);
+            JsonData jsonObj = JsonMapper.ToObject(json);
             try
             {
-                return NewUserEntitiesFromJsonString(in_json, jsonObj["data"]["initialSharedData"]["entities"]);
+                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["initialSharedData"]["entities"]);
             }
             catch (KeyNotFoundException)
             {
@@ -86,7 +86,7 @@ namespace BrainCloud.Entity
             }
         }
 
-        public void RegisterEntityClass<T>(string in_entityType) where T : BCEntity
+        public void RegisterEntityClass<T>(string entityType) where T : BCEntity
         {
             Type type = typeof(T);
             Type[] constructorParams = new Type[] {};
@@ -94,14 +94,14 @@ namespace BrainCloud.Entity
             ConstructorInfo ci = type.GetConstructor(constructorParams);
             if (ci != null)
             {
-                m_registeredClasses[in_entityType] = ci;
+                m_registeredClasses[entityType] = ci;
             }
         }
 
-        private BCEntity CreateRegisteredEntityClass(string in_entityType)
+        private BCEntity CreateRegisteredEntityClass(string entityType)
         {
             ConstructorInfo ci = null;
-            if (m_registeredClasses.TryGetValue(in_entityType, out ci))
+            if (m_registeredClasses.TryGetValue(entityType, out ci))
             {
                 return (BCEntity)ci.Invoke(null);
             }
@@ -109,15 +109,15 @@ namespace BrainCloud.Entity
         }
 
         // the list of entitiies
-        private IList<BCUserEntity> NewUserEntitiesFromJsonString(string in_json, JsonData in_entities)
+        private IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, JsonData entitiesJson)
         {
             List<BCUserEntity> entities = new List<BCUserEntity>();
             JsonData child = null;
-            for (int i = 0; i < in_entities.Count; ++i)
+            for (int i = 0; i < entities.Count; ++i)
             {
                 try
                 {
-                    child = in_entities[i];
+                    child = entitiesJson[i];
                     BCUserEntity entity = null;
                     entity = NewUserEntity((string)child["entityType"]);
                     entity.ReadFromJson(child);

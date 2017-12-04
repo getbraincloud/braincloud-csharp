@@ -20,9 +20,9 @@ namespace BrainCloud.Entity.Internal
         {
         }
 
-        public DictionaryWrapper(IDictionary<string, SValue> in_sourceDictionary)
+        public DictionaryWrapper(IDictionary<string, SValue> sourceDictionary)
         {
-            m_sourceDictionary = in_sourceDictionary;
+            m_sourceDictionary = sourceDictionary;
         }
 
         // IDictionary<>

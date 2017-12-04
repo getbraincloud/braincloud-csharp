@@ -13,9 +13,9 @@ namespace BrainCloud
     public class BrainCloudTournament
     {
         private BrainCloudClient _client;
-        public BrainCloudTournament(BrainCloudClient brainCloudClientRef)
+        public BrainCloudTournament(BrainCloudClient client)
         {
-            _client = brainCloudClientRef;
+            _client = client;
         }
 
         /// <summary>
