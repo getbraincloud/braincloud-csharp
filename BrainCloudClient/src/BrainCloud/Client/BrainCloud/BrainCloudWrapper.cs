@@ -979,7 +979,7 @@ public class BrainCloudWrapper
     private void SaveData()
     {
 #if DOT_NET
-        string prefix = _instanceName.Equals("") ? "" : _instanceName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName).Equals("") ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
         
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
@@ -993,7 +993,7 @@ public class BrainCloudWrapper
             }
         }
 #else
-        string prefix = WrapperName.Equals("") ? "" : WrapperName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
         PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
         PlayerPrefs.SetString(prefix + PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
@@ -1003,7 +1003,7 @@ public class BrainCloudWrapper
     private void LoadData()
     {
 #if DOT_NET
-        string prefix = _instanceName.Equals("") ? "" : _instanceName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
         
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
@@ -1024,7 +1024,7 @@ public class BrainCloudWrapper
             _wrapperData = JsonReader.Deserialize<WrapperData>(file);
         }
 #else
-        string prefix = WrapperName.Equals("") ? "" : WrapperName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         _wrapperData.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
         _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
         _wrapperData.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
