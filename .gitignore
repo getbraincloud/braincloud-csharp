@@ -28,4 +28,3 @@ Thumbs.db
 /BrainCloudClient/tests/ids.txt
 /BrainCloudClient/tests/NUnit/TestResult.xml
 /BrainCloudClient/tests/NUnit/UnitTests.VisualState.xml
-*.meta

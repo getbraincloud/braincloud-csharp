@@ -1371,7 +1371,7 @@ MonoBehaviour:
   m_CustomStyles:
   - m_Name: Header
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 6255620fc0e4f1d459e7e882feda8aa8, type: 3}
+      m_Background: {fileID: 2800000, guid: af96030cd33603446b9e2e285b37ea08, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
@@ -1437,7 +1437,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Panel
     m_Normal:
-      m_Background: {fileID: 2800000, guid: cd14f9ef62d1f9b4ab656e9e8e490429, type: 3}
+      m_Background: {fileID: 2800000, guid: 8e217e58208f17640b22dfe1e8c83de4, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
@@ -1503,7 +1503,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Tab_Selected
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 3f3ce18d6d09788459122287fed6e3ae, type: 3}
+      m_Background: {fileID: 2800000, guid: 235257c8badfce14194345c763fa7be9, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
@@ -1569,15 +1569,15 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Tab
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 78ee6598188e4334abb6e00cd4ea43be, type: 3}
+      m_Background: {fileID: 2800000, guid: 249e4216705f567439e79e60d5525a3b, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0.32352942, g: 0.32352942, b: 0.32352942, a: 1}
     m_Hover:
-      m_Background: {fileID: 2800000, guid: b53f4b9a96c2cc54bb13ffb8dd59e310, type: 3}
+      m_Background: {fileID: 2800000, guid: 52c54b282533a494591b91a2476b9322, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Active:
-      m_Background: {fileID: 2800000, guid: f58d97bc06b11624ea4da81fac952019, type: 3}
+      m_Background: {fileID: 2800000, guid: 8334a5ac62a7cec4fa714d0e1e6a64af, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Focused:
@@ -1708,7 +1708,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Container
     m_Normal:
-      m_Background: {fileID: 2800000, guid: dfdb9aaf9cec45a4e8cd913f3f9cfad9, type: 3}
+      m_Background: {fileID: 2800000, guid: f1388ff15e49a9c4d9c3b9abd45e12e2, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
@@ -1774,7 +1774,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Underline
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 8ba6549ad0aab2640b20a0d77f17f7c4, type: 3}
+      m_Background: {fileID: 2800000, guid: 9e9c9042aa75ff0479fa79ab486cde28, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
@@ -1840,7 +1840,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: Icon
     m_Normal:
-      m_Background: {fileID: 2800000, guid: ef2b81b2e4a9ac34ab0bc7d6d3360ca5, type: 3}
+      m_Background: {fileID: 2800000, guid: 681ae9ac204546247aaf35b3cd630e2d, type: 3}
       m_ScaledBackgrounds: []
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Hover:
