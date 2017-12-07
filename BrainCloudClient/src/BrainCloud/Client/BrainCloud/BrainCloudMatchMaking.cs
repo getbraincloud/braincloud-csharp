@@ -252,6 +252,39 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.ShieldOff, null, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Increases the shield on time by specified number of minutes 
+        /// </summary>
+        /// <remarks>
+        /// Service Name - MatchMaking
+        /// Service Operation - IncrementShieldOnFor
+        /// </remarks>
+        /// <param name="minutes">
+        /// Number of minutes to increase the shield time for
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void IncrementShieldOnFor(
+            int minutes,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.MatchMakingServiceMinutes.Value] = minutes;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.MatchMaking, ServiceOperation.IncrementShieldOnFor, data, callback);
+            _client.SendRequest(sc);
+        }
 
         /// <summary>
         /// Gets the shield expiry for the given player id. Passing in a null player id
