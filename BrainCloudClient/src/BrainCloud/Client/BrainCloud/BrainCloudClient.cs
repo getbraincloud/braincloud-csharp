@@ -1079,7 +1079,7 @@ namespace BrainCloud
         
         #region Deprecated
         /// <summary>A way to get a Singleton instance of brainCloud.</summary>
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
         public static BrainCloudClient Get()
         {
             if (!EnableSingletonMode)
@@ -1099,7 +1099,7 @@ namespace BrainCloud
             return s_instance;
         }
 
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
         public static BrainCloudClient Instance
         {
             get

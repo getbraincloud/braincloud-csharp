@@ -1041,7 +1041,7 @@ public class BrainCloudWrapper
     }
     
     #region Deprecated
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
     public static BrainCloudWrapper Instance { get { return GetInstance(); } }
 
     /// <summary>
@@ -1049,7 +1049,7 @@ public class BrainCloudWrapper
     /// The BrainCloudWrapper object is stored in a Unity Game Object.
     /// </summary>
     /// <returns>The instance</returns>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
     public static BrainCloudWrapper GetInstance()
     {
         if (!BrainCloudClient.EnableSingletonMode)
@@ -1104,7 +1104,7 @@ public class BrainCloudWrapper
     /// accessible through the client.
     /// </summary>
     /// <returns>The brainCloud client object</returns>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
     public static BrainCloudClient GetBC()
     {
         return GetInstance().Client;
@@ -1115,7 +1115,7 @@ public class BrainCloudWrapper
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
     /// </summary>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
     public static void Initialize()
     {
         Initialize(
@@ -1136,7 +1136,7 @@ public class BrainCloudWrapper
     /// <param name="secretKey">The app's secret</param>
     /// <param name="appId">The app's id</param>
     /// <param name="version">The app's version</param>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/blog")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
     public static void Initialize(string url, string secretKey, string appId, string version)
     {
         BrainCloudWrapper bcw = GetInstance();
