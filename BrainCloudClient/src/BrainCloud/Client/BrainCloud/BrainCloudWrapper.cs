@@ -211,11 +211,6 @@ public class BrainCloudWrapper
             get { return Client.TournamentService; }
         }
 
-        public BrainCloudAuthentication AuthenticationService
-        {
-            get { return Client.AuthenticationService; }
-        }
-
         public BrainCloudPushNotification PushNotificationService
         {
             get { return Client.PushNotificationService; }
