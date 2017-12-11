@@ -113,7 +113,7 @@ namespace BrainCloud.Entity
         {
             List<BCUserEntity> entities = new List<BCUserEntity>();
             JsonData child = null;
-            for (int i = 0; i < entities.Count; ++i)
+            for (int i = 0; i < entitiesJson.Count; ++i)
             {
                 try
                 {
