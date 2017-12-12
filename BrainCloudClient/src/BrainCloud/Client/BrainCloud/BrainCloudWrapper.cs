@@ -272,7 +272,7 @@ public class BrainCloudWrapper
     
     /// <summary>
     /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
-    /// If you can't see the wrapperName on construction, use the WrapperName property
+    /// Can't set the wrapperName on construction? use the WrapperName property instead
     /// </summary>
     /// <param name="wrapperName">string value used to differentiate saved wrapper data</param>
     public BrainCloudWrapper(string wrapperName)
