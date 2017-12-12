@@ -99,11 +99,6 @@ public class BrainCloudWrapper
     
     #region Client Service Properties
 
-        internal BrainCloudComms Comms
-        {
-            get { return Client.Comms; }
-        }
-
         public BrainCloudEntity EntityService
         {
             get { return Client.EntityService; }
