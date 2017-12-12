@@ -95,7 +95,7 @@ public class BrainCloudWrapper
     /// <summary>
     /// Name of this wrapper instance. Used for data loading
     /// </summary>
-    public string WrapperName { get; private set; }
+    public string WrapperName { get; set; }
     
     #region Client Service Properties
 
@@ -270,7 +270,18 @@ public class BrainCloudWrapper
         Client = client;
     }
     
-    
+    /// <summary>
+    /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
+    /// If you can't see the wrapperName on construction, use the WrapperName property
+    /// </summary>
+    /// <param name="wrapperName">string value used to differentiate saved wrapper data</param>
+    public BrainCloudWrapper(string wrapperName)
+    {
+        Client = new BrainCloudClient();
+        WrapperName = wrapperName;
+    }
+
+
     public void Update()
     {
         if (Client != null)
@@ -292,14 +303,13 @@ public class BrainCloudWrapper
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
     /// </summary>
-    public void Init(String wrapperName = "")
+    public void Init()
     {
         Init(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
             BrainCloudSettings.Instance.GameId,
-            BrainCloudSettings.Instance.GameVersion,
-            wrapperName);
+            BrainCloudSettings.Instance.GameVersion);
 
         Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
@@ -313,9 +323,8 @@ public class BrainCloudWrapper
     /// <param name="secretKey">The app's secret</param>
     /// <param name="appId">The app's id</param>
     /// <param name="version">The app's version</param>
-    public void Init(string url, string secretKey, string appId, string version, string wrapperName = "")
+    public void Init(string url, string secretKey, string appId, string version)
     {
-        WrapperName = wrapperName;
         _lastUrl = url;
         _lastSecretKey = secretKey;
         _lastAppId = appId;
@@ -891,7 +900,7 @@ public class BrainCloudWrapper
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion, WrapperName);
+        Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {
