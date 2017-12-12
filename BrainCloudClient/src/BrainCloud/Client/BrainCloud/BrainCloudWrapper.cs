@@ -275,18 +275,7 @@ public class BrainCloudWrapper
         Client = client;
     }
     
-    /// <summary>
-    /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
-    /// </summary>
-    /// <param name="wrapperName">string value used to differentiate saved wrapper data</param>
-    public BrainCloudWrapper(string wrapperName)
-    {
-        Client = new BrainCloudClient();
-        WrapperName = wrapperName;
-    }
-
     
-
     public void Update()
     {
         if (Client != null)
