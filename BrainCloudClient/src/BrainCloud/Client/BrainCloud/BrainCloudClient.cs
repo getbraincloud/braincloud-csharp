@@ -80,7 +80,7 @@ namespace BrainCloud
     public class BrainCloudClient
     {
         /// <summary>Enable the usage of the BrainCloudWrapper singleton.</summary>
-        public bool EnableSingletonMode = false;
+        public static bool EnableSingletonMode = false;
         public const string SingletonUseErrorMessage =
             "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
         
