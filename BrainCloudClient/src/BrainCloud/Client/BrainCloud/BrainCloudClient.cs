@@ -71,7 +71,7 @@ namespace BrainCloud
     /// <param name="fileUploadId">The file upload id</param>
     /// <param name="statusCode">The http status of the operation</param>
     /// <param name="reasonCode">The reason code of the operation</param>
-    /// <param name="jsonResponse">The JSON response describing the failure. This uses the 
+    /// <param name="jsonResponse">The JSON response describing the failure. This uses the
     /// usual brainCloud error format similar to this:</param>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
 
@@ -83,8 +83,8 @@ namespace BrainCloud
         public static bool EnableSingletonMode = false;
         public const string SingletonUseErrorMessage =
             "Singleton usage is disabled. If called by mistake, use your own variable that holds an instance of the bcWrapper/bcClient.";
-        
-       
+
+
         #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
@@ -821,15 +821,15 @@ namespace BrainCloud
 
         /// <summary>
         /// Sets the packet timeouts using a list of integers that
-        /// represent timeout values for each packet retry. The 
+        /// represent timeout values for each packet retry. The
         /// first item in the list represents the timeout for the first packet
         /// attempt, the second for the second packet attempt, and so on.
-        /// 
+        ///
         /// The number of entries in this array determines how many packet
         /// retries will occur.
-        /// 
+        ///
         /// By default, the packet timeout array is {10, 10, 10}
-        /// 
+        ///
         /// Note that this method does not change the timeout for authentication
         /// packets (use SetAuthenticationPacketTimeout method).
         ///
@@ -936,26 +936,26 @@ namespace BrainCloud
 
         /// <summary>
         /// Enables the timeout message caching which is disabled by default.
-        /// Once enabled, if a client side timeout is encountered 
+        /// Once enabled, if a client side timeout is encountered
         /// (i.e. brainCloud server is unreachable presumably due to the client
         /// network being down) the SDK will do the following:
-        /// 
+        ///
         /// 1 - cache the currently queued messages to brainCloud
         /// 2 - call the network error callback
         /// 3 - then expect the app to call either:
         ///     a) RetryCachedMessages() to retry sending to brainCloud
         ///     b) FlushCachedMessages() to dump all messages in the queue.
-        /// 
+        ///
         /// Between steps 2 & 3, the app can prompt the user to retry connecting
         /// to brainCloud to determine whether to follow path 3a or 3b.
-        /// 
+        ///
         /// Note that if path 3a is followed, and another timeout is encountered,
         /// the process will begin all over again from step 1.
-        /// 
+        ///
         /// WARNING - the brainCloud SDK will cache *all* API calls sent
         /// when a timeout is encountered if this mechanism is enabled.
         /// This effectively freezes all communication with brainCloud.
-        /// Apps must call either RetryCachedMessages() or FlushCachedMessages() 
+        /// Apps must call either RetryCachedMessages() or FlushCachedMessages()
         /// for the brainCloud SDK to resume sending messages.
         /// ResetCommunication() will also clear the message cache.
         /// </summary>
@@ -989,16 +989,16 @@ namespace BrainCloud
         /// <summary>
         /// Inserts a marker which will tell the brainCloud comms layer
         /// to close the message bundle off at this point. Any messages queued
-        /// before this method was called will likely be bundled together in 
+        /// before this method was called will likely be bundled together in
         /// the next send to the server.
-        /// 
-        /// To ensure that only a single message is sent to the server you would 
+        ///
+        /// To ensure that only a single message is sent to the server you would
         /// do something like this:
-        /// 
+        ///
         /// InsertEndOfMessageBundleMarker()
         /// SomeApiCall()
         /// InsertEndOfMessageBundleMarker()
-        /// 
+        ///
         /// </summary>
         public void InsertEndOfMessageBundleMarker()
         {
@@ -1046,7 +1046,7 @@ namespace BrainCloud
 #if UNITY_EDITOR
             BrainCloudUnity.BrainCloudPlugin.ResponseEvent.AppendLog(log);
 #endif
-            
+
             if (_loggingEnabled)
             {
                 string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
@@ -1076,10 +1076,10 @@ namespace BrainCloud
             // which will add it to its queue and send back responses accordingly
             _comms.AddToQueue(serviceMessage);
         }
-        
+
         #region Deprecated
         /// <summary>A way to get a Singleton instance of brainCloud.</summary>
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
         public static BrainCloudClient Get()
         {
             if (!EnableSingletonMode)
@@ -1088,8 +1088,8 @@ namespace BrainCloud
                 throw new Exception(SingletonUseErrorMessage);
             }
 #pragma warning restore 162
-            
-            
+
+
             // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
             // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
             if (s_instance == null)
@@ -1099,7 +1099,7 @@ namespace BrainCloud
             return s_instance;
         }
 
-        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+        [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
         public static BrainCloudClient Instance
         {
             get
@@ -1110,7 +1110,7 @@ namespace BrainCloud
                     throw new Exception(SingletonUseErrorMessage);
                 }
 #pragma warning restore 162
-                
+
                 // DO NOT USE THIS INTERNALLY WITHIN BRAINCLOUD LIBRARY...
                 // THIS IS JUST A CONVENIENCE FOR APP DEVELOPERS TO STORE A SINGLETON!
                 if (s_instance == null)
@@ -1120,7 +1120,7 @@ namespace BrainCloud
                 return s_instance;
             }
         }
-        
+
         [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
         public string GameId
         {
@@ -1133,7 +1133,7 @@ namespace BrainCloud
             get { return _appVersion; }
         }
 
-        
+
         #endregion
     }
 }

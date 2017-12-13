@@ -21,7 +21,7 @@ using System.IO.IsolatedStorage;
 /// <summary>
 /// The BrainCloudWrapper class provides some glue between the Unity environment and the
 /// brainCloud C# library. Specifically the BrainCloudWrapper does the following:
-/// 
+///
 /// 1) Creates and uses a global singleton GameObject to manage it's lifetime across the game
 /// 2) Provides an Initialize method which uses the game id, secret, version, and server url
 ///    defined in the brainCloud Settings Unity window.
@@ -29,22 +29,22 @@ using System.IO.IsolatedStorage;
 /// 4) For Anonymous authentication, stores the anonymous id and profile id to the Unity player prefs
 ///    upon successful authentication. This is important as once an anonymous account is created,
 ///    both the anonymous id and profile id of the account are required to authenticate.
-/// 
+///
 /// Note that this class is *not* required to use brainCloud - you are free to reimplement the
 /// functionality as you see fit. It is simply used as a starting point to get developers off the
 /// ground - especially with authentications.
-/// 
+///
 /// The meat of the BrainCloud api is available by using
-/// 
+///
 /// BrainCloudWrapper.GetBC()
-/// 
+///
 /// to grab an instance of the BrainCloudClient. From here you have access to all of the brainCloud
 /// API service. So for instance, to execute a read player statistics API you would do the following:
-/// 
+///
 /// BrainCloudWrapper.GetBC().PlayerStatisticsService.ReadAllUserStats()
-/// 
+///
 /// Similar services exist for other APIs.
-/// 
+///
 /// See http://getbraincloud.com/apidocs/ for the full list of brainCloud APIs.
 /// </summary>
 #if !DOT_NET
@@ -72,13 +72,13 @@ public class BrainCloudWrapper
     /// The name of the singleton brainCloud game object
     /// </summary>
     public static string GAMEOBJECT_BRAINCLOUD = "BrainCloudWrapper";
-    
+
     public static string AUTHENTICATION_ANONYMOUS = "anonymous";
 
     private static BrainCloudWrapper _instance = null;
     private static bool _applicationIsQuitting = false;
 
-    
+
     private string _lastUrl = "";
     private string _lastSecretKey = "";
     private string _lastAppId = "";
@@ -86,7 +86,7 @@ public class BrainCloudWrapper
 
     private WrapperData _wrapperData = new WrapperData();
 
-    
+
     //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
     //Switch to BrainCloudWrapper.GetBC();
     public BrainCloudClient Client { get; private set; }
@@ -96,7 +96,7 @@ public class BrainCloudWrapper
     /// Name of this wrapper instance. Used for data loading
     /// </summary>
     public string WrapperName { get; set; }
-    
+
     #region Client Service Properties
 
         public BrainCloudEntity EntityService
@@ -252,7 +252,7 @@ public class BrainCloudWrapper
         }
 
         #endregion
-    
+
     /// <summary>
     /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
     /// </summary>
@@ -260,7 +260,7 @@ public class BrainCloudWrapper
     {
         Client = new BrainCloudClient();
     }
-    
+
     /// <summary>
     /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
     /// </summary>
@@ -269,7 +269,7 @@ public class BrainCloudWrapper
     {
         Client = client;
     }
-    
+
     /// <summary>
     /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
     /// Can't set the wrapperName on construction? use the WrapperName property instead
@@ -297,7 +297,7 @@ public class BrainCloudWrapper
     }
 #endif
 
-   
+
 #if !DOT_NET
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
@@ -351,7 +351,7 @@ public class BrainCloudWrapper
     /// <summary>
     /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
     /// the user to login, or for users who are sensitive to their privacy
-    /// 
+    ///
     /// Note that this method is special in that the anonymous id and profile id
     /// are persisted to the Unity player prefs cache if authentication is successful.
     /// Both pieces of information are required to successfully log into that account
@@ -735,7 +735,7 @@ public class BrainCloudWrapper
     /// </param>
     /// <param name="cbObject">
     /// The user supplied callback object
-    /// </param> 
+    /// </param>
     public void AuthenticateUniversal(
         string username,
         string password,
@@ -782,8 +782,8 @@ public class BrainCloudWrapper
     /// AuthenticateAnonymous method, a success callback handler hook will be installed
     /// that will trap the return from the brainCloud server and persist the anonymous id
     /// and profile id.
-    /// 
-    /// Note that clients are free to implement this logic on their own as well if they 
+    ///
+    /// Note that clients are free to implement this logic on their own as well if they
     /// wish to store the information in another location and/or change the behaviour.
     /// </summary>
     protected virtual void InitializeIdentity(bool isAnonymousAuth = false)
@@ -928,14 +928,14 @@ public class BrainCloudWrapper
             SetStoredProfileId(profileId);
         }
         if (cbObject != null)
-        {            
+        {
             WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
             if (aco._successCallback != null)
             {
                 aco._successCallback(json, aco._cbObject);
             }
         }
-        
+
 #if UNITY_EDITOR
         BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateSuccess(json);
 #endif
@@ -958,7 +958,7 @@ public class BrainCloudWrapper
                 aco._failureCallback(statusCode, reasonCode, errorJson, aco._cbObject);
             }
         }
-        
+
 #if UNITY_EDITOR
         BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
 #endif
@@ -969,7 +969,7 @@ public class BrainCloudWrapper
 #if DOT_NET
         string prefix = string.IsNullOrEmpty(WrapperName).Equals("") ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
-        
+
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
         using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, isoStore))
@@ -993,7 +993,7 @@ public class BrainCloudWrapper
 #if DOT_NET
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
-        
+
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
         if (isoStore.FileExists(fileName))
@@ -1027,9 +1027,9 @@ public class BrainCloudWrapper
 
         public static readonly string FileName = "BrainCloudWrapper.json";
     }
-    
+
     #region Deprecated
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
     public static BrainCloudWrapper Instance { get { return GetInstance(); } }
 
     /// <summary>
@@ -1037,7 +1037,7 @@ public class BrainCloudWrapper
     /// The BrainCloudWrapper object is stored in a Unity Game Object.
     /// </summary>
     /// <returns>The instance</returns>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
     public static BrainCloudWrapper GetInstance()
     {
         if (!BrainCloudClient.EnableSingletonMode)
@@ -1046,7 +1046,7 @@ public class BrainCloudWrapper
             throw new Exception(BrainCloudClient.SingletonUseErrorMessage);
         }
 #pragma warning restore 162
-        
+
         if (_applicationIsQuitting)
         {
             return null;
@@ -1071,12 +1071,12 @@ public class BrainCloudWrapper
             if (_instance == null)
             {
                 GameObject go = new GameObject(GAMEOBJECT_BRAINCLOUD);
-                
+
                 _instance = go.AddComponent<BrainCloudWrapper>();
 #pragma warning disable 618
                 _instance.Client = BrainCloudClient.Get();
 #pragma warning restore 618
-                
+
                 DontDestroyOnLoad(go);
             }
 #else
@@ -1086,24 +1086,24 @@ public class BrainCloudWrapper
         }
         return _instance;
     }
-    
+
     /// <summary>
     /// Returns a singleton instance of the BrainCloudClient. All brainCloud APIs are
     /// accessible through the client.
     /// </summary>
     /// <returns>The brainCloud client object</returns>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
     public static BrainCloudClient GetBC()
     {
         return GetInstance().Client;
     }
-    
+
 #if !DOT_NET
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
     /// </summary>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
     public static void Initialize()
     {
         Initialize(
@@ -1115,7 +1115,7 @@ public class BrainCloudWrapper
         Instance.Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
 #endif
-    
+
     /// <summary>
     /// Initialize the brainCloud client with the passed in parameters. This version of Initialize
     /// overrides the parameters configured in the Unity brainCloud Settings window.
@@ -1124,7 +1124,7 @@ public class BrainCloudWrapper
     /// <param name="secretKey">The app's secret</param>
     /// <param name="appId">The app's id</param>
     /// <param name="version">The app's version</param>
-    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/")]
+    [Obsolete("Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/wrappers-clients-and-inconvenient-singletons/")]
     public static void Initialize(string url, string secretKey, string appId, string version)
     {
         BrainCloudWrapper bcw = GetInstance();
@@ -1136,6 +1136,6 @@ public class BrainCloudWrapper
 
         _instance.LoadData();
     }
-    
+
     #endregion
 }
