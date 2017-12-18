@@ -68,6 +68,7 @@ namespace BrainCloudTests
             Spin();
 
             Assert.False(m_result);
+            
             if (in_expectedStatusCode != -1)
             {
                 Assert.AreEqual(in_expectedStatusCode, m_statusCode);
@@ -77,6 +78,16 @@ namespace BrainCloudTests
                 Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
             }
 
+            return !m_result;
+        }
+
+        public bool RunExpectFail()
+        {
+            Reset();
+            Spin();
+
+            Assert.False(m_result);
+            
             return !m_result;
         }
 
@@ -142,7 +153,6 @@ namespace BrainCloudTests
             long maxWait = m_timeToWaitSecs * 1000;
             while (!m_done && maxWait > 0)
             {
-
                 _bc.Update();
                 Thread.Sleep(10);
                 maxWait -= 10;

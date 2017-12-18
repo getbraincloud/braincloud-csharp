@@ -40,7 +40,7 @@ namespace BrainCloudTests
             _bc.Client.DeregisterEventCallback();
         }
 
-        //[Test]
+        //[Test] //TODO Fix
         //public void TestSendEvent()
         //{
         //    TestResult tr = new TestResult(_bc);

@@ -78,9 +78,9 @@ namespace BrainCloudTests
             // server to reject the second authenticate packet but with the
             // new comms change, this should result in the heartbeat being
             // removed from the message bundle.
-            BrainCloudClient.Get().SendHeartbeat();
+            _bc.Client.SendHeartbeat();
 
-            BrainCloudClient.Get().AuthenticationService.AuthenticateEmailPassword(
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
                 GetUser(Users.UserA).Email,
                 GetUser(Users.UserA).Password,
                 true,

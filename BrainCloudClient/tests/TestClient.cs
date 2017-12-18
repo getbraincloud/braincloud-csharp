@@ -11,7 +11,7 @@ namespace BrainCloudTests
     {
         private bool _killSwitchEngaged;
 
-        //[Test]
+        [Test]
         public void TestKillSwitch()
         {
             TestResult tr = new TestResult(_bc);
@@ -41,6 +41,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
+            int failureIndex = 0;
             while (!_killSwitchEngaged)
             {
                 _bc.EntityService.UpdateEntity(
@@ -55,7 +56,16 @@ namespace BrainCloudTests
                     tr.ApiError(statusCode, reasonCode, message, cbObj);
                 });
 
-                tr.RunExpectFail(404, ReasonCodes.UPDATE_FAILED);
+                if(_killSwitchEngaged)
+                {
+                    break;
+                }
+
+                tr.RunExpectFail();
+
+                failureIndex++;
+
+                Assert.Less(failureIndex, 13, "UpdateEntity called too many times without killswitch turning on/");
             }
 
             _bc.Client.AuthenticationService.AuthenticateUniversal(
@@ -64,7 +74,7 @@ namespace BrainCloudTests
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(900, ReasonCodes.UPDATE_FAILED);
+            tr.RunExpectFail(900, ReasonCodes.CLIENT_DISABLED);
         }
 
         void OnErrorCheck(int statusCode, int reasonCode)

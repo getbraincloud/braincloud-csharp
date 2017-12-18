@@ -10,39 +10,39 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateAnonymous()
         {
-            BrainCloudWrapper.Instance.ResetStoredAnonymousId();
-            BrainCloudWrapper.Instance.ResetStoredProfileId();
+            _bc.ResetStoredAnonymousId();
+            _bc.ResetStoredProfileId();
 
             TestResult tr = new TestResult(_bc);
-            BrainCloudWrapper.Instance.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             string profileId = _bc.Client.AuthenticationService.ProfileId;
             string anonId = _bc.Client.AuthenticationService.AnonymousId;
 
-            Assert.AreEqual(profileId, BrainCloudWrapper.Instance.GetStoredProfileId());
-            Assert.AreEqual(anonId, BrainCloudWrapper.Instance.GetStoredAnonymousId());
+            Assert.AreEqual(profileId, _bc.GetStoredProfileId());
+            Assert.AreEqual(anonId, _bc.GetStoredAnonymousId());
 
-            BrainCloudWrapper.Instance.Client.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            _bc.Client.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudWrapper.Instance.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            Assert.AreEqual(profileId, BrainCloudWrapper.Instance.GetStoredProfileId());
-            Assert.AreEqual(anonId, BrainCloudWrapper.Instance.GetStoredAnonymousId());
+            Assert.AreEqual(profileId, _bc.GetStoredProfileId());
+            Assert.AreEqual(anonId, _bc.GetStoredAnonymousId());
         }
 
         [Test]
         public void TestAuthenticateUniversal()
         {
-            BrainCloudWrapper.Instance.Client.AuthenticationService.ClearSavedProfileID();
-            BrainCloudWrapper.Instance.ResetStoredAnonymousId();
-            BrainCloudWrapper.Instance.ResetStoredProfileId();
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
+            _bc.ResetStoredAnonymousId();
+            _bc.ResetStoredProfileId();
 
             TestResult tr = new TestResult(_bc);
 
-            BrainCloudWrapper.Instance.AuthenticateUniversal(
+            _bc.AuthenticateUniversal(
                 GetUser(Users.UserA).Id + "W",
                 GetUser(Users.UserA).Password,
                 true,
@@ -55,16 +55,16 @@ namespace BrainCloudTests
         public void TestReconnect()
         {
             TestResult tr = new TestResult(_bc);
-            BrainCloudWrapper.Instance.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudWrapper.Instance.Client.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            _bc.Client.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudWrapper.Instance.Reconnect(tr.ApiSuccess, tr.ApiError);
+            _bc.Reconnect(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudWrapper.Instance.Client.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            _bc.Client.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

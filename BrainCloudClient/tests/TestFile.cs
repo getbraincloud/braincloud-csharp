@@ -243,32 +243,32 @@ namespace BrainCloudTests
             int count = 0;
             bool sw = true;
 
-            BrainCloudClient _client = BrainCloudClient.Instance;
+            BrainCloudClient client = _bc.Client;
 
-            _client.Update();
+            client.Update();
             while (_returnCount < uploadIds.Length && count < 1000 * 30)
             {
 
                 for (int i = 0; i < uploadIds.Length; i++)
                 {
-                    double progress = _client.FileService.GetUploadProgress(uploadIds[i]);
+                    double progress = client.FileService.GetUploadProgress(uploadIds[i]);
 
                     if (progress > -1 && sw)
                     {
                         string logStr = "File " + (i + 1) + " Progress: " +
                             progress + " | " +
-                            _client.FileService.GetUploadBytesTransferred(uploadIds[i]) + "/" +
-                            _client.FileService.GetUploadTotalBytesToTransfer(uploadIds[i]);
+                            client.FileService.GetUploadBytesTransferred(uploadIds[i]) + "/" +
+                            client.FileService.GetUploadTotalBytesToTransfer(uploadIds[i]);
                         Console.WriteLine(logStr);
                     }
 
                     if (cancelTime > 0 && progress > 0.05)
                     {
-                        _client.FileService.CancelUpload(uploadIds[i]);
+                        client.FileService.CancelUpload(uploadIds[i]);
                     }
                 }
 
-                _client.Update();
+                client.Update();
                 sw = !sw;
 
                 Thread.Sleep(150);

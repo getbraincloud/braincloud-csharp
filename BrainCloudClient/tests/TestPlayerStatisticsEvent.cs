@@ -55,13 +55,13 @@ namespace BrainCloudTests
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1 };
 
-            BrainCloudClient.Get ().RegisterRewardCallback(rewardCallback);
+            _bc.Client.RegisterRewardCallback(rewardCallback);
             _bc.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Get ().DeregisterRewardCallback();
+            _bc.Client.DeregisterRewardCallback();
 
             Assert.AreEqual (m_rewardCallbackHitCount, 1);
         }
@@ -79,8 +79,8 @@ namespace BrainCloudTests
             Dictionary<string, object>[] jsonData1 = new Dictionary<string, object>[] { event1 };
             Dictionary<string, object> event2 = new Dictionary<string, object> { { "eventName", "incQuest2Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData2 = new Dictionary<string, object>[] { event2 };
-            
-            BrainCloudClient.Get ().RegisterRewardCallback(rewardCallback);
+
+            _bc.Client.RegisterRewardCallback(rewardCallback);
             _bc.PlayerStatisticsEventService.TriggerStatsEvents(
                 JsonWriter.Serialize(jsonData1),
                 tr.ApiSuccess, tr.ApiError);
@@ -88,8 +88,8 @@ namespace BrainCloudTests
                 JsonWriter.Serialize(jsonData2),
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectCount(2);
-            
-            BrainCloudClient.Get ().DeregisterRewardCallback();
+
+            _bc.Client.DeregisterRewardCallback();
             
             Assert.AreEqual (m_rewardCallbackHitCount, 2);
         }

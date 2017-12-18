@@ -94,15 +94,15 @@ namespace BrainCloudTests
     {
         public static string ENTITY_TYPE = "player";
 
-        public Player(BrainCloudWrapper bc)
-            : base(bc.EntityService)
-        {
+        public Player()
+        { 
             // set up some defaults
             m_entityType = "player";
             Name = "";
             Age = 0;
             Hobbies = new List<Hobby>();
         }
+        
 
         public string Name
         {
