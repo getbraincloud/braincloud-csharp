@@ -11,9 +11,9 @@ namespace BrainCloudTests
         [Test]
         public void FindUsersByExactName()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.FindUsersByExactName(
+            _bc.FriendService.FindUsersByExactName(
                 "search",
                 10,
                 tr.ApiSuccess, tr.ApiError);
@@ -24,9 +24,9 @@ namespace BrainCloudTests
         [Test]
         public void TestFindUsersBySubstrName()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.FindUsersBySubstrName(
+            _bc.FriendService.FindUsersBySubstrName(
                 "search",
                 10,
                 tr.ApiSuccess, tr.ApiError);
@@ -37,9 +37,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetExternalIdForProfileId()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.GetExternalIdForProfileId(
+            _bc.FriendService.GetExternalIdForProfileId(
                 GetUser(Users.UserA).ProfileId,
                 "Facebook",
                 tr.ApiSuccess, tr.ApiError);
@@ -50,9 +50,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetProfileInfoForCredential()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.GetProfileInfoForCredential(
+            _bc.FriendService.GetProfileInfoForCredential(
                 GetUser(Users.UserA).Id,
                 AuthenticationType.Universal,
                 tr.ApiSuccess, tr.ApiError);
@@ -63,9 +63,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetProfileInfoForExternalAuthId()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.GetProfileInfoForExternalAuthId(
+            _bc.FriendService.GetProfileInfoForExternalAuthId(
                 GetUser(Users.UserA).Id,
                 "test",
                 tr.ApiSuccess, tr.ApiError);
@@ -76,9 +76,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetSummaryDataForProfileId()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.GetSummaryDataForProfileId(
+            _bc.FriendService.GetSummaryDataForProfileId(
                 GetUser(Users.UserA).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -88,9 +88,9 @@ namespace BrainCloudTests
         [Test]
         public void TestFindUserByUniversalId()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.FindUserByUniversalId(
+            _bc.FriendService.FindUserByUniversalId(
                 "search",
                 10,
                 tr.ApiSuccess, tr.ApiError);
@@ -101,9 +101,9 @@ namespace BrainCloudTests
         [Test]
         public void TestListFriends()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.FriendService.ListFriends(
+            _bc.FriendService.ListFriends(
                 BrainCloudFriend.FriendPlatform.All,
                 false,
                 tr.ApiSuccess, tr.ApiError);
@@ -122,11 +122,11 @@ namespace BrainCloudTests
         {
             AddFriends();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string[] friends = { GetUser(Users.UserB).ProfileId };
 
-            BrainCloudClient.Instance.FriendService.RemoveFriends(
+            _bc.FriendService.RemoveFriends(
                 friends,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -136,11 +136,11 @@ namespace BrainCloudTests
         [Test]
         public void TestGetUsersOnlineStatus()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string[] friends = { GetUser(Users.UserB).ProfileId };
 
-            BrainCloudClient.Instance.FriendService.GetUsersOnlineStatus(
+            _bc.FriendService.GetUsersOnlineStatus(
                 friends,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -150,11 +150,11 @@ namespace BrainCloudTests
         //Helpers
         private void AddFriends()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string[] friends = { GetUser(Users.UserB).ProfileId };
 
-            BrainCloudClient.Instance.FriendService.AddFriends(
+            _bc.FriendService.AddFriends(
                 friends,
                 tr.ApiSuccess, tr.ApiError);
 

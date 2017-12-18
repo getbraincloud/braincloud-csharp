@@ -15,9 +15,9 @@ namespace BrainCloudTests
         [Test]
         public void TestRedeemCode()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.RedemptionCodeService.RedeemCode(
+            _bc.RedemptionCodeService.RedeemCode(
                 GetValidCode().ToString(),
                 _codeType,
                 Helpers.CreateJsonPair("test", 127),
@@ -29,9 +29,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetRedeemedCodes()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.RedemptionCodeService.GetRedeemedCodes(
+            _bc.RedemptionCodeService.GetRedeemedCodes(
                 _codeType,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -40,9 +40,9 @@ namespace BrainCloudTests
 
         private long GetValidCode()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GlobalStatisticsService.IncrementGlobalStats(
+            _bc.GlobalStatisticsService.IncrementGlobalStats(
                 Helpers.CreateJsonPair(_lastUsedCodeStatName, "+1"),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

@@ -10,9 +10,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadServerTime()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TimeService.ReadServerTime(
+            _bc.TimeService.ReadServerTime(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

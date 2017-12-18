@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug_Unity\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES, DOT_NET</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>

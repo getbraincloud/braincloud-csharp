@@ -29,9 +29,9 @@ namespace BrainCloudTests
         {
             int version = JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.ClaimTournamentReward(
+            _bc.TournamentService.ClaimTournamentReward(
                 _leaderboardId,
                 version,
                 tr.ApiSuccess, tr.ApiError);
@@ -44,9 +44,9 @@ namespace BrainCloudTests
         {
             int version = JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.GetTournamentStatus(
+            _bc.TournamentService.GetTournamentStatus(
                 _leaderboardId,
                 version,
                 tr.ApiSuccess, tr.ApiError);
@@ -73,9 +73,9 @@ namespace BrainCloudTests
         {
             JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.PostTournamentScore(
+            _bc.TournamentService.PostTournamentScore(
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
@@ -92,9 +92,9 @@ namespace BrainCloudTests
         {
             JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.PostTournamentScoreWithResults(
+            _bc.TournamentService.PostTournamentScoreWithResults(
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
@@ -115,9 +115,9 @@ namespace BrainCloudTests
         {
             JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.ViewCurrentReward(
+            _bc.TournamentService.ViewCurrentReward(
                 _leaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -131,9 +131,9 @@ namespace BrainCloudTests
         {
             JoinTestTournament();
 
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.ViewReward(
+            _bc.TournamentService.ViewReward(
                 _leaderboardId,
                 -1,
                 tr.ApiSuccess, tr.ApiError);
@@ -147,9 +147,9 @@ namespace BrainCloudTests
         // Helpers
         private int JoinTestTournament()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.JoinTournament(
+            _bc.TournamentService.JoinTournament(
                 _leaderboardId,
                 _tournamentCode,
                 _rand.Next(1000),
@@ -158,7 +158,7 @@ namespace BrainCloudTests
             tr.Run();
             _didJoin = true;
 
-            BrainCloudClient.Instance.TournamentService.GetTournamentStatus(
+            _bc.TournamentService.GetTournamentStatus(
                 _leaderboardId,
                 -1,
                 tr.ApiSuccess, tr.ApiError);
@@ -170,9 +170,9 @@ namespace BrainCloudTests
 
         private void LeaveTestTournament()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.TournamentService.LeaveTournament(
+            _bc.TournamentService.LeaveTournament(
                 _leaderboardId,
                 tr.ApiSuccess, tr.ApiError);
 

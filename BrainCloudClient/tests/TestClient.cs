@@ -14,9 +14,9 @@ namespace BrainCloudTests
         //[Test]
         public void TestKillSwitch()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
@@ -26,7 +26,7 @@ namespace BrainCloudTests
 
             for (int i = 0; i < 3; ++i)
             {
-                BrainCloudClient.Instance.EntityService.UpdateEntity(
+                _bc.EntityService.UpdateEntity(
                 "FAIL",
                 "FAIL",
                 Helpers.CreateJsonPair("test", 1),
@@ -37,13 +37,13 @@ namespace BrainCloudTests
                 tr.RunExpectFail(404, ReasonCodes.UPDATE_FAILED);
             }
 
-            BrainCloudClient.Instance.TimeService.ReadServerTime(
+            _bc.TimeService.ReadServerTime(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             while (!_killSwitchEngaged)
             {
-                BrainCloudClient.Instance.EntityService.UpdateEntity(
+                _bc.EntityService.UpdateEntity(
                 "FAIL",
                 "FAIL",
                 Helpers.CreateJsonPair("test", 1),
@@ -58,7 +58,7 @@ namespace BrainCloudTests
                 tr.RunExpectFail(404, ReasonCodes.UPDATE_FAILED);
             }
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,

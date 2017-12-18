@@ -23,7 +23,7 @@ namespace BrainCloudTests
                 DeleteGroupAsUserA();
             }
 
-            if (BrainCloudClient.Instance.IsAuthenticated())
+            if (_bc.Client.IsAuthenticated())
             {
                 Logout();
             }
@@ -35,8 +35,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.InviteGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.InviteGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.ADMIN,
@@ -47,7 +47,7 @@ namespace BrainCloudTests
             Logout();
             Authenticate(Users.UserB);
 
-            BrainCloudClient.Instance.GroupService.AcceptGroupInvitation(
+            _bc.GroupService.AcceptGroupInvitation(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -62,8 +62,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.AddGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.AddGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.ADMIN,
@@ -80,8 +80,8 @@ namespace BrainCloudTests
             CreateGroupAsUserA();
             Authenticate(Users.UserB);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.JoinGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.JoinGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -89,7 +89,7 @@ namespace BrainCloudTests
             Logout();
             Authenticate(Users.UserA);
 
-            BrainCloudClient.Instance.GroupService.ApproveGroupJoinRequest(
+            _bc.GroupService.ApproveGroupJoinRequest(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.MEMBER,
@@ -107,8 +107,8 @@ namespace BrainCloudTests
             CreateGroupAsUserA(true);
             Authenticate(Users.UserB);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.AutoJoinGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.AutoJoinGroup(
                 _groupType,
                 BrainCloudGroup.AutoJoinStrategy.JoinFirstGroup,
                 null,
@@ -125,8 +125,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.InviteGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.InviteGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.ADMIN,
@@ -134,7 +134,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.GroupService.CancelGroupInvitation(
+            _bc.GroupService.CancelGroupInvitation(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
@@ -179,8 +179,8 @@ namespace BrainCloudTests
             CreateGroup();
             string entityId = CreateGroupEntity();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.DeleteGroupEntity(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.DeleteGroupEntity(
                 _groupId,
                 entityId,
                 1,
@@ -197,8 +197,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.GetMyGroups(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.GetMyGroups(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -212,8 +212,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.IncrementGroupData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.IncrementGroupData(
                 _groupId,
                 Helpers.CreateJsonPair("testInc", 1),
                 tr.ApiSuccess, tr.ApiError);
@@ -230,8 +230,8 @@ namespace BrainCloudTests
             CreateGroup();
             string id = CreateGroupEntity();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.IncrementGroupEntityData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.IncrementGroupEntityData(
                 _groupId,
                 id,
                 Helpers.CreateJsonPair("testInc", 1),
@@ -249,8 +249,8 @@ namespace BrainCloudTests
             CreateGroup();
             string id = CreateGroupEntity();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.IncrementGroupEntityData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.IncrementGroupEntityData(
                 _groupId,
                 id,
                 Helpers.CreateJsonPair("testInc", 1),
@@ -267,8 +267,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.InviteGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.InviteGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.MEMBER,
@@ -286,8 +286,8 @@ namespace BrainCloudTests
             CreateGroupAsUserA();
             Authenticate(Users.UserB);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.JoinGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.JoinGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -302,13 +302,13 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.LeaveGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.LeaveGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.GroupService.ReadGroup(
+            _bc.GroupService.ReadGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, 40345);
@@ -324,8 +324,8 @@ namespace BrainCloudTests
 
             string context = CreateContext(10, 1, "groupType", _groupType);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ListGroupsPage(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ListGroupsPage(
                 context,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -340,15 +340,15 @@ namespace BrainCloudTests
 
             string context = CreateContext(10, 1, "groupType", _groupType);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ListGroupsPage(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ListGroupsPage(
                 context,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             context = (string)((Dictionary<string, object>)tr.m_response["data"])["context"];
 
-            BrainCloudClient.Instance.GroupService.ListGroupsPageByOffset(
+            _bc.GroupService.ListGroupsPageByOffset(
                 context,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -362,8 +362,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             //CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ListGroupsWithMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ListGroupsWithMember(
                 GetUser(Users.UserA).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -377,8 +377,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -393,8 +393,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroupData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroupData(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -411,8 +411,8 @@ namespace BrainCloudTests
 
             string context = CreateContext(10, 1, "groupId", _groupId);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroupEntitiesPage(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroupEntitiesPage(
                 context,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -429,15 +429,15 @@ namespace BrainCloudTests
 
             string context = CreateContext(10, 1, "groupId", _groupId);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroupEntitiesPage(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroupEntitiesPage(
                 context,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             context = (string)((Dictionary<string, object>)tr.m_response["data"])["context"];
 
-            BrainCloudClient.Instance.GroupService.ReadGroupEntitiesPageByOffset(
+            _bc.GroupService.ReadGroupEntitiesPageByOffset(
                 context,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -453,8 +453,8 @@ namespace BrainCloudTests
             CreateGroup();
             string id = CreateGroupEntity();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroupEntity(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroupEntity(
                 _groupId,
                 id,
                 tr.ApiSuccess, tr.ApiError);
@@ -470,8 +470,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.ReadGroupMembers(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.ReadGroupMembers(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -486,8 +486,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.InviteGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.InviteGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 BrainCloudGroup.Role.ADMIN,
@@ -498,7 +498,7 @@ namespace BrainCloudTests
             Logout();
             Authenticate(Users.UserB);
 
-            BrainCloudClient.Instance.GroupService.RejectGroupInvitation(
+            _bc.GroupService.RejectGroupInvitation(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -513,8 +513,8 @@ namespace BrainCloudTests
             CreateGroupAsUserA();
             Authenticate(Users.UserB);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.JoinGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.JoinGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -522,7 +522,7 @@ namespace BrainCloudTests
             Logout();
             Authenticate(Users.UserA);
 
-            BrainCloudClient.Instance.GroupService.RejectGroupJoinRequest(
+            _bc.GroupService.RejectGroupJoinRequest(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
@@ -537,8 +537,8 @@ namespace BrainCloudTests
             CreateGroupAsUserA(true);
             Authenticate(Users.UserB);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.JoinGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.JoinGroup(
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -546,7 +546,7 @@ namespace BrainCloudTests
             Logout();
             Authenticate(Users.UserA);
 
-            BrainCloudClient.Instance.GroupService.RemoveGroupMember(
+            _bc.GroupService.RemoveGroupMember(
                 _groupId,
                 GetUser(Users.UserB).ProfileId,
                 tr.ApiSuccess, tr.ApiError);
@@ -561,8 +561,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.UpdateGroupData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.UpdateGroupData(
                 _groupId,
                 1,
                 Helpers.CreateJsonPair("testUpdate", 1),
@@ -580,8 +580,8 @@ namespace BrainCloudTests
             CreateGroup();
             string id = CreateGroupEntity();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.UpdateGroupEntityData(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.UpdateGroupEntityData(
                 _groupId,
                 id,
                 1,
@@ -599,8 +599,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.UpdateGroupMember(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.UpdateGroupMember(
                 _groupId,
                 GetUser(Users.UserA).ProfileId,
                 null,
@@ -618,8 +618,8 @@ namespace BrainCloudTests
             Authenticate(Users.UserA);
             CreateGroup();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.UpdateGroupName(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.UpdateGroupName(
                 _groupId,
                 "testName",
                 tr.ApiSuccess, tr.ApiError);
@@ -647,8 +647,8 @@ namespace BrainCloudTests
 
         private void Authenticate(Users user)
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(user).Id,
                 GetUser(user).Password,
                 true,
@@ -658,18 +658,18 @@ namespace BrainCloudTests
 
         private void Logout()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.PlayerStateService.Logout(
+            TestResult tr = new TestResult(_bc);
+            _bc.PlayerStateService.Logout(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            BrainCloudClient.Instance.AuthenticationService.ClearSavedProfileID();
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
         }
 
         private void CreateGroup(bool isOpen = false)
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GroupService.CreateGroup(
+            _bc.GroupService.CreateGroup(
                 "testGroup",
                 _groupType,
                 isOpen,
@@ -687,9 +687,9 @@ namespace BrainCloudTests
 
         private string CreateGroupEntity()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GroupService.CreateGroupEntity(
+            _bc.GroupService.CreateGroupEntity(
                 _groupId,
                 _entityType,
                 false,
@@ -704,8 +704,8 @@ namespace BrainCloudTests
 
         private void DeleteGroup()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.GroupService.DeleteGroup(
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.DeleteGroup(
                 _groupId,
                 -1,
                 tr.ApiSuccess, tr.ApiError);

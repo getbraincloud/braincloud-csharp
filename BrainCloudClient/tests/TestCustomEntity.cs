@@ -13,9 +13,9 @@ namespace BrainCloudTests
         [Test]
         public void TestStoreAsync()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            TestResult tr = new TestResult(_bc);
+            _bc.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = _bc.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
 
             playerEntity.StoreAsync(tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -26,7 +26,7 @@ namespace BrainCloudTests
         [Test]
         public void TestDeleteAsync()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             Player playerEntity = Initialize();
 
             playerEntity.DeleteAsync(tr.ApiSuccess, tr.ApiError);
@@ -36,9 +36,9 @@ namespace BrainCloudTests
         [Test]
         public void TestStoreAsyncShared()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            TestResult tr = new TestResult(_bc);
+            _bc.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = _bc.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
 
             playerEntity.StoreAsyncShared(GetUser(Users.UserA).ProfileId, tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -50,15 +50,15 @@ namespace BrainCloudTests
         public void TestNewUserEntitiesFromReadPlayerState()
         {
             Initialize();
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             Player playerEntity = null;
 
-            BrainCloudClient.Instance.PlayerStateService.ReadUserState(
+            _bc.PlayerStateService.ReadUserState(
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
-                IList<BCUserEntity> entities = BrainCloudClient.Instance.EntityFactory.NewUserEntitiesFromReadPlayerState(JsonWriter.Serialize(tr.m_response));
+                IList<BCUserEntity> entities = _bc.EntityFactory.NewUserEntitiesFromReadPlayerState(JsonWriter.Serialize(tr.m_response));
                 foreach (BCUserEntity e in entities)
                 {
                     if (e.EntityType == Player.ENTITY_TYPE)
@@ -73,9 +73,9 @@ namespace BrainCloudTests
 
         private Player Initialize()
         {            
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = BrainCloudClient.Instance.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            TestResult tr = new TestResult(_bc);
+            _bc.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = _bc.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
             playerEntity.StoreAsync(tr.ApiSuccess, tr.ApiError);            
             tr.Run();
             return playerEntity;
@@ -84,7 +84,7 @@ namespace BrainCloudTests
         private void Cleanup(Player playerEntity)
         {
             if (playerEntity == null) return;
-            TestResult tr = new TestResult();            
+            TestResult tr = new TestResult(_bc);            
             playerEntity.DeleteAsync(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -94,8 +94,8 @@ namespace BrainCloudTests
     {
         public static string ENTITY_TYPE = "player";
 
-        public Player()
-            : base(BrainCloudClient.Instance.EntityService)
+        public Player(BrainCloudWrapper bc)
+            : base(bc.EntityService)
         {
             // set up some defaults
             m_entityType = "player";

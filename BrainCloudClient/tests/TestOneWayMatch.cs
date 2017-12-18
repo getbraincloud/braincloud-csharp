@@ -27,9 +27,9 @@ namespace BrainCloudTests
         public void TestCompleteMatch()
         {
             string streamId = StartMatch();
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.OneWayMatchService.CompleteMatch(
+            _bc.OneWayMatchService.CompleteMatch(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -40,10 +40,10 @@ namespace BrainCloudTests
 
         private string StartMatch()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             string streamId = "";
 
-            BrainCloudClient.Instance.OneWayMatchService.StartMatch(
+            _bc.OneWayMatchService.StartMatch(
                 GetUser(Users.UserB).ProfileId,
                 1000,
                 tr.ApiSuccess, tr.ApiError);
@@ -58,8 +58,8 @@ namespace BrainCloudTests
 
         private void CancelMatch(string streamId)
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.OneWayMatchService.CancelMatch(
+            TestResult tr = new TestResult(_bc);
+            _bc.OneWayMatchService.CancelMatch(
                 streamId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

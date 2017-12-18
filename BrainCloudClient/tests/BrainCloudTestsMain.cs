@@ -12,8 +12,10 @@ namespace BrainCloudTests
     {
         static int Main(string[] args)
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Get ().AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
+            BrainCloudWrapper bc = new BrainCloudWrapper();
+
+            TestResult tr = new TestResult(new BrainCloudWrapper());
+            bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
             if (tr.Run ())
             {
                 // something

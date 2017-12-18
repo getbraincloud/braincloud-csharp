@@ -14,9 +14,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetUpdatedFiles()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.S3HandlingService.GetUpdatedFiles(
+            _bc.S3HandlingService.GetUpdatedFiles(
                 _category,
                 GetModifiedFileDetails(),
                 tr.ApiSuccess, tr.ApiError);
@@ -27,9 +27,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetFileList()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.S3HandlingService.GetFileList(
+            _bc.S3HandlingService.GetFileList(
                 _category,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -39,9 +39,9 @@ namespace BrainCloudTests
         [Test]
         public void TestGetCdnUrl()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.S3HandlingService.GetFileList(
+            _bc.S3HandlingService.GetFileList(
                 _category,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -51,7 +51,7 @@ namespace BrainCloudTests
             Dictionary<string, object> file = (Dictionary<string, object>)files[0];
             string fileId = file["fileId"] as string;
 
-            BrainCloudClient.Instance.S3HandlingService.GetCDNUrl(
+            _bc.S3HandlingService.GetCDNUrl(
                 fileId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -60,10 +60,10 @@ namespace BrainCloudTests
 
         private string GetModifiedFileDetails()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             string fileDetails = "";
 
-            BrainCloudClient.Instance.S3HandlingService.GetFileList(
+            _bc.S3HandlingService.GetFileList(
                 _category,
                 tr.ApiSuccess, tr.ApiError);
 

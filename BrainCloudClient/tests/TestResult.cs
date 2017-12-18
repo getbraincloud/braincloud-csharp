@@ -24,8 +24,12 @@ namespace BrainCloudTests
         public int m_globalErrorCount;
         public int m_networkErrorCount;
 
-        public TestResult()
-        { }
+        BrainCloudWrapper _bc;
+
+        public TestResult(BrainCloudWrapper bc)
+        {
+            _bc = bc;
+        }
 
         public void Reset()
         {
@@ -138,7 +142,8 @@ namespace BrainCloudTests
             long maxWait = m_timeToWaitSecs * 1000;
             while (!m_done && maxWait > 0)
             {
-                BrainCloudClient.Get().Update();
+
+                _bc.Update();
                 Thread.Sleep(10);
                 maxWait -= 10;
             }

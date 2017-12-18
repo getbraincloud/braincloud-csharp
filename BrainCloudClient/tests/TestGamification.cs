@@ -20,9 +20,9 @@ namespace BrainCloudTests
         [Test]
         public void TestAwardAchievements()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.AwardAchievements(
+            _bc.GamificationService.AwardAchievements(
                 new string[] {_achievementId01, _achievementId02},
                 tr.ApiSuccess, tr.ApiError);
 
@@ -32,9 +32,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadAchievedAchievements()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadAchievedAchievements(
+            _bc.GamificationService.ReadAchievedAchievements(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -44,9 +44,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadAchievements()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadAchievements(
+            _bc.GamificationService.ReadAchievements(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -60,9 +60,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadCompletedMilestones()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadCompletedMilestones(
+            _bc.GamificationService.ReadCompletedMilestones(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -72,9 +72,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadInProgressMilestones()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadInProgressMilestones(
+            _bc.GamificationService.ReadInProgressMilestones(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -84,9 +84,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadMilestones()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadMilestones(
+            _bc.GamificationService.ReadMilestones(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -96,9 +96,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadMilestonesByCategory()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadMilestonesByCategory(
+            _bc.GamificationService.ReadMilestonesByCategory(
                 _milestoneCategory,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -109,9 +109,9 @@ namespace BrainCloudTests
         [Test]
         public void TestResetMilestones()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ResetMilestones(
+            _bc.GamificationService.ResetMilestones(
                 new string[] { _milestoneId },
                 tr.ApiSuccess, tr.ApiError);
 
@@ -125,9 +125,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadCompletedQuests()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadCompletedQuests(
+            _bc.GamificationService.ReadCompletedQuests(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -137,9 +137,9 @@ namespace BrainCloudTests
         [Test]
         public void ReadNotStartedQuests()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadNotStartedQuests(
+            _bc.GamificationService.ReadNotStartedQuests(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -149,9 +149,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadInProgressQuests()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadInProgressQuests(
+            _bc.GamificationService.ReadInProgressQuests(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -161,9 +161,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadQuests()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadQuests(
+            _bc.GamificationService.ReadQuests(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -173,9 +173,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadQuestsByCategory()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadQuestsByCategory(
+            _bc.GamificationService.ReadQuestsByCategory(
                 _questsCategory,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -186,9 +186,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadQuestsWithBasicPercentage()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadQuestsWithBasicPercentage(
+            _bc.GamificationService.ReadQuestsWithBasicPercentage(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -198,9 +198,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadQuestsWithComplexPercentage()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadQuestsWithComplexPercentage(
+            _bc.GamificationService.ReadQuestsWithComplexPercentage(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -210,9 +210,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadQuestsWithStatus()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadQuestsWithStatus(
+            _bc.GamificationService.ReadQuestsWithStatus(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -222,9 +222,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadXPLevelsMetaData()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadXpLevelsMetaData(
+            _bc.GamificationService.ReadXpLevelsMetaData(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -237,9 +237,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadAllGamification()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GamificationService.ReadAllGamification(
+            _bc.GamificationService.ReadAllGamification(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 

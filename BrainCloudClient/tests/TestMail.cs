@@ -12,9 +12,9 @@ namespace BrainCloudTests
         [Test]
         public void TestSendBasicEmail()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.MailService.SendBasicEmail(
+            _bc.MailService.SendBasicEmail(
                 GetUser(Users.UserA).ProfileId,
                 "Test Subject - TestSendBasicEmail",
                 "Test body content message.",
@@ -26,7 +26,7 @@ namespace BrainCloudTests
         [Test]
         public void TestSendAdvancedEmailSendGrid()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             var data = new Dictionary<string, object>();
             data["subject"] = "Test Subject - TestSendAdvancedEmailSendGrid";
@@ -34,7 +34,7 @@ namespace BrainCloudTests
             //data["substitutions"] = new Dictionary<string, object>() { { "*replace*", "test" } };
             data["categories"] = new string[] { "unit-test" };
 
-            BrainCloudClient.Instance.MailService.SendAdvancedEmail(
+            _bc.MailService.SendAdvancedEmail(
                 GetUser(Users.UserB).ProfileId,
                 JsonWriter.Serialize(data),
                 tr.ApiSuccess, tr.ApiError);
@@ -45,7 +45,7 @@ namespace BrainCloudTests
         [Test]
         public void TestSendAdvancedEmailByAddressSendGrid()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             var data = new Dictionary<string, object>();
             data["subject"] = "Test Subject - TestSendAdvancedEmailSendGrid";
@@ -53,7 +53,7 @@ namespace BrainCloudTests
             //data["substitutions"] = new Dictionary<string, object>() { { "*replace*", "test" } };
             data["categories"] = new string[] { "unit-test" };
 
-            BrainCloudClient.Instance.MailService.SendAdvancedEmailByAddress(
+            _bc.MailService.SendAdvancedEmailByAddress(
                 GetUser(Users.UserB).Email,
                 JsonWriter.Serialize(data),
                 tr.ApiSuccess, tr.ApiError);

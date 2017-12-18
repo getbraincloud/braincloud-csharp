@@ -12,38 +12,38 @@ namespace BrainCloudTests
         [Test]
         public void TestDeletePlayer()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.AuthenticationService.ClearSavedProfileID();
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserC).Id,
                 GetUser(Users.UserC).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.PlayerStateService.DeleteUser(
+            _bc.PlayerStateService.DeleteUser(
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            BrainCloudClient.Instance.AuthenticationService.ClearSavedProfileID();
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            //GetUser(Users.UserA).ProfileId = BrainCloudClient.Instance.AuthenticationService.ProfileId;
+            //GetUser(Users.UserA).ProfileId = _bc.AuthenticationService.ProfileId;
         }
 
         [Test]
         public void TestGetAttributes()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.GetAttributes(
+            _bc.PlayerStateService.GetAttributes(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -52,9 +52,9 @@ namespace BrainCloudTests
         [Test]
         public void TestLogout()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.Logout(
+            _bc.PlayerStateService.Logout(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -63,9 +63,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadPlayerState()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.ReadUserState(
+            _bc.PlayerStateService.ReadUserState(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -74,9 +74,9 @@ namespace BrainCloudTests
         [Test]
         public void TestRemoveAttributes()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.RemoveAttributes(
+            _bc.PlayerStateService.RemoveAttributes(
                 new string[] { "testAttrib1", "testAttrib2" },
                 tr.ApiSuccess, tr.ApiError);
 
@@ -86,9 +86,9 @@ namespace BrainCloudTests
         [Test]
         public void TestResetPlayer()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.ResetUser(
+            _bc.PlayerStateService.ResetUser(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -97,11 +97,11 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateAttributes()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             Dictionary<string, object> stats = new Dictionary<string, object> { { "testAttrib1", "value1" }, { "testAttrib2", "value2" } };
 
-            BrainCloudClient.Instance.PlayerStateService.UpdateAttributes(
+            _bc.PlayerStateService.UpdateAttributes(
                 JsonWriter.Serialize(stats),
                 false,
                 tr.ApiSuccess, tr.ApiError);
@@ -112,9 +112,9 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdatePlayerName()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.UpdateUserName(
+            _bc.PlayerStateService.UpdateUserName(
                 "ABC",
                 tr.ApiSuccess, tr.ApiError);
 
@@ -125,9 +125,9 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateSummaryFriendData()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             
-            BrainCloudClient.Instance.PlayerStateService.UpdateSummaryFriendData(
+            _bc.PlayerStateService.UpdateSummaryFriendData(
                 "{\"field\":\"value\"}",
                 tr.ApiSuccess, tr.ApiError);
             
@@ -137,9 +137,9 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdatePlayerPictureUrl()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.UpdateUserPictureUrl(
+            _bc.PlayerStateService.UpdateUserPictureUrl(
                 @"https://some.domain.com/mypicture.jpg",
                 tr.ApiSuccess, tr.ApiError);
 
@@ -149,9 +149,9 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateContactEmail()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.UpdateContactEmail(
+            _bc.PlayerStateService.UpdateContactEmail(
                 GetUser(Users.UserA).Email,
                 tr.ApiSuccess, tr.ApiError);
 

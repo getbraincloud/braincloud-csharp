@@ -10,9 +10,9 @@ namespace BrainCloudTests
         [Test]
         public void TestBrainCloudGlobalApp()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GlobalAppService.ReadProperties(
+            _bc.GlobalAppService.ReadProperties(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

@@ -10,9 +10,9 @@ namespace BrainCloudTests
         [Test]
         public void TestCustomPageEvent()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.DataStreamService.CustomPageEvent(
+            _bc.DataStreamService.CustomPageEvent(
                 "testPageEvent",
                 Helpers.CreateJsonPair("test1", 1332),
                 tr.ApiSuccess, tr.ApiError);
@@ -23,9 +23,9 @@ namespace BrainCloudTests
         [Test]
         public void TestCustomScreenEvent()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.DataStreamService.CustomScreenEvent(
+            _bc.DataStreamService.CustomScreenEvent(
                 "testScreenEvent",
                 Helpers.CreateJsonPair("test2", 132),
                 tr.ApiSuccess, tr.ApiError);
@@ -36,9 +36,9 @@ namespace BrainCloudTests
         [Test]
         public void TestCustomTrackEvent()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.DataStreamService.CustomTrackEvent(
+            _bc.DataStreamService.CustomTrackEvent(
                 "testTrackEvent",
                 Helpers.CreateJsonPair("test3", 12),
                 tr.ApiSuccess, tr.ApiError);

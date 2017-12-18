@@ -23,19 +23,22 @@ namespace BrainCloudTests
 
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
+        public BrainCloudWrapper _bc;
+
         [SetUp]
         public void Setup()
         {
             LoadIds();
 
-            BrainCloudClient.Instance.Initialize(ServerUrl, Secret, AppId, Version);
-            BrainCloudClient.Instance.EnableLogging(true);
-            BrainCloudClient.Instance.RegisterLogDelegate(HandleLog);
+            _bc = new BrainCloudWrapper();
+            _bc.Init(ServerUrl, Secret, AppId, Version);
+            _bc.Client.EnableLogging(true);
+            _bc.Client.RegisterLogDelegate(HandleLog);
 
             if (ShouldAuthenticate())
             {
-                TestResult tr = new TestResult();
-                BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+                TestResult tr = new TestResult(_bc);
+                _bc.Client.AuthenticationService.AuthenticateUniversal(
                     GetUser(Users.UserA).Id,
                     GetUser(Users.UserA).Password,
                     true,
@@ -47,9 +50,9 @@ namespace BrainCloudTests
         [TearDown]
         public void TearDown()
         {
-            BrainCloudClient.Instance.ResetCommunication();
-            BrainCloudClient.Instance.DeregisterEventCallback();
-            BrainCloudClient.Instance.DeregisterRewardCallback();
+            _bc.Client.ResetCommunication();
+            _bc.Client.DeregisterEventCallback();
+            _bc.Client.DeregisterRewardCallback();
         }
 
         /// <summary>
@@ -111,8 +114,8 @@ namespace BrainCloudTests
         /// <returns>If the switch was successful</returns>
         protected bool GoToChildProfile()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.IdentityService.SwitchToSingletonChildProfile(ChildAppId, true, tr.ApiSuccess, tr.ApiError);
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.SwitchToSingletonChildProfile(ChildAppId, true, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 
@@ -122,8 +125,8 @@ namespace BrainCloudTests
         /// <returns>If the switch was successful</returns>
         protected bool GoToParentProfile()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.IdentityService.SwitchToParentProfile(ParentLevel, tr.ApiSuccess, tr.ApiError);
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.SwitchToParentProfile(ParentLevel, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 
@@ -136,8 +139,8 @@ namespace BrainCloudTests
         protected bool AttachPeer(Users user, AuthenticationType authType)
         {
             TestUser testUser = GetUser(user);
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.IdentityService.AttachPeerProfile(PeerName, testUser.Id + "_peer", testUser.Password, authType, null, true, tr.ApiSuccess, tr.ApiError);
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachPeerProfile(PeerName, testUser.Id + "_peer", testUser.Password, authType, null, true, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 
@@ -147,8 +150,8 @@ namespace BrainCloudTests
         /// <returns>Success</returns>
         protected bool DetachPeer()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.IdentityService.DetachPeer(PeerName, tr.ApiSuccess, tr.ApiError);
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.DetachPeer(PeerName, tr.ApiSuccess, tr.ApiError);
             return tr.Run();
         }
 
@@ -228,17 +231,17 @@ namespace BrainCloudTests
             if (!_init)
             {
                 Console.Write(">> Initializing New Random Users");
-                BrainCloudClient.Instance.EnableLogging(false);
+                _bc.Client.EnableLogging(false);
                 _testUsers = new TestUser[Enum.GetNames(typeof(Users)).Length];
                 Random rand = new Random();
 
                 for (int i = _testUsers.Length; i-- > 0;)
                 {
-                    _testUsers[i] = new TestUser(((Users)i).ToString() + "_CS" + "-", rand.Next());
+                    _testUsers[i] = new TestUser(_bc, ((Users)i).ToString() + "_CS" + "-", rand.Next());
                     Console.Write(".");
                 }
                 Console.Write("\n");
-                BrainCloudClient.Instance.EnableLogging(true);
+                _bc.Client.EnableLogging(true);
                 _init = true;
             }
 
@@ -256,8 +259,12 @@ namespace BrainCloudTests
         public string ProfileId = "";
         public string Email = "";
 
-        public TestUser(string idPrefix, int suffix)
+        BrainCloudWrapper _bc;
+
+        public TestUser(BrainCloudWrapper bc, string idPrefix, int suffix)
         {
+            _bc = bc;
+
             Id = idPrefix + suffix;
             Password = Id;
             Email = Id + "@bctestuser.com";
@@ -266,26 +273,26 @@ namespace BrainCloudTests
 
         private void Authenticate()
         {
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 Id,
                 Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            ProfileId = BrainCloudClient.Instance.AuthenticationService.ProfileId;
+            ProfileId = _bc.Client.AuthenticationService.ProfileId;
 
             if (((string)((Dictionary<string, object>)tr.m_response["data"])["newUser"]) == "true")
             {
-                BrainCloudClient.Instance.MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
+                _bc.MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                BrainCloudClient.Instance.PlayerStateService.UpdateUserName(Id, tr.ApiSuccess, tr.ApiError);
+                _bc.PlayerStateService.UpdateUserName(Id, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                BrainCloudClient.Instance.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
+                _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
 
-            BrainCloudClient.Instance.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            _bc.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

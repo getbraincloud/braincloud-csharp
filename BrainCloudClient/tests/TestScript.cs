@@ -17,9 +17,9 @@ namespace BrainCloudTests
         [Test]
         public void TestRunScript()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ScriptService.RunScript(
+            _bc.ScriptService.RunScript(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 tr.ApiSuccess, tr.ApiError);
@@ -30,9 +30,9 @@ namespace BrainCloudTests
         [Test]
         public void TestScheduleScriptUTC()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptUTC(
+            _bc.ScriptService.ScheduleRunScriptUTC(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 DateTime.Now.AddDays(1),
@@ -44,9 +44,9 @@ namespace BrainCloudTests
         [Test]
         public void TestScheduleScriptMinutesFromNow()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMinutes(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 60,
@@ -58,9 +58,9 @@ namespace BrainCloudTests
         [Test]
         public void TestCancelJob()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMinutes(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
                 60,
@@ -71,7 +71,7 @@ namespace BrainCloudTests
             var data = (Dictionary<string, object>)tr.m_response["data"];
             string jobId = data["jobId"] as string;
 
-            BrainCloudClient.Instance.ScriptService.CancelScheduledScript(
+            _bc.ScriptService.CancelScheduledScript(
                 jobId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -83,8 +83,8 @@ namespace BrainCloudTests
         {
             GoToChildProfile();
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ScriptService.RunParentScript(
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunParentScript(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1), ParentLevel,
                 tr.ApiSuccess, tr.ApiError);
@@ -97,8 +97,8 @@ namespace BrainCloudTests
         {
             AttachPeer(Users.UserA, AuthenticationType.Universal);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ScriptService.RunPeerScript(
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunPeerScript(
                 _peerScriptName,
                 Helpers.CreateJsonPair("testParm1", 1), 
                 PeerName,
@@ -114,8 +114,8 @@ namespace BrainCloudTests
         {
             AttachPeer(Users.UserA, AuthenticationType.Universal);
 
-            TestResult tr = new TestResult();
-            BrainCloudClient.Instance.ScriptService.RunPeerScriptAsync(
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunPeerScriptAsync(
                 _peerScriptName,
                 Helpers.CreateJsonPair("testParm1", 1), 
                 PeerName,

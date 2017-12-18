@@ -11,16 +11,16 @@ namespace BrainCloudTests
         [TearDown]
         public void Cleanup()
         {
-            BrainCloudClient.Instance.OverrideCountryCode(null);
-            BrainCloudClient.Instance.OverrideLanguageCode(null);
+            _bc.Client.OverrideCountryCode(null);
+            _bc.Client.OverrideLanguageCode(null);
         }
 
         [Test]
         public void TestAuthenticateUniversal()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
@@ -32,9 +32,9 @@ namespace BrainCloudTests
         /*[Test]
         public void TestAuthenticateAnonymous()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateAnonymous(
+            _bc.AuthenticationService.AuthenticateAnonymous(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -44,9 +44,9 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateEmailPassword()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateEmailPassword(
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
                 GetUser(Users.UserA).Email,
                 GetUser(Users.UserA).Password,
                 true,
@@ -58,11 +58,11 @@ namespace BrainCloudTests
         [Test]
         public void TestResetEmailPassword()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string email = "braincloudunittest@gmail.com";
 
-            BrainCloudClient.Instance.AuthenticationService.ResetEmailPassword(
+            _bc.Client.AuthenticationService.ResetEmailPassword(
                 email,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -72,7 +72,7 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateWithHeartbeat()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             // Insert heartbeat as first packet. This would normally cause the
             // server to reject the second authenticate packet but with the
@@ -92,13 +92,13 @@ namespace BrainCloudTests
         [Test]
         public void TestSetCountryCode()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string countryCode = "RU";
 
-            BrainCloudClient.Instance.OverrideCountryCode(countryCode);
+            _bc.Client.OverrideCountryCode(countryCode);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
@@ -114,13 +114,13 @@ namespace BrainCloudTests
         [Test]
         public void TestSetLanguageCode()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             string languageCode = "ru";
 
-            BrainCloudClient.Instance.OverrideLanguageCode(languageCode);
+            _bc.Client.OverrideLanguageCode(languageCode);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateUniversal(
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
@@ -136,11 +136,11 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthFirst()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.PlayerStateService.ReadUserState(tr.ApiSuccess, tr.ApiError);
+            _bc.PlayerStateService.ReadUserState(tr.ApiSuccess, tr.ApiError);
 
-            BrainCloudClient.Instance.AuthenticationService.AuthenticateEmailPassword(
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
                 GetUser(Users.UserA).Email,
                 GetUser(Users.UserA).Password,
                 true,

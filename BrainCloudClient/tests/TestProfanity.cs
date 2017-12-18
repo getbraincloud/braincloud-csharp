@@ -10,9 +10,9 @@ namespace BrainCloudTests
         [Test]
         public void TestProfanityCheck()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ProfanityService.ProfanityCheck(
+            _bc.ProfanityService.ProfanityCheck(
                 "shitbird fly away", "en", true, true, true,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -22,9 +22,9 @@ namespace BrainCloudTests
         [Test]
         public void TestProfanityReplaceText()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ProfanityService.ProfanityReplaceText(
+            _bc.ProfanityService.ProfanityReplaceText(
                 "shitbird fly away", "*", "en", false, false, false,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -34,9 +34,9 @@ namespace BrainCloudTests
         [Test]
         public void TestProfanityIdentifyBadWords()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.ProfanityService.ProfanityIdentifyBadWords(
+            _bc.ProfanityService.ProfanityIdentifyBadWords(
                 "shitbird fly away", "en", true, false, false,
                 tr.ApiSuccess, tr.ApiError);
 

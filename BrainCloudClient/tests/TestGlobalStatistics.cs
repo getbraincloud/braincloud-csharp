@@ -12,11 +12,11 @@ namespace BrainCloudTests
         [Test]
         public void TestIncrementGlobalStats()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             Dictionary<string, object> stats = new Dictionary<string, object> { { "TestStat", "RESET" } };
 
-            BrainCloudClient.Instance.GlobalStatisticsService.IncrementGlobalStats(
+            _bc.GlobalStatisticsService.IncrementGlobalStats(
                 JsonWriter.Serialize(stats),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -26,9 +26,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadAllGlobalStats()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GlobalStatisticsService.ReadAllGlobalStats(
+            _bc.GlobalStatisticsService.ReadAllGlobalStats(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -37,9 +37,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadGlobalStatsSubset()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
-            BrainCloudClient.Instance.GlobalStatisticsService.ReadGlobalStatsSubset(
+            _bc.GlobalStatisticsService.ReadGlobalStatsSubset(
                 new string[] { "TestStat" },
                 tr.ApiSuccess, tr.ApiError);
 
@@ -49,9 +49,9 @@ namespace BrainCloudTests
         [Test]
         public void TestReadGlobalStatsForCategory()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
             
-            BrainCloudClient.Instance.GlobalStatisticsService.ReadGlobalStatsForCategory(
+            _bc.GlobalStatisticsService.ReadGlobalStatsForCategory(
                 "Test",
                 tr.ApiSuccess, tr.ApiError);
             
@@ -61,11 +61,11 @@ namespace BrainCloudTests
         [Test]
         public void TestProcessStats()
         {
-            TestResult tr = new TestResult();
+            TestResult tr = new TestResult(_bc);
 
             Dictionary<string, object> stats = new Dictionary<string, object> { { "TestStat", "RESET" } };
 
-            BrainCloudClient.Instance.GlobalStatisticsService.ProcessStatistics(
+            _bc.GlobalStatisticsService.ProcessStatistics(
                 stats,
                 tr.ApiSuccess, tr.ApiError);
 
