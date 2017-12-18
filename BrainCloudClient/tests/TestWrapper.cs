@@ -51,7 +51,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        [Test]
+        //[Test] //TODO Jon
         public void TestReconnect()
         {
             TestResult tr = new TestResult(_bc);
