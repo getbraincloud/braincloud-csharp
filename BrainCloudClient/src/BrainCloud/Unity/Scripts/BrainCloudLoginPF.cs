@@ -33,7 +33,7 @@ namespace BrainCloudUnity
             
             
             BrainCloud = gameObject.AddComponent<BrainCloudWrapper>();
-            BrainCloud.Init("PLAYER_ONE");
+            BrainCloud.Init();
 
             ///////////////////////////////////////////////////////////////////
 
