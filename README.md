@@ -99,7 +99,7 @@ DontDestroyOnLoad(go);
 ```
 
 If you're not using Unity or GameObjects, you will need to call update yourself in the update loop.
-To do this, you need to call runCallbacks();
+To do this, you need to call Update();
 
 ```csharp
 _bc.Update();
