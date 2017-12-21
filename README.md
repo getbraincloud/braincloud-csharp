@@ -90,9 +90,9 @@ _appVersion is the current version of our app. Having an _appVersion less than y
 ## How do I keep the brainCloud SDK updating?
 In your project's update loop, you're going to want to update brainCloud client so it can check for responses.
 
-If you're using Unity and added the brainCloud Wrapper as a gameobject, Unity will auto update the wrapper. 
+If you're using Unity and added the brainCloud Wrapper as a GameObject, Unity will auto update the wrapper. 
 
-Ensure you set the gameobject as DontDestroyOnLoad so it won't be deleted when switching scenes.
+Ensure you set the GameObject as DontDestroyOnLoad so it won't be deleted when switching scenes.
 
 ```csharp
 DontDestroyOnLoad(go);
