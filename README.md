@@ -62,6 +62,7 @@ It is recommended to use the wrapper by default.
 ## How do I initialize brainCloud?
 If using the wrapper use the following code.
 ```csharp
+GameObject go = new GameObject();
 _bc = go.AddComponent<BrainCloudWrapper>();
 _bc.WrapperName = _wrapperName; // optionally set a wrapper-name
 _bc.Init(); // extra data, such as: _appId, _secret and _appVersion, is taken from the brainCloud Unity Plugin. See Installation Guide above
@@ -85,6 +86,24 @@ If your app is already live, you should **NOT** specify the _wrapperName - other
 _appVersion is the current version of our app. Having an _appVersion less than your minimum app version on brainCloud will prevent the user from accessing the service until they update their app to the lastest version you have provided them.
 
 ![wrapper](/screenshots/bc-minVersions.png?raw=true)
+
+## How do I keep the brainCloud SDK updating?
+In your project's update loop, you're going to want to update brainCloud client so it can check for responses.
+
+If you're using Unity and added the brainCloud Wrapper as a gameobject, Unity will auto update the wrapper. 
+
+Ensure you set the gameobject as DontDestroyOnLoad so it won't be deleted when switching scenes.
+
+```csharp
+DontDestroyOnLoad(go);
+```
+
+If you're not using Unity or GameObjects, you will need to call update yourself in the update loop.
+To do this, you need to call runCallbacks();
+
+```csharp
+_bc.Update();
+```
 
 ## How do I authenticate a user with brainCloud?
 The simplest form of authenticating with brainCloud Wrapper is an Anonymous Authentication.
