@@ -70,285 +70,290 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudAsyncMatch.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAsyncMatch.cs">
       <Link>BrainCloud\BrainCloudAsyncMatch.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudAuthentication.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAuthentication.cs">
       <Link>BrainCloud\BrainCloudAuthentication.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudClient.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudClient.cs">
       <Link>BrainCloud\BrainCloudClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudDataStream.cs">
       <Link>BrainCloud\BrainCloudDataStream.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudEntity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudEntity.cs">
       <Link>BrainCloud\BrainCloudEntity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudEvent.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudEvent.cs">
       <Link>BrainCloud\BrainCloudEvent.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
       <Link>BrainCloud\BrainCloudFile.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudFriend.cs">
+    <Content Include="C:\Codez\Libs\Folder\OtherFolder\**\*.*">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudFriend.cs">
       <Link>BrainCloud\BrainCloudFriend.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGamification.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGamification.cs">
       <Link>BrainCloud\BrainCloudGamification.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGlobalApp.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGlobalApp.cs">
       <Link>BrainCloud\BrainCloudGlobalApp.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGlobalEntity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGlobalEntity.cs">
       <Link>BrainCloud\BrainCloudGlobalEntity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGlobalStatistics.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGlobalStatistics.cs">
       <Link>BrainCloud\BrainCloudGlobalStatistics.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGroup.cs">
       <Link>BrainCloud\BrainCloudGroup.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
       <Link>BrainCloud\BrainCloudIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudMail.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMail.cs">
       <Link>BrainCloud\BrainCloudMail.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudMatchMaking.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMatchMaking.cs">
       <Link>BrainCloud\BrainCloudMatchMaking.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudOneWayMatch.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudOneWayMatch.cs">
       <Link>BrainCloud\BrainCloudOneWayMatch.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPlaybackStream.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPlaybackStream.cs">
       <Link>BrainCloud\BrainCloudPlaybackStream.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPlayerState.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPlayerState.cs">
       <Link>BrainCloud\BrainCloudPlayerState.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPlayerStatistics.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPlayerStatistics.cs">
       <Link>BrainCloud\BrainCloudPlayerStatistics.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPlayerStatisticsEvent.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPlayerStatisticsEvent.cs">
       <Link>BrainCloud\BrainCloudPlayerStatisticsEvent.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudProduct.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudProduct.cs">
       <Link>BrainCloud\BrainCloudProduct.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudProfanity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudProfanity.cs">
       <Link>BrainCloud\BrainCloudProfanity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPushNotification.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPushNotification.cs">
       <Link>BrainCloud\BrainCloudPushNotification.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudRedemptionCode.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudRedemptionCode.cs">
       <Link>BrainCloud\BrainCloudRedemptionCode.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudS3Handling.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudS3Handling.cs">
       <Link>BrainCloud\BrainCloudS3Handling.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudScript.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudScript.cs">
       <Link>BrainCloud\BrainCloudScript.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudSocialLeaderboard.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudSocialLeaderboard.cs">
       <Link>BrainCloud\BrainCloudSocialLeaderboard.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTime.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudTime.cs">
       <Link>BrainCloud\BrainCloudTime.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
       <Link>BrainCloud\BrainCloudTournament.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\ACL.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\ACL.cs">
       <Link>BrainCloud\Common\ACL.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
       <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Common\Platform.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\BCEntity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\BCEntity.cs">
       <Link>BrainCloud\Entity\BCEntity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\BCEntityFactory.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\BCEntityFactory.cs">
       <Link>BrainCloud\Entity\BCEntityFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\BCUserEntity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\BCUserEntity.cs">
       <Link>BrainCloud\Entity\BCUserEntity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\AutoCreateAOTCompileHelper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\AutoCreateAOTCompileHelper.cs">
       <Link>BrainCloud\Entity\Internal\AutoCreateAOTCompileHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\DictionaryWrapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\DictionaryWrapper.cs">
       <Link>BrainCloud\Entity\Internal\DictionaryWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\DictionaryWrapperEnumerator.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\DictionaryWrapperEnumerator.cs">
       <Link>BrainCloud\Entity\Internal\DictionaryWrapperEnumerator.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\EntityUtil.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\EntityUtil.cs">
       <Link>BrainCloud\Entity\Internal\EntityUtil.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\ListWrapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\ListWrapper.cs">
       <Link>BrainCloud\Entity\Internal\ListWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Entity\Internal\ListWrapperEnumerator.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Entity\Internal\ListWrapperEnumerator.cs">
       <Link>BrainCloud\Entity\Internal\ListWrapperEnumerator.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\FileUploader.cs">
       <Link>BrainCloud\Internal\FileUploader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
       <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
       <Link>BrainCloud\Internal\OperationParam.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
       <Link>BrainCloud\Internal\ProgressStream.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RequestState.cs">
       <Link>BrainCloud\Internal\RequestState.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServerCall.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServerCall.cs">
       <Link>BrainCloud\Internal\ServerCall.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServiceName.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceName.cs">
       <Link>BrainCloud\Internal\ServiceName.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
       <Link>BrainCloud\Internal\ServiceOperation.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
       <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\MD5Unity.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\MD5Unity.cs">
       <Link>BrainCloud\MD5Unity.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\ReasonCodes.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ReasonCodes.cs">
       <Link>BrainCloud\ReasonCodes.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\RegionLocale.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\RegionLocale.cs">
       <Link>BrainCloud\RegionLocale.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\ServerCallback.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ServerCallback.cs">
       <Link>BrainCloud\ServerCallback.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\StatusCodes.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\StatusCodes.cs">
       <Link>BrainCloud\StatusCodes.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Util.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Util.cs">
       <Link>BrainCloud\Util.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Version.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Version.cs">
       <Link>BrainCloud\Version.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\DataReaderProvider.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\DataReaderProvider.cs">
       <Link>JsonFx\DataReaderProvider.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\DataWriterProvider.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\DataWriterProvider.cs">
       <Link>JsonFx\DataWriterProvider.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\EcmaScriptIdentifier.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\EcmaScriptIdentifier.cs">
       <Link>JsonFx\EcmaScriptIdentifier.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\EcmaScriptWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\EcmaScriptWriter.cs">
       <Link>JsonFx\EcmaScriptWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\IDataReader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\IDataReader.cs">
       <Link>JsonFx\IDataReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\IDataWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\IDataWriter.cs">
       <Link>JsonFx\IDataWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\IJsonSerializable.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\IJsonSerializable.cs">
       <Link>JsonFx\IJsonSerializable.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonDataReader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonDataReader.cs">
       <Link>JsonFx\JsonDataReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonDataWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonDataWriter.cs">
       <Link>JsonFx\JsonDataWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonIgnoreAttribute.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonIgnoreAttribute.cs">
       <Link>JsonFx\JsonIgnoreAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonNameAttribute.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonNameAttribute.cs">
       <Link>JsonFx\JsonNameAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonReader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonReader.cs">
       <Link>JsonFx\JsonReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonReaderSettings.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonReaderSettings.cs">
       <Link>JsonFx\JsonReaderSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonSerializationException.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonSerializationException.cs">
       <Link>JsonFx\JsonSerializationException.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonSpecifiedPropertyAttribute.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonSpecifiedPropertyAttribute.cs">
       <Link>JsonFx\JsonSpecifiedPropertyAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonToken.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonToken.cs">
       <Link>JsonFx\JsonToken.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonWriter.cs">
       <Link>JsonFx\JsonWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\JsonWriterSettings.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\JsonWriterSettings.cs">
       <Link>JsonFx\JsonWriterSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\TypeCoercionUtility.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\TypeCoercionUtility.cs">
       <Link>JsonFx\TypeCoercionUtility.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\XmlDataReader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\XmlDataReader.cs">
       <Link>JsonFx\XmlDataReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\JsonFx\XmlDataWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\JsonFx\XmlDataWriter.cs">
       <Link>JsonFx\XmlDataWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\IJsonWrapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\IJsonWrapper.cs">
       <Link>LitJson\IJsonWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonData.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonData.cs">
       <Link>LitJson\JsonData.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonException.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonException.cs">
       <Link>LitJson\JsonException.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonMapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonMapper.cs">
       <Link>LitJson\JsonMapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonMockWrapper.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonMockWrapper.cs">
       <Link>LitJson\JsonMockWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonReader.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonReader.cs">
       <Link>LitJson\JsonReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\JsonWriter.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonWriter.cs">
       <Link>LitJson\JsonWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\Lexer.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\Lexer.cs">
       <Link>LitJson\Lexer.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\LitJson\ParserToken.cs">
+    <Compile Include="..\..\Assets\BrainCloud\LitJson\ParserToken.cs">
       <Link>LitJson\ParserToken.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
+    <Compile Include="..\..\Assets\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
       <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
+    <Content Include="ids.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
