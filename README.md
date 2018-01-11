@@ -66,6 +66,7 @@ GameObject go = new GameObject();
 _bc = go.AddComponent<BrainCloudWrapper>();
 _bc.WrapperName = _wrapperName; // optionally set a wrapper-name
 _bc.Init(); // extra data, such as: _appId, _secret and _appVersion, is taken from the brainCloud Unity Plugin. See Installation Guide above
+DontDestroyOnLoad(go); // keep the brainCloud game object through scene changes
 ```
 
 Your _appId, _secret, is set on the brainCloud dashboard. Under Design | Core App Info > Application IDs
