@@ -2,8 +2,6 @@
 
 set -e
 
-build_version=$1
-
 if [ "$build_version" == "" ]; then
   echo "Must pass in build version"
   exit 1
