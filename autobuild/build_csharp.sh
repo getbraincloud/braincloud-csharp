@@ -1,4 +1,3 @@
-
 set -e
 set -x
 
@@ -13,19 +12,28 @@ rm -rf artifacts
 # Create C# Client
 mkdir -p artifacts/brainCloudClient
 cp docs/README.txt artifacts/brainCloudClient
-sed -i -e "s/Platform.*/Platform\: C\#/g" artifacts/brainCloudClient/README.TXT
-sed -i -e "s/Version.*/Version\: $build_version/g" artifacts/brainCloudClient/README.TXT
+sed -i.temp "s/Platform.*/Platform\: C\#/g" artifacts/brainCloudClient/README.TXT
+sed -i.temp "s/Version.*/Version\: $build_version/g" artifacts/brainCloudClient/README.TXT
+
+rm -rf artifacts/brainCloudClient/README.TXT.temp
+
 
 cp -r ../BrainCloudClient/Assets/BrainCloud artifacts/brainCloudClient
+
+rm -rf artifacts/brainCloudClient/BrainCloud/Unity 
+rm -rf artifacts/brainCloudClient/BrainCloud/Resources
+
 pushd artifacts/brainCloudClient
 
 find . -name "*.meta" -delete
 
 
-find . -name '*.cs' -type f -exec sed -i -e '1i \
+find . -name '*.cs' -type f -exec sed -i.temp '1i \
 \#define DOT_NET \
 \
 ' {} \;
+
+find . -name "*.cs.temp" -delete
 
 
 zip -r ../brainCloudClient_csharp_$build_version.zip .
