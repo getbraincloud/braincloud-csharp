@@ -6,7 +6,6 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
-using UnityEngine.Assertions;
 #if !XAMARIN
 using BrainCloud.Entity;
 using System;
@@ -14,6 +13,7 @@ using System;
 
 #if !(DOT_NET)
 using UnityEngine;
+using UnityEngine.Assertions;
 #else
 using System.Globalization;
 using System;
