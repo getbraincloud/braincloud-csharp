@@ -6,6 +6,7 @@ using JsonFx.Json;
 using System.IO;
 using System.Threading;
 using System;
+using System.Net;
 
 namespace BrainCloudTests
 {
@@ -61,6 +62,65 @@ namespace BrainCloudTests
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
             Assert.IsFalse(_failCount > 0);
+        }
+
+
+        private string GetFullPath(string cloudPath, string cloudFileName)
+        {
+            string serverUrl = ServerUrl.Replace("/dispatcherv2", "");
+            return serverUrl +
+                   "/downloader/bc/g/" +
+                    _bc.Client.AppId +
+                   "/u/" +
+                    _bc.Client.AuthenticationService.ProfileId +
+                   "/f/" +
+                    cloudPath +
+                   "/" +
+                    cloudFileName;
+        }
+
+        [Test]
+        public void TestSimpleUploadFailedFromPrivacySettings()
+        {
+            String cloudPath = "test";
+        
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+        
+            FileInfo info = new FileInfo(CreateFile(4024));
+        
+            _bc.FileService.UploadFile(
+                cloudPath,
+                info.Name,
+                false,
+                true,
+                info.FullName,
+                tr.ApiSuccess, tr.ApiError);
+        
+            tr.Run();
+        
+            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+
+            WaitForReturn(new[] { GetUploadId(tr.m_response) });
+
+            Assert.IsFalse(_failCount > 0);
+
+            Thread.Sleep(2000);
+
+            WebClient webClient = new WebClient();
+            string name = info.Name;
+            string fullPath = GetFullPath(cloudPath, name);
+
+            try
+            {
+                webClient.DownloadFile(fullPath, name);
+            }
+            catch(Exception e)
+            {
+                return;
+            }
+
+            Assert.IsFalse(true);
         }
 
         [Test]
