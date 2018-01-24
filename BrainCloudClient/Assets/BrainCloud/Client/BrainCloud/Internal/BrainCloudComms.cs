@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if (DOT_NET)
+#if (DOT_NET || DISABLE_SSL_CHECK)
 using System.Net;
+#endif
+#if DOT_NET
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
@@ -291,9 +293,10 @@ namespace BrainCloud.Internal
 
         public BrainCloudComms(BrainCloudClient client)
         {
-#if (DOT_NET)
-            //ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(AcceptAllCertifications);
-#endif
+            #if DISABLE_SSL_CHECK
+            ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
+            #endif        
+    
             _clientRef = client;
             ResetErrorCache();
         }
@@ -1523,17 +1526,17 @@ namespace BrainCloud.Internal
             AddToQueue(sc);
         }
 
-#if UNITY_WP8 || DOT_NET
-        //private bool AcceptAllCertifications(object sender,
-        //                                     System.Security.Cryptography.X509Certificates.X509Certificate certification,
-        //                                     System.Security.Cryptography.X509Certificates.X509Chain chain,
-        //                                     System.Net.Security.SslPolicyErrors sslPolicyErrors)
-        //{
-        //    // TODO: we should only be accepting certificates from places we deem safe [smrj]
-        //    // right now accepting all! - not that secure!
-        //    return true;
-        //}
-#endif
+        #if DISABLE_SSL_CHECK
+        private bool AcceptAllCertifications(object sender,
+                                            System.Security.Cryptography.X509Certificates.X509Certificate certification,
+                                             System.Security.Cryptography.X509Certificates.X509Chain chain,
+                                             System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            // TODO: we should only be accepting certificates from places we deem safe [smrj]
+            // right now accepting all! - not that secure!
+            return true;
+        }
+        #endif
 
         /// <summary>
         /// Adds a server call to the internal queue.
