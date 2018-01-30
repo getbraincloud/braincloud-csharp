@@ -29,6 +29,9 @@ using System.Threading.Tasks;
 
 namespace BrainCloud.Internal
 {
+/*
+ * FileUploader is not supported in WebPlayer && WebGL
+ */
     internal class FileUploader
     {
         public enum FileUploaderStatus
@@ -62,6 +65,8 @@ namespace BrainCloud.Internal
 #endif
         #endregion
 
+        //Silencing Unity WebPlayer && WebGL Warnings with Pragma Disable: FileUploader not supported on WebPlayer && WebGL
+#pragma warning disable 649
         private BrainCloudClient _client;
         private string _sessionId;
         private string _localPath;
@@ -69,6 +74,7 @@ namespace BrainCloud.Internal
         private string _fileName;
         private long _timeoutThreshold = 50;
         private int _timeout = 120;
+#pragma warning restore 649
 
         //transfer rate
         private const double TIME_INTERVAL = 0.25f;
