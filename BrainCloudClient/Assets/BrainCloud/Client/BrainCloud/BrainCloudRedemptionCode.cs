@@ -47,8 +47,8 @@ namespace BrainCloud
             string scanCode,
             string codeType,
             string jsonCustomRedemptionInfo,
-            SuccessCallback success,
-            FailureCallback failure,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -87,8 +87,8 @@ namespace BrainCloud
         /// </param>
         public void GetRedeemedCodes(
             string codeType,
-            SuccessCallback success,
-            FailureCallback failure,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = null;

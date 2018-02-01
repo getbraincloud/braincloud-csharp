@@ -34,8 +34,8 @@ namespace BrainCloud
         /// The callback object
         /// </param>
         public void ReadAllGlobalStats(
-            SuccessCallback success,
-            FailureCallback failure,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
             object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -64,8 +64,8 @@ namespace BrainCloud
         /// </param>
         public void ReadGlobalStatsSubset(
             IList<string> globalStats,
-            SuccessCallback success,
-            FailureCallback failure,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -142,8 +142,8 @@ namespace BrainCloud
         /// </param>
         public void IncrementGlobalStats(
             string jsonData,
-            SuccessCallback success,
-            FailureCallback failure,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();

@@ -474,9 +474,9 @@ namespace BrainCloud
             AuthenticationType authenticationType,
             string externalAuthName,
             bool forceCreate,
-            SuccessCallback success,
-            FailureCallback failure,
-            object cbObject)
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
         {
             string languageCode = _client.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
