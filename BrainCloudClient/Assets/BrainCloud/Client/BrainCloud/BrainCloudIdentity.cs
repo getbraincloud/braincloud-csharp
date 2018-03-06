@@ -1094,6 +1094,55 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Allows email identity email address to be changed
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - REFRESH_IDENTITY
+        /// </remarks>
+        /// <param name="oldEmailAddress">
+        /// Old email address
+        /// </param>
+        /// <param name="password">
+        /// Password for identity
+        /// </param>
+        /// <param name="newEmailAddress">
+        /// New email address
+        /// </param>
+        /// <param name="updateContactEmail">
+        /// Whether to update contact email in profile
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ChangeEmailIdentity(
+            string oldEmailAddress,
+            string password,
+            string newEmailAddress,
+            bool updateContactEmail,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceOldEmailAddress.Value] = oldEmailAddress;
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = password;
+            data[OperationParam.IdentityServiceNewEmailAddress.Value] = newEmailAddress;
+            data[OperationParam.IdentityServiceUpdateContactEmail.Value] = updateContactEmail;
+
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.ChangeEmailIdentity, data, callback);
+            _client.SendRequest(sc);
+        }
+        
 
         /// <summary>
         /// Attaches a peer identity to this user's profile

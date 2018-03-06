@@ -69,6 +69,11 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceExternalId = new OperationParam("externalId");
         public static readonly OperationParam IdentityServiceAuthenticationType = new OperationParam("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous = new OperationParam("confirmAnonymous");
+        
+        public static readonly OperationParam IdentityServiceOldEmailAddress = new OperationParam("oldEmailAddress");
+        public static readonly OperationParam IdentityServiceNewEmailAddress = new OperationParam("newEmailAddress");
+        public static readonly OperationParam IdentityServiceUpdateContactEmail = new OperationParam("updateContactEmail");
+
 
         // Peer
         public static readonly OperationParam Peer = new OperationParam("peer");
