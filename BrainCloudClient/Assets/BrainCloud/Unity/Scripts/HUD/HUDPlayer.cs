@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
@@ -100,58 +99,6 @@ namespace BrainCloudUnity.HUD
 			{
 				BrainCloudLoginPF.BrainCloud.PlayerStateService.DeleteUser (DeletePlayerSuccess, Failure);
 			}
-			
-			if (GUILayout.Button ("Get Friend Example"))
-			{
-				BrainCloudLoginPF.BrainCloud.FriendService.FindUserByUniversalId("User", 4, (response, cbObject) =>
-				{
-				
-					/**
- {
-   "data":{
-      "matchedCount":5,
-      "message":"Result count exceeds maximum.",
-      "matches":[
-         {
-            "profileId":"40683b0c-f3a7-4fc2-8ba1-d065247ec4b6",
-            "profileName":"",
-            "summaryFriendData":null,
-            "pictureUrl":null,
-            "externalId":"userb-14585208"
-         },
-         {
-            "profileId":"36fccd98-26d7-4b74-a9c1-3de64be525a5",
-            "profileName":"",
-            "summaryFriendData":null,
-            "pictureUrl":null,
-            "externalId":"userb-14732606"
-         },
-         {
-            "profileId":"67c1f191-c74f-4dfe-b8c0-61b74236fb51",
-            "profileName":"",
-            "summaryFriendData":null,
-            "pictureUrl":null,
-            "externalId":"user"
-         },
-         {
-            "profileId":"b420b910-e8b1-4d3c-a9ad-c50a7fa832df",
-            "profileName":"",
-            "summaryFriendData":null,
-            "pictureUrl":null,
-            "externalId":"usera-10971514"
-         }
-      ]
-   },
-   "status":200
-}
-					 */
-					
-				}, (status, code, error, cbObject) =>
-				{
-					
-				});
-			}
-			
 			GUILayout.EndHorizontal ();
 
 			GUILayout.EndScrollView();
