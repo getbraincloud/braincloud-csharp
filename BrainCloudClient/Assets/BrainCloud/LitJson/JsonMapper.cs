@@ -706,6 +706,11 @@ namespace LitJson
 
                 return;
             }
+            
+            if (obj is ulong) {
+                writer.Write ((ulong) obj);
+                return;
+            }
 
             if (obj is String) {
                 writer.Write ((string) obj);

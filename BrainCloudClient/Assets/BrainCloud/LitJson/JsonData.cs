@@ -27,6 +27,7 @@ namespace LitJson
         private double                        inst_double;
         private int                           inst_int;
         private long                          inst_long;
+        private ulong                         inst_ulong;
         private IDictionary<string, JsonData> inst_object;
         private string                        inst_string;
         private string                        json;
@@ -59,6 +60,10 @@ namespace LitJson
         }
 
         public bool IsLong {
+            get { return type == JsonType.Long; }
+        }
+        
+        public bool IsULong {
             get { return type == JsonType.Long; }
         }
 
@@ -560,6 +565,15 @@ namespace LitJson
 
             return inst_long;
         }
+        
+        ulong IJsonWrapper.GetULong ()
+        {
+            if (type != JsonType.Long)
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold a long");
+
+            return inst_ulong;
+        }
 
         string IJsonWrapper.GetString ()
         {
@@ -595,6 +609,13 @@ namespace LitJson
         {
             type = JsonType.Long;
             inst_long = val;
+            json = null;
+        }
+        
+        void IJsonWrapper.SetULong (ulong val)
+        {
+            type = JsonType.Long;
+            inst_ulong = val;
             json = null;
         }
 
@@ -773,11 +794,18 @@ namespace LitJson
                 return;
             }
 
-            if (obj.IsLong) {
+            if (obj.IsLong && obj.GetULong() > 0) 
+            {
+                writer.Write (obj.GetULong ());
+                return;
+            }            
+            
+            if (obj.IsLong) 
+            {
                 writer.Write (obj.GetLong ());
                 return;
             }
-
+            
             if (obj.IsArray) {
                 writer.WriteArrayStart ();
                 foreach (object elem in (IList) obj)
