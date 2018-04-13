@@ -754,6 +754,411 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticateUniversal(
             username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user with a custom Email and Password.  Note that the client app
+    /// is responsible for collecting (and storing) the e-mail and potentially password
+    /// (for convenience) in the client data.  For the greatest security,
+    /// force the user to re-enter their password at each login.
+    /// (Or at least give them that option).
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="email">
+    /// The e-mail address of the user
+    /// </param>
+    /// <param name="password">
+    /// The password of the user
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateEmail(
+        string email,
+        string password,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateEmailPassword(email, password, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
+    /// This allows the developer to extend brainCloud authentication to support other backend authentication systems.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="userid">
+    /// The user id
+    /// </param>
+    /// <param name="token">
+    /// The user token (password etc)
+    /// </param>
+    /// /// <param name="externalAuthName">
+    /// The name of the cloud script to call for external authentication
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateExternal(
+        string userid,
+        string token,
+        string externalAuthName,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateExternal(userid, token, externalAuthName, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="externalId">
+    /// The facebook id of the user
+    /// </param>
+    /// <param name="authenticationToken">
+    /// The validated token from the Facebook SDK (that will be further
+    /// validated when sent to the bC service)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateFacebook(
+        string fbUserId,
+        string fbAuthToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateFacebook(fbUserId, fbAuthToken, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user using their Game Center id
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="gameCenterId">
+    /// The user's game center id  (use the playerID property from the local GKPlayer object)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateGameCenter(
+        string gameCenterId,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateGameCenter(gameCenterId, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user using a google userid(email address) and google authentication token.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="userid">
+    /// String representation of google+ userid (email)
+    /// </param>
+    /// <param name="token">
+    /// The authentication token derived via the google apis.
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateGoogle(
+        string userid,
+        string token,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateGoogle(userid, token, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="userid">
+    /// String representation of 64 bit steam id
+    /// </param>
+    /// <param name="sessionticket">
+    /// The session ticket of the user (hex encoded)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitcAuthenticateSteam(
+        string userid,
+        string sessionticket,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateSteam(userid, sessionticket, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user using a Twitter userid, authentication token, and secret from twitter.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="userid">
+    /// String representation of a Twitter user ID
+    /// </param>
+    /// <param name="token">
+    /// The authentication token derived via the Twitter apis
+    /// </param>
+    /// <param name="secret">
+    /// The secret given when attempting to link with Twitter
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitcAuthenticateTwitter(
+        string userid,
+        string token,
+        string secret,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateTwitter(userid, token, secret, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user using a userid and password (without any validation on the userid).
+    /// Similar to AuthenticateEmailPassword - except that that method has additional features to
+    /// allow for e-mail validation, password resets, etc.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="email">
+    /// The e-mail address of the user
+    /// </param>
+    /// <param name="password">
+    /// The password of the user
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param> 
+    public virtual void SmartSwitchAuthenticateUniversal(
+        string username,
+        string password,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null, 
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) => 
+        {
+            AuthenticateUniversal(username, password, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
+    private void SmartSwitchAuthentication(SuccessCallback authenticateCallback, FailureCallback failureCallback)
+    {
+        var getIdentitiesCallback = GetIdentitiesCallback(authenticateCallback, failureCallback);
+        Client.IdentityService.GetIdentities(getIdentitiesCallback);
+    }
+
+    private SuccessCallback GetIdentitiesCallback(SuccessCallback success, FailureCallback failure)
+    {
+        const string JSON_DATA = "data";
+        const string JSON_IDENTITIES = "identities";
+
+        SuccessCallback getIdentitiesCallback = (response, cbObject) =>
+        {
+            Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(response);
+            Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage[JSON_DATA];
+
+            if (jsonData.ContainsKey(JSON_IDENTITIES))
+            {
+                Dictionary<string, object> jsonIdentities = (Dictionary<string, object>) jsonData[JSON_IDENTITIES];
+                if (jsonIdentities.Count == 0)
+                {
+                    Client.PlayerStateService.DeleteUser(success, failure);
+                }
+                else
+                {
+                    Client.PlayerStateService.Logout(success, failure);
+                }
+            }
+        };
+        
+        return getIdentitiesCallback;
+    }
 
     /// <summary>
     /// Re-authenticates the user with brainCloud
