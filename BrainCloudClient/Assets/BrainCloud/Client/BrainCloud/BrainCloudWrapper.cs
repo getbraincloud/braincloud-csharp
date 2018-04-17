@@ -1130,7 +1130,15 @@ public class BrainCloudWrapper
     private void SmartSwitchAuthentication(SuccessCallback authenticateCallback, FailureCallback failureCallback)
     {
         var getIdentitiesCallback = GetIdentitiesCallback(authenticateCallback, failureCallback);
-        Client.IdentityService.GetIdentities(getIdentitiesCallback);
+
+        if (Client.Authenticated)
+        {
+            Client.IdentityService.GetIdentities(getIdentitiesCallback);            
+        }
+        else
+        {
+            authenticateCallback("", null);
+        }
     }
 
     private SuccessCallback GetIdentitiesCallback(SuccessCallback success, FailureCallback failure)
