@@ -288,9 +288,7 @@ namespace BrainCloud.Internal
         /// to either RetryCachedMessages or FlushCachedMessages
         /// </summary>
         private bool _blockingQueue = false;
-
-
-
+        
         public BrainCloudComms(BrainCloudClient client)
         {
             #if DISABLE_SSL_CHECK

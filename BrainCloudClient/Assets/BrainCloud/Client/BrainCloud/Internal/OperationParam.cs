@@ -383,6 +383,35 @@ namespace BrainCloud
         public static readonly OperationParam RoundStartedEpoch = new OperationParam("roundStartedEpoch");
         public static readonly OperationParam Data = new OperationParam("data");
 
+        // chat
+        public static readonly OperationParam ChatChannelId = new OperationParam("channelId");
+        public static readonly OperationParam ChatMaxReturn = new OperationParam("maxReturn");
+        public static readonly OperationParam ChatMessageId = new OperationParam("messageId");
+        public static readonly OperationParam ChatVersion = new OperationParam("version");
+        
+        public static readonly OperationParam ChatChannelType = new OperationParam("channelType");
+        public static readonly OperationParam ChatChannelSubId = new OperationParam("channelSubId");
+        public static readonly OperationParam ChatContent = new OperationParam("content");
+        public static readonly OperationParam ChatPlain = new OperationParam("plain");
+
+        public static readonly OperationParam ChatRich = new OperationParam("rich");
+        
+        // TODO:: do we enumerate these ? [smrj]
+        // chat channel types 
+        public static readonly OperationParam AllChannelType = new OperationParam("all");
+        public static readonly OperationParam GlobalChannelType = new OperationParam("gl");
+        public static readonly OperationParam GroupChannelType = new OperationParam("gr");
+
+        // messaging
+        public static readonly OperationParam MessagingMessageIds = new OperationParam("msgIds");
+        public static readonly OperationParam MessagingContext = new OperationParam("context");
+        public static readonly OperationParam MessagingPageOffset = new OperationParam("pageOffset");
+        public static readonly OperationParam MessagingFromName = new OperationParam("fromName");
+        public static readonly OperationParam MessagingToProfileIds = new OperationParam("toProfileIds");
+        public static readonly OperationParam MessagingContent = new OperationParam("content");
+        public static readonly OperationParam MessagingSubject = new OperationParam("subject");
+        public static readonly OperationParam MessagingText = new OperationParam("text");
+
         private OperationParam(string value)
         {
             Value = value;

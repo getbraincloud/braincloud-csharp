@@ -330,6 +330,32 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ViewReward = new ServiceOperation("VIEW_REWARD");
         public static readonly ServiceOperation ClaimTournamentReward = new ServiceOperation("CLAIM_TOURNAMENT_REWARD");
 
+        // rtt
+        public static readonly ServiceOperation RequestClientConnection = new ServiceOperation("REQUEST_CLIENT_CONNECTION");
+
+        // chat
+        public static readonly ServiceOperation ChannelConnect = new ServiceOperation("CHANNEL_CONNECT");
+        public static readonly ServiceOperation ChannelDisconnect = new ServiceOperation("CHANNEL_DISCONNECT");
+        public static readonly ServiceOperation DeleteChatMessage = new ServiceOperation("DELETE_CHAT_MESSAGE");
+        public static readonly ServiceOperation GetChannelId = new ServiceOperation("GET_CHANNEL_ID");
+        public static readonly ServiceOperation GetChannelInfo = new ServiceOperation("GET_CHANNEL_INFO");
+        public static readonly ServiceOperation GetChatMessage = new ServiceOperation("GET_CHAT_MESSAGE");
+        public static readonly ServiceOperation GetChatMessages = new ServiceOperation("GET_CHAT_MESSAGES");
+        public static readonly ServiceOperation GetSubscribedChannels = new ServiceOperation("GET_SUBSCRIBED_CHANNELS");
+        public static readonly ServiceOperation PostChatMessage = new ServiceOperation("POST_CHAT_MESSAGE");
+        public static readonly ServiceOperation UpdateChatMessage = new ServiceOperation("UPDATE_CHAT_MESSAGE");
+
+        // messaging 
+        public static readonly ServiceOperation DeleteMessages = new ServiceOperation("DELETE_MESSAGES");
+        public static readonly ServiceOperation GetMessageBoxes = new ServiceOperation("GET_MESSAGE_BOXES");
+        public static readonly ServiceOperation GetMessageCounts = new ServiceOperation("GET_MESSAGE_COUNTS");
+        public static readonly ServiceOperation GetMessagesPage = new ServiceOperation("GET_MESSAGES_PAGE");
+        public static readonly ServiceOperation GetMessagesPageOffset = new ServiceOperation("GET_MESSAGES_PAGE_OFFSET");
+        public static readonly ServiceOperation MarkMessagesRead = new ServiceOperation("MARK_MESSAGES_READ");
+        public static readonly ServiceOperation RetrieveMessage = new ServiceOperation("RETRIEVE_MESSAGE");
+        public static readonly ServiceOperation SendMessage = new ServiceOperation("SEND_MESSAGE");
+        public static readonly ServiceOperation SendSimpleMessage = new ServiceOperation("SEND_SIMPLE_MESSAGE");
+
         private ServiceOperation(string value)
         {
             Value = value;

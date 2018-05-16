@@ -40,6 +40,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Twitter = new ServiceName("twitter");
         public static readonly ServiceName Time = new ServiceName("time");
         public static readonly ServiceName Tournament = new ServiceName("tournament");
+        public static readonly ServiceName RTT = new ServiceName("rttRegistration");
+        public static readonly ServiceName Chat = new ServiceName("chat");
+        public static readonly ServiceName Messaging = new ServiceName("messaging");
 
         private ServiceName(string value)
         {
