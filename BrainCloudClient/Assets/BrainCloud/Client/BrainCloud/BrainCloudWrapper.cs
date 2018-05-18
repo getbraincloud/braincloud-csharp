@@ -299,12 +299,14 @@ public class BrainCloudWrapper
         Client = new BrainCloudClient();
         WrapperName = wrapperName;
     }
-
-
+    
     public void Update()
     {
         if (Client != null)
         {
+            // MonoBehavior runs every update Tick
+            // for further control please review eBrainCloudUpdateType
+            // from the direct Client Updates
             Client.Update();
         }
     }

@@ -51,7 +51,8 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DisableRTT()
         {
-            disconnect();
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTT.Value, "disconnect", "DisableRTT Called"));
+            //disconnect();
         }
 
         /// <summary>
@@ -201,6 +202,7 @@ namespace BrainCloud.Internal
         private string buildHeartbeatRequest()
         {
             Dictionary<string, object> json = new Dictionary<string, object>();
+            json["service"] = ServiceName.RTT.Value;
             json["operation"] = "HEARTBEAT";
             json["data"] = null;
 
@@ -374,13 +376,13 @@ namespace BrainCloud.Internal
         {
             m_timeSinceLastRequest = 0;
             m_clientRef.Log("RTT RECV: " + in_message);
-
             Dictionary<string, object> response = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(in_message);
 
             string service = (string)response["service"];
             string operation = (string)response["operation"];
 
-            addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
+            if (operation != "HEARTBEAT")
+                addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
         }
 
         /// <summary>
@@ -480,7 +482,7 @@ namespace BrainCloud.Internal
 
         private int m_timeSinceLastRequest = 0;
         private const int MAX_PACKETSIZE = 1024;// TODO:: based off of some config 
-        private const int HEART_BEAT_TIME = 5 * 1000;
+        private const int HEART_BEAT_TIME = 10 * 1000;
 
         private BrainCloudClient m_clientRef;
 
@@ -515,7 +517,9 @@ namespace BrainCloud
     {
         INVALID,
         WEBSOCKET,
-        TCP
+        TCP,
+
+        MAX
     }
     #endregion
 }

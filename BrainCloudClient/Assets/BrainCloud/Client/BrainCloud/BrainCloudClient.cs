@@ -21,6 +21,17 @@ using System;
 
 namespace BrainCloud
 {
+    #region Enums
+    public enum eBrainCloudUpdateType
+    {
+        ALL,
+        REST,
+        RTT,
+
+        MAX
+    }
+    #endregion
+
     #region Delegates
 
     /// <summary>
@@ -706,10 +717,31 @@ namespace BrainCloud
         /// <summary>Update method needs to be called regularly in order
         /// to process incoming and outgoing messages.
         /// </summary>
-        public void Update()
+        /// 
+        public void Update(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
-            if (_comms != null) _comms.Update();
-            if (_rttComms != null) _rttComms.Update();
+            switch (in_updateType)
+            {
+                case eBrainCloudUpdateType.REST:
+                    {
+                        if (_comms != null) _comms.Update();
+                    }
+                    break;
+
+                case eBrainCloudUpdateType.RTT:
+                    {
+                        if (_rttComms != null) _rttComms.Update();
+                    }
+                    break;
+
+                default:
+                case eBrainCloudUpdateType.ALL:
+                    {
+                        if (_rttComms != null) _rttComms.Update();
+                        if (_comms != null) _comms.Update();
+                    }
+                    break;
+            }
         }
 
         /// <summary>
