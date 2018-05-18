@@ -150,6 +150,7 @@ namespace BrainCloud
         private BrainCloudFile _fileService;
         private BrainCloudGroup _groupService;
         private BrainCloudMail _mailService;
+        private BrainCloudMessaging _messagingService;
 
         // RTT service
         private BrainCloudChat _chatService;
@@ -215,6 +216,7 @@ namespace BrainCloud
             _fileService = new BrainCloudFile(this);
             _groupService = new BrainCloudGroup(this);
             _mailService = new BrainCloudMail(this);
+            _messagingService = new BrainCloudMessaging(this);
 
             // RTT 
             _chatService = new BrainCloudChat(this);
@@ -451,6 +453,12 @@ namespace BrainCloud
         {
             get { return _chatService; }
         }
+
+        public BrainCloudMessaging MessagingService
+        {
+            get { return _messagingService; }
+        }
+        
         #endregion
 
         #region Service Getters

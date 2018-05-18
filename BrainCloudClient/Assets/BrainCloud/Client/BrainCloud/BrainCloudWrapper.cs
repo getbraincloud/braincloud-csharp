@@ -270,6 +270,11 @@ public class BrainCloudWrapper
     {
         get { return Client.ChatService; }
     }
+
+    public BrainCloudMessaging MessagingService
+    {
+        get { return Client.MessagingService; }
+    }
     #endregion
 
     /// <summary>
