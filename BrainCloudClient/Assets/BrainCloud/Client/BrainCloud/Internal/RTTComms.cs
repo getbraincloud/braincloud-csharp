@@ -97,7 +97,7 @@ namespace BrainCloud.Internal
                         m_lastNowMS = DateTime.Now;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
-                    else if (m_connectionFailureCallback != null &&
+                    else if (m_bIsConnected && m_connectionFailureCallback != null &&
                         toProcessResponse.Operation == "error" || toProcessResponse.Operation == "disconnect")
                     {
                         if (toProcessResponse.Operation == "disconnect")
