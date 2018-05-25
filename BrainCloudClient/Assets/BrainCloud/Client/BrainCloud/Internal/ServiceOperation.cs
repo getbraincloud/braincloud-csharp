@@ -340,7 +340,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetChannelId = new ServiceOperation("GET_CHANNEL_ID");
         public static readonly ServiceOperation GetChannelInfo = new ServiceOperation("GET_CHANNEL_INFO");
         public static readonly ServiceOperation GetChatMessage = new ServiceOperation("GET_CHAT_MESSAGE");
-        public static readonly ServiceOperation GetChatMessages = new ServiceOperation("GET_CHAT_MESSAGES");
+        public static readonly ServiceOperation GetRecentMessages = new ServiceOperation("GET_RECENT_MESSAGES");
         public static readonly ServiceOperation GetSubscribedChannels = new ServiceOperation("GET_SUBSCRIBED_CHANNELS");
         public static readonly ServiceOperation PostChatMessage = new ServiceOperation("POST_CHAT_MESSAGE");
         public static readonly ServiceOperation UpdateChatMessage = new ServiceOperation("UPDATE_CHAT_MESSAGE");

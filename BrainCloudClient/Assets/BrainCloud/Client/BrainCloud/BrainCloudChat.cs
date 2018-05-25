@@ -106,14 +106,14 @@ namespace BrainCloud
         /// <summary>
         /// Get a list of <maxReturn> messages from history of channel <channelId>
         /// </summary>
-        public void GetChatMessages(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void GetRecentMessages(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
             data[OperationParam.ChatMaxReturn.Value] = in_maxToReturn;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.GetChatMessages, null, callback);
+            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.GetRecentMessages, null, callback);
             m_clientRef.SendRequest(sc);
         }
 
@@ -134,7 +134,7 @@ namespace BrainCloud
         /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
         /// </summary>
         /// 
-        public void PostChatMessage(string in_channelId, string in_message, string in_jsonSomethingCustom, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void PostChatMessage(string in_channelId, string in_message, string in_jsonSomethingCustom, bool in_recordInHisory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> content = new Dictionary<string, object>();
             content[OperationParam.ChatPlain.Value] = in_message;
@@ -143,7 +143,8 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
             data[OperationParam.ChatContent.Value] = content;
-
+            data[OperationParam.ChatRecordInHistory.Value] = in_recordInHisory;
+            
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.PostChatMessage, data, callback);
             m_clientRef.SendRequest(sc);

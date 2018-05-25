@@ -395,7 +395,8 @@ namespace BrainCloud
         public static readonly OperationParam ChatPlain = new OperationParam("plain");
 
         public static readonly OperationParam ChatRich = new OperationParam("rich");
-        
+        public static readonly OperationParam ChatRecordInHistory = new OperationParam("recordInHisory");
+
         // TODO:: do we enumerate these ? [smrj]
         // chat channel types 
         public static readonly OperationParam AllChannelType = new OperationParam("all");

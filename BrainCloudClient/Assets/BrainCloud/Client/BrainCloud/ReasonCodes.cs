@@ -348,6 +348,9 @@ namespace BrainCloud
         public const int IMPORT_MISSING_PEERS_DATA = 40533;
         public const int INVALID_CREDENTIAL = 40534;
 
+        public const int MESSAGING_FEATURE_NOT_CONFIGURED = 40593;
+        public const int CHAT_FEATURE_NOT_CONFIGURED = 40594;
+
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
