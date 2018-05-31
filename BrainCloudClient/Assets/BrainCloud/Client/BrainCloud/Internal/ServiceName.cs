@@ -43,6 +43,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName RTT = new ServiceName("rttRegistration");
         public static readonly ServiceName Chat = new ServiceName("chat");
         public static readonly ServiceName Messaging = new ServiceName("messaging");
+        public static readonly ServiceName Lobby = new ServiceName("lobby");
 
         private ServiceName(string value)
         {

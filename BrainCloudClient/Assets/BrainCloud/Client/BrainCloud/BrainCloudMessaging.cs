@@ -6,7 +6,6 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using JsonFx.Json;
-using System;
 
 namespace BrainCloud
 {
@@ -21,11 +20,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deletes specified user messages on the server.
+        /// Deletes specified user messages on the server. in_msgBox = OperationParam.InboxMessageType && OperationParam.SentMessageType
         /// </summary>
-        public void DeleteMessages(string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void DeleteMessages(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.MessagingMessageBox.Value] = in_msgBox;
             data[OperationParam.MessagingMessageIds.Value] = in_msgsIds;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -46,13 +46,27 @@ namespace BrainCloud
         /// <summary>
         /// Returns count of user's 'total' messages and their 'unread' messages.
         /// </summary>
-        public void DeleteChatMessage(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void GetMessageCounts(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.GetMessageCounts, null, callback);
             m_clientRef.SendRequest(sc);
         }
-        
+
+        /// <summary>
+        /// Retrieves list of specified messages.
+        /// </summary>
+        public void GetMessages(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.MessagingMessageBox.Value] = in_msgBox;
+            data[OperationParam.MessagingMessageIds.Value] = in_msgsIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.GetMessages, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
         /// <summary>
         /// Retrieves a page of messages.
         /// </summary>
@@ -66,11 +80,11 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.GetMessagesPage, data, callback);
             m_clientRef.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Gets the page of messages from the server based on the encoded context and specified page offset.
         /// </summary>
-        public void GetMessagesPageOffset( string in_context, int pageOffset, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void GetMessagesPageOffset(string in_context, int pageOffset, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             var data = new Dictionary<string, object>();
             data[OperationParam.MessagingContext.Value] = in_context;
@@ -84,9 +98,10 @@ namespace BrainCloud
         /// <summary>
         /// Marks list of user messages as read on the server.
         /// </summary>
-        public void MarkMessagesRead(string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void MarkMessagesRead(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.MessagingMessageBox.Value] = in_msgBox;
             data[OperationParam.MessagingMessageIds.Value] = in_msgsIds;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -95,29 +110,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves specified message.
-        /// </summary>
-        public void RetrieveMessage(string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MessagingMessageIds.Value] = in_msgsIds;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.RetrieveMessage, null, callback);
-            m_clientRef.SendRequest(sc);
-        }
-
-        /// <summary>
         /// Sends a message with specified 'subject' and 'text' to list of users.
         /// </summary>
-        public void SendMessage(string in_fromName, string[] in_toProfileIds, string in_messageText, string in_messageSubject, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void SendMessage(string[] in_toProfileIds, string in_messageText, string in_messageSubject, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> content = new Dictionary<string, object>();
             content[OperationParam.MessagingText.Value] = in_messageText;
             content[OperationParam.MessagingSubject.Value] = in_messageSubject;
 
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MessagingFromName.Value] = in_fromName;
             data[OperationParam.MessagingToProfileIds.Value] = in_toProfileIds;
             data[OperationParam.MessagingContent.Value] = content;
 
@@ -130,10 +131,9 @@ namespace BrainCloud
         /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
         /// </summary>
         /// 
-        public void SendSimpleMessage(string in_fromName, string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void SendSimpleMessage(string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.MessagingFromName.Value] = in_fromName;
             data[OperationParam.MessagingToProfileIds.Value] = in_toProfileIds;
             data[OperationParam.MessagingText.Value] = in_messageText;
 

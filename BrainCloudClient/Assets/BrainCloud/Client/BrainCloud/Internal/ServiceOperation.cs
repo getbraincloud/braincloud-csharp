@@ -349,10 +349,10 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation DeleteMessages = new ServiceOperation("DELETE_MESSAGES");
         public static readonly ServiceOperation GetMessageBoxes = new ServiceOperation("GET_MESSAGE_BOXES");
         public static readonly ServiceOperation GetMessageCounts = new ServiceOperation("GET_MESSAGE_COUNTS");
+        public static readonly ServiceOperation GetMessages = new ServiceOperation("GET_MESSAGES");
         public static readonly ServiceOperation GetMessagesPage = new ServiceOperation("GET_MESSAGES_PAGE");
         public static readonly ServiceOperation GetMessagesPageOffset = new ServiceOperation("GET_MESSAGES_PAGE_OFFSET");
         public static readonly ServiceOperation MarkMessagesRead = new ServiceOperation("MARK_MESSAGES_READ");
-        public static readonly ServiceOperation RetrieveMessage = new ServiceOperation("RETRIEVE_MESSAGE");
         public static readonly ServiceOperation SendMessage = new ServiceOperation("SEND_MESSAGE");
         public static readonly ServiceOperation SendSimpleMessage = new ServiceOperation("SEND_SIMPLE_MESSAGE");
 
