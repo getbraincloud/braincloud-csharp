@@ -153,6 +153,7 @@ namespace BrainCloud
         private BrainCloudMessaging _messagingService;
 
         // RTT service
+        private BrainCloudLobby _lobbyService;
         private BrainCloudChat _chatService;
         private BrainCloudRTT _rttService;
         private RTTComms _rttComms;
@@ -219,6 +220,7 @@ namespace BrainCloud
             _messagingService = new BrainCloudMessaging(this);
 
             // RTT 
+            _lobbyService = new BrainCloudLobby(this);
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
             _rttComms = new RTTComms(this);
@@ -447,6 +449,11 @@ namespace BrainCloud
         public BrainCloudRTT RTTService
         {
             get { return _rttService; }
+        }
+
+        public BrainCloudLobby LobbyService
+        {
+            get { return _lobbyService; }
         }
 
         public BrainCloudChat ChatService
@@ -923,7 +930,23 @@ namespace BrainCloud
         {
             _rttComms.DeregisterRTTCallback(ServiceName.Messaging);
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTLobbyCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTListener(ServiceName.Lobby, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTLobbyCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Lobby);
+        }
+
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)

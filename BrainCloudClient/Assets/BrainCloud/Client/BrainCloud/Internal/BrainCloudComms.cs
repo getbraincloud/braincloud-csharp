@@ -808,7 +808,7 @@ namespace BrainCloud.Internal
                         }
 
                         string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
-                        if (sessionId != null)
+                        if (profileId != null)
                         {
                             _clientRef.AuthenticationService.ProfileId = profileId;
                         }

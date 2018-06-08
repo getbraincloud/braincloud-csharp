@@ -266,6 +266,11 @@ public class BrainCloudWrapper
         get { return Client.RTTService; }
     }
 
+    public BrainCloudLobby LobbyService
+    {
+        get { return Client.LobbyService; }
+    }
+
     public BrainCloudChat ChatService
     {
         get { return Client.ChatService; }

@@ -105,7 +105,7 @@ namespace BrainCloud
         /// <summary>App Version No Longer Supported</summary>
         public const int GAME_VERSION_NOT_SUPPORTED = 40322;
         public const int APP_VERSION_NOT_SUPPORTED = GAME_VERSION_NOT_SUPPORTED;
-        
+
         public const int BAD_REFERENCE_DATA = 40324;
         public const int MISSING_OAUTH_TOKEN = 40325;
         public const int MISSING_OAUTH_VERIFIER = 40326;
