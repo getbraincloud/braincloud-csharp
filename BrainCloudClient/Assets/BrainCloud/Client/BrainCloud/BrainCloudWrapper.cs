@@ -78,14 +78,13 @@ public class BrainCloudWrapper
     private static BrainCloudWrapper _instance = null;
     private static bool _applicationIsQuitting = false;
 
-
     private string _lastUrl = "";
     private string _lastSecretKey = "";
     private string _lastAppId = "";
     private string _lastAppVersion = "";
 
     private bool _alwaysAllowProfileSwitch = true;
-    
+
     private WrapperData _wrapperData = new WrapperData();
 
 
@@ -98,6 +97,11 @@ public class BrainCloudWrapper
         set { _alwaysAllowProfileSwitch = value; }
     }
 
+    private void OnApplicationQuit()
+    {
+        Client.DisableRTT();
+    }
+
     /// <summary>
     /// Name of this wrapper instance. Used for data loading
     /// </summary>
@@ -105,159 +109,178 @@ public class BrainCloudWrapper
 
     #region Client Service Properties
 
-        public BrainCloudEntity EntityService
-        {
-            get { return Client.EntityService; }
-        }
+    public BrainCloudEntity EntityService
+    {
+        get { return Client.EntityService; }
+    }
 
 #if !XAMARIN
-        public BCEntityFactory EntityFactory
-        {
-            get { return Client.EntityFactory; }
-        }
+    public BCEntityFactory EntityFactory
+    {
+        get { return Client.EntityFactory; }
+    }
 #endif
 
-        public BrainCloudGlobalEntity GlobalEntityService
-        {
-            get { return Client.GlobalEntityService; }
-        }
+    public BrainCloudGlobalEntity GlobalEntityService
+    {
+        get { return Client.GlobalEntityService; }
+    }
 
-        public BrainCloudGlobalApp GlobalAppService
-        {
-            get { return Client.GlobalAppService; }
-        }
+    public BrainCloudGlobalApp GlobalAppService
+    {
+        get { return Client.GlobalAppService; }
+    }
 
-        public BrainCloudProduct ProductService
-        {
-            get { return Client.ProductService; }
-        }
+    public BrainCloudProduct ProductService
+    {
+        get { return Client.ProductService; }
+    }
 
-        public BrainCloudPlayerStatistics PlayerStatisticsService
-        {
-            get { return Client.PlayerStatisticsService; }
-        }
+    public BrainCloudPlayerStatistics PlayerStatisticsService
+    {
+        get { return Client.PlayerStatisticsService; }
+    }
 
-        public BrainCloudGlobalStatistics GlobalStatisticsService
-        {
-            get { return Client.GlobalStatisticsService; }
-        }
+    public BrainCloudGlobalStatistics GlobalStatisticsService
+    {
+        get { return Client.GlobalStatisticsService; }
+    }
 
-        public BrainCloudIdentity IdentityService
-        {
-            get { return Client.IdentityService; }
-        }
+    public BrainCloudIdentity IdentityService
+    {
+        get { return Client.IdentityService; }
+    }
 
-        public BrainCloudScript ScriptService
-        {
-            get { return Client.ScriptService; }
-        }
+    public BrainCloudScript ScriptService
+    {
+        get { return Client.ScriptService; }
+    }
 
-        public BrainCloudMatchMaking MatchMakingService
-        {
-            get { return Client.MatchMakingService; }
-        }
+    public BrainCloudMatchMaking MatchMakingService
+    {
+        get { return Client.MatchMakingService; }
+    }
 
-        public BrainCloudOneWayMatch OneWayMatchService
-        {
-            get { return Client.OneWayMatchService; }
-        }
+    public BrainCloudOneWayMatch OneWayMatchService
+    {
+        get { return Client.OneWayMatchService; }
+    }
 
-        public BrainCloudPlaybackStream PlaybackStreamService
-        {
-            get { return Client.PlaybackStreamService; }
-        }
+    public BrainCloudPlaybackStream PlaybackStreamService
+    {
+        get { return Client.PlaybackStreamService; }
+    }
 
-        public BrainCloudGamification GamificationService
-        {
-            get { return Client.GamificationService; }
-        }
+    public BrainCloudGamification GamificationService
+    {
+        get { return Client.GamificationService; }
+    }
 
-        public BrainCloudPlayerState PlayerStateService
-        {
-            get { return Client.PlayerStateService; }
-        }
+    public BrainCloudPlayerState PlayerStateService
+    {
+        get { return Client.PlayerStateService; }
+    }
 
-        public BrainCloudFriend FriendService
-        {
-            get { return Client.FriendService; }
-        }
+    public BrainCloudFriend FriendService
+    {
+        get { return Client.FriendService; }
+    }
 
-        public BrainCloudEvent EventService
-        {
-            get { return Client.EventService; }
-        }
+    public BrainCloudEvent EventService
+    {
+        get { return Client.EventService; }
+    }
 
-        public BrainCloudSocialLeaderboard SocialLeaderboardService
-        {
-            get { return Client.SocialLeaderboardService; }
-        }
+    public BrainCloudSocialLeaderboard SocialLeaderboardService
+    {
+        get { return Client.SocialLeaderboardService; }
+    }
 
-        public BrainCloudSocialLeaderboard LeaderboardService
-        {
-            get { return Client.LeaderboardService; }
-        }
+    public BrainCloudSocialLeaderboard LeaderboardService
+    {
+        get { return Client.LeaderboardService; }
+    }
 
-        public BrainCloudAsyncMatch AsyncMatchService
-        {
-            get { return Client.AsyncMatchService; }
-        }
+    public BrainCloudAsyncMatch AsyncMatchService
+    {
+        get { return Client.AsyncMatchService; }
+    }
 
-        public BrainCloudTime TimeService
-        {
-            get { return Client.TimeService; }
-        }
+    public BrainCloudTime TimeService
+    {
+        get { return Client.TimeService; }
+    }
 
-        public BrainCloudTournament TournamentService
-        {
-            get { return Client.TournamentService; }
-        }
+    public BrainCloudTournament TournamentService
+    {
+        get { return Client.TournamentService; }
+    }
 
-        public BrainCloudPushNotification PushNotificationService
-        {
-            get { return Client.PushNotificationService; }
-        }
+    public BrainCloudPushNotification PushNotificationService
+    {
+        get { return Client.PushNotificationService; }
+    }
 
-        public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
-        {
-            get { return Client.PlayerStatisticsEventService; }
-        }
+    public BrainCloudPlayerStatisticsEvent PlayerStatisticsEventService
+    {
+        get { return Client.PlayerStatisticsEventService; }
+    }
 
-        public BrainCloudS3Handling S3HandlingService
-        {
-            get { return Client.S3HandlingService; }
-        }
+    public BrainCloudS3Handling S3HandlingService
+    {
+        get { return Client.S3HandlingService; }
+    }
 
-        public BrainCloudRedemptionCode RedemptionCodeService
-        {
-            get { return Client.RedemptionCodeService; }
-        }
+    public BrainCloudRedemptionCode RedemptionCodeService
+    {
+        get { return Client.RedemptionCodeService; }
+    }
 
-        public BrainCloudDataStream DataStreamService
-        {
-            get { return Client.DataStreamService; }
-        }
+    public BrainCloudDataStream DataStreamService
+    {
+        get { return Client.DataStreamService; }
+    }
 
-        public BrainCloudProfanity ProfanityService
-        {
-            get { return Client.ProfanityService; }
-        }
+    public BrainCloudProfanity ProfanityService
+    {
+        get { return Client.ProfanityService; }
+    }
 
-        public BrainCloudFile FileService
-        {
-            get { return Client.FileService; }
-        }
+    public BrainCloudFile FileService
+    {
+        get { return Client.FileService; }
+    }
 
-        public BrainCloudGroup GroupService
-        {
-            get { return Client.GroupService; }
-        }
+    public BrainCloudGroup GroupService
+    {
+        get { return Client.GroupService; }
+    }
 
-        public BrainCloudMail MailService
-        {
-            get { return Client.MailService; }
-        }
+    public BrainCloudMail MailService
+    {
+        get { return Client.MailService; }
+    }
 
-        #endregion
+    public BrainCloudRTT RTTService
+    {
+        get { return Client.RTTService; }
+    }
+
+    public BrainCloudLobby LobbyService
+    {
+        get { return Client.LobbyService; }
+    }
+
+    public BrainCloudChat ChatService
+    {
+        get { return Client.ChatService; }
+    }
+
+    public BrainCloudMessaging MessagingService
+    {
+        get { return Client.MessagingService; }
+    }
+    #endregion
 
     /// <summary>
     /// Create the brainCloud Wrapper, which has utility helpers for using the brainCloud API
@@ -286,12 +309,14 @@ public class BrainCloudWrapper
         Client = new BrainCloudClient();
         WrapperName = wrapperName;
     }
-
-
+    
     public void Update()
     {
         if (Client != null)
         {
+            // MonoBehavior runs every update Tick
+            // for further control please review eBrainCloudUpdateType
+            // from the direct Client Updates
             Client.Update();
         }
     }
@@ -760,7 +785,7 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticateUniversal(
             username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -799,17 +824,17 @@ public class BrainCloudWrapper
         string password,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateEmailPassword(email, password, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -849,17 +874,17 @@ public class BrainCloudWrapper
         string externalAuthName,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateExternal(userid, token, externalAuthName, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -895,17 +920,17 @@ public class BrainCloudWrapper
         string fbAuthToken,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateFacebook(fbUserId, fbAuthToken, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -936,17 +961,17 @@ public class BrainCloudWrapper
         string gameCenterId,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateGameCenter(gameCenterId, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -981,17 +1006,17 @@ public class BrainCloudWrapper
         string token,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateGoogle(userid, token, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -1021,22 +1046,22 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
-    public virtual void SmartSwitcAuthenticateSteam(
+    public virtual void SmartSwitchAuthenticateSteam(
         string userid,
         string sessionticket,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateSteam(userid, sessionticket, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -1069,23 +1094,23 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
-    public virtual void SmartSwitcAuthenticateTwitter(
+    public virtual void SmartSwitchAuthenticateTwitter(
         string userid,
         string token,
         string secret,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateTwitter(userid, token, secret, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
@@ -1122,10 +1147,10 @@ public class BrainCloudWrapper
         string password,
         bool forceCreate,
         SuccessCallback success = null,
-        FailureCallback failure = null, 
+        FailureCallback failure = null,
         object cbObject = null)
     {
-        SuccessCallback authenticateCallback = (response, o) => 
+        SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateUniversal(username, password, forceCreate, success, failure, cbObject);
         };
@@ -1139,7 +1164,7 @@ public class BrainCloudWrapper
 
         if (Client.Authenticated)
         {
-            Client.IdentityService.GetIdentities(getIdentitiesCallback);            
+            Client.IdentityService.GetIdentities(getIdentitiesCallback);
         }
         else
         {
@@ -1154,12 +1179,12 @@ public class BrainCloudWrapper
 
         SuccessCallback getIdentitiesCallback = (response, cbObject) =>
         {
-            Dictionary<string, object> jsonMessage = (Dictionary<string, object>) JsonReader.Deserialize(response);
-            Dictionary<string, object> jsonData = (Dictionary<string, object>) jsonMessage[JSON_DATA];
+            Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonReader.Deserialize(response);
+            Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage[JSON_DATA];
 
             if (jsonData.ContainsKey(JSON_IDENTITIES))
             {
-                Dictionary<string, object> jsonIdentities = (Dictionary<string, object>) jsonData[JSON_IDENTITIES];
+                Dictionary<string, object> jsonIdentities = (Dictionary<string, object>)jsonData[JSON_IDENTITIES];
                 if (jsonIdentities.Count == 0)
                 {
                     Client.PlayerStateService.DeleteUser(success, failure);
@@ -1170,7 +1195,7 @@ public class BrainCloudWrapper
                 }
             }
         };
-        
+
         return getIdentitiesCallback;
     }
 

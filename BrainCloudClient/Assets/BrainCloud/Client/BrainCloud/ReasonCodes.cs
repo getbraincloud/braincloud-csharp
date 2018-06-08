@@ -105,7 +105,7 @@ namespace BrainCloud
         /// <summary>App Version No Longer Supported</summary>
         public const int GAME_VERSION_NOT_SUPPORTED = 40322;
         public const int APP_VERSION_NOT_SUPPORTED = GAME_VERSION_NOT_SUPPORTED;
-        
+
         public const int BAD_REFERENCE_DATA = 40324;
         public const int MISSING_OAUTH_TOKEN = 40325;
         public const int MISSING_OAUTH_VERIFIER = 40326;
@@ -347,6 +347,9 @@ namespace BrainCloud
         public const int INVALID_OWNER_ID = 40532;
         public const int IMPORT_MISSING_PEERS_DATA = 40533;
         public const int INVALID_CREDENTIAL = 40534;
+
+        public const int MESSAGING_FEATURE_NOT_CONFIGURED = 40593;
+        public const int CHAT_FEATURE_NOT_CONFIGURED = 40594;
 
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
