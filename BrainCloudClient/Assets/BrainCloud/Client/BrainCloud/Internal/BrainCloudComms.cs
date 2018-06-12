@@ -233,7 +233,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// A list of packet timeouts. Index represents the packet attempt number.
         /// </summary>
-        private List<int> _packetTimeouts = new List<int> { 10, 10, 10 };
+        private List<int> _packetTimeouts = new List<int> { 15, 10, 10 };
         public List<int> PacketTimeouts
         {
             get
@@ -247,7 +247,7 @@ namespace BrainCloud.Internal
         }
         public void SetPacketTimeoutsToDefault()
         {
-            _packetTimeouts = new List<int> { 10, 10, 10 };
+            _packetTimeouts = new List<int> { 15, 10, 10 };
         }
 
         private int _authPacketTimeoutSecs = 15;
@@ -400,12 +400,15 @@ namespace BrainCloud.Internal
             }
 
             // process current request
+            bool bypassTimeout = false;
             if (_activeRequest != null)
             {
                 RequestState.eWebRequestStatus status = GetWebRequestStatus(_activeRequest);
                 if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                 {
-                    // do nothing with the error right now - let the timeout code handle it
+                    // Force the timeout to be elapsed because we have completed the request with error
+                    // or else, do nothing with the error right now - let the timeout code handle it
+                    bypassTimeout = (_activeRequest.Retries >= GetMaxRetriesForPacket(_activeRequest));
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
@@ -421,7 +424,7 @@ namespace BrainCloud.Internal
             // is it time for a retry?
             if (_activeRequest != null)
             {
-                if (DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(_activeRequest))
+                if (bypassTimeout || DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(_activeRequest))
                 {
                     // grab status/response before cancelling the request as in Unity, the www object
                     // will set internal status fields to null when www object is disposed
@@ -1300,6 +1303,12 @@ namespace BrainCloud.Internal
         /// <param name="requestState">Request state.</param>
         private void InternalSendMessage(RequestState requestState)
         {
+#if DOT_NET
+            // During retry, the RequestState is reused so we have to make sure its state goes back to PENDING.
+            // Unity uses the info stored in the WWW object and it's recreated here so it's not an issue.
+            requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
+#endif
+
             // bundle up the data into a string
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
@@ -1397,11 +1406,11 @@ namespace BrainCloud.Internal
         /// <param name="requestState">Request state.</param>
         private bool ResendMessage(RequestState requestState)
         {
-            ++_activeRequest.Retries;
             if (_activeRequest.Retries >= GetMaxRetriesForPacket(requestState))
             {
                 return false;
             }
+            ++_activeRequest.Retries;
             InternalSendMessage(requestState);
             return true;
         }

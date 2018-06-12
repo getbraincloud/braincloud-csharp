@@ -163,7 +163,7 @@ namespace BrainCloudTests
         {
             string exePath = AppDomain.CurrentDomain.BaseDirectory;
             string absPath = exePath;
-            string search = "Unity-Csharp" + Path.DirectorySeparatorChar + "BrainCloudClient";
+            string search = "BrainCloudClient";
             if (absPath.Contains(search))
             {
                 absPath = absPath.Substring(0, absPath.LastIndexOf(search));
