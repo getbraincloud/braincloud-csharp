@@ -338,32 +338,32 @@ namespace BrainCloud.Internal
 
         private void setupWebSocket(string in_url)
         {
-            m_webSocket = new UnityWebSocket(in_url);
+            m_webSocket = new BrainCloudWebSocket(in_url);
             m_webSocket.OnClose += WebSocket_OnClose;
             m_webSocket.OnOpen += Websocket_OnOpen;
             m_webSocket.OnMessage += WebSocket_OnMessage;
             m_webSocket.OnError += WebSocket_OnError;
         }
 
-        private void WebSocket_OnClose(UnityWebSocket sender, int code, string reason)
+        private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
             m_clientRef.Log("Connection closed: " + reason);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTT.Value, "disconnect", reason));
         }
 
-        private void Websocket_OnOpen(UnityWebSocket accepted)
+        private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
             m_clientRef.Log("Connection established.");
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTT.Value, "connect", ""));
         }
 
-        private void WebSocket_OnMessage(UnityWebSocket sender, byte[] data)
+        private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
             string message = Encoding.UTF8.GetString(data);
             onRecv(message);
         }
 
-        private void WebSocket_OnError(UnityWebSocket sender, string message)
+        private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
             m_clientRef.Log("Error: " + message);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTT.Value, "error", message));
@@ -476,7 +476,7 @@ namespace BrainCloud.Internal
 
         private bool m_useWebSocket = false;
         private bool m_bIsConnected = false;
-        private UnityWebSocket m_webSocket = null;
+        private BrainCloudWebSocket m_webSocket = null;
 
         private DateTime m_lastNowMS;
 
