@@ -154,7 +154,6 @@ namespace BrainCloud.Internal
             }
         }
 
-		internal void setAuthenticated() {
 			_isAuthenticated = true;
 		}
 

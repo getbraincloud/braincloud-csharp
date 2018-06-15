@@ -29,9 +29,9 @@ using System.Threading.Tasks;
 
 namespace BrainCloud.Internal
 {
-/*
- * FileUploader is not supported in WebPlayer && WebGL
- */
+    /*
+     * FileUploader is not supported in WebPlayer && WebGL
+     */
     internal class FileUploader
     {
         public enum FileUploaderStatus
@@ -72,6 +72,7 @@ namespace BrainCloud.Internal
         private string _localPath;
         private string _serverUrl;
         private string _fileName;
+        private string _peerCode;
         private long _timeoutThreshold = 50;
         private int _timeout = 120;
 #pragma warning restore 649
@@ -106,10 +107,11 @@ namespace BrainCloud.Internal
             string sessionId,
             int timeout,
             int timeoutThreshold,
-            BrainCloudClient client)
+            BrainCloudClient client,
+            string peerCode = "")
         {
             _client = client;
-            
+
 #if UNITY_WEBPLAYER || UNITY_WEBGL
             throw new Exception("File upload API is not supported on Web builds");
 #else
@@ -117,6 +119,7 @@ namespace BrainCloud.Internal
             _localPath = localPath;
             _serverUrl = serverUrl;
             _sessionId = sessionId;
+            _peerCode = peerCode;
 
             _timeout = timeout;
             _timeoutThreshold = timeoutThreshold;
@@ -142,6 +145,8 @@ namespace BrainCloud.Internal
             byte[] file = File.ReadAllBytes(_localPath);
             WWWForm postForm = new WWWForm();
             postForm.AddField("sessionId", _sessionId);
+
+            if (_peerCode != "") postForm.AddField("peerCode", _peerCode);
             postForm.AddField("uploadId", UploadId);
             postForm.AddField("fileSize", TotalBytesToTransfer.ToString());
             postForm.AddBinaryData("uploadFile", file, _fileName);
@@ -165,6 +170,7 @@ namespace BrainCloud.Internal
             fileStream.BytesRead += BytesReadCallback;
 
             requestContent.Add(new StringContent(_sessionId), "sessionId");
+            if (_peerCode != "") requestContent.Add(new StringContent(_peerCode), "peerCode");
             requestContent.Add(new StringContent(UploadId), "uploadId");
             requestContent.Add(new StringContent(TotalBytesToTransfer.ToString()), "fileSize");
             requestContent.Add(new StreamContent(fileStream), "uploadFile", _fileName);
