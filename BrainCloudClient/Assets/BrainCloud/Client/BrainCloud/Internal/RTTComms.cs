@@ -192,6 +192,12 @@ namespace BrainCloud.Internal
             jsonData["sessionId"] = m_clientRef.SessionID;
             jsonData["profileId"] = m_clientRef.AuthenticationService.ProfileId;
 
+            // pass on all the other headers
+            foreach (KeyValuePair<string, string> item in m_rttHeaders)
+            {
+                jsonData[item.Key] = item.Value;
+            }
+            
             Dictionary<string, object> json = new Dictionary<string, object>();
             json["operation"] = "CONNECT";
             json["data"] = jsonData;
@@ -332,7 +338,7 @@ namespace BrainCloud.Internal
         private void startReceivingWebSocket()
         {
             bool sslEnabled = (bool)m_endpoint["ssl"];
-            string url = (sslEnabled ? "wss" : "ws") + "://" + m_endpoint["host"] as string + ":" + (int)m_endpoint["port"];
+            string url = (sslEnabled ? "wss://" : "ws://") + m_rttHeaders["X-APPID"] + ":" + m_rttHeaders["X-RTT-SECRET"] + "@" + m_endpoint["host"] as string + ":" + (int)m_endpoint["port"];
             setupWebSocket(url);
         }
 
@@ -393,15 +399,20 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(jsonResponse);
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
+            Dictionary<string, object> headers = (Dictionary<string, object>)jsonData["headers"];
+            foreach (KeyValuePair<string, object> item in headers)
+            {
+                m_rttHeaders[item.Key] = (string)item.Value;
+            }
 
             if (m_useWebSocket)
             {
                 //   1st choice: websocket + ssl
                 //   2nd: websocket
-                m_endpoint = getEndpointForType(endpoints, "http", true);
+                m_endpoint = getEndpointForType(endpoints, "ws", true);
                 if (m_endpoint == null)
                 {
-                    m_endpoint = getEndpointForType(endpoints, "http", false);
+                    m_endpoint = getEndpointForType(endpoints, "ws", false);
                 }
 
                 connectWebSocket();
@@ -446,8 +457,7 @@ namespace BrainCloud.Internal
                     }
                 }
             }
-
-            m_clientRef.Log("STEVE getEndpointForType " + toReturn.ToString());
+            
             return toReturn;
         }
 
@@ -457,6 +467,7 @@ namespace BrainCloud.Internal
         private void rttConnectionServerError(int status, int reasonCode, string jsonError, object cbObject)
         {
             // TODO::
+            m_bIsConnected = false;
             m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTT.Value, "error", jsonError));
         }
@@ -491,6 +502,7 @@ namespace BrainCloud.Internal
         private FailureCallback m_connectionFailureCallback = null;
         private object m_connectedObj = null;
 
+        private Dictionary<string, string> m_rttHeaders = new Dictionary<string, string>();
         private Dictionary<string, RTTCallback> m_registeredCallbacks = new Dictionary<string, RTTCallback>();
         private List<RTTCommandResponse> m_queuedRTTCommands = new List<RTTCommandResponse>();
 
