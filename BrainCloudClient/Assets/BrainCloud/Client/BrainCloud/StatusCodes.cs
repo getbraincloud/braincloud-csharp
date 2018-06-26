@@ -19,6 +19,8 @@ namespace BrainCloud
         /// </summary>
         public const int INTERNAL_SERVER_ERROR = 500;
 
+        public const int BAD_REQUEST = 400;
+        
         public const int FORBIDDEN = 403;
     }
 }
