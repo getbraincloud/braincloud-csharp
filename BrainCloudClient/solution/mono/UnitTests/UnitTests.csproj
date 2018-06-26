@@ -88,9 +88,6 @@
     <Compile Include="..\..\..\tests\TestClient.cs">
       <Link>TestClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\Chat.cs">
-      <Link>Chat.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\tests\TestEntity.cs">
       <Link>TestEntity.cs</Link>
     </Compile>

@@ -134,24 +134,13 @@ namespace BrainCloud
         /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
         /// </summary>
         /// 
-        public void PostChatMessage(string in_channelId, string in_plain, string in_jsonRich, bool in_recordInHisory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void PostChatMessage(string in_channelId, string in_message, string in_jsonSomethingCustom, bool in_recordInHisory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            // Build message content
             Dictionary<string, object> content = new Dictionary<string, object>();
-            content[OperationParam.ChatPlain.Value] = in_plain;
-            if (Util.IsOptionalParameterValid(in_jsonRich))
-            {
-                Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonRich);
-                content[OperationParam.ChatRich.Value] = jsonRich;
-            }
-            else
-            {
-                Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> ("{}");
-                content[OperationParam.ChatRich.Value] = jsonRich;
-            }
+            content[OperationParam.ChatPlain.Value] = in_message;
+            content[OperationParam.ChatRich.Value] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSomethingCustom);
 
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
             data[OperationParam.ChatContent.Value] = content;
             data[OperationParam.ChatRecordInHistory.Value] = in_recordInHisory;
@@ -164,20 +153,11 @@ namespace BrainCloud
         /// <summary>
         /// Update a chat message. <content> must contain at least a "plain" field for plain-text messaging. <version> must match the latest or pass -1 to bypass version check.
         /// </summary>
-        public void UpdateChatMessage(string in_channelId, string in_messageId, int in_version, string in_plain, string in_jsonRich, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void UpdateChatMessage(string in_channelId, string in_messageId, string in_message, string in_jsonSomethingCustom, int in_version, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> content = new Dictionary<string, object>();
-            content[OperationParam.ChatPlain.Value] = in_plain;
-            if (Util.IsOptionalParameterValid(in_jsonRich))
-            {
-                Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonRich);
-                content[OperationParam.ChatRich.Value] = jsonRich;
-            }
-            else
-            {
-                Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> ("{}");
-                content[OperationParam.ChatRich.Value] = jsonRich;
-            }
+            content[OperationParam.ChatPlain.Value] = in_message;
+            content[OperationParam.ChatRich.Value] = JsonReader.Deserialize<Dictionary<string, object>>(in_jsonSomethingCustom);
 
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
