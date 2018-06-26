@@ -154,8 +154,10 @@ namespace BrainCloud.Internal
             }
         }
 
-			_isAuthenticated = true;
-		}
+        internal void setAuthenticated()
+        {
+            _isAuthenticated = true;
+        }
 
         private string _appId = null;
 
@@ -184,9 +186,10 @@ namespace BrainCloud.Internal
                 return _sessionID;
             }
         }
-		internal void setSessionId(String sessionId) {
-			_sessionID = sessionId;
-		}
+        internal void setSessionId(String sessionId)
+        {
+            _sessionID = sessionId;
+        }
 
         private string _serverURL = "";
         public string ServerURL
@@ -287,13 +290,13 @@ namespace BrainCloud.Internal
         /// to either RetryCachedMessages or FlushCachedMessages
         /// </summary>
         private bool _blockingQueue = false;
-        
+
         public BrainCloudComms(BrainCloudClient client)
         {
-            #if DISABLE_SSL_CHECK
+#if DISABLE_SSL_CHECK
             ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
-            #endif        
-    
+#endif
+
             _clientRef = client;
             ResetErrorCache();
         }
@@ -411,7 +414,7 @@ namespace BrainCloud.Internal
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
-                     ResetIdleTimer();
+                    ResetIdleTimer();
 
                     // note that active request is set to null if exception is to be thrown
                     HandleResponseBundle(GetWebRequestResponse(_activeRequest));
@@ -461,10 +464,10 @@ namespace BrainCloud.Internal
                                 _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
                                 _serviceCallsInProgress.Clear();
                             }
-                            
-                            #if UNITY_EDITOR
+
+#if UNITY_EDITOR
                             BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnNetworkError("NetworkError");
-                            #endif
+#endif
 
                             _networkErrorCallback();
                         }
@@ -507,13 +510,13 @@ namespace BrainCloud.Internal
                 {
                     if (_fileUploadSuccessCallback != null)
                     {
-                        #if UNITY_EDITOR
+#if UNITY_EDITOR
                         BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
-                        #endif
-                        
+#endif
+
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
                     }
-                    
+
                     _clientRef.Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
@@ -521,14 +524,14 @@ namespace BrainCloud.Internal
                 {
                     if (_fileUploadFailedCallback != null)
                     {
-                        #if UNITY_EDITOR
+#if UNITY_EDITOR
                         BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
-                        #endif
-                        
+#endif
+
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
 
                     }
-                        
+
                     _clientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
                     _fileUploads.RemoveAt(i);
                 }
@@ -740,7 +743,7 @@ namespace BrainCloud.Internal
         {
             _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
 
-            if(string.IsNullOrEmpty(jsonData))
+            if (string.IsNullOrEmpty(jsonData))
             {
                 _clientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
                 return;
@@ -820,6 +823,16 @@ namespace BrainCloud.Internal
                     if (sc != null)
                     {
                         string operation = sc.GetOperation();
+                        bool bIsPeerScriptUploadCall = false;
+                        try
+                        {
+                            bIsPeerScriptUploadCall = operation == ServiceOperation.RunPeerScript.Value &&
+                                                     response.ContainsKey(OperationParam.ServiceMessageData.Value) &&
+                                                     ((Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value]).ContainsKey("response") &&
+                                                     ((Dictionary<string, object>)((Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value])["response"]).ContainsKey(OperationParam.ServiceMessageData.Value) &&
+                                                     ((Dictionary<string, object>)((Dictionary<string, object>)((Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value])["response"])[OperationParam.ServiceMessageData.Value]).ContainsKey("fileDetails");
+                        }
+                        catch (Exception) { }
 
                         if (operation == ServiceOperation.FullReset.Value ||
                             operation == ServiceOperation.Logout.Value)
@@ -835,21 +848,26 @@ namespace BrainCloud.Internal
                         {
                             ProcessAuthenticate(data);
                         }
-                        else if (operation == ServiceOperation.PrepareUserUpload.Value)
+                        else if (operation == ServiceOperation.PrepareUserUpload.Value || bIsPeerScriptUploadCall)
                         {
                             var uploadData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
-                            var fileData = (Dictionary<string, object>)uploadData["fileDetails"];
-                            string uploadId = (string)fileData["uploadId"];
-                            string localPath = (string)fileData["localPath"];
-                            //int fileSize = (int)fileData["fileSize"];
+                            string peerCode = bIsPeerScriptUploadCall && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : "";
+                            var fileData = peerCode == "" ? (Dictionary<string, object>)uploadData["fileDetails"] :
+                                (Dictionary<string, object>)((Dictionary<string, object>)((Dictionary<string, object>)uploadData["response"])[OperationParam.ServiceMessageData.Value])["fileDetails"];
 
-                            var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
-                                _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _clientRef);
+                            if (fileData.ContainsKey("uploadId") && fileData.ContainsKey("localPath"))
+                            {
+
+                                string uploadId = (string)fileData["uploadId"];
+                                string localPath = (string)fileData["localPath"];
+                                var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
+                                    _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _clientRef, peerCode);
 #if DOT_NET
-                            uploader.HttpClient = _httpClient;
+                                uploader.HttpClient = _httpClient;
 #endif
-                            _fileUploads.Add(uploader);
-                            uploader.Start();
+                                _fileUploads.Add(uploader);
+                                uploader.Start();
+                            }
                         }
 
                         // // only process callbacks that are real
@@ -860,7 +878,7 @@ namespace BrainCloud.Internal
 #if UNITY_EDITOR
                                 BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSuccess(data);
 #endif
-                                
+
                                 sc.GetCallback().OnSuccessCallback(data);
                             }
                             catch (Exception e)
@@ -923,11 +941,11 @@ namespace BrainCloud.Internal
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
-                                    
-                                    #if UNITY_EDITOR
+
+#if UNITY_EDITOR
                                     BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnReward(rewardsAsJson);
-                                    #endif
-                                    
+#endif
+
                                     _rewardCallback(rewardsAsJson);
                                 }
                             }
@@ -1019,10 +1037,10 @@ namespace BrainCloud.Internal
                             }
                         }
 
-                        #if UNITY_EDITOR
+#if UNITY_EDITOR
                         BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(errorJson);
-                        #endif
-                        
+#endif
+
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
 
@@ -1030,7 +1048,7 @@ namespace BrainCloud.Internal
                 }
             }
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             //Send Events to the Unity Plugin
             if (bundleObj.events != null)
             {
@@ -1048,9 +1066,9 @@ namespace BrainCloud.Internal
                     //Ignored
                 }
             }
-            #endif
-                    
-            
+#endif
+
+
             if (bundleObj.events != null && _eventCallback != null)
             {
                 Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
@@ -1286,7 +1304,7 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
+            _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
 
             ResetIdleTimer();
 
@@ -1320,8 +1338,8 @@ namespace BrainCloud.Internal
 
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + _secretKey);
-            
-            
+
+
 #if UNITY_EDITOR
             //Sending Data to the Unity Debug Plugin for ease of developer debugging when in the Editor
             try
@@ -1329,7 +1347,7 @@ namespace BrainCloud.Internal
                 BrainCloudUnity.BrainCloudPlugin.ResponseEvent.ClearLastSentRequest();
                 Dictionary<string, object> requestData =
                     JsonReader.Deserialize<Dictionary<string, object>>(jsonRequestString);
-                Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[]) requestData["messages"];
+                Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[])requestData["messages"];
 
                 foreach (var messagesData in messagesDataList)
                 {
@@ -1347,8 +1365,8 @@ namespace BrainCloud.Internal
                 //Ignored
             }
 #endif
-            
-            
+
+
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
             requestState.Signature = sig;
@@ -1377,7 +1395,7 @@ namespace BrainCloud.Internal
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(_serverURL));
                 req.Content = new ByteArrayContent(byteArray);
                 req.Headers.Add("X-SIG", sig);
-                if (_appId != null && _appId.Length > 0)
+                if (_appId != null && _appId.Length > 0) 
                 {
                     req.Headers.Add("X-APPID", _appId);
                 }
@@ -1399,9 +1417,9 @@ namespace BrainCloud.Internal
 
                 ResetIdleTimer();
 
-                
-                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ?  " Retry(" + requestState.Retries + ")" : ""),  DateTime.Now, jsonRequestString));
-                
+
+                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
+
             }
         }
 
@@ -1440,7 +1458,7 @@ namespace BrainCloud.Internal
             }
 
 #if !(DOT_NET)
-			if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
@@ -1464,7 +1482,7 @@ namespace BrainCloud.Internal
         {
             string response = "";
 #if !(DOT_NET)
-			if (!string.IsNullOrEmpty( _activeRequest.WebRequest.error))
+            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
             }
@@ -1540,7 +1558,7 @@ namespace BrainCloud.Internal
             AddToQueue(sc);
         }
 
-        #if DISABLE_SSL_CHECK
+#if DISABLE_SSL_CHECK
         private bool AcceptAllCertifications(object sender,
                                             System.Security.Cryptography.X509Certificates.X509Certificate certification,
                                              System.Security.Cryptography.X509Certificates.X509Chain chain,
@@ -1550,7 +1568,7 @@ namespace BrainCloud.Internal
             // right now accepting all! - not that secure!
             return true;
         }
-        #endif
+#endif
 
         /// <summary>
         /// Adds a server call to the internal queue.
