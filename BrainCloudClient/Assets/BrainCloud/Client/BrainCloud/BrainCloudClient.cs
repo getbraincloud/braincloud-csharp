@@ -950,9 +950,9 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        public void DeregisterAllRTTCallback()
+        public void deregisterAllRTTCallbacks()
         {
-            _rttComms.DeregisterAllRTTCallback();
+            _rttComms.deregisterAllRTTCallbacks();
         }
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>

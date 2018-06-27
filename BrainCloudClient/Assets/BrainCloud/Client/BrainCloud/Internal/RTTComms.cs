@@ -77,7 +77,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        public void DeregisterAllRTTCallback()
+        public void deregisterAllRTTCallbacks()
         {
             m_registeredCallbacks.Clear();
         }
