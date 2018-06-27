@@ -77,7 +77,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        public void deregisterAllRTTCallbacks()
+        public void DeregisterAllRTTCallbacks()
         {
             m_registeredCallbacks.Clear();
         }
@@ -200,11 +200,9 @@ namespace BrainCloud.Internal
             jsonData["sessionId"] = m_clientRef.SessionID;
             jsonData["profileId"] = m_clientRef.AuthenticationService.ProfileId;
 
-            // pass on all the other headers
-            foreach (KeyValuePair<string, string> item in m_rttHeaders)
-            {
-                jsonData[item.Key] = item.Value;
-            }
+            jsonData[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_clientRef.ReleasePlatform.ToString();
+
+            jsonData["auth"] = JsonFx.Json.JsonWriter.Serialize(m_rttHeaders);
 
             Dictionary<string, object> json = new Dictionary<string, object>();
             json["service"] = ServiceName.RTT.Value;
@@ -405,7 +403,7 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(jsonResponse);
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
-            Dictionary<string, object> headers = (Dictionary<string, object>)jsonData["headers"];
+            Dictionary<string, object> headers = (Dictionary<string, object>)jsonData["auth"];
             foreach (KeyValuePair<string, object> item in headers)
             {
                 m_rttHeaders[item.Key] = (string)item.Value;
