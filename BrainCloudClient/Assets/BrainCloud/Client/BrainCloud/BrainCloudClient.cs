@@ -947,6 +947,14 @@ namespace BrainCloud
             _rttComms.DeregisterRTTCallback(ServiceName.Lobby);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterAllRTTCallback()
+        {
+            _rttComms.DeregisterAllRTTCallback();
+        }
+
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)

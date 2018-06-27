@@ -77,6 +77,14 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
+        public void DeregisterAllRTTCallback()
+        {
+            m_registeredCallbacks.Clear();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Update()
         {
             RTTCommandResponse toProcessResponse;
