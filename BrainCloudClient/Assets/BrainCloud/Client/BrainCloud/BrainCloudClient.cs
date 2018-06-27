@@ -888,7 +888,7 @@ namespace BrainCloud
         /// </summary>
         public void RegisterRTTEventCallback(RTTCallback in_callback)
         {
-            _rttComms.RegisterRTTListener(ServiceName.Event, in_callback);
+            _rttComms.RegisterRTTCallback(ServiceName.Event, in_callback);
         }
 
         /// <summary>
@@ -904,7 +904,7 @@ namespace BrainCloud
         /// </summary>
         public void RegisterRTTChatCallback(RTTCallback in_callback)
         {
-            _rttComms.RegisterRTTListener(ServiceName.Chat, in_callback);
+            _rttComms.RegisterRTTCallback(ServiceName.Chat, in_callback);
         }
 
         /// <summary>
@@ -920,7 +920,7 @@ namespace BrainCloud
         /// </summary>
         public void RegisterRTTMessagingCallback(RTTCallback in_callback)
         {
-            _rttComms.RegisterRTTListener(ServiceName.Messaging, in_callback);
+            _rttComms.RegisterRTTCallback(ServiceName.Messaging, in_callback);
         }
 
         /// <summary>
@@ -936,7 +936,7 @@ namespace BrainCloud
         /// </summary>
         public void RegisterRTTLobbyCallback(RTTCallback in_callback)
         {
-            _rttComms.RegisterRTTListener(ServiceName.Lobby, in_callback);
+            _rttComms.RegisterRTTCallback(ServiceName.Lobby, in_callback);
         }
 
         /// <summary>

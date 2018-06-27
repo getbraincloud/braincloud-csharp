@@ -58,7 +58,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        public void RegisterRTTListener(ServiceName in_serviceName, RTTCallback in_callback)
+        public void RegisterRTTCallback(ServiceName in_serviceName, RTTCallback in_callback)
         {
             m_registeredCallbacks[in_serviceName.Value] = in_callback;
         }
