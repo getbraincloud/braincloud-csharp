@@ -342,8 +342,22 @@ namespace BrainCloud.Internal
         private void startReceivingWebSocket()
         {
             bool sslEnabled = (bool)m_endpoint["ssl"];
-            string url = (sslEnabled ? "wss://" : "ws://") + m_rttHeaders["X-APPID"] + ":" + m_rttHeaders["X-RTT-SECRET"] + "@" + m_endpoint["host"] as string + ":" + (int)m_endpoint["port"];
+            string url = (sslEnabled ? "wss://" : "ws://") + m_endpoint["host"] as string + ":" + (int)m_endpoint["port"] + getUrlQueryParameters();
             setupWebSocket(url);
+        }
+
+        private string getUrlQueryParameters()
+        {
+            string sToReturn = "?";
+            int count = 0;
+            foreach (KeyValuePair<string, object> item in m_rttHeaders)
+            {
+                if (count > 0) sToReturn += "&";
+                sToReturn += item.Key + "=" + item.Value;
+                ++count;
+            }
+
+            return sToReturn;
         }
 
         private void setupWebSocket(string in_url)

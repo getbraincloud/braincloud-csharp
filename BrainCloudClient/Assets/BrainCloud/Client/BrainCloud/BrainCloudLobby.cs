@@ -22,11 +22,22 @@ namespace BrainCloud
         /// <summary>
         /// Finds a lobby matching the specified parameters
         /// </summary>
-        public void FindLobby(string in_roomType, string in_filterJson, int in_timeoutSecs, bool in_isReady, string in_extraJson, string in_teamCode,
+        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+                                string in_strategy, string in_alignment, int[] in_ranges,
+                                 Dictionary<string, object> in_filterJson, int in_timeoutSecs, bool in_isReady,
+                                 Dictionary<string, object> in_extraJson, string in_teamCode,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Dictionary<string, object> algo = new Dictionary<string, object>();
+            algo[OperationParam.LobbyStrategy.Value] = in_strategy;
+            algo[OperationParam.LobbyAlignment.Value] = in_alignment;
+            algo[OperationParam.LobbyRanges.Value] = in_ranges;
+
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = algo;
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
@@ -41,13 +52,17 @@ namespace BrainCloud
         /// <summary>
         /// Like findLobby, but explicitely geared toward creating new lobbies
         /// </summary>
-        public void CreateLobby(string in_roomType, string in_filterJson, string in_configJson, bool in_isReady, string in_extraJson, string in_teamCode,
+        public void CreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_filterJson, string in_configJson, bool in_isReady,
+            Dictionary<string, object> in_extraJson, string in_teamCode,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
-            data[OperationParam.LobbyConfigData.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_configJson;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
@@ -60,14 +75,25 @@ namespace BrainCloud
         /// <summary>
         /// Finds a lobby matching the specified parameters, or creates one
         /// </summary>
-        public void FindOrCreateLobby(string in_roomType, string in_filterJson, int in_timeoutSecs, string in_configJson, bool in_isReady, string in_extraJson, string in_teamCode,
+        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+                                     string in_strategy, string in_alignment, int[] in_ranges,
+                                      Dictionary<string, object> in_filterJson, int in_timeoutSecs, Dictionary<string, object> in_configJson,
+                                      bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
                                     SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Dictionary<string, object> algo = new Dictionary<string, object>();
+            algo[OperationParam.LobbyStrategy.Value] = in_strategy;
+            algo[OperationParam.LobbyAlignment.Value] = in_alignment;
+            algo[OperationParam.LobbyRanges.Value] = in_ranges;
+
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = algo;
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbyConfigData.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_configJson;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
@@ -101,7 +127,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
-            data[OperationParam.LobbyConfigData.Value] = in_configData;
+            data[OperationParam.LobbySettings.Value] = in_configData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.UpdateLobbyConfig, data, callback);
@@ -166,7 +192,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.RemoveMember, data, callback);
             m_clientRef.SendRequest(sc);
         }
-        
+
         #region private
         /// <summary>
         /// Reference to the brainCloud client object

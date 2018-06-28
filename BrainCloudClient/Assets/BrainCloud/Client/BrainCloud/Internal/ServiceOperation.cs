@@ -51,7 +51,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ScheduleNormalizedNotification = new ServiceOperation("SCHEDULE_NORMALIZED_NOTIFICATION");
 
         public static readonly ServiceOperation ScheduleRawNotification = new ServiceOperation("SCHEDULE_RAW_NOTIFICATION");
-        
+
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
 
@@ -208,7 +208,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetStreamSummariesForTargetPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_TARGET_PLAYER");
         public static readonly ServiceOperation GetRecentStreamsForInitiatingPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_INITIATING_PLAYER");
         public static readonly ServiceOperation GetRecentStreamsForTargetPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_TARGET_PLAYER");
-        
+
         public static readonly ServiceOperation GetUserInfo = new ServiceOperation("GET_USER_INFO");
         public static readonly ServiceOperation InitializeTransaction = new ServiceOperation("INITIALIZE_TRANSACTION");
         public static readonly ServiceOperation FinalizeTransaction = new ServiceOperation("FINALIZE_TRANSACTION");
@@ -240,7 +240,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetExpiredIdentities = new ServiceOperation("GET_EXPIRED_IDENTITIES");
         public static readonly ServiceOperation RefreshIdentity = new ServiceOperation("REFRESH_IDENTITY");
         public static readonly ServiceOperation ChangeEmailIdentity = new ServiceOperation("CHANGE_EMAIL_IDENTITY");
-        
+
         public static readonly ServiceOperation FbConfirmPurchase = new ServiceOperation("FB_CONFIRM_PURCHASE");
         public static readonly ServiceOperation GooglePlayConfirmPurchase = new ServiceOperation("CONFIRM_GOOGLEPLAY_PURCHASE");
 
@@ -359,7 +359,7 @@ namespace BrainCloud.Internal
         // lobby
         public static readonly ServiceOperation FindLobby = new ServiceOperation("FIND_LOBBY");
         public static readonly ServiceOperation CreateLobby = new ServiceOperation("CREATE_LOBBY");
-        public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_CREATE_LOBBY");
+        public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_OR_CREATE_LOBBY");
         public static readonly ServiceOperation UpdateReady = new ServiceOperation("UPDATE_READY");
         public static readonly ServiceOperation UpdateLobbyConfig = new ServiceOperation("UPDATE_LOBBY_CONFIG");
         public static readonly ServiceOperation SwitchTeam = new ServiceOperation("SWITCH_TEAM");

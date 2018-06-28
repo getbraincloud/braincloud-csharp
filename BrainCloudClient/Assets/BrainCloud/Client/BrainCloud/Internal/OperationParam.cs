@@ -69,7 +69,7 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceExternalId = new OperationParam("externalId");
         public static readonly OperationParam IdentityServiceAuthenticationType = new OperationParam("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous = new OperationParam("confirmAnonymous");
-        
+
         public static readonly OperationParam IdentityServiceOldEmailAddress = new OperationParam("oldEmailAddress");
         public static readonly OperationParam IdentityServiceNewEmailAddress = new OperationParam("newEmailAddress");
         public static readonly OperationParam IdentityServiceUpdateContactEmail = new OperationParam("updateContactEmail");
@@ -388,11 +388,11 @@ namespace BrainCloud
         public static readonly OperationParam ChatMaxReturn = new OperationParam("maxReturn");
         public static readonly OperationParam ChatMessageId = new OperationParam("msgId");
         public static readonly OperationParam ChatVersion = new OperationParam("version");
-        
+
         public static readonly OperationParam ChatChannelType = new OperationParam("channelType");
         public static readonly OperationParam ChatChannelSubId = new OperationParam("channelSubId");
         public static readonly OperationParam ChatContent = new OperationParam("content");
-        public static readonly OperationParam ChatPlain = new OperationParam("plain");
+        public static readonly OperationParam ChatText = new OperationParam("text");
 
         public static readonly OperationParam ChatRich = new OperationParam("rich");
         public static readonly OperationParam ChatRecordInHistory = new OperationParam("recordInHisory");
@@ -418,9 +418,15 @@ namespace BrainCloud
         public static readonly OperationParam SentMessageType = new OperationParam("sent");
 
         // lobby
-        public static readonly OperationParam LobbyRoomType = new OperationParam("roomType");
+        public static readonly OperationParam LobbyRoomType = new OperationParam("lobbyType");
+        public static readonly OperationParam LobbyRating = new OperationParam("rating");
+        public static readonly OperationParam LobbyAlgorithm = new OperationParam("algo");
+        public static readonly OperationParam LobbyMaxSteps = new OperationParam("maxSteps");
+        public static readonly OperationParam LobbyStrategy = new OperationParam("strategy");
+        public static readonly OperationParam LobbyAlignment = new OperationParam("alignment");
+        public static readonly OperationParam LobbyRanges = new OperationParam("ranges");
         public static readonly OperationParam LobbyFilterJson = new OperationParam("filterJson");
-        public static readonly OperationParam LobbyConfigData = new OperationParam("configData");
+        public static readonly OperationParam LobbySettings = new OperationParam("settings");
         public static readonly OperationParam LobbyTimeoutSeconds = new OperationParam("timeoutSecs");
         public static readonly OperationParam LobbyIsReady = new OperationParam("isReady");
         public static readonly OperationParam LobbyExtraJson = new OperationParam("extraJson");
