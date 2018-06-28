@@ -465,7 +465,7 @@ namespace BrainCloud
         {
             get { return _messagingService; }
         }
-        
+
         #endregion
 
         #region Service Getters
@@ -775,7 +775,7 @@ namespace BrainCloud
         {
             _rttComms.EnableRTT(in_connectionType, in_success, in_failure, cb_object);
         }
-        
+
         /// <summary>
         /// Disables Real Time event for this session.
         /// </summary>
@@ -953,6 +953,14 @@ namespace BrainCloud
         public void DeregisterAllRTTCallbacks()
         {
             _rttComms.DeregisterAllRTTCallbacks();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetRTTHeartBeatSeconds(int in_value)
+        {
+            _rttComms.SetRTTHeartBeatSeconds(in_value);
         }
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>

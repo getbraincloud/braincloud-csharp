@@ -85,6 +85,14 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
+        public void SetRTTHeartBeatSeconds(int in_value)
+        {
+            m_heartBeatTime = in_value * 1000;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Update()
         {
             RTTCommandResponse toProcessResponse;
@@ -134,7 +142,7 @@ namespace BrainCloud.Internal
                 m_timeSinceLastRequest += (nowMS - m_lastNowMS).Milliseconds;
                 m_lastNowMS = nowMS;
 
-                if (m_timeSinceLastRequest >= HEART_BEAT_TIME)
+                if (m_timeSinceLastRequest >= m_heartBeatTime)
                 {
                     m_timeSinceLastRequest = 0;
                     send(buildHeartbeatRequest());
@@ -199,6 +207,8 @@ namespace BrainCloud.Internal
             jsonData["appId"] = m_clientRef.AppId;
             jsonData["sessionId"] = m_clientRef.SessionID;
             jsonData["profileId"] = m_clientRef.AuthenticationService.ProfileId;
+            jsonData["platform"] = m_clientRef.ReleasePlatform;
+            jsonData["protocol"] = m_useWebSocket ? "ws" : "tcp";
 
             jsonData[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_clientRef.ReleasePlatform.ToString();
 
@@ -405,6 +415,22 @@ namespace BrainCloud.Internal
             string service = (string)response["service"];
             string operation = (string)response["operation"];
 
+            if (operation == "CONNECT")
+            {
+                Dictionary<string, object> data = (Dictionary<string, object>)response["data"];
+                int heartBeat = m_heartBeatTime / 1000;
+                try
+                {
+                    heartBeat = (int)data["heartbeatSecs"];
+                }
+                catch (Exception)
+                {
+                    heartBeat = (int)data["wsHeartbeatSecs"];
+                }
+
+                SetRTTHeartBeatSeconds(heartBeat);
+            }
+
             if (operation != "HEARTBEAT")
                 addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
         }
@@ -507,7 +533,7 @@ namespace BrainCloud.Internal
 
         private int m_timeSinceLastRequest = 0;
         private const int MAX_PACKETSIZE = 1024;// TODO:: based off of some config 
-        private const int HEART_BEAT_TIME = 10 * 1000;
+        private int m_heartBeatTime = 10 * 1000;
 
         private BrainCloudClient m_clientRef;
 

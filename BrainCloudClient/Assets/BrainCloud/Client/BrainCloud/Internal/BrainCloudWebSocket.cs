@@ -23,6 +23,7 @@ public class BrainCloudWebSocket
     public BrainCloudWebSocket(string url)
     {
 #if DOT_NET
+        NativeWebSocket
 #elif UNITY_WEBGL && !UNITY_EDITOR
 		NativeWebSocket = new NativeWebSocket(url);
 		NativeWebSocket.SetOnOpen(NativeSocket_OnOpen);
@@ -48,10 +49,12 @@ public class BrainCloudWebSocket
         if (NativeWebSocket == null)
 			return;
 		NativeWebSocket.CloseAsync();
+        /*
 		NativeWebSocket.SetOnOpen(null);
 		NativeWebSocket.SetOnMessage(null);
 		NativeWebSocket.SetOnError(null);
 		NativeWebSocket.SetOnClose(null);
+        */
 		NativeWebSocket = null;
 #else
         if (WebSocket == null)

@@ -26,7 +26,7 @@ namespace BrainCloud
         public void RequestClientConnection(  SuccessCallback success = null, FailureCallback failure = null,  object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.RTT, ServiceOperation.RequestClientConnection, null, callback);
+            ServerCall sc = new ServerCall(ServiceName.RTTRegistration, ServiceOperation.RequestClientConnection, null, callback);
                 m_clientRef.SendRequest(sc);
         }
 
