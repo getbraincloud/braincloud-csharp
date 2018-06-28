@@ -106,7 +106,7 @@ namespace BrainCloud
         /// <summary>
         /// Get a list of <maxReturn> messages from history of channel <channelId>
         /// </summary>
-        public void GetRecentMessages(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void GetRecentChatMessages(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
