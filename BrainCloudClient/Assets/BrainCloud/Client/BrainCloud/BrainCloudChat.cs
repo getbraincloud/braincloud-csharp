@@ -140,7 +140,7 @@ namespace BrainCloud
 
             // Build message content
             Dictionary<string, object> content = new Dictionary<string, object>();
-            content[OperationParam.ChatPlain.Value] = in_plain;
+            content[OperationParam.ChatText.Value] = in_plain;
             if (Util.IsOptionalParameterValid(in_jsonRich))
             {
                 Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonRich);
@@ -167,7 +167,7 @@ namespace BrainCloud
         public void UpdateChatMessage(string in_channelId, string in_messageId, int in_version, string in_plain, string in_jsonRich, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> content = new Dictionary<string, object>();
-            content[OperationParam.ChatPlain.Value] = in_plain;
+            content[OperationParam.ChatText.Value] = in_plain;
             if (Util.IsOptionalParameterValid(in_jsonRich))
             {
                 Dictionary<string, object> jsonRich = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonRich);
