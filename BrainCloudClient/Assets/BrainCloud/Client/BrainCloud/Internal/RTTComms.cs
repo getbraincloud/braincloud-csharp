@@ -203,14 +203,15 @@ namespace BrainCloud.Internal
 
         private string buildConnectionRequest()
         {
+            Dictionary<string, object> system = new Dictionary<string, object>();
+            system["platform"] = m_clientRef.ReleasePlatform;
+            system["protocol"] = m_useWebSocket ? "ws" : "tcp";
+
             Dictionary<string, object> jsonData = new Dictionary<string, object>();
             jsonData["appId"] = m_clientRef.AppId;
             jsonData["sessionId"] = m_clientRef.SessionID;
             jsonData["profileId"] = m_clientRef.AuthenticationService.ProfileId;
-            jsonData["platform"] = m_clientRef.ReleasePlatform;
-            jsonData["protocol"] = m_useWebSocket ? "ws" : "tcp";
-
-            jsonData[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_clientRef.ReleasePlatform.ToString();
+            jsonData["system"] = system;
 
             jsonData["auth"] = m_rttHeaders;
 
