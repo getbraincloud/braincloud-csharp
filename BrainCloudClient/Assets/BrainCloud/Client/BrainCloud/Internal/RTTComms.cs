@@ -202,7 +202,7 @@ namespace BrainCloud.Internal
 
             jsonData[OperationParam.AuthenticateServiceAuthenticateReleasePlatform.Value] = m_clientRef.ReleasePlatform.ToString();
 
-            jsonData["auth"] = JsonFx.Json.JsonWriter.Serialize(m_rttHeaders);
+            jsonData["auth"] = m_rttHeaders;
 
             Dictionary<string, object> json = new Dictionary<string, object>();
             json["service"] = ServiceName.RTT.Value;
@@ -403,11 +403,7 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(jsonResponse);
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
-            Dictionary<string, object> headers = (Dictionary<string, object>)jsonData["auth"];
-            foreach (KeyValuePair<string, object> item in headers)
-            {
-                m_rttHeaders[item.Key] = (string)item.Value;
-            }
+            m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
 
             if (m_useWebSocket)
             {
@@ -506,7 +502,7 @@ namespace BrainCloud.Internal
         private FailureCallback m_connectionFailureCallback = null;
         private object m_connectedObj = null;
 
-        private Dictionary<string, string> m_rttHeaders = new Dictionary<string, string>();
+        private Dictionary<string, object> m_rttHeaders = new Dictionary<string, object>();
         private Dictionary<string, RTTCallback> m_registeredCallbacks = new Dictionary<string, RTTCallback>();
         private List<RTTCommandResponse> m_queuedRTTCommands = new List<RTTCommandResponse>();
 
