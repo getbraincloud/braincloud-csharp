@@ -468,5 +468,11 @@ namespace BrainCloud
         public const int INVALID_TEMPLATE_GAME_TEAM = 550012;
         public const int BASIC_AUTH_FAILURE = 550013;
         public const int CONCURRENT_LOCK_ERROR = 600002;
+        public const int LOBBY_NOT_FOUND = 40613;
+        public const int MESSAGE_CONTENT_INVALID_JSON = 40614;
+        public const int RTT_FEATURE_NOT_CONFIGURED = 40615;
+        public const int CLOUD_CODE_ONLY_METHOD = 40616;
+        public const int MESSAGE_FROM_JSON_ID_MUST_BE_NULL = 40617;
+        public const int MESSAGE_FROM_JSON_NAME_MANDATORY = 40618;
     }
 }
