@@ -422,7 +422,7 @@ namespace BrainCloud.Internal
                 int heartBeat = m_heartBeatTime / 1000;
                 try
                 {
-                    heartBeat = (int)data["heartbeatSecs"];
+                    heartBeat = (int)data["heartbeatSeconds"];
                 }
                 catch (Exception)
                 {
