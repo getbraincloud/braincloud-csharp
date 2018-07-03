@@ -113,7 +113,7 @@ namespace BrainCloud
             data[OperationParam.ChatMaxReturn.Value] = in_maxToReturn;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.GetRecentChatMessages, null, callback);
+            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.GetRecentChatMessages, data, callback);
             m_clientRef.SendRequest(sc);
         }
 
