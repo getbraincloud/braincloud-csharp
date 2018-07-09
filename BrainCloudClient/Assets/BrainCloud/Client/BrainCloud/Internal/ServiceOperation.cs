@@ -343,6 +343,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetRecentChatMessages = new ServiceOperation("GET_RECENT_CHAT_MESSAGES");
         public static readonly ServiceOperation GetSubscribedChannels = new ServiceOperation("GET_SUBSCRIBED_CHANNELS");
         public static readonly ServiceOperation PostChatMessage = new ServiceOperation("POST_CHAT_MESSAGE");
+        public static readonly ServiceOperation PostChatMessageSimple = new ServiceOperation("POST_CHAT_MESSAGE_SIMPLE");
         public static readonly ServiceOperation UpdateChatMessage = new ServiceOperation("UPDATE_CHAT_MESSAGE");
 
         // messaging 
@@ -354,7 +355,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetMessagesPageOffset = new ServiceOperation("GET_MESSAGES_PAGE_OFFSET");
         public static readonly ServiceOperation MarkMessagesRead = new ServiceOperation("MARK_MESSAGES_READ");
         public static readonly ServiceOperation SendMessage = new ServiceOperation("SEND_MESSAGE");
-        public static readonly ServiceOperation SendSimpleMessage = new ServiceOperation("SEND_SIMPLE_MESSAGE");
+        public static readonly ServiceOperation SendMessageSimple = new ServiceOperation("SEND_MESSAGE_SIMPLE");
 
         // lobby
         public static readonly ServiceOperation FindLobby = new ServiceOperation("FIND_LOBBY");

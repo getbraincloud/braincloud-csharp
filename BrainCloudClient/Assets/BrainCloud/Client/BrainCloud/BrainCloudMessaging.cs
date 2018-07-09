@@ -138,7 +138,7 @@ namespace BrainCloud
             data[OperationParam.MessagingText.Value] = in_messageText;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.SendSimpleMessage, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.SendMessageSimple, data, callback);
             m_clientRef.SendRequest(sc);
         }
 

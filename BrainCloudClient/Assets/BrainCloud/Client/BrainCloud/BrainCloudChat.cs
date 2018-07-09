@@ -160,6 +160,27 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.PostChatMessage, data, callback);
             m_clientRef.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Sends a plain-text chat message.
+        /// </summary>
+        /// 
+        public void PostChatMessageSimple(string in_channelId, string in_plain, bool in_recordInHisory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            // Build message content
+            Dictionary<string, object> content = new Dictionary<string, object>();
+            content[OperationParam.ChatText.Value] = in_plain;
+            
+            data[OperationParam.ChatChannelId.Value] = in_channelId;
+            data[OperationParam.ChatContent.Value] = content;
+            data[OperationParam.ChatRecordInHistory.Value] = in_recordInHisory;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.PostChatMessageSimple, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
 
         /// <summary>
         /// Update a chat message. <content> must contain at least a "plain" field for plain-text messaging. <version> must match the latest or pass -1 to bypass version check.

@@ -104,7 +104,7 @@ namespace BrainCloud
         /// <summary>
         /// updates the ready state of the player
         /// </summary>
-        public void UpdateReady(string in_lobbyID, bool in_isReady, string in_extraJson,
+        public void UpdateReady(string in_lobbyID, bool in_isReady, Dictionary<string, object> in_extraJson,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
