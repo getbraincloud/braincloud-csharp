@@ -131,7 +131,7 @@ namespace BrainCloud
         /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
         /// </summary>
         /// 
-        public void SendSimpleMessage(string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void SendMessageSimple(string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MessagingToProfileIds.Value] = in_toProfileIds;
