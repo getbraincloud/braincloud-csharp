@@ -53,7 +53,7 @@ namespace BrainCloud
         /// Like findLobby, but explicitely geared toward creating new lobbies
         /// </summary>
         public void CreateLobby(string in_roomType, int in_rating, int in_maxSteps,
-            Dictionary<string, object> in_filterJson, string in_configJson, bool in_isReady,
+            Dictionary<string, string in_configJson, bool in_isReady,
             Dictionary<string, object> in_extraJson, string in_teamCode,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -61,7 +61,6 @@ namespace BrainCloud
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
             data[OperationParam.LobbyRating.Value] = in_rating;
             data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
-            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbySettings.Value] = in_configJson;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
