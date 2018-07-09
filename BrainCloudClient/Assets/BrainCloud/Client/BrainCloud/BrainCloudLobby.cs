@@ -23,10 +23,10 @@ namespace BrainCloud
         /// Finds a lobby matching the specified parameters
         /// </summary>
         public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
-                                string in_strategy, string in_alignment, int[] in_ranges,
-                                 Dictionary<string, object> in_filterJson, int in_timeoutSecs, bool in_isReady,
-                                 Dictionary<string, object> in_extraJson, string in_teamCode,
-                            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+            string in_strategy, string in_alignment, int[] in_ranges,
+            Dictionary<string, object> in_filterJson, int in_timeoutSecs, bool in_isReady,
+            Dictionary<string, object> in_extraJson, string in_teamCode,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> algo = new Dictionary<string, object>();
             algo[OperationParam.LobbyStrategy.Value] = in_strategy;
@@ -74,10 +74,10 @@ namespace BrainCloud
         /// Finds a lobby matching the specified parameters, or creates one
         /// </summary>
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
-                                     string in_strategy, string in_alignment, int[] in_ranges,
-                                      Dictionary<string, object> in_filterJson, int in_timeoutSecs, Dictionary<string, object> in_configJson,
-                                      bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
-                                    SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+            string in_strategy, string in_alignment, int[] in_ranges,
+            Dictionary<string, object> in_filterJson, int in_timeoutSecs, Dictionary<string, object> in_configJson,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> algo = new Dictionary<string, object>();
             algo[OperationParam.LobbyStrategy.Value] = in_strategy;
@@ -105,7 +105,7 @@ namespace BrainCloud
         /// updates the ready state of the player
         /// </summary>
         public void UpdateReady(string in_lobbyID, bool in_isReady, string in_extraJson,
-                                SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
@@ -121,7 +121,7 @@ namespace BrainCloud
         /// valid only for the owner of the group -- edits the overally lobby config data
         /// </summary>
         public void UpdateLobbyConfig(string in_lobbyID, string in_configData,
-                                SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;

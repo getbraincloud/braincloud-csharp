@@ -767,7 +767,7 @@ namespace BrainCloud
         ///
         ///This function will first call requestClientConnection, then connect to the address
         /// </summary>
-        /// <param name="in_useWebSockets"></param>
+        /// <param name="in_connectionType"></param>
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
