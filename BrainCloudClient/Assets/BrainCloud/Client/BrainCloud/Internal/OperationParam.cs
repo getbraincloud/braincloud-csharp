@@ -432,7 +432,7 @@ namespace BrainCloud
         public static readonly OperationParam LobbyExtraJson = new OperationParam("extraJson");
         public static readonly OperationParam LobbyTeamCode = new OperationParam("teamCode");
         public static readonly OperationParam LobbyIdentifier = new OperationParam("lobbyId");
-        public static readonly OperationParam LobbyToTeamName = new OperationParam("toTeamName");
+        public static readonly OperationParam LobbyToTeamName = new OperationParam("toTeamCode");
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
 
