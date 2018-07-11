@@ -93,6 +93,20 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Gets data for the given lobby instance <lobbyId>.
+        /// </summary>
+        public void GetLobbyData(string in_lobbyID,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetLobbyData, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+        
+        /// <summary>
         /// updates the ready state of the player
         /// </summary>
         public void UpdateReady(string in_lobbyID, bool in_isReady, string in_extraJson,
