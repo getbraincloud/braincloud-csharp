@@ -13,12 +13,12 @@ https://portal.braincloudservers.com/
 
 Package | Description
  ---- | ----
-[**brainCloudClient_csharp_X.X.X.zip**](https://github.com/getbraincloud/Unity-Csharp/releases) | Unity projects
-[**brainCloudClient_unity_X.X.X.unitypackage**](https://github.com/getbraincloud/Unity-Csharp/releases) | C# projects
+[**brainCloudClient_csharp_X.X.X.zip**](https://github.com/getbraincloud/Unity-Csharp/releases) | C# projects
+[**brainCloudClient_unity_X.X.X.unitypackage**](https://github.com/getbraincloud/Unity-Csharp/releases) | Unity projects
 
 ## Installation Guide
 
-To install the brainCloud library, open the brainCloudClient_unity_X.X.X.unitypackage file with your Unity Project open:
+To install the brainCloud library, open the brainCloudClient_unity_X.X.X.unitypackage file with your Unity Project open, and click the import prompt:
 
 
 
