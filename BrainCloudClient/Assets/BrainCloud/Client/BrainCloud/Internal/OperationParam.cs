@@ -429,6 +429,7 @@ namespace BrainCloud
         public static readonly OperationParam LobbySettings = new OperationParam("settings");
         public static readonly OperationParam LobbyTimeoutSeconds = new OperationParam("timeoutSecs");
         public static readonly OperationParam LobbyIsReady = new OperationParam("isReady");
+        public static readonly OperationParam LobbyOtherUserCxIds = new OperationParam("otherUserCxIds");
         public static readonly OperationParam LobbyExtraJson = new OperationParam("extraJson");
         public static readonly OperationParam LobbyTeamCode = new OperationParam("teamCode");
         public static readonly OperationParam LobbyIdentifier = new OperationParam("lobbyId");

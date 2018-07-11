@@ -22,10 +22,10 @@ namespace BrainCloud
         /// <summary>
         /// Finds a lobby matching the specified parameters
         /// </summary>
-        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps, 
                                  Dictionary<string, object> in_algo,
                                  Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-                                 bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+                                 bool in_isReady, string [] in_otherUserCxIds, Dictionary<string, object> in_extraJson, string in_teamCode,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -36,6 +36,7 @@ namespace BrainCloud
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
 
@@ -48,7 +49,7 @@ namespace BrainCloud
         /// Like findLobby, but explicitely geared toward creating new lobbies
         /// </summary>
         public void CreateLobby(string in_roomType, int in_rating,
-            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            bool in_isReady, string [] in_otherUserCxIds, Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_configJson,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -57,6 +58,7 @@ namespace BrainCloud
             data[OperationParam.LobbyRating.Value] = in_rating;
             data[OperationParam.LobbySettings.Value] = in_configJson;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
 
@@ -69,11 +71,12 @@ namespace BrainCloud
         /// Finds a lobby matching the specified parameters, or creates one
         /// </summary>
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
-                                    Dictionary<string, object> in_algo,
-                                      Dictionary<string, object> in_filterJson, int in_timeoutSecs, 
-                                      bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
-                                      Dictionary<string, object> in_configJson,
-                                    SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+            Dictionary<string, object> in_algo,
+            Dictionary<string, object> in_filterJson, int in_timeoutSecs, 
+            bool in_isReady, string [] in_otherUserCxIds, 
+            Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_configJson,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
@@ -84,6 +87,7 @@ namespace BrainCloud
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
             data[OperationParam.LobbySettings.Value] = in_configJson;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
 
