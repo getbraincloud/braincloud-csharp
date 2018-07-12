@@ -219,7 +219,7 @@ namespace BrainCloud
         /// <summary>
         /// sends LOBBY_SIGNAL_DATA message to all lobby members
         /// </summary>
-        public void SendSignal(string in_lobbyID, string in_signalData, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void SendSignal(string in_lobbyID, Dictionary<string, object> in_signalData, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
