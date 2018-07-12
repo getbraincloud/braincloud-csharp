@@ -366,6 +366,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateLobbyConfig = new ServiceOperation("UPDATE_SETTINGS");
         public static readonly ServiceOperation SwitchTeam = new ServiceOperation("SWITCH_TEAM");
         public static readonly ServiceOperation SendSignal = new ServiceOperation("SEND_SIGNAL");
+        public static readonly ServiceOperation JoinLobby = new ServiceOperation("JOIN_LOBBY");
         public static readonly ServiceOperation LeaveLobby = new ServiceOperation("LEAVE_LOBBY");
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
 
