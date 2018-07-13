@@ -252,10 +252,20 @@ namespace BrainCloud
         {
             get { return _comms != null ? _comms.AppId : ""; }
         }
-        
+
         public string ProfileId
         {
             get { return AuthenticationService != null ? AuthenticationService.ProfileId : ""; }
+        }
+
+        public string RTTConnectionID
+        {
+            get { return _rttComms != null ? _rttComms.RTTConnectionID : ""; }
+        }
+
+        public string RTTEventServer
+        {
+            get { return _rttComms != null ? _rttComms.RTTEventServer : ""; }
         }
 
         public string AppVersion

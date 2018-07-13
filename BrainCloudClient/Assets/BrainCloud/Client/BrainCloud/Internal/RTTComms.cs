@@ -90,6 +90,9 @@ namespace BrainCloud.Internal
             m_heartBeatTime = in_value * 1000;
         }
 
+        public string RTTConnectionID { get; private set; }
+        public string RTTEventServer { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -120,7 +123,8 @@ namespace BrainCloud.Internal
                             disconnect();
 
                         // TODO:
-                        m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
+                        if (m_connectionFailureCallback != null)
+                            m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                     }
 
                     // first time connecting? send the server connection call
@@ -195,6 +199,9 @@ namespace BrainCloud.Internal
             if (m_tcpClient != null) m_tcpClient.Close();
             if (m_webSocket != null) m_webSocket.Close();
 
+            RTTConnectionID = "";
+            RTTEventServer = "";
+
             m_tcpClient = null;
             m_webSocket = null;
 
@@ -210,7 +217,7 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonData = new Dictionary<string, object>();
             jsonData["appId"] = m_clientRef.AppId;
             jsonData["sessionId"] = m_clientRef.SessionID;
-            jsonData["profileId"] = m_clientRef.AuthenticationService.ProfileId;
+            jsonData["profileId"] = m_clientRef.ProfileId;
             jsonData["system"] = system;
 
             jsonData["auth"] = m_rttHeaders;
@@ -416,9 +423,9 @@ namespace BrainCloud.Internal
             string service = (string)response["service"];
             string operation = (string)response["operation"];
 
+            Dictionary<string, object> data = (Dictionary<string, object>)response["data"];
             if (operation == "CONNECT")
             {
-                Dictionary<string, object> data = (Dictionary<string, object>)response["data"];
                 int heartBeat = m_heartBeatTime / 1000;
                 try
                 {
@@ -430,6 +437,12 @@ namespace BrainCloud.Internal
                 }
 
                 SetRTTHeartBeatSeconds(heartBeat);
+            }
+
+            if (data != null)
+            {
+                if (data.ContainsKey("cxId")) RTTConnectionID = (string)data["cxId"];
+                if (data.ContainsKey("evs")) RTTEventServer = (string)data["evs"];
             }
 
             if (operation != "HEARTBEAT")
