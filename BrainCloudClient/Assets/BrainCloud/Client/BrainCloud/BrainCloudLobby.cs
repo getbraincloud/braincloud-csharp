@@ -25,7 +25,7 @@ namespace BrainCloud
         ///
         /// otherUserCxIds support coming soon!
         /// 
-        private void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -56,7 +56,7 @@ namespace BrainCloud
         /// 
         /// otherUserCxIds support coming soon!
         /// 
-        private void CreateLobby(string in_roomType, int in_rating,
+        public void CreateLobby(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_configJson, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -84,7 +84,7 @@ namespace BrainCloud
         /// 
         /// otherUserCxIds support coming soon!
         /// 
-        private void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady, 
