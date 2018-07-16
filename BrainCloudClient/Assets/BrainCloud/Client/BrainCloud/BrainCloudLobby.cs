@@ -22,12 +22,26 @@ namespace BrainCloud
         /// <summary>
         /// Finds a lobby matching the specified parameters
         /// </summary>
+        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            FindLobby(in_roomType, in_rating, in_maxSteps,
+                in_algo, in_filterJson, in_timeoutSecs,
+                in_isReady, null, in_extraJson, in_teamCode,
+                success, failure , cbObject);
+        }
+        
+        /// <summary>
+        /// Finds a lobby matching the specified parameters
+        /// </summary>
         ///
         /// otherUserCxIds support coming soon!
         /// 
-        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+        private void FindLobby(string in_roomType, int in_rating, int in_maxSteps, 
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
+            bool in_isReady, string [] in_otherUserCxIds, Dictionary<string, object> in_extraJson, string in_teamCode,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -53,18 +67,31 @@ namespace BrainCloud
         /// <summary>
         /// Like findLobby, but explicitely geared toward creating new lobbies
         /// </summary>
+        public void CreateLobby(string in_roomType, int in_rating,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            CreateLobby(in_roomType, in_rating,
+                in_isReady, null, in_extraJson, in_teamCode,
+                in_settings, success , failure , cbObject);
+        }
+
+        /// <summary>
+        /// Like findLobby, but explicitely geared toward creating new lobbies
+        /// </summary>
         /// 
         /// otherUserCxIds support coming soon!
         /// 
-        public void CreateLobby(string in_roomType, int in_rating,
-            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_configJson, string[] in_otherUserCxIds = null,
+        private void CreateLobby(string in_roomType, int in_rating,
+            bool in_isReady, string [] in_otherUserCxIds, Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
             data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             if (in_otherUserCxIds != null)
             {
@@ -77,6 +104,22 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CreateLobby, data, callback);
             m_clientRef.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Finds a lobby matching the specified parameters, or creates one
+        /// </summary>
+        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, 
+            int in_timeoutSecs, bool in_isReady, 
+            Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            FindOrCreateLobby(in_roomType, in_rating, in_maxSteps,
+                in_algo, in_filterJson, in_timeoutSecs, 
+                in_isReady, null, in_extraJson, in_teamCode,
+                in_settings, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Finds a lobby matching the specified parameters, or creates one
@@ -84,12 +127,12 @@ namespace BrainCloud
         /// 
         /// otherUserCxIds support coming soon!
         /// 
-        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+        private void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
-            Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady, 
+            Dictionary<string, object> in_filterJson, int in_timeoutSecs, 
+            bool in_isReady, string [] in_otherUserCxIds, 
             Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_configJson, string[] in_otherUserCxIds = null,
+            Dictionary<string, object> in_settings,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -99,7 +142,7 @@ namespace BrainCloud
             data[OperationParam.LobbyAlgorithm.Value] = in_algo;
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             if (in_otherUserCxIds != null)
             {
@@ -126,7 +169,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetLobbyData, data, callback);
             m_clientRef.SendRequest(sc);
         }
-
+        
         /// <summary>
         /// updates the ready state of the player
         /// </summary>
@@ -146,12 +189,12 @@ namespace BrainCloud
         /// <summary>
         /// valid only for the owner of the group -- edits the overally lobby config data
         /// </summary>
-        public void UpdateLobbyConfig(string in_lobbyID, Dictionary<string, object> in_configJson,
+        public void UpdateSettings(string in_lobbyID, Dictionary<string, object> in_settings,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.UpdateLobbyConfig, data, callback);
@@ -187,7 +230,7 @@ namespace BrainCloud
             m_clientRef.SendRequest(sc);
         }
 
-
+        
         /// <summary>
         /// User joins the specified lobby. 
         /// </summary>
@@ -205,7 +248,7 @@ namespace BrainCloud
         ///     ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.JoinLobby, data, callback);
         ///     m_clientRef.SendRequest(sc);
         /// }
-
+        
         /// <summary>
         /// User leaves the specified lobby. if the user was the owner, a new owner will be chosen
         /// </summary>
@@ -219,7 +262,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.LeaveLobby, data, callback);
             m_clientRef.SendRequest(sc);
         }
-
+        
         /// <summary>
         /// Adds a list of users to the specified lobby. 
         /// </summary>
@@ -262,3 +305,4 @@ namespace BrainCloud
         #endregion
     }
 }
+
