@@ -58,13 +58,13 @@ namespace BrainCloud
         /// 
         public void CreateLobby(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_configJson, string[] in_otherUserCxIds = null,
+            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
             data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             if (in_otherUserCxIds != null)
             {
@@ -89,7 +89,7 @@ namespace BrainCloud
             Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady, 
             Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_configJson, string[] in_otherUserCxIds = null,
+            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -99,7 +99,7 @@ namespace BrainCloud
             data[OperationParam.LobbyAlgorithm.Value] = in_algo;
             data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
             data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
             if (in_otherUserCxIds != null)
             {
@@ -146,12 +146,12 @@ namespace BrainCloud
         /// <summary>
         /// valid only for the owner of the group -- edits the overally lobby config data
         /// </summary>
-        public void UpdateLobbyConfig(string in_lobbyID, Dictionary<string, object> in_configJson,
+        public void UpdateLobbyConfig(string in_lobbyID, Dictionary<string, object> in_settings,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
-            data[OperationParam.LobbySettings.Value] = in_configJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.UpdateLobbyConfig, data, callback);
