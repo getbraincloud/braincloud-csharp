@@ -474,5 +474,10 @@ namespace BrainCloud
         public const int CLOUD_CODE_ONLY_METHOD = 40616;
         public const int MESSAGE_FROM_JSON_ID_MUST_BE_NULL = 40617;
         public const int MESSAGE_FROM_JSON_NAME_MANDATORY = 40618;
+        public const int INVALID_LOBBY_STEP_ALIGNMENT = 40619;
+        public const int INVALID_LOBBY_STEP_STRATEGY = 40620;
+        public const int MESSAGING_MAX_RECIPIENTS_EXCEEDED = 40621;
+        public const int LOBBY_FEATURE_NOT_CONFIGURED = 40622;
+        public const int TOO_MANY_USERS_FOR_LOBBY_TYPE = 40623;
     }
 }
