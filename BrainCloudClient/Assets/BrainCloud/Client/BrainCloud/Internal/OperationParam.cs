@@ -410,7 +410,7 @@ namespace BrainCloud
         public static readonly OperationParam MessagingPageOffset = new OperationParam("pageOffset");
         public static readonly OperationParam MessagingFromName = new OperationParam("fromName");
         public static readonly OperationParam MessagingToProfileIds = new OperationParam("toProfileIds");
-        public static readonly OperationParam MessagingContent = new OperationParam("content");
+        public static readonly OperationParam MessagingContent = new OperationParam("contentJson");
         public static readonly OperationParam MessagingSubject = new OperationParam("subject");
         public static readonly OperationParam MessagingText = new OperationParam("text");
 

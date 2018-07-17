@@ -478,6 +478,7 @@ namespace BrainCloud
         public const int INVALID_LOBBY_STEP_STRATEGY = 40620;
         public const int MESSAGING_MAX_RECIPIENTS_EXCEEDED = 40621;
         public const int LOBBY_FEATURE_NOT_CONFIGURED = 40622;
-        public const int TOO_MANY_USERS_FOR_LOBBY_TYPE = 40623;
+        public const int TOO_MANY_USERS_FOR_LOBBY_TYPE = 40624;
+        public const int TOO_MANY_USERS_FOR_TEAM = 40623;
     }
 }
