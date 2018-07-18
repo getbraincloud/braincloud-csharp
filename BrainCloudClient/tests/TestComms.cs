@@ -334,7 +334,6 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-
         private void GlobalErrorHandler(int status, int reasonCode, string jsonError, object cbObject)
         {
             if (cbObject != null)
@@ -352,4 +351,23 @@ namespace BrainCloudTests
         }
     }
 
+    [TestFixture]
+    public class TestCommsNoAuth : TestFixtureBase
+    {
+        [Test]
+        public void TestRetry30Sec()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunScript("TestTimeoutRetry", Helpers.CreateJsonPair("testParm1", 1), tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestRetry45Sec()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunScript("TestTimeoutRetry45", Helpers.CreateJsonPair("testParm1", 1), tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
+        }
+    }
 }

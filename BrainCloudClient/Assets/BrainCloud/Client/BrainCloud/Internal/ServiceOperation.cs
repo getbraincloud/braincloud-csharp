@@ -51,7 +51,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ScheduleNormalizedNotification = new ServiceOperation("SCHEDULE_NORMALIZED_NOTIFICATION");
 
         public static readonly ServiceOperation ScheduleRawNotification = new ServiceOperation("SCHEDULE_RAW_NOTIFICATION");
-        
+
         public static readonly ServiceOperation FullReset = new ServiceOperation("FULL_PLAYER_RESET");
         public static readonly ServiceOperation DataReset = new ServiceOperation("GAME_DATA_RESET");
 
@@ -208,7 +208,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetStreamSummariesForTargetPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_TARGET_PLAYER");
         public static readonly ServiceOperation GetRecentStreamsForInitiatingPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_INITIATING_PLAYER");
         public static readonly ServiceOperation GetRecentStreamsForTargetPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_TARGET_PLAYER");
-        
+
         public static readonly ServiceOperation GetUserInfo = new ServiceOperation("GET_USER_INFO");
         public static readonly ServiceOperation InitializeTransaction = new ServiceOperation("INITIALIZE_TRANSACTION");
         public static readonly ServiceOperation FinalizeTransaction = new ServiceOperation("FINALIZE_TRANSACTION");
@@ -240,7 +240,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetExpiredIdentities = new ServiceOperation("GET_EXPIRED_IDENTITIES");
         public static readonly ServiceOperation RefreshIdentity = new ServiceOperation("REFRESH_IDENTITY");
         public static readonly ServiceOperation ChangeEmailIdentity = new ServiceOperation("CHANGE_EMAIL_IDENTITY");
-        
+
         public static readonly ServiceOperation FbConfirmPurchase = new ServiceOperation("FB_CONFIRM_PURCHASE");
         public static readonly ServiceOperation GooglePlayConfirmPurchase = new ServiceOperation("CONFIRM_GOOGLEPLAY_PURCHASE");
 
@@ -329,6 +329,46 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation ViewCurrentReward = new ServiceOperation("VIEW_CURRENT_REWARD");
         public static readonly ServiceOperation ViewReward = new ServiceOperation("VIEW_REWARD");
         public static readonly ServiceOperation ClaimTournamentReward = new ServiceOperation("CLAIM_TOURNAMENT_REWARD");
+
+        // rtt
+        public static readonly ServiceOperation RequestClientConnection = new ServiceOperation("REQUEST_CLIENT_CONNECTION");
+
+        // chat
+        public static readonly ServiceOperation ChannelConnect = new ServiceOperation("CHANNEL_CONNECT");
+        public static readonly ServiceOperation ChannelDisconnect = new ServiceOperation("CHANNEL_DISCONNECT");
+        public static readonly ServiceOperation DeleteChatMessage = new ServiceOperation("DELETE_CHAT_MESSAGE");
+        public static readonly ServiceOperation GetChannelId = new ServiceOperation("GET_CHANNEL_ID");
+        public static readonly ServiceOperation GetChannelInfo = new ServiceOperation("GET_CHANNEL_INFO");
+        public static readonly ServiceOperation GetChatMessage = new ServiceOperation("GET_CHAT_MESSAGE");
+        public static readonly ServiceOperation GetRecentChatMessages = new ServiceOperation("GET_RECENT_CHAT_MESSAGES");
+        public static readonly ServiceOperation GetSubscribedChannels = new ServiceOperation("GET_SUBSCRIBED_CHANNELS");
+        public static readonly ServiceOperation PostChatMessage = new ServiceOperation("POST_CHAT_MESSAGE");
+        public static readonly ServiceOperation PostChatMessageSimple = new ServiceOperation("POST_CHAT_MESSAGE_SIMPLE");
+        public static readonly ServiceOperation UpdateChatMessage = new ServiceOperation("UPDATE_CHAT_MESSAGE");
+
+        // messaging 
+        public static readonly ServiceOperation DeleteMessages = new ServiceOperation("DELETE_MESSAGES");
+        public static readonly ServiceOperation GetMessageBoxes = new ServiceOperation("GET_MESSAGE_BOXES");
+        public static readonly ServiceOperation GetMessageCounts = new ServiceOperation("GET_MESSAGE_COUNTS");
+        public static readonly ServiceOperation GetMessages = new ServiceOperation("GET_MESSAGES");
+        public static readonly ServiceOperation GetMessagesPage = new ServiceOperation("GET_MESSAGES_PAGE");
+        public static readonly ServiceOperation GetMessagesPageOffset = new ServiceOperation("GET_MESSAGES_PAGE_OFFSET");
+        public static readonly ServiceOperation MarkMessagesRead = new ServiceOperation("MARK_MESSAGES_READ");
+        public static readonly ServiceOperation SendMessage = new ServiceOperation("SEND_MESSAGE");
+        public static readonly ServiceOperation SendMessageSimple = new ServiceOperation("SEND_MESSAGE_SIMPLE");
+
+        // lobby
+        public static readonly ServiceOperation FindLobby = new ServiceOperation("FIND_LOBBY");
+        public static readonly ServiceOperation CreateLobby = new ServiceOperation("CREATE_LOBBY");
+        public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_OR_CREATE_LOBBY");
+        public static readonly ServiceOperation GetLobbyData = new ServiceOperation("GET_LOBBY_DATA");
+        public static readonly ServiceOperation UpdateReady = new ServiceOperation("UPDATE_READY");
+        public static readonly ServiceOperation UpdateLobbyConfig = new ServiceOperation("UPDATE_SETTINGS");
+        public static readonly ServiceOperation SwitchTeam = new ServiceOperation("SWITCH_TEAM");
+        public static readonly ServiceOperation SendSignal = new ServiceOperation("SEND_SIGNAL");
+        public static readonly ServiceOperation JoinLobby = new ServiceOperation("JOIN_LOBBY");
+        public static readonly ServiceOperation LeaveLobby = new ServiceOperation("LEAVE_LOBBY");
+        public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
 
         private ServiceOperation(string value)
         {

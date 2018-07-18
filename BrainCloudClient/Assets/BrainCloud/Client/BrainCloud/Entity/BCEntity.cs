@@ -384,6 +384,7 @@ namespace BrainCloud.Entity
                     || obj is float
                     || obj is double
                     || obj is string
+                    || obj is ulong
                     || obj is DateTime);
         }
 

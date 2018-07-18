@@ -32,6 +32,7 @@ namespace LitJson
         public int      GetInt ()      { return 0; }
         public JsonType GetJsonType () { return JsonType.None; }
         public long     GetLong ()     { return 0L; }
+        public ulong    GetULong ()    { return 0L; }
         public string   GetString ()   { return ""; }
 
         public void SetBoolean  (bool val)      {}
@@ -39,6 +40,7 @@ namespace LitJson
         public void SetInt      (int val)       {}
         public void SetJsonType (JsonType type) {}
         public void SetLong     (long val)      {}
+        public void SetULong    (ulong val)     {}
         public void SetString   (string val)    {}
 
         public string ToJson ()                  { return ""; }

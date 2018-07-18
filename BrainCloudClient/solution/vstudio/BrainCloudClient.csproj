@@ -73,6 +73,18 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAsyncMatch.cs">
       <Link>BrainCloud\BrainCloudAsyncMatch.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudChat.cs">
+      <Link>BrainCloud\BrainCloudChat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMessaging.cs">
+      <Link>BrainCloud\BrainCloudMessaging.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudRTT.cs">
+      <Link>BrainCloud\BrainCloudRTT.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudLobby.cs">
+      <Link>BrainCloud\BrainCloudLobby.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAuthentication.cs">
       <Link>BrainCloud\BrainCloudAuthentication.cs</Link>
     </Compile>
@@ -232,6 +244,12 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceName.cs">
       <Link>BrainCloud\Internal\ServiceName.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\BrainCloudWebSocket.cs">
+      <Link>BrainCloud\Internal\BrainCloudWebSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RTTComms.cs">
+      <Link>BrainCloud\Internal\RTTComms.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
       <Link>BrainCloud\Internal\ServiceOperation.cs</Link>

@@ -30,6 +30,10 @@ Once installed, you will need to configure a few settings from the brainCloud me
 - Select your team and your app. [screenshot](/screenshots/3_SelectTeamAndApp.png)
 - With your app selected, debug information will now appear in the debug tab when the game is running. [screenshot](/screenshots/4_ViewDebugContent.png)
 
+## Example Projects
+
+Examples of using brainCloud in your Unity Projects can be found [here](https://github.com/getbraincloud/UnityExamples).
+
 
 ## First run
 To check that everything is working, try running the default scene which is located here:
