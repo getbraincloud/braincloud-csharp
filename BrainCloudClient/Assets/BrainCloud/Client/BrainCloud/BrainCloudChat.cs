@@ -203,7 +203,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ChatChannelId.Value] = in_channelId;
             data[OperationParam.ChatMessageId.Value] = in_messageId;
-            data[OperationParam.ChatChannelId.Value] = in_channelId;
+            data[OperationParam.ChatVersion.Value] = in_version;
             data[OperationParam.ChatContent.Value] = content;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);

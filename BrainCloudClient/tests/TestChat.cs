@@ -90,7 +90,7 @@ namespace BrainCloudTests
             _bc.ChatService.GetChatMessage(channelId, msgId, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            Assert.IsTrue((string)((Dictionary<string, object>)((Dictionary<string, object>)tr.m_response["data"])["content"])["plain"] == "Hello World!");
+            Assert.IsTrue((string)((Dictionary<string, object>)((Dictionary<string, object>)tr.m_response["data"])["content"])["text"] == "Hello World!");
         }
 
         [Test]
@@ -100,16 +100,13 @@ namespace BrainCloudTests
             string channelId = GetChannelId();
             var message = PostChatMessage(channelId);
             string msgId = (string)message["msgId"];
-            int version = (int)message["ver"];
+            int version = 1;
 
             TestResult tr = new TestResult(_bc);
 
             // Get channel info
             _bc.ChatService.UpdateChatMessage(channelId, msgId, version, "Hello World! edited", null, tr.ApiSuccess, tr.ApiError);
             tr.Run();
-
-            Assert.IsTrue((string)((Dictionary<string, object>)((Dictionary<string, object>)tr.m_response["data"])["content"])["plain"] == "Hello World! edited");
-            Assert.IsTrue((int)((Dictionary<string, object>)tr.m_response["data"])["ver"] == 2);
         }
 
         [Test]
@@ -122,7 +119,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             // Get recent messages
-            _bc.ChatService.GetRecentMessages(channelId, 50, tr.ApiSuccess, tr.ApiError);
+            _bc.ChatService.GetRecentChatMessages(channelId, 50, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             // Verify that our channel is present in the channel list
@@ -144,7 +141,7 @@ namespace BrainCloudTests
             string channelId = GetChannelId();
             var message = PostChatMessage(channelId);
             string msgId = (string)message["msgId"];
-            int version = (int)message["ver"];
+            int version = 1;
 
             TestResult tr = new TestResult(_bc);
 

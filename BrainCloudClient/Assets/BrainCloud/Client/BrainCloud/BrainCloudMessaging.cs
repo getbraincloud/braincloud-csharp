@@ -36,7 +36,7 @@ namespace BrainCloud
         /// <summary>
         /// Retrieve user's message boxes, including 'inbox', 'sent', etc.
         /// </summary>
-        public void GetMessageBoxes(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void GetMessageboxes(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Messaging, ServiceOperation.GetMessageBoxes, null, callback);
