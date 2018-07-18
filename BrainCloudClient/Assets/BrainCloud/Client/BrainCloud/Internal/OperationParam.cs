@@ -404,7 +404,7 @@ namespace BrainCloud
         public static readonly OperationParam GroupChannelType = new OperationParam("gr");
 
         // messaging
-        public static readonly OperationParam MessagingMessageBox = new OperationParam("msgBox");
+        public static readonly OperationParam MessagingMessageBox = new OperationParam("msgbox");
         public static readonly OperationParam MessagingMessageIds = new OperationParam("msgIds");
         public static readonly OperationParam MessagingContext = new OperationParam("context");
         public static readonly OperationParam MessagingPageOffset = new OperationParam("pageOffset");
