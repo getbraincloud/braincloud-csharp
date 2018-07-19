@@ -210,37 +210,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.AddEvent, data, callback);
             _client.SendRequest(sc);
         }
-
-        [Obsolete("This has been deprecated. Use GetRecentStreamsForInitiatingPlayer instead - removal after September 1 2017")]
-        public void GetStreamSummariesForInitiatingPlayer(
-            string initiatingPlayerId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceInitiatingPlayerId.Value] = initiatingPlayerId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetStreamSummariesForInitiatingPlayer, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use GetRecentStreamsForTargetPlayer instead - removal after September 1 2017")]
-        public void GetStreamSummariesForTargetPlayer(
-            string targetPlayerId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlaybackStreamServiceTargetPlayerId.Value] = targetPlayerId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetStreamSummariesForTargetPlayer, data, callback);
-            _client.SendRequest(sc);
-        }
-        
+                
         /// <summary>
         /// Gets recent streams for initiating player
         /// </summary>

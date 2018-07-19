@@ -1314,20 +1314,6 @@ namespace BrainCloud
                 return s_instance;
             }
         }
-
-        [Obsolete("This has been deprecated. Use appId instead - removal after September 1 2017")]
-        public string GameId
-        {
-            get { return _comms != null ? _comms.AppId : ""; }
-        }
-
-        [Obsolete("This has been deprecated. Use AppVersion instead - removal after September 1 2017")]
-        public string GameVersion
-        {
-            get { return _appVersion; }
-        }
-
-
         #endregion
     }
 }

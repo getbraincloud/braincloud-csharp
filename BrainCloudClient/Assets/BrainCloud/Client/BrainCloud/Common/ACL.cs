@@ -3,9 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-#if !XAMARIN
-using LitJson;
-#endif
+using JsonFx.Json;
 using System.Collections.Generic;
 
 namespace BrainCloud.Common
@@ -44,28 +42,29 @@ namespace BrainCloud.Common
 
         public void ReadFromJson(string json)
         {
-            Dictionary<string, object> jsonObj = JsonFx.Json.JsonReader.Deserialize<Dictionary<string, object>>(json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             Other = (Access)(int)jsonObj["other"];
         }
 
         public string ToJsonString()
         {
             Dictionary<string, object> jsonObj = new Dictionary<string, object> { { "other", (int)Other } };
-            return JsonFx.Json.JsonWriter.Serialize(jsonObj);
+            return JsonWriter.Serialize(jsonObj);
         }
-
+        /*
 #if !XAMARIN
-        public static ACL CreateFromJson(JsonData json)
+        public static ACL CreateFromJson(Json json)
         {
             ACL acl = new ACL();
             acl.ReadFromJson(json);
             return acl;
         }
 
-        public void ReadFromJson(JsonData json)
+        public void ReadFromJson(Json json)
         {
             Other = (Access)(int)json["other"];
         }
 #endif
+*/
     }
 }

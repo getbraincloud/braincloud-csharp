@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Net.Sockets;
+using JsonFx.Json;
 
 namespace BrainCloud.Internal
 {
@@ -227,7 +228,7 @@ namespace BrainCloud.Internal
             json["operation"] = "CONNECT";
             json["data"] = jsonData;
 
-            return JsonFx.Json.JsonWriter.Serialize(json);
+            return JsonWriter.Serialize(json);
         }
 
         private string buildHeartbeatRequest()
@@ -237,7 +238,7 @@ namespace BrainCloud.Internal
             json["operation"] = "HEARTBEAT";
             json["data"] = null;
 
-            return JsonFx.Json.JsonWriter.Serialize(json);
+            return JsonWriter.Serialize(json);
         }
 
         /// <summary>
@@ -418,7 +419,7 @@ namespace BrainCloud.Internal
         {
             m_timeSinceLastRequest = 0;
             m_clientRef.Log("RTT RECV: " + in_message);
-            Dictionary<string, object> response = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(in_message);
+            Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
 
             string service = (string)response["service"];
             string operation = (string)response["operation"];
@@ -454,7 +455,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void rttConnectionServerSuccess(string jsonResponse, object cbObject)
         {
-            Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonFx.Json.JsonReader.Deserialize(jsonResponse);
+            Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonReader.Deserialize(jsonResponse);
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
             m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
