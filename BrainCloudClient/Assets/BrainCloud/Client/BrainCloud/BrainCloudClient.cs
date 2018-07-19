@@ -21,6 +21,17 @@ using System;
 
 namespace BrainCloud
 {
+    #region Enums
+    public enum eBrainCloudUpdateType
+    {
+        ALL,
+        REST,
+        RTT,
+
+        MAX
+    }
+    #endregion
+
     #region Delegates
 
     /// <summary>
@@ -51,6 +62,7 @@ namespace BrainCloud
 
     /// <summary>
     /// Callback method invoked when brainCloud events are received.
+    /// TODO: should we deprecate this? [smrj], view RTTEventCallback
     /// </summary>
     public delegate void EventCallback(string jsonResponse);
 
@@ -58,6 +70,12 @@ namespace BrainCloud
     /// Callback method invoked when brainCloud rewards are received.
     /// </summary>
     public delegate void RewardCallback(string jsonResponse);
+
+    /// <summary>
+    /// Success callback for an RTT response method.
+    /// </summary>
+    /// <param name="jsonResponse">The JSON response from the server</param>
+    public delegate void RTTCallback(string jsonResponse);
 
     /// <summary>
     /// Method called when a file upload has completed.
@@ -74,7 +92,6 @@ namespace BrainCloud
     /// <param name="jsonResponse">The JSON response describing the failure. This uses the
     /// usual brainCloud error format similar to this:</param>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
-
     #endregion
 
     public class BrainCloudClient
@@ -133,6 +150,13 @@ namespace BrainCloud
         private BrainCloudFile _fileService;
         private BrainCloudGroup _groupService;
         private BrainCloudMail _mailService;
+        private BrainCloudMessaging _messagingService;
+
+        // RTT service
+        private BrainCloudLobby _lobbyService;
+        private BrainCloudChat _chatService;
+        private BrainCloudRTT _rttService;
+        private RTTComms _rttComms;
 
         #endregion Private Data
 
@@ -193,6 +217,13 @@ namespace BrainCloud
             _fileService = new BrainCloudFile(this);
             _groupService = new BrainCloudGroup(this);
             _mailService = new BrainCloudMail(this);
+            _messagingService = new BrainCloudMessaging(this);
+
+            // RTT 
+            _lobbyService = new BrainCloudLobby(this);
+            _chatService = new BrainCloudChat(this);
+            _rttService = new BrainCloudRTT(this);
+            _rttComms = new RTTComms(this);
         }
 
         //---------------------------------------------------------------
@@ -220,6 +251,21 @@ namespace BrainCloud
         public string AppId
         {
             get { return _comms != null ? _comms.AppId : ""; }
+        }
+
+        public string ProfileId
+        {
+            get { return AuthenticationService != null ? AuthenticationService.ProfileId : ""; }
+        }
+
+        public string RTTConnectionID
+        {
+            get { return _rttComms != null ? _rttComms.RTTConnectionID : ""; }
+        }
+
+        public string RTTEventServer
+        {
+            get { return _rttComms != null ? _rttComms.RTTEventServer : ""; }
         }
 
         public string AppVersion
@@ -413,6 +459,26 @@ namespace BrainCloud
         public BrainCloudMail MailService
         {
             get { return _mailService; }
+        }
+
+        public BrainCloudRTT RTTService
+        {
+            get { return _rttService; }
+        }
+
+        public BrainCloudLobby LobbyService
+        {
+            get { return _lobbyService; }
+        }
+
+        public BrainCloudChat ChatService
+        {
+            get { return _chatService; }
+        }
+
+        public BrainCloudMessaging MessagingService
+        {
+            get { return _messagingService; }
         }
 
         #endregion
@@ -681,9 +747,56 @@ namespace BrainCloud
         /// <summary>Update method needs to be called regularly in order
         /// to process incoming and outgoing messages.
         /// </summary>
-        public void Update()
+        /// 
+        public void Update(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
-            if (_comms != null) _comms.Update();
+            switch (in_updateType)
+            {
+                case eBrainCloudUpdateType.REST:
+                    {
+                        if (_comms != null) _comms.Update();
+                    }
+                    break;
+
+                case eBrainCloudUpdateType.RTT:
+                    {
+                        if (_rttComms != null) _rttComms.Update();
+                    }
+                    break;
+
+                default:
+                case eBrainCloudUpdateType.ALL:
+                    {
+                        if (_rttComms != null) _rttComms.Update();
+                        if (_comms != null) _comms.Update();
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Enables Real Time event for this session.
+        /// Real Time events are disabled by default. Usually events
+        /// need to be polled using GET_EVENTS. By enabling this, events will
+        /// be received instantly when they happen through a TCP connection to an Event Server.
+        ///
+        ///This function will first call requestClientConnection, then connect to the address
+        /// </summary>
+        /// <param name="in_connectionType"></param>
+        /// <param name="in_success"></param>
+        /// <param name="in_failure"></param>
+        /// <param name="cb_object"></param>
+        public void EnableRTT(eRTTConnectionType in_connectionType = eRTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        {
+            _rttComms.EnableRTT(in_connectionType, in_success, in_failure, cb_object);
+        }
+
+        /// <summary>
+        /// Disables Real Time event for this session.
+        /// </summary>
+        public void DisableRTT()
+        {
+            _rttComms.DisableRTT();
         }
 
         /// <summary>
@@ -785,6 +898,86 @@ namespace BrainCloud
             _comms.DeregisterNetworkErrorCallback();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTEventCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.Event, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTEventCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Event);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTChatCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.Chat, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTChatCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Chat);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTMessagingCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.Messaging, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTMessagingCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Messaging);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTLobbyCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.Lobby, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTLobbyCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Lobby);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterAllRTTCallbacks()
+        {
+            _rttComms.DeregisterAllRTTCallbacks();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetRTTHeartBeatSeconds(int in_value)
+        {
+            _rttComms.SetRTTHeartBeatSeconds(in_value);
+        }
+
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
         /// <param name="enable">True if logging is to be enabled</param>
         public void EnableLogging(bool enable)
@@ -809,6 +1002,7 @@ namespace BrainCloud
         public void ResetCommunication()
         {
             _comms.ResetCommunication();
+            _rttComms.DisableRTT();
             AuthenticationService.ClearSavedProfileID();
         }
 

@@ -45,6 +45,7 @@ namespace LitJson
         int      GetInt ();
         JsonType GetJsonType ();
         long     GetLong ();
+        ulong    GetULong ();
         string   GetString ();
 
         void SetBoolean  (bool val);
@@ -52,6 +53,7 @@ namespace LitJson
         void SetInt      (int val);
         void SetJsonType (JsonType type);
         void SetLong     (long val);
+        void SetULong    (ulong val);
         void SetString   (string val);
 
         string ToJson ();

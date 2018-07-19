@@ -78,6 +78,12 @@
     <Compile Include="..\..\..\tests\TestAuthenticate.cs">
       <Link>TestAuthenticate.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestChat.cs">
+      <Link>TestChat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestMessaging.cs">
+      <Link>TestMessaging.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestClient.cs">
       <Link>TestClient.cs</Link>
     </Compile>

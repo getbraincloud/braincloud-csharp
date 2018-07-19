@@ -86,6 +86,19 @@ namespace BrainCloud.Entity
             }
         }
 
+        public IList<BCUserEntity> NewUserEntitiesFromDataResponse(string json)
+        {
+            JsonData jsonObj = JsonMapper.ToObject(json);
+            try
+            {
+                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["response"]["entities"]);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new List<BCUserEntity>();
+            }
+        }
+
         public void RegisterEntityClass<T>(string entityType) where T : BCEntity
         {
             Type type = typeof(T);
@@ -109,7 +122,7 @@ namespace BrainCloud.Entity
         }
 
         // the list of entitiies
-        private IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, JsonData entitiesJson)
+        public IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, JsonData entitiesJson)
         {
             List<BCUserEntity> entities = new List<BCUserEntity>();
             JsonData child = null;

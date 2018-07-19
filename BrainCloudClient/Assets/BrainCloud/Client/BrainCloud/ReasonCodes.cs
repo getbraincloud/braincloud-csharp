@@ -17,7 +17,7 @@ namespace BrainCloud
         public const int MERGING_MEMORY = 40202;
         public const int RECREATING_ANONYMOUS_MEMORY = 40203;
         public const int MOVING_ANONYMOUS_MEMORY = 40204;
-        public const int LOGIN_SECURITY_ERROR = 40205;
+        public const int LOGIN_SECURITY_ERROR = 40209;
 
         /// <summary>This means that you have provided a profile id
         /// but the identity lookup fails to find an identity entry.
@@ -105,7 +105,7 @@ namespace BrainCloud
         /// <summary>App Version No Longer Supported</summary>
         public const int GAME_VERSION_NOT_SUPPORTED = 40322;
         public const int APP_VERSION_NOT_SUPPORTED = GAME_VERSION_NOT_SUPPORTED;
-        
+
         public const int BAD_REFERENCE_DATA = 40324;
         public const int MISSING_OAUTH_TOKEN = 40325;
         public const int MISSING_OAUTH_VERIFIER = 40326;
@@ -348,6 +348,9 @@ namespace BrainCloud
         public const int IMPORT_MISSING_PEERS_DATA = 40533;
         public const int INVALID_CREDENTIAL = 40534;
 
+        public const int MESSAGING_FEATURE_NOT_CONFIGURED = 40593;
+        public const int CHAT_FEATURE_NOT_CONFIGURED = 40594;
+
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
@@ -370,5 +373,112 @@ namespace BrainCloud
         public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
         public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
         public const int CLIENT_DISABLED = 90200;
+        public const int DATABASE_INPUT_TOO_LARGE_ERROR = 40218;
+        public const int MISSING_APP_EMAIL_ACCOUNT = 40219;
+        public const int INVALID_DATABASE_FIELD_NAME = 40347;
+        public const int INVALID_AMOUNT = 40385;
+        public const int GLOBAL_ENTITY_SECURITY_ERROR = 40535;
+        public const int LEADERBOARD_SECURITY_ERROR = 40536;
+        public const int NOT_A_SYSTEM_ENTITY = 40537;
+        public const int CONTROLLER_ERROR = 40538;
+        public const int EVENT_MISSING = 40539;
+        public const int INVALID_XP_LEVEL = 40540;
+        public const int INVALID_ITUNES_ID = 40541;
+        public const int IMPORT_ERROR = 40542;
+        public const int INVALID_ENTITY_TYPE = 40543;
+        public const int FORM_ERROR = 40544;
+        public const int INVALID_PARENT = 40545;
+        public const int INVALID_CURRENCY = 40546;
+        public const int INVALID_THRESHHOLD = 40547;
+        public const int MATCH_ALREADY_EXISTS = 40548;
+        public const int FRIEND_NOT_FOUND = 40549;
+        public const int MATCH_NOT_FOUND = 40550;
+        public const int MATCH_COMPLETE = 40551;
+        public const int MATCH_NOT_STARTED = 40552;
+        public const int MATCH_EXPIRED = 40553;
+        public const int PLAYER_NOT_IN_MATCH = 40554;
+        public const int INVALID_MATCH_VERSION = 40555;
+        public const int INVALID_TURN_VERSION = 40556;
+        public const int INVALID_DEVICE_TYPE = 40557;
+        public const int DUPLICATE_ENTITY = 40558;
+        public const int DUPLICATE_EVENT = 40559;
+        public const int INVALID_LEADERBOARD_COUNT = 40560;
+        public const int DUPLICATE_LEADERBOARD = 40561;
+        public const int MICROSOFT_ERROR = 40562;
+        public const int DUPLICATE_TOURNAMENT = 40563;
+        public const int CREATE_SYSTEM_ENTITY_FAILED = 40564;
+        public const int INVALID_MAX_NUM_STREAMS = 40565;
+        public const int INVALID_PACKET_ID = 40566;
+        public const int HOOK_ERROR = 40567;
+        public const int INVALID_STREAM_ID = 40568;
+        public const int INVALID_SCAN_CODE = 40569;
+        public const int NO_CUSTOM_ENTITY_CONFIG_FOUND = 40570;
+        public const int NO_CUSTOM_ENTITY_FOUND = 40571;
+        public const int CLOUD_STORAGE_ERROR = 40572;
+        public const int NO_CUSTOM_FIELD_CONFIG_FOUND = 40573;
+        public const int MISSING_CUSTOM_ENTITY_QUERY = 40574;
+        public const int INVALID_CUSTOM_ENTITY_JSON_WHERE = 40575;
+        public const int INVALID_CUSTOM_ENTITY_JSON_FIELDS = 40576;
+        public const int ENTITY_ID_NOT_CONFIGURED = 40577;
+        public const int UNCONFIGURED_CUSTOM_FIELD_ERROR = 40578;
+        public const int CUSTOM_ENTITY_SECURITY_ERROR = 40579;
+        public const int CUSTOM_ENTITY_PARTIAL_UPDATE_INVALID_DATA = 40580;
+        public const int TOURNAMENT_PLAY_HAS_NOT_STARTED = 40581;
+        public const int TOURNAMENT_PLAY_HAS_ENDED = 40582;
+        public const int NEW_CREDENTIAL_IN_USE = 40583;
+        public const int OLD_CREDENTIAL_NOT_OWNED = 40584;
+        public const int CLOUD_CODE_SECURITY_ERROR = 40585;
+        public const int RTT_SERVER_NOT_FOUND = 40586;
+        public const int RTT_CLIENT_NOT_FOUND = 40587;
+        public const int NO_RTT_SERVERS_AVAILABLE = 40588;
+        public const int PROFILE_SESSION_MISMATCH = 40589;
+        public const int WAITING_FOR_ON_DEMAND_TOURNAMENT_TO_START = 40590;
+        public const int CDN_URLS_NOT_SUPPORTED = 40591;
+        public const int CLOUD_CONTAINER_ERROR = 40592;
+        public const int MESSAGE_NOT_FOUND = 40595;
+        public const int COLLECTION_CREATE_DISABLED = 40596;
+        public const int LEADERBAORD_COLLECTION_CREATE_DISABLED = 40597;
+        public const int MESSAGE_VERSION_MISMATCH = 40598;
+        public const int MESSAGEBOX_VERSION_MISMATCH = 40599;
+        public const int MESSAGE_TOO_LARGE = 40600;
+        public const int FEATURE_NOT_ENABLED = 40601;
+        public const int CHANNEL_NOT_FOUND = 40603;
+        public const int MALFORMED_FORM_DATA = 40604;
+        public const int MISSING_LAST_PACKET_RESPONSE = 40605;
+        public const int PACKET_IN_PROGRESS = 40606;
+        public const int LOBBY_MEMBER_NOT_FOUND = 40607;
+        public const int LOBBY_TEAM_NOT_FOUND = 40608;
+        public const int LOBBY_ENTRY_QUEUE_MEMBER_NOT_FOUND = 40609;
+        public const int INVALID_HEADER_APP_ID = 40610;
+        public const int LOBBY_TYPE_NOT_FOUND = 40611;
+        public const int LOBBY_TEAM_FULL = 40612;
+        public const int TWITTER_AUTH_ERROR = 500006;
+        public const int TWITTER_ERROR = 500007;
+        public const int NOT_TEAM_ADMIN = 550000;
+        public const int NO_TEAM_ACCESS = 550001;
+        public const int MISSING_COMPANY_RECORD = 550002;
+        public const int TEAM_MEMBER_NOT_FOUND = 550003;
+        public const int TEAM_MEMBER_NOT_ENABLED = 550004;
+        public const int TEAM_MEMBER_NOT_ACTIVE = 550005;
+        public const int TEAM_MEMBER_LOCKED = 550006;
+        public const int INVALID_PASSWORD = 550007;
+        public const int TOKEN_INVALID = 550008;
+        public const int TOKEN_EXPIRED = 550009;
+        public const int TEMPLATE_GAME_NOT_FOUND = 550011;
+        public const int INVALID_TEMPLATE_GAME_TEAM = 550012;
+        public const int BASIC_AUTH_FAILURE = 550013;
+        public const int CONCURRENT_LOCK_ERROR = 600002;
+        public const int LOBBY_NOT_FOUND = 40613;
+        public const int MESSAGE_CONTENT_INVALID_JSON = 40614;
+        public const int RTT_FEATURE_NOT_CONFIGURED = 40615;
+        public const int CLOUD_CODE_ONLY_METHOD = 40616;
+        public const int MESSAGE_FROM_JSON_ID_MUST_BE_NULL = 40617;
+        public const int MESSAGE_FROM_JSON_NAME_MANDATORY = 40618;
+        public const int INVALID_LOBBY_STEP_ALIGNMENT = 40619;
+        public const int INVALID_LOBBY_STEP_STRATEGY = 40620;
+        public const int MESSAGING_MAX_RECIPIENTS_EXCEEDED = 40621;
+        public const int LOBBY_FEATURE_NOT_CONFIGURED = 40622;
+        public const int TOO_MANY_USERS_FOR_LOBBY_TYPE = 40624;
+        public const int TOO_MANY_USERS_FOR_TEAM = 40623;
     }
 }
