@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using BrainCloud.Common;
 using JsonFx.Json;
 using BrainCloud.Entity.Internal;
+using System.Collections.Specialized;
+using System.Collections;
 
 namespace BrainCloud.Entity
 {
@@ -45,6 +47,7 @@ namespace BrainCloud.Entity
             // Entity has been deleted on the server
             Deleted = 5
         }
+
         private EntityState m_state = EntityState.New;
 
         // members used if we send a create to the server but in the meantime the client has updated the entity
@@ -56,7 +59,7 @@ namespace BrainCloud.Entity
         protected DateTime m_createdAt;
         protected DateTime m_updatedAt;
 
-        protected BrainCloudEntity m_braincloud;
+        protected BrainCloudEntity m_bcEntityService;
 
         //protected JsonData m_cachedServerObject;
 
@@ -120,15 +123,15 @@ namespace BrainCloud.Entity
                 m_state = value;
             }
         }
-        public BrainCloudEntity BrainCloud
+        public BrainCloudEntity BrainCloudEntityService
         {
             get
             {
-                return m_braincloud;
+                return m_bcEntityService;
             }
             set
             {
-                m_braincloud = value;
+                m_bcEntityService = value;
             }
         }
         #endregion
@@ -141,14 +144,9 @@ namespace BrainCloud.Entity
         protected abstract void DeleteEntity(SuccessCallback success, FailureCallback failure);
         #endregion
 
-
-        public BCEntity()
-        {
-        }
-
         public BCEntity(BrainCloudEntity braincloud)
         {
-            m_braincloud = braincloud;
+            m_bcEntityService = braincloud;
         }
 
         /// <summary>
@@ -369,15 +367,135 @@ namespace BrainCloud.Entity
             m_state = EntityState.Ready;
             m_entityType = (string)jsonDict["entityType"];
             m_entityId = (string)jsonDict["entityId"];
-            m_acl = ACL.CreateFromJson((string)jsonDict["acl"]);
+            m_acl = ACL.CreateFromJson((Dictionary<string, object>)jsonDict["acl"]);
             UpdateTimeStamps(jsonDict);
-            m_data = jsonDict["data"] as Dictionary<string, object>;
+            m_data = JsonToDictionary(jsonDict["data"]);
         }
 
         public override string ToString()
         {
             return ToJsonString();
         }
+
+        #region protected
+        protected static IDictionary<string, object> JsonToDictionary(object jsonObj)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Dictionary<string, object> json = jsonObj as Dictionary<string, object>;
+            var enumerator = json.GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                var child = enumerator.Current;
+                var dictEntry = child;
+                var childValue = dictEntry.Value;
+                var childKey = dictEntry.Key;
+
+                if (childValue as Dictionary<string, object> != null)
+                {
+                    dict[childKey] = JsonToDictionary(childValue);
+                }
+                else if (childValue as Array != null)
+                {
+                    dict[childKey] = JsonToList(childValue);
+                }
+                else
+                {
+                    dict[childKey] = JsonToBasicType(childValue);
+                }
+            }
+
+            return dict;
+        }
+
+        protected static IList<object> JsonToList(object jsonObj)
+        {
+            List<object> list = new List<object>();
+            Array arr = (Array)jsonObj;
+            if (arr != null)
+            {
+                object child = null;
+                for (int i = 0; i < arr.Length; ++i)
+                {
+                    child = arr.GetValue(i);
+                    if (child as Dictionary<string, object> != null)
+                    {
+                        list.Add(JsonToDictionary(child));
+                    }
+                    else if (child as Array != null)
+                    {
+                        list.Add(JsonToList(child));
+                    }
+                    else
+                    {
+                        list.Add(JsonToBasicType(child));
+                    }
+                }
+            }
+            
+            return list;
+        }
+
+        protected static object JsonToBasicType(object jsonObj)
+        {
+            if (jsonObj is bool)
+            {
+                return (bool)jsonObj;
+            }
+            else if (jsonObj is string)
+            {
+                return (string)jsonObj;
+            }
+            // number types below
+            else if (jsonObj is int)
+            {
+                return (int)jsonObj;
+            }
+            else if (jsonObj is uint)
+            {
+                return (uint)jsonObj;
+            }
+            else if (jsonObj is float)
+            {
+                return (float)jsonObj;
+            }
+            else if (jsonObj is double)
+            {
+                return (double)jsonObj;
+            }
+            else if (jsonObj is decimal)
+            {
+                return (decimal)jsonObj;
+            }
+            else if (jsonObj is long)
+            {
+                return (long)jsonObj;
+            }
+            else if (jsonObj is ulong)
+            {
+                return (ulong)jsonObj;
+            }
+            else if (jsonObj is short)
+            {
+                return (short)jsonObj;
+            }
+            else if (jsonObj is ushort)
+            {
+                return (ushort)jsonObj;
+            }
+            else if (jsonObj is sbyte)
+            {
+                return (sbyte)jsonObj;
+            }
+            else if (jsonObj is byte)
+            {
+                return (byte)jsonObj;
+            }
+            throw new ArgumentException("Unexpected type");
+        }
+
+        #endregion
+
     }
 }
 

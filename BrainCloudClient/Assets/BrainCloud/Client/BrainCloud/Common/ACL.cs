@@ -33,17 +33,16 @@ namespace BrainCloud.Common
             return acl;
         }
 
-        public static ACL CreateFromJson(string json)
+        public static ACL CreateFromJson(Dictionary<string, object> json)
         {
             ACL acl = new ACL();
             acl.ReadFromJson(json);
             return acl;
         }
 
-        public void ReadFromJson(string json)
+        public void ReadFromJson(Dictionary<string, object> json)
         {
-            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
-            Other = (Access)(int)jsonObj["other"];
+            Other = (Access)(int)json["other"];
         }
 
         public string ToJsonString()

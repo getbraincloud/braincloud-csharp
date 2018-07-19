@@ -15,22 +15,21 @@ namespace BrainCloud.Entity
 {
     public class BCEntityFactory
     {
-        private BrainCloudEntity m_braincloud;
+        private BrainCloudEntity m_bcEntityService;
         private IDictionary<string, ConstructorInfo> m_registeredClasses;
 
         public delegate BCUserEntity CreateUserEntityFromType(string type);
-
-
-        public BCEntityFactory(BrainCloudEntity braincloud)
+        
+        public BCEntityFactory(BrainCloudEntity in_bcEntityService)
         {
-            m_braincloud = braincloud;
+            m_bcEntityService = in_bcEntityService;
             m_registeredClasses = new Dictionary<string, ConstructorInfo>();
         }
 
         public T NewEntity<T>(string entityType) where T : BCEntity
         {
             T e = (T)CreateRegisteredEntityClass(entityType);
-            e.BrainCloud = m_braincloud;
+            e.BrainCloudEntityService = m_bcEntityService;
             e.EntityType = entityType;
             return e;
         }
@@ -40,9 +39,8 @@ namespace BrainCloud.Entity
             BCUserEntity e = (BCUserEntity)CreateRegisteredEntityClass(entityType);
             if (e == null)
             {
-                e = new BCUserEntity();
+                e = new BCUserEntity(m_bcEntityService);
             }
-            e.BrainCloud = m_braincloud;
             e.EntityType = entityType;
             return e;
         }
