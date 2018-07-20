@@ -19,7 +19,7 @@ namespace BrainCloud
         {
             _client = client;
         }
-        
+
         /// <summary>
         /// Trigger an event server side that will increase the user statistics.
         /// This may cause one or more awards to be sent back to the user -
@@ -60,7 +60,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerStatisticsEvent, ServiceOperation.Trigger, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// See documentation for TriggerStatsEvent for more
         /// documentation.
@@ -88,7 +88,7 @@ namespace BrainCloud
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object> ();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             object[] events = JsonReader.Deserialize<object[]>(jsonData);
             data[OperationParam.PlayerStatisticEventServiceEvents.Value] = events;
 

@@ -160,7 +160,7 @@ namespace BrainCloud.Internal
         }
 
         private string _appId = null;
-        
+
         public string AppId
         {
             get

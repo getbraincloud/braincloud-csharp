@@ -32,9 +32,7 @@ namespace BrainCloud.Entity
         }
 
         public void CbCreateFailure(int statusCode, int reasonCode, string statusMessage, object cbObject)
-        {
-
-        }
+        { }
 
         public void CbUpdateSuccess(string jsonString, object cbObject)
         {
@@ -44,9 +42,7 @@ namespace BrainCloud.Entity
         }
 
         public void CbUpdateFailure(int statusCode, int reasonCode, string statusMessage, object cbObject)
-        {
-
-        }
+        { }
 
         public void CbDeleteSuccess(string json, object cbObject)
         {

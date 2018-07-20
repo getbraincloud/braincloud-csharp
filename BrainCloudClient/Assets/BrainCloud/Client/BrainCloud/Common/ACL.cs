@@ -50,20 +50,5 @@ namespace BrainCloud.Common
             Dictionary<string, object> jsonObj = new Dictionary<string, object> { { "other", (int)Other } };
             return JsonWriter.Serialize(jsonObj);
         }
-        /*
-#if !XAMARIN
-        public static ACL CreateFromJson(Json json)
-        {
-            ACL acl = new ACL();
-            acl.ReadFromJson(json);
-            return acl;
-        }
-
-        public void ReadFromJson(Json json)
-        {
-            Other = (Access)(int)json["other"];
-        }
-#endif
-*/
     }
 }

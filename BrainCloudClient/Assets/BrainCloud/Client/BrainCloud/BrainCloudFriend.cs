@@ -3,9 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using JsonFx.Json;
 using BrainCloud.Internal;
 using BrainCloud.Common;
 

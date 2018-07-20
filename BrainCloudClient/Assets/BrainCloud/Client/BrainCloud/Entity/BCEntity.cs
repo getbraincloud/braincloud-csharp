@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using BrainCloud.Common;
 using JsonFx.Json;
 using BrainCloud.Entity.Internal;
-using System.Collections.Specialized;
-using System.Collections;
 
 namespace BrainCloud.Entity
 {
@@ -432,7 +430,7 @@ namespace BrainCloud.Entity
                     }
                 }
             }
-            
+
             return list;
         }
 

@@ -5,9 +5,7 @@
 
 #if !XAMARIN
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using JsonFx.Json;
 using System.Reflection;
 
@@ -19,7 +17,7 @@ namespace BrainCloud.Entity
         private IDictionary<string, ConstructorInfo> m_registeredClasses;
 
         public delegate BCUserEntity CreateUserEntityFromType(string type);
-        
+
         public BCEntityFactory(BrainCloudEntity in_bcEntityService)
         {
             m_bcEntityService = in_bcEntityService;
@@ -50,7 +48,7 @@ namespace BrainCloud.Entity
             Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             try
             {
-                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary < string, object > )jsonObj["data"])["entityList"]);
+                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary<string, object>)jsonObj["data"])["entityList"]);
             }
             catch (KeyNotFoundException)
             {

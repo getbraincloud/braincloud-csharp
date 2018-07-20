@@ -13,7 +13,6 @@ namespace BrainCloud
 {
     public class BrainCloudPlaybackStream
     {
-
         private BrainCloudClient _client;
 
         public BrainCloudPlaybackStream(BrainCloudClient client)
@@ -196,13 +195,13 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(eventData))
             {
-                Dictionary<string, object> jsonEventData = JsonReader.Deserialize<Dictionary<string, object>> (eventData);
+                Dictionary<string, object> jsonEventData = JsonReader.Deserialize<Dictionary<string, object>>(eventData);
                 data[OperationParam.PlaybackStreamServiceEventData.Value] = jsonEventData;
             }
 
             if (Util.IsOptionalParameterValid(summary))
             {
-                Dictionary<string, object> jsonSummary = JsonReader.Deserialize<Dictionary<string, object>> (summary);
+                Dictionary<string, object> jsonSummary = JsonReader.Deserialize<Dictionary<string, object>>(summary);
                 data[OperationParam.PlaybackStreamServiceSummary.Value] = jsonSummary;
             }
 
@@ -210,7 +209,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.AddEvent, data, callback);
             _client.SendRequest(sc);
         }
-                
+
         /// <summary>
         /// Gets recent streams for initiating player
         /// </summary>
@@ -248,7 +247,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetRecentStreamsForInitiatingPlayer, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Gets recent streams for target player
         /// </summary>

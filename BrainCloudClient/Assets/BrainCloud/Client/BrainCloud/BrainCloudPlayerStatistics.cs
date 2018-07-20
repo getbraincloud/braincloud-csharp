@@ -138,7 +138,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Reset, null, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Atomically increment (or decrement) user statistics.
         /// Any rewards that are triggered from user statistic increments

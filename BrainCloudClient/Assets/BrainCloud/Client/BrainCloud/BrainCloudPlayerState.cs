@@ -5,9 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
 using JsonFx.Json;
 using BrainCloud.Internal;
 
@@ -17,11 +14,11 @@ namespace BrainCloud
     {
         private BrainCloudClient _client;
 
-        public BrainCloudPlayerState (BrainCloudClient client)
+        public BrainCloudPlayerState(BrainCloudClient client)
         {
             _client = client;
         }
-        
+
         /// <summary>
         /// Read the state of the currently logged in user.
         /// This method returns a JSON object describing most of the
@@ -147,7 +144,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Sets the user name.
         /// </summary>
@@ -222,7 +219,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             if (Util.IsOptionalParameterValid(jsonSummaryData))
             {
-                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>> (jsonSummaryData);
+                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>>(jsonSummaryData);
                 data[OperationParam.PlayerStateServiceUpdateSummaryFriendData.Value] = summaryData;
             }
             else data = null;
@@ -288,7 +285,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            Dictionary<string, object> attributes = JsonReader.Deserialize<Dictionary<string, object>> (jsonAttributes);
+            Dictionary<string, object> attributes = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
             data[OperationParam.PlayerStateServiceAttributes.Value] = attributes;
             data[OperationParam.PlayerStateServiceWipeExisting.Value] = wipeExisting;
 
