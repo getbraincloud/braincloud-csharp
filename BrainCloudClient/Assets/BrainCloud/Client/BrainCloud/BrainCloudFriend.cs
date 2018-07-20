@@ -3,9 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using JsonFx.Json;
 using BrainCloud.Internal;
 using BrainCloud.Common;
 
@@ -26,24 +24,7 @@ namespace BrainCloud
         {
             _client = client;
         }
-
-        [Obsolete("This has been deprecated. Use FindUserByUniversalId instead - removal after September 1 2017")]
-        public void FindPlayerByUniversalId(
-            string searchText,
-            int maxResults,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.FriendServiceSearchText.Value] = searchText;
-            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindPlayerByUniversalId, data, callback);
-            _client.SendRequest(sc);
-        }
-
+        
         /// <summary>
         /// Retrieves profile information for the partial matches of the specified text.
         /// </summary>
@@ -264,21 +245,6 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriendsEntities, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use ReadFriendUserState instead - removal after September 1 2017")]
-        public void ReadFriendPlayerState(
-            string friendId,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.FriendServiceReadPlayerStateFriendId.Value] = friendId;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ReadFriendPlayerState, data, callback);
             _client.SendRequest(sc);
         }
 

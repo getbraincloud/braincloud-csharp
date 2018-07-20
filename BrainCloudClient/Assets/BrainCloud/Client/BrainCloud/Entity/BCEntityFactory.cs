@@ -5,54 +5,50 @@
 
 #if !XAMARIN
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using LitJson;
+using JsonFx.Json;
 using System.Reflection;
 
 namespace BrainCloud.Entity
 {
     public class BCEntityFactory
     {
-        private BrainCloudEntity m_braincloud;
+        private BrainCloudEntity m_bcEntityService;
         private IDictionary<string, ConstructorInfo> m_registeredClasses;
 
         public delegate BCUserEntity CreateUserEntityFromType(string type);
 
-
-        public BCEntityFactory(BrainCloudEntity braincloud)
+        public BCEntityFactory(BrainCloudEntity in_bcEntityService)
         {
-            m_braincloud = braincloud;
-            m_registeredClasses  = new Dictionary<string, ConstructorInfo>();
+            m_bcEntityService = in_bcEntityService;
+            m_registeredClasses = new Dictionary<string, ConstructorInfo>();
         }
 
-        public T NewEntity<T> (string entityType) where T : BCEntity
+        public T NewEntity<T>(string entityType) where T : BCEntity
         {
             T e = (T)CreateRegisteredEntityClass(entityType);
-            e.BrainCloud = m_braincloud;
+            e.BrainCloudEntityService = m_bcEntityService;
             e.EntityType = entityType;
             return e;
         }
 
         public BCUserEntity NewUserEntity(string entityType)
         {
-            BCUserEntity e = (BCUserEntity) CreateRegisteredEntityClass(entityType);
+            BCUserEntity e = (BCUserEntity)CreateRegisteredEntityClass(entityType);
             if (e == null)
             {
-                e = new BCUserEntity();
+                e = new BCUserEntity(m_bcEntityService);
             }
-            e.BrainCloud = m_braincloud;
             e.EntityType = entityType;
             return e;
         }
 
         public IList<BCUserEntity> NewUserEntitiesFromGetList(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             try
             {
-                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["entityList"]);
+                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary<string, object>)jsonObj["data"])["entityList"]);
             }
             catch (KeyNotFoundException)
             {
@@ -62,10 +58,10 @@ namespace BrainCloud.Entity
 
         public IList<BCUserEntity> NewUserEntitiesFromReadPlayerState(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             try
             {
-                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["entities"]);
+                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary<string, object>)jsonObj["data"])["entities"]);
             }
             catch (KeyNotFoundException)
             {
@@ -75,10 +71,10 @@ namespace BrainCloud.Entity
 
         public IList<BCUserEntity> NewUserEntitiesFromStartMatch(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             try
             {
-                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["initialSharedData"]["entities"]);
+                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary<string, object>)((Dictionary<string, object>)jsonObj["data"])["initialSharedData"])["entities"]);
             }
             catch (KeyNotFoundException)
             {
@@ -88,10 +84,10 @@ namespace BrainCloud.Entity
 
         public IList<BCUserEntity> NewUserEntitiesFromDataResponse(string json)
         {
-            JsonData jsonObj = JsonMapper.ToObject(json);
+            Dictionary<string, object> jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
             try
             {
-                return NewUserEntitiesFromJsonString(json, jsonObj["data"]["response"]["entities"]);
+                return NewUserEntitiesFromJsonString(json, (Array)((Dictionary<string, object>)((Dictionary<string, object>)jsonObj["data"])["response"])["entities"]);
             }
             catch (KeyNotFoundException)
             {
@@ -102,7 +98,7 @@ namespace BrainCloud.Entity
         public void RegisterEntityClass<T>(string entityType) where T : BCEntity
         {
             Type type = typeof(T);
-            Type[] constructorParams = new Type[] {};
+            Type[] constructorParams = new Type[] { };
 
             ConstructorInfo ci = type.GetConstructor(constructorParams);
             if (ci != null)
@@ -121,22 +117,39 @@ namespace BrainCloud.Entity
             return null;
         }
 
-        // the list of entitiies
-        public IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, JsonData entitiesJson)
+        public BCUserEntity NewUserFromDictionary(Dictionary<string, object> in_dict)
         {
-            List<BCUserEntity> entities = new List<BCUserEntity>();
-            JsonData child = null;
-            for (int i = 0; i < entitiesJson.Count; ++i)
+            BCUserEntity toReturn = null;
+            if (in_dict != null)
             {
                 try
                 {
-                    child = entitiesJson[i];
-                    BCUserEntity entity = null;
-                    entity = NewUserEntity((string)child["entityType"]);
-                    entity.ReadFromJson(child);
+                    toReturn = NewUserEntity((string)in_dict["entityType"]);
+                    toReturn.ReadFromJson(in_dict);
+                }
+                catch (Exception)
+                {
+                    /* do nadda */
+                }
+            }
+
+            return toReturn;
+        }
+
+        // the list of entitiies
+        public IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, Array entitiesJson)
+        {
+            List<BCUserEntity> entities = new List<BCUserEntity>();
+            Dictionary<string, object> child = null;
+            for (int i = 0; i < entitiesJson.Length; ++i)
+            {
+                try
+                {
+                    child = entitiesJson.GetValue(i) as Dictionary<string, object>;
+                    BCUserEntity entity = NewUserFromDictionary(child);
                     entities.Add(entity);
                 }
-                catch (System.Exception)
+                catch (Exception)
                 {
                     /* do nadda */
                 }

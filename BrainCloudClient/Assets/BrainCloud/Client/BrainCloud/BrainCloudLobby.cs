@@ -5,7 +5,6 @@
 
 using System.Collections.Generic;
 using BrainCloud.Internal;
-using JsonFx.Json;
 
 namespace BrainCloud
 {
@@ -87,7 +86,7 @@ namespace BrainCloud
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady, 
+            bool in_isReady,
             Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)

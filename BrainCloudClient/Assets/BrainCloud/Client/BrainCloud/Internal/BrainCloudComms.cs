@@ -161,15 +161,6 @@ namespace BrainCloud.Internal
 
         private string _appId = null;
 
-        [Obsolete("This has been deprecated. Use AppId instead - removal after September 1 2017")]
-        public string GameId
-        {
-            get
-            {
-                return _appId;
-            }
-        }
-
         public string AppId
         {
             get
@@ -1741,7 +1732,6 @@ namespace BrainCloud.Internal
         public long packetId = 0;
         public Dictionary<string, object>[] responses = null;
         public Dictionary<string, object>[] events = null;
-
 
         public JsonResponseBundleV2()
         { }

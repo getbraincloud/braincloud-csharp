@@ -1,168 +1,156 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using LitJson;
+using JsonFx.Json;
 
 namespace BrainCloudUnity.HUD
 {
-	public class HUDLeaderboard : IHUDElement
-	{
-		class LBEntry
-		{
-			public string playerId;
-			public string name;
-			public long rank;
-			public long score;
-		}
-		List<LBEntry> m_lb = new List<LBEntry>();
-		string m_lbId = "default";
-		string m_score = "1000";
-		bool m_showPlayerIds = false;
-		Vector2 m_scrollPosition = new Vector2(0,0);
-		
-		public void OnHUDActivate()
-		{}
-		
-		public void OnHUDDeactivate()
-		{}
-		
-		public string GetHUDTitle()
-		{
-			return "Leaderboard";
-		}
-		
-		void RetrieveLeaderboard(string leaderboardId)
-		{
-			m_lb.Clear ();
-			
-			BrainCloudLoginPF.BrainCloud.SocialLeaderboardService.GetGlobalLeaderboardPage(
-				leaderboardId, BrainCloud.BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW, 0, 100,
-				ReadLeaderboardSuccess, ReadLeaderboardFailure);
-		}
+    public class HUDLeaderboard : IHUDElement
+    {
+        class LBEntry
+        {
+            public string playerId;
+            public string name;
+            public long rank;
+            public long score;
+        }
+        List<LBEntry> m_lb = new List<LBEntry>();
+        string m_lbId = "default";
+        string m_score = "1000";
+        bool m_showPlayerIds = false;
+        Vector2 m_scrollPosition = new Vector2(0, 0);
 
-		void PostScore(string lbId, long score)
-		{
-			BrainCloudLoginPF.BrainCloud.SocialLeaderboardService.PostScoreToLeaderboard(
-				lbId, score, null, PostScoreSuccess, PostScoreFailure);
-		}
+        public void OnHUDActivate()
+        { }
 
-		void PostScoreSuccess(string json, object cb)
-		{
-			Debug.Log("Posted score successfully... refetching new scores: " + json);
+        public void OnHUDDeactivate()
+        { }
 
-			RetrieveLeaderboard(m_lbId);
-		}
+        public string GetHUDTitle()
+        {
+            return "Leaderboard";
+        }
 
-		void PostScoreFailure(int statusCode, int reasonCode, string statusMessage, object cb)
-		{
-			Debug.LogError("Failed to post to leaderboard: " + statusMessage);
-		}
+        void RetrieveLeaderboard(string leaderboardId)
+        {
+            m_lb.Clear();
 
-		void ReadLeaderboardSuccess(string json, object cb)
-		{
-			Debug.Log ("Leaderboard json: " + json);
+            BrainCloudLoginPF.BrainCloud.SocialLeaderboardService.GetGlobalLeaderboardPage(
+                leaderboardId, BrainCloud.BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW, 0, 100,
+                ReadLeaderboardSuccess, ReadLeaderboardFailure);
+        }
 
-			JsonData jObj = JsonMapper.ToObject(json);
-			JsonData jLeaderboard = jObj["data"]["social_leaderboard"];
-			IList entries = jLeaderboard as IList;
-			if (entries != null)
-			{
-				foreach (JsonData jEntry in entries)
-				{
-					LBEntry lbe = new LBEntry();
-					lbe.playerId = (string) jEntry["playerId"];
-					lbe.name = (string) jEntry["name"];
+        void PostScore(string lbId, long score)
+        {
+            BrainCloudLoginPF.BrainCloud.SocialLeaderboardService.PostScoreToLeaderboard(
+                lbId, score, null, PostScoreSuccess, PostScoreFailure);
+        }
 
-					if (jEntry["rank"].IsInt)
-					{
-						lbe.rank = (int) jEntry["rank"];
-					}
-					else
-					{
-						lbe.rank = (long) jEntry["rank"];
-					}
+        void PostScoreSuccess(string json, object cb)
+        {
+            Debug.Log("Posted score successfully... refetching new scores: " + json);
 
-					if (jEntry["score"].IsInt)
-					{
-						lbe.score = (int) jEntry["score"];
-					}
-					else
-					{
-						lbe.score = (long) jEntry["score"];
-					}
-					m_lb.Add (lbe);
-				}
-			}
-		}
-		
-		void ReadLeaderboardFailure(int statusCode, int reasonCode, string statusMessage, object cb)
-		{
-			Debug.LogError("Failed to read leaderboard: " + statusMessage);
-		}
-		
-		public void OnHUDDraw()
-		{
-			GUILayout.BeginVertical();
-			GUILayout.Box("Leaderboard Operations");
+            RetrieveLeaderboard(m_lbId);
+        }
 
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Leaderboard Id:");
-			m_lbId = GUILayout.TextField (m_lbId);
-			if(GUILayout.Button("Fetch"))
-			{
-				RetrieveLeaderboard(m_lbId);
-			}
-			GUILayout.EndHorizontal ();
+        void PostScoreFailure(int statusCode, int reasonCode, string statusMessage, object cb)
+        {
+            Debug.LogError("Failed to post to leaderboard: " + statusMessage);
+        }
 
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Score:");
-			m_score = GUILayout.TextField (m_score, GUILayout.MinWidth (100));
-			if (GUILayout.Button("Post"))
-			{
-				long scoreAsLong;
-				if (long.TryParse (m_score, out scoreAsLong))
-				{
-					PostScore(m_lbId, scoreAsLong);
-				}
-				else
-				{
-					Debug.LogError ("Can't parse score to long value");
-				}
-			}
-			GUILayout.EndHorizontal ();
+        void ReadLeaderboardSuccess(string json, object cb)
+        {
+            Debug.Log("Leaderboard json: " + json);
 
-			GUILayout.Box("Results");
+            Dictionary<string, object> jObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
+            Dictionary<string, object> data = (Dictionary<string, object>)jObj["data"];
+            List<object> entries = (List<object>)data["social_leaderboard"];
 
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace ();
-			m_showPlayerIds = GUILayout.Toggle (m_showPlayerIds, "Show Player Ids");
-			GUILayout.EndHorizontal();
+            if (entries != null)
+            {
+                Dictionary<string, object> jEntry = null;
 
-			m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                foreach (object entry in entries)
+                {
+                    jEntry = (Dictionary<string, object>)entry;
+                    LBEntry lbe = new LBEntry();
+                    lbe.playerId = (string)jEntry["playerId"];
+                    lbe.name = (string)jEntry["name"];
+                    lbe.rank = System.Convert.ToInt64(jEntry["rank"]);
+                    lbe.score = System.Convert.ToInt64(jEntry["score"]);
+                    
+                    m_lb.Add(lbe);
+                }
+            }
+        }
 
-			foreach (LBEntry entry in m_lb)
-			{
-				string player;
-				if (m_showPlayerIds)
-				{
-					player = entry.playerId;
-				}
-				else
-				{
-					player = entry.name == "" ? "(no name)" : entry.name;
-				}
-				GUILayout.BeginHorizontal();
-				GUILayout.Label(entry.rank.ToString () + ":");
-				GUILayout.Label (player);
-				GUILayout.FlexibleSpace ();
-				GUILayout.Label(entry.score.ToString ());
-				GUILayout.EndHorizontal();
-			}
-			
-			GUILayout.EndScrollView();
+        void ReadLeaderboardFailure(int statusCode, int reasonCode, string statusMessage, object cb)
+        {
+            Debug.LogError("Failed to read leaderboard: " + statusMessage);
+        }
 
-			GUILayout.EndVertical();
-		}
+        public void OnHUDDraw()
+        {
+            GUILayout.BeginVertical();
+            GUILayout.Box("Leaderboard Operations");
 
-	}
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Leaderboard Id:");
+            m_lbId = GUILayout.TextField(m_lbId);
+            if (GUILayout.Button("Fetch"))
+            {
+                RetrieveLeaderboard(m_lbId);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Score:");
+            m_score = GUILayout.TextField(m_score, GUILayout.MinWidth(100));
+            if (GUILayout.Button("Post"))
+            {
+                long scoreAsLong;
+                if (long.TryParse(m_score, out scoreAsLong))
+                {
+                    PostScore(m_lbId, scoreAsLong);
+                }
+                else
+                {
+                    Debug.LogError("Can't parse score to long value");
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Box("Results");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            m_showPlayerIds = GUILayout.Toggle(m_showPlayerIds, "Show Player Ids");
+            GUILayout.EndHorizontal();
+
+            m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+
+            foreach (LBEntry entry in m_lb)
+            {
+                string player;
+                if (m_showPlayerIds)
+                {
+                    player = entry.playerId;
+                }
+                else
+                {
+                    player = entry.name == "" ? "(no name)" : entry.name;
+                }
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(entry.rank.ToString() + ":");
+                GUILayout.Label(player);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(entry.score.ToString());
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.EndScrollView();
+
+            GUILayout.EndVertical();
+        }
+
+    }
 }
