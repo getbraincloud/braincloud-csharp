@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using LitJson;
+using JsonFx.Json;
 
 namespace BrainCloudUnity.HUD
 {
@@ -39,20 +38,16 @@ namespace BrainCloudUnity.HUD
 
         void ReadPlayerStatsSuccess(string json, object cb)
         {
-            JsonData jObj = JsonMapper.ToObject(json);
-            JsonData jStats = jObj["data"]["statistics"];
-            IDictionary dStats = jStats as IDictionary;
-            if (dStats != null)
+            Dictionary<string, object> jObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
+            Dictionary<string, object> data = (Dictionary<string, object>)jObj["data"];
+            Dictionary<string, object> stats = (Dictionary<string, object>)data["statistics"];
+            if (stats != null)
             {
-                foreach (string key in dStats.Keys)
+                foreach (string key in stats.Keys)
                 {
                     PlayerStatistic stat = new PlayerStatistic();
-                    stat.name = (string)key;
-                    JsonData value = (JsonData)dStats[key];
-
-                    // silly that LitJson can't upcast an int to a long...
-                    stat.value = value.IsInt ? (int)value : (long)value;
-
+                    stat.name = key;
+                    HUDLeaderboard.ReadLongSafe(stats[key], ref stat.value);
                     m_stats[stat.name] = stat;
                 }
             }
