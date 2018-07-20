@@ -1733,7 +1733,6 @@ namespace BrainCloud.Internal
         public Dictionary<string, object>[] responses = null;
         public Dictionary<string, object>[] events = null;
 
-
         public JsonResponseBundleV2()
         { }
     }

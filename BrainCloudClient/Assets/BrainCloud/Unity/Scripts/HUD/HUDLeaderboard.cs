@@ -75,23 +75,11 @@ namespace BrainCloudUnity.HUD
                     LBEntry lbe = new LBEntry();
                     lbe.playerId = (string)jEntry["playerId"];
                     lbe.name = (string)jEntry["name"];
-
-                    ReadLongSafe(jEntry["rank"], ref lbe.rank);
-                    ReadLongSafe(jEntry["score"], ref lbe.score);
+                    lbe.rank = System.Convert.ToInt64(jEntry["rank"]);
+                    lbe.score = System.Convert.ToInt64(jEntry["score"]);
+                    
                     m_lb.Add(lbe);
                 }
-            }
-        }
-
-        public static void ReadLongSafe(object in_item, ref long rToSet)
-        {
-            try
-            {
-                rToSet = (long)in_item;
-            }
-            catch (System.InvalidCastException)
-            {
-                rToSet = (int)in_item;
             }
         }
 

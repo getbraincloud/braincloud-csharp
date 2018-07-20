@@ -117,6 +117,25 @@ namespace BrainCloud.Entity
             return null;
         }
 
+        public BCUserEntity NewUserFromDictionary(Dictionary<string, object> in_dict)
+        {
+            BCUserEntity toReturn = null;
+            if (in_dict != null)
+            {
+                try
+                {
+                    toReturn = NewUserEntity((string)in_dict["entityType"]);
+                    toReturn.ReadFromJson(in_dict);
+                }
+                catch (Exception)
+                {
+                    /* do nadda */
+                }
+            }
+
+            return toReturn;
+        }
+
         // the list of entitiies
         public IList<BCUserEntity> NewUserEntitiesFromJsonString(string json, Array entitiesJson)
         {
@@ -127,9 +146,7 @@ namespace BrainCloud.Entity
                 try
                 {
                     child = entitiesJson.GetValue(i) as Dictionary<string, object>;
-                    BCUserEntity entity = null;
-                    entity = NewUserEntity((string)child["entityType"]);
-                    entity.ReadFromJson(child);
+                    BCUserEntity entity = NewUserFromDictionary(child);
                     entities.Add(entity);
                 }
                 catch (Exception)

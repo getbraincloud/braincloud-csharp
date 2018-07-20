@@ -48,7 +48,7 @@ namespace BrainCloudUnity.HUD
                 {
                     GlobalStatistic stat = new GlobalStatistic();
                     stat.name = key;
-                    HUDLeaderboard.ReadLongSafe(stats[key], ref stat.value);
+                    stat.value = System.Convert.ToInt64(stats[key]);
                     
                     m_stats[stat.name] = stat;
                 }

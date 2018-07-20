@@ -47,7 +47,7 @@ namespace BrainCloudUnity.HUD
                 {
                     PlayerStatistic stat = new PlayerStatistic();
                     stat.name = key;
-                    HUDLeaderboard.ReadLongSafe(stats[key], ref stat.value);
+                    stat.value = System.Convert.ToInt64(stats[key]);
                     m_stats[stat.name] = stat;
                 }
             }
