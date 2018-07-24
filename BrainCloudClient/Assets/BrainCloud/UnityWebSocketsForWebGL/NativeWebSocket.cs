@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_WEBGL && !UNITY_EDITOR
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -155,3 +156,4 @@ public class CloseError
         }
     }
 }
+#endif
