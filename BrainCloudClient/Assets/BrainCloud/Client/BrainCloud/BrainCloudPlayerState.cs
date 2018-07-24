@@ -5,9 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
 using JsonFx.Json;
 using BrainCloud.Internal;
 
@@ -17,20 +14,9 @@ namespace BrainCloud
     {
         private BrainCloudClient _client;
 
-        public BrainCloudPlayerState (BrainCloudClient client)
+        public BrainCloudPlayerState(BrainCloudClient client)
         {
             _client = client;
-        }
-
-        [Obsolete("This has been deprecated. Use ReadUserState instead - removal after September 1 2017")]
-        public void ReadPlayerState(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Read, null, callback);
-            _client.SendRequest(sc);
         }
 
         /// <summary>
@@ -103,17 +89,6 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-        [Obsolete("This has been deprecated. Use ResetUser instead - removal after September 1 2017")]
-        public void ResetPlayer(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.DataReset, null, callback);
-            _client.SendRequest(sc);
-        }
-
         /// <summary>
         /// This method will delete *most* data for the currently logged in user.
         /// Data which is not deleted includes: currency, credentials, and
@@ -167,21 +142,6 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use UpdateUserName instead - removal after September 1 2017")]
-        public void UpdatePlayerName(
-            string userName,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceUpdateNameData.Value] = userName;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateName, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -259,7 +219,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             if (Util.IsOptionalParameterValid(jsonSummaryData))
             {
-                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>> (jsonSummaryData);
+                Dictionary<string, object> summaryData = JsonReader.Deserialize<Dictionary<string, object>>(jsonSummaryData);
                 data[OperationParam.PlayerStateServiceUpdateSummaryFriendData.Value] = summaryData;
             }
             else data = null;
@@ -325,7 +285,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            Dictionary<string, object> attributes = JsonReader.Deserialize<Dictionary<string, object>> (jsonAttributes);
+            Dictionary<string, object> attributes = JsonReader.Deserialize<Dictionary<string, object>>(jsonAttributes);
             data[OperationParam.PlayerStateServiceAttributes.Value] = attributes;
             data[OperationParam.PlayerStateServiceWipeExisting.Value] = wipeExisting;
 
@@ -364,21 +324,6 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.RemoveAttributes, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use UpdateUserPictureUrl instead - removal after September 1 2017")]
-        public void UpdatePlayerPictureUrl(
-            string pictureUrl,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServicePlayerPictureUrl.Value] = pictureUrl;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdatePictureUrl, data, callback);
             _client.SendRequest(sc);
         }
 

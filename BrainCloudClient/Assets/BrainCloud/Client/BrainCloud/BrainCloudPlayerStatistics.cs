@@ -19,17 +19,6 @@ namespace BrainCloud
             _client = client;
         }
 
-        [Obsolete("This has been deprecated. Use ReadAllUserStats instead - removal after September 1 2017")]
-        public void ReadAllPlayerStats(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Read, null, callback);
-            _client.SendRequest(sc);
-        }
-
         /// <summary>
         /// Read all available user statistics.
         /// </summary>
@@ -54,16 +43,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Read, null, callback);
             _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use ReadUserStatsSubset instead - removal after September 1 2017")]
-        public void ReadPlayerStatsSubset(
-            IList<string> playerStats,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ReadUserStatsSubset(playerStats, success, failure, cbObject);
         }
 
         /// <summary>
@@ -99,16 +78,6 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-        [Obsolete("This has been deprecated. Use ReadUserStatsForCategory instead - removal after September 1 2017")]
-        public void ReadPlayerStatsForCategory(
-            string category,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ReadUserStatsForCategory(category, success, failure, cbObject);
-        }
-
         /// <summary>
         /// Method retrieves the user statistics for the given category.
         /// </summary>
@@ -142,15 +111,6 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-        [Obsolete("This has been deprecated. Use ResetAllUserStats instead - removal after September 1 2017")]
-        public void ResetAllPlayerStats(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ResetAllUserStats(success, failure, cbObject);
-        }
-
         /// <summary>
         /// Reset all of the statistics for this user back to their initial value.
         /// </summary>
@@ -176,22 +136,6 @@ namespace BrainCloud
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Reset, null, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use IncrementUserStats instead - removal after September 1 2017")]
-        public void IncrementPlayerStats(
-            string jsonData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-            data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -238,21 +182,6 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
             data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated. Use IncrementUserStats instead - removal after September 1 2017")]
-        public void IncrementPlayerStats(
-            Dictionary<string, object> dictData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStatisticsServiceStats.Value] = dictData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);

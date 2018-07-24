@@ -309,7 +309,7 @@ public class BrainCloudWrapper
         Client = new BrainCloudClient();
         WrapperName = wrapperName;
     }
-    
+
     public void Update()
     {
         if (Client != null)

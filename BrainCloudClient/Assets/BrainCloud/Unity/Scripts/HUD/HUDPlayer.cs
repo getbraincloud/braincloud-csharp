@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using LitJson;
+using JsonFx.Json;
 
 namespace BrainCloudUnity.HUD
 {
@@ -29,15 +28,16 @@ namespace BrainCloudUnity.HUD
 		{
 			m_attributes.Clear ();
 
-			JsonData jObj = JsonMapper.ToObject(json);
-			JsonData jStats = jObj["data"]["attributes"];
-			IDictionary dStats = jStats as IDictionary;
-			if (dStats != null)
+            Dictionary<string, object> jObj = JsonReader.Deserialize<Dictionary<string, object>>(json);
+            Dictionary<string, object> data = (Dictionary<string, object>)jObj["data"];
+            Dictionary<string, object> stats = (Dictionary<string, object>)data["attributes"];
+            
+			if (stats != null)
 			{
-				foreach (string key in dStats.Keys)
+				foreach (string key in stats.Keys)
 				{
-					string name = (string) key;
-					string value = (string) dStats[key];
+					string name = key;
+					string value = (string)stats[key];
 					m_attributes[name] = value;
 				}
 			}
