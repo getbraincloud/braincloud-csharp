@@ -94,7 +94,7 @@ namespace BrainCloudTests
     {
         public static string ENTITY_TYPE = "player";
 
-        public Player()
+        public Player(BrainCloudEntity in_bcEntityService) : base(in_bcEntityService)
         { 
             // set up some defaults
             m_entityType = "player";
