@@ -8,6 +8,9 @@ If you haven't signed up or you want to log into the brainCloud portal, you can 
 
 https://portal.braincloudservers.com/
 
+The brainCloud API Reference can be found here: 
+
+http://getbraincloud.com/apidocs/apiref/#capi-auth
 
 ## Releases
 
