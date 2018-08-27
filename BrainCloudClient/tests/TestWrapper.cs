@@ -51,6 +51,73 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestSmartSwitchAuthenticateEmailFromAnonAuth()
+        {
+            _bc.ResetStoredAnonymousId();
+            _bc.ResetStoredProfileId();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+
+            tr = new TestResult(_bc);
+
+            
+            _bc.SmartSwitchAuthenticateEmail(
+               "testAuth",
+               "testPass",
+               true,
+               tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSmartSwitchAuthenticateEmailFromAuth()
+        {
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
+            _bc.ResetStoredAnonymousId();
+            _bc.ResetStoredProfileId();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AuthenticateUniversal(
+                GetUser(Users.UserA).Id + "WW",
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.SmartSwitchAuthenticateEmail(
+               "testAuth",
+               "testPass",
+               true,
+               tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSmartSwitchAuthenticateEmailFromNoAuth()
+        {
+            _bc.Client.AuthenticationService.ClearSavedProfileID();
+            _bc.ResetStoredAnonymousId();
+            _bc.ResetStoredProfileId();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.SmartSwitchAuthenticateEmail(
+                "testAuth",
+                "testPass",
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         //[Test] //TODO Jon
         public void TestReconnect()
         {
