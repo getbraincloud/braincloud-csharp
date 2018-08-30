@@ -322,7 +322,11 @@ namespace BrainCloud.Internal
 
         //tournament
         public static readonly ServiceOperation GetTournamentStatus = new ServiceOperation("GET_TOURNAMENT_STATUS");
+        public static readonly ServiceOperation GetDivisionInfo = new ServiceOperation("GET_DIVISION_INFO");
+        public static readonly ServiceOperation GetMyDivisions = new ServiceOperation("GET_MY_DIVISIONS");
+        public static readonly ServiceOperation JoinDivision= new ServiceOperation("JOIN_DIVISION");
         public static readonly ServiceOperation JoinTournament = new ServiceOperation("JOIN_TOURNAMENT");
+        public static readonly ServiceOperation LeaveDivisionInstance = new ServiceOperation("LEAVE_DIVISION_INSTANCE");
         public static readonly ServiceOperation LeaveTournament = new ServiceOperation("LEAVE_TOURNAMENT");
         public static readonly ServiceOperation PostTournamentScore = new ServiceOperation("POST_TOURNAMENT_SCORE");
         public static readonly ServiceOperation PostTournamentScoreWithResults = new ServiceOperation("POST_TOURNAMENT_SCORE_WITH_RESULTS");
