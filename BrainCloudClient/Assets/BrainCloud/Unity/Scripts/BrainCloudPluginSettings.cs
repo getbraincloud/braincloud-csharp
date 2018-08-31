@@ -33,6 +33,8 @@ namespace BrainCloudUnity
             {
                 get
                 {
+                    if (_instance) _instance.ClientVersion = BrainCloud.Version.GetVersion();
+                    
                     if (_instance) return _instance;
 
                     _instance = Resources.Load("BrainCloudPluginSettings") as BrainCloudPluginSettings;
