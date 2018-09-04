@@ -58,6 +58,65 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Gets the info of specified division set
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_DIVISION_INFO
+        /// </remarks>
+        /// <param name="divSetId">
+        /// The division 
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetDivisionInfo(
+            string divSetId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.DivSetId.Value] = divSetId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.GetDivisionInfo, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets the player's recently active divisions
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_MY_DIVISIONS
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetMyDivisions(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.GetMyDivisions, null, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Get tournament status associated with a leaderboard
         /// </summary>
         /// <remarks>
@@ -92,6 +151,50 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.GetTournamentStatus, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets the info of specified division set
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_DIVISION_INFO
+        /// </remarks>
+        /// <param name="divSetId">
+        /// The division 
+        /// </param>
+        /// <param name="tournamentCode">
+        /// The tournament to join
+        /// </param>
+        /// <param name="initialScore">
+        /// The initial score for players first joining a tournament
+        /// Usually 0, unless leaderboard is LOW_VALUE
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void JoinDivision(
+            string divSetId,
+            string tournamentCode,
+            long initialScore,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.DivSetId.Value] = divSetId;
+            data[OperationParam.TournamentCode.Value] = tournamentCode;
+            data[OperationParam.InitialScore.Value] = initialScore;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.JoinDivision, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -137,6 +240,39 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.JoinTournament, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets the info of specified division set
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_DIVISION_INFO
+        /// </remarks>
+        /// <param name="learboardId">
+        /// The division 
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void LeaveDivisionInstance(
+            string leaderboardId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.LeaveDivisionInstance, data, callback);
             _client.SendRequest(sc);
         }
 
