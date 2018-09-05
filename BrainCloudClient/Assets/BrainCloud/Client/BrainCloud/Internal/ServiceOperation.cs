@@ -320,6 +320,18 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation DetachPeer = new ServiceOperation("DETACH_PEER");
         public static readonly ServiceOperation GetPeerProfiles = new ServiceOperation("GET_PEER_PROFILES");
 
+        //presence
+        public static readonly ServiceOperation ForcePush = new ServiceOperation("FORCE_PUSH");
+        public static readonly ServiceOperation GetPresenceOfFriends = new ServiceOperation("GET_PRESENCE_OF_FRIENDS");
+        public static readonly ServiceOperation GetPresenceOfGroup = new ServiceOperation("GET_PRESENCE_OF_GROUP");
+        public static readonly ServiceOperation GetPresenceOfUsers = new ServiceOperation("GET_PRESENCE_OF_USERS");
+        public static readonly ServiceOperation RegisterListenersForFriends = new ServiceOperation("REGISTER_LISTENERS_FOR_FRIENDS");
+        public static readonly ServiceOperation RegisterListenersForGroup = new ServiceOperation("REGISTER_LISTENERS_FOR_GROUP");
+        public static readonly ServiceOperation RegisterListenersForProfiles = new ServiceOperation("REGISTER_LISTENERS_FOR_PROFILES");
+        public static readonly ServiceOperation SetVisibility = new ServiceOperation("SET_VISIBILITY");
+        public static readonly ServiceOperation StopListening = new ServiceOperation("STOP_LISTENING");
+        public static readonly ServiceOperation UpdateActivity = new ServiceOperation("UPDATE_ACTIVITY");
+
         //tournament
         public static readonly ServiceOperation GetTournamentStatus = new ServiceOperation("GET_TOURNAMENT_STATUS");
         public static readonly ServiceOperation GetDivisionInfo = new ServiceOperation("GET_DIVISION_INFO");
