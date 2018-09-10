@@ -152,6 +152,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudProduct.cs">
       <Link>BrainCloud\BrainCloudProduct.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPresence.cs">
+      <Link>BrainCloud\BrainCloudPresence.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudProfanity.cs">
       <Link>BrainCloud\BrainCloudProfanity.cs</Link>
     </Compile>

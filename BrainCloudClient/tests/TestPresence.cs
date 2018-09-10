@@ -14,7 +14,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.ForcePush(
+            _bc.Client.PresenceService.ForcePush(
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -25,7 +25,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.GetPresenceOfFriends(
+            _bc.Client.PresenceService.GetPresenceOfFriends(
                 "brainCloud",
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -38,12 +38,12 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.GetPresenceOfGroup(
+            _bc.Client.PresenceService.GetPresenceOfGroup(
                 "brainCloud",
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_GROUP_ID);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace BrainCloudTests
 
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.GetTournamentStatus(
+            _bc.Client.PresenceService.GetPresenceOfUsers(
                 data,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -68,7 +68,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.RegisterListenersForFriends(
+            _bc.Client.PresenceService.RegisterListenersForFriends(
                 "brainCloud",
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -81,12 +81,12 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.RegisterListenersForGroup(
-                "aaa-bbb-ccc",
+            _bc.Client.PresenceService.RegisterListenersForGroup(
+                "brainCloud",
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_GROUP_ID);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace BrainCloudTests
 
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.RegisterListenersForProfiles(
+            _bc.Client.PresenceService.RegisterListenersForProfiles(
                 data,
                 true,
                 tr.ApiSuccess, tr.ApiError);
@@ -111,11 +111,11 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.SetVisibility(
+            _bc.Client.PresenceService.SetVisibility(
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, PRESENCE_NOT_INITIALIZED);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PRESENCE_NOT_INITIALIZED);
         }
 
         [Test]
@@ -123,10 +123,10 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.StopListening(
+            _bc.Client.PresenceService.StopListening(
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, PRESENCE_NOT_INITIALIZED);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PRESENCE_NOT_INITIALIZED);
         }
 
         [Test]
@@ -134,11 +134,11 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PresenceService.UpdateActivity(
+            _bc.Client.PresenceService.UpdateActivity(
                 "{\"test\":\"thing\"}",
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, PRESENCE_NOT_INITIALIZED);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_PARAMETER_TYPE);
         }
     }
 }

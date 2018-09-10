@@ -43,7 +43,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ForcePush, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.ForcePush, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -80,11 +80,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = platform;
-            data[OperationParam.ProductServiceCurrencyId.Value] = includeOffline;
+            data[OperationParam.PresenceServicePlatform.Value] = platform;
+            data[OperationParam.PresenceServiceIncludeOffline.Value] = includeOffline;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetPresenceOfFriends, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.GetPresenceOfFriends, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -119,11 +119,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = groupId;
-            data[OperationParam.ProductServiceCurrencyId.Value] = includeOffline;
+            data[OperationParam.PresenceServiceGroupId.Value] = groupId;
+            data[OperationParam.PresenceServiceIncludeOffline.Value] = includeOffline;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetPresenceOfGroup, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.GetPresenceOfGroup, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -158,11 +158,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = profileIds;
-            data[OperationParam.ProductServiceCurrencyId.Value] = includeOffline;
+            data[OperationParam.PresenceServiceProfileIds.Value] = profileIds;
+            data[OperationParam.PresenceServiceIncludeOffline.Value] = includeOffline;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.GetPresenceOfUsers, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.GetPresenceOfUsers, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -202,11 +202,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = platform;
-            data[OperationParam.ProductServiceCurrencyId.Value] = bidirectional;
+            data[OperationParam.PresenceServicePlatform.Value] = platform;
+            data[OperationParam.PresenceServiceBidirectional.Value] = bidirectional;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.RegisterListenersForFriends, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.RegisterListenersForFriends, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -240,11 +240,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = groupId;
-            data[OperationParam.ProductServiceCurrencyId.Value] = bidirectional;
+            data[OperationParam.PresenceServiceGroupId.Value] = groupId;
+            data[OperationParam.PresenceServiceBidirectional.Value] = bidirectional;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.RegisterListenersForGroup, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.RegisterListenersForGroup, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -280,11 +280,11 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = profileIds;
-            data[OperationParam.ProductServiceCurrencyId.Value] = bidirectional;
+            data[OperationParam.PresenceServiceProfileIds.Value] = profileIds;
+            data[OperationParam.PresenceServiceBidirectional.Value] = bidirectional;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.RegisterListenersForProfiles, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.RegisterListenersForProfiles, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -314,10 +314,10 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = visible;
+            data[OperationParam.PresenceServiceVisibile.Value] = visible;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.SetVisibility, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.SetVisibility, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -347,7 +347,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.StopListening, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.StopListening, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -377,10 +377,10 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ProductServiceCurrencyId.Value] = jsonActivity;
+            data[OperationParam.PresenceServiceActivity.Value] = jsonActivity;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.UpdateActivity, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.UpdateActivity, data, callback);
             _client.SendRequest(sc);
         }
     }

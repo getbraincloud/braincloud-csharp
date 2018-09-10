@@ -167,6 +167,15 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStatisticEventServiceEventMultiplier = new OperationParam("eventMultiplier");
         public static readonly OperationParam PlayerStatisticEventServiceEvents = new OperationParam("events");
 
+        // Presence Params
+        public static readonly OperationParam PresenceServicePlatform = new OperationParam("platform");
+        public static readonly OperationParam PresenceServiceIncludeOffline = new OperationParam("includeOffline");
+        public static readonly OperationParam PresenceServiceGroupId = new OperationParam("groupId");
+        public static readonly OperationParam PresenceServiceProfileIds = new OperationParam("profileIds");
+        public static readonly OperationParam PresenceServiceBidirectional = new OperationParam("bidirectional");
+        public static readonly OperationParam PresenceServiceVisibile = new OperationParam("visible");
+        public static readonly OperationParam PresenceServiceActivity = new OperationParam("activity");
+
         // Player State Service - Read Params
         public static readonly OperationParam PlayerStateServiceReadEntitySubtype = new OperationParam("entitySubType");
 
