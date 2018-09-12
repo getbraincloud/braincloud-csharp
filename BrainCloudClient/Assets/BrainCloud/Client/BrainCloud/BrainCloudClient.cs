@@ -125,7 +125,8 @@ namespace BrainCloud
         private BrainCloudGlobalEntity _globalEntityService;
         private BrainCloudGlobalApp _globalAppService;
         private BrainCloudProduct _productService;
-        private BrainCloudPresence _presenceService;
+        private BrainCloudVirtualCurrency _virtualCurrencyService;
+        private BrainCloudAppStore _appStore;
         private BrainCloudPlayerStatistics _playerStatisticsService;
         private BrainCloudGlobalStatistics _globalStatisticsService;
         private BrainCloudIdentity _identityService;
@@ -188,6 +189,9 @@ namespace BrainCloud
 
             _globalAppService = new BrainCloudGlobalApp(this);
             _productService = new BrainCloudProduct(this);
+            _virtualCurrencyService = new BrainCloudVirtualCurrency(this);
+            _appStore = new BrainCloudAppStore(this);
+
             _playerStatisticsService = new BrainCloudPlayerStatistics(this);
             _globalStatisticsService = new BrainCloudGlobalStatistics(this);
 
@@ -225,7 +229,6 @@ namespace BrainCloud
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
             _rttComms = new RTTComms(this);
-            _presenceService = new BrainCloudPresence(this);
         }
 
         //---------------------------------------------------------------
@@ -331,6 +334,16 @@ namespace BrainCloud
         public BrainCloudProduct ProductService
         {
             get { return _productService; }
+        }
+
+        public BrainCloudVirtualCurrency VirtualCurrencyService
+        {
+            get { return _virtualCurrencyService; }
+        }
+
+        public BrainCloudAppStore AppStoreService
+        {
+            get { return _appStore; }
         }
 
         public BrainCloudPlayerStatistics PlayerStatisticsService
@@ -448,11 +461,6 @@ namespace BrainCloud
             get { return _profanityService; }
         }
 
-        public BrainCloudPresence PresenceService
-        {
-            get { return _presenceService; }
-        }
-
         public BrainCloudFile FileService
         {
             get { return _fileService; }
@@ -512,11 +520,6 @@ namespace BrainCloud
         public BrainCloudGlobalEntity GetGlobalEntityService()
         {
             return GlobalEntityService;
-        }
-
-        public BrainCloudPresence GetPresenceService()
-        {
-            return PresenceService;
         }
 
         public BrainCloudProduct GetProductService()

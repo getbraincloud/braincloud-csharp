@@ -136,6 +136,16 @@ public class BrainCloudWrapper
         get { return Client.ProductService; }
     }
 
+    public BrainCloudVirtualCurrency VirtualCurrencyService
+    {
+        get { return Client.VirtualCurrencyService; }
+    }
+
+    public BrainCloudAppStore AppStoreService
+    {
+        get { return Client.AppStoreService; }
+    }
+
     public BrainCloudPlayerStatistics PlayerStatisticsService
     {
         get { return Client.PlayerStatisticsService; }

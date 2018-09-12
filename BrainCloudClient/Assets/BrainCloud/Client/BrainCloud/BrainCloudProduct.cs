@@ -40,6 +40,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudVirtualCurrency.getCurrency")]
         public void GetCurrency(
             string currencyType,
             SuccessCallback success = null,
@@ -85,6 +86,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.GetSalesInventory")]
         public void GetSalesInventory(
             string platform,
             string userCurrency,
@@ -129,6 +131,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.GetSalesInventoryByCategory")]
         public void GetSalesInventoryByCategory(
             string platform,
             string userCurrency,
@@ -175,6 +178,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.StartPurchase")]
         public void StartSteamTransaction(
             string language,
             string itemId,
@@ -211,6 +215,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.FinalizePurchase")]
         public void FinalizeSteamTransaction(
             string transId,
             SuccessCallback success = null,
@@ -245,6 +250,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.VerifyPurchase")]
         public void VerifyMicrosoftReceipt(
             string receipt,
             SuccessCallback success = null,
@@ -275,6 +281,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.GetEligiblePromotions")]
         public void GetEligiblePromotions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -305,6 +312,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.VerifyPurchase")]
         public void VerifyItunesReceipt(
             string base64EncReceiptData,
             SuccessCallback success = null,
@@ -339,6 +347,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.VerifyPurchase")]
         public void ConfirmFacebookPurchase(
             string signedRequest,
             SuccessCallback success = null,
@@ -379,6 +388,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Will be removed September 2019, Please use BrainCloudAppStore.VerifyPurchase")]
         public void ConfirmGooglePlayPurchase(
             string orderId,
             string productId,
@@ -398,7 +408,6 @@ namespace BrainCloud
         }
 
         #region Deprecated
-
         [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
         public void AwardCurrency(
             string currencyType,
@@ -410,12 +419,12 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ProductServiceCurrencyId.Value] = currencyType;
             data[OperationParam.ProductServiceCurrencyAmount.Value] = amount;
- 
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.AwardVC, data, callback);
             _client.SendRequest(sc);
         }
- 
+
         [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
         public void ConsumeCurrency(
             string currencyType,
@@ -427,12 +436,12 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.ProductServiceCurrencyId.Value] = currencyType;
             data[OperationParam.ProductServiceCurrencyAmount.Value] = amount;
- 
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ConsumePlayerVC, data, callback);
             _client.SendRequest(sc);
         }
- 
+
         [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
         public void ResetCurrency(
             SuccessCallback success = null,
@@ -443,7 +452,7 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Product, ServiceOperation.ResetPlayerVC, null, callback);
             _client.SendRequest(sc);
         }
-        
+
         #endregion
     }
 }

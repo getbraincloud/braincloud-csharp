@@ -123,8 +123,12 @@ namespace BrainCloud.Internal
 
         public static readonly ServiceOperation AwardParentCurrency = new ServiceOperation("AWARD_PARENT_VC");
         public static readonly ServiceOperation ConsumeParentCurrency = new ServiceOperation("CONSUME_PARENT_VC");
-        public static readonly ServiceOperation GetParentCurrency = new ServiceOperation("GET_PARENT_VC");
+        public static readonly ServiceOperation GetParentVC = new ServiceOperation("GET_PARENT_VC");
         public static readonly ServiceOperation ResetParentCurrency = new ServiceOperation("RESET_PARENT_VC");
+
+        public static readonly ServiceOperation GetPeerVC = new ServiceOperation("GET_PEER_VC");
+        public static readonly ServiceOperation StartPurchase = new ServiceOperation("START_PURCHASE");
+        public static readonly ServiceOperation FinalizePurchase = new ServiceOperation("FINALIZE_PURCHASE");
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
