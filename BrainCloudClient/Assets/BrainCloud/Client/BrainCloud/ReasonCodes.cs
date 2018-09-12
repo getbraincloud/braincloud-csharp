@@ -452,6 +452,9 @@ namespace BrainCloud
         public const int INVALID_HEADER_APP_ID = 40610;
         public const int LOBBY_TYPE_NOT_FOUND = 40611;
         public const int LOBBY_TEAM_FULL = 40612;
+        public const int DIVISION_SET_DOESNOT_EXIST = 40625;
+        public const int PRESENCE_NOT_INITIALIZED = 40627;
+        public const int LEADERBOARD_NOT_DIVISION_SET_INSTANCE = 40632;
         public const int TWITTER_AUTH_ERROR = 500006;
         public const int TWITTER_ERROR = 500007;
         public const int NOT_TEAM_ADMIN = 550000;
