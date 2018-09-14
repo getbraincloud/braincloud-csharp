@@ -191,7 +191,7 @@ namespace BrainCloud
             data[OperationParam.AppStoreServiceReceiptData.Value] = receiptData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.VerifyMicrosoftReceipt, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.VerifyPurchase, data, callback);
             _client.SendRequest(sc);
         }
 
