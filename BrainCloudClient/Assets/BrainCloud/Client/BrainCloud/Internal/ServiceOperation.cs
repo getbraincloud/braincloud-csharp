@@ -217,6 +217,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation InitializeTransaction = new ServiceOperation("INITIALIZE_TRANSACTION");
         public static readonly ServiceOperation FinalizeTransaction = new ServiceOperation("FINALIZE_TRANSACTION");
 
+        public static readonly ServiceOperation VerifyPurchase = new ServiceOperation("VERIFY_PURCHASE");
         public static readonly ServiceOperation StartSteamTransaction = new ServiceOperation("START_STEAM_TRANSACTION");
         public static readonly ServiceOperation FinalizeSteamTransaction = new ServiceOperation("FINALIZE_STEAM_TRANSACTION");
         public static readonly ServiceOperation VerifyMicrosoftReceipt = new ServiceOperation("VERIFY_MICROSOFT_RECEIPT");
