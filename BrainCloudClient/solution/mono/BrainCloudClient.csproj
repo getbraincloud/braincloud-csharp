@@ -140,6 +140,12 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudProduct.cs">
       <Link>BrainCloud\BrainCloudProduct.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudVirtualCurrency.cs">
+      <Link>BrainCloud\BrainCloudVirtualCurrency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudAppStore.cs">
+      <Link>BrainCloud\BrainCloudAppStore.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudPresence.cs">
       <Link>BrainCloud\BrainCloudPresence.cs</Link>
     </Compile>
