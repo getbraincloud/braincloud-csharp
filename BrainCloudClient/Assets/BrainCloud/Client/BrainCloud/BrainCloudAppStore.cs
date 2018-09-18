@@ -243,7 +243,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Start A Two Staged Purchase Transaction
+        /// Finalize A Two Staged Purchase Transaction
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
@@ -274,7 +274,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void StartPurchase(
+        public void FinalizePurchase(
             string storeId,
             string transationId,
             string transactionJson,

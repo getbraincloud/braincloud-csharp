@@ -159,6 +159,12 @@
     <Compile Include="..\..\..\tests\TestProduct.cs">
       <Link>TestProduct.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestVirtualCurrency.cs">
+      <Link>VirtualCurrency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestAppStore.cs">
+      <Link>AppStore.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestProfanity.cs">
       <Link>TestProfanity.cs</Link>
     </Compile>
