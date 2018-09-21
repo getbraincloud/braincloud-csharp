@@ -175,6 +175,18 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestPostChatMessageSimple()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            // Get channel id
+            string channelId = GetChannelId();
+
+            _bc.ChatService.PostChatMessageSimple(channelId, "Hello World!", true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
         private Dictionary<string, object> PostChatMessage(string channelId)
         {
             TestResult tr = new TestResult(_bc);
