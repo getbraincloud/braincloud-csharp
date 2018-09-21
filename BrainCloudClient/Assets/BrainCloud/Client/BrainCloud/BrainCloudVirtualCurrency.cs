@@ -132,8 +132,8 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-        #region Deprecated
-        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        #region Obsolete
+        [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
         public void AwardCurrency(
             string currencyType,
             ulong amount,
@@ -150,7 +150,7 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
         public void ConsumeCurrency(
             string currencyType,
             ulong amount,
