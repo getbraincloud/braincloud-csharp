@@ -256,6 +256,7 @@ namespace BrainCloud
 
         // Virtual Currency Service
         public static readonly OperationParam VirtualCurrencyServiceCurrencyId = new OperationParam("vcId");
+        public static readonly OperationParam VirtualCurrencyServiceCurrencyAmount = new OperationParam("vcAmount");
 
         // Product Service - Get Inventory Params
         public static readonly OperationParam ProductServiceGetInventoryPlatform = new OperationParam("platform");

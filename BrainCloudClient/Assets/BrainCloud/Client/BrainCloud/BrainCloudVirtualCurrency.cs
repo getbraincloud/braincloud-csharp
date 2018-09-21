@@ -131,5 +131,41 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.GetPeerVC, data, callback);
             _client.SendRequest(sc);
         }
+
+        #region Deprecated
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void AwardCurrency(
+            string currencyType,
+            ulong amount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.VirtualCurrencyServiceCurrencyId.Value] = currencyType;
+            data[OperationParam.VirtualCurrencyServiceCurrencyAmount.Value] = amount;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.AwardVC, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        [Obsolete("Method is now available in Cloud Code only for security. If you need to use it client side, enable 'Allow Currency Calls from Client' on the brainCloud dashboard")]
+        public void ConsumeCurrency(
+            string currencyType,
+            ulong amount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.VirtualCurrencyServiceCurrencyId.Value] = currencyType;
+            data[OperationParam.VirtualCurrencyServiceCurrencyAmount.Value] = amount;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.ConsumePlayerVC, data, callback);
+            _client.SendRequest(sc);
+        }
+        #endregion
     }
 }
