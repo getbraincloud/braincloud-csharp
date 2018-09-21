@@ -23,8 +23,6 @@ Package | Description
 
 To install the brainCloud library, open the brainCloudClient_unity_X.X.X.unitypackage file with your Unity Project open, and click the import prompt:
 
-
-
 Once installed, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
 - Open brainCloud | Select Settings. ![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
