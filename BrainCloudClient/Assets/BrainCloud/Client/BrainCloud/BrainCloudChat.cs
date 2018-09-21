@@ -168,13 +168,9 @@ namespace BrainCloud
         public void PostChatMessageSimple(string in_channelId, string in_plain, bool in_recordInHisory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-
-            // Build message content
-            Dictionary<string, object> content = new Dictionary<string, object>();
-            content[OperationParam.ChatText.Value] = in_plain;
             
             data[OperationParam.ChatChannelId.Value] = in_channelId;
-            data[OperationParam.ChatContent.Value] = content;
+            data[OperationParam.ChatText.Value] = in_plain;
             data[OperationParam.ChatRecordInHistory.Value] = in_recordInHisory;
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
