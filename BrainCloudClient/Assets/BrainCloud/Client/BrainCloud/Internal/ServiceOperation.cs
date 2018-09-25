@@ -314,6 +314,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateGroupEntity = new ServiceOperation("UPDATE_GROUP_ENTITY_DATA");
         public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
         public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
+        public static readonly ServiceOperation SetGroupOpen = new ServiceOperation("SET_GROUP_OPEN");
 
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");
