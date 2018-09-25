@@ -29,6 +29,20 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetSocialLeaderboardByVersion()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetSocialLeaderboardByVersion(
+                _globalLeaderboardId,
+                true,
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetMultiSocialLeaderboard()
         {
             PostScoreToGlobalLeaderboard();
@@ -322,6 +336,28 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetGroupSocialLeaderboardByVersion()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
+
+            _bc.LeaderboardService.GetGroupSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+                id,
+                0,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetPlayersSocialLeaderboard()
         {
             TestResult tr = new TestResult(_bc);
@@ -329,6 +365,20 @@ namespace BrainCloudTests
             _bc.LeaderboardService.GetPlayersSocialLeaderboard(
                 _socialLeaderboardId,
                 new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayersSocialLeaderboardByVersion()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetPlayersSocialLeaderboardByVersion(
+                _socialLeaderboardId,
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                0,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

@@ -100,6 +100,62 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Method returns the social leaderboard by its version. A player's social leaderboard is
+        /// comprised of players who are recognized as being your friend.
+        /// For now, this applies solely to Facebook connected players who are
+        /// friends with the logged in player (who also must be Facebook connected).
+        /// In the future this will expand to other identification means (such as
+        /// Game Centre, Google circles etc).
+        ///
+        /// Leaderboards entries contain the player's score and optionally, some user-defined
+        /// data associated with the score. The currently logged in player will also
+        /// be returned in the social leaderboard.
+        ///
+        /// Note: If no friends have played the game, the bestScore, createdAt, updatedAt
+        /// will contain NULL.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve
+        /// </param>
+        /// <param name="replaceName">
+        /// If true, the currently logged in player's name will be replaced
+        /// by the string "You".
+        /// </param>
+        /// <param name="versionId">
+        /// The version
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetSocialLeaderboardByVersion(
+            string leaderboardId,
+            bool replaceName,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboardByVersion, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Reads multiple social leaderboards.
         /// </summary>
         /// <remarks>
@@ -381,7 +437,7 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - ocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboardVersions
+        /// Service Operation - GET_GROUP_SOCIAL_LEADERBOARD
         /// </remarks>
         /// <param name="leaderboardId">The leaderboard to read</param>
         /// <param name="groupId">The group ID</param>
@@ -401,6 +457,37 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupSocialLeaderboard, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve the social leaderboard for a group by its version.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - ocialLeaderboard
+        /// Service Operation - GET_GROUP_SOCIAL_LEADERBOARD_BY_VERSION
+        /// </remarks>
+        /// <param name="leaderboardId">The leaderboard to read</param>
+        /// <param name="groupId">The group ID</param>
+        /// <param name="versionId">The version ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void GetGroupSocialLeaderboardByVersion(
+            string leaderboardId,
+            string groupId,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupSocialLeaderboardByVersion, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -680,6 +767,50 @@ namespace BrainCloud
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboard, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve the social leaderboard for a list of players by their version.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD_BY_VERSION
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="profileIds">
+        /// The IDs of the players
+        /// </param>
+        /// <param name="versionId">
+        /// The version
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayersSocialLeaderboardByVersion(
+            string leaderboardId,
+            IList<string> profileIds,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceProfileIds.Value] = profileIds;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboardByVersion, data, callback);
             _client.SendRequest(sc);
         }
 
