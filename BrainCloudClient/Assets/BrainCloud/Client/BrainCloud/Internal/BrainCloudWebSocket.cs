@@ -47,11 +47,8 @@ public class BrainCloudWebSocket
 #elif UNITY_WEBGL && !UNITY_EDITOR
         if (NativeWebSocket == null)
 			return;
+        webSocketInstances.Remove(NativeWebSocket.Id);
 		NativeWebSocket.CloseAsync();
-		NativeWebSocket.SetOnOpen(null);
-		NativeWebSocket.SetOnMessage(null);
-		NativeWebSocket.SetOnError(null);
-		NativeWebSocket.SetOnClose(null);
 		NativeWebSocket = null;
 #else
         if (WebSocket == null)
@@ -70,22 +67,25 @@ public class BrainCloudWebSocket
     [MonoPInvokeCallback(typeof(Action<int>))]
 	public static void NativeSocket_OnOpen(int id) {
 	
-		if (webSocketInstances[id].OnOpen != null)
+		if (webSocketInstances.ContainsKey(id) && webSocketInstances[id].OnOpen != null)
 			webSocketInstances[id].OnOpen(webSocketInstances[id]);
 	}
 
 	[MonoPInvokeCallback(typeof(Action<int>))]
 	public static void NativeSocket_OnMessage(int id) {
     
-		byte[] data = webSocketInstances[id].NativeWebSocket.Receive();
-		if (webSocketInstances[id].OnMessage != null)
-			webSocketInstances[id].OnMessage(webSocketInstances[id], data);
+        if (webSocketInstances.ContainsKey(id))
+        {
+	    	byte[] data = webSocketInstances[id].NativeWebSocket.Receive();
+	    	if (webSocketInstances[id].OnMessage != null)
+	    		webSocketInstances[id].OnMessage(webSocketInstances[id], data);
+        }
 	}
 
 	[MonoPInvokeCallback(typeof(Action<int>))]
 	public static void NativeSocket_OnError(int id) {
 		
-		if (webSocketInstances[id].OnError != null)
+		if (webSocketInstances.ContainsKey(id) && webSocketInstances[id].OnError != null)
 			webSocketInstances[id].OnError(webSocketInstances[id], webSocketInstances[id].NativeWebSocket.Error);
 	}
 
@@ -93,7 +93,7 @@ public class BrainCloudWebSocket
 	public static void NativeSocket_OnClose(int code, int id) {
     
 		CloseError errorInfo = CloseError.Get(code);
-		if (webSocketInstances[id].OnClose != null)
+		if (webSocketInstances.ContainsKey(id) && webSocketInstances[id].OnClose != null)
 			webSocketInstances[id].OnClose(webSocketInstances[id], errorInfo.Code, errorInfo.Message);
 	}
 #else
