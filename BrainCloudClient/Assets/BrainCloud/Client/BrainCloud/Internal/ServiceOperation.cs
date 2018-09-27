@@ -86,6 +86,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
         public static readonly ServiceOperation GetUsersOnlineStatus = new ServiceOperation("GET_USERS_ONLINE_STATUS");
         public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetSocialLeaderboardByVersion = new ServiceOperation("GET_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation GetMultiSocialLeaderboard = new ServiceOperation("GET_MULTI_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboardPage = new ServiceOperation("GET_GLOBAL_LEADERBOARD_PAGE");
@@ -97,7 +98,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetGroupSocialLeaderboardByVersion = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetPlayersSocialLeaderboardByVersion = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation ListAllLeaderboards = new ServiceOperation("LIST_ALL_LEADERBOARDS");
         public static readonly ServiceOperation GetGlobalLeaderboardEntryCount = new ServiceOperation("GET_GLOBAL_LEADERBOARD_ENTRY_COUNT");
         public static readonly ServiceOperation GetPlayerScore = new ServiceOperation("GET_PLAYER_SCORE");
@@ -314,6 +317,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateGroupEntity = new ServiceOperation("UPDATE_GROUP_ENTITY_DATA");
         public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
         public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
+        public static readonly ServiceOperation SetGroupOpen = new ServiceOperation("SET_GROUP_OPEN");
 
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");

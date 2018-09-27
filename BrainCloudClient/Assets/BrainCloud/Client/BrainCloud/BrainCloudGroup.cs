@@ -1024,6 +1024,35 @@ namespace BrainCloud
             SendRequest(ServiceOperation.UpdateGroupName, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// set a group to be open true or false
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - SET_GROUP_OPEN
+        /// </remarks>
+        /// <param name="groupId">
+        /// ID of the group.
+        /// </param>
+        /// <param name="isOpenGroup">
+        /// true or false if a group is open.
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void SetGroupOpen(
+            string groupId,
+            bool isOpenGroup,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup;
+
+            SendRequest(ServiceOperation.SetGroupOpen, success, failure, cbObject, data);
+        }
 
         private void SendRequest(ServiceOperation operation, SuccessCallback success, FailureCallback failure, object cbObject, IDictionary data)
         {
