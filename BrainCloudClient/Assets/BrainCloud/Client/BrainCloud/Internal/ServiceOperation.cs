@@ -86,6 +86,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
         public static readonly ServiceOperation GetUsersOnlineStatus = new ServiceOperation("GET_USERS_ONLINE_STATUS");
         public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetSocialLeaderboardByVersion = new ServiceOperation("GET_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation GetMultiSocialLeaderboard = new ServiceOperation("GET_MULTI_SOCIAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboard = new ServiceOperation("GET_GLOBAL_LEADERBOARD");
         public static readonly ServiceOperation GetGlobalLeaderboardPage = new ServiceOperation("GET_GLOBAL_LEADERBOARD_PAGE");
@@ -97,7 +98,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
         public static readonly ServiceOperation RewardTournament = new ServiceOperation("REWARD_TOURNAMENT");
         public static readonly ServiceOperation GetGroupSocialLeaderboard = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetGroupSocialLeaderboardByVersion = new ServiceOperation("GET_GROUP_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation GetPlayersSocialLeaderboard = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD");
+        public static readonly ServiceOperation GetPlayersSocialLeaderboardByVersion = new ServiceOperation("GET_PLAYERS_SOCIAL_LEADERBOARD_BY_VERSION");
         public static readonly ServiceOperation ListAllLeaderboards = new ServiceOperation("LIST_ALL_LEADERBOARDS");
         public static readonly ServiceOperation GetGlobalLeaderboardEntryCount = new ServiceOperation("GET_GLOBAL_LEADERBOARD_ENTRY_COUNT");
         public static readonly ServiceOperation GetPlayerScore = new ServiceOperation("GET_PLAYER_SCORE");
@@ -123,8 +126,12 @@ namespace BrainCloud.Internal
 
         public static readonly ServiceOperation AwardParentCurrency = new ServiceOperation("AWARD_PARENT_VC");
         public static readonly ServiceOperation ConsumeParentCurrency = new ServiceOperation("CONSUME_PARENT_VC");
-        public static readonly ServiceOperation GetParentCurrency = new ServiceOperation("GET_PARENT_VC");
+        public static readonly ServiceOperation GetParentVC = new ServiceOperation("GET_PARENT_VC");
         public static readonly ServiceOperation ResetParentCurrency = new ServiceOperation("RESET_PARENT_VC");
+
+        public static readonly ServiceOperation GetPeerVC = new ServiceOperation("GET_PEER_VC");
+        public static readonly ServiceOperation StartPurchase = new ServiceOperation("START_PURCHASE");
+        public static readonly ServiceOperation FinalizePurchase = new ServiceOperation("FINALIZE_PURCHASE");
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
@@ -213,6 +220,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation InitializeTransaction = new ServiceOperation("INITIALIZE_TRANSACTION");
         public static readonly ServiceOperation FinalizeTransaction = new ServiceOperation("FINALIZE_TRANSACTION");
 
+        public static readonly ServiceOperation VerifyPurchase = new ServiceOperation("VERIFY_PURCHASE");
         public static readonly ServiceOperation StartSteamTransaction = new ServiceOperation("START_STEAM_TRANSACTION");
         public static readonly ServiceOperation FinalizeSteamTransaction = new ServiceOperation("FINALIZE_STEAM_TRANSACTION");
         public static readonly ServiceOperation VerifyMicrosoftReceipt = new ServiceOperation("VERIFY_MICROSOFT_RECEIPT");
@@ -309,6 +317,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation UpdateGroupEntity = new ServiceOperation("UPDATE_GROUP_ENTITY_DATA");
         public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
         public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
+        public static readonly ServiceOperation SetGroupOpen = new ServiceOperation("SET_GROUP_OPEN");
 
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");
@@ -320,9 +329,25 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation DetachPeer = new ServiceOperation("DETACH_PEER");
         public static readonly ServiceOperation GetPeerProfiles = new ServiceOperation("GET_PEER_PROFILES");
 
+        //presence
+        public static readonly ServiceOperation ForcePush = new ServiceOperation("FORCE_PUSH");
+        public static readonly ServiceOperation GetPresenceOfFriends = new ServiceOperation("GET_PRESENCE_OF_FRIENDS");
+        public static readonly ServiceOperation GetPresenceOfGroup = new ServiceOperation("GET_PRESENCE_OF_GROUP");
+        public static readonly ServiceOperation GetPresenceOfUsers = new ServiceOperation("GET_PRESENCE_OF_USERS");
+        public static readonly ServiceOperation RegisterListenersForFriends = new ServiceOperation("REGISTER_LISTENERS_FOR_FRIENDS");
+        public static readonly ServiceOperation RegisterListenersForGroup = new ServiceOperation("REGISTER_LISTENERS_FOR_GROUP");
+        public static readonly ServiceOperation RegisterListenersForProfiles = new ServiceOperation("REGISTER_LISTENERS_FOR_PROFILES");
+        public static readonly ServiceOperation SetVisibility = new ServiceOperation("SET_VISIBILITY");
+        public static readonly ServiceOperation StopListening = new ServiceOperation("STOP_LISTENING");
+        public static readonly ServiceOperation UpdateActivity = new ServiceOperation("UPDATE_ACTIVITY");
+
         //tournament
         public static readonly ServiceOperation GetTournamentStatus = new ServiceOperation("GET_TOURNAMENT_STATUS");
+        public static readonly ServiceOperation GetDivisionInfo = new ServiceOperation("GET_DIVISION_INFO");
+        public static readonly ServiceOperation GetMyDivisions = new ServiceOperation("GET_MY_DIVISIONS");
+        public static readonly ServiceOperation JoinDivision= new ServiceOperation("JOIN_DIVISION");
         public static readonly ServiceOperation JoinTournament = new ServiceOperation("JOIN_TOURNAMENT");
+        public static readonly ServiceOperation LeaveDivisionInstance = new ServiceOperation("LEAVE_DIVISION_INSTANCE");
         public static readonly ServiceOperation LeaveTournament = new ServiceOperation("LEAVE_TOURNAMENT");
         public static readonly ServiceOperation PostTournamentScore = new ServiceOperation("POST_TOURNAMENT_SCORE");
         public static readonly ServiceOperation PostTournamentScoreWithResults = new ServiceOperation("POST_TOURNAMENT_SCORE_WITH_RESULTS");

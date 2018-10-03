@@ -33,7 +33,7 @@ namespace BrainCloudTests
                 200,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+            tr.Run();
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace BrainCloudTests
                 100,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+            tr.Run();
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace BrainCloudTests
             _bc.ProductService.ResetCurrency(
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(403, ReasonCodes.CURRENCY_SECURITY_ERROR);
+            tr.Run();
         }
 
         [Test]

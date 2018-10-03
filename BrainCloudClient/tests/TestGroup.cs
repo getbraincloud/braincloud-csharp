@@ -629,6 +629,23 @@ namespace BrainCloudTests
             Logout();
         }
 
+        [Test]
+        public void TestSetGroupOpen()
+        {
+            Authenticate(Users.UserA);
+            CreateGroup();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.SetGroupOpen(
+                _groupId,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+            Logout();
+        }
+
         #region Helpers
 
         private void CreateGroupAsUserA(bool isOpen = false)

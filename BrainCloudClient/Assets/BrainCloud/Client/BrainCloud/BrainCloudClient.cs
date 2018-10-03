@@ -124,7 +124,10 @@ namespace BrainCloud
         private BrainCloudEntity _entityService;
         private BrainCloudGlobalEntity _globalEntityService;
         private BrainCloudGlobalApp _globalAppService;
+        private BrainCloudPresence _presenceService;
         private BrainCloudProduct _productService;
+        private BrainCloudVirtualCurrency _virtualCurrencyService;
+        private BrainCloudAppStore _appStore;
         private BrainCloudPlayerStatistics _playerStatisticsService;
         private BrainCloudGlobalStatistics _globalStatisticsService;
         private BrainCloudIdentity _identityService;
@@ -186,7 +189,11 @@ namespace BrainCloud
             _globalEntityService = new BrainCloudGlobalEntity(this);
 
             _globalAppService = new BrainCloudGlobalApp(this);
+            _presenceService = new BrainCloudPresence(this);
             _productService = new BrainCloudProduct(this);
+            _virtualCurrencyService = new BrainCloudVirtualCurrency(this);
+            _appStore = new BrainCloudAppStore(this);
+
             _playerStatisticsService = new BrainCloudPlayerStatistics(this);
             _globalStatisticsService = new BrainCloudGlobalStatistics(this);
 
@@ -326,9 +333,24 @@ namespace BrainCloud
             get { return _globalAppService; }
         }
 
+        public BrainCloudPresence PresenceService
+        {
+            get { return _presenceService; }
+        }
+
         public BrainCloudProduct ProductService
         {
             get { return _productService; }
+        }
+
+        public BrainCloudVirtualCurrency VirtualCurrencyService
+        {
+            get { return _virtualCurrencyService; }
+        }
+
+        public BrainCloudAppStore AppStoreService
+        {
+            get { return _appStore; }
         }
 
         public BrainCloudPlayerStatistics PlayerStatisticsService
@@ -505,6 +527,11 @@ namespace BrainCloud
         public BrainCloudGlobalEntity GetGlobalEntityService()
         {
             return GlobalEntityService;
+        }
+
+        public BrainCloudPresence GetPresenceService()
+        {
+            return PresenceService;
         }
 
         public BrainCloudProduct GetProductService()

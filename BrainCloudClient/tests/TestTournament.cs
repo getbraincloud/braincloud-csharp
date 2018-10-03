@@ -9,6 +9,7 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestTournament : TestFixtureBase
     {
+        private readonly string _divSetId = "testDivSetId";
         private readonly string _tournamentCode = "testTournament";
         private readonly string _leaderboardId = "testTournamentLeaderboard";
 
@@ -40,6 +41,29 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void GetDivisionInfo()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.GetDivisionInfo(
+                "Invalid_Id",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.RunExpectFail(400, ReasonCodes.DIVISION_SET_DOESNOT_EXIST);
+        }
+
+        [Test]
+        public void GetMyDivisions()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.GetMyDivisions(
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void GetTournamentStatus()
         {
             int version = JoinTestTournament();
@@ -55,10 +79,36 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void JoinDivision()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.JoinDivision(
+                "Invalid_Id",
+                _tournamentCode,
+                _rand.Next(1000),
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(400, ReasonCodes.DIVISION_SET_DOESNOT_EXIST);
+            
+        }
+
+
+        [Test]
         public void JoinTournament()
         {
             JoinTestTournament();
             LeaveTestTournament();
+        }
+
+        [Test]
+        public void LeaveDivisionInstance()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.TournamentService.LeaveDivisionInstance(
+                "Invalid_id",
+                tr.ApiSuccess, tr.ApiError
+            );
+            tr.RunExpectFail(400, ReasonCodes.LEADERBOARD_NOT_DIVISION_SET_INSTANCE);
         }
 
         [Test]
@@ -67,6 +117,7 @@ namespace BrainCloudTests
             JoinTestTournament();
             LeaveTestTournament();
         }
+        
 
         [Test]
         public void PostTournamentScore()
@@ -179,5 +230,6 @@ namespace BrainCloudTests
             tr.Run();
             _didJoin = false;
         }
+
     }
 }

@@ -54,6 +54,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateExternalAuthName = new OperationParam("externalAuthName");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateLevelName = new OperationParam("levelName");
+        public static readonly OperationParam AuthenticateServiceAuthenticatePeerCode = new OperationParam("peerCode");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateCountryCode = new OperationParam("countryCode");
         public static readonly OperationParam AuthenticateServiceAuthenticateLanguageCode = new OperationParam("languageCode");
@@ -167,6 +168,15 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStatisticEventServiceEventMultiplier = new OperationParam("eventMultiplier");
         public static readonly OperationParam PlayerStatisticEventServiceEvents = new OperationParam("events");
 
+        // Presence Params
+        public static readonly OperationParam PresenceServicePlatform = new OperationParam("platform");
+        public static readonly OperationParam PresenceServiceIncludeOffline = new OperationParam("includeOffline");
+        public static readonly OperationParam PresenceServiceGroupId = new OperationParam("groupId");
+        public static readonly OperationParam PresenceServiceProfileIds = new OperationParam("profileIds");
+        public static readonly OperationParam PresenceServiceBidirectional = new OperationParam("bidirectional");
+        public static readonly OperationParam PresenceServiceVisibile = new OperationParam("visible");
+        public static readonly OperationParam PresenceServiceActivity = new OperationParam("activity");
+
         // Player State Service - Read Params
         public static readonly OperationParam PlayerStateServiceReadEntitySubtype = new OperationParam("entitySubType");
 
@@ -235,6 +245,18 @@ namespace BrainCloud
         // Product Service
         public static readonly OperationParam ProductServiceCurrencyId = new OperationParam("vc_id");
         public static readonly OperationParam ProductServiceCurrencyAmount = new OperationParam("vc_amount");
+
+        // AppStore 
+        public static readonly OperationParam AppStoreServiceStoreId = new OperationParam("storeId");
+        public static readonly OperationParam AppStoreServiceReceiptData = new OperationParam("receiptData");
+        public static readonly OperationParam AppStoreServicePurchaseData = new OperationParam("purchaseData");
+        public static readonly OperationParam AppStoreServiceTransactionId = new OperationParam("transactionId");
+        public static readonly OperationParam AppStoreServiceTransactionData = new OperationParam("transactionData");
+        public static readonly OperationParam AppStoreServicePriceInfoCriteria = new OperationParam("priceInfoCriteria");
+
+        // Virtual Currency Service
+        public static readonly OperationParam VirtualCurrencyServiceCurrencyId = new OperationParam("vcId");
+        public static readonly OperationParam VirtualCurrencyServiceCurrencyAmount = new OperationParam("vcAmount");
 
         // Product Service - Get Inventory Params
         public static readonly OperationParam ProductServiceGetInventoryPlatform = new OperationParam("platform");
@@ -376,6 +398,7 @@ namespace BrainCloud
         public static readonly OperationParam EmailAddress = new OperationParam("emailAddress");
 
         public static readonly OperationParam LeaderboardId = new OperationParam("leaderboardId");
+        public static readonly OperationParam DivSetId = new OperationParam("divSetId");
         public static readonly OperationParam VersionId = new OperationParam("versionId");
         public static readonly OperationParam TournamentCode = new OperationParam("tournamentCode");
         public static readonly OperationParam InitialScore = new OperationParam("initialScore");
