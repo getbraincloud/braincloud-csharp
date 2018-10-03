@@ -15,7 +15,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.VirtualCurrencyService.GetCurrency("_invalid_id_", tr.ApiSuccess, tr.ApiError);
+            _bc.VirtualCurrencyService.GetCurrency(null, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 
@@ -24,7 +24,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.VirtualCurrencyService.GetParentCurrency("_invalid_id_", "_invalid_level_", tr.ApiSuccess, tr.ApiError);
+            _bc.VirtualCurrencyService.GetParentCurrency(null, "_invalid_level_", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_PLAYER_PARENT);
         }
 
@@ -33,7 +33,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.VirtualCurrencyService.GetPeerCurrency("_invalid_id_", "_invalid_peer_code_", tr.ApiSuccess, tr.ApiError);
+            _bc.VirtualCurrencyService.GetPeerCurrency(null, "_invalid_peer_code_", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PROFILE_PEER_NOT_FOUND);
         }
     }
