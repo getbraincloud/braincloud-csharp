@@ -291,6 +291,7 @@ namespace BrainCloud.Internal
         /// Initialize the communications library with the specified serverURL and secretKey.
         /// </summary>
         /// <param name="serverURL">Server URL.</param>
+        /// /// <param name="appId">AppId</param>
         /// <param name="secretKey">Secret key.</param>
         public void Initialize(string serverURL, string appId, string secretKey)
         {
