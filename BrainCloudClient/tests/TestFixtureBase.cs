@@ -18,6 +18,7 @@ namespace BrainCloudTests
         protected string Secret = "";
         protected string Version = "1.0.0";
         protected string ChildAppId = "";
+        protected string ChildSecret = "";
         protected string ParentLevel = "";
         protected string PeerName = "";
 
@@ -31,7 +32,10 @@ namespace BrainCloudTests
             LoadIds();
 
             _bc = new BrainCloudWrapper();
-            _bc.Init(ServerUrl, Secret, AppId, Version);
+            Dictionary<String, String> secretMap = new Dictionary<String, String>();
+            secretMap.Add(AppId, Secret);
+            secretMap.Add(ChildAppId, ChildSecret);
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
 
@@ -201,6 +205,11 @@ namespace BrainCloudTests
                     {
                         ChildAppId = line.Substring(("childAppId=").Length);
                         ChildAppId.Trim();
+                    }
+                    else if (line.StartsWith("childSecret="))
+                    {
+                        ChildSecret = line.Substring(("childSecret=").Length);
+                        ChildSecret.Trim();
                     }
                     else if (line.StartsWith("parentLevelName="))
                     {
