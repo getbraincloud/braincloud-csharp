@@ -2,7 +2,6 @@
 
 using UnityEngine;
 using System.IO;
-using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -75,8 +74,7 @@ namespace BrainCloudUnity
         // Settings
         public const string DEFAULT_BRAINCLOUD_URL = "https://sharedprod.braincloudservers.com";
 
-        [SerializeField]
-        private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
+        [SerializeField] private string m_serverURL = DEFAULT_BRAINCLOUD_URL;
 
         public string ServerURL
         {
@@ -101,8 +99,7 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField]
-        private string m_secretKey = "";
+        [SerializeField] private string m_secretKey = "";
 
         public string SecretKey
         {
@@ -127,8 +124,7 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField]
-        private string m_gameId = "";
+        [SerializeField] private string m_gameId = "";
 
         public string GameId
         {
@@ -153,35 +149,7 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField]
-        private Dictionary<string, string> m_appIdSecrets = new Dictionary<string, string>();
-
-        public Dictionary<string, string> AppIdSecrets
-        {
-            get
-            {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    return m_appIdSecrets;
-                }
-
-                // TODO:: @JM- update plugin to use this correctly [SMRJ]
-                return new Dictionary<string, string>();
-            }
-            set
-            {
-                if (m_appIdSecrets != value)
-                {
-                    m_appIdSecrets = value;
-#if UNITY_EDITOR
-                    EditorUtility.SetDirty(this);
-#endif
-                }
-            }
-        }
-
-        [SerializeField]
-        private string m_gameVersion = "1.0.0";
+        [SerializeField] private string m_gameVersion = "1.0.0";
 
         public string GameVersion
         {
@@ -206,8 +174,7 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField]
-        private bool m_enableLogging = false;
+        [SerializeField] private bool m_enableLogging = false;
 
         public bool EnableLogging
         {
@@ -223,7 +190,7 @@ namespace BrainCloudUnity
                 }
             }
         }
-
+        
     }
 }
 

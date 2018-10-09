@@ -159,48 +159,54 @@ namespace BrainCloud.Internal
             _isAuthenticated = true;
         }
 
-        public Dictionary<string, string> AppIdSecretMap
-        {
-            get; private set;
-        }
+        private string _appId = null;
 
         public string AppId
         {
-            get; private set;
+            get
+            {
+                return _appId;
+            }
         }
 
+        private string _sessionID;
+        public string SessionID
+        {
+            get
+            {
+                return _sessionID;
+            }
+        }
+        internal void setSessionId(String sessionId)
+        {
+            _sessionID = sessionId;
+        }
+
+        private string _serverURL = "";
+        public string ServerURL
+        {
+            get
+            {
+                return _serverURL;
+            }
+        }
+
+        private string _uploadURL = "";
+        public string UploadURL
+        {
+            get
+            {
+                return _uploadURL;
+            }
+        }
+
+        private string _secretKey = "";
         public string SecretKey
         {
             get
             {
-                if (AppIdSecretMap.ContainsKey(AppId))
-                {
-                    return AppIdSecretMap[AppId];
-                }
-                else
-                {
-                    return "NO SECRET DEFINED FOR '" + AppId + "'";
-                }
+                return _secretKey;
             }
-        }
-
-        public string SessionID
-        {
-            get; private set;
-        }
-        internal void setSessionId(String sessionId)
-        {
-            SessionID = sessionId;
-        }
-
-        public string ServerURL
-        {
-            get; private set;
-        }
-
-        public string UploadURL
-        {
-            get; private set;
         }
 
         private int _uploadLowTransferRateTimeout = 120;
@@ -281,7 +287,7 @@ namespace BrainCloud.Internal
 #if DISABLE_SSL_CHECK
             ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
 #endif
-            AppIdSecretMap = new Dictionary<string, string>();
+
             _clientRef = client;
             ResetErrorCache();
         }
@@ -291,38 +297,23 @@ namespace BrainCloud.Internal
         /// Initialize the communications library with the specified serverURL and secretKey.
         /// </summary>
         /// <param name="serverURL">Server URL.</param>
-        /// /// <param name="appId">AppId</param>
         /// <param name="secretKey">Secret key.</param>
-        public void Initialize(string serverURL, string appId, string secretKey)
+        public void Initialize(string serverURL, string gameId, string secretKey)
         {
             _packetId = 0;
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
 
-            ServerURL = serverURL;
+            _serverURL = serverURL;
 
             string suffix = @"/dispatcherv2";
-            UploadURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
-            UploadURL += @"/uploader";
+            _uploadURL = _serverURL.EndsWith(suffix) ? _serverURL.Substring(0, _serverURL.Length - suffix.Length) : _serverURL;
+            _uploadURL += @"/uploader";
 
-            AppIdSecretMap[appId] = secretKey;
-            AppId = appId;
+            _appId = gameId;
+            _secretKey = secretKey;
 
             _blockingQueue = false;
             _initialized = true;
-        }
-
-        /// <summary>
-        /// Initialize the communications library with the specified serverURL and secretKey.
-        /// </summary>
-        /// <param name="serverURL">Server URL.</param>
-        /// <param name="defaultAppId">default appId </param>
-        /// /// <param name="appIdSecretMap">map of appId -> secrets, to allow the client to safely switch between apps with secret being secure</param>
-        public void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, string> appIdSecretMap)
-        {
-            AppIdSecretMap.Clear();
-            AppIdSecretMap = appIdSecretMap;
-
-            Initialize(serverURL, defaultAppId, AppIdSecretMap[defaultAppId]);
         }
 
         public void RegisterEventCallback(EventCallback cb)
@@ -808,7 +799,7 @@ namespace BrainCloud.Internal
                         string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
                         if (sessionId != null)
                         {
-                            SessionID = sessionId;
+                            _sessionID = sessionId;
                             _isAuthenticated = true;
                         }
 
@@ -840,19 +831,13 @@ namespace BrainCloud.Internal
                             // we reset the current player or logged out
                             // we are no longer authenticated
                             _isAuthenticated = false;
-                            SessionID = "";
+                            _sessionID = "";
                             _clientRef.AuthenticationService.ClearSavedProfileID();
                             ResetErrorCache();
                         }
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(data);
-                        }
-                        // switch to child
-                        else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
-                            operation.Equals(ServiceOperation.SwitchToParentProfile.Value))
-                        {
-                            ProcessSwitchResponse(data);
                         }
                         else if (operation == ServiceOperation.PrepareUserUpload.Value || bIsPeerScriptUploadCall)
                         {
@@ -866,7 +851,7 @@ namespace BrainCloud.Internal
 
                                 string uploadId = (string)fileData["uploadId"];
                                 string localPath = (string)fileData["localPath"];
-                                var uploader = new FileUploader(uploadId, localPath, UploadURL, SessionID,
+                                var uploader = new FileUploader(uploadId, localPath, _uploadURL, _sessionID,
                                     _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _clientRef, peerCode);
 #if DOT_NET
                                 uploader.HttpClient = _httpClient;
@@ -991,7 +976,7 @@ namespace BrainCloud.Internal
                         || reasonCode == ReasonCodes.PLAYER_SESSION_LOGGED_OUT)
                     {
                         _isAuthenticated = false;
-                        SessionID = "";
+                        _sessionID = "";
                         _clientRef.Log("Received session expired or not found, need to re-authenticate");
 
                         // cache error if session related
@@ -1010,7 +995,7 @@ namespace BrainCloud.Internal
                         if (reasonCode == ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT)
                         {
                             _isAuthenticated = false;
-                            SessionID = "";
+                            _sessionID = "";
                             _clientRef.Log("Could not communicate with the server on logout due to network timeout");
                         }
                     }
@@ -1254,14 +1239,14 @@ namespace BrainCloud.Internal
                             requestState.PacketNoRetry = true;
                         }
 
-                        if (operation.Equals(ServiceOperation.Authenticate.Value) ||
-                            operation.Equals(ServiceOperation.ResetEmailPassword.Value))
+                        if (operation.Equals(ServiceOperation.Authenticate.Value)
+                            || operation.Equals(ServiceOperation.ResetEmailPassword.Value))
                         {
                             isAuth = true;
                         }
 
-                        if (operation.Equals(ServiceOperation.FullReset.Value) ||
-                            operation.Equals(ServiceOperation.Logout.Value))
+                        if (operation.Equals(ServiceOperation.FullReset.Value)
+                            || operation.Equals(ServiceOperation.Logout.Value))
                         {
                             requestState.PacketRequiresLongTimeout = true;
                         }
@@ -1301,10 +1286,10 @@ namespace BrainCloud.Internal
         {
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
-            packet[OperationParam.ServiceMessageSessionId.Value] = SessionID;
-            if (AppId != null && AppId.Length > 0)
+            packet[OperationParam.ServiceMessageSessionId.Value] = _sessionID;
+            if (_appId != null && _appId.Length > 0)
             {
-                packet[OperationParam.ServiceMessageGameId.Value] = AppId;
+                packet[OperationParam.ServiceMessageGameId.Value] = _appId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
@@ -1335,15 +1320,15 @@ namespace BrainCloud.Internal
             // bundle up the data into a string
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
-            packet[OperationParam.ServiceMessageSessionId.Value] = SessionID;
-            if (AppId != null && AppId.Length > 0)
+            packet[OperationParam.ServiceMessageSessionId.Value] = _sessionID;
+            if (_appId != null && _appId.Length > 0)
             {
-                packet[OperationParam.ServiceMessageGameId.Value] = AppId;
+                packet[OperationParam.ServiceMessageGameId.Value] = _appId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
             string jsonRequestString = JsonWriter.Serialize(packet);
-            string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
+            string sig = CalculateMD5Hash(jsonRequestString + _secretKey);
 
 
 #if UNITY_EDITOR
@@ -1390,20 +1375,20 @@ namespace BrainCloud.Internal
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
                 formTable["Content-Type"] = "application/json; charset=utf-8";
                 formTable["X-SIG"] = sig;
-                if (AppId != null && AppId.Length > 0)
+                if (_appId != null && _appId.Length > 0)
                 {
-                    formTable["X-APPID"] = AppId;
+                    formTable["X-APPID"] = _appId;
                 }
-                WWW request = new WWW(ServerURL, byteArray, formTable);
+                WWW request = new WWW(_serverURL, byteArray, formTable);
                 requestState.WebRequest = request;
 #else
 
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(ServerURL));
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(_serverURL));
                 req.Content = new ByteArrayContent(byteArray);
                 req.Headers.Add("X-SIG", sig);
-                if (AppId != null && AppId.Length > 0) 
+                if (_appId != null && _appId.Length > 0) 
                 {
-                    req.Headers.Add("X-APPID", AppId);
+                    req.Headers.Add("X-APPID", _appId);
                 }
                 req.Method = HttpMethod.Post;
 
@@ -1612,7 +1597,7 @@ namespace BrainCloud.Internal
                 _serviceCallsInTimeoutQueue.Clear();
                 _activeRequest = null;
                 _clientRef.AuthenticationService.ProfileId = "";
-                SessionID = "";
+                _sessionID = "";
             }
         }
 
@@ -1702,17 +1687,6 @@ namespace BrainCloud.Internal
             _isAuthenticated = true;
         }
 
-        private void ProcessSwitchResponse(string jsonString)
-        {
-            Dictionary<string, object> jsonMessage = (Dictionary<string, object>)JsonReader.Deserialize(jsonString);
-            Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
-
-            if (jsonData.ContainsKey("switchToAppId"))
-            {
-                string switchToAppId = (string)jsonData["switchToAppId"];
-                AppId = switchToAppId;
-            }
-        }
 
         private static string GetJsonString(Dictionary<string, object> jsonData, string key, string defaultReturn)
         {
