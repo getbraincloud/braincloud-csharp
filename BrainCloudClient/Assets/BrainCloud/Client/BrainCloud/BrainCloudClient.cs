@@ -690,66 +690,49 @@ namespace BrainCloud
         #endregion
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
-        /// <param name="secretKey">The secret key for your app
+        /// <param name="secretKey">The secret key for your app</param>
         /// <param name="appId ">The app id</param>
-        /// <param name="appVersion The app version</param>
-        /// <param name="cachedProfileId The profile Id</param>
-        /// <param name="anonymousId The anonymous Id</param>
+        /// <param name="appVersion"> The app version</param>
         public void Initialize(string secretKey, string appId, string appVersion)
         {
             Initialize(s_defaultServerURL, secretKey, appId, appVersion);
         }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
+        /// <param name="appId ">The app id</param>
+        /// <param name="appIdSecrectMap">The map of appid to secret</param>
+        /// <param name="appVersion"> The app version</param>
+        public void InitializeWithApps(string defaultAppId, Dictionary<string, string> appIdSecrectMap, string appVersion)
+        {
+            InitializeWithApps(s_defaultServerURL, defaultAppId, appIdSecrectMap, appVersion);
+        }
+
+        /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The URL to the brainCloud server</param>
-        /// <param name="secretKey">The secret key for your app
+        /// <param name="appId ">The app id</param>
+        /// <param name="appIdSecrectMap">The map of appid to secret</param>
+        /// <param name="appVersion"> The app version</param>
+        public void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, string> appIdSecrectMap, string appVersion)
+        {
+            initializeHelper(serverURL, appIdSecrectMap[defaultAppId], defaultAppId, appVersion);
+
+            // set up braincloud which does the message handling
+            _comms.InitializeWithApps(serverURL, defaultAppId, appIdSecrectMap);
+
+            _initialized = true;
+        }
+
+        /// <summary>Method initializes the BrainCloudClient.</summary>
+        /// <param name="serverURL">The URL to the brainCloud server</param>
+        /// <param name="secretKey">The secret key for your app</param>
         /// <param name="appId">The app id</param>
         /// <param name="appVersion">The app version</param>
-        /// <param name="cachedProfileId">The profile Id</param>
-        /// <param name="anonymousId">The anonymous Id</param>
         public void Initialize(string serverURL, string secretKey, string appId, string appVersion)
         {
-            string error = null;
-            if (string.IsNullOrEmpty(serverURL))
-                error = "serverURL was null or empty";
-            else if (string.IsNullOrEmpty(secretKey))
-                error = "secretKey was null or empty";
-            else if (string.IsNullOrEmpty(appId))
-                error = "appId was null or empty";
-            else if (string.IsNullOrEmpty(appVersion))
-                error = "appVerson was null or empty";
-
-            if (error != null)
-            {
-#if !(DOT_NET)
-                Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
-#elif !XAMARIN
-                Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
-#endif
-                return;
-            }
-
-            // TODO: what is our default c# platform?
-            Platform platform = Platform.Windows;
-#if !(DOT_NET)
-            platform = Platform.FromUnityRuntime();
-#endif
+            initializeHelper(serverURL, secretKey, appId, appVersion);
 
             // set up braincloud which does the message handling
             _comms.Initialize(serverURL, appId, secretKey);
-
-            _appVersion = appVersion;
-            _platform = platform;
-
-            //setup region/country code
-            if (Util.GetCurrentCountryCode() == string.Empty)
-            {
-#if (DOT_NET)
-                Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
-#else
-                Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);
-#endif
-            }
 
             _initialized = true;
         }
@@ -1296,6 +1279,49 @@ namespace BrainCloud
             // pass this directly to the brainCloud Class
             // which will add it to its queue and send back responses accordingly
             _comms.AddToQueue(serviceMessage);
+        }
+
+        private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)
+        {
+            string error = null;
+            if (string.IsNullOrEmpty(serverURL))
+                error = "serverURL was null or empty";
+            else if (string.IsNullOrEmpty(secretKey))
+                error = "secretKey was null or empty";
+            else if (string.IsNullOrEmpty(appId))
+                error = "appId was null or empty";
+            else if (string.IsNullOrEmpty(appVersion))
+                error = "appVerson was null or empty";
+
+            if (error != null)
+            {
+#if !(DOT_NET)
+                Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
+#elif !XAMARIN
+                Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
+#endif
+                return;
+            }
+
+            // TODO: what is our default c# platform?
+            Platform platform = Platform.Windows;
+#if !(DOT_NET)
+            platform = Platform.FromUnityRuntime();
+#endif
+
+
+            _appVersion = appVersion;
+            _platform = platform;
+
+            //setup region/country code
+            if (Util.GetCurrentCountryCode() == string.Empty)
+            {
+#if (DOT_NET)
+                Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
+#else
+                Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);
+#endif
+            }
         }
 
         #region Deprecated
