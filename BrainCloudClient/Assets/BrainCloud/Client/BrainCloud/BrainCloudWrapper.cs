@@ -349,7 +349,7 @@ public class BrainCloudWrapper
         Init(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
-            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.AppId,
             BrainCloudSettings.Instance.GameVersion);
 
         Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
@@ -363,7 +363,7 @@ public class BrainCloudWrapper
     {
         InitWithApps(
             BrainCloudSettings.Instance.DispatcherURL,
-            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.AppId,
             BrainCloudSettings.Instance.AppIdSecrets,
             BrainCloudSettings.Instance.GameVersion);
 
@@ -1597,7 +1597,7 @@ public class BrainCloudWrapper
         Initialize(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
-            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.AppId,
             BrainCloudSettings.Instance.GameVersion);
 
         Instance.Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);

@@ -3,20 +3,22 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb4fd16f854e89249a23146eeaf1cd10, type: 3}
-  m_Name: BrainCloudPluginSettings
+  m_Name: 
   m_EditorClassIdentifier: 
   PluginState: 0
   TeamType: 0
   WasSelectedTeam: 0
   WasSelectedApp: 0
+  ClientVersion: Not Set
   ServerUrl: https://sharedprod.braincloudservers.com
   NewAppName: New App Name
+  AppIdSecrets: []
   AdminData:
     TeamList: []
     TeamNameList: []
