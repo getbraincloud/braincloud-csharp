@@ -259,7 +259,7 @@ namespace BrainCloud
         /// - windowsPhone
         /// - googlePlay
         /// </param>
-        /// /// <param name="transationId">
+        /// /// <param name="transactionId">
         /// The Transaction Id returned in Start Transaction
         /// </param>
         /// <param name="transactionJson">
@@ -276,7 +276,7 @@ namespace BrainCloud
         /// </param>
         public void FinalizePurchase(
             string storeId,
-            string transationId,
+            string transactionId,
             string transactionJson,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -284,7 +284,7 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AppStoreServiceStoreId.Value] = storeId;
-            data[OperationParam.AppStoreServiceTransactionId.Value] = transationId;
+            data[OperationParam.AppStoreServiceTransactionId.Value] = transactionId;
 
             var transactionData = JsonReader.Deserialize<Dictionary<string, object>>(transactionJson);
             data[OperationParam.AppStoreServiceTransactionData.Value] = transactionData;
