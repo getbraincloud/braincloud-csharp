@@ -46,6 +46,20 @@ public class BrainCloudSettingsEditor : Editor
 
     // Draw the content of the inspector GUI
 #if UNITY_EDITOR
+    
+    
+    public static void Show (SerializedProperty list) {
+        EditorGUILayout.PropertyField(list);
+        EditorGUI.indentLevel += 1;
+        if (list.isExpanded) {
+            EditorGUILayout.PropertyField(list.FindPropertyRelative("Array.size"));
+            for (int i = 0; i < list.arraySize; i++) {
+                EditorGUILayout.PropertyField(list.GetArrayElementAtIndex(i), true);
+            }
+        }
+        EditorGUI.indentLevel -= 1;
+    }
+    
     public override void OnInspectorGUI()
     {
         BrainCloudSettings instance = (BrainCloudSettings) target;
@@ -56,9 +70,17 @@ public class BrainCloudSettingsEditor : Editor
             EditorGUILayout.HelpBox("The game configuration parameters can be found on the brainCloud portal.",
                 MessageType.None);
 
-            instance.GameId = EditorGUILayout.TextField("Game Id", instance.GameId);
-            instance.SecretKey = EditorGUILayout.TextField("Game Secret", instance.SecretKey);
-            instance.GameVersion = EditorGUILayout.TextField("Game Version", instance.GameVersion);
+            serializedObject.Update();
+            Show(serializedObject.FindProperty("m_appIdSecrets"));
+            serializedObject.ApplyModifiedProperties();
+            
+            
+            
+            instance.AppId = EditorGUILayout.TextField("App Id", instance.AppId);
+            instance.SecretKey = EditorGUILayout.TextField("App Secret", instance.SecretKey);
+            instance.GameVersion = EditorGUILayout.TextField("App Version", instance.GameVersion);
+            
+            
 
             EditorGUILayout.Space();
 
@@ -102,9 +124,7 @@ public class BrainCloudSettingsEditor : Editor
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            //GUIStyle linkStyle = new GUIStyle(GUI.skin.button);
-            //linkStyle.richText = true;
-            //if (GUILayout.Button("<color=#ffda48ff>Open brainCloud API Docs</color>", linkStyle))
+            
             if (GUILayout.Button("View API Docs", buttonStyle))
             {
                 GoAPIDoc();
