@@ -349,7 +349,22 @@ public class BrainCloudWrapper
         Init(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
-            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.AppId,
+            BrainCloudSettings.Instance.GameVersion);
+
+        Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
+    }
+
+    /// <summary>
+    /// Initializes the brainCloud client. This method uses the parameters as configured
+    /// in the Unity brainCloud Settings window.
+    /// </summary>
+    public void InitWithApps()
+    {
+        InitWithApps(
+            BrainCloudSettings.Instance.DispatcherURL,
+            BrainCloudSettings.Instance.AppId,
+            BrainCloudSettings.Instance.AppIdSecrets,
             BrainCloudSettings.Instance.GameVersion);
 
         Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
@@ -371,6 +386,25 @@ public class BrainCloudWrapper
         _lastAppId = appId;
         _lastAppVersion = version;
         Client.Initialize(url, secretKey, appId, version);
+
+        LoadData();
+    }
+
+    /// <summary>
+    /// Initialize the brainCloud client with the passed in parameters. This version of Initialize
+    /// overrides the parameters configured in the Unity brainCloud Settings window.
+    /// </summary>
+    /// <param name="url">The brainCloud server url</param>
+    /// <param name="secretKey">The app's secret</param>
+    /// <param name="appId">The app's id</param>
+    /// <param name="version">The app's version</param>
+    public void InitWithApps(string url, string defaultAppId, Dictionary<string, string> appIdSecretMap, string version)
+    {
+        _lastUrl = url;
+        _lastSecretKey = appIdSecretMap[defaultAppId];
+        _lastAppId = defaultAppId;
+        _lastAppVersion = version;
+        Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
 
         LoadData();
     }
@@ -1563,7 +1597,7 @@ public class BrainCloudWrapper
         Initialize(
             BrainCloudSettings.Instance.DispatcherURL,
             BrainCloudSettings.Instance.SecretKey,
-            BrainCloudSettings.Instance.GameId,
+            BrainCloudSettings.Instance.AppId,
             BrainCloudSettings.Instance.GameVersion);
 
         Instance.Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);

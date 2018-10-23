@@ -1,5 +1,7 @@
 ﻿#if !DOT_NET
 
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 #if UNITY_EDITOR
@@ -12,6 +14,8 @@ namespace BrainCloudUnity
 #if UNITY_EDITOR
     [InitializeOnLoad]
 #endif
+
+    
     public class BrainCloudSettings : ScriptableObject
     {
         private static BrainCloudSettings s_instance;
@@ -126,7 +130,8 @@ namespace BrainCloudUnity
 
         [SerializeField] private string m_gameId = "";
 
-        public string GameId
+        
+        public string AppId
         {
             get
             {
@@ -148,10 +153,16 @@ namespace BrainCloudUnity
                 }
             }
         }
+        
+        public string GameId
+        {
+            get { return AppId; }
+            set { AppId = value; }
+        }
 
         [SerializeField] private string m_gameVersion = "1.0.0";
 
-        public string GameVersion
+        public string AppVersion
         {
             get
             {
@@ -174,6 +185,42 @@ namespace BrainCloudUnity
             }
         }
 
+        [SerializeField] private AppIdSecretPair[] m_appIdSecrets;
+
+        public Dictionary<string, string> AppIdSecrets
+        {
+            get
+            {
+                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    Dictionary<string, string> appIdSecretsDict = AppIdSecretPair.ToDictionary(m_appIdSecrets);
+
+                    if (!appIdSecretsDict.ContainsKey(AppId))
+                    {
+                        appIdSecretsDict.Add(AppId, SecretKey);
+                    }
+                    
+                    return appIdSecretsDict;
+                }
+
+                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppIdSecrets();
+            }
+            set
+            {
+                    m_appIdSecrets = AppIdSecretPair.FromDictionary(value);
+#if UNITY_EDITOR
+                    EditorUtility.SetDirty(this);
+#endif
+                
+            }
+        }
+        
+        public string GameVersion
+        {
+            get { return AppVersion; }
+            set { AppVersion = value; }
+        }
+
         [SerializeField] private bool m_enableLogging = false;
 
         public bool EnableLogging
@@ -190,7 +237,6 @@ namespace BrainCloudUnity
                 }
             }
         }
-        
     }
 }
 
