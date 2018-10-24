@@ -398,7 +398,7 @@ namespace JsonFx.Json
 				else if (targetType == typeof(Version))
 				{
 					// try-catch is pointless since will throw upon generic conversion
-					return new Version((string)value);
+					return new System.Version((string)value);
 				}
 			}
 			else if (targetType == typeof(TimeSpan))

@@ -42,7 +42,7 @@ namespace JsonFx
 
 		public static readonly About Fx = new About(typeof(About).Assembly);
 
-		public readonly Version Version;
+		public readonly System.Version Version;
 		public readonly string FullName;
 		public readonly string Name;
 		public readonly string Configuration;
