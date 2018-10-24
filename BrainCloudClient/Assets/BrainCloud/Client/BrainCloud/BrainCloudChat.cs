@@ -131,6 +131,23 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Sends a potentially richer member chat message. By convention, content should contain a field named text for plain-text content. Returns the id of the message created.
+        /// </summary>
+        /// 
+        public void PostChatMessage(string in_channelId, string in_jsonContent, bool in_recordInHistory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.ChatChannelId.Value] = in_channelId;
+            data[OperationParam.ChatContent.Value] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonContent);
+            data[OperationParam.ChatRecordInHistory.Value] = in_recordInHistory;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Chat, ServiceOperation.PostChatMessage, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+        
+        /// <summary>
         /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
         /// </summary>
         /// 
