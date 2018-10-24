@@ -21,23 +21,17 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             string eventId = "";
 
-            _bc.Client.RegisterEventCallback(EventCallback);
-
             _bc.EventService.SendEvent(
-                GetUser(Users.UserA).ProfileId,
+                "profileId",
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
                 tr.ApiSuccess, tr.ApiError);
 
             if (tr.Run())
             {
-                eventId = (((Dictionary<string, object>)(tr.m_response["data"]))["evId"]) as string;
+               eventId = (((Dictionary<string, object>)(tr.m_response["data"]))["evId"]) as string;
             }
-
-            Assert.IsTrue(_callbackRan);
-
             CleanupIncomingEvent(eventId);
-            _bc.Client.DeregisterEventCallback();
         }
 
         //[Test] //TODO Fix
@@ -70,17 +64,17 @@ namespace BrainCloudTests
         //    CleanupIncomingEvent(eventId);
         //}
 
-        public void EventCallback(string jsonResponse)
-        {
-            Console.WriteLine("Events received: " + jsonResponse);
+        // public void EventCallback(string jsonResponse)
+        // {
+        //     Console.WriteLine("Events received: " + jsonResponse);
 
-            var response = JsonReader.Deserialize<Dictionary<string, object>>(jsonResponse);
-            var events = (object[])(response["events"]);
+        //     var response = JsonReader.Deserialize<Dictionary<string, object>>(jsonResponse);
+        //     var events = (object[])(response["events"]);
 
-            Assert.Greater(events.Length, 0);
+        //     Assert.Greater(events.Length, 0);
 
-            _callbackRan = true;
-        }
+        //     _callbackRan = true;
+        // }
         
         [Test]
         public void TestDeleteIncomingEvent()
