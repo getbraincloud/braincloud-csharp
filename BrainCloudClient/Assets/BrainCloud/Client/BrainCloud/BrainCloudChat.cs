@@ -139,7 +139,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             data[OperationParam.ChatChannelId.Value] = in_channelId;
-            data[OperationParam.ChatContent.Value] = in_jsonContent;
+            data[OperationParam.ChatContent.Value] = JsonReader.Deserialize<Dictionary<string, object>> (in_jsonContent);
             data[OperationParam.ChatRecordInHistory.Value] = in_recordInHistory;
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
