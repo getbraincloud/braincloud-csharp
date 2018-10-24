@@ -28,11 +28,12 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
-using System;
-using System.Reflection;
 
 namespace JsonFx
 {
+	using System;
+	using System.Reflection;
+	
 	/// <summary>
 	/// JsonFx metadata
 	/// </summary>
@@ -42,7 +43,7 @@ namespace JsonFx
 
 		public static readonly About Fx = new About(typeof(About).Assembly);
 
-		public readonly System.Version Version;
+		public readonly Version Version;
 		public readonly string FullName;
 		public readonly string Name;
 		public readonly string Configuration;
