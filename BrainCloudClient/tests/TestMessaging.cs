@@ -71,10 +71,13 @@ namespace BrainCloudTests
         public void TestSendMessage()
         {
             TestResult tr = new TestResult(_bc);
-            string profileId = _bc.Client.ProfileId;
+            Dictionary<string, object> content = new Dictionary<string, object>();
+            content.Add("Subject", "Test");
+            content.Add("Text", "BlahBlah");
 
+            string profileId = _bc.Client.ProfileId;
             string[] toProfileIds = {profileId};
-            _bc.MessagingService.SendMessage(toProfileIds, "This is text", "This is subject", tr.ApiSuccess, tr.ApiError);
+            _bc.MessagingService.SendMessage(toProfileIds, content, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 
