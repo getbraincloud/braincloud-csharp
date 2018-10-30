@@ -71,9 +71,8 @@ namespace BrainCloudTests
         public void TestSendMessage()
         {
             TestResult tr = new TestResult(_bc);
-            Dictionary<string, object> content = new Dictionary<string, object>();
-            content.Add("Subject", "Test");
-            content.Add("Text", "BlahBlah");
+            
+            string content = "{ \"subject\": \"Chat and messaging features are here!\", \"text\": \"hi.\"}";
 
             string profileId = _bc.Client.ProfileId;
             string[] toProfileIds = {profileId};

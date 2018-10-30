@@ -112,10 +112,12 @@ namespace BrainCloud
         /// <summary>
         /// Sends a message with specified 'subject' and 'text' to list of users.
         /// </summary>
-        public void SendMessage(string[] in_toProfileIds, Dictionary<string, object> content, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void SendMessage(string[] in_toProfileIds, string in_contentJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MessagingToProfileIds.Value] = in_toProfileIds;
+
+            var content = JsonReader.Deserialize<Dictionary<string, object>>(in_contentJson);
             data[OperationParam.MessagingContent.Value] = content;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
