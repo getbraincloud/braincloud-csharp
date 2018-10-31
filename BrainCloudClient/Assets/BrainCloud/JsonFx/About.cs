@@ -28,11 +28,12 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
-using System;
-using System.Reflection;
 
 namespace JsonFx
 {
+	using System;
+	using System.Reflection;
+	
 	/// <summary>
 	/// JsonFx metadata
 	/// </summary>
