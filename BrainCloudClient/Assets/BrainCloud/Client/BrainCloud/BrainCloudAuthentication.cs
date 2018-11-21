@@ -392,6 +392,39 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Authenticate the user using a handoffId and authentication token
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="handoffId">
+        /// braincloud handoffId that is generated from cloud script
+        /// </param>
+        /// <param name="securityToken">
+        /// The authentication token
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateHandoff(
+            string handoffId,
+            string securityToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(handoffId, securityToken, AuthenticationType.Handoff,
+                null, false, success, failure, cbObject);
+        }
+
+        /// <summary>
         /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
         /// This allows the developer to extend brainCloud authentication to support other backend authentication systems.
         /// </summary>
