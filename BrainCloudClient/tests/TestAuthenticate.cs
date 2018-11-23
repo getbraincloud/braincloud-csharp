@@ -29,6 +29,20 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestAuthenticateHandoff()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateHandoff(
+                "invalid_handOffId",
+                "invalid_securityToken",
+                tr.ApiSuccess, tr.ApiError);
+
+            //expect token to not match user
+            tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+        }   
+
         /*[Test]
         public void TestAuthenticateAnonymous()
         {
