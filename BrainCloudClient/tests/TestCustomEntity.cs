@@ -11,13 +11,11 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestCustomEntity : TestFixtureBase
     {
-        [Ignore ("EntityFactory wants NewEntity to use generic types, but the entities require a parameter to initialize. player entity will always be null. It is not essential these tests pass")]
         [Test]
         public void TestStoreAsync()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.EntityFactory.RegisterEntityClass<Player>(Player.ENTITY_TYPE);
-            Player playerEntity = _bc.EntityFactory.NewEntity<Player>(Player.ENTITY_TYPE);
+            Player playerEntity = Initialize();
 
             playerEntity.StoreAsync(tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -25,7 +23,6 @@ namespace BrainCloudTests
             Cleanup(playerEntity);
         }
 
-        [Ignore ("EntityFactory wants NewEntity to use generic types, but the entities require a parameter to initialize. player entity will always be null. It is not essential these tests pass")]
         [Test]
         public void TestDeleteAsync()
         {
@@ -35,7 +32,6 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        [Ignore ("EntityFactory wants NewEntity to use generic types, but the entities require a parameter to initialize. player entity will always be null. It is not essential these tests pass")]
         [Test]
         public void TestStoreAsyncShared()
         {
@@ -49,7 +45,6 @@ namespace BrainCloudTests
             Cleanup(playerEntity);
         }
 
-        [Ignore ("Failing! EntityFactory wants NewEntity to use generic types, but the entities require a parameter to initialize. Player entity will always be null. It is not essential these tests pass")]
         [Test]
         public void TestNewUserEntitiesFromReadPlayerState()
         {

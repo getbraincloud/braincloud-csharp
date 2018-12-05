@@ -28,15 +28,16 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reflection;
 
 namespace JsonFx.Json
 {
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Globalization;
+	using System.Reflection;
+	
 	/// <summary>
 	/// Utility for forcing conversion between types
 	/// </summary>
