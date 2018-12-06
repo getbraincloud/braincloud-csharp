@@ -236,6 +236,47 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.Update, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Apply statistics grammar to a partial set of statistics.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - playerStatistics
+        /// Service Operation - PROCESS_STATISTICS
+        /// </remarks>
+        /// <param name="statisticsData">
+        /// Example data to be passed to method:
+        /// {
+        ///     "DEAD_CATS": "RESET",
+        ///     "LIVES_LEFT": "SET#9",
+        ///     "MICE_KILLED": "INC#2",
+        ///     "DOG_SCARE_BONUS_POINTS": "INC#10",
+        ///     "TREES_CLIMBED": 1
+        /// }
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void ProcessStatistics(
+            string statisticsData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            Dictionary<string, object> statsData = JsonReader.Deserialize<Dictionary<string, object>>(statisticsData);
+            data[OperationParam.PlayerStatisticsServiceStats.Value] = statsData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerStatistics, ServiceOperation.ProcessStatistics, data, callback);
+            _client.SendRequest(sc);
+        }
 
         /// <summary>
         /// Apply statistics grammar to a partial set of statistics.
