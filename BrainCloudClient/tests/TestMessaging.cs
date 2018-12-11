@@ -97,7 +97,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             string[] msgIds = {"invalidMsgId"};
-            _bc.MessagingService.MarkMessagesRead("inbox", msgIds, tr.ApiSuccess, tr.ApiError);
+            _bc.MessagingService.MarkMessagesRead("inbox", msgIds, true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

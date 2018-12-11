@@ -98,7 +98,7 @@ namespace BrainCloud
         /// <summary>
         /// Marks list of user messages as read on the server.
         /// </summary>
-        public void MarkMessagesRead(string in_msgBox, string[] in_msgsIds, bool markAsRead SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        public void MarkMessagesRead(string in_msgBox, string[] in_msgsIds, bool markAsRead, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.MessagingMessageBox.Value] = in_msgBox;
