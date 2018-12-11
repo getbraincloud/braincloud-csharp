@@ -17,6 +17,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Merge = new ServiceOperation("MERGE");
         public static readonly ServiceOperation Detach = new ServiceOperation("DETACH");
         public static readonly ServiceOperation ResetEmailPassword = new ServiceOperation("RESET_EMAIL_PASSWORD");
+        public static readonly ServiceOperation ResetEmailPasswordAdvanced = new ServiceOperation("RESET_EMAIL_PASSWORD_ADVANCED");
         public static readonly ServiceOperation SwitchToChildProfile = new ServiceOperation("SWITCH_TO_CHILD_PROFILE");
         public static readonly ServiceOperation SwitchToParentProfile = new ServiceOperation("SWITCH_TO_PARENT_PROFILE");
         public static readonly ServiceOperation DetachParent = new ServiceOperation("DETACH_PARENT");
