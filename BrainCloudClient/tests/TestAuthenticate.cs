@@ -2,6 +2,7 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
+using JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -88,25 +89,6 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            string email = "braincloudunittest@gmail.com";
-            //string email2 = GetUser(Users.UserA).Email;
-
-            Dictionary<string, object> testJson = new Dictionary<string, object>();
-            testJson.Add("fromAddress", "fromAddress");
-            testJson.Add("fromName", "fromName");
-            testJson.Add("replyName", "replyName");
-            testJson.Add("templateId", "8f14c77d-61f4-4966-ab6d-0bee8b13d090");
-            testJson.Add("subject", "subject");
-            testJson.Add("body", "body here");
-            Dictionary<string, object> substitutions = new Dictionary<string, object>();
-            substitutions.Add(":name", "John Doe");
-            substitutions.Add(":resetLink", "www.dummyLink.io");
-            testJson.Add("substitutions", substitutions);
-            string[] categories = new string[2];
-            categories[0] = "category1";
-            categories[1] = "category2";
-            testJson.Add("categories", categories);
-
             //create a session
             _bc.Client.AuthenticationService.AuthenticateEmailPassword(
             GetUser(Users.UserA).Email,
@@ -115,10 +97,12 @@ namespace BrainCloudTests
             tr.ApiSuccess, tr.ApiError);
             tr.Run();
         
+            string email = "braincloudunittest@gmail.com";
+            string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
 
             _bc.Client.AuthenticationService.ResetEmailPasswordAdvanced(
                 email,
-                testJson,
+                content,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
         }

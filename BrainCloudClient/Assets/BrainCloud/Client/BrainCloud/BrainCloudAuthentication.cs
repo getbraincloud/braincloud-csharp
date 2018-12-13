@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+using JsonFx.Json;
 
 namespace BrainCloud
 {
@@ -529,7 +530,8 @@ namespace BrainCloud
         /// </param>
         public void ResetEmailPasswordAdvanced(
             string emailAddress,
-            Dictionary<string, object> serviceParams,
+            //Dictionary<string, object> serviceParams,
+            string serviceParams,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -537,7 +539,9 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
             data[OperationParam.AuthenticateServiceAuthenticateEmailAddress.Value] = emailAddress;
-            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = serviceParams;
+
+            var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
+            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvanced, data, callback);
