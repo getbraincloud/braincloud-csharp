@@ -88,14 +88,6 @@ namespace BrainCloudTests
         public void TestResetEmailPasswordAdvanced()
         {
             TestResult tr = new TestResult(_bc);
-
-            //create a session
-            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
-            GetUser(Users.UserA).Email,
-            GetUser(Users.UserA).Password,
-            true,
-            tr.ApiSuccess, tr.ApiError);
-            tr.Run();
         
             string email = "braincloudunittest@gmail.com";
             string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";

@@ -1255,7 +1255,8 @@ namespace BrainCloud.Internal
                         }
 
                         if (operation.Equals(ServiceOperation.Authenticate.Value) ||
-                            operation.Equals(ServiceOperation.ResetEmailPassword.Value))
+                            operation.Equals(ServiceOperation.ResetEmailPassword.Value) ||
+                            operation.Equals(ServiceOperation.ResetEmailPasswordAdvanced.Value))
                         {
                             isAuth = true;
                         }
