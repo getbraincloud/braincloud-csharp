@@ -1,10 +1,11 @@
 ﻿#if !DOT_NET
-#if UNITY_EDITOR
-
 
 using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+
+#endif
 
 namespace BrainCloudUnity
 {
@@ -15,7 +16,9 @@ namespace BrainCloudUnity
         /// 
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
+#if UNITY_EDITOR
         [InitializeOnLoad]
+#endif
         public class BrainCloudPluginSettings : BaseBrainCloudPluginSettings
         {
             public static bool IsLegacyPluginEnabled()
@@ -52,6 +55,7 @@ namespace BrainCloudUnity
             {
                 _instance = CreateInstance<BrainCloudPluginSettings>();
 
+#if UNITY_EDITOR
                 string properPath = Path.Combine(Application.dataPath, "BrainCloud");
                 if (!Directory.Exists(properPath))
                 {
@@ -66,6 +70,7 @@ namespace BrainCloudUnity
 
                 const string fullPath = "Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset";
                 AssetDatabase.CreateAsset(_instance, fullPath);
+#endif
             }
 
 
@@ -80,5 +85,4 @@ namespace BrainCloudUnity
     }
 }
 
-#endif
 #endif
