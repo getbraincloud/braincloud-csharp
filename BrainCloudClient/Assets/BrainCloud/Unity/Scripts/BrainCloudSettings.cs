@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -52,16 +54,23 @@ namespace BrainCloudUnity
             }
         }
 
+        [SerializeField] private string m_dispatchUrl = "";
         public string DispatcherURL
         {
             get
-            {
+            {  
+#if UNITY_EDITOR
                 if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    return m_serverURL + "/dispatcherv2";
+                    m_dispatchUrl = m_serverURL + "/dispatcherv2";
                 }
+                else
+                {
+                    m_dispatchUrl = BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
+                }
+#endif
 
-                return BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
+                return m_dispatchUrl;
             }
         }
 
@@ -84,12 +93,14 @@ namespace BrainCloudUnity
         {
             get
             {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+#if UNITY_EDITOR
+                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    return m_serverURL;
+                    m_serverURL = BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl;
                 }
+#endif
 
-                return BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl;
+                return m_serverURL;
             }
             set
             {
@@ -109,12 +120,14 @@ namespace BrainCloudUnity
         {
             get
             {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+#if UNITY_EDITOR
+                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    return m_secretKey;
-                }
+                    m_secretKey = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppSecret();
+                }                                
+#endif
 
-                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppSecret();
+                return m_secretKey;
             }
             set
             {
@@ -128,25 +141,28 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField] private string m_gameId = "";
+        [FormerlySerializedAs("m_gameId")] [SerializeField] private string m_appId = "";
 
         
         public string AppId
         {
             get
             {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                
+#if UNITY_EDITOR
+                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    return m_gameId;
+                    m_appId = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppId();
                 }
-
-                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppId();
+#endif 
+                
+                return m_appId;
             }
             set
             {
-                if (m_gameId != value)
+                if (m_appId != value)
                 {
-                    m_gameId = value;
+                    m_appId = value;
 #if UNITY_EDITOR
                     EditorUtility.SetDirty(this);
 #endif
@@ -160,24 +176,26 @@ namespace BrainCloudUnity
             set { AppId = value; }
         }
 
-        [SerializeField] private string m_gameVersion = "1.0.0";
+        [FormerlySerializedAs("m_gameVersion")] [SerializeField] private string m_appVersion = "1.0.0";
 
         public string AppVersion
         {
             get
             {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+#if UNITY_EDITOR
+                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    return m_gameVersion;
+                    m_appVersion = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppVersion();
                 }
-
-                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppVersion();
+#endif                    
+                
+                return m_appVersion;
             }
             set
             {
-                if (m_gameVersion != value)
+                if (m_appVersion != value)
                 {
-                    m_gameVersion = value;
+                    m_appVersion = value;
 #if UNITY_EDITOR
                     EditorUtility.SetDirty(this);
 #endif
@@ -191,19 +209,24 @@ namespace BrainCloudUnity
         {
             get
             {
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+#if UNITY_EDITOR
+                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
-                    Dictionary<string, string> appIdSecretsDict = AppIdSecretPair.ToDictionary(m_appIdSecrets);
 
-                    if (!appIdSecretsDict.ContainsKey(AppId))
-                    {
-                        appIdSecretsDict.Add(AppId, SecretKey);
-                    }
-                    
-                    return appIdSecretsDict;
+                    m_appIdSecrets =
+                        AppIdSecretPair.FromDictionary(BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppIdSecrets());
                 }
+#endif
 
-                return BrainCloudPlugin.BrainCloudPluginSettings.GetAppIdSecrets();
+                Dictionary<string, string> appIdSecretsDict = AppIdSecretPair.ToDictionary(m_appIdSecrets);
+                
+                    
+                if (!appIdSecretsDict.ContainsKey(AppId))
+                {
+                    appIdSecretsDict.Add(AppId, SecretKey);
+                }
+ 
+                return appIdSecretsDict;
             }
             set
             {
