@@ -1,11 +1,9 @@
 ﻿#if !DOT_NET
+#if UNITY_EDITOR
 
 using System.IO;
 using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-
-#endif
 
 namespace BrainCloudUnity
 {
@@ -16,9 +14,7 @@ namespace BrainCloudUnity
         /// Contains the debug data for the newer brainCloud Plugin - BrainCloudPluginSettings
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
-#if UNITY_EDITOR
         [InitializeOnLoad]
-#endif
         public class BrainCloudDebugInfo : BaseBrainCloudDebugInfo
         {
             public new static BaseBrainCloudDebugInfo Instance
@@ -45,7 +41,6 @@ namespace BrainCloudUnity
             {
                 _instance = CreateInstance<BrainCloudDebugInfo>();
 
-#if UNITY_EDITOR
                 string properPath = Path.Combine(Application.dataPath, "BrainCloud");
                 if (!Directory.Exists(properPath))
                 {
@@ -65,7 +60,6 @@ namespace BrainCloudUnity
 
                 const string fullPath = "Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset";
                 AssetDatabase.CreateAsset(_instance, fullPath);
-#endif
             }
 
 
@@ -88,4 +82,5 @@ namespace BrainCloudUnity
     }
 }
 
+#endif
 #endif

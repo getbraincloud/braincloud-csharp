@@ -4,18 +4,19 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb4fd16f854e89249a23146eeaf1cd10, type: 3}
-  m_Name: 
+  m_Name: BrainCloudPluginSettings
   m_EditorClassIdentifier: 
   PluginState: 0
   TeamType: 0
   WasSelectedTeam: 0
   WasSelectedApp: 0
-  ClientVersion: Not Set
+  ClientVersion: 3.10.0
   ServerUrl: https://sharedprod.braincloudservers.com
   NewAppName: New App Name
   AppIdSecrets: []
@@ -31,8 +32,12 @@ MonoBehaviour:
     Credentials:
       AdminId: 
       Token: 
+  SelectedTemplate: 1
+  CreateWithTemplateEnabled: 1
+  TemplateDataList: []
+  TemplateNameList: []
   AppOptions:
-    GamficationEnabled: 1
+    GamificationEnabled: 1
     SupportedPlatforms:
     - PlatformName: APPLE_TV_OS
       DisplayName: Apple TV OS
@@ -71,7 +76,7 @@ MonoBehaviour:
       DisplayName: Tizen
       IsEnabled: 0
     - PlatformName: UNKNOWN
-      DisplayName: Unkown
+      DisplayName: Unknown
       IsEnabled: 0
     - PlatformName: WATCH_OS
       DisplayName: Apple Watch
@@ -95,5 +100,4 @@ MonoBehaviour:
       DisplayName: Xbox One
       IsEnabled: 0
   UseDefaultServerUrl: 1
-  ShouldShowLogs: 0
   AdvanceSelection: 0
