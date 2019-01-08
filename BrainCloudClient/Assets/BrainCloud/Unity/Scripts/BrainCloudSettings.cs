@@ -1,14 +1,14 @@
 ﻿#if !DOT_NET
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System.Linq;
+
 using UnityEngine.Serialization;
+
 #if UNITY_EDITOR
 using UnityEditor;
-
+using BrainCloudUnity.BrainCloudPlugin;
 #endif
 
 namespace BrainCloudUnity
@@ -20,6 +20,39 @@ namespace BrainCloudUnity
     
     public class BrainCloudSettings : ScriptableObject
     {
+#if UNITY_EDITOR
+        static BrainCloudSettings()
+        {
+        }
+
+        public void OnEnable()
+        {
+            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated = null;
+            
+            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated += () =>
+            {
+                if (!BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                {
+                    Instance.m_dispatchUrl = BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
+                    Instance.m_serverURL = BrainCloudPluginSettings.Instance.GetServerUrl;   
+                    Instance.m_secretKey = BaseBrainCloudPluginSettings.GetAppSecret();
+                    Instance.m_appId = BaseBrainCloudPluginSettings.GetAppId();
+                    Instance.m_appVersion = BaseBrainCloudPluginSettings.GetAppVersion();
+
+                    var appIdSecrets = BaseBrainCloudPluginSettings.GetAppIdSecrets();
+                    
+                    if(appIdSecrets != null)
+                        Instance.m_appIdSecrets =
+                            AppIdSecretPair.FromDictionary(BaseBrainCloudPluginSettings.GetAppIdSecrets());
+   
+                    EditorUtility.SetDirty(Instance);
+                }
+
+            };
+
+        }
+#endif
+        
         private static BrainCloudSettings s_instance;
 
         public static BrainCloudSettings Instance
@@ -60,13 +93,9 @@ namespace BrainCloudUnity
             get
             {  
 #if UNITY_EDITOR
-                if (BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
+                if (BrainCloudPluginSettings.IsLegacyPluginEnabled())
                 {
                     m_dispatchUrl = m_serverURL + "/dispatcherv2";
-                }
-                else
-                {
-                    m_dispatchUrl = BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
                 }
 #endif
 
@@ -93,13 +122,6 @@ namespace BrainCloudUnity
         {
             get
             {
-#if UNITY_EDITOR
-                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    m_serverURL = BrainCloudPlugin.BrainCloudPluginSettings.Instance.GetServerUrl;
-                }
-#endif
-
                 return m_serverURL;
             }
             set
@@ -120,13 +142,6 @@ namespace BrainCloudUnity
         {
             get
             {
-#if UNITY_EDITOR
-                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    m_secretKey = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppSecret();
-                }                                
-#endif
-
                 return m_secretKey;
             }
             set
@@ -142,20 +157,11 @@ namespace BrainCloudUnity
         }
 
         [FormerlySerializedAs("m_gameId")] [SerializeField] private string m_appId = "";
-
         
         public string AppId
         {
             get
             {
-                
-#if UNITY_EDITOR
-                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    m_appId = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppId();
-                }
-#endif 
-                
                 return m_appId;
             }
             set
@@ -181,14 +187,7 @@ namespace BrainCloudUnity
         public string AppVersion
         {
             get
-            {
-#if UNITY_EDITOR
-                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    m_appVersion = BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppVersion();
-                }
-#endif                    
-                
+            { 
                 return m_appVersion;
             }
             set
@@ -209,17 +208,7 @@ namespace BrainCloudUnity
         {
             get
             {
-#if UNITY_EDITOR
-                if (!BrainCloudPlugin.BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-
-                    m_appIdSecrets =
-                        AppIdSecretPair.FromDictionary(BrainCloudPlugin.BaseBrainCloudPluginSettings.GetAppIdSecrets());
-                }
-#endif
-
                 Dictionary<string, string> appIdSecretsDict = AppIdSecretPair.ToDictionary(m_appIdSecrets);
-                
                     
                 if (!appIdSecretsDict.ContainsKey(AppId))
                 {
