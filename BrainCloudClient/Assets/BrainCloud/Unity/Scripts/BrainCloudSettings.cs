@@ -27,6 +27,8 @@ namespace BrainCloudUnity
 
         public void OnEnable()
         {
+            BrainCloudDebugInfo.Instance.ClearPluginData();
+        
             BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated = null;
             
             BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated += () =>
