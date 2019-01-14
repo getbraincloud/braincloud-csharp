@@ -54,6 +54,8 @@ namespace BrainCloudUnity
                         AppIdSecretPair.FromDictionary(BaseBrainCloudPluginSettings.GetAppIdSecrets());
    
                 EditorUtility.SetDirty(Instance);
+                
+                EditorUtility.SetDirty(Resources.Load("BrainCloudSettings") as BrainCloudSettings);
             }
         }
 
