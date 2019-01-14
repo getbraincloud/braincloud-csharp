@@ -23,35 +23,45 @@ namespace BrainCloudUnity
 #if UNITY_EDITOR
         static BrainCloudSettings()
         {
+            
         }
+        
 
+        
         public void OnEnable()
         {
             BrainCloudDebugInfo.Instance.ClearPluginData();
-        
-            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated = null;
+
             
-            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated += () =>
+            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated += UpdatePlugin;
+
+        }
+
+        private void UpdatePlugin()
+        {
+            if (!BrainCloudPluginSettings.IsLegacyPluginEnabled())
             {
-                if (!BrainCloudPluginSettings.IsLegacyPluginEnabled())
-                {
-                    Instance.m_dispatchUrl = BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
-                    Instance.m_serverURL = BrainCloudPluginSettings.Instance.GetServerUrl;   
-                    Instance.m_secretKey = BaseBrainCloudPluginSettings.GetAppSecret();
-                    Instance.m_appId = BaseBrainCloudPluginSettings.GetAppId();
-                    Instance.m_appVersion = BaseBrainCloudPluginSettings.GetAppVersion();
+                Instance.m_dispatchUrl = BrainCloudPluginSettings.Instance.GetServerUrl + "/dispatcherv2";
+                Instance.m_serverURL = BrainCloudPluginSettings.Instance.GetServerUrl;   
+                Instance.m_secretKey = BaseBrainCloudPluginSettings.GetAppSecret();
+                Instance.m_appId = BaseBrainCloudPluginSettings.GetAppId();
+                Instance.m_appVersion = BaseBrainCloudPluginSettings.GetAppVersion();
 
-                    var appIdSecrets = BaseBrainCloudPluginSettings.GetAppIdSecrets();
+                var appIdSecrets = BaseBrainCloudPluginSettings.GetAppIdSecrets();
                     
-                    if(appIdSecrets != null)
-                        Instance.m_appIdSecrets =
-                            AppIdSecretPair.FromDictionary(BaseBrainCloudPluginSettings.GetAppIdSecrets());
+                if(appIdSecrets != null)
+                    Instance.m_appIdSecrets =
+                        AppIdSecretPair.FromDictionary(BaseBrainCloudPluginSettings.GetAppIdSecrets());
    
-                    EditorUtility.SetDirty(Instance);
-                }
+                EditorUtility.SetDirty(Instance);
+                
+                EditorUtility.SetDirty(Resources.Load("BrainCloudSettings") as BrainCloudSettings);
+            }
+        }
 
-            };
-
+        private void OnDisable()
+        {
+            BaseBrainCloudPluginSettings.Instance.BrainCloudPluginUpdated -=  UpdatePlugin;
         }
 #endif
         
