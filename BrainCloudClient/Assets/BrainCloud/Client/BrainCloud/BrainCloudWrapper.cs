@@ -100,6 +100,8 @@ public class BrainCloudWrapper
     private void OnApplicationQuit()
     {
         Client.DisableRTT();
+        Client.RoomServerService.DisableRS();
+        Client.Update();
     }
 
     /// <summary>
@@ -289,6 +291,10 @@ public class BrainCloudWrapper
     public BrainCloudMessaging MessagingService
     {
         get { return Client.MessagingService; }
+    }
+    public BrainCloudRoomServer RoomServerService
+    {
+        get { return Client.RoomServerService; }
     }
     #endregion
 

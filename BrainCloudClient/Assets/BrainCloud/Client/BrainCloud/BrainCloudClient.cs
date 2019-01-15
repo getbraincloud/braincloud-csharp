@@ -27,6 +27,7 @@ namespace BrainCloud
         ALL,
         REST,
         RTT,
+        RS,
 
         MAX
     }
@@ -78,6 +79,12 @@ namespace BrainCloud
     public delegate void RTTCallback(string jsonResponse);
 
     /// <summary>
+    /// Success callback for a Room Server response method.
+    /// </summary>
+    /// <param name="jsonResponse">The JSON response from the server</param>
+    public delegate void RSCallback(string jsonResponse);
+
+    /// <summary>
     /// Method called when a file upload has completed.
     /// </summary>
     /// <param name="fileUploadId">The file upload id</param>
@@ -121,6 +128,9 @@ namespace BrainCloud
         private BCEntityFactory _entityFactory;
 #endif
         private BrainCloudComms _comms;
+        private RTTComms _rttComms;
+        private RSComms _rsComms;
+
         private BrainCloudEntity _entityService;
         private BrainCloudGlobalEntity _globalEntityService;
         private BrainCloudGlobalApp _globalAppService;
@@ -159,7 +169,7 @@ namespace BrainCloud
         private BrainCloudLobby _lobbyService;
         private BrainCloudChat _chatService;
         private BrainCloudRTT _rttService;
-        private RTTComms _rttComms;
+        private BrainCloudRoomServer _rsService;
 
         #endregion Private Data
 
@@ -182,6 +192,9 @@ namespace BrainCloud
         public BrainCloudClient()
         {
             _comms = new BrainCloudComms(this);
+            _rttComms = new RTTComms(this);
+            _rsComms = new RSComms(this);
+
             _entityService = new BrainCloudEntity(this);
 #if !XAMARIN
             _entityFactory = new BCEntityFactory(_entityService);
@@ -230,7 +243,7 @@ namespace BrainCloud
             _lobbyService = new BrainCloudLobby(this);
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
-            _rttComms = new RTTComms(this);
+            _rsService = new BrainCloudRoomServer(this, _rsComms);
         }
 
         //---------------------------------------------------------------
@@ -503,6 +516,10 @@ namespace BrainCloud
             get { return _messagingService; }
         }
 
+        public BrainCloudRoomServer RoomServerService
+        {
+            get { return _rsService; }
+        }
         #endregion
 
         #region Service Getters
@@ -774,11 +791,18 @@ namespace BrainCloud
                     }
                     break;
 
+                case eBrainCloudUpdateType.RS:
+                    {
+                        if (_rsComms != null) _rsComms.Update();
+                    }
+                    break;
+
                 default:
                 case eBrainCloudUpdateType.ALL:
                     {
                         if (_rttComms != null) _rttComms.Update();
                         if (_comms != null) _comms.Update();
+                        if (_rsComms != null) _rsComms.Update();
                     }
                     break;
             }
@@ -1013,6 +1037,7 @@ namespace BrainCloud
         {
             _comms.ResetCommunication();
             _rttComms.DisableRTT();
+            _rsComms.DisableRS();
             AuthenticationService.ClearSavedProfileID();
         }
 
