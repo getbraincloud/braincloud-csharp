@@ -34,7 +34,7 @@ namespace BrainCloud.Internal
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void EnableRS(eRSConnectionType in_connectionType = eRSConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void Connect(eRSConnectionType in_connectionType = eRSConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             if (!m_bIsConnected)
             {
@@ -49,17 +49,9 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public void Send(string in_message, Dictionary<string, object> in_dict)
-        {
-            send(in_message);
-        }
-
-        /// <summary>
         /// Disables Real Time event for this session.
         /// </summary>
-        public void DisableRS()
+        public void Disconnect()
         {
             addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "disconnect", "DisableRS Called"));
         }
@@ -68,7 +60,7 @@ namespace BrainCloud.Internal
         /// 
         /// </summary>
         ///
-        public void RegisterRSCallback(RSCallback in_callback)
+        public void RegisterCallback(RSCallback in_callback)
         {
             m_registeredCallbacks = in_callback;
         }
@@ -76,10 +68,19 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        public void DeregisterRSCallback()
+        public void DeregisterCallback()
         {
             m_registeredCallbacks = null;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Send(string in_message, Dictionary<string, object> in_dict)
+        {
+            send(in_message);
+        }
+
 
         /// <summary>
         /// 

@@ -17,14 +17,6 @@ namespace BrainCloud
             m_clientRef = in_client;
             m_commsLayer = in_comms;
         }
-
-        /// <summary>
-        /// Requests the event server address
-        /// </summary>
-        public void Send(string in_message, Dictionary<string, object> in_options = null)
-        {
-            m_commsLayer.Send(in_message, in_options);
-        }
         
         /// <summary>
         ///
@@ -33,33 +25,43 @@ namespace BrainCloud
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void EnableRS(eRSConnectionType in_connectionType = eRSConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void Connect(eRSConnectionType in_connectionType = eRSConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
-            m_commsLayer.EnableRS(in_connectionType, in_options, in_success, in_failure, cb_object);
-        }
-
-        /// <summary>
-        /// Disables Room Service for this session.
-        /// </summary>
-        public void DisableRS()
-        {
-            m_commsLayer.DisableRS();
+            m_commsLayer.Connect(in_connectionType, in_options, in_success, in_failure, cb_object);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void RegisterRSCallback(RSCallback in_callback)
+        public void Disconnect()
         {
-            m_commsLayer.RegisterRSCallback(in_callback);
+            m_commsLayer.Disconnect();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void DeregisterRSCallback()
+        public void RegisterCallback(RSCallback in_callback)
         {
-            m_commsLayer.DeregisterRSCallback();
+            m_commsLayer.RegisterCallback(in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterCallback()
+        {
+            m_commsLayer.DeregisterCallback();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="in_message"></param>
+        /// <param name="in_options"></param>
+        public void Send(string in_message, Dictionary<string, object> in_options = null)
+        {
+            m_commsLayer.Send(in_message, in_options);
         }
 
         #region private

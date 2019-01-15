@@ -100,7 +100,7 @@ public class BrainCloudWrapper
     private void OnApplicationQuit()
     {
         Client.DisableRTT();
-        Client.RoomServerService.DisableRS();
+        Client.RoomServerService.Disconnect();
         Client.Update();
     }
 

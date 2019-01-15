@@ -1037,7 +1037,7 @@ namespace BrainCloud
         {
             _comms.ResetCommunication();
             _rttComms.DisableRTT();
-            _rsComms.DisableRS();
+            _rsComms.Disconnect();
             AuthenticationService.ClearSavedProfileID();
         }
 
