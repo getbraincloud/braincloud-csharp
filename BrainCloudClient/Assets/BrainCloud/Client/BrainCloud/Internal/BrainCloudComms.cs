@@ -105,6 +105,29 @@ namespace BrainCloud.Internal
         /// </summary>
         private int _killSwitchThreshold = 11;
 
+        ///<summary>
+        ///The maximum number of attempts that the client can use
+        ///while trying to successfully authenticate before the client 
+        ///is disabled.
+        ///<summary>
+        private int _failedAuthenticationAttemptThreshold = 4; 
+        
+        ///<summary>
+        ///The current number of failed attempts at authenticating. This 
+        ///will reset when a successful authentication is made.
+        ///<summary>
+        private int _failedAuthenticationAttempts = 0;
+
+        ///<summary>
+        ///A bool that keeps track of the type of fakeErrorResponse to send to back 
+        ///<summary>
+        private bool _tooManyFailedAuthentications;
+        
+        ///<summary>
+        ///An array that stores the most recently used profileIds.
+        ///<summary>
+        private String[] _recentlyUsedProfileIdsForAuth = {"", ""}; 
+
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
         /// </summary>
@@ -969,6 +992,19 @@ namespace BrainCloud.Internal
                     int reasonCode = 0;
                     string errorJson = "";
 
+                    //if it was an authentication call 
+                    if(sc.GetOperation() == "AUTHENTICATE")
+                    {
+                        //we handle the logic in the kill switch, but we want to keep track of the new profileId being used, and keep note of the last one we used. 
+                        //compare the current response profileId with the last used one.
+                        string profileIdInUse = ""; 
+                        object profileIdObj = null;
+                        //store the last used profile Id into slot 1 and the newest in slot 0. This way we can keep both stored for when testing the killswitch conditions, and track changes. 
+                        _recentlyUsedProfileIdsForAuth[1] = _recentlyUsedProfileIdsForAuth[0];
+                        response.TryGetValue("profileId", out profileIdObj);
+                        _recentlyUsedProfileIdsForAuth[0] = (string)profileIdObj;
+                    }
+
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
                     {
                         reasonCode = (int)reasonCodeObj;
@@ -1119,6 +1155,37 @@ namespace BrainCloud.Internal
                 _killSwitchEngaged = true;
                 _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
             }
+
+            //Authentication check for kill switch. 
+            //did the client make an authentication call?
+            if(operation == ServiceOperation.Authenticate.Value)
+            {
+                _clientRef.Log("Failed authentication call");
+                //increment the amount of failed authentication attempts
+                _failedAuthenticationAttempts++;
+                string num;
+                num = _failedAuthenticationAttempts.ToString();
+                _clientRef.Log("Current number of failed authentications: " + num);
+                
+                //check the recently used profileIds, are they the same?
+                if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
+                {
+                    //give a suggestion to the client if we catch a recurring problem. 
+                    _clientRef.Log("Same profileId used and still failing, try a different profileId");
+                }
+
+                //have the attempts gone beyond the threshold?
+                if(_failedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
+                {
+                    //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
+                    //we are going to now engage the killswitch and disable the client. May as well have it behave the same as if
+                    //the client were failing too many of a regular api call.  
+                    _killSwitchEngaged = true;
+                    _tooManyFailedAuthentications = true;
+                    _clientRef.Log("Too many repeat authentication failures");
+                }
+                
+            }
         }
 
         private void ResetKillSwitch()
@@ -1126,6 +1193,12 @@ namespace BrainCloud.Internal
             _killSwitchErrorCount = 0;
             _killSwitchService = null;
             _killSwitchOperation = null;
+
+            //reset the amount of failed attempts and 
+            _failedAuthenticationAttempts = 0;
+            _recentlyUsedProfileIdsForAuth[0] = "";
+            _recentlyUsedProfileIdsForAuth[1] = "";
+            _tooManyFailedAuthentications = false;
         }
 
         /// <summary>
@@ -1285,9 +1358,18 @@ namespace BrainCloud.Internal
                     }
                     else
                     {
-                        FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
-                            "Client has been disabled due to repeated errors from a single API call");
-                        requestState = null;
+                        //not really needed, but will be able to help distinguish if its from an authentication call specifically. 
+                        if(_tooManyFailedAuthentications == true)
+                        {
+                            FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
+                                "Client has been disabled due to repeated errors from an authentication call");
+                            requestState = null;  
+                        }
+                        else{
+                            FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
+                                "Client has been disabled due to repeated errors from a single API call");
+                            requestState = null;   
+                        }
                     }
                 }
             } // unlock _serviceCallsWaiting

@@ -103,6 +103,8 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
       <Link>BrainCloud\BrainCloudFile.cs</Link>
     </Compile>
+    <Compile Include="BrainCloud\BrainCloudRoomServer.cs" />
+    <Compile Include="BrainCloud\Internal\RSComms.cs" />
     <Content Include="C:\Codez\Libs\Folder\OtherFolder\**\*.*">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

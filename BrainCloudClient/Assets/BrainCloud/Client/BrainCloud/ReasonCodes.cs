@@ -106,8 +106,8 @@ namespace BrainCloud
         public const int MISSING_PLAYER_ID = 40382;
         public const int DECODE_CONTEXT = 40383;
         public const int INVALID_QUERY_CONTEXT = 40384;
-        public const int INVALID_AMOUNT = 40385;
         public const int GROUP_MEMBER_NOT_FOUND = 40385;
+        public const int INVALID_AMOUNT = 40385;
         public const int INVALID_SORT = 40386;
         public const int GAME_NOT_FOUND = 40387;
         public const int GAMES_NOT_IN_SAME_COMPANY = 40388;
@@ -366,6 +366,7 @@ namespace BrainCloud
         public const int LEADERBOARD_ROTATION_ERROR = 40642;
         public const int INVALID_STORE_ID = 40700;
         public const int METHOD_DEPRECATED = 40701;
+        public const int INVALID_BILLING_PROVIDER_ID = 40702;
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
