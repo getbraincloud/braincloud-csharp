@@ -111,15 +111,9 @@ namespace BrainCloud.Internal
         ///is disabled.
         ///<summary>
         private int _failedAuthenticationAttemptThreshold = 3; 
-        
-        ///<summary>
-        ///The current number of failed attempts at authenticating. This 
-        ///will reset when a successful authentication is made.
-        ///<summary>
-        private int _failedAuthenticationAttempts = 0;
 
         ///<summary>
-        ///The current number of failed attempts at authenticating. This 
+        ///The current number of identical failed attempts at authenticating. This 
         ///will reset when a successful authentication is made.
         ///<summary>
         private int _identicalFailedAuthenticationAttempts = 0;
@@ -144,7 +138,7 @@ namespace BrainCloud.Internal
         /// When we have too many authentication errors under the same credentials, 
         /// the client will not be able to try and authenticate again until the timer is up.
         /// </summary>
-        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(0.015f);
+        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// When the authentication timer began 
