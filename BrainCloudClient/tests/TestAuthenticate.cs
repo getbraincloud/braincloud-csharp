@@ -39,7 +39,7 @@ namespace BrainCloudTests
                true,
                tr.ApiSuccess, tr.ApiError
              ); 
-            tr.RunExpectFail(202, 40207);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
 
             TestResult tr2 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -47,7 +47,7 @@ namespace BrainCloudTests
                true,
                tr2.ApiSuccess, tr2.ApiError
              ); 
-            tr2.RunExpectFail(202, 40207);
+            tr2.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
 
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -55,7 +55,7 @@ namespace BrainCloudTests
                true,
                tr3.ApiSuccess, tr3.ApiError
              ); 
-            tr3.RunExpectFail(202, 40207);
+            tr3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
 
             TestResult tr4 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -63,7 +63,7 @@ namespace BrainCloudTests
                true,
                tr4.ApiSuccess, tr4.ApiError
              ); 
-            tr4.RunExpectFail(202, 40207);
+            tr4.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
 
             DateTime _testPauseStart = DateTime.Now;
             TimeSpan _testPauseDuration = TimeSpan.FromSeconds(35);
@@ -81,7 +81,7 @@ namespace BrainCloudTests
                true,
                tr5.ApiSuccess, tr5.ApiError
              ); 
-            tr5.RunExpectFail(900, 90200);
+            tr5.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, CLIENT_DISABLED);
 
             //Now that the timer has refreshed in comms after waiting out the time, we should now be able to call another authenticate call. 
             TestResult tr6 = new TestResult(_bc);
@@ -90,7 +90,7 @@ namespace BrainCloudTests
                true,
                tr6.ApiSuccess, tr6.ApiError
              );  
-             tr6.RunExpectFail(202, 40207);
+             tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace BrainCloudTests
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(202, 40207);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
         }
 
         [Test]

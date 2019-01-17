@@ -110,7 +110,7 @@ namespace BrainCloud.Internal
         ///while trying to successfully authenticate before the client 
         ///is disabled.
         ///<summary>
-        private int _failedAuthenticationAttemptThreshold = 3; 
+        private int _identicalFailedAuthAttemptThreshold = 3; 
 
         ///<summary>
         ///The current number of identical failed attempts at authenticating. This 
@@ -130,7 +130,7 @@ namespace BrainCloud.Internal
         private Dictionary<string, object> blankResponseData = new Dictionary<string, object>();
 
         ///<summary>
-        ///An array that stores the most recent response jsons.
+        ///An array that stores the most recent response jsons as dictionaries.
         ///<summary>
         private Dictionary<string, object>[] _recentResponseJsonData = {new Dictionary<string, object>(), new Dictionary<string, object>()};
 
@@ -538,7 +538,7 @@ namespace BrainCloud.Internal
             {
                 _clientRef.Log("TIMER ON");
                 _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
-                //check the timeout
+                //check the timeout, has enough time passed?
                 if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
                 {
                     _clientRef.Log("TIMER FINISHED");
@@ -1067,12 +1067,18 @@ namespace BrainCloud.Internal
                         }
                         else
                         {
+                            //different lengths of data mean theyre not the same call.
                             responsesAreTheSame = false;
                         }
-                
+
+                        //now we either increment the amount of identical failed authentication attempts, or reset it because its not identical. 
                         if(responsesAreTheSame == true)
                         {
                             _identicalFailedAuthenticationAttempts++;
+                        }
+                        else
+                        {
+                            _identicalFailedAuthenticationAttempts = 0;
                         }
                     }
 
@@ -1238,15 +1244,15 @@ namespace BrainCloud.Internal
                 _clientRef.Log("Current number of identical failed authentications: " + num);
                 
                 //have the attempts gone beyond the threshold?
-                if(_identicalFailedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
+                if(_identicalFailedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold)
                 {
                     //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
                     //we are going to now engage the killswitch and disable the client. This will act differently however. client will not
                     //be able to send an authentication request for a time. 
+                    _clientRef.Log("Too many identical repeat authentication failures");
                     _killSwitchEngaged = true;
                     _tooManyFailedAuthentications = true;
                     ResetAuthenticationTimer();
-                    _clientRef.Log("Too many identical repeat authentication failures");
                 }
                 
             }

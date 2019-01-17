@@ -9,6 +9,8 @@ namespace BrainCloud
     {
         public const int OK = 200;
 
+        public const int ACCEPTED = 202;
+
         /// <summary>
         /// Status code for a client side error
         /// </summary>
