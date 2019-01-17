@@ -62,7 +62,8 @@ namespace BrainCloudTests
              ); 
             tr4.RunExpectFail(202, 40207);
 
-            //by this point we expect calls the client to become disabled. 
+            //At this point, I expect we the max error count and the client is disabled 
+            //currently testing it as disabled for 0.01 seconds so it should skip this call.
             TestResult tr5 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
                 "",
@@ -71,15 +72,14 @@ namespace BrainCloudTests
              ); 
             tr5.RunExpectFail(900, 90200);
 
-            //the client should still be disabled. 
+            //The timer should finish by this call, and you will see that they can call authenticate again. 
             TestResult tr6 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
                 "",
                true,
                tr6.ApiSuccess, tr6.ApiError
              );  
-             tr6.RunExpectFail(900, 90200);
-            //tr6.RunExpectFail(900, 90200);
+             tr6.RunExpectFail(202, 40207);
         }
 
         [Test]

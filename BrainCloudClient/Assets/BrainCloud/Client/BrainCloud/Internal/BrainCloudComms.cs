@@ -144,7 +144,7 @@ namespace BrainCloud.Internal
         /// When we have too many authentication errors under the same credentials, 
         /// the client will not be able to try and authenticate again until the timer is up.
         /// </summary>
-        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(30);
+        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(0.01f);
 
         /// <summary>
         /// When the authentication timer began 
@@ -539,6 +539,21 @@ namespace BrainCloud.Internal
                 }
             }
 
+            //if the client is currently locked on authentication calls. 
+            if(_tooManyFailedAuthentications == true)
+            {
+                _clientRef.Log("TIMER ON");
+                _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
+                //check the timeout
+                if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
+                {
+                    _clientRef.Log("TIMER FINISHED");
+                    //if the wait time is up they're free to make authentication calls again
+                    _killSwitchEngaged = false;
+                    ResetKillSwitch();
+                }
+            }
+
             RunFileUploadCallbacks();
         }
 
@@ -783,9 +798,9 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Starts timeout of authentication calls.
         /// </summary>
-        private void SetAuthenticationTimer()
+        private void ResetAuthenticationTimer()
         {
-            _lastTimePacketSent = DateTime.Now;
+            _authenticationTimeoutStart = DateTime.Now;
         }
 
         /// <summary>
@@ -1232,41 +1247,13 @@ namespace BrainCloud.Internal
                 _killSwitchEngaged = true;
                 _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
             }
-            // KEEPING FOR NOW IN CASE
-            // //Authentication check for kill switch. 
-            // //did the client make an authentication call?
-            // if(operation == ServiceOperation.Authenticate.Value)
-            // {
-            //     _clientRef.Log("Failed authentication call");
-            //     //increment the amount of failed authentication attempts
-            //     _failedAuthenticationAttempts++;
-            //     string num;
-            //     num = _failedAuthenticationAttempts.ToString();
-            //     _clientRef.Log("Current number of failed authentications: " + num);
-                
-            //     //check the recently used profileIds, are they the same?
-            //     if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
-            //     {
-            //         //give a suggestion to the client if we catch a recurring problem. 
-            //         _clientRef.Log("Same profileId used and still failing, try a different profileId");
-            //     }
-
-            //     //have the attempts gone beyond the threshold?
-            //     if(_failedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
-            //     {
-            //         //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
-            //         //we are going to now engage the killswitch and disable the client. May as well have it behave the same as if
-            //         //the client were failing too many of a regular api call.  
-            //         _killSwitchEngaged = true;
-            //         _tooManyFailedAuthentications = true;
-            //         _clientRef.Log("Too many repeat authentication failures");
-            //     }
 
             //Authentication check for kill switch. 
             //did the client make an authentication call?
             if(operation == ServiceOperation.Authenticate.Value)
             {
                 _clientRef.Log("Failed authentication call");
+
                 string num;
                 num = _identicalFailedAuthenticationAttempts.ToString();
                 _clientRef.Log("Current number of identical failed authentications: " + num);
@@ -1279,6 +1266,7 @@ namespace BrainCloud.Internal
                     //be able to send an authentication request for a time. 
                     _killSwitchEngaged = true;
                     _tooManyFailedAuthentications = true;
+                    ResetAuthenticationTimer();
                     _clientRef.Log("Too many identical repeat authentication failures");
                 }
                 
@@ -1292,7 +1280,8 @@ namespace BrainCloud.Internal
             _killSwitchOperation = null;
 
             //reset the amount of failed attempts upon a successful attempt
-            _failedAuthenticationAttempts = 0;
+            _tooManyFailedAuthentications = false;
+            _identicalFailedAuthenticationAttempts = 0;
             _recentResponseJsonData[0] = blankResponseData;
             _recentResponseJsonData[1] = blankResponseData;
         }
