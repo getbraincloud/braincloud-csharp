@@ -144,7 +144,7 @@ namespace BrainCloud.Internal
         /// When we have too many authentication errors under the same credentials, 
         /// the client will not be able to try and authenticate again until the timer is up.
         /// </summary>
-        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(0.01f);
+        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(0.015f);
 
         /// <summary>
         /// When the authentication timer began 
@@ -1252,7 +1252,7 @@ namespace BrainCloud.Internal
             //did the client make an authentication call?
             if(operation == ServiceOperation.Authenticate.Value)
             {
-                _clientRef.Log("Failed authentication call");
+                _clientRef.Log("Failed Authentication Call");
 
                 string num;
                 num = _identicalFailedAuthenticationAttempts.ToString();
@@ -1315,9 +1315,6 @@ namespace BrainCloud.Internal
 
                             if (_serviceCallsWaiting[i].GetOperation() == ServiceOperation.Authenticate.Value)
                             {
-                                if(_tooManyFailedAuthentications == false)
-                                {
-                                _clientRef.Log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAARGH");
                                 if (i != 0)
                                 {
                                     var call = _serviceCallsWaiting[i];
@@ -1327,10 +1324,6 @@ namespace BrainCloud.Internal
 
                                 numMessagesWaiting = 1;
                                 break;
-                                }
-                                else{
-                                    _clientRef.Log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRR");
-                                }
                             }
                         }
 
@@ -1442,7 +1435,7 @@ namespace BrainCloud.Internal
                     {
                         if (_isAuthenticated || isAuth)
                         {
-                            _clientRef.Log("STIIIIIIIIIIIIIIIILLL SENDING HAHA");
+                            _clientRef.Log("SENDING REQUEST");
                             InternalSendMessage(requestState);
                         }
                         else
@@ -1456,7 +1449,7 @@ namespace BrainCloud.Internal
                         if(_tooManyFailedAuthentications == true)
                         {
                             FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
-                                "Client has been disabled due to identical repeat Authentication calls that are throwing errors. Authenticating with the same credentials is now disabled for 30 seconds");
+                                "Client has been disabled due to identical repeat Authentication calls that are throwing errors. Authenticating with the same credentials is disabled for 30 seconds");
                             requestState = null;   
                         }
                         else
@@ -1523,7 +1516,6 @@ namespace BrainCloud.Internal
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if UNITY_EDITOR
             //Sending Data to the Unity Debug Plugin for ease of developer debugging when in the Editor
             try
