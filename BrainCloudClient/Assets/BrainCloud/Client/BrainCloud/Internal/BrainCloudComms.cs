@@ -110,7 +110,7 @@ namespace BrainCloud.Internal
         ///while trying to successfully authenticate before the client 
         ///is disabled.
         ///<summary>
-        private int _failedAuthenticationAttemptThreshold = 4; 
+        private int _failedAuthenticationAttemptThreshold = 3; 
         
         ///<summary>
         ///The current number of failed attempts at authenticating. This 
@@ -119,14 +119,37 @@ namespace BrainCloud.Internal
         private int _failedAuthenticationAttempts = 0;
 
         ///<summary>
+        ///The current number of failed attempts at authenticating. This 
+        ///will reset when a successful authentication is made.
+        ///<summary>
+        private int _identicalFailedAuthenticationAttempts = 0;
+
+        ///<summary>
         ///A bool that keeps track of the type of fakeErrorResponse to send to back 
         ///<summary>
         private bool _tooManyFailedAuthentications;
         
         ///<summary>
-        ///An array that stores the most recently used profileIds.
+        ///A blank reference for response data so we don't need to continually allocate new dictionaries when trying to
+        ///make the data blank again.
         ///<summary>
-        private String[] _recentlyUsedProfileIdsForAuth = {"", ""}; 
+        private Dictionary<string, object> blankResponseData = new Dictionary<string, object>();
+
+        ///<summary>
+        ///An array that stores the most recent response jsons.
+        ///<summary>
+        private Dictionary<string, object>[] _recentResponseJsonData = {new Dictionary<string, object>(), new Dictionary<string, object>()};
+
+        /// <summary>
+        /// When we have too many authentication errors under the same credentials, 
+        /// the client will not be able to try and authenticate again until the timer is up.
+        /// </summary>
+        private TimeSpan _authenticationTimeoutDuration = TimeSpan.FromSeconds(30);
+
+        /// <summary>
+        /// When the authentication timer began 
+        /// </summary>
+        private DateTime _authenticationTimeoutStart;
 
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
@@ -757,6 +780,13 @@ namespace BrainCloud.Internal
             _lastTimePacketSent = DateTime.Now;
         }
 
+        /// <summary>
+        /// Starts timeout of authentication calls.
+        /// </summary>
+        private void SetAuthenticationTimer()
+        {
+            _lastTimePacketSent = DateTime.Now;
+        }
 
         /// <summary>
         /// Handles the response bundle and calls registered callbacks.
@@ -995,14 +1025,61 @@ namespace BrainCloud.Internal
                     //if it was an authentication call 
                     if(sc.GetOperation() == "AUTHENTICATE")
                     {
-                        //we handle the logic in the kill switch, but we want to keep track of the new profileId being used, and keep note of the last one we used. 
-                        //compare the current response profileId with the last used one.
-                        string profileIdInUse = ""; 
-                        object profileIdObj = null;
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //MAY NOT NEED
+                        //we want to keep track of the new profileId being used, and keep note of the last one we used. To see if they're making changes to their call
+                       // string profileIdInUse = ""; 
+                        //object profileIdObj = null;
                         //store the last used profile Id into slot 1 and the newest in slot 0. This way we can keep both stored for when testing the killswitch conditions, and track changes. 
-                        _recentlyUsedProfileIdsForAuth[1] = _recentlyUsedProfileIdsForAuth[0];
-                        response.TryGetValue("profileId", out profileIdObj);
-                        _recentlyUsedProfileIdsForAuth[0] = (string)profileIdObj;
+                       // _recentlyUsedProfileIdsForAuth[1] = _recentlyUsedProfileIdsForAuth[0];
+                       // response.TryGetValue("profileId", out profileIdObj);
+                       // _recentlyUsedProfileIdsForAuth[0] = (string)profileIdObj;
+
+                        //simplified version with profileId only. 
+                        //if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
+                        //{
+                        //    _identicalFailedAuthenticationAttempts++;
+                        //}
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        _recentResponseJsonData[1] = _recentResponseJsonData[0];
+                        _recentResponseJsonData[0] = response;
+
+                        //need to compare the json data of the most recent response and the last response. If they are the same, it means the client
+                        //is attempting the exact same authentication call. 
+                        bool responsesAreTheSame = true;
+                        //if the data has different lengths, they're obviously not the same
+                        if(_recentResponseJsonData[0].Count == _recentResponseJsonData[1].Count)
+                        {
+                            foreach(var pair in _recentResponseJsonData[0])
+                            {
+                                object value = null;
+                                //if there is ever a time they're not the same value, then they are not the same
+                                if(_recentResponseJsonData[1].TryGetValue(pair.Key, out value))
+                                {
+                                    //if the values are not the same theyre different
+                                    if(value.ToString() != pair.Value.ToString())
+                                    {
+                                        responsesAreTheSame = false;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    //If the key isnt found, they also can't be the same
+                                    responsesAreTheSame = false;
+                                    break;
+                                }
+                            } 
+                        }
+                        else
+                        {
+                            responsesAreTheSame = false;
+                        }
+                
+                        if(responsesAreTheSame == true)
+                        {
+                            _identicalFailedAuthenticationAttempts++;
+                        }
                     }
 
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
@@ -1155,34 +1232,54 @@ namespace BrainCloud.Internal
                 _killSwitchEngaged = true;
                 _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
             }
+            // KEEPING FOR NOW IN CASE
+            // //Authentication check for kill switch. 
+            // //did the client make an authentication call?
+            // if(operation == ServiceOperation.Authenticate.Value)
+            // {
+            //     _clientRef.Log("Failed authentication call");
+            //     //increment the amount of failed authentication attempts
+            //     _failedAuthenticationAttempts++;
+            //     string num;
+            //     num = _failedAuthenticationAttempts.ToString();
+            //     _clientRef.Log("Current number of failed authentications: " + num);
+                
+            //     //check the recently used profileIds, are they the same?
+            //     if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
+            //     {
+            //         //give a suggestion to the client if we catch a recurring problem. 
+            //         _clientRef.Log("Same profileId used and still failing, try a different profileId");
+            //     }
+
+            //     //have the attempts gone beyond the threshold?
+            //     if(_failedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
+            //     {
+            //         //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
+            //         //we are going to now engage the killswitch and disable the client. May as well have it behave the same as if
+            //         //the client were failing too many of a regular api call.  
+            //         _killSwitchEngaged = true;
+            //         _tooManyFailedAuthentications = true;
+            //         _clientRef.Log("Too many repeat authentication failures");
+            //     }
 
             //Authentication check for kill switch. 
             //did the client make an authentication call?
             if(operation == ServiceOperation.Authenticate.Value)
             {
                 _clientRef.Log("Failed authentication call");
-                //increment the amount of failed authentication attempts
-                _failedAuthenticationAttempts++;
                 string num;
-                num = _failedAuthenticationAttempts.ToString();
-                _clientRef.Log("Current number of failed authentications: " + num);
+                num = _identicalFailedAuthenticationAttempts.ToString();
+                _clientRef.Log("Current number of identical failed authentications: " + num);
                 
-                //check the recently used profileIds, are they the same?
-                if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
-                {
-                    //give a suggestion to the client if we catch a recurring problem. 
-                    _clientRef.Log("Same profileId used and still failing, try a different profileId");
-                }
-
                 //have the attempts gone beyond the threshold?
-                if(_failedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
+                if(_identicalFailedAuthenticationAttempts >= _failedAuthenticationAttemptThreshold)
                 {
                     //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
-                    //we are going to now engage the killswitch and disable the client. May as well have it behave the same as if
-                    //the client were failing too many of a regular api call.  
+                    //we are going to now engage the killswitch and disable the client. This will act differently however. client will not
+                    //be able to send an authentication request for a time. 
                     _killSwitchEngaged = true;
                     _tooManyFailedAuthentications = true;
-                    _clientRef.Log("Too many repeat authentication failures");
+                    _clientRef.Log("Too many identical repeat authentication failures");
                 }
                 
             }
@@ -1194,11 +1291,10 @@ namespace BrainCloud.Internal
             _killSwitchService = null;
             _killSwitchOperation = null;
 
-            //reset the amount of failed attempts and 
+            //reset the amount of failed attempts upon a successful attempt
             _failedAuthenticationAttempts = 0;
-            _recentlyUsedProfileIdsForAuth[0] = "";
-            _recentlyUsedProfileIdsForAuth[1] = "";
-            _tooManyFailedAuthentications = false;
+            _recentResponseJsonData[0] = blankResponseData;
+            _recentResponseJsonData[1] = blankResponseData;
         }
 
         /// <summary>
@@ -1230,6 +1326,9 @@ namespace BrainCloud.Internal
 
                             if (_serviceCallsWaiting[i].GetOperation() == ServiceOperation.Authenticate.Value)
                             {
+                                if(_tooManyFailedAuthentications == false)
+                                {
+                                _clientRef.Log("BLAAAAAAAAAAAAAAAAAAAAAAAAAAARGH");
                                 if (i != 0)
                                 {
                                     var call = _serviceCallsWaiting[i];
@@ -1239,6 +1338,10 @@ namespace BrainCloud.Internal
 
                                 numMessagesWaiting = 1;
                                 break;
+                                }
+                                else{
+                                    _clientRef.Log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRRRRRRR");
+                                }
                             }
                         }
 
@@ -1346,10 +1449,13 @@ namespace BrainCloud.Internal
                     requestState.MessageList = messageList;
                     ++_packetId;
 
-                    if (!_killSwitchEngaged)
+                    if (!_killSwitchEngaged && _tooManyFailedAuthentications == false)
                     {
                         if (_isAuthenticated || isAuth)
+                        {
+                            _clientRef.Log("STIIIIIIIIIIIIIIIILLL SENDING HAHA");
                             InternalSendMessage(requestState);
+                        }
                         else
                         {
                             FakeErrorResponse(requestState, _cachedStatusCode, _cachedReasonCode, _cachedStatusMessage);
@@ -1358,14 +1464,14 @@ namespace BrainCloud.Internal
                     }
                     else
                     {
-                        //not really needed, but will be able to help distinguish if its from an authentication call specifically. 
                         if(_tooManyFailedAuthentications == true)
                         {
                             FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
-                                "Client has been disabled due to repeated errors from an authentication call");
-                            requestState = null;  
+                                "Client has been disabled due to identical repeat Authentication calls that are throwing errors. Authenticating with the same credentials is now disabled for 30 seconds");
+                            requestState = null;   
                         }
-                        else{
+                        else
+                        {
                             FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
                                 "Client has been disabled due to repeated errors from a single API call");
                             requestState = null;   
@@ -1428,7 +1534,7 @@ namespace BrainCloud.Internal
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if UNITY_EDITOR
             //Sending Data to the Unity Debug Plugin for ease of developer debugging when in the Editor
             try

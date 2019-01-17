@@ -78,7 +78,8 @@ namespace BrainCloudTests
                true,
                tr6.ApiSuccess, tr6.ApiError
              );  
-            tr6.RunExpectFail(900, 90200);
+             tr6.RunExpectFail(900, 90200);
+            //tr6.RunExpectFail(900, 90200);
         }
 
         [Test]
