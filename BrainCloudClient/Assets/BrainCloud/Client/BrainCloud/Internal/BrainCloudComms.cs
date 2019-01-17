@@ -1034,22 +1034,7 @@ namespace BrainCloud.Internal
                     //if it was an authentication call 
                     if(sc.GetOperation() == "AUTHENTICATE")
                     {
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        //MAY NOT NEED
-                        //we want to keep track of the new profileId being used, and keep note of the last one we used. To see if they're making changes to their call
-                       // string profileIdInUse = ""; 
-                        //object profileIdObj = null;
-                        //store the last used profile Id into slot 1 and the newest in slot 0. This way we can keep both stored for when testing the killswitch conditions, and track changes. 
-                       // _recentlyUsedProfileIdsForAuth[1] = _recentlyUsedProfileIdsForAuth[0];
-                       // response.TryGetValue("profileId", out profileIdObj);
-                       // _recentlyUsedProfileIdsForAuth[0] = (string)profileIdObj;
-
-                        //simplified version with profileId only. 
-                        //if(_recentlyUsedProfileIdsForAuth[0] == _recentlyUsedProfileIdsForAuth[1])
-                        //{
-                        //    _identicalFailedAuthenticationAttempts++;
-                        //}
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //swap the recent responses, so you have the newest one, and the one last time you came through.
                         _recentResponseJsonData[1] = _recentResponseJsonData[0];
                         _recentResponseJsonData[0] = response;
 
