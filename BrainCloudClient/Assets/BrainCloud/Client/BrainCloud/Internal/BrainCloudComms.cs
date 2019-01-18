@@ -117,11 +117,6 @@ namespace BrainCloud.Internal
         ///will reset when a successful authentication is made.
         ///<summary>
         private int _identicalFailedAuthenticationAttempts = 0;
-
-        ///<summary>
-        ///A bool that keeps track of the type of fakeErrorResponse to send to back 
-        ///<summary>
-        private bool _tooManyFailedAuthentications;
         
         ///<summary>
         ///A blank reference for response data so we don't need to continually allocate new dictionaries when trying to
@@ -534,7 +529,7 @@ namespace BrainCloud.Internal
             }
 
             //if the client is currently locked on authentication calls. 
-            if(_tooManyFailedAuthentications == true)
+            if(tooManyAuthenticationAttempts())
             {
                 _clientRef.Log("TIMER ON");
                 _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
@@ -795,6 +790,14 @@ namespace BrainCloud.Internal
         private void ResetAuthenticationTimer()
         {
             _authenticationTimeoutStart = DateTime.Now;
+        }
+
+        ///<summary>
+        ///keeps track of if the client has made too many authentication attempts.
+        ///<summary>
+        private bool tooManyAuthenticationAttempts()
+        {
+            return _identicalFailedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold;
         }
 
         /// <summary>
@@ -1071,14 +1074,18 @@ namespace BrainCloud.Internal
                             responsesAreTheSame = false;
                         }
 
-                        //now we either increment the amount of identical failed authentication attempts, or reset it because its not identical. 
-                        if(responsesAreTheSame == true)
+                        //if we haven't already gone above the threshold and are waiting for the timer or a 200 response to reset things
+                        if(!tooManyAuthenticationAttempts())
                         {
-                            _identicalFailedAuthenticationAttempts++;
-                        }
-                        else
-                        {
-                            _identicalFailedAuthenticationAttempts = 0;
+                            //we either increment the amount of identical failed authentication attempts, or reset it because its not identical. 
+                            if(responsesAreTheSame == true)
+                            {
+                                _identicalFailedAuthenticationAttempts++;
+                            }
+                            else
+                            {
+                                _identicalFailedAuthenticationAttempts = 0;
+                            }
                         }
                     }
 
@@ -1251,7 +1258,6 @@ namespace BrainCloud.Internal
                     //be able to send an authentication request for a time. 
                     _clientRef.Log("Too many identical repeat authentication failures");
                     _killSwitchEngaged = true;
-                    _tooManyFailedAuthentications = true;
                     ResetAuthenticationTimer();
                 }
                 
@@ -1265,7 +1271,6 @@ namespace BrainCloud.Internal
             _killSwitchOperation = null;
 
             //reset the amount of failed attempts upon a successful attempt
-            _tooManyFailedAuthentications = false;
             _identicalFailedAuthenticationAttempts = 0;
             _recentResponseJsonData[0] = blankResponseData;
             _recentResponseJsonData[1] = blankResponseData;
@@ -1416,7 +1421,7 @@ namespace BrainCloud.Internal
                     requestState.MessageList = messageList;
                     ++_packetId;
 
-                    if (!_killSwitchEngaged && _tooManyFailedAuthentications == false)
+                    if (!_killSwitchEngaged && !tooManyAuthenticationAttempts())
                     {
                         if (_isAuthenticated || isAuth)
                         {
@@ -1431,7 +1436,7 @@ namespace BrainCloud.Internal
                     }
                     else
                     {
-                        if(_tooManyFailedAuthentications == true)
+                        if(tooManyAuthenticationAttempts())
                         {
                             FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
                                 "Client has been disabled due to identical repeat Authentication calls that are throwing errors. Authenticating with the same credentials is disabled for 30 seconds");

@@ -113,13 +113,14 @@ namespace BrainCloud
         /// The user supplied callback object
         /// </param>
         public void AuthenticateAnonymous(
-            string externalId,
+            string anonymousId,
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(externalId, "", AuthenticationType.Anonymous,
+            AnonymousId = anonymousId;
+            Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
                               "", forceCreate, success, failure, cbObject);
         }
 

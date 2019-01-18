@@ -81,7 +81,7 @@ namespace BrainCloudTests
                true,
                tr5.ApiSuccess, tr5.ApiError
              ); 
-            tr5.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, CLIENT_DISABLED);
+            tr5.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED);
 
             //Now that the timer has refreshed in comms after waiting out the time, we should now be able to call another authenticate call. 
             TestResult tr6 = new TestResult(_bc);
