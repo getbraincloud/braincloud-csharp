@@ -3,6 +3,7 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
 using JsonFx.Json;
+using System;
 
 namespace BrainCloudTests
 {
@@ -14,6 +15,82 @@ namespace BrainCloudTests
         {
             _bc.Client.OverrideCountryCode(null);
             _bc.Client.OverrideLanguageCode(null);
+        }
+
+        [Test]
+        public void TestAuthenticateSpam()
+        {
+            // //our problem is that users who find they can't log in, will retry over and over until they have success. They do not change their credentials while doing this.
+            // //This threatens our servers, because huge numbers of errors related to the profileId not matching the anonymousId show up, as the user continues to have this retry. 
+            // //Our goal is to stop this by checking to see if the call being made was an authentication call, then seeing if the attempted parameters for the authenticate were the
+            // //same. If they were, we know they're simply retrying, and retrying, and we can send a client error saying that the credentials have already been retried. 
+            
+            //start test by initializing an anonymous Id and profileID
+            string anonId = _bc.Client.AuthenticationService.GenerateAnonymousId();
+            _bc.Client.AuthenticationService.Initialize("randomProfileId", anonId);
+
+            //in this test I purposefully fail 4 times so that 3 identical call will have been made after the first
+            //I then allow a fifth call to show that whenever a call is made it will simply hit the client with a fake response. 
+            //Then I freeze the test in a while loop for 30 seconds to wait out the comms timer. 
+            //then I call authenticate again and you will notice that a call will be made to the server and everything reset. 
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr.ApiSuccess, tr.ApiError
+             ); 
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr2.ApiSuccess, tr2.ApiError
+             ); 
+            tr2.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr3.ApiSuccess, tr3.ApiError
+             ); 
+            tr3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+
+            TestResult tr4 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr4.ApiSuccess, tr4.ApiError
+             ); 
+            tr4.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+
+            DateTime _testPauseStart = DateTime.Now;
+            TimeSpan _testPauseDuration = TimeSpan.FromSeconds(35);
+
+            //now that we've had out tests exceed the max failed tests, we will make a timer for the test to wait out the timer in comms.
+            while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+            {
+                //putting the test into a while loop until it passes this condition
+            }
+
+            //based on the order of logic in comms, this test will get a fake response before the timer is finished so we expect the fake response. 
+            TestResult tr5 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr5.ApiSuccess, tr5.ApiError
+             ); 
+            tr5.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED_FAILED_AUTH);
+
+            //Now that the timer has refreshed in comms after waiting out the time, we should now be able to call another authenticate call. 
+            TestResult tr6 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
+               true,
+               tr6.ApiSuccess, tr6.ApiError
+             );  
+             tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
         }
 
         [Test]
@@ -44,17 +121,21 @@ namespace BrainCloudTests
             tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
         }   
 
-        /*[Test]
+        [Test]
         public void TestAuthenticateAnonymous()
         {
+            string anonId = _bc.Client.AuthenticationService.GenerateAnonymousId();
+            _bc.Client.AuthenticationService.Initialize("randomProfileId", anonId);
+
             TestResult tr = new TestResult(_bc);
 
-            _bc.AuthenticationService.AuthenticateAnonymous(
+            _bc.Client.AuthenticationService.AuthenticateAnonymous(
+                "",
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.Run();
-        }*/
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+        }
 
         [Test]
         public void TestAuthenticateEmailPassword()
@@ -179,5 +260,6 @@ namespace BrainCloudTests
             tr.Run();
             tr.Run();
         }
+
     }
 }

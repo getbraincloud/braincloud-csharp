@@ -44,8 +44,8 @@ namespace BrainCloud
         /// </param>
         public void Initialize(string profileId, string anonymousId)
         {
-            AnonymousId = anonymousId;
             ProfileId = profileId;
+            AnonymousId = anonymousId;
         }
 
         /// <summary>
@@ -85,6 +85,42 @@ namespace BrainCloud
         {
             Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
                               null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Overloaded version AuthenticateAnonymous call, takes in more parameters. This is made as temporary
+        /// fix to this service's implementation structure. The AnonymousId of the regular call tends to be null
+        /// even after initializing the profileId and AnonId.This leads to an externalId missing error. This only
+        /// happens when the client uses the service directly and not through the Wrapper. 
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="anonymousId">
+        /// provide an externalId, can be anything to keep anonymous
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created if it does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateAnonymous(
+            string anonymousId,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AnonymousId = anonymousId;
+            AuthenticateAnonymous(forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
