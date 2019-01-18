@@ -1251,7 +1251,7 @@ namespace BrainCloud.Internal
                 _clientRef.Log("Current number of identical failed authentications: " + num);
                 
                 //have the attempts gone beyond the threshold?
-                if(_identicalFailedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold)
+                if(tooManyAuthenticationAttempts())
                 {
                     //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
                     //we are going to now engage the killswitch and disable the client. This will act differently however. client will not

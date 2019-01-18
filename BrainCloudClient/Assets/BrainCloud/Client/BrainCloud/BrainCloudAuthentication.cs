@@ -97,7 +97,7 @@ namespace BrainCloud
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="externalId">
+        /// <param name="anonymousId">
         /// provide an externalId, can be anything to keep anonymous
         /// </param>
         /// <param name="forceCreate">
@@ -120,8 +120,7 @@ namespace BrainCloud
             object cbObject = null)
         {
             AnonymousId = anonymousId;
-            Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
-                              "", forceCreate, success, failure, cbObject);
+            AuthenticateAnonymous(forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
