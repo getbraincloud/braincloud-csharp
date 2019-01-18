@@ -400,6 +400,7 @@ namespace BrainCloud
         public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
         public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
         public const int CLIENT_DISABLED = 90200;
+        public const int CLIENT_DISABLED_FAILED_AUTH = 90201;
         public const int CHILD_USER_MISSING = CHILD_PLAYER_MISSING;
         public const int DISABLED_APP = DISABLED_GAME;
         public const int APPS_NOT_IN_SAME_COMPANY = GAMES_NOT_IN_SAME_COMPANY;

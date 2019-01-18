@@ -1438,7 +1438,7 @@ namespace BrainCloud.Internal
                     {
                         if(tooManyAuthenticationAttempts())
                         {
-                            FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED,
+                            FakeErrorResponse(requestState, StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_DISABLED_FAILED_AUTH,
                                 "Client has been disabled due to identical repeat Authentication calls that are throwing errors. Authenticating with the same credentials is disabled for 30 seconds");
                             requestState = null;   
                         }
