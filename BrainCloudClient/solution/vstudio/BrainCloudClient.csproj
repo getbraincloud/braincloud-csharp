@@ -103,8 +103,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudFile.cs">
       <Link>BrainCloud\BrainCloudFile.cs</Link>
     </Compile>
-    <Compile Include="BrainCloud\BrainCloudRoomServer.cs" />
-    <Compile Include="BrainCloud\Internal\RSComms.cs" />
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudRoomServer.cs">
+      <Link>BrainCloud\BrainCloudRoomServer.cs</Link>
+    </Compile>
     <Content Include="C:\Codez\Libs\Folder\OtherFolder\**\*.*">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -231,6 +232,9 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\BrainCloudComms.cs">
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RSComms.cs">
+      <Link>BrainCloud\Entity\Internal\RSComms.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
