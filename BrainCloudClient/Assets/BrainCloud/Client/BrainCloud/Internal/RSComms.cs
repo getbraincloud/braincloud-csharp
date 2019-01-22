@@ -78,9 +78,16 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Send(string in_message, Dictionary<string, object> in_dict)
         {
-            send(in_message);
+            send("RLAY" + in_message);
         }
 
+        public long LastPing {get; private set;}
+        private long m_sentPing = DateTime.Now.Ticks;
+        public void Echo(string in_message, Dictionary<string, object> in_dict)
+        {
+            m_sentPing = DateTime.Now.Ticks;
+            send("ECHO" + in_message);
+        }
 
         /// <summary>
         /// 
@@ -108,7 +115,7 @@ namespace BrainCloud.Internal
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                     }
-                    
+
                     if (!m_bIsConnected && toProcessResponse.Operation == "connect")
                     {
                         m_bIsConnected = true;
@@ -130,8 +137,9 @@ namespace BrainCloud.Internal
             json["op"] = "CONNECT";
             json["profileId"] = m_clientRef.ProfileId;
             json["lobbyId"] = m_connectionOptions["lobbyId"] as string;
+            json["passcode"] = m_connectionOptions["passcode"] as string;
 
-            return JsonWriter.Serialize(json);
+            return "CONN" + JsonWriter.Serialize(json);
         }
         /// <summary>
         /// 
@@ -155,7 +163,7 @@ namespace BrainCloud.Internal
 
             m_bIsConnected = false;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -168,10 +176,10 @@ namespace BrainCloud.Internal
             {
                 return bMessageSent;
             }
-            
+
             try
             {
-                m_clientRef.Log("RS SEND: " + in_message);
+                //m_clientRef.Log("RS SEND: " + in_message);
 
                 // TCP 
                 if (!m_useWebSocket)
@@ -250,10 +258,20 @@ namespace BrainCloud.Internal
         /// </summary>
         private void onRecv(string in_message)
         {
-            m_clientRef.Log("RS RECV: " + in_message);
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", in_message));
+            string recvOpp = in_message.Substring(0, 4);
+            in_message = in_message.Substring(4);
+            if (recvOpp == "RSMG" || recvOpp == "RLAY") // Room server msg or RLAY
+            {
+                //m_clientRef.Log("RS RECV: " + in_message);
+                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", in_message));
+            }
+            else if (recvOpp == "ECHO")
+            {
+                LastPing = DateTime.Now.Ticks - m_sentPing;
+                m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
+            }
         }
-        
+
         private void addRSCommandResponse(RSCommandResponse in_command)
         {
             lock (m_queuedRSCommands)
@@ -264,11 +282,11 @@ namespace BrainCloud.Internal
 
         private TcpClient m_tcpClient;
         private Dictionary<string, object> m_connectionOptions = null;
-        
+
         private bool m_useWebSocket = false;
         private bool m_bIsConnected = false;
         private BrainCloudWebSocket m_webSocket = null;
-        
+
         private const int MAX_PACKETSIZE = 1024;// TODO:: based off of some config 
 
         private BrainCloudClient m_clientRef;
@@ -277,7 +295,7 @@ namespace BrainCloud.Internal
         private SuccessCallback m_connectedSuccessCallback = null;
         private FailureCallback m_connectionFailureCallback = null;
         private object m_connectedObj = null;
-        
+
         private RSCallback m_registeredCallbacks = null;
         private List<RSCommandResponse> m_queuedRSCommands = new List<RSCommandResponse>();
 

@@ -12,11 +12,15 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        internal BrainCloudRoomServer(BrainCloudClient in_client, RSComms in_comms)
+        internal BrainCloudRoomServer(RSComms in_comms)
         {
-            m_clientRef = in_client;
             m_commsLayer = in_comms;
         }
+
+        /// <summary>
+        /// Use Echo() in order to properly calculate the Last ping received
+        /// </summary>
+        public long LastPing { get { return m_commsLayer.LastPing; } }
         
         /// <summary>
         ///
@@ -64,11 +68,20 @@ namespace BrainCloud
             m_commsLayer.Send(in_message, in_options);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="in_message"></param>
+        /// <param name="in_options"></param>
+        public void Echo(string in_message, Dictionary<string, object> in_options = null)
+        {
+            m_commsLayer.Echo(in_message, in_options);
+        }
+
         #region private
         /// <summary>
         /// Reference to the brainCloud client object
         /// </summary>
-        private BrainCloudClient m_clientRef;
         private RSComms m_commsLayer;
         #endregion
 

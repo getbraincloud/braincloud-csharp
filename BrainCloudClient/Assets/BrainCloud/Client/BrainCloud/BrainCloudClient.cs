@@ -243,7 +243,7 @@ namespace BrainCloud
             _lobbyService = new BrainCloudLobby(this);
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
-            _rsService = new BrainCloudRoomServer(this, _rsComms);
+            _rsService = new BrainCloudRoomServer(_rsComms);
         }
 
         //---------------------------------------------------------------
