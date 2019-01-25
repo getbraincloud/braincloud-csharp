@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+using System;
 
 namespace BrainCloud
 {
@@ -47,6 +48,7 @@ namespace BrainCloud
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        [Obsolete("Use findUserByExactUniversalId instead")]
         public void FindUserByUniversalId(
             string searchText,
             int maxResults,
@@ -349,6 +351,34 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Find a specific user by their Universal Id
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_USER_BY_EXACT_UNIVERSAL_ID
+        /// </remarks>
+        /// <param name="searchText"> 
+        /// The string to search for.
+        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void FindUserByExactUniversalId(
+            string searchText,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindUserByExactUniversalId, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Finds a list of users matching the search text by performing a substring
         /// search of all user names.
         /// </summary>
@@ -486,6 +516,82 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetUsersOnlineStatus, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves Name information for the partial matches of the specified text. 
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_USERS_BY_NAME_STARTING_WITH
+        /// </remarks>
+        /// <param name="searchText">
+        /// text on which to search.
+        /// </param>
+        /// <param name="maxResults">
+        /// Maximum number of results to return.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void FindUsersByNameStartingWith(
+            string searchText,
+            int maxResults,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindUsersByNameStartingWith, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieves Universal Id information for the partial matches of the specified text.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - FIND_USERS_BY_UNIVERSAL_ID_STARTING_WITH
+        /// </remarks>
+        /// <param name="searchText">
+        /// text on which to search.
+        /// </param>
+        /// <param name="maxResults">
+        /// Maximum number of results to return.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void FindUsersByUniversalIdStartingWith(
+            string searchText,
+            int maxResults,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceSearchText.Value] = searchText;
+            data[OperationParam.FriendServiceMaxResults.Value] = maxResults;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.FindUsersByUniversalIdStartingWith, data, callback);
             _client.SendRequest(sc);
         }
     }
