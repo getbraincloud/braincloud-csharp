@@ -118,6 +118,34 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestWrapperResetEmailPassword()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.ResetEmailPassword(
+                "ryanr@bitheads.com",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        
+        [Test]
+        public void TestWrapperResetEmailPasswordAdvanced()
+        {
+            string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+            
+            TestResult tr = new TestResult(_bc);
+
+            _bc.ResetEmailPasswordAdvanced(
+                "ryanr@bitheads.com",
+                content,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+        }
+
         //[Test] //TODO Jon
         public void TestReconnect()
         {
