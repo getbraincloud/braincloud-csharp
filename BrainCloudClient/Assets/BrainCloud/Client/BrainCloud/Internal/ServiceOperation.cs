@@ -73,6 +73,9 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation GetProfileInfoForExternalAuthId = new ServiceOperation("GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID");
         public static readonly ServiceOperation GetExternalIdForProfileId = new ServiceOperation("GET_EXTERNAL_ID_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByUniversalId = new ServiceOperation("FIND_PLAYER_BY_UNIVERSAL_ID");
+        public static readonly ServiceOperation FindUserByExactUniversalId = new ServiceOperation("FIND_USER_BY_EXACT_UNIVERSAL_ID");
+        public static readonly ServiceOperation FindUsersByNameStartingWith = new ServiceOperation("FIND_USERS_BY_NAME_STARTING_WITH");
+        public static readonly ServiceOperation FindUsersByUniversalIdStartingWith = new ServiceOperation("FIND_USERS_BY_UNIVERSAL_ID_STARTING_WITH");
         public static readonly ServiceOperation ReadFriends = new ServiceOperation("READ_FRIENDS");
         public static readonly ServiceOperation ReadFriendEntity = new ServiceOperation("READ_FRIEND_ENTITY");
         public static readonly ServiceOperation ReadFriendsEntities = new ServiceOperation("READ_FRIENDS_ENTITIES");

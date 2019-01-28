@@ -98,6 +98,19 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        
+        [Test]
+        public void TestFindUserByExactUniversalId()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.FriendService.FindUserByExactUniversalId(
+                "RandomUniversalId",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
         [Test]
         public void TestListFriends()
         {
@@ -156,6 +169,30 @@ namespace BrainCloudTests
 
             _bc.FriendService.AddFriends(
                 friends,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        private void testFindUsersByUniversalIdStartingWith()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.FriendService.FindUsersByUniversalIdStartingWith(
+                "completelyRandomUniversalId",
+                30,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        private void testFindUsersByNameStartingWith()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.FriendService.FindUsersByNameStartingWith(
+                "completelyRandomName",
+                30,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

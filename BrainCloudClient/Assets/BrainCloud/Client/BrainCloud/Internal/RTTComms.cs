@@ -53,6 +53,7 @@ namespace BrainCloud.Internal
         public void DisableRTT()
         {
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "disconnect", "DisableRTT Called"));
+            Update();
             //disconnect();
         }
 
