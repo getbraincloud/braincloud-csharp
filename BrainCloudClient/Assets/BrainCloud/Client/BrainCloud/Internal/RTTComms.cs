@@ -58,6 +58,14 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
+        /// Returns true if RTT is enabled
+        /// </summary>
+        public bool IsRTTEnabled()
+        {
+            return m_bIsConnected;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         public void RegisterRTTCallback(ServiceName in_serviceName, RTTCallback in_callback)
