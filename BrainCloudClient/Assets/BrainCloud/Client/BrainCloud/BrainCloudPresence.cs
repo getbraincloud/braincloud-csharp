@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using BrainCloud.Internal;
+using JsonFx.Json;
 using System;
 
 namespace BrainCloud
@@ -377,7 +378,8 @@ namespace BrainCloud
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PresenceServiceActivity.Value] = jsonActivity;
+            var jsonActivityString = JsonReader.Deserialize<Dictionary<string, object>>(jsonActivity);
+            data[OperationParam.PresenceServiceActivity.Value] = jsonActivityString;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Presence, ServiceOperation.UpdateActivity, data, callback);
