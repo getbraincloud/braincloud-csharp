@@ -972,6 +972,23 @@ namespace BrainCloud
             _rttComms.DeregisterRTTCallback(ServiceName.Chat);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTPresenceCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.Presence, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTPresenceCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.Presence);
+        }
+
         /// <summary>
         /// 
         /// </summary>

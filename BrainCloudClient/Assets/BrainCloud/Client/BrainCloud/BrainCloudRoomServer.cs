@@ -78,6 +78,14 @@ namespace BrainCloud
             m_commsLayer.Echo(in_message, in_options);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Ping()
+        {
+            m_commsLayer.Ping();
+        }
+
         #region private
         /// <summary>
         /// Reference to the brainCloud client object

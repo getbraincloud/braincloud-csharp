@@ -53,7 +53,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Disconnect()
         {
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "disconnect", "DisableRS Called"));
+            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "disconnect", "Disconnect Called"));
         }
 
         /// <summary>
@@ -81,12 +81,29 @@ namespace BrainCloud.Internal
             send("RLAY" + in_message);
         }
 
-        public long LastPing {get; private set;}
-        private long m_sentPing = DateTime.Now.Ticks;
+        /// <summary>
+        /// 
+        /// </summary>
         public void Echo(string in_message, Dictionary<string, object> in_dict)
         {
-            m_sentPing = DateTime.Now.Ticks;
             send("ECHO" + in_message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Ping()
+        {
+            m_sentPing = DateTime.Now.Ticks;
+            Dictionary<string, object> json = new Dictionary<string, object>();
+            string lastPingStr = (LastPing * 0.0001).ToString();
+            int indexOf = lastPingStr.IndexOf(".");
+            if (LastPing != 0)
+            {
+                json["ping"] = indexOf > 0 ? lastPingStr.Substring(0,indexOf) : lastPingStr;
+            }
+
+            send("PING" + JsonWriter.Serialize(json));
         }
 
         /// <summary>
@@ -130,6 +147,11 @@ namespace BrainCloud.Internal
             }
         }
 
+        /// <summary>
+        /// Call Ping() to get an updated LastPing value
+        /// </summary>
+        public long LastPing { get; private set; }
+        
         #region private
         private string buildConnectionRequest()
         {
@@ -260,15 +282,15 @@ namespace BrainCloud.Internal
         {
             string recvOpp = in_message.Substring(0, 4);
             in_message = in_message.Substring(4);
-            if (recvOpp == "RSMG" || recvOpp == "RLAY") // Room server msg or RLAY
+            if (recvOpp == "RSMG" || recvOpp == "RLAY" || recvOpp == "ECHO") // Room server msg or RLAY
             {
                 //m_clientRef.Log("RS RECV: " + in_message);
                 addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", in_message));
             }
-            else if (recvOpp == "ECHO")
+            else if (recvOpp == "PONG")
             {
                 LastPing = DateTime.Now.Ticks - m_sentPing;
-                m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
+                //m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
             }
         }
 
@@ -298,6 +320,8 @@ namespace BrainCloud.Internal
 
         private RSCallback m_registeredCallbacks = null;
         private List<RSCommandResponse> m_queuedRSCommands = new List<RSCommandResponse>();
+
+        private long m_sentPing = DateTime.Now.Ticks;
 
         private struct RSCommandResponse
         {
