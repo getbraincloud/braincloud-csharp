@@ -395,6 +395,15 @@ namespace BrainCloud
         public const int BASIC_AUTH_FAILURE = 550013;
         public const int MONGO_DB_EXCEPTION = 600001;
         public const int CONCURRENT_LOCK_ERROR = 600002;
+        public const int RTT_LEFT_BY_CHOICE = 80000;
+        public const int RTT_EVICTED = 80001;
+        public const int RTT_LOST_CONNECTION = 80002;
+        public const int RTT_TIMEOUT = 80100;
+        public const int RTT_ROOM_READY = 80101;
+        public const int RTT_ROOM_CANCELLED = 80102;
+        public const int RTT_ERROR_ASSIGNING_ROOM = 80103;
+        public const int RTT_ERROR_LAUNCHING_ROOM = 80104;
+        public const int RTT_NO_LOBBIES_FOUND = 80200;
         public const int CLIENT_NETWORK_ERROR_TIMEOUT = 90001;
         public const int CLIENT_UPLOAD_FILE_CANCELLED = 90100;
         public const int CLIENT_UPLOAD_FILE_TIMED_OUT = 90101;
