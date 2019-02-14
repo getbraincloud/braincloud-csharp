@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+using JsonFx.Json;
 
 namespace BrainCloud
 {
@@ -43,8 +44,8 @@ namespace BrainCloud
         /// </param>
         public void Initialize(string profileId, string anonymousId)
         {
-            AnonymousId = anonymousId;
             ProfileId = profileId;
+            AnonymousId = anonymousId;
         }
 
         /// <summary>
@@ -84,6 +85,42 @@ namespace BrainCloud
         {
             Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
                               null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Overloaded version AuthenticateAnonymous call, takes in more parameters. This is made as temporary
+        /// fix to this service's implementation structure. The AnonymousId of the regular call tends to be null
+        /// even after initializing the profileId and AnonId.This leads to an externalId missing error. This only
+        /// happens when the client uses the service directly and not through the Wrapper. 
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="anonymousId">
+        /// provide an externalId, can be anything to keep anonymous
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created if it does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateAnonymous(
+            string anonymousId,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AnonymousId = anonymousId;
+            AuthenticateAnonymous(forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -500,6 +537,52 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Reset Email password with service parameters - sends a password reset email to 
+        ///the specified addresses.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetEmailPasswordAdvanced
+        /// </remarks>
+        /// <param name="appId">
+        /// The app id
+        /// </param>
+        /// <param name="emailAddress">
+        /// The email address to send the reset email to
+        /// </param>
+        /// <param name="serviceParams">
+        /// The parameters to send the email service. See documentation for full list
+        /// http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetEmailPasswordAdvanced(
+            string emailAddress,
+            //Dictionary<string, object> serviceParams,
+            string serviceParams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateEmailAddress.Value] = emailAddress;
+
+            var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
+            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvanced, data, callback);
+            _client.SendRequest(sc);
+        }
 
         private void Authenticate(
             string externalId,

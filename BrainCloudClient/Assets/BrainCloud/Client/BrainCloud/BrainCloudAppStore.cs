@@ -108,13 +108,13 @@ namespace BrainCloud
             Dictionary<string, object> priceInfoCriteria = new Dictionary<string, object>();
             if (Util.IsOptionalParameterValid(userCurrency))
             {
-                priceInfoCriteria[OperationParam.ProductServiceGetInventoryUserCurrency.Value] = userCurrency;
+                priceInfoCriteria[OperationParam.AppStoreServiceUserCurrency.Value] = userCurrency;
             }
             data[OperationParam.AppStoreServicePriceInfoCriteria.Value] = priceInfoCriteria;
 
             if (Util.IsOptionalParameterValid(category))
             {
-                data[OperationParam.ProductServiceGetInventoryCategory.Value] = category;
+                data[OperationParam.AppStoreServiceCategory.Value] = category;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);

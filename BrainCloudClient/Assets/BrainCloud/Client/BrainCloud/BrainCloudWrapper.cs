@@ -100,6 +100,7 @@ public class BrainCloudWrapper
     private void OnApplicationQuit()
     {
         Client.DisableRTT();
+        Client.Update();
     }
 
     /// <summary>
@@ -1294,6 +1295,77 @@ public class BrainCloudWrapper
         }
         SetStoredAuthenticationType(isAnonymousAuth ? AUTHENTICATION_ANONYMOUS : "");
         Client.InitializeIdentity(profileIdToAuthenticateWith, anonymousId);
+    }
+
+    /// <summary>
+    /// Reset Email password - Sends a password reset email to the specified address
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Operation - ResetEmailPassword
+    /// </remarks>
+    /// <param name="externalId">
+    /// The email address to send the reset email to.
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of success
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void ResetEmailPassword(
+        string externalId,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        //WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        //aco._successCallback = success;
+        //aco._failureCallback = failure;
+        //aco.cbObject = cbObject;
+
+        Client.AuthenticationService.ResetEmailPassword(externalId, success, failure);
+    }
+
+    /// <summary>
+    /// Reset Email password with service parameters - sends a password reset email to 
+    ///the specified addresses.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Operation - ResetEmailPasswordAdvanced
+    /// </remarks>
+    /// <param name="appId">
+    /// The app id
+    /// </param>
+    /// <param name="emailAddress">
+    /// The email address to send the reset email to
+    /// </param>
+    /// <param name="serviceParams">
+    /// The parameters to send the email service. See documentation for full list
+    /// http://getbraincloud.com/apidocs/apiref/#capi-mail
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of success
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void ResetEmailPasswordAdvanced(
+        string emailAddress,
+        //Dictionary<string, object> serviceParams,
+        string serviceParams,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        Client.AuthenticationService.ResetEmailPasswordAdvanced(emailAddress, serviceParams, success, failure);
     }
 
     #endregion

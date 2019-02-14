@@ -52,6 +52,8 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateGameVersion = new OperationParam("gameVersion");
         public static readonly OperationParam AuthenticateServiceAuthenticateBrainCloudVersion = new OperationParam("clientLibVersion");
         public static readonly OperationParam AuthenticateServiceAuthenticateExternalAuthName = new OperationParam("externalAuthName");
+        public static readonly OperationParam AuthenticateServiceAuthenticateEmailAddress = new OperationParam("emailAddress");
+        public static readonly OperationParam AuthenticateServiceAuthenticateServiceParams = new OperationParam("serviceParams");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateLevelName = new OperationParam("levelName");
         public static readonly OperationParam AuthenticateServiceAuthenticatePeerCode = new OperationParam("peerCode");
@@ -253,6 +255,8 @@ namespace BrainCloud
         public static readonly OperationParam AppStoreServiceTransactionId = new OperationParam("transactionId");
         public static readonly OperationParam AppStoreServiceTransactionData = new OperationParam("transactionData");
         public static readonly OperationParam AppStoreServicePriceInfoCriteria = new OperationParam("priceInfoCriteria");
+        public static readonly OperationParam AppStoreServiceUserCurrency = new OperationParam("userCurrency");
+        public static readonly OperationParam AppStoreServiceCategory = new OperationParam("category");
 
         // Virtual Currency Service
         public static readonly OperationParam VirtualCurrencyServiceCurrencyId = new OperationParam("vcId");
@@ -429,6 +433,7 @@ namespace BrainCloud
         // messaging
         public static readonly OperationParam MessagingMessageBox = new OperationParam("msgbox");
         public static readonly OperationParam MessagingMessageIds = new OperationParam("msgIds");
+        public static readonly OperationParam MessagingMarkAsRead = new OperationParam("markAsRead");
         public static readonly OperationParam MessagingContext = new OperationParam("context");
         public static readonly OperationParam MessagingPageOffset = new OperationParam("pageOffset");
         public static readonly OperationParam MessagingFromName = new OperationParam("fromName");

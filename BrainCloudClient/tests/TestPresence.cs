@@ -138,7 +138,7 @@ namespace BrainCloudTests
                 "{\"test\":\"thing\"}",
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_PARAMETER_TYPE);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PRESENCE_NOT_INITIALIZED);
         }
     }
 }

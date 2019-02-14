@@ -44,7 +44,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             string[] msgIds = {"invalidMsgId"};
-            _bc.MessagingService.GetMessages("inbox", msgIds, tr.ApiSuccess, tr.ApiError);
+            _bc.MessagingService.GetMessages("inbox", msgIds, true, tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.MESSAGE_NOT_FOUND);
         }
 
