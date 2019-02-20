@@ -183,6 +183,11 @@ public class BrainCloudWrapper
         get { return Client.PlaybackStreamService; }
     }
 
+    public BrainCloudPresence PresenceService
+    {
+        get { return Client.PresenceService; }
+    }
+
     public BrainCloudGamification GamificationService
     {
         get { return Client.GamificationService; }
