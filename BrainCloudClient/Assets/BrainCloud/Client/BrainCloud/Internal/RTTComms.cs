@@ -263,7 +263,6 @@ namespace BrainCloud.Internal
                 return bMessageSent;
             }
 
-            m_timeSinceLastRequest = 0;
             try
             {
                 m_clientRef.Log("RTT SEND: " + in_message);
@@ -426,7 +425,6 @@ namespace BrainCloud.Internal
         /// </summary>
         private void onRecv(string in_message)
         {
-            m_timeSinceLastRequest = 0;
             m_clientRef.Log("RTT RECV: " + in_message);
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
 
