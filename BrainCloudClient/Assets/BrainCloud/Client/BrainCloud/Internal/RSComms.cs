@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Net.Sockets;
 using JsonFx.Json;
 
@@ -43,7 +42,7 @@ namespace BrainCloud.Internal
                 m_connectedObj = cb_object;
 
                 m_connectionOptions = in_options;
-                m_useWebSocket = in_connectionType == eRSConnectionType.WEBSOCKET;
+                m_currentConnectionType = in_connectionType;
                 connectWebSocket();
             }
         }
@@ -62,7 +61,7 @@ namespace BrainCloud.Internal
         ///
         public void RegisterCallback(RSCallback in_callback)
         {
-            m_registeredCallbacks = in_callback;
+            m_registeredCallback = in_callback;
         }
 
         /// <summary>
@@ -70,13 +69,30 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DeregisterCallback()
         {
-            m_registeredCallbacks = null;
+            m_registeredCallback = null;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void Send(string in_message, Dictionary<string, object> in_dict)
+        ///
+        public void RegisterDataCallback(RSDataCallback in_callback)
+        {
+            m_registeredDataCallback = in_callback;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterDataCallback()
+        {
+            m_registeredDataCallback = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Send(string in_message)
         {
             send("RLAY" + in_message);
         }
@@ -84,7 +100,17 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        public void Echo(string in_message, Dictionary<string, object> in_dict)
+        public void Send(byte[] in_data, string in_header = "RLAY")
+        {
+            // appened RLAY to the beginning
+            byte[] destination = concatenateByteArrays(Encoding.ASCII.GetBytes(in_header), in_data);
+            send(destination);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Echo(string in_message)
         {
             send("ECHO" + in_message);
         }
@@ -95,15 +121,13 @@ namespace BrainCloud.Internal
         public void Ping()
         {
             m_sentPing = DateTime.Now.Ticks;
-            Dictionary<string, object> json = new Dictionary<string, object>();
-            string lastPingStr = (LastPing * 0.0001).ToString();
-            int indexOf = lastPingStr.IndexOf(".");
-            if (LastPing != 0)
-            {
-                json["ping"] = indexOf > 0 ? lastPingStr.Substring(0,indexOf) : lastPingStr;
-            }
+            short lastPingShort = Convert.ToInt16(LastPing * 0.0001);
+            byte data1, data2;
+            fromShort(lastPingShort, out data1, out data2);
 
-            send("PING" + JsonWriter.Serialize(json));
+            byte[] dataArr = { data1, data2 }; 
+
+            Send(dataArr, "PING");
         }
 
         /// <summary>
@@ -139,8 +163,11 @@ namespace BrainCloud.Internal
                         send(buildConnectionRequest());
                     }
 
-                    if (m_registeredCallbacks != null)
-                        m_registeredCallbacks(toProcessResponse.JsonMessage);
+                    if (m_registeredCallback != null)
+                        m_registeredCallback(toProcessResponse.JsonMessage);
+
+                    if (m_registeredDataCallback != null && toProcessResponse.RawData != null)
+                        m_registeredDataCallback(toProcessResponse.RawData);
                 }
 
                 m_queuedRSCommands.Clear();
@@ -191,38 +218,33 @@ namespace BrainCloud.Internal
         /// </summary>
         private bool send(string in_message)
         {
+            m_clientRef.Log("RS SEND: " + in_message);
+            byte[] data = Encoding.ASCII.GetBytes(in_message);
+            return send(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool send(byte[] in_data)
+        {
             bool bMessageSent = false;
+            bool isSocket = m_currentConnectionType == eRSConnectionType.WEBSOCKET;
             // early return
-            if ((!m_useWebSocket && m_tcpClient == null) ||
-                (m_useWebSocket && m_webSocket == null))
+            if ((isSocket && m_webSocket == null))
             {
                 return bMessageSent;
             }
 
             try
             {
-                //m_clientRef.Log("RS SEND: " + in_message);
-
-                // TCP 
-                if (!m_useWebSocket)
+                // WEBSOCKET 
+                if (isSocket)
                 {
-                    // Get a stream object for writing. 			
-                    NetworkStream stream = m_tcpClient.GetStream();
-
-                    // Convert string message to byte array.                 
-                    byte[] clientMessageAsByteArray = Encoding.ASCII.GetBytes(in_message);
-
-                    // Write byte array to tcpConnection stream.                 
-                    stream.Write(clientMessageAsByteArray, 0, clientMessageAsByteArray.Length);
-                    stream.Flush();
-                    bMessageSent = true;
+                    //m_clientRef.Log("RS SEND Bytes : " + in_data.Length);
+                    m_webSocket.SendAsync(in_data);
                 }
-                // web socket
-                else
-                {
-                    byte[] data = Encoding.UTF8.GetBytes(in_message);
-                    m_webSocket.SendAsync(data);
-                }
+                bMessageSent = true;
             }
             catch (SocketException socketException)
             {
@@ -232,6 +254,7 @@ namespace BrainCloud.Internal
 
             return bMessageSent;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -265,8 +288,7 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
-            string message = Encoding.UTF8.GetString(data);
-            onRecv(message);
+            onRecv(data);
         }
 
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
@@ -278,19 +300,27 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        private void onRecv(string in_message)
+        private void onRecv(byte[] in_data)
         {
-            string recvOpp = in_message.Substring(0, 4);
-            in_message = in_message.Substring(4);
-            if (recvOpp == "RSMG" || recvOpp == "RLAY" || recvOpp == "ECHO") // Room server msg or RLAY
+            if (in_data.Length >= 4)
             {
-                //m_clientRef.Log("RS RECV: " + in_message);
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", in_message));
-            }
-            else if (recvOpp == "PONG")
-            {
-                LastPing = DateTime.Now.Ticks - m_sentPing;
-                //m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
+                string in_message = Encoding.ASCII.GetString(in_data);
+                string recvOpp = in_message.Substring(0, 4);
+                in_message = in_message.Substring(4);
+
+                if (recvOpp == "RSMG" || recvOpp == "RLAY" || recvOpp == "ECHO") // Room server msg or RLAY
+                {
+                    // bytes after the headers removed
+                    in_data = Encoding.ASCII.GetBytes(in_message);
+
+                    //m_clientRef.Log("RS RECV: " + in_message);
+                    addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", in_message, in_message[0] != '{'  && in_message[0] != 'o' ? in_data : null));
+                }
+                else if (recvOpp == "PONG")
+                {
+                    LastPing = DateTime.Now.Ticks - m_sentPing;
+                    //m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
+                }
             }
         }
 
@@ -301,11 +331,24 @@ namespace BrainCloud.Internal
                 m_queuedRSCommands.Add(in_command);
             }
         }
+        
+        private byte[] concatenateByteArrays(byte[] a, byte[] b)
+        {
+            byte[] rv = new byte[a.Length + b.Length];
+            Buffer.BlockCopy(a, 0, rv, 0, a.Length);
+            Buffer.BlockCopy(b, 0, rv, a.Length, b.Length);
+            return rv;
+        }
 
-        private TcpClient m_tcpClient;
+        private void fromShort(short number, out byte byte1, out byte byte2)
+        {
+            byte2 = (byte)(number >> 8);
+            byte1 = (byte)(number >> 0);
+        }
+
         private Dictionary<string, object> m_connectionOptions = null;
 
-        private bool m_useWebSocket = false;
+        private eRSConnectionType m_currentConnectionType = eRSConnectionType.INVALID;
         private bool m_bIsConnected = false;
         private BrainCloudWebSocket m_webSocket = null;
 
@@ -318,22 +361,26 @@ namespace BrainCloud.Internal
         private FailureCallback m_connectionFailureCallback = null;
         private object m_connectedObj = null;
 
-        private RSCallback m_registeredCallbacks = null;
+        private RSCallback m_registeredCallback = null;
+        private RSDataCallback m_registeredDataCallback = null;
+
         private List<RSCommandResponse> m_queuedRSCommands = new List<RSCommandResponse>();
 
         private long m_sentPing = DateTime.Now.Ticks;
 
         private struct RSCommandResponse
         {
-            public RSCommandResponse(string in_service, string in_op, string in_msg)
+            public RSCommandResponse(string in_service, string in_op, string in_msg, byte[] in_data = null)
             {
                 Service = in_service;
                 Operation = in_op;
                 JsonMessage = in_msg;
+                RawData = in_data;
             }
             public string Service { get; set; }
             public string Operation { get; set; }
             public string JsonMessage { get; set; }
+            public byte[] RawData { get; set; }
         }
         #endregion
     }

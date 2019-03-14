@@ -877,6 +877,7 @@ namespace BrainCloud.Internal
                             _isAuthenticated = true;
                         }
 
+                        // save the profile Id
                         string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
                         if (profileId != null)
                         {
