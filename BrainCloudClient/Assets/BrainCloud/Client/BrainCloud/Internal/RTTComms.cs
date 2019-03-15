@@ -77,9 +77,10 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DeregisterRTTCallback(ServiceName in_serviceName)
         {
-            if (m_registeredCallbacks.ContainsKey(in_serviceName.Value))
+            string toCheck = in_serviceName.Value;
+            if (m_registeredCallbacks.ContainsKey(toCheck))
             {
-                m_registeredCallbacks.Remove(in_serviceName.Value);
+                m_registeredCallbacks.Remove(toCheck);
             }
         }
 

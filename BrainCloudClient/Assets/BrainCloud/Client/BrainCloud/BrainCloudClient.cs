@@ -1024,6 +1024,22 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
+        public void RegisterRTTAsyncMatchCallback(RTTCallback in_callback)
+        {
+            _rttComms.RegisterRTTCallback(ServiceName.AsyncMatch, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTAsyncMatchCallback()
+        {
+            _rttComms.DeregisterRTTCallback(ServiceName.AsyncMatch);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void DeregisterAllRTTCallbacks()
         {
             _rttComms.DeregisterAllRTTCallbacks();
