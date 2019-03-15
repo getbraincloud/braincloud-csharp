@@ -52,7 +52,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DisableRTT()
         {
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "disconnect", "DisableRTT Called"));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
             //disconnect();
         }
 
@@ -69,7 +69,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void RegisterRTTCallback(ServiceName in_serviceName, RTTCallback in_callback)
         {
-            m_registeredCallbacks[in_serviceName.Value] = in_callback;
+            m_registeredCallbacks[in_serviceName.Value.ToLower()] = in_callback;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DeregisterRTTCallback(ServiceName in_serviceName)
         {
-            string toCheck = in_serviceName.Value;
+            string toCheck = in_serviceName.Value.ToLower();
             if (m_registeredCallbacks.ContainsKey(toCheck))
             {
                 m_registeredCallbacks.Remove(toCheck);
@@ -251,7 +251,7 @@ namespace BrainCloud.Internal
             catch (SocketException socketException)
             {
                 m_clientRef.Log("send exception: " + socketException);
-                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "error", socketException.ToString()));
+                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", socketException.ToString()));
             }
 
             return bMessageSent;
@@ -293,13 +293,13 @@ namespace BrainCloud.Internal
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
             m_clientRef.Log("Connection closed: " + reason);
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "disconnect", reason));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
             m_clientRef.Log("Connection established.");
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "connect", ""));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
@@ -311,7 +311,7 @@ namespace BrainCloud.Internal
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
             m_clientRef.Log("Error: " + message);
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "error", message));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", message));
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace BrainCloud.Internal
             // TODO::
             m_bIsConnected = false;
             m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value, "error", jsonError));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
         }
 
         private void addRTTCommandResponse(RTTCommandResponse in_command)
