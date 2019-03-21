@@ -134,12 +134,17 @@ namespace BrainCloud
             double utcOffset = 0;
             try
             {
-                TimeZone localZone = TimeZone.CurrentTimeZone;
+#if NET_4_6
+                TimeZoneInfo localZone = TimeZoneInfo.Local;
+                utcOffset = localZone.BaseUtcOffset.TotalHours;
+#else
                 DateTime baseUTC = new DateTime();
-                // Calculate the local time and UTC offset.
+                TimeZone localZone = TimeZone.CurrentTimeZone;
                 DateTime localTime = localZone.ToLocalTime(baseUTC);
+                // Calculate the local time and UTC offset
                 TimeSpan localOffset = localZone.GetUtcOffset(localTime);
                 utcOffset = localOffset.TotalHours;
+#endif
             }
             catch (Exception)
             {
