@@ -83,7 +83,7 @@ namespace BrainCloud.Common
             // first deal with platforms that have no define
 
             // 5.0 and later
-#if !UNITY_4_6
+#if !UNITY_4_6 && !UNITY_2018_3_OR_NEWER
             if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
             {
                 return PSVita;

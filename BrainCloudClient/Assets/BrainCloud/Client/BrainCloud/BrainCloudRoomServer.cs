@@ -61,11 +61,17 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="in_message"></param>
-        /// <param name="in_options"></param>
-        public void Send(string in_message, Dictionary<string, object> in_options = null)
+        public void RegisterDataCallback(RSDataCallback in_callback)
         {
-            m_commsLayer.Send(in_message, in_options);
+            m_commsLayer.RegisterDataCallback(in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterDataCallback()
+        {
+            m_commsLayer.DeregisterCallback();
         }
 
         /// <summary>
@@ -73,9 +79,29 @@ namespace BrainCloud
         /// </summary>
         /// <param name="in_message"></param>
         /// <param name="in_options"></param>
-        public void Echo(string in_message, Dictionary<string, object> in_options = null)
+        public void Send(string in_message)
         {
-            m_commsLayer.Echo(in_message, in_options);
+            m_commsLayer.Send(in_message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="in_data"></param>
+        /// <param name="in_options"></param>
+        public void Send(byte[] in_data)
+        {
+            m_commsLayer.Send(in_data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="in_message"></param>
+        /// <param name="in_options"></param>
+        public void Echo(string in_message)
+        {
+            m_commsLayer.Echo(in_message);
         }
 
         /// <summary>
