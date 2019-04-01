@@ -240,9 +240,6 @@ namespace BrainCloud
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
         }
-
-        //---------------------------------------------------------------
-
         #endregion
 
         #region Properties
