@@ -2,6 +2,9 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
+#if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +18,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 #else
+#if USE_WEB_REQUEST
+#if UNITY_5_3
+using UnityEngine.Experimental.Networking;
+#else
+using UnityEngine.Networking;
+#endif
+#endif
 using UnityEngine;
 #endif
 
@@ -877,6 +887,7 @@ namespace BrainCloud.Internal
                             _isAuthenticated = true;
                         }
 
+                        // save the profile Id
                         string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
                         if (profileId != null)
                         {
@@ -1554,7 +1565,20 @@ namespace BrainCloud.Internal
                 {
                     formTable["X-APPID"] = AppId;
                 }
+#if USE_WEB_REQUEST
+                UnityWebRequest request  = UnityWebRequest.Post(ServerURL, formTable);
+                request.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
+                request.SetRequestHeader("X-SIG", sig);
+                UploadHandler uh = new UploadHandlerRaw(byteArray);
+                request.uploadHandler = uh;
+                if (AppId != null && AppId.Length > 0)
+                {
+                    request.SetRequestHeader("X-APPID", AppId);
+                }
+                request.SendWebRequest();
+#else
                 WWW request = new WWW(ServerURL, byteArray, formTable);
+#endif
                 requestState.WebRequest = request;
 #else
 
@@ -1628,10 +1652,17 @@ namespace BrainCloud.Internal
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
+#if USE_WEB_REQUEST
+            else if (_activeRequest.WebRequest.downloadHandler.isDone)
+            {
+                status = RequestState.eWebRequestStatus.STATUS_DONE;
+            }
+#else
             else if (_activeRequest.WebRequest.isDone)
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
+#endif
 #else
             status = _activeRequest.DotNetRequestStatus;
 #endif
@@ -1654,12 +1685,16 @@ namespace BrainCloud.Internal
             }
             else
             {
+#if USE_WEB_REQUEST
+                response = _activeRequest.WebRequest.downloadHandler.text;
+#else
                 response = _activeRequest.WebRequest.text;
+#endif
             }
 #else
             response = _activeRequest.DotNetResponseString;
 #endif
-            return response;
+                return response;
         }
 
         /// <summary>

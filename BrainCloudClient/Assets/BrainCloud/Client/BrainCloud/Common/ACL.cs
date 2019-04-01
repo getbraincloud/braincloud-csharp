@@ -26,10 +26,24 @@ namespace BrainCloud.Common
             Other = access;
         }
 
-        public static ACL ReadOnlyOther()
+        public static ACL None()
+        {
+            ACL acl = new ACL();
+            acl.Other = Access.None;
+            return acl;
+
+        }
+        public static ACL ReadOnly()
         {
             ACL acl = new ACL();
             acl.Other = Access.ReadOnly;
+            return acl;
+        }
+
+        public static ACL ReadWrite()
+        {
+            ACL acl = new ACL();
+            acl.Other = Access.ReadWrite;
             return acl;
         }
 

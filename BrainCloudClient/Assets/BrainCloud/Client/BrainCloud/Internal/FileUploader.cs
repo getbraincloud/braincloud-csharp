@@ -3,7 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-#if (UNITY_5_3 || UNITY_5_4) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
@@ -153,7 +153,7 @@ namespace BrainCloud.Internal
 
 #if USE_WEB_REQUEST
             _request = UnityWebRequest.Post(_serverUrl, postForm);
-            _request.Send();
+            _request.SendWebRequest();
 #else
             _request = new WWW(_serverUrl, postForm);
 #endif

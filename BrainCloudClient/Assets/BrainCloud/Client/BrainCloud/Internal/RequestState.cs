@@ -2,9 +2,13 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
+#if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+#endif
 
 using System;
 using System.Collections.Generic;
+
 
 #if (DOT_NET)
 using System.Net;
@@ -12,9 +16,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 #else
+#if USE_WEB_REQUEST
+#if UNITY_5_3
+using UnityEngine.Experimental.Networking;
+#else
+using UnityEngine.Networking;
+#endif
+#endif
 using UnityEngine;
 #endif
-
 
 namespace BrainCloud.Internal
 {
@@ -52,8 +62,12 @@ namespace BrainCloud.Internal
         public byte[] ByteArray { get; set; }
 
 #if !(DOT_NET)
+#if USE_WEB_REQUEST
+        public UnityWebRequest WebRequest { get; set; }
+#else
         // unity uses WWW objects to make http calls cross platform
         public WWW WebRequest { get; set; }
+#endif
 #else
         // while .net projects can use the WebRequest Object
         public IAsyncResult AsyncResult { get; set; }
@@ -87,7 +101,7 @@ namespace BrainCloud.Internal
 
         public RequestState()
         {
-            WebRequest = null;
+            CleanupRequest();
         }
 
         public void CancelRequest()
@@ -102,16 +116,29 @@ namespace BrainCloud.Internal
                     CancelToken.Cancel();
                 }
 #else
-                /* disposing of the www class causes unity editor to lock up
-                if (WebRequest != null)
-                {
-                    WebRequest.Dispose();
-                }*/
+                CleanupRequest();
 #endif
             }
             catch (Exception)
             {
             }
+        }
+
+        private void CleanupRequest()
+        {
+#if USE_WEB_REQUEST
+            if (WebRequest == null) return;
+            WebRequest.Dispose();
+#else
+
+            /* disposing of the www class causes unity editor to lock up
+            if (WebRequest != null)
+            {
+                WebRequest.Dispose();
+            }*/
+#endif
+
+            WebRequest = null;
         }
     }
 }
