@@ -228,9 +228,6 @@ namespace BrainCloud
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(this);
         }
-
-        //---------------------------------------------------------------
-
         #endregion
 
         #region Properties
@@ -498,7 +495,6 @@ namespace BrainCloud
         {
             get { return _messagingService; }
         }
-
         #endregion
 
         #region Service Getters
@@ -1050,7 +1046,6 @@ namespace BrainCloud
         {
             _comms.ResetCommunication();
             _rttComms.DisableRTT();
-            Update();
             AuthenticationService.ClearSavedProfileID();
         }
 
