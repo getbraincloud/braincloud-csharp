@@ -53,7 +53,6 @@ namespace BrainCloud.Internal
         public void DisableRTT()
         {
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
-            //disconnect();
         }
 
         /// <summary>
@@ -159,7 +158,7 @@ namespace BrainCloud.Internal
                 if (m_timeSinceLastRequest >= m_heartBeatTime)
                 {
                     m_timeSinceLastRequest = 0;
-                    send(buildHeartbeatRequest());
+                    send(buildHeartbeatRequest(), false);
                 }
             }
             //////
@@ -196,7 +195,7 @@ namespace BrainCloud.Internal
         {
             Dictionary<string, object> system = new Dictionary<string, object>();
             system["platform"] = m_clientRef.ReleasePlatform;
-            system["protocol"] = m_currentConnectionType == eRTTConnectionType.WEBSOCKET ? "ws" : "tcp"; // TODO add more protocols
+            system["protocol"] = "ws";
 
             Dictionary<string, object> jsonData = new Dictionary<string, object>();
             jsonData["appId"] = m_clientRef.AppId;
@@ -227,7 +226,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
-        private bool send(string in_message)
+        private bool send(string in_message, bool in_bLogMessage = true)
         {
             bool bMessageSent = false;
             bool m_useWebSocket = m_currentConnectionType == eRTTConnectionType.WEBSOCKET;
@@ -239,7 +238,8 @@ namespace BrainCloud.Internal
 
             try
             {
-                m_clientRef.Log("RTT SEND: " + in_message);
+                if (in_bLogMessage)
+                    m_clientRef.Log("RTT SEND: " + in_message);
 
                 // Web Socket 
                 if (m_useWebSocket)
@@ -248,7 +248,7 @@ namespace BrainCloud.Internal
                     m_webSocket.SendAsync(data);
                 }
             }
-            catch (SocketException socketException)
+            catch (Exception socketException)
             {
                 m_clientRef.Log("send exception: " + socketException);
                 addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", socketException.ToString()));
@@ -319,7 +319,6 @@ namespace BrainCloud.Internal
         /// </summary>
         private void onRecv(string in_message)
         {
-            m_clientRef.Log("RTT RECV: " + in_message);
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
 
             string service = (string)response["service"];
@@ -348,7 +347,10 @@ namespace BrainCloud.Internal
             }
 
             if (operation != "HEARTBEAT")
+            {
+                m_clientRef.Log("RTT RECV: " + in_message);
                 addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
+            }
         }
 
         /// <summary>

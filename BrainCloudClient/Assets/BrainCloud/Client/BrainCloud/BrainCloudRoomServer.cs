@@ -45,22 +45,6 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        public void RegisterCallback(RSCallback in_callback)
-        {
-            m_commsLayer.RegisterCallback(in_callback);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void DeregisterCallback()
-        {
-            m_commsLayer.DeregisterCallback();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public void RegisterDataCallback(RSDataCallback in_callback)
         {
             m_commsLayer.RegisterDataCallback(in_callback);
@@ -71,7 +55,7 @@ namespace BrainCloud
         /// </summary>
         public void DeregisterDataCallback()
         {
-            m_commsLayer.DeregisterCallback();
+            m_commsLayer.DeregisterDataCallback();
         }
 
         /// <summary>
@@ -92,16 +76,6 @@ namespace BrainCloud
         public void Send(byte[] in_data)
         {
             m_commsLayer.Send(in_data);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="in_message"></param>
-        /// <param name="in_options"></param>
-        public void Echo(string in_message)
-        {
-            m_commsLayer.Echo(in_message);
         }
 
         /// <summary>
