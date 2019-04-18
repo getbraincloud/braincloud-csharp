@@ -32,6 +32,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
         public static readonly ServiceOperation ReadSharedEntity = new ServiceOperation("READ_SHARED_ENTITY");
+        public static readonly ServiceOperation UpdateEntityIndexedId = new ServiceOperation("UPDATE_INDEXED_ID");
         public static readonly ServiceOperation UpdateEntityOwnerAndAcl = new ServiceOperation("UPDATE_ENTITY_OWNER_AND_ACL");
         public static readonly ServiceOperation MakeSystemEntity = new ServiceOperation("MAKE_SYSTEM_ENTITY");
 

@@ -310,6 +310,23 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateEntityIndexedId()
+        {
+            string entityId = CreateDefaultGlobalEntity(ACL.Access.None, "indexedId");
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.GlobalEntityService.UpdateEntityIndexedId(
+                entityId,
+                -1,
+                "indexedId",
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestUpdateEntityOwnerAndAcl()
         {
             string entityId = CreateDefaultGlobalEntity();

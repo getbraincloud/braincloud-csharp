@@ -642,7 +642,15 @@ namespace BrainCloud.Internal
                 try
                 {
                     m_udpClient = new UdpClient();
+                    #if !(DOT_NET)
                     await m_udpClient.Client.ConnectAsync(host, port);
+                    #else
+                    SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+                    args.Completed += new EventHandler<SocketAsyncEventArgs>(OnUDPConnected);
+                    args.RemoteEndPoint = new DnsEndPoint(host, port);
+                    m_udpClient.Client.ConnectAsync(args);
+                    #endif
+
                 }
                 catch (Exception e)
                 {
@@ -654,9 +662,13 @@ namespace BrainCloud.Internal
 
             if (success)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "connect", ""));
-                m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
+                OnUDPConnected(null, null);
             }
+        }
+        private void OnUDPConnected(object sender, SocketAsyncEventArgs args)
+        {
+            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "connect", ""));
+            m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
         }
 
         private void addRSCommandResponse(RSCommandResponse in_command)
