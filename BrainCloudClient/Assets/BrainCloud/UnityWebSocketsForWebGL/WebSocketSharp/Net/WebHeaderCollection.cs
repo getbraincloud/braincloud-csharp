@@ -49,7 +49,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
     /// <summary>
     /// Provides a collection of the HTTP headers associated with a request or response.

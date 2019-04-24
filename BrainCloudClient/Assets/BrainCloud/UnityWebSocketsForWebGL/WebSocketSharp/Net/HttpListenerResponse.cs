@@ -50,7 +50,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Provides the access to a response to a request received by the <see cref="HttpListener"/>.
@@ -77,7 +77,7 @@ namespace WebSocketSharp.Net
     private bool                _sendChunked;
     private int                 _statusCode;
     private string              _statusDescription;
-    private Version             _version;
+    private System.Version             _version;
 
     #endregion
 
@@ -281,7 +281,7 @@ namespace WebSocketSharp.Net
     /// Gets or sets the HTTP version used in the response.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the version used in the response.
+    /// A <see cref="System.Version"/> that represents the version used in the response.
     /// </value>
     /// <exception cref="ArgumentNullException">
     /// The value specified for a set operation is <see langword="null"/>.
@@ -296,7 +296,7 @@ namespace WebSocketSharp.Net
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
     /// </exception>
-    public Version ProtocolVersion {
+    public System.Version ProtocolVersion {
       get {
         return _version;
       }

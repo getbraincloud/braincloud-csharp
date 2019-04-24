@@ -38,14 +38,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Represents an incoming request to a <see cref="HttpListener"/> instance.
@@ -68,7 +67,7 @@ namespace WebSocketSharp.Net
     private WebHeaderCollection    _headers;
     private string                 _httpMethod;
     private Stream                 _inputStream;
-    private Version                _protocolVersion;
+    private System.Version                _protocolVersion;
     private NameValueCollection    _queryString;
     private string                 _rawUrl;
     private Guid                   _requestTraceIdentifier;
@@ -373,10 +372,10 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP version specified by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the HTTP version specified in
+    /// A <see cref="System.Version"/> that represents the HTTP version specified in
     /// the request line.
     /// </value>
-    public Version ProtocolVersion {
+    public System.Version ProtocolVersion {
       get {
         return _protocolVersion;
       }
@@ -800,7 +799,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Version ver;
+      System.Version ver;
       if (!rawVer.Substring (5).TryCreateVersion (out ver)) {
         _context.ErrorMessage = "Invalid request line (version)";
         return;

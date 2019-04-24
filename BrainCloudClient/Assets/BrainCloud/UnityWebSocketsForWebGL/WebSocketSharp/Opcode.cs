@@ -26,9 +26,7 @@
  */
 #endregion
 
-using System;
-
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   /// <summary>
   /// Indicates the WebSocket frame type.

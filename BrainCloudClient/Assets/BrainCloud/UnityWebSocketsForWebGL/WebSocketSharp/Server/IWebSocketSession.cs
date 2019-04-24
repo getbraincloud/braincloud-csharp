@@ -27,9 +27,9 @@
 #endregion
 
 using System;
-using WebSocketSharp.Net.WebSockets;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
   /// <summary>
   /// Exposes the access to the information in a WebSocket session.
