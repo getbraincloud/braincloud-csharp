@@ -1294,7 +1294,7 @@ namespace BrainCloud
         internal void Log(string log)
         {
 #if UNITY_EDITOR
-            BrainCloudUnity.BrainCloudPlugin.ResponseEvent.AppendLog(log);
+            BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.AppendLog(log);
 #endif
 
             if (_loggingEnabled)

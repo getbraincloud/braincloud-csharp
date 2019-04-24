@@ -1,40 +1,40 @@
 ﻿using BrainCloudUnity;
-using BrainCloudUnity.BrainCloudPlugin;
+using BrainCloudUnity.BrainCloudSettingsDLL;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(BrainCloudSettings))]
+[CustomEditor(typeof(BrainCloudSettingsManual))]
 public class BrainCloudSettingsEditor : Editor
 {
     // Menu Bar
     [MenuItem("brainCloud/Select Settings", false, 001)]
     public static void OpenSettings()
     {
-        Selection.activeObject = BrainCloudPluginSettings.Instance;
+        Selection.activeObject = BrainCloudSettings.Instance;
     }
 
-    [MenuItem("brainCloud/Select Legacy Settings", false, 201)]
-    public static void SelectLegacyPlugin()
+    [MenuItem("brainCloud/Select Manual Settings", false, 201)]
+    public static void SelectManualSettings()
     {
-        Selection.activeObject = BrainCloudSettings.Instance;
+        Selection.activeObject = BrainCloudSettingsManual.Instance;
     }
 
     [MenuItem("brainCloud/Launch Portal...", false, 100)]
     public static void GoPortal()
     {
-        Help.BrowseURL(BrainCloudSettings.Instance.PortalURL);
+        Help.BrowseURL(BrainCloudSettingsManual.Instance.PortalURL);
     }
 
     [MenuItem("brainCloud/View API Documentation...", false, 101)]
-    public static void GoAPIDoc()
+    public static void GoApiReference()
     {
-        Help.BrowseURL(BrainCloudSettings.Instance.ApiDocsURL + "/apiref/index.html");
+        Help.BrowseURL(BrainCloudSettingsManual.Instance.ApiDocsURL + "/apiref/index.html");
     }
 
     [MenuItem("brainCloud/View Tutorials...", false, 102)]
     public static void GoTutorials()
     {
-        Help.BrowseURL(BrainCloudSettings.Instance.ApiDocsURL + "/tutorials/unity-tutorials/");
+        Help.BrowseURL(BrainCloudSettingsManual.Instance.ApiDocsURL + "/tutorials/unity-tutorials/");
     }
 
     [MenuItem("brainCloud/View Code Examples...", false, 103)]
@@ -62,9 +62,9 @@ public class BrainCloudSettingsEditor : Editor
     
     public override void OnInspectorGUI()
     {
-        BrainCloudSettings instance = (BrainCloudSettings) target;
+        BrainCloudSettingsManual instance = (BrainCloudSettingsManual) target;
 
-        if (BrainCloudPluginSettings.IsLegacyPluginEnabled())
+        if (BrainCloudSettings.IsManualSettingsEnabled())
         {
             // Game Config
             EditorGUILayout.HelpBox("The game configuration parameters can be found on the brainCloud portal.",
@@ -92,7 +92,7 @@ public class BrainCloudSettingsEditor : Editor
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Reset to Default Server URL", GUILayout.ExpandWidth(false)))
             {
-                instance.ServerURL = BrainCloudSettings.DEFAULT_BRAINCLOUD_URL;
+                instance.ServerURL = BrainCloudSettingsManual.DEFAULT_BRAINCLOUD_URL;
             }
             GUILayout.EndHorizontal();
 
@@ -127,7 +127,7 @@ public class BrainCloudSettingsEditor : Editor
             
             if (GUILayout.Button("View API Docs", buttonStyle))
             {
-                GoAPIDoc();
+                GoApiReference();
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -144,12 +144,12 @@ public class BrainCloudSettingsEditor : Editor
         else
         {
             EditorGUILayout.HelpBox(
-                "These are the settings for the Manual brainCloud Settings. Please use the automatic settings asset.",
+                "These are the manual settings for brainCloud. Please use the automatic settings asset.",
                 MessageType.None);
 
             if (GUILayout.Button("Select Settings", GUILayout.ExpandWidth(false)))
             {
-                Selection.activeObject = BrainCloudPluginSettings.Instance;
+                Selection.activeObject = BrainCloudSettings.Instance;
             }
         }
     }
