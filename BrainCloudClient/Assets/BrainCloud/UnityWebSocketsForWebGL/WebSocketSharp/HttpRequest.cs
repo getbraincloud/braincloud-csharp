@@ -37,9 +37,9 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using WebSocketSharp.Net;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   internal class HttpRequest : HttpBase
   {
@@ -53,7 +53,7 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
+    private HttpRequest (string method, string uri, System.Version version, NameValueCollection headers)
       : base (version, headers)
     {
       _method = method;
@@ -165,7 +165,7 @@ namespace WebSocketSharp
         headers.InternalSet (headerParts[i], false);
 
       return new HttpRequest (
-        requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);
+        requestLine[0], requestLine[1], new System.Version (requestLine[2].Substring (5)), headers);
     }
 
     internal static HttpRequest Read (Stream stream, int millisecondsTimeout)

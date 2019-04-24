@@ -1,12 +1,11 @@
 ﻿using System;
-
 #if DOT_NET
 using System.Net.WebSockets;
 #elif UNITY_WEBGL && !UNITY_EDITOR
 using AOT;
 using System.Collections.Generic;
 #else
-using WebSocketSharp;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 #endif
 
 public class BrainCloudWebSocket

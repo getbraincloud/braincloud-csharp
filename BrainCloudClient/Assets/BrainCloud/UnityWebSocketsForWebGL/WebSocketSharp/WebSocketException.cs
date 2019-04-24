@@ -28,7 +28,7 @@
 
 using System;
 
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   /// <summary>
   /// The exception that is thrown when a fatal error occurs in
