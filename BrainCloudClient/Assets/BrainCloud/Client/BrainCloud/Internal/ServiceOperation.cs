@@ -22,6 +22,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation SwitchToParentProfile = new ServiceOperation("SWITCH_TO_PARENT_PROFILE");
         public static readonly ServiceOperation DetachParent = new ServiceOperation("DETACH_PARENT");
         public static readonly ServiceOperation AttachParentWithIdentity = new ServiceOperation("ATTACH_PARENT_WITH_IDENTITY");
+        public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
+        public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
 
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
