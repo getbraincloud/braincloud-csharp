@@ -28,7 +28,7 @@
 
 using System;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Provides the credentials for the password-based authentication.

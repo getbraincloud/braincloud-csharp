@@ -37,9 +37,7 @@
  */
 #endregion
 
-using System;
-
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Specifies the scheme for authentication.

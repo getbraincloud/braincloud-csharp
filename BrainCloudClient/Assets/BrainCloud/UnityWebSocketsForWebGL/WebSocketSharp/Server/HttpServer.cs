@@ -38,18 +38,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
   /// <summary>
   /// Provides a simple HTTP server that allows to accept

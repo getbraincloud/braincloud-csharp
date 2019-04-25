@@ -29,10 +29,10 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
   /// <summary>
   /// Exposes a set of methods and properties used to define the behavior of

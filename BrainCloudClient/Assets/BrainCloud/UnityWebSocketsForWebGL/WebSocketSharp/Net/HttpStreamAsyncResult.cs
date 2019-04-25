@@ -40,7 +40,7 @@
 using System;
 using System.Threading;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   internal class HttpStreamAsyncResult : IAsyncResult
   {

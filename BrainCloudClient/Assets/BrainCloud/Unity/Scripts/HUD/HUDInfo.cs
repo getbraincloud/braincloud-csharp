@@ -52,7 +52,7 @@ namespace BrainCloudUnity.HUD
 			//GUILayout.FlexibleSpace();
 			if (GUILayout.Button ("Player Monitoring"))
 			{
-				Application.OpenURL(BrainCloudSettings.Instance.ServerURL +"/admin/dashboard#/monitoring/summary");
+				Application.OpenURL(BrainCloudSettingsManual.Instance.ServerURL +"/admin/dashboard#/monitoring/summary");
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();

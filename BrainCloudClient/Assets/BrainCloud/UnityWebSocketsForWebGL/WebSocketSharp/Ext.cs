@@ -51,13 +51,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
-using WebSocketSharp.Server;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   /// <summary>
   /// Provides a set of static methods for websocket-sharp.
@@ -595,7 +592,7 @@ namespace WebSocketSharp
       return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
-    internal static bool IsHttpMethod (this string value, Version version)
+    internal static bool IsHttpMethod (this string value, System.Version version)
     {
       return version == HttpVersion.Version10
              ? value.isHttpMethod10 ()
@@ -675,7 +672,7 @@ namespace WebSocketSharp
     }
 
     internal static bool KeepsAlive (
-      this NameValueCollection headers, Version version
+      this NameValueCollection headers, System.Version version
     )
     {
       var comparison = StringComparison.OrdinalIgnoreCase;
@@ -1017,13 +1014,13 @@ namespace WebSocketSharp
     }
 
     internal static bool TryCreateVersion (
-      this string versionString, out Version result
+      this string versionString, out System.Version result
     )
     {
       result = null;
 
       try {
-        result = new Version (versionString);
+        result = new System.Version (versionString);
       }
       catch {
         return false;

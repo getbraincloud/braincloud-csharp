@@ -40,7 +40,7 @@
 using System;
 using System.IO;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   internal class RequestStream : Stream
   {

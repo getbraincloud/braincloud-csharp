@@ -26,9 +26,7 @@
  */
 #endregion
 
-using System;
-
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   /// <summary>
   /// Indicates whether the payload data of a WebSocket frame is masked.
