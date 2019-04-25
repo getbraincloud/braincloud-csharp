@@ -98,8 +98,8 @@ public class BrainCloudWrapper
 
     private void OnApplicationQuit()
     {
-        Client.DisableRTT();
-        Client.RoomServerService.Disconnect();
+        RTTService.DisableRTT();
+        RelayService.Disconnect();
         Client.Update();
     }
 
@@ -296,9 +296,9 @@ public class BrainCloudWrapper
     {
         get { return Client.MessagingService; }
     }
-    public BrainCloudRoomServer RoomServerService
+    public BrainCloudRelay RelayService
     {
-        get { return Client.RoomServerService; }
+        get { return Client.RelayService; }
     }
     #endregion
 
@@ -350,12 +350,12 @@ public class BrainCloudWrapper
     public void Init()
     {
         Init(
-            BrainCloudSettingsManual.Instance.DispatcherURL,
-            BrainCloudSettingsManual.Instance.SecretKey,
-            BrainCloudSettingsManual.Instance.AppId,
-            BrainCloudSettingsManual.Instance.GameVersion);
+            BrainCloudSettings.Instance.DispatcherURL,
+            BrainCloudSettings.Instance.SecretKey,
+            BrainCloudSettings.Instance.AppId,
+            BrainCloudSettings.Instance.GameVersion);
 
-        Client.EnableLogging(BrainCloudSettingsManual.Instance.EnableLogging);
+        Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
 
     /// <summary>
@@ -365,12 +365,12 @@ public class BrainCloudWrapper
     public void InitWithApps()
     {
         InitWithApps(
-            BrainCloudSettingsManual.Instance.DispatcherURL,
-            BrainCloudSettingsManual.Instance.AppId,
-            BrainCloudSettingsManual.Instance.AppIdSecrets,
-            BrainCloudSettingsManual.Instance.GameVersion);
+            BrainCloudSettings.Instance.DispatcherURL,
+            BrainCloudSettings.Instance.AppId,
+            BrainCloudSettings.Instance.AppIdSecrets,
+            BrainCloudSettings.Instance.GameVersion);
 
-        Client.EnableLogging(BrainCloudSettingsManual.Instance.EnableLogging);
+        Client.EnableLogging(BrainCloudSettings.Instance.EnableLogging);
     }
 #endif
 
@@ -1499,7 +1499,7 @@ public class BrainCloudWrapper
         }
 
 #if UNITY_EDITOR
-        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateSuccess(json);
+        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateSuccess(json);
 #endif
     }
 
@@ -1522,7 +1522,7 @@ public class BrainCloudWrapper
         }
 
 #if UNITY_EDITOR
-        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
+        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
 #endif
     }
 

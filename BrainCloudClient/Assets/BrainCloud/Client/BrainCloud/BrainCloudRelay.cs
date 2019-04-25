@@ -7,21 +7,26 @@ using System.Collections.Generic;
 using BrainCloud.Internal;
 namespace BrainCloud
 {
-    public class BrainCloudRoomServer
+    public class BrainCloudRelay
     {
         /// <summary>
         /// 
         /// </summary>
-        internal BrainCloudRoomServer(RSComms in_comms)
+        internal BrainCloudRelay(RelayComms in_comms)
         {
             m_commsLayer = in_comms;
         }
 
         /// <summary>
-        /// Use Echo() in order to properly calculate the Last ping received
+        /// Use Ping() in order to properly calculate the Last ping received
         /// </summary>
-        public long LastPing { get { return m_commsLayer.LastPing; } }
-        
+        public long LastPing { get { return m_commsLayer.Ping; } }
+
+        /// <summary>
+        /// NetId retrieved from the connected call
+        /// </summary>
+        public short NetId { get { return m_commsLayer.NetId; } }
+
         /// <summary>
         ///
         /// </summary>
@@ -29,7 +34,7 @@ namespace BrainCloud
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void Connect(eRSConnectionType in_connectionType = eRSConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void Connect(RelayConnectionType in_connectionType = RelayConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             m_commsLayer.Connect(in_connectionType, in_options, in_success, in_failure, cb_object);
         }
@@ -81,16 +86,16 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        public void Ping()
+        public void SetPingInterval(float in_interval)
         {
-            m_commsLayer.Ping();
+            m_commsLayer.SetPingInterval(in_interval);
         }
 
         #region private
         /// <summary>
-        /// Reference to the brainCloud client object
+        /// Reference to the Relay Comms
         /// </summary>
-        private RSComms m_commsLayer;
+        private RelayComms m_commsLayer;
         #endregion
 
     }
