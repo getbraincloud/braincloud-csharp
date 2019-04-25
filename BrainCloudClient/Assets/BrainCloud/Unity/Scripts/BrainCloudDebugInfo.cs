@@ -11,11 +11,11 @@ using UnityEditor;
 
 namespace BrainCloudUnity
 {
-    namespace BrainCloudPlugin
+    namespace BrainCloudSettingsDLL
     {
         /// <inheritdoc />
         /// <summary>
-        /// Contains the debug data for the newer brainCloud Plugin - BrainCloudPluginSettings
+        /// Contains the debug data for the brainCloud Settings - BrainCloudSettings
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
 
@@ -28,21 +28,21 @@ namespace BrainCloudUnity
                 {
                     if (_instance) return _instance;
 
-                    _instance = Resources.Load("Debug/BrainCloudPluginDebugInfo") as BrainCloudDebugInfo;
+                    _instance = Resources.Load("Debug/BrainCloudDebugInfo") as BrainCloudDebugInfo;
 
                     // If not found, autocreate the asset object.
                     if (_instance == null)
                     {
-                        CreatePluginAsset();
+                        CreateSettingsAsset();
                     }
 
-                    _instance.name = "BrainCloudPluginDebugInfo";
+                    _instance.name = "BrainCloudDebugInfo";
 
                     return _instance;
                 }
             }
 
-            private static void CreatePluginAsset()
+            private static void CreateSettingsAsset()
             {
                 _instance = CreateInstance<BrainCloudDebugInfo>();
 
@@ -63,25 +63,25 @@ namespace BrainCloudUnity
                 }
 
 
-                const string fullPath = "Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset";
+                const string fullPath = "Assets/BrainCloud/Resources/Debug/BrainCloudDebugInfo.asset";
                 AssetDatabase.CreateAsset(_instance, fullPath);
            }
 
 
             public void Refresh()
             {
-                _instance = Resources.Load("Debug/BrainCloudPluginDebugInfo") as BrainCloudDebugInfo;
+                _instance = Resources.Load("Debug/BrainCloudDebugInfo") as BrainCloudDebugInfo;
 
                 if (_instance != null)
                 {
-                    _instance.ClearPluginData();
+                    _instance.ClearSettingsData();
 
                     Resources.UnloadAsset(_instance);
 
                     _instance = null;
                 }
 
-                CreatePluginAsset();
+                CreateSettingsAsset();
             }
         }
     }

@@ -30,9 +30,9 @@ using System;
 using System.IO;
 using System.Security.Principal;
 using System.Text;
-using WebSocketSharp.Net;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
-namespace WebSocketSharp.Server
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
   /// <summary>
   /// Represents the event data for the HTTP request events of

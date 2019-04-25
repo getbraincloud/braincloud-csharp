@@ -511,7 +511,7 @@ namespace BrainCloud.Internal
                             }
 
 #if UNITY_EDITOR
-                            BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnNetworkError("NetworkError");
+                            BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnNetworkError("NetworkError");
 #endif
 
                             _networkErrorCallback();
@@ -571,7 +571,7 @@ namespace BrainCloud.Internal
                     if (_fileUploadSuccessCallback != null)
                     {
 #if UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
+                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
 #endif
 
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
@@ -585,7 +585,7 @@ namespace BrainCloud.Internal
                     if (_fileUploadFailedCallback != null)
                     {
 #if UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
+                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
 #endif
 
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
@@ -958,7 +958,7 @@ namespace BrainCloud.Internal
                             try
                             {
 #if UNITY_EDITOR
-                                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSuccess(data);
+                                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSuccess(data);
 #endif
 
                                 sc.GetCallback().OnSuccessCallback(data);
@@ -1025,7 +1025,7 @@ namespace BrainCloud.Internal
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
 
 #if UNITY_EDITOR
-                                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnReward(rewardsAsJson);
+                                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnReward(rewardsAsJson);
 #endif
 
                                     _rewardCallback(rewardsAsJson);
@@ -1175,7 +1175,7 @@ namespace BrainCloud.Internal
                         }
 
 #if UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(errorJson);
+                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(errorJson);
 #endif
 
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
@@ -1196,7 +1196,7 @@ namespace BrainCloud.Internal
                     eventsJsonObjUnity["events"] = bundleObj.events;
                     string eventsAsJsonUnity = JsonWriter.Serialize(eventsJsonObjUnity);
 
-                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnEvent(eventsAsJsonUnity);
+                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(eventsAsJsonUnity);
                 }
                 catch (Exception)
                 {
@@ -1518,10 +1518,10 @@ namespace BrainCloud.Internal
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
 #if UNITY_EDITOR
-            //Sending Data to the Unity Debug Plugin for ease of developer debugging when in the Editor
+            //Sending Data to the brainCloud Debug Info for ease of developer debugging when in the Unity Editor
             try
             {
-                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.ClearLastSentRequest();
+                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.ClearLastSentRequest();
                 Dictionary<string, object> requestData =
                     JsonReader.Deserialize<Dictionary<string, object>>(jsonRequestString);
                 Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[])requestData["messages"];
@@ -1533,7 +1533,7 @@ namespace BrainCloud.Internal
                     var dataList = messagesData["data"];
                     var dataValue = JsonWriter.Serialize(dataList);
 
-                    BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSentRequest(
+                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSentRequest(
                         string.Format("{0} {1}", serviceValue, operationValue), dataValue);
                 }
             }

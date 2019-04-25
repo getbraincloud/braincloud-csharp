@@ -26,9 +26,7 @@
  */
 #endregion
 
-using System;
-
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   /// <summary>
   /// Indicates whether each RSV (RSV1, RSV2, and RSV3) of a WebSocket frame is non-zero.

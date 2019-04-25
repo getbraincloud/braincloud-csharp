@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace WebSocketSharp
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
   internal class WebSocketFrame : IEnumerable<byte>
   {

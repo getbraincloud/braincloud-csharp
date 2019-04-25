@@ -44,7 +44,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   internal class ChunkStream
   {

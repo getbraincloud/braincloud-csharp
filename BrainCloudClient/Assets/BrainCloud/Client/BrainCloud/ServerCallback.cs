@@ -32,7 +32,7 @@ namespace BrainCloud
             if ( m_fnSuccessCallback != null )
             {
 #if UNITY_EDITOR
-                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnSuccess(jsonResponse);
+                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSuccess(jsonResponse);
 #endif
                 m_fnSuccessCallback(jsonResponse, m_cbObject);
             }
@@ -43,7 +43,7 @@ namespace BrainCloud
             if ( m_fnFailureCallback != null )
             {
 #if UNITY_EDITOR
-                BrainCloudUnity.BrainCloudPlugin.ResponseEvent.OnFailedResponse(statusMessage);
+                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(statusMessage);
 #endif
                         
                 m_fnFailureCallback(statusCode, reasonCode, statusMessage, m_cbObject);

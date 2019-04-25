@@ -37,10 +37,9 @@
  */
 #endregion
 
-using System;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Holds the username and password from an HTTP Basic authentication attempt.

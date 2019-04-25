@@ -44,7 +44,7 @@ using System;
 using System.Globalization;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   /// <summary>
   /// Provides a set of methods and properties used to manage an HTTP Cookie.

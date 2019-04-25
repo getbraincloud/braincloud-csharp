@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net.WebSockets
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets
 {
   /// <summary>
   /// Exposes the access to the information in a WebSocket handshake request.
