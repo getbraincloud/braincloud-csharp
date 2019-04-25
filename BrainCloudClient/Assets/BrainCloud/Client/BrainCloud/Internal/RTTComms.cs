@@ -6,8 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using System.Net.Sockets;
 using JsonFx.Json;
 
 namespace BrainCloud.Internal
@@ -34,7 +32,7 @@ namespace BrainCloud.Internal
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void EnableRTT(eRTTConnectionType in_connectionType = eRTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             if (!m_bIsConnected)
             {
@@ -229,7 +227,7 @@ namespace BrainCloud.Internal
         private bool send(string in_message, bool in_bLogMessage = true)
         {
             bool bMessageSent = false;
-            bool m_useWebSocket = m_currentConnectionType == eRTTConnectionType.WEBSOCKET;
+            bool m_useWebSocket = m_currentConnectionType == RTTConnectionType.WEBSOCKET;
             // early return
             if ((m_useWebSocket && m_webSocket == null))
             {
@@ -251,7 +249,7 @@ namespace BrainCloud.Internal
             catch (Exception socketException)
             {
                 m_clientRef.Log("send exception: " + socketException);
-                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", socketException.ToString()));
+                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(socketException.ToString())));
             }
 
             return bMessageSent;
@@ -311,7 +309,7 @@ namespace BrainCloud.Internal
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
             m_clientRef.Log("Error: " + message);
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", message));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(message)));
         }
 
         /// <summary>
@@ -363,7 +361,7 @@ namespace BrainCloud.Internal
             Array endpoints = (Array)jsonData["endpoints"];
             m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
 
-            if (m_currentConnectionType == eRTTConnectionType.WEBSOCKET)
+            if (m_currentConnectionType == RTTConnectionType.WEBSOCKET)
             {
                 //   1st choice: websocket + ssl
                 //   2nd: websocket
@@ -427,8 +425,19 @@ namespace BrainCloud.Internal
             }
         }
 
+        private string buildRTTRequestError(string in_statusMessage)
+        {
+            Dictionary<string, object> json = new Dictionary<string, object>();
+            json["status"] = 403;
+            json["reason_code"] = ReasonCodes.RTT_CLIENT_ERROR;
+            json["status_message"] = in_statusMessage;
+            json["severity"] = "ERROR";
+
+            return JsonWriter.Serialize(json);
+        }
+
         private Dictionary<string, object> m_endpoint = null;
-        private eRTTConnectionType m_currentConnectionType = eRTTConnectionType.INVALID;
+        private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private bool m_bIsConnected = false;
         private BrainCloudWebSocket m_webSocket = null;
 
@@ -468,7 +477,7 @@ namespace BrainCloud.Internal
 namespace BrainCloud
 {
     #region public enums
-    public enum eRTTConnectionType
+    public enum RTTConnectionType
     {
         INVALID,
         WEBSOCKET,
