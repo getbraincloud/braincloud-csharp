@@ -63,7 +63,7 @@ namespace BrainCloud.Internal
         public void Connect(RelayConnectionType in_connectionType = RelayConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
 #if UNITY_WEBGL
-            if (in_connectionType != eRSConnectionType.WEBSOCKET)
+            if (in_connectionType != RelayConnectionType.WEBSOCKET)
             {
                 m_clientRef.Log("Non-WebSocket Connection Type Requested, on WEBGL.  Please connect via WebSocket.");
 
@@ -677,30 +677,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        private async void connectUDPAsync(string host, int port)
-        {
-            bool success = await Task.Run(async () =>
-            {
-                try
-                {
-                    m_udpClient = new UdpClient();
-                    await m_udpClient.Client.ConnectAsync(host, port);
-                }
-                catch (Exception e)
-                {
-                    addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "error", buildRSRequestError(e.ToString())));
-                    return false;
-                }
-                return true;
-            });
-
-            if (success)
-            {
-                OnUDPConnected(null, null);
-            }
-        }
-
-        private void connectUDPAsync2(string host, int port)
+        private void connectUDPAsync(string host, int port)
         {
             try
             {
