@@ -30,347 +30,350 @@
 
 using System;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// Represents an ECMAScript identifier for serialization.
-	/// </summary>
-	public class EcmaScriptIdentifier : IJsonSerializable
-	{
-		#region Fields
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// Represents an ECMAScript identifier for serialization.
+        /// </summary>
+        public class EcmaScriptIdentifier : IJsonSerializable
+        {
+            #region Fields
 
-		private readonly string identifier;
+            private readonly string identifier;
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Init
+            #region Init
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		public EcmaScriptIdentifier()
-			: this(null)
-		{
-		}
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            public EcmaScriptIdentifier()
+                : this(null)
+            {
+            }
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		public EcmaScriptIdentifier(string ident)
-		{
-			this.identifier = String.IsNullOrEmpty(ident) ? String.Empty :
-				EcmaScriptIdentifier.EnsureValidIdentifier(ident, true);
-		}
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            public EcmaScriptIdentifier(string ident)
+            {
+                this.identifier = String.IsNullOrEmpty(ident) ? String.Empty :
+                    EcmaScriptIdentifier.EnsureValidIdentifier(ident, true);
+            }
 
-		#endregion Init
+            #endregion Init
 
-		#region Properties
+            #region Properties
 
-		/// <summary>
-		/// Gets the ECMAScript identifier represented by this instance.
-		/// </summary>
-		public string Identifier
-		{
-			get { return this.identifier; }
-		}
+            /// <summary>
+            /// Gets the ECMAScript identifier represented by this instance.
+            /// </summary>
+            public string Identifier
+            {
+                get { return this.identifier; }
+            }
 
-		#endregion Properties
+            #endregion Properties
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Ensures is a valid EcmaScript variable expression.
-		/// </summary>
-		/// <param name="varExpr">the variable expression</param>
-		/// <returns>varExpr</returns>
-		public static string EnsureValidIdentifier(string varExpr, bool nested)
-		{
-			return EcmaScriptIdentifier.EnsureValidIdentifier(varExpr, nested, true);
-		}
+            /// <summary>
+            /// Ensures is a valid EcmaScript variable expression.
+            /// </summary>
+            /// <param name="varExpr">the variable expression</param>
+            /// <returns>varExpr</returns>
+            public static string EnsureValidIdentifier(string varExpr, bool nested)
+            {
+                return EcmaScriptIdentifier.EnsureValidIdentifier(varExpr, nested, true);
+            }
 
-		/// <summary>
-		/// Ensures is a valid EcmaScript variable expression.
-		/// </summary>
-		/// <param name="varExpr">the variable expression</param>
-		/// <returns>varExpr</returns>
-		public static string EnsureValidIdentifier(string varExpr, bool nested, bool throwOnEmpty)
-		{
-			if (String.IsNullOrEmpty(varExpr))
-			{
-				if (throwOnEmpty)
-				{
-					throw new ArgumentException("Variable expression is empty.");
-				}
-				return String.Empty;
-			}
+            /// <summary>
+            /// Ensures is a valid EcmaScript variable expression.
+            /// </summary>
+            /// <param name="varExpr">the variable expression</param>
+            /// <returns>varExpr</returns>
+            public static string EnsureValidIdentifier(string varExpr, bool nested, bool throwOnEmpty)
+            {
+                if (String.IsNullOrEmpty(varExpr))
+                {
+                    if (throwOnEmpty)
+                    {
+                        throw new ArgumentException("Variable expression is empty.");
+                    }
+                    return String.Empty;
+                }
 
-			varExpr = varExpr.Replace(" ", "");
+                varExpr = varExpr.Replace(" ", "");
 
-			if (!EcmaScriptIdentifier.IsValidIdentifier(varExpr, nested))
-			{
-				throw new ArgumentException("Variable expression \""+varExpr+"\" is not supported.");
-			}
+                if (!EcmaScriptIdentifier.IsValidIdentifier(varExpr, nested))
+                {
+                    throw new ArgumentException("Variable expression \"" + varExpr + "\" is not supported.");
+                }
 
-			return varExpr;
-		}
+                return varExpr;
+            }
 
-		/// <summary>
-		/// Verifies is a valid EcmaScript variable expression.
-		/// </summary>
-		/// <param name="varExpr">the variable expression</param>
-		/// <returns>varExpr</returns>
-		/// <remarks>
-		/// http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf
-		/// 
-		/// IdentifierName =
-		///		IdentifierStart | IdentifierName IdentifierPart
-		/// IdentifierStart =
-		///		Letter | '$' | '_'
-		/// IdentifierPart =
-		///		IdentifierStart | Digit
-		/// </remarks>
-		public static bool IsValidIdentifier(string varExpr, bool nested)
-		{
-			if (String.IsNullOrEmpty(varExpr))
-			{
-				return false;
-			}
+            /// <summary>
+            /// Verifies is a valid EcmaScript variable expression.
+            /// </summary>
+            /// <param name="varExpr">the variable expression</param>
+            /// <returns>varExpr</returns>
+            /// <remarks>
+            /// http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf
+            /// 
+            /// IdentifierName =
+            ///		IdentifierStart | IdentifierName IdentifierPart
+            /// IdentifierStart =
+            ///		Letter | '$' | '_'
+            /// IdentifierPart =
+            ///		IdentifierStart | Digit
+            /// </remarks>
+            public static bool IsValidIdentifier(string varExpr, bool nested)
+            {
+                if (String.IsNullOrEmpty(varExpr))
+                {
+                    return false;
+                }
 
-			if (nested)
-			{
-				string[] parts = varExpr.Split('.');
-				foreach (string part in parts)
-				{
-					if (!EcmaScriptIdentifier.IsValidIdentifier(part, false))
-					{
-						return false;
-					}
-				}
-				return true;
-			}
+                if (nested)
+                {
+                    string[] parts = varExpr.Split('.');
+                    foreach (string part in parts)
+                    {
+                        if (!EcmaScriptIdentifier.IsValidIdentifier(part, false))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
 
-			if (EcmaScriptIdentifier.IsReservedWord(varExpr))
-			{
-				return false;
-			}
+                if (EcmaScriptIdentifier.IsReservedWord(varExpr))
+                {
+                    return false;
+                }
 
-			bool indentPart = false;
-			foreach (char ch in varExpr)
-			{
-				if (indentPart && Char.IsDigit(ch))
-				{
-					// digits are only allowed after first char
-					continue;
-				}
+                bool indentPart = false;
+                foreach (char ch in varExpr)
+                {
+                    if (indentPart && Char.IsDigit(ch))
+                    {
+                        // digits are only allowed after first char
+                        continue;
+                    }
 
-				// can be start or part
-				if (Char.IsLetter(ch) || ch == '_' || ch == '$')
-				{
-					indentPart = true;
-					continue;
-				}
+                    // can be start or part
+                    if (Char.IsLetter(ch) || ch == '_' || ch == '$')
+                    {
+                        indentPart = true;
+                        continue;
+                    }
 
-				return false;
-			}
+                    return false;
+                }
 
-			return true;
-		}
+                return true;
+            }
 
-		private static bool IsReservedWord(string varExpr)
-		{
-			// TODO: investigate doing this like Rhino does (switch on length check first letter or two)
-			switch (varExpr)
-			{
-				// literals
-				case "null":
-				case "false":
-				case "true":
+            private static bool IsReservedWord(string varExpr)
+            {
+                // TODO: investigate doing this like Rhino does (switch on length check first letter or two)
+                switch (varExpr)
+                {
+                    // literals
+                    case "null":
+                    case "false":
+                    case "true":
 
-				// ES5 Keywords
-				case "break":
-				case "case":
-				case "catch":
-				case "continue":
-				case "debugger":
-				case "default":
-				case "delete":
-				case "do":
-				case "else":
-				case "finally":
-				case "for":
-				case "function":
-				case "if":
-				case "in":
-				case "instanceof":
-				case "new":
-				case "return":
-				case "switch":
-				case "this":
-				case "throw":
-				case "try":
-				case "typeof":
-				case "var":
-				case "void":
-				case "while":
-				case "with":
+                    // ES5 Keywords
+                    case "break":
+                    case "case":
+                    case "catch":
+                    case "continue":
+                    case "debugger":
+                    case "default":
+                    case "delete":
+                    case "do":
+                    case "else":
+                    case "finally":
+                    case "for":
+                    case "function":
+                    case "if":
+                    case "in":
+                    case "instanceof":
+                    case "new":
+                    case "return":
+                    case "switch":
+                    case "this":
+                    case "throw":
+                    case "try":
+                    case "typeof":
+                    case "var":
+                    case "void":
+                    case "while":
+                    case "with":
 
-				// ES5 Future Reserved Words
-				case "abstract":
-				case "boolean":
-				case "byte":
-				case "char":
-				case "class":
-				case "const":
-				case "double":
-				case "enum":
-				case "export":
-				case "extends":
-				case "final":
-				case "float":
-				case "goto":
-				case "implements":
-				case "import":
-				case "int":
-				case "interface":
-				case "long":
-				case "native":
-				case "package":
-				case "private":
-				case "protected":
-				case "public":
-				case "short":
-				case "static":
-				case "super":
-				case "synchronized":
-				case "throws":
-				case "transient":
-				case "volatile":
+                    // ES5 Future Reserved Words
+                    case "abstract":
+                    case "boolean":
+                    case "byte":
+                    case "char":
+                    case "class":
+                    case "const":
+                    case "double":
+                    case "enum":
+                    case "export":
+                    case "extends":
+                    case "final":
+                    case "float":
+                    case "goto":
+                    case "implements":
+                    case "import":
+                    case "int":
+                    case "interface":
+                    case "long":
+                    case "native":
+                    case "package":
+                    case "private":
+                    case "protected":
+                    case "public":
+                    case "short":
+                    case "static":
+                    case "super":
+                    case "synchronized":
+                    case "throws":
+                    case "transient":
+                    case "volatile":
 
-				// ES5 Possible Reserved Words
-				case "let":
-				case "yield":
-				{
-					return true;
-				}
-				default:
-				{
-					return false;
-				}
-			}
-		}
+                    // ES5 Possible Reserved Words
+                    case "let":
+                    case "yield":
+                        {
+                            return true;
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+            }
 
-		/// <summary>
-		/// Trivial conversion method. Essentially performs a cast.
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <remarks>
-		/// Supports conversion via System.Web.UI.PropertyConverter.ObjectFromString(Type, MemberInfo, string)
-		/// </remarks>
-		public static EcmaScriptIdentifier Parse(string value)
-		{
-			return new EcmaScriptIdentifier(value);
-		}
+            /// <summary>
+            /// Trivial conversion method. Essentially performs a cast.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            /// <remarks>
+            /// Supports conversion via System.Web.UI.PropertyConverter.ObjectFromString(Type, MemberInfo, string)
+            /// </remarks>
+            public static EcmaScriptIdentifier Parse(string value)
+            {
+                return new EcmaScriptIdentifier(value);
+            }
 
-		#endregion Methods
+            #endregion Methods
 
-		#region Operators
+            #region Operators
 
-		/// <summary>
-		/// Implicit type conversion allows to be used directly as a String
-		/// </summary>
-		/// <param name="ident">valid ECMAScript identifier</param>
-		/// <returns></returns>
-		public static implicit operator string(EcmaScriptIdentifier ident)
-		{
-			if (ident == null)
-			{
-				return String.Empty;
-			}
-			return ident.identifier;
-		}
+            /// <summary>
+            /// Implicit type conversion allows to be used directly as a String
+            /// </summary>
+            /// <param name="ident">valid ECMAScript identifier</param>
+            /// <returns></returns>
+            public static implicit operator string(EcmaScriptIdentifier ident)
+            {
+                if (ident == null)
+                {
+                    return String.Empty;
+                }
+                return ident.identifier;
+            }
 
-		/// <summary>
-		/// Implicit type conversion allows to be used directly with Strings
-		/// </summary>
-		/// <param name="ident">valid ECMAScript identifier</param>
-		/// <returns></returns>
-		public static implicit operator EcmaScriptIdentifier(string ident)
-		{
-			return new EcmaScriptIdentifier(ident);
-		}
+            /// <summary>
+            /// Implicit type conversion allows to be used directly with Strings
+            /// </summary>
+            /// <param name="ident">valid ECMAScript identifier</param>
+            /// <returns></returns>
+            public static implicit operator EcmaScriptIdentifier(string ident)
+            {
+                return new EcmaScriptIdentifier(ident);
+            }
 
-		#endregion Operators
+            #endregion Operators
 
-		#region IJsonSerializable Members
+            #region IJsonSerializable Members
 
-		void IJsonSerializable.ReadJson(JsonReader reader)
-		{
-			throw new NotImplementedException("The method or operation is not implemented.");
-		}
+            void IJsonSerializable.ReadJson(JsonReader reader)
+            {
+                throw new NotImplementedException("The method or operation is not implemented.");
+            }
 
-		void IJsonSerializable.WriteJson(JsonWriter writer)
-		{
-			if (String.IsNullOrEmpty(this.identifier))
-			{
-				writer.TextWriter.Write("null");
-			}
-			else
-			{
-				// TODO: determine if this should output parens around identifier
-				writer.TextWriter.Write(this.identifier);
-			}
-		}
+            void IJsonSerializable.WriteJson(JsonWriter writer)
+            {
+                if (String.IsNullOrEmpty(this.identifier))
+                {
+                    writer.TextWriter.Write("null");
+                }
+                else
+                {
+                    // TODO: determine if this should output parens around identifier
+                    writer.TextWriter.Write(this.identifier);
+                }
+            }
 
-		#endregion IJsonSerializable Members
+            #endregion IJsonSerializable Members
 
-		#region Object Overrides
+            #region Object Overrides
 
-		/// <summary>
-		/// Compares the identifiers.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public override bool Equals(object obj)
-		{
-			EcmaScriptIdentifier that = obj as EcmaScriptIdentifier;
-			if (that == null)
-			{
-				return base.Equals(obj);
-			}
+            /// <summary>
+            /// Compares the identifiers.
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
+            public override bool Equals(object obj)
+            {
+                EcmaScriptIdentifier that = obj as EcmaScriptIdentifier;
+                if (that == null)
+                {
+                    return base.Equals(obj);
+                }
 
-			if (String.IsNullOrEmpty(this.identifier) && String.IsNullOrEmpty(that.identifier))
-			{
-				// null and String.Empty are equivalent
-				return true;
-			}
+                if (String.IsNullOrEmpty(this.identifier) && String.IsNullOrEmpty(that.identifier))
+                {
+                    // null and String.Empty are equivalent
+                    return true;
+                }
 
-			return StringComparer.Ordinal.Equals(this.identifier, that.identifier);
-		}
+                return StringComparer.Ordinal.Equals(this.identifier, that.identifier);
+            }
 
-		/// <summary>
-		/// Returns the identifier.
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return this.identifier;
-		}
+            /// <summary>
+            /// Returns the identifier.
+            /// </summary>
+            /// <returns></returns>
+            public override string ToString()
+            {
+                return this.identifier;
+            }
 
-		/// <summary>
-		/// Returns the hash code for this identifier.
-		/// </summary>
-		/// <returns></returns>
-		public override int GetHashCode()
-		{
-			if (this.identifier == null)
-			{
-				return 0;
-			}
+            /// <summary>
+            /// Returns the hash code for this identifier.
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                if (this.identifier == null)
+                {
+                    return 0;
+                }
 
-			return this.identifier.GetHashCode();
-		}
+                return this.identifier.GetHashCode();
+            }
 
-		#endregion Object Overrides
-	}
+            #endregion Object Overrides
+        }
+    }
 }

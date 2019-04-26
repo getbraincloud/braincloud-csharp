@@ -31,108 +31,111 @@
 using System;
 using System.IO;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// Represents a proxy method for serialization of types which do not implement IJsonSerializable
-	/// </summary>
-	/// <typeparam name="T">the type for this proxy</typeparam>
-	/// <param name="writer">the JsonWriter to serialize to</param>
-	/// <param name="value">the value to serialize</param>
-	public delegate void WriteDelegate<T>(JsonWriter writer, T value);
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// Represents a proxy method for serialization of types which do not implement IJsonSerializable
+        /// </summary>
+        /// <typeparam name="T">the type for this proxy</typeparam>
+        /// <param name="writer">the JsonWriter to serialize to</param>
+        /// <param name="value">the value to serialize</param>
+        public delegate void WriteDelegate<T>(JsonWriter writer, T value);
 
-	/// <summary>
-	/// Controls the serialization settings for JsonWriter
-	/// </summary>
-	public class JsonWriterSettings
-	{
-		#region Fields
+        /// <summary>
+        /// Controls the serialization settings for JsonWriter
+        /// </summary>
+        public class JsonWriterSettings
+        {
+            #region Fields
 
-		private WriteDelegate<DateTime> dateTimeSerializer;
-		private int maxDepth = 25;
-		private string newLine = Environment.NewLine;
-		private bool prettyPrint;
-		private string tab = "\t";
-		private string typeHintName;
-		private bool useXmlSerializationAttributes;
+            private WriteDelegate<DateTime> dateTimeSerializer;
+            private int maxDepth = 25;
+            private string newLine = Environment.NewLine;
+            private bool prettyPrint;
+            private string tab = "\t";
+            private string typeHintName;
+            private bool useXmlSerializationAttributes;
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Properties
+            #region Properties
 
-		/// <summary>
-		/// Gets and sets the property name used for type hinting.
-		/// </summary>
-		public virtual string TypeHintName
-		{
-			get { return this.typeHintName; }
-			set { this.typeHintName = value; }
-		}
+            /// <summary>
+            /// Gets and sets the property name used for type hinting.
+            /// </summary>
+            public virtual string TypeHintName
+            {
+                get { return this.typeHintName; }
+                set { this.typeHintName = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets if JSON will be formatted for human reading.
-		/// </summary>
-		public virtual bool PrettyPrint
-		{
-			get { return this.prettyPrint; }
-			set { this.prettyPrint = value; }
-		}
+            /// <summary>
+            /// Gets and sets if JSON will be formatted for human reading.
+            /// </summary>
+            public virtual bool PrettyPrint
+            {
+                get { return this.prettyPrint; }
+                set { this.prettyPrint = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets the string to use for indentation
-		/// </summary>
-		public virtual string Tab
-		{
-			get { return this.tab; }
-			set { this.tab = value; }
-		}
+            /// <summary>
+            /// Gets and sets the string to use for indentation
+            /// </summary>
+            public virtual string Tab
+            {
+                get { return this.tab; }
+                set { this.tab = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets the line terminator string
-		/// </summary>
-		public virtual string NewLine
-		{
-			get { return this.newLine; }
-			set { this.newLine = value; }
-		}
+            /// <summary>
+            /// Gets and sets the line terminator string
+            /// </summary>
+            public virtual string NewLine
+            {
+                get { return this.newLine; }
+                set { this.newLine = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets the maximum depth to be serialized.
-		/// </summary>
-		public virtual int MaxDepth
-		{
-			get { return this.maxDepth; }
-			set
-			{
-				if (value < 1)
-				{
-					throw new ArgumentOutOfRangeException("MaxDepth must be a positive integer as it controls the maximum nesting level of serialized objects.");
-				}
-				this.maxDepth = value;
-			}
-		}
+            /// <summary>
+            /// Gets and sets the maximum depth to be serialized.
+            /// </summary>
+            public virtual int MaxDepth
+            {
+                get { return this.maxDepth; }
+                set
+                {
+                    if (value < 1)
+                    {
+                        throw new ArgumentOutOfRangeException("MaxDepth must be a positive integer as it controls the maximum nesting level of serialized objects.");
+                    }
+                    this.maxDepth = value;
+                }
+            }
 
-		/// <summary>
-		/// Gets and sets if should use XmlSerialization Attributes.
-		/// </summary>
-		/// <remarks>
-		/// Respects XmlIgnoreAttribute, ...
-		/// </remarks>
-		public virtual bool UseXmlSerializationAttributes
-		{
-			get { return this.useXmlSerializationAttributes; }
-			set { this.useXmlSerializationAttributes = value; }
-		}
+            /// <summary>
+            /// Gets and sets if should use XmlSerialization Attributes.
+            /// </summary>
+            /// <remarks>
+            /// Respects XmlIgnoreAttribute, ...
+            /// </remarks>
+            public virtual bool UseXmlSerializationAttributes
+            {
+                get { return this.useXmlSerializationAttributes; }
+                set { this.useXmlSerializationAttributes = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets a proxy formatter to use for DateTime serialization
-		/// </summary>
-		public virtual WriteDelegate<DateTime> DateTimeSerializer
-		{
-			get { return this.dateTimeSerializer; }
-			set { this.dateTimeSerializer = value; }
-		}
+            /// <summary>
+            /// Gets and sets a proxy formatter to use for DateTime serialization
+            /// </summary>
+            public virtual WriteDelegate<DateTime> DateTimeSerializer
+            {
+                get { return this.dateTimeSerializer; }
+                set { this.dateTimeSerializer = value; }
+            }
 
-		#endregion Properties
-	}
+            #endregion Properties
+        }
+    }
 }

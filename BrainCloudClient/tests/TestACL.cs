@@ -1,7 +1,7 @@
 using NUnit.Core;
 using NUnit.Framework;
 using System.Collections.Generic;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 
 namespace BrainCloudTests

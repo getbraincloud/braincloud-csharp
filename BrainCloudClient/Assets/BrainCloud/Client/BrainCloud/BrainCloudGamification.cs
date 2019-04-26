@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using BrainCloud.Internal;
 
 #if !(DOT_NET)
