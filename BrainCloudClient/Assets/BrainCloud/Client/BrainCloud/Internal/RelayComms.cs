@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using System.Net;
 using System.Threading.Tasks;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using BrainCloud;
 
 

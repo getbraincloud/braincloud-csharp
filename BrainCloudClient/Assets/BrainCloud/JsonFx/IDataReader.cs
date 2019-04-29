@@ -32,34 +32,37 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// A common interface for data deserializers
-	/// </summary>
-	public interface IDataReader
-	{
-		#region Properties
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// A common interface for data deserializers
+        /// </summary>
+        public interface IDataReader
+        {
+            #region Properties
 
-		/// <summary>
-		/// Gets the content type of the serialized data
-		/// </summary>
-		string ContentType
-		{
-			get;
-		}
+            /// <summary>
+            /// Gets the content type of the serialized data
+            /// </summary>
+            string ContentType
+            {
+                get;
+            }
 
-		#endregion Properties
+            #endregion Properties
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Serializes the data to the given output
-		/// </summary>
-		/// <param name="input"></param>
-		/// <param name="data"></param>
-		object Deserialize(TextReader input, Type data);
+            /// <summary>
+            /// Serializes the data to the given output
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="data"></param>
+            object Deserialize(TextReader input, Type data);
 
-		#endregion Methods
-	}
+            #endregion Methods
+        }
+    }
 }

@@ -6,7 +6,7 @@
 #if !XAMARIN
 using System;
 using System.Collections.Generic;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using System.Reflection;
 
 namespace BrainCloud.Entity

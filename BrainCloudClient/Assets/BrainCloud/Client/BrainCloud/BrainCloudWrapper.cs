@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Entity;
 using BrainCloud.Internal;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 #if !DOT_NET
 using UnityEngine;

@@ -33,105 +33,108 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
-namespace JsonFx.Xml
+namespace BrainCloud
 {
-	/// <summary>
-	/// An <see cref="IDataReader"/> adapter for <see cref="XmlReader"/>
-	/// </summary>
-	public class XmlDataReader : IDataReader
-	{
-		#region Constants
+    namespace JsonFx.Xml
+    {
+        /// <summary>
+        /// An <see cref="IDataReader"/> adapter for <see cref="XmlReader"/>
+        /// </summary>
+        public class XmlDataReader : IDataReader
+        {
+            #region Constants
 
-		public const string XmlMimeType = XmlDataWriter.XmlMimeType;
+            public const string XmlMimeType = XmlDataWriter.XmlMimeType;
 
-		#endregion Constants
+            #endregion Constants
 
-		#region Fields
+            #region Fields
 
-		private readonly XmlReaderSettings Settings;
+            private readonly XmlReaderSettings Settings;
 
-		// to prevent warning when compiling
-		#pragma warning disable 0414
-		private readonly XmlSerializerNamespaces Namespaces;
-		#pragma warning restore 0414
+            // to prevent warning when compiling
+#pragma warning disable 0414
+            private readonly XmlSerializerNamespaces Namespaces;
+#pragma warning restore 0414
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Init
+            #region Init
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		/// <param name="settings"></param>
-		/// <param name="namespaces"></param>
-		public XmlDataReader(XmlReaderSettings settings, XmlSerializerNamespaces namespaces)
-		{
-			if (settings == null)
-			{
-				throw new ArgumentNullException("settings");
-			}
-			this.Settings = settings;
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            /// <param name="settings"></param>
+            /// <param name="namespaces"></param>
+            public XmlDataReader(XmlReaderSettings settings, XmlSerializerNamespaces namespaces)
+            {
+                if (settings == null)
+                {
+                    throw new ArgumentNullException("settings");
+                }
+                this.Settings = settings;
 
-			if (namespaces == null)
-			{
-				namespaces = new XmlSerializerNamespaces();
-				namespaces.Add(String.Empty, String.Empty);// tricks the serializer into not emitting default xmlns attributes
-			}
-			this.Namespaces = namespaces;
-		}
+                if (namespaces == null)
+                {
+                    namespaces = new XmlSerializerNamespaces();
+                    namespaces.Add(String.Empty, String.Empty);// tricks the serializer into not emitting default xmlns attributes
+                }
+                this.Namespaces = namespaces;
+            }
 
-		#endregion Init
+            #endregion Init
 
-		#region IDataSerializer Members
+            #region IDataSerializer Members
 
-		/// <summary>
-		/// Gets the content type
-		/// </summary>
-		public string ContentType
-		{
-			get { return XmlDataWriter.XmlMimeType; }
-		}
+            /// <summary>
+            /// Gets the content type
+            /// </summary>
+            public string ContentType
+            {
+                get { return XmlDataWriter.XmlMimeType; }
+            }
 
-		/// <summary>
-		/// Deserializes a data object from the given input
-		/// </summary>
-		/// <param name="input"></param>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public object Deserialize(TextReader input, Type type)
-		{
-			XmlReader reader = XmlReader.Create(input, this.Settings);
+            /// <summary>
+            /// Deserializes a data object from the given input
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="type"></param>
+            /// <returns></returns>
+            public object Deserialize(TextReader input, Type type)
+            {
+                XmlReader reader = XmlReader.Create(input, this.Settings);
 
-			// skip DocType / processing instructions
-			reader.MoveToContent();
+                // skip DocType / processing instructions
+                reader.MoveToContent();
 
-			// serialize feed
-			XmlSerializer serializer = new XmlSerializer(type);
-			return serializer.Deserialize(reader);
-		}
+                // serialize feed
+                XmlSerializer serializer = new XmlSerializer(type);
+                return serializer.Deserialize(reader);
+            }
 
-		#endregion IDataSerializer Members
+            #endregion IDataSerializer Members
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Builds a common settings objects
-		/// </summary>
-		/// <returns></returns>
-		public static XmlReaderSettings CreateSettings()
-		{
-			// setup document formatting
-			XmlReaderSettings settings = new XmlReaderSettings();
-			settings.CloseInput = false;
-			settings.ConformanceLevel = ConformanceLevel.Auto;
-			settings.IgnoreComments = true;
-			settings.IgnoreWhitespace = true;
-			settings.IgnoreProcessingInstructions = true;
-			return settings;
-		}
+            /// <summary>
+            /// Builds a common settings objects
+            /// </summary>
+            /// <returns></returns>
+            public static XmlReaderSettings CreateSettings()
+            {
+                // setup document formatting
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.CloseInput = false;
+                settings.ConformanceLevel = ConformanceLevel.Auto;
+                settings.IgnoreComments = true;
+                settings.IgnoreWhitespace = true;
+                settings.IgnoreProcessingInstructions = true;
+                return settings;
+            }
 
-		#endregion Methods
-	}
+            #endregion Methods
+        }
+    }
 }

@@ -28,7 +28,7 @@ using UnityEngine.Networking;
 using UnityEngine;
 #endif
 
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloud.Internal
 {
