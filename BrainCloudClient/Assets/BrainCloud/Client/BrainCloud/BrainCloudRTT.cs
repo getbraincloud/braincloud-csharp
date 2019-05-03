@@ -44,6 +44,13 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Returns true if RTT is enabled
+        /// </summary>
+        public bool IsRTTEnabled()
+        {
+            return m_commsLayer.IsRTTEnabled();
+        }
+        /// <summary>
         /// 
         /// </summary>
         public void RegisterRTTEventCallback(RTTCallback in_callback)

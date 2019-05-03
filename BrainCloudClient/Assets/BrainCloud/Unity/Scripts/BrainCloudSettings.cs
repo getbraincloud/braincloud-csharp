@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEditor;
 
 #endif
-
 namespace BrainCloudUnity
 {
     namespace BrainCloudSettingsDLL

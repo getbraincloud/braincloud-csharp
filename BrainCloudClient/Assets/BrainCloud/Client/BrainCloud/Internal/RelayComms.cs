@@ -3,12 +3,13 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using BrainCloud.JsonFx.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Net.Sockets;
-using BrainCloud.JsonFx.Json;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace BrainCloud.Internal
@@ -16,16 +17,20 @@ namespace BrainCloud.Internal
     internal sealed class RelayComms
     {
         #region public consts
-        public const int MAX_PACKETSIZE = 1024; // TODO:: based off of some config 
+        public const int MAX_PACKETSIZE = 1024;
 
         public const byte MAX_PLAYERS = 128;
         public const byte INVALID_NET_ID = MAX_PLAYERS;
-        public const byte RECV_CTRL_RSMG = INVALID_NET_ID + 1;                 // CONN_HEADER = "CONN" / RSMG
-        public const byte RECV_CTRL_DNCT = INVALID_NET_ID + 2;                 // DNCT_HEADER = "DNCT"
-        public const byte RECV_CTRL_RELAY = INVALID_NET_ID + 3;                // RLAY_HEADER = "RLAY"
-        public const byte RECV_CTRL_PING = INVALID_NET_ID + 5;                 // PING_HEADER = "PING"
-        public const byte RECV_CTRL_PONG = RECV_CTRL_PING;                     // PONG_HEADER = "PONG"
-        public const byte RECV_CTRL_ACKN = INVALID_NET_ID + 6;                 // ACKN_HEADER = "ACKN"
+
+        public const byte CL2RS_CONNECTION = 129;
+        public const byte CL2RS_DISCONNECT = 130;
+        public const byte CL2RS_RELAY = 131;
+        public const byte CL2RS_PING = 133;
+        public const byte RS2CL_PONG = CL2RS_PING;
+        public const byte CL2RS_RSMG_ACKNOWLEDGE = 134;
+        public const byte CL2RS_ACKNOWLEDGE = 135;
+
+        public const short TO_ALL_PLAYERS = CL2RS_RELAY;
         #endregion
 
         /// <summary>
@@ -98,7 +103,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Disconnect()
         {
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "disconnect", "Disconnect Called"));
+            addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "disconnect", "Disconnect Called"));
         }
 
         /// <summary>
@@ -121,19 +126,21 @@ namespace BrainCloud.Internal
         /// <summary>
         /// send a string representation of data
         /// </summary>
-        public void Send(string in_message)
+        public void Send(string in_message, short in_target, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            send(in_message, RECV_CTRL_RELAY);
+            byte target = Convert.ToByte(in_target);
+            sendStringHelper(in_message, target, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>
         /// send byte array representation of data
         /// </summary>
-        public void Send(byte[] in_data, byte in_header = RECV_CTRL_RELAY)
+        public void Send(byte[] in_data, short in_target, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            // appened RLAY to the beginning
-            byte[] destination = appendReliableBytes(in_data, in_header);
-            send(destination);
+            // appened the target (netId, or all) to the beginning
+            byte target = Convert.ToByte(in_target);
+            byte[] destination = appendHeaderData(in_data, target, in_reliable, in_ordered, in_channel);
+            send(destination, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>
@@ -150,6 +157,8 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Update()
         {
+            processOrderedReceivedMap();
+
             RSCommandResponse toProcessResponse;
             lock (m_queuedRSCommands)
             {
@@ -162,7 +171,7 @@ namespace BrainCloud.Internal
                         m_lastNowMS = DateTime.Now;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
-                    else if (m_bIsConnected && (toProcessResponse.Operation == "error" || toProcessResponse.Operation == "disconnect"))
+                    else if ((toProcessResponse.Operation == "error" || toProcessResponse.Operation == "disconnect"))
                     {
                         if (toProcessResponse.Operation == "disconnect")
                             disconnect();
@@ -174,8 +183,7 @@ namespace BrainCloud.Internal
 
                     if (!m_bIsConnected && toProcessResponse.Operation == "connect")
                     {
-                        m_bIsConnected = true;
-                        send(buildConnectionRequest());
+                        send(buildConnectionRequest(), true, true, 0);
                     }
 
                     if (m_registeredDataCallback != null && toProcessResponse.RawData != null)
@@ -197,6 +205,8 @@ namespace BrainCloud.Internal
                     m_timeSinceLastPingRequest = 0;
                     ping();
                 }
+
+                processReliableQueue();
             }
         }
 
@@ -212,7 +222,7 @@ namespace BrainCloud.Internal
             fromShortBE(lastPingShort, out data1, out data2);
 
             byte[] dataArr = { data1, data2 };
-            Send(dataArr, RECV_CTRL_PING);
+            Send(dataArr, CL2RS_PING);
         }
 
         private byte[] buildConnectionRequest()
@@ -221,7 +231,7 @@ namespace BrainCloud.Internal
 #if !SMRJ_HACK
             json["profileId"] = m_clientRef.ProfileId;
 #else
-            json["profileId"] = "b09994cb-d91d-4060-876c-5430756ead7d";//  "841cf9fa-1a93-4a7a-a36b-e5833f7e239b"; //  
+            json["profileId"] = "841cf9fa-1a93-4a7a-a36b-e5833f7e239b"; //  "b09994cb-d91d-4060-876c-5430756ead7d";//  
 #endif
             json["lobbyId"] = m_connectOptions["lobbyId"] as string;
             json["passcode"] = m_connectOptions["passcode"] as string;
@@ -252,30 +262,43 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
-            if (m_bIsConnected) send(buildDisconnectRequest());
+            if (m_bIsConnected) send(buildDisconnectRequest(), true, false, 0);
+
+            m_bIsConnected = false;
+            m_connectedSuccessCallback = null;
+            m_connectionFailureCallback = null;
+            m_connectedObj = null;
+
+            m_connectionType = RelayConnectionType.INVALID;
+
+            NetId = -1;
 
             if (m_webSocket != null) m_webSocket.Close();
             m_webSocket = null;
 
+            if (m_tcpStream != null)
+            {
+                m_tcpStream.Flush();
+                m_tcpStream.Close();
+            }
+            m_tcpStream = null;
+
+            if (m_tcpClient != null)
+            {
+                m_tcpClient.Client.Close(0);
+                m_tcpClient.Close();
+                fToSend.Clear();
+            }
+            m_tcpClient = null;
+
             if (m_udpClient != null) m_udpClient.Close();
             m_udpClient = null;
 
-            if (m_tcpClient != null) m_tcpClient.Close();
-            m_tcpClient = null;
-
-            m_bIsConnected = false;
-            NetId = -1;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private bool send(string in_message, byte in_header)
-        {
-            // appened in_header to the beginning
-            byte[] data = Encoding.ASCII.GetBytes(in_message);
-            byte[] destination = appendReliableBytes(data, in_header);
-            return send(destination);
+            // cleanup UDP stuff
+            m_sendPacketId.Clear();
+            m_currentReceivedPacketId.Clear();
+            m_reliableSentMap.Clear();
+            m_orderedReceivedMap.Clear();
         }
 
         /// <summary>
@@ -292,20 +315,89 @@ namespace BrainCloud.Internal
             return concatenateByteArrays(dataArr, in_data);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private byte[] appendReliableBytes(byte[] in_data, byte in_header = RECV_CTRL_RELAY)
+        private void constructReliableHeader(out byte out_data1, out byte out_data2, bool in_reliable, bool in_ordered, int in_channel)
         {
-            byte[] destination;
-            if (in_header == RECV_CTRL_RELAY)
+            ushort reliableHeader = 0;
+            // r = reliable bit
+            // o = ordered bit
+            // ch = channel bits (up to four channels)
+            // pack_etid_rest = packet id, 12 bits (4096)
+            //                                   roch_pack_etid_rest
+            if (in_reliable) reliableHeader |= 0b1000_0000_0000_0000;
+            if (in_ordered) reliableHeader |= 0b0100_0000_0000_0000;
+            if (in_channel > 0)
             {
-                byte[] header = { in_header, 0, 0 };
+                switch (in_channel)
+                {
+                    case 1:
+                        {
+                            reliableHeader |= 0b0001_0000_0000_0000;
+                        }
+                        break;
+                    case 2:
+                        {
+                            reliableHeader |= 0b0010_0000_0000_0000;
+                        }
+                        break;
+                    case 3:
+                        {
+                            reliableHeader |= 0b0011_0000_0000_0000;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // append to reliable header
+            reliableHeader |= (ushort)(m_sendPacketId[in_channel] & 0xFFF);
+
+            // increment packet id
+            if (m_sendPacketId[in_channel] + 1 >= MAX_PACKET_ID)
+                m_sendPacketId[in_channel] = 0;
+            else
+                ++m_sendPacketId[in_channel];
+
+            // switch to Big Endian
+            fromShortBE(reliableHeader, out out_data1, out out_data2);
+        }
+
+        /// <summary>
+        /// Parse Header bits associated by two bytes, 
+        /// 0|reliable, 1|ordered, 2-3|channel, 4-16|packetId
+        /// </summary>
+        private void parseHeaderData(byte[] in_data, out bool out_reliable, out bool out_ordered, out int out_channel, out int out_packetId)
+        {
+            ushort reliableHeader = toShortBE(in_data);
+
+            // read in big endian
+            out_reliable = (reliableHeader & 0b1000_0000_0000_0000) == 0b1000_0000_0000_0000;
+            out_ordered = (reliableHeader & 0b0100_0000_0000_0000) == 0b0100_0000_0000_0000;
+            out_channel = (reliableHeader >> 12) & 0x3;
+            out_packetId = reliableHeader & 0xFFF;
+        }
+
+        /// <summary>
+        /// Reliable bits associated by two bytes, 
+        /// 0|reliable, 1|ordered, 2-3|channel, 4-16|packetId
+        /// </summary>
+        private byte[] appendHeaderData(byte[] in_data, byte in_header, bool in_reliable, bool in_ordered, int in_channel)
+        {
+            byte[] destination = null;
+
+            if (in_header == CL2RS_RELAY)
+            {
+                byte data1 = 0;
+                byte data2 = 0;
+                if (m_connectionType == RelayConnectionType.UDP)
+                {
+                    constructReliableHeader(out data1, out data2, in_reliable, in_ordered, in_channel);
+                }
+                byte[] header = { in_header, data1, data2 };
                 destination = concatenateByteArrays(header, in_data);
             }
             else
             {
-
                 byte[] header = { in_header };
                 destination = concatenateByteArrays(header, in_data);
             }
@@ -313,9 +405,29 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
+        /// resend 
+        /// </summary>
+        private void resendPacket(UDPPacket in_packet)
+        {
+            // force resend! reliable, ordered and channel do not matter in this case
+            send(in_packet.RawData, true, true, 0, true);
+            in_packet.UpdateTimeIntervalSent();
+        }
+        /// <summary>
+        /// helper for plain send string, need to convert to byte[] from ascii
+        /// </summary>
+        private bool sendStringHelper(string in_message, byte in_header, bool in_reliable, bool in_ordered, int in_channel)
+        {
+            // appened in_header to the beginning
+            byte[] data = Encoding.ASCII.GetBytes(in_message);
+            byte[] destination = appendHeaderData(data, in_header, in_reliable, in_ordered, in_channel);
+            return send(destination, in_reliable, in_ordered, in_channel);
+        }
+
+        /// <summary>
         /// raw send of byte[]
         /// </summary>
-        private bool send(byte[] in_data)
+        private bool send(byte[] in_data, bool in_reliable, bool in_ordered, int in_channel, bool in_bResend = false)
         {
             bool bMessageSent = false;
             // early return, based on type
@@ -345,8 +457,8 @@ namespace BrainCloud.Internal
             try
             {
                 //string recvOpp = Encoding.ASCII.GetString(in_data);
-                //m_clientRef.Log(in_data.Length + "bytes RS " +  (m_connectionType == eRSConnectionType.WEBSOCKET ? "WS" : m_connectionType == eRSConnectionType.TCP ? "TCP" : "UDP") + " SEND msg : " + recvOpp);
-                in_data = appendSizeBytes(in_data);
+                //m_clientRef.Log(in_data.Length + "bytes RS " +  (m_connectionType == RelayConnectionType.WEBSOCKET ? "WS" : m_connectionType == RelayConnectionType.TCP ? "TCP" : "UDP") + " SEND msg : " + recvOpp);
+                if (!in_bResend) in_data = appendSizeBytes(in_data);
                 switch (m_connectionType)
                 {
                     case RelayConnectionType.WEBSOCKET:
@@ -363,6 +475,21 @@ namespace BrainCloud.Internal
                         break;
                     case RelayConnectionType.UDP:
                         {
+                            if (!in_bResend)
+                            {
+                                byte controlHeader = in_data[SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY];
+                                if (in_reliable &&
+                                    (controlHeader == CL2RS_RELAY || controlHeader < MAX_PLAYERS))
+                                {
+                                    // add to the reliable queue
+                                    int packetId = m_sendPacketId[in_channel];
+                                    lock (m_reliableSentMap)
+                                    {
+                                        m_reliableSentMap[in_channel][packetId] = new UDPPacket(in_data, in_channel, packetId, NetId);
+                                    }
+                                }
+                            }
+
                             m_udpClient.SendAsync(in_data, in_data.Length);
                             bMessageSent = true;
                         }
@@ -373,12 +500,11 @@ namespace BrainCloud.Internal
             catch (Exception socketException)
             {
                 m_clientRef.Log("send exception: " + socketException);
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "error", buildRSRequestError(socketException.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(socketException.ToString())));
             }
 
             return bMessageSent;
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -411,30 +537,38 @@ namespace BrainCloud.Internal
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
             m_clientRef.Log("Connection closed: " + reason);
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "disconnect", reason));
+            addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
             m_clientRef.Log("Connection established.");
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "connect", ""));
+            // initial connect call, sets connection requests if not connected
+            addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", ""));
         }
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
             Array.Copy(data, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, data, 0, data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY);
-            onRecv(data, (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY) );
+            onRecv(data, (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY));
         }
 
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
             m_clientRef.Log("Error: " + message);
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "error", buildRSRequestError(message)));
+            addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(message)));
         }
 
         private bool isOppRSMG(byte controlByte)
         {
-            return controlByte < MAX_PLAYERS || controlByte == RECV_CTRL_RSMG || controlByte == RECV_CTRL_RELAY;
+            return controlByte < MAX_PLAYERS ||
+                controlByte == CL2RS_CONNECTION ||
+                controlByte == CL2RS_RELAY;
+        }
+
+        private bool isReceivedServerAck(byte controlByte)
+        {
+            return (m_connectionType == RelayConnectionType.UDP && controlByte == CL2RS_ACKNOWLEDGE);
         }
         /// <summary>
         /// 
@@ -447,75 +581,247 @@ namespace BrainCloud.Internal
                 byte controlByte = in_data[0];// was an array now just one byte
 
                 bool bOppRSMG = isOppRSMG(controlByte);
+                bool bUDPAcknowledge = isReceivedServerAck(controlByte);
                 int headerLength = CONTROL_BYTE_HEADER_LENGTH;
                 if (bOppRSMG)
                     headerLength += SIZE_OF_RELIABLE_FLAGS;
 
-                if (in_lengthOfData >= headerLength && 
-                    bOppRSMG) // Room server msg or RLAY
+                // check to see if we need to remove this from the reliable queue, 
+                if (bUDPAcknowledge)
+                {
+                    removeReliableQueueData(in_data);
+                }
+
+                if (in_lengthOfData >= headerLength && bOppRSMG)
                 {
                     // bytes after the headers removed
                     byte[] cutOffData = new byte[in_lengthOfData - headerLength];
                     Buffer.BlockCopy(in_data, headerLength, cutOffData, 0, cutOffData.Length);
 
-                    // do we need to parse the jsonMessage
-                    string jsonMessage = NetId >= 0 ? "" : Encoding.ASCII.GetString(cutOffData);
+                    bool processResponse = confirmOrderedReceive(controlByte, in_data);
 
-                    // read in the netId if not set yet
-                    if (jsonMessage != "")
+                    if (processResponse)
                     {
-                        Dictionary<string, object> parsedDict = (Dictionary<string, object>)JsonReader.Deserialize(jsonMessage);
-                        if (parsedDict.ContainsKey("netId") && parsedDict.ContainsKey("profileId"))
+                        // if netId is not setup yet
+                        string jsonMessage = NetId >= 0 ? "" : Encoding.ASCII.GetString(cutOffData);
+
+                        // read in the netId if not set yet
+                        if (jsonMessage != "")
                         {
-                            if (parsedDict["profileId"] as string == m_clientRef.ProfileId)
+                            Dictionary<string, object> parsedDict = (Dictionary<string, object>)JsonReader.Deserialize(jsonMessage);
+                            if (parsedDict.ContainsKey("netId") && parsedDict.ContainsKey("profileId"))
                             {
-                                NetId = Convert.ToInt16(parsedDict["netId"]);
+                                if (parsedDict["profileId"] as string == m_clientRef.ProfileId)
+                                {
+                                    // we are connected
+                                    m_bIsConnected = true;
+                                    NetId = Convert.ToInt16(parsedDict["netId"]);
+                                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", ""));
+                                }
                             }
                         }
+                        //m_clientRef.Log("RS RECV: " + cutOffData.Length + "bytes - " + jsonMessage);
+                        addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "onrecv", jsonMessage, cutOffData));
                     }
-
-                    //m_clientRef.Log("RS RECV: " + cutOffData.Length + "bytes - " + jsonMessage);
-                    addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "onrecv", jsonMessage, cutOffData));
 
                     // and acknowledge we got it
                     if (m_connectionType == RelayConnectionType.UDP)
                     {
-                        cutOffData = new byte[SIZE_OF_RELIABLE_FLAGS];
-                        Buffer.BlockCopy(in_data, CONTROL_BYTE_HEADER_LENGTH, cutOffData, 0, SIZE_OF_RELIABLE_FLAGS);
-                        // send back ACKN
-                        Send(cutOffData, RECV_CTRL_ACKN);
+                        onUDPAcknowledge(controlByte, in_data);
                     }
                 }
-                else if (controlByte == RECV_CTRL_PONG)
+                else if (controlByte == RS2CL_PONG)
                 {
                     Ping = DateTime.Now.Ticks - m_sentPing;
-                    //m_clientRef.Log("LastPing: " + (LastPing * 0.0001f).ToString() + "ms");
+                    //m_clientRef.Log("LastPing: " + (Ping * 0.0001f).ToString() + "ms");
                 }
             }
         }
 
+        private void removeReliableQueueData(byte[] in_data)
+        {
+            bool reliable, ordered;
+            int channel, packetId;
+            parseHeaderData(in_data, out reliable, out ordered, out channel, out packetId);
+
+            lock (m_reliableSentMap)
+            {
+                if (m_reliableSentMap[channel].ContainsKey(packetId))
+                {
+                    m_reliableSentMap[channel].Remove(packetId);
+                }
+            }
+        }
+
+        private void processReliableQueue()
+        {
+            lock (m_reliableSentMap)
+            {
+                DateTime nowMS = DateTime.Now;
+                // for each channel
+                foreach (var reliables in m_reliableSentMap)
+                {
+                    // we always resend reliably
+                    var ordered = reliables.OrderByDescending(x => x.Key);
+                    // and every packet that is in the queue
+                    foreach (var udpPacket in ordered)
+                    {
+                        // if the delta of the next time interval < the delta of now and last time we tried sending
+                        if (udpPacket.Value.TimeInterval < (nowMS - udpPacket.Value.LastTimeSent).Milliseconds)
+                        {
+                            // RESEND!
+                            resendPacket(udpPacket.Value);
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool confirmOrderedReceive(byte in_incomingNetId, byte[] in_data)
+        {
+            bool bProcessReceived = true;
+
+            if (m_connectionType == RelayConnectionType.UDP)
+            {
+                // only do this for messages that are reliable
+                // read the incoming datas flags based off its header
+                bool reliable, ordered;
+                int channel, packetId;
+                parseHeaderData(in_data, out reliable, out ordered, out channel, out packetId);
+                if (ordered && in_incomingNetId < MAX_PLAYERS)
+                {
+                    // update to the newer packet id on the channel
+                    // if we haven't seen this packet before
+                    // non reliable, we just care if its less then the incoming one
+                    // reliable, we need it to be the correct one
+                    bool receivedNewerPacketId = packetId == 0 ||
+                                                 !m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ||
+                                                 ((!reliable && m_currentReceivedPacketId[channel][in_incomingNetId] < packetId) ||
+                                                  (reliable && (m_currentReceivedPacketId[channel][in_incomingNetId] + 1) == packetId));
+
+
+                    if (receivedNewerPacketId)
+                    {
+                        m_currentReceivedPacketId[channel][in_incomingNetId] = packetId;
+                    }
+                    else if (reliable && m_currentReceivedPacketId[channel][in_incomingNetId] < packetId)
+                    {
+                        lock (m_orderedReceivedMap)
+                        {
+                            m_orderedReceivedMap[channel].Add(new KeyValuePair<int, int>(in_incomingNetId, packetId), new UDPPacket(in_data, channel, packetId, in_incomingNetId));
+                            m_clientRef.Log(in_incomingNetId + " confirmOrderedReceive: adding p:" + packetId + " cp:" + m_currentReceivedPacketId[channel][in_incomingNetId]);
+                        }
+                    }
+
+                    // by default we are going to process
+                    // these are the conditions that we will not process the received response again
+                    if (!receivedNewerPacketId ||                                // dont process older ones
+                        m_orderedReceivedMap[channel].ContainsKey(
+                            new KeyValuePair<int, int>(in_incomingNetId, packetId))   // already has seen this control byte + packet id combo
+                       )
+                    {
+                        bProcessReceived = false;
+                    }
+                }
+            }
+
+            return bProcessReceived;
+        }
+
+        private void processOrderedReceivedMap()
+        {
+            if (m_connectionType == RelayConnectionType.UDP)
+            {
+                lock (m_orderedReceivedMap)
+                {
+                    DateTime nowMS = DateTime.Now;
+                    // for each channel
+                    for (int channel = 0; channel < MAX_CHANNELS; ++channel)
+                    {
+                        // we always process in order
+                        var ordered = m_orderedReceivedMap[channel].OrderByDescending(x => x.Key.Value);
+                        // and every packet that is in the queue
+                        foreach (var udpPacket in ordered)
+                        {
+                            m_clientRef.Log("processOrderedReceivedMap k:" + udpPacket.Key.Key + " p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
+                            if (m_currentReceivedPacketId[channel][udpPacket.Key.Key] + 1 == udpPacket.Value.PacketId)
+                            {
+                                m_clientRef.Log(udpPacket.Key.Key + " processOrderedReceivedMap: removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
+                                onRecv(udpPacket.Value.RawData, udpPacket.Value.RawData.Length);
+                                // remove the item
+                                m_orderedReceivedMap[channel].Remove(udpPacket.Key);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void onUDPAcknowledge(byte controlByte, byte[] in_data)
+        {
+            // we always want to ack anything we get back 
+            byte[] cutOffData = null;
+            byte headerControlByte = 0;
+            if (controlByte == CL2RS_CONNECTION)
+            {
+                headerControlByte = CL2RS_RSMG_ACKNOWLEDGE;
+                cutOffData = new byte[SIZE_OF_RELIABLE_FLAGS];
+                Buffer.BlockCopy(in_data, CONTROL_BYTE_HEADER_LENGTH, cutOffData, 0, SIZE_OF_RELIABLE_FLAGS);
+            }
+            else if (controlByte < MAX_PLAYERS)
+            {
+                // only do this for messages that are reliable
+                // read the incoming datas flags based off its header
+                bool reliable, ordered;
+                int channel, packetId;
+                parseHeaderData(in_data, out reliable, out ordered, out channel, out packetId);
+                if (reliable)
+                {
+                    headerControlByte = CL2RS_ACKNOWLEDGE;
+                    // append the netid this was captured from 
+                    cutOffData = new byte[SIZE_OF_RELIABLE_FLAGS + CONTROL_BYTE_HEADER_LENGTH];
+                    byte[] controlByteArr = { controlByte };
+
+                    Buffer.BlockCopy(in_data, CONTROL_BYTE_HEADER_LENGTH, cutOffData, 0, SIZE_OF_RELIABLE_FLAGS);
+                    Buffer.BlockCopy(controlByteArr, 0, cutOffData, SIZE_OF_RELIABLE_FLAGS, CONTROL_BYTE_HEADER_LENGTH);
+                }
+            }
+
+            // send back ACKN
+            if (headerControlByte != 0)
+            {
+                Send(cutOffData, headerControlByte);
+            }
+        }
         private void onUDPRecv(IAsyncResult result)
         {
             // this is what had been passed into BeginReceive as the second parameter:
-            UdpClient udpClient = result.AsyncState as UdpClient;
-
-            string host = (string)m_connectOptions["host"];
-            int port = (int)m_connectOptions["port"];
-            IPEndPoint source = new IPEndPoint(IPAddress.Parse(host), port);
-
-            if (udpClient != null)
+            try
             {
-                // get the actual message and fill out the source:
-                byte[] data = udpClient.EndReceive(result, ref source);
-                Array.Copy(data, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, data, 0, data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY);
-                onRecv(data, (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY));
+                UdpClient udpClient = result.AsyncState as UdpClient;
+                string host = (string)m_connectOptions["host"];
+                int port = (int)m_connectOptions["port"];
+                IPEndPoint source = new IPEndPoint(IPAddress.Parse(host), port);
 
-                //string in_message = Encoding.ASCII.GetString(data);
-                //m_clientRef.Log("RS UDP AFTER RECV: " + (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY) + "bytes - " + in_message);
+                if (udpClient != null)
+                {
+                    // get the actual message and fill out the source:
+                    byte[] data = udpClient.EndReceive(result, ref source);
+                    Array.Copy(data, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, data, 0, data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY);
+                    onRecv(data, (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY));
 
-                // schedule the next receive operation once reading is done:
-                udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
+                    //string in_message = Encoding.ASCII.GetString(data);
+                    //m_clientRef.Log("RS UDP AFTER RECV: " + (data.Length - SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY) + "bytes - " + in_message);
+
+                    // schedule the next receive operation once reading is done:
+                    udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
+                }
             }
+            catch (Exception e)
+            {
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
+            }
+
         }
 
         /// <summary>
@@ -540,13 +846,10 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RTTRegistration.Value, "error", buildRSRequestError(e.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
             }
         }
 
-        // ASync TCP Writes
-        private object fLock = new object();
-        private Queue<byte[]> fToSend = new Queue<byte[]>();
         private void tcpFinishWrite(IAsyncResult result)
         {
             try
@@ -568,22 +871,23 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RTTRegistration.Value, "error", buildRSRequestError(e.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
             }
         }
-
-        // ASync TCP Reads
-        const int SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY = 2;
-        private int m_tcpBytesRead = 0; // the ones already processed
-        private int m_tcpBytesToRead = 0; // the number to finish reading
-        private byte[] m_tcpHeaderReadBuffer = new byte[SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY];
         private void onTCPReadHeader(IAsyncResult ar)
         {
             try
             {
                 // Read precisely SIZE_OF_HEADER for the length of the following message
                 int read = m_tcpStream.EndRead(ar);
-                if (read == SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY)
+                if (read == 0)
+                {
+                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError("Server Closed Connection")));
+                    return;
+                }
+
+                m_clientRef.Log("onTCPReadHeader --- start  " + read + " c" + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                if (m_tcpStream != null && read == SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY)
                 {
                     m_tcpBytesRead = 0;
                     if (BitConverter.IsLittleEndian)
@@ -598,17 +902,21 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RTTRegistration.Value, "error", buildRSRequestError(e.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
             }
         }
         private void onTCPFinishRead(IAsyncResult result)
         {
             try
             {
+                if (m_tcpStream == null) return;
                 // Finish reading from our stream. 0 bytes read means stream was closed
                 int read = m_tcpStream.EndRead(result);
-                if (0 == read)
-                    throw new Exception();
+                if (read == 0)
+                {
+                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError("Server Closed Connection")));
+                    return;
+                }
 
                 // Increment the number of bytes we've read. If there's still more to get, get them
                 m_tcpBytesRead += read;
@@ -622,7 +930,8 @@ namespace BrainCloud.Internal
                 // Should be exactly the right number read now.
                 if (m_tcpBytesRead != m_tcpBytesToRead)
                 {
-                    throw new Exception();
+                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError("Incorrect Bytes Read " + m_tcpBytesRead + " " + m_tcpBytesToRead)));
+                    return;
                 }
 
                 //string in_message = Encoding.ASCII.GetString(m_tcpReadBuffer);
@@ -630,13 +939,15 @@ namespace BrainCloud.Internal
 
                 // Handle the message
                 onRecv(m_tcpReadBuffer, m_tcpBytesToRead);
+
                 // read the next header
                 m_tcpBytesToRead = 0;
+
                 m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
             }
             catch (Exception e)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RTTRegistration.Value, "error", buildRSRequestError(e.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
             }
         }
 
@@ -659,11 +970,12 @@ namespace BrainCloud.Internal
                     m_tcpClient = new TcpClient();
                     m_tcpClient.NoDelay = true;
                     m_tcpClient.Client.NoDelay = true;
+                    m_clientRef.Log("Starting TCP connect ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
                     await m_tcpClient.ConnectAsync(host, port);
                 }
                 catch (Exception e)
                 {
-                    addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "error", buildRSRequestError(e.ToString())));
+                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
                     return false;
                 }
                 return true;
@@ -672,8 +984,32 @@ namespace BrainCloud.Internal
             if (success)
             {
                 m_tcpStream = m_tcpClient.GetStream();
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "connect", ""));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", ""));
+                // read the next header
+                m_tcpBytesToRead = 0;
                 m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
+
+                m_clientRef.Log("Connected! ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+            }
+        }
+
+        private void initUDPConnection()
+        {
+            m_udpClient = new UdpClient();
+
+            // init packet id list
+            m_sendPacketId.Clear();
+            m_currentReceivedPacketId.Clear();
+            lock (m_reliableSentMap)
+            {
+                m_reliableSentMap.Clear();
+                for (int i = 0; i < MAX_CHANNELS; ++i)
+                {
+                    m_sendPacketId.Add(0);
+                    m_currentReceivedPacketId.Add(new Dictionary<int, int>());
+                    m_reliableSentMap.Add(new Dictionary<int, UDPPacket>());
+                    m_orderedReceivedMap.Add(new Dictionary<KeyValuePair<int, int>, UDPPacket>());
+                }
             }
         }
 
@@ -685,21 +1021,19 @@ namespace BrainCloud.Internal
                 args.Completed += new EventHandler<SocketAsyncEventArgs>(OnUDPConnected);
                 args.RemoteEndPoint = new DnsEndPoint(host, port);
 
-                if (!m_udpClient.Client.ConnectAsync(args))
-                {
-                    OnUDPConnected(null, args);
-                }
+                initUDPConnection();
+                m_udpClient.Client.ConnectAsync(args);
             }
             catch (Exception e)
             {
-                addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "error", buildRSRequestError(e.ToString())));
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError(e.ToString())));
             }
         }
 
         private void OnUDPConnected(object sender, SocketAsyncEventArgs args)
         {
-            addRSCommandResponse(new RSCommandResponse(ServiceName.RoomServer.Value, "connect", ""));
             m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
+            addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", ""));
         }
 
         private void addRSCommandResponse(RSCommandResponse in_command)
@@ -723,6 +1057,20 @@ namespace BrainCloud.Internal
             byte1 = (byte)(number >> 8);
             byte2 = (byte)(number >> 0);
         }
+        private void fromShortBE(ushort number, out byte byte1, out byte byte2)
+        {
+            byte1 = (byte)(number >> 8);
+            byte2 = (byte)(number >> 0);
+        }
+
+        private ushort toShortBE(byte[] byteArr)
+        {
+            bool isLittleEndian = BitConverter.IsLittleEndian;
+            ushort toReturn = BitConverter.ToUInt16(new byte[2] {
+                                                        isLittleEndian ? byteArr[CONTROL_BYTE_HEADER_LENGTH + 1] : byteArr[CONTROL_BYTE_HEADER_LENGTH + 0],
+                                                        isLittleEndian ? byteArr[CONTROL_BYTE_HEADER_LENGTH + 0] : byteArr[CONTROL_BYTE_HEADER_LENGTH + 1] }, 0);
+            return toReturn;
+        }
 
         private Dictionary<string, object> m_connectOptions = null;
         private RelayConnectionType m_connectionType = RelayConnectionType.INVALID;
@@ -731,14 +1079,42 @@ namespace BrainCloud.Internal
         private int m_timeSinceLastPingRequest = 0;
         private int m_pingInterval = 1000; // one second
 
+        private const int MAX_RELIABLE_RESEND_INTERVAL = 500;
+        private const short MAX_PACKET_ID = 4096;
+        private const short MAX_CHANNELS = 4;
+
         // start
         // different connection types
+        // WebSocket
         private BrainCloudWebSocket m_webSocket = null;
-        private UdpClient m_udpClient = null;
-
+        // TCP
         private TcpClient m_tcpClient = null;
         private NetworkStream m_tcpStream = null;
         private byte[] m_tcpReadBuffer = new byte[MAX_PACKETSIZE];
+
+        // ASync TCP Reads
+        const int SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY = 2;
+        private int m_tcpBytesRead = 0; // the ones already processed
+        private int m_tcpBytesToRead = 0; // the number to finish reading
+        private byte[] m_tcpHeaderReadBuffer = new byte[SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY];
+
+        // ASync TCP Writes
+        private object fLock = new object();
+        private Queue<byte[]> fToSend = new Queue<byte[]>();
+
+        // UDP
+        private UdpClient m_udpClient = null;
+        // packetIds per channel
+        private List<int> m_sendPacketId = new List<int>();
+
+        // current index of received, packetIds per channel, per net id,  
+        private List<Dictionary<int, int>> m_currentReceivedPacketId = new List<Dictionary<int, int>>();
+
+        // reliable send queue.. per channel, per packet id look up map, items are removed thus keeping a thing lookup
+        private List<Dictionary<int, UDPPacket>> m_reliableSentMap = new List<Dictionary<int, UDPPacket>>();
+
+        // ordered received queue... per channel, per net id, per packet id, 
+        private List<Dictionary<KeyValuePair<int, int>, UDPPacket>> m_orderedReceivedMap = new List<Dictionary<KeyValuePair<int, int>, UDPPacket>>();
         // end 
 
         private const int CONTROL_BYTE_HEADER_LENGTH = 1;
@@ -746,8 +1122,8 @@ namespace BrainCloud.Internal
 
         private BrainCloudClient m_clientRef;
         private long m_sentPing = DateTime.Now.Ticks;
-        private byte[] DISCONNECT_ARR = { RECV_CTRL_DNCT };
-        private byte[] CONNECT_ARR = { RECV_CTRL_RSMG };
+        private byte[] DISCONNECT_ARR = { CL2RS_DISCONNECT };
+        private byte[] CONNECT_ARR = { CL2RS_CONNECTION };
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;
@@ -770,13 +1146,38 @@ namespace BrainCloud.Internal
             public string JsonMessage { get; set; }
             public byte[] RawData { get; set; }
         }
-#endregion
+
+        private class UDPPacket
+        {
+            public UDPPacket(byte[] in_data, int in_channel, int in_packetId, int in_netId)
+            {
+                LastTimeSent = DateTime.Now;
+                TimeInterval = 50;// ms
+                RawData = in_data;
+                ChannelId = in_channel;
+                PacketId = in_packetId;
+                NetId = in_netId;
+            }
+
+            public void UpdateTimeIntervalSent()
+            {
+                LastTimeSent = DateTime.Now;
+                TimeInterval = Math.Min((int)(TimeInterval * 1.25f), MAX_RELIABLE_RESEND_INTERVAL);
+            }
+            public DateTime LastTimeSent { get; private set; }
+            public int TimeInterval { get; private set; }
+            public byte[] RawData { get; private set; }
+            public int ChannelId { get; private set; }
+            public int PacketId { get; private set; }
+            public int NetId { get; private set; }
+        }
+        #endregion
     }
 }
 
 namespace BrainCloud
 {
-#region public enums
+    #region public enums
     public enum RelayConnectionType
     {
         INVALID,
@@ -786,5 +1187,5 @@ namespace BrainCloud
 
         MAX
     }
-#endregion
+    #endregion
 }

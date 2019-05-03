@@ -403,6 +403,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation JoinLobby = new ServiceOperation("JOIN_LOBBY");
         public static readonly ServiceOperation LeaveLobby = new ServiceOperation("LEAVE_LOBBY");
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
+        public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
 
         private ServiceOperation(string value)
         {

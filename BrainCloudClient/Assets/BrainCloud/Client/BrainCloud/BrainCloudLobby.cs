@@ -196,7 +196,6 @@ namespace BrainCloud
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
-            data[OperationParam.LobbyIsReady.Value] = in_isReady;
             if (in_otherUserCxIds != null)
             {
                 data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
@@ -237,6 +236,21 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.RemoveMember, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Cancel this members Find, Join and Searching of Lobbies
+        /// </summary>
+        /// 
+        public void CancelFindRequest(string in_roomType, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyConnectionId.Value] = m_clientRef.RTTConnectionID;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CancelFindRequest, data, callback);
             m_clientRef.SendRequest(sc);
         }
 

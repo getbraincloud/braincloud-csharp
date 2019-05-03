@@ -803,14 +803,6 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Returns true if RTT is enabled
-        /// </summary>
-        public bool IsRTTEnabled()
-        {
-            return _rttComms.IsRTTEnabled();
-        }
-
-        /// <summary>
         /// Sets a callback handler for any out of band event messages that come from
         /// brainCloud.
         /// </summary>

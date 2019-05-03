@@ -66,21 +66,27 @@ namespace BrainCloud
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="in_message"></param>
-        /// <param name="in_options"></param>
-        public void Send(string in_message)
+        /// <param in_message="message to be sent"></param>
+        /// <param to_netId="the net id to send to, RelayComms.TO_ALL_PLAYERS to relay to all"></param>
+        /// <param in_reliable="send this reliably or not"></param>
+        /// <param in_ordered="received this ordered or not"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)"></param>
+        public void Send(string in_message, short to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            m_commsLayer.Send(in_message);
+            m_commsLayer.Send(in_message, to_netId, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="in_data"></param>
-        /// <param name="in_options"></param>
-        public void Send(byte[] in_data)
+        /// <param in_message="message to be sent"></param>
+        /// <param to_netId="the net id to send to, RelayComms.TO_ALL_PLAYERS to relay to all"></param>
+        /// <param in_reliable="send this reliably or not"></param>
+        /// <param in_ordered="received this ordered or not"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)"></param>
+        public void Send(byte[] in_data, short to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            m_commsLayer.Send(in_data);
+            m_commsLayer.Send(in_data, to_netId);
         }
 
         /// <summary>
