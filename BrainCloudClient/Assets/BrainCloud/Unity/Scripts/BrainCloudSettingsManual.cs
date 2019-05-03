@@ -115,11 +115,13 @@ namespace BrainCloudUnity
          */
         private static void handlingNameUpdate()
         {
+#if UNITY_EDITOR
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset");
             BaseBrainCloudSettings tempBaseBrainCloudSettings = BrainCloudSettings.Instance;
             BaseBrainCloudDebugInfo tempBaseBrainCloudDebugInfo = BrainCloudDebugInfo.Instance;
+#endif
         }
 
         [SerializeField] private string m_dispatchUrl = "";

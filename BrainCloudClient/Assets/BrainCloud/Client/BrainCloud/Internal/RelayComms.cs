@@ -323,25 +323,26 @@ namespace BrainCloud.Internal
             // ch = channel bits (up to four channels)
             // pack_etid_rest = packet id, 12 bits (4096)
             //                                   roch_pack_etid_rest
-            if (in_reliable) reliableHeader |= 0b1000_0000_0000_0000;
-            if (in_ordered) reliableHeader |= 0b0100_0000_0000_0000;
+            if (in_reliable) reliableHeader |= 1 << 15;// 0b1000_0000_0000_0000;
+            if (in_ordered) reliableHeader |= 1 << 14;// 0b0100_0000_0000_0000;
             if (in_channel > 0)
             {
                 switch (in_channel)
                 {
                     case 1:
                         {
-                            reliableHeader |= 0b0001_0000_0000_0000;
+                            reliableHeader |= 1 << 12; //0b0001_0000_0000_0000;
                         }
                         break;
                     case 2:
                         {
-                            reliableHeader |= 0b0010_0000_0000_0000;
+                            reliableHeader |= 1 << 13; //0b0010_0000_0000_0000;
                         }
                         break;
                     case 3:
                         {
-                            reliableHeader |= 0b0011_0000_0000_0000;
+                            reliableHeader |= 1 << 12;
+                            reliableHeader |= 1 << 13; //reliableHeader |= 0b0011_0000_0000_0000;
                         }
                         break;
                     default:
@@ -371,8 +372,8 @@ namespace BrainCloud.Internal
             ushort reliableHeader = toShortBE(in_data);
 
             // read in big endian
-            out_reliable = (reliableHeader & 0b1000_0000_0000_0000) == 0b1000_0000_0000_0000;
-            out_ordered = (reliableHeader & 0b0100_0000_0000_0000) == 0b0100_0000_0000_0000;
+            out_reliable = (reliableHeader & (1 << 15)/*0b1000_0000_0000_0000*/) == (1 << 15)/*0b1000_0000_0000_0000*/;
+            out_ordered = (reliableHeader & (1 << 14) /*0b0100_0000_0000_0000*/) == (1 << 14)/*0b0100_0000_0000_0000*/;
             out_channel = (reliableHeader >> 12) & 0x3;
             out_packetId = reliableHeader & 0xFFF;
         }
