@@ -4,10 +4,7 @@
 
 using System.IO;
 using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-
-#endif
 
 namespace BrainCloudUnity
 {
@@ -19,7 +16,6 @@ namespace BrainCloudUnity
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
 
-        [InitializeOnLoad]
         public class BrainCloudSettings : BaseBrainCloudSettings
         {
             public static bool IsManualSettingsEnabled()
@@ -28,6 +24,42 @@ namespace BrainCloudUnity
                        Instance.SettingsState == BrainCloudSettingsState.DISABLED;
             }
 
+            public void OnEnable()
+            {
+                BrainCloudDebugInfo.Instance.ClearSettingsData();
+
+            
+                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
+
+            }
+            
+            private void OnDisable()
+            {
+                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated -=  UpdateSettings;
+            }
+            
+            private void UpdateSettings()
+            {
+                if (!IsManualSettingsEnabled())
+                {
+                    BrainCloudSettingsManual.Instance.ServerURL = Instance.GetServerUrl;   
+                    BrainCloudSettingsManual.Instance.SecretKey = GetAppSecret();
+                    BrainCloudSettingsManual.Instance.AppId = GetAppId();
+                    BrainCloudSettingsManual.Instance.AppVersion = GetAppVersion();
+
+                    var appIdSecrets = GetAppIdSecrets();
+                    
+                    if(appIdSecrets != null)
+                        BrainCloudSettingsManual.Instance.m_appIdSecrets =
+                            AppIdSecretPair.FromDictionary(GetAppIdSecrets());
+   
+                    EditorUtility.SetDirty(Instance);
+                
+                    EditorUtility.SetDirty(Resources.Load("BrainCloudSettingsManual") as BrainCloudSettingsManual);
+                }
+            }
+
+            
             public static BrainCloudDebugInfo DebugInstance;
 
             public new static BaseBrainCloudSettings Instance
