@@ -16,7 +16,7 @@ public class BrainCloudWebSocket
     private static Dictionary<int, BrainCloudWebSocket> webSocketInstances =
         new Dictionary<int, BrainCloudWebSocket>();
 #else
-    private WebSocket WebSocket;
+    private BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket WebSocket;
 #endif
 
     public BrainCloudWebSocket(string url)
@@ -30,7 +30,7 @@ public class BrainCloudWebSocket
 		NativeWebSocket.SetOnClose(NativeSocket_OnClose);
 		webSocketInstances.Add(NativeWebSocket.Id, this);
 #else
-        WebSocket = new WebSocket(url);
+        WebSocket = new BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket(url);
         WebSocket.ConnectAsync();
         WebSocket.OnOpen += WebSocket_OnOpen;
         WebSocket.OnMessage += WebSocket_OnMessage;

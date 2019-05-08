@@ -85,6 +85,12 @@ namespace BrainCloud
     public delegate void RSDataCallback(byte[] jsonResponse);
 
     /// <summary>
+    /// Success callback for a Room Server response method.
+    /// </summary>
+    /// <param name="jsonResponse">The JSON response from the server</param>
+    public delegate void RSDataCallback(byte[] jsonResponse);
+
+    /// <summary>
     /// Method called when a file upload has completed.
     /// </summary>
     /// <param name="fileUploadId">The file upload id</param>
@@ -239,9 +245,6 @@ namespace BrainCloud
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms);
         }
-
-        //---------------------------------------------------------------
-
         #endregion
 
         #region Properties
@@ -785,18 +788,11 @@ namespace BrainCloud
                     }
                     break;
 
-                case eBrainCloudUpdateType.RS:
-                    {
-                        if (_rsComms != null) _rsComms.Update();
-                    }
-                    break;
-
                 default:
                 case eBrainCloudUpdateType.ALL:
                     {
                         if (_rttComms != null) _rttComms.Update();
                         if (_comms != null) _comms.Update();
-                        if (_rsComms != null) _rsComms.Update();
                     }
                     break;
             }

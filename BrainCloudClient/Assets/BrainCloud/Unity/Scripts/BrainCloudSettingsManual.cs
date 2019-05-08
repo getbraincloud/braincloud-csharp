@@ -1,5 +1,6 @@
 ﻿#if !DOT_NET
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -13,58 +14,9 @@ using BrainCloudUnity.BrainCloudSettingsDLL;
 
 namespace BrainCloudUnity
 {
-#if UNITY_EDITOR
-    [InitializeOnLoad]
-#endif
-
-    
     public class BrainCloudSettingsManual : ScriptableObject
     {
-#if UNITY_EDITOR
-        static BrainCloudSettingsManual()
-        {
-            
-        }
-        
 
-        
-        public void OnEnable()
-        {
-            BrainCloudDebugInfo.Instance.ClearSettingsData();
-
-            
-            BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
-
-        }
-
-        private void UpdateSettings()
-        {
-            if (!BrainCloudSettings.IsManualSettingsEnabled())
-            {
-                Instance.m_dispatchUrl = BrainCloudSettings.Instance.GetServerUrl + "/dispatcherv2";
-                Instance.m_serverURL = BrainCloudSettings.Instance.GetServerUrl;   
-                Instance.m_secretKey = BaseBrainCloudSettings.GetAppSecret();
-                Instance.m_appId = BaseBrainCloudSettings.GetAppId();
-                Instance.m_appVersion = BaseBrainCloudSettings.GetAppVersion();
-
-                var appIdSecrets = BaseBrainCloudSettings.GetAppIdSecrets();
-                    
-                if(appIdSecrets != null)
-                    Instance.m_appIdSecrets =
-                        AppIdSecretPair.FromDictionary(BaseBrainCloudSettings.GetAppIdSecrets());
-   
-                EditorUtility.SetDirty(Instance);
-                
-                EditorUtility.SetDirty(Resources.Load("BrainCloudSettingsManual") as BrainCloudSettingsManual);
-            }
-        }
-
-        private void OnDisable()
-        {
-            BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated -=  UpdateSettings;
-        }
-#endif
-        
         private static BrainCloudSettingsManual s_instance;
 
         public static BrainCloudSettingsManual Instance
@@ -115,13 +67,11 @@ namespace BrainCloudUnity
          */
         private static void handlingNameUpdate()
         {
-#if UNITY_EDITOR
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset");
             BaseBrainCloudSettings tempBaseBrainCloudSettings = BrainCloudSettings.Instance;
             BaseBrainCloudDebugInfo tempBaseBrainCloudDebugInfo = BrainCloudDebugInfo.Instance;
-#endif
         }
 
         [SerializeField] private string m_dispatchUrl = "";
@@ -239,7 +189,7 @@ namespace BrainCloudUnity
             }
         }
 
-        [SerializeField] private AppIdSecretPair[] m_appIdSecrets;
+        [SerializeField] public AppIdSecretPair[] m_appIdSecrets;
 
         public Dictionary<string, string> AppIdSecrets
         {
