@@ -86,7 +86,7 @@ namespace BrainCloud
         /// <param in_channel="0,1,2,3 (max of four channels)"></param>
         public void Send(byte[] in_data, short to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            m_commsLayer.Send(in_data, to_netId);
+            m_commsLayer.Send(in_data, to_netId, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>

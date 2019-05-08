@@ -157,8 +157,6 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Update()
         {
-            processOrderedReceivedMap();
-
             RSCommandResponse toProcessResponse;
             lock (m_queuedRSCommands)
             {
@@ -176,7 +174,6 @@ namespace BrainCloud.Internal
                         if (toProcessResponse.Operation == "disconnect")
                             disconnect();
 
-                        // TODO:
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                     }
@@ -228,11 +225,7 @@ namespace BrainCloud.Internal
         private byte[] buildConnectionRequest()
         {
             Dictionary<string, object> json = new Dictionary<string, object>();
-#if !SMRJ_HACK
             json["profileId"] = m_clientRef.ProfileId;
-#else
-            json["profileId"] = "841cf9fa-1a93-4a7a-a36b-e5833f7e239b"; //  "b09994cb-d91d-4060-876c-5430756ead7d";//  
-#endif
             json["lobbyId"] = m_connectOptions["lobbyId"] as string;
             json["passcode"] = m_connectOptions["passcode"] as string;
 
@@ -321,7 +314,7 @@ namespace BrainCloud.Internal
             // r = reliable bit
             // o = ordered bit
             // ch = channel bits (up to four channels)
-            // pack_etid_rest = packet id, 12 bits (4096)
+            // pack_etid_rest = packet id, 12 bits (MAX_PACKET_ID, 4096)
             //                                   roch_pack_etid_rest
             if (in_reliable) reliableHeader |= 1 << 15;// 0b1000_0000_0000_0000;
             if (in_ordered) reliableHeader |= 1 << 14;// 0b0100_0000_0000_0000;
@@ -486,7 +479,7 @@ namespace BrainCloud.Internal
                                     int packetId = m_sendPacketId[in_channel];
                                     lock (m_reliableSentMap)
                                     {
-                                        m_reliableSentMap[in_channel][packetId] = new UDPPacket(in_data, in_channel, packetId, NetId);
+                                        m_reliableSentMap[in_channel][packetId] = new UDPPacket(in_data, in_channel, packetId, NetId, in_reliable);
                                     }
                                 }
                             }
@@ -637,6 +630,8 @@ namespace BrainCloud.Internal
                     //m_clientRef.Log("LastPing: " + (Ping * 0.0001f).ToString() + "ms");
                 }
             }
+
+            processOrderedReceivedMap();
         }
 
         private void removeReliableQueueData(byte[] in_data)
@@ -662,8 +657,8 @@ namespace BrainCloud.Internal
                 // for each channel
                 foreach (var reliables in m_reliableSentMap)
                 {
-                    // we always resend reliably
-                    var ordered = reliables.OrderByDescending(x => x.Key);
+                    // we always resend reliably ordered
+                    var ordered = reliables.OrderBy(x => x.Key);
                     // and every packet that is in the queue
                     foreach (var udpPacket in ordered)
                     {
@@ -687,30 +682,40 @@ namespace BrainCloud.Internal
                 // only do this for messages that are reliable
                 // read the incoming datas flags based off its header
                 bool reliable, ordered;
-                int channel, packetId;
-                parseHeaderData(in_data, out reliable, out ordered, out channel, out packetId);
+                int channel, incomingPacketId;
+                parseHeaderData(in_data, out reliable, out ordered, out channel, out incomingPacketId);
                 if (ordered && in_incomingNetId < MAX_PLAYERS)
                 {
                     // update to the newer packet id on the channel
                     // if we haven't seen this packet before
                     // non reliable, we just care if its less then the incoming one
                     // reliable, we need it to be the correct one
-                    bool receivedNewerPacketId = packetId == 0 ||
-                                                 !m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ||
-                                                 ((!reliable && m_currentReceivedPacketId[channel][in_incomingNetId] < packetId) ||
-                                                  (reliable && (m_currentReceivedPacketId[channel][in_incomingNetId] + 1) == packetId));
+                    int currentPacketId = (m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ? m_currentReceivedPacketId[channel][in_incomingNetId] : 0);
 
+                    bool receivedNewerPacketId = !m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ||
+                                                 ((!reliable && incomingPacketId > currentPacketId) ||      // all others dropped
+                                                  (reliable && incomingPacketId == currentPacketId + 1));   // consecutive one
+
+                    // check cyclical packets
+                    if (!receivedNewerPacketId)
+                    {
+                        if (reliable && currentPacketId == MAX_PACKET_ID - 1 && incomingPacketId == 0)
+                            receivedNewerPacketId = true;
+                        // give a 25% buffer to receive a new one 
+                        else if (!reliable && currentPacketId >= MAX_PACKET_ID * 0.75 && incomingPacketId >= 0)
+                            receivedNewerPacketId = true;
+                    }
 
                     if (receivedNewerPacketId)
                     {
-                        m_currentReceivedPacketId[channel][in_incomingNetId] = packetId;
+                        m_currentReceivedPacketId[channel][in_incomingNetId] = incomingPacketId;
                     }
-                    else if (reliable && m_currentReceivedPacketId[channel][in_incomingNetId] < packetId)
+                    else if (reliable && incomingPacketId > currentPacketId)
                     {
                         lock (m_orderedReceivedMap)
                         {
-                            m_orderedReceivedMap[channel].Add(new KeyValuePair<int, int>(in_incomingNetId, packetId), new UDPPacket(in_data, channel, packetId, in_incomingNetId));
-                            m_clientRef.Log(in_incomingNetId + " confirmOrderedReceive: adding p:" + packetId + " cp:" + m_currentReceivedPacketId[channel][in_incomingNetId]);
+                            m_orderedReceivedMap[channel].Add(new KeyValuePair<int, int>(in_incomingNetId, incomingPacketId), new UDPPacket(in_data, channel, incomingPacketId, in_incomingNetId, reliable));
+                            //m_clientRef.Log(" confirmOrderedReceive adding ch:" + channel + " r:" + reliable + " p:" + incomingPacketId + " cp:" + currentPacketId);
                         }
                     }
 
@@ -718,7 +723,7 @@ namespace BrainCloud.Internal
                     // these are the conditions that we will not process the received response again
                     if (!receivedNewerPacketId ||                                // dont process older ones
                         m_orderedReceivedMap[channel].ContainsKey(
-                            new KeyValuePair<int, int>(in_incomingNetId, packetId))   // already has seen this control byte + packet id combo
+                            new KeyValuePair<int, int>(in_incomingNetId, incomingPacketId))   // already has seen this control byte + packet id combo
                        )
                     {
                         bProcessReceived = false;
@@ -740,16 +745,22 @@ namespace BrainCloud.Internal
                     for (int channel = 0; channel < MAX_CHANNELS; ++channel)
                     {
                         // we always process in order
-                        var ordered = m_orderedReceivedMap[channel].OrderByDescending(x => x.Key.Value);
+                        var ordered = m_orderedReceivedMap[channel].OrderBy(x => x.Key.Value);
                         // and every packet that is in the queue
                         foreach (var udpPacket in ordered)
                         {
-                            m_clientRef.Log("processOrderedReceivedMap k:" + udpPacket.Key.Key + " p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
-                            if (m_currentReceivedPacketId[channel][udpPacket.Key.Key] + 1 == udpPacket.Value.PacketId)
+                            //m_clientRef.Log("processOrderedReceivedMap k:" + channel + " p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
+                            if (udpPacket.Value.Reliable && udpPacket.Value.PacketId == m_currentReceivedPacketId[channel][udpPacket.Key.Key] + 1)
                             {
-                                m_clientRef.Log(udpPacket.Key.Key + " processOrderedReceivedMap: removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
+                                //m_clientRef.Log(" processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
                                 onRecv(udpPacket.Value.RawData, udpPacket.Value.RawData.Length);
                                 // remove the item
+                                m_orderedReceivedMap[channel].Remove(udpPacket.Key);
+                            }
+                            // packet id is less then the current one we are on
+                            else if (!udpPacket.Value.Reliable && !udpPacket.Value.Reliable && udpPacket.Value.PacketId <= m_currentReceivedPacketId[channel][udpPacket.Key.Key])
+                            {
+                                //m_clientRef.Log("Removing processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
                                 m_orderedReceivedMap[channel].Remove(udpPacket.Key);
                             }
                         }
@@ -887,7 +898,6 @@ namespace BrainCloud.Internal
                     return;
                 }
 
-                m_clientRef.Log("onTCPReadHeader --- start  " + read + " c" + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
                 if (m_tcpStream != null && read == SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY)
                 {
                     m_tcpBytesRead = 0;
@@ -1150,14 +1160,15 @@ namespace BrainCloud.Internal
 
         private class UDPPacket
         {
-            public UDPPacket(byte[] in_data, int in_channel, int in_packetId, int in_netId)
+            public UDPPacket(byte[] in_data, int in_channel, int in_packetId, int in_netId, bool in_reliable)
             {
                 LastTimeSent = DateTime.Now;
-                TimeInterval = 50;// ms
+                TimeInterval = in_channel <= 1 ? 50 : in_channel == 2 ? 150 : 250;// ms
                 RawData = in_data;
                 ChannelId = in_channel;
                 PacketId = in_packetId;
                 NetId = in_netId;
+                Reliable = in_reliable;
             }
 
             public void UpdateTimeIntervalSent()
@@ -1171,6 +1182,7 @@ namespace BrainCloud.Internal
             public int ChannelId { get; private set; }
             public int PacketId { get; private set; }
             public int NetId { get; private set; }
+            public bool Reliable { get; private set; }
         }
         #endregion
     }
