@@ -74,20 +74,9 @@ namespace BrainCloudUnity
             BaseBrainCloudDebugInfo tempBaseBrainCloudDebugInfo = BrainCloudDebugInfo.Instance;
         }
 
-        [SerializeField] private string m_dispatchUrl = "";
         public string DispatcherURL
         {
-            get
-            {  
-#if UNITY_EDITOR
-                if (BrainCloudSettings.IsManualSettingsEnabled())
-                {
-                    m_dispatchUrl = m_serverURL + "/dispatcherv2";
-                }
-#endif
-
-                return m_dispatchUrl;
-            }
+            get { return m_serverURL + "/dispatcherv2"; }
         }
 
         public string PortalURL
