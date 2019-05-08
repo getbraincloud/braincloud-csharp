@@ -85,12 +85,6 @@ namespace BrainCloud
     public delegate void RSDataCallback(byte[] jsonResponse);
 
     /// <summary>
-    /// Success callback for a Room Server response method.
-    /// </summary>
-    /// <param name="jsonResponse">The JSON response from the server</param>
-    public delegate void RSDataCallback(byte[] jsonResponse);
-
-    /// <summary>
     /// Method called when a file upload has completed.
     /// </summary>
     /// <param name="fileUploadId">The file upload id</param>
