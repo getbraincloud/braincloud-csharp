@@ -45,14 +45,7 @@ namespace BrainCloudUnity
                     {
                         AssetDatabase.CreateFolder("Assets/BrainCloud", "Resources");
                     }
-
                     
-                    /**
-                     * Handling name update for 3.11.2 patch. Where the "Plugin" text was removed from BrainCloudSettings.
-                     */
-                    handlingNameUpdate();
-                    
-
                     string fullPath = "Assets/BrainCloud/Resources/BrainCloudSettingsManual.asset";
                     AssetDatabase.CreateAsset(s_instance, fullPath);
 #endif
@@ -61,25 +54,12 @@ namespace BrainCloudUnity
                 return s_instance;
             }
         }
-
-        /**
-         * Adjust plugin asset name
-         */
-        private static void handlingNameUpdate()
-        {
-            AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset");
-            AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudSettings.asset");
-            AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset");
-            BaseBrainCloudSettings tempBaseBrainCloudSettings = BrainCloudSettings.Instance;
-            BaseBrainCloudDebugInfo tempBaseBrainCloudDebugInfo = BrainCloudDebugInfo.Instance;
-        }
-
         public string DispatcherURL
         {
             get { return m_serverURL + "/dispatcherv2"; }
         }
 
-        public string PortalURL
+        public string PortalURLhandlingNameUpdate
         {
             get { return "https://portal.braincloudservers.com"; }
         }
