@@ -59,7 +59,7 @@ namespace BrainCloudUnity
             get { return m_serverURL + "/dispatcherv2"; }
         }
 
-        public string PortalURLhandlingNameUpdate
+        public string PortalURL
         {
             get { return "https://portal.braincloudservers.com"; }
         }
