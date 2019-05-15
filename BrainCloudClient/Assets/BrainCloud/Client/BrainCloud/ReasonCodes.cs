@@ -404,6 +404,7 @@ namespace BrainCloud
         public const int RTT_ERROR_ASSIGNING_ROOM = 80103;
         public const int RTT_ERROR_LAUNCHING_ROOM = 80104;
         public const int RTT_NO_LOBBIES_FOUND = 80200;
+        public const int RTT_FIND_REQUEST_CANCELLED = 80201;
         public const int RTT_CLIENT_ERROR = 80300;
         public const int CLIENT_NETWORK_ERROR_TIMEOUT = 90001;
         public const int CLIENT_UPLOAD_FILE_CANCELLED = 90100;

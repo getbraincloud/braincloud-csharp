@@ -192,7 +192,7 @@ namespace BrainCloud.Internal
         private string buildConnectionRequest()
         {
             Dictionary<string, object> system = new Dictionary<string, object>();
-            system["platform"] = m_clientRef.ReleasePlatform;
+            system["platform"] = m_clientRef.ReleasePlatform.ToString();
             system["protocol"] = "ws";
 
             Dictionary<string, object> jsonData = new Dictionary<string, object>();
@@ -302,7 +302,7 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
-            string message = Encoding.ASCII.GetString(data);
+            string message = Encoding.UTF8.GetString(data);
             onRecv(message);
         }
 

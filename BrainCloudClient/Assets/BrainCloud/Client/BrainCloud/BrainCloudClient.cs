@@ -239,6 +239,9 @@ namespace BrainCloud
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms);
         }
+
+        //---------------------------------------------------------------
+
         #endregion
 
         #region Properties
@@ -782,11 +785,18 @@ namespace BrainCloud
                     }
                     break;
 
+                case eBrainCloudUpdateType.RS:
+                    {
+                        if (_rsComms != null) _rsComms.Update();
+                    }
+                    break;
+
                 default:
                 case eBrainCloudUpdateType.ALL:
                     {
                         if (_rttComms != null) _rttComms.Update();
                         if (_comms != null) _comms.Update();
+                        if (_rsComms != null) _rsComms.Update();
                     }
                     break;
             }

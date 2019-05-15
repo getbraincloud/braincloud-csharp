@@ -124,15 +124,6 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// send a string representation of data
-        /// </summary>
-        public void Send(string in_message, short in_target, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
-        {
-            byte target = Convert.ToByte(in_target);
-            sendStringHelper(in_message, target, in_reliable, in_ordered, in_channel);
-        }
-
-        /// <summary>
         /// send byte array representation of data
         /// </summary>
         public void Send(byte[] in_data, short in_target, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
@@ -168,14 +159,15 @@ namespace BrainCloud.Internal
                     {
                         m_lastNowMS = DateTime.Now;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
+                        return;
                     }
                     else if ((toProcessResponse.Operation == "error" || toProcessResponse.Operation == "disconnect"))
                     {
-                        if (toProcessResponse.Operation == "disconnect")
-                            disconnect();
-
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
+
+                        if (toProcessResponse.Operation == "disconnect")
+                            disconnect();
                     }
 
                     if (!m_bIsConnected && toProcessResponse.Operation == "connect")
@@ -271,8 +263,7 @@ namespace BrainCloud.Internal
 
             if (m_tcpStream != null)
             {
-                m_tcpStream.Flush();
-                m_tcpStream.Close();
+                m_tcpStream.Dispose();
             }
             m_tcpStream = null;
 
@@ -344,13 +335,13 @@ namespace BrainCloud.Internal
             }
 
             // append to reliable header
-            reliableHeader |= (ushort)(m_sendPacketId[in_channel] & 0xFFF);
+            reliableHeader |= (ushort)(m_sendPacketId[in_channel][in_reliable] & 0xFFF);
 
             // increment packet id
-            if (m_sendPacketId[in_channel] + 1 >= MAX_PACKET_ID)
-                m_sendPacketId[in_channel] = 0;
+            if (m_sendPacketId[in_channel][in_reliable] + 1 >= MAX_PACKET_ID)
+                m_sendPacketId[in_channel][in_reliable] = 0;
             else
-                ++m_sendPacketId[in_channel];
+                ++m_sendPacketId[in_channel][in_reliable];
 
             // switch to Big Endian
             fromShortBE(reliableHeader, out out_data1, out out_data2);
@@ -378,7 +369,7 @@ namespace BrainCloud.Internal
         private byte[] appendHeaderData(byte[] in_data, byte in_header, bool in_reliable, bool in_ordered, int in_channel)
         {
             byte[] destination = null;
-
+            byte[] header = { in_header };
             if (in_header == CL2RS_RELAY)
             {
                 byte data1 = 0;
@@ -387,14 +378,11 @@ namespace BrainCloud.Internal
                 {
                     constructReliableHeader(out data1, out data2, in_reliable, in_ordered, in_channel);
                 }
-                byte[] header = { in_header, data1, data2 };
+                header = new byte[] { in_header, data1, data2 };
                 destination = concatenateByteArrays(header, in_data);
             }
-            else
-            {
-                byte[] header = { in_header };
-                destination = concatenateByteArrays(header, in_data);
-            }
+
+            destination = concatenateByteArrays(header, in_data);
             return destination;
         }
 
@@ -406,16 +394,6 @@ namespace BrainCloud.Internal
             // force resend! reliable, ordered and channel do not matter in this case
             send(in_packet.RawData, true, true, 0, true);
             in_packet.UpdateTimeIntervalSent();
-        }
-        /// <summary>
-        /// helper for plain send string, need to convert to byte[] from ascii
-        /// </summary>
-        private bool sendStringHelper(string in_message, byte in_header, bool in_reliable, bool in_ordered, int in_channel)
-        {
-            // appened in_header to the beginning
-            byte[] data = Encoding.ASCII.GetBytes(in_message);
-            byte[] destination = appendHeaderData(data, in_header, in_reliable, in_ordered, in_channel);
-            return send(destination, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>
@@ -476,7 +454,7 @@ namespace BrainCloud.Internal
                                     (controlHeader == CL2RS_RELAY || controlHeader < MAX_PLAYERS))
                                 {
                                     // add to the reliable queue
-                                    int packetId = m_sendPacketId[in_channel];
+                                    int packetId = m_sendPacketId[in_channel][in_reliable];
                                     lock (m_reliableSentMap)
                                     {
                                         m_reliableSentMap[in_channel][packetId] = new UDPPacket(in_data, in_channel, packetId, NetId, in_reliable);
@@ -610,7 +588,7 @@ namespace BrainCloud.Internal
                                     // we are connected
                                     m_bIsConnected = true;
                                     NetId = Convert.ToInt16(parsedDict["netId"]);
-                                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", ""));
+                                    addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "connect", jsonMessage, cutOffData));
                                 }
                             }
                         }
@@ -690,9 +668,9 @@ namespace BrainCloud.Internal
                     // if we haven't seen this packet before
                     // non reliable, we just care if its less then the incoming one
                     // reliable, we need it to be the correct one
-                    int currentPacketId = (m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ? m_currentReceivedPacketId[channel][in_incomingNetId] : 0);
+                    int currentPacketId = (m_currentReceivedPacketId[channel][reliable].ContainsKey(in_incomingNetId) ? m_currentReceivedPacketId[channel][reliable][in_incomingNetId] : 0);
 
-                    bool receivedNewerPacketId = !m_currentReceivedPacketId[channel].ContainsKey(in_incomingNetId) ||
+                    bool receivedNewerPacketId = !m_currentReceivedPacketId[channel][reliable].ContainsKey(in_incomingNetId) ||
                                                  ((!reliable && incomingPacketId > currentPacketId) ||      // all others dropped
                                                   (reliable && incomingPacketId == currentPacketId + 1));   // consecutive one
 
@@ -708,7 +686,7 @@ namespace BrainCloud.Internal
 
                     if (receivedNewerPacketId)
                     {
-                        m_currentReceivedPacketId[channel][in_incomingNetId] = incomingPacketId;
+                        m_currentReceivedPacketId[channel][reliable][in_incomingNetId] = incomingPacketId;
                     }
                     else if (reliable && incomingPacketId > currentPacketId)
                     {
@@ -738,10 +716,12 @@ namespace BrainCloud.Internal
         {
             if (m_connectionType == RelayConnectionType.UDP)
             {
+                List<UDPPacket> toProcess = new List<UDPPacket>();
                 lock (m_orderedReceivedMap)
                 {
                     DateTime nowMS = DateTime.Now;
                     // for each channel
+                    int currentPacketId = 0;
                     for (int channel = 0; channel < MAX_CHANNELS; ++channel)
                     {
                         // we always process in order
@@ -749,22 +729,29 @@ namespace BrainCloud.Internal
                         // and every packet that is in the queue
                         foreach (var udpPacket in ordered)
                         {
+                            currentPacketId = m_currentReceivedPacketId[channel][udpPacket.Value.Reliable][udpPacket.Key.Key];
                             //m_clientRef.Log("processOrderedReceivedMap k:" + channel + " p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
-                            if (udpPacket.Value.Reliable && udpPacket.Value.PacketId == m_currentReceivedPacketId[channel][udpPacket.Key.Key] + 1)
+                            if (udpPacket.Value.Reliable && udpPacket.Value.PacketId == currentPacketId + 1)
                             {
-                                //m_clientRef.Log(" processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
-                                onRecv(udpPacket.Value.RawData, udpPacket.Value.RawData.Length);
+                                //m_clientRef.Log(" processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + currentPacketId);
+                                toProcess.Add(udpPacket.Value);
                                 // remove the item
                                 m_orderedReceivedMap[channel].Remove(udpPacket.Key);
                             }
                             // packet id is less then the current one we are on
-                            else if (!udpPacket.Value.Reliable && !udpPacket.Value.Reliable && udpPacket.Value.PacketId <= m_currentReceivedPacketId[channel][udpPacket.Key.Key])
+                            else if (!udpPacket.Value.Reliable && udpPacket.Value.PacketId <= currentPacketId)
                             {
-                                //m_clientRef.Log("Removing processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + m_currentReceivedPacketId[channel][udpPacket.Key.Key]);
+                                //m_clientRef.Log("**REMOVING processOrderedReceivedMap k:" + channel + " removing p:" + udpPacket.Value.PacketId + " cp:" + currentPacketId);
                                 m_orderedReceivedMap[channel].Remove(udpPacket.Key);
                             }
                         }
                     }
+                }
+
+                // and now process them 
+                foreach (var packet in toProcess)
+                {
+                    onRecv(packet.RawData, packet.RawData.Length);
                 }
             }
         }
@@ -1016,8 +1003,14 @@ namespace BrainCloud.Internal
                 m_reliableSentMap.Clear();
                 for (int i = 0; i < MAX_CHANNELS; ++i)
                 {
-                    m_sendPacketId.Add(0);
-                    m_currentReceivedPacketId.Add(new Dictionary<int, int>());
+                    m_sendPacketId.Add(new Dictionary<bool, int>());
+                    m_sendPacketId[i][true] = 0;
+                    m_sendPacketId[i][false] = 0;
+
+                    m_currentReceivedPacketId.Add(new Dictionary<bool, Dictionary<int, int>>());
+                    m_currentReceivedPacketId[i][true] = new Dictionary<int, int>();
+                    m_currentReceivedPacketId[i][false] = new Dictionary<int, int>();
+
                     m_reliableSentMap.Add(new Dictionary<int, UDPPacket>());
                     m_orderedReceivedMap.Add(new Dictionary<KeyValuePair<int, int>, UDPPacket>());
                 }
@@ -1115,11 +1108,11 @@ namespace BrainCloud.Internal
 
         // UDP
         private UdpClient m_udpClient = null;
-        // packetIds per channel
-        private List<int> m_sendPacketId = new List<int>();
+        // packetIds per channel, and reliableness
+        private List<Dictionary<bool, int>> m_sendPacketId = new List<Dictionary<bool, int>>();
 
-        // current index of received, packetIds per channel, per net id,  
-        private List<Dictionary<int, int>> m_currentReceivedPacketId = new List<Dictionary<int, int>>();
+        // current index of received, packetIds per channel, per reliable, per net id,  
+        private List<Dictionary<bool, Dictionary<int, int>>> m_currentReceivedPacketId = new List<Dictionary<bool, Dictionary<int, int>>>();
 
         // reliable send queue.. per channel, per packet id look up map, items are removed thus keeping a thing lookup
         private List<Dictionary<int, UDPPacket>> m_reliableSentMap = new List<Dictionary<int, UDPPacket>>();
