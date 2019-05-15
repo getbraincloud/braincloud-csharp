@@ -52,7 +52,7 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Start off a connection, based off connection type to brainClouds Room Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
+        /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
         /// </summary>
         /// <param name="in_connectionType"></param>
         /// <param name="in_options">
@@ -99,7 +99,7 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Disables Real Time event for this session.
+        /// Disables relay event for this session.
         /// </summary>
         public void Disconnect()
         {
@@ -109,7 +109,6 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Register callback, so that data is received on the main thread
         /// </summary>
-        ///
         public void RegisterDataCallback(RSDataCallback in_callback)
         {
             m_registeredDataCallback = in_callback;
@@ -126,6 +125,11 @@ namespace BrainCloud.Internal
         /// <summary>
         /// send byte array representation of data
         /// </summary>
+        /// <param in_message="message to be sent"></param>
+        /// <param to_netId="the net id to send to, RelayComms.TO_ALL_PLAYERS to relay to all"></param>
+        /// <param in_reliable="send this reliably or not"></param>
+        /// <param in_ordered="received this ordered or not"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)"></param>
         public void Send(byte[] in_data, short in_target, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             // appened the target (netId, or all) to the beginning

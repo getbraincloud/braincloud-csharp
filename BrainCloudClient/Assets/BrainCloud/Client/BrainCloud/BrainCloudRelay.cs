@@ -28,9 +28,16 @@ namespace BrainCloud
         public short NetId { get { return m_commsLayer.NetId; } }
 
         /// <summary>
-        ///
+        /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
         /// </summary>
         /// <param name="in_connectionType"></param>
+        /// <param name="in_options">
+        ///             in_options["ssl"] = false;
+        ///             in_options["host"] = "168.0.1.192";
+        ///             in_options["port"] = 9000;
+        ///             in_options["passcode"] = "somePasscode"
+        ///             in_options["lobbyId"] = "55555:v5v:001";
+        ///</param>
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
@@ -40,7 +47,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Disables relay event for this session.
         /// </summary>
         public void Disconnect()
         {
@@ -48,7 +55,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Register callback, so that data is received on the main thread
         /// </summary>
         public void RegisterDataCallback(RSDataCallback in_callback)
         {
@@ -56,7 +63,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Deregister the data callback
         /// </summary>
         public void DeregisterDataCallback()
         {
@@ -64,7 +71,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// send byte array representation of data
         /// </summary>
         /// <param in_message="message to be sent"></param>
         /// <param to_netId="the net id to send to, RelayComms.TO_ALL_PLAYERS to relay to all"></param>
@@ -77,7 +84,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// 
+        /// Set the ping interval.
         /// </summary>
         public void SetPingInterval(float in_interval)
         {
