@@ -78,7 +78,7 @@ namespace BrainCloud.Internal
             }
 #endif
             Ping = 999;
-            if (!m_bIsConnected)
+            if (!IsConnected())
             {
                 // the callback
                 m_connectedSuccessCallback = in_success;
@@ -104,6 +104,14 @@ namespace BrainCloud.Internal
         public void Disconnect()
         {
             addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "disconnect", "Disconnect Called"));
+        }
+
+        /// <summary>
+        /// IsConnected
+        /// </summary>
+        public bool IsConnected()
+        {
+            return m_bIsConnected;
         }
 
         /// <summary>
@@ -153,13 +161,14 @@ namespace BrainCloud.Internal
         public void Update()
         {
             RSCommandResponse toProcessResponse;
+            bool isConnected = IsConnected();
             lock (m_queuedRSCommands)
             {
                 for (int i = 0; i < m_queuedRSCommands.Count; ++i)
                 {
                     toProcessResponse = m_queuedRSCommands[i];
 
-                    if (toProcessResponse.Operation == "connect" && m_bIsConnected && m_connectedSuccessCallback != null)
+                    if (toProcessResponse.Operation == "connect" && isConnected && m_connectedSuccessCallback != null)
                     {
                         m_lastNowMS = DateTime.Now;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
@@ -174,7 +183,7 @@ namespace BrainCloud.Internal
                             disconnect();
                     }
 
-                    if (!m_bIsConnected && toProcessResponse.Operation == "connect")
+                    if (!isConnected && toProcessResponse.Operation == "connect")
                     {
                         send(buildConnectionRequest(), true, true, 0);
                     }
@@ -186,7 +195,7 @@ namespace BrainCloud.Internal
                 m_queuedRSCommands.Clear();
             }
 
-            if (m_bIsConnected)
+            if (isConnected)
             {
                 DateTime nowMS = DateTime.Now;
                 // the heart beat
@@ -251,7 +260,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
-            if (m_bIsConnected) send(buildDisconnectRequest(), true, false, 0);
+            if (IsConnected()) send(buildDisconnectRequest(), true, false, 0);
 
             m_bIsConnected = false;
             m_connectedSuccessCallback = null;

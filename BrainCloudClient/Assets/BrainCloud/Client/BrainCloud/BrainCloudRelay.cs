@@ -55,6 +55,14 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Is Connected
+        /// </summary>
+        public bool IsConnected()
+        {
+            return m_commsLayer.IsConnected();
+        }
+
+        /// <summary>
         /// Register callback, so that data is received on the main thread
         /// </summary>
         public void RegisterDataCallback(RSDataCallback in_callback)
