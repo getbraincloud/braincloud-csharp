@@ -145,7 +145,7 @@ namespace BrainCloud
         /// <summary>
         /// valid only for the owner of the group -- edits the overally lobby config data
         /// </summary>
-        public void UpdateLobbyConfig(string in_lobbyID, Dictionary<string, object> in_settings,
+        public void UpdateSettings(string in_lobbyID, Dictionary<string, object> in_settings,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -153,7 +153,7 @@ namespace BrainCloud
             data[OperationParam.LobbySettings.Value] = in_settings;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.UpdateLobbyConfig, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.UpdateSettings, data, callback);
             m_clientRef.SendRequest(sc);
         }
 
@@ -190,20 +190,25 @@ namespace BrainCloud
         /// <summary>
         /// User joins the specified lobby. 
         /// </summary>
-        ///
-        /// Coming soon!
-        ///
-        /// public void JoinLobby(string in_lobbyID, bool in_isReady, string in_toTeamName, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        /// {
-        ///     Dictionary<string, object> data = new Dictionary<string, object>();
-        ///     data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
-        ///     data[OperationParam.LobbyIsReady.Value] = in_isReady;
-        ///     data[OperationParam.LobbyToTeamName.Value] = in_toTeamName;
-        /// 
-        ///     ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-        ///     ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.JoinLobby, data, callback);
-        ///     m_clientRef.SendRequest(sc);
-        /// }
+        public void JoinLobby(string in_lobbyID,
+                            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
+                            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+            data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+        
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.JoinLobby, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
 
         /// <summary>
         /// User leaves the specified lobby. if the user was the owner, a new owner will be chosen
@@ -220,25 +225,6 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Adds a list of users to the specified lobby. 
-        /// </summary>
-        ///
-        /// Coming soon!
-        /// 
-        /// public void AddOthersToLobby(string in_lobbyID, string [] in_otherUserCxIds, bool in_isReady, string in_toTeamName, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        /// {
-        ///     Dictionary<string, object> data = new Dictionary<string, object>();
-        ///     data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
-        ///     data[OperationParam.LobbyIsReady.Value] = in_isReady;
-        ///     data[OperationParam.LobbyToTeamName.Value] = in_toTeamName;
-        /// 
-        ///     ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-        ///     ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.AddOthersToLobby, data, callback);
-        ///     m_clientRef.SendRequest(sc);
-        /// }
-
-
-        /// <summary>
         /// Only valid from the owner of the lobby -- removes the specified member from the lobby
         /// </summary>
         /// 
@@ -250,6 +236,21 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.RemoveMember, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Cancel this members Find, Join and Searching of Lobbies
+        /// </summary>
+        /// 
+        public void CancelFindRequest(string in_roomType, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyConnectionId.Value] = m_clientRef.RTTConnectionID;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CancelFindRequest, data, callback);
             m_clientRef.SendRequest(sc);
         }
 

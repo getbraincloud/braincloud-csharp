@@ -168,5 +168,21 @@ namespace BrainCloudTests
             _bc.IdentityService.GetPeerProfiles(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+        
+        [Test]
+        public void TestAttachNonLoginUniversalId()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachNonLoginUniversalId("braincloudtest@gmail.com", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(202, ReasonCodes.DUPLICATE_IDENTITY_TYPE);
+        }
+
+        [Test]
+        public void TestUpdateUniversalIdLogin()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.UpdateUniversalIdLogin("braincloudtest@gmail.com", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(400, ReasonCodes.NEW_CREDENTIAL_IN_USE);
+        }
     }
 }

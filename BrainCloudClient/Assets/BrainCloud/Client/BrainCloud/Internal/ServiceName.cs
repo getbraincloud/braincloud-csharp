@@ -43,6 +43,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Tournament = new ServiceName("tournament");
         public static readonly ServiceName RTTRegistration = new ServiceName("rttRegistration");
         public static readonly ServiceName RTT = new ServiceName("rtt");
+        public static readonly ServiceName Relay = new ServiceName("relay");
         public static readonly ServiceName Chat = new ServiceName("chat");
         public static readonly ServiceName Messaging = new ServiceName("messaging");
         public static readonly ServiceName Lobby = new ServiceName("lobby");

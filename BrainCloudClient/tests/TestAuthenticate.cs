@@ -2,7 +2,7 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using System;
 
 namespace BrainCloudTests
@@ -178,6 +178,51 @@ namespace BrainCloudTests
                 content,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+        }
+
+        [Test]
+        public void TestResetUniversalIdPassword()
+        {
+            TestResult tr2 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr2.ApiSuccess, tr2.ApiError);
+
+            tr2.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.ResetUniversalIdPassword(
+                GetUser(Users.UserA).Id,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestResetUniversalIdPasswordAdvanced()
+        {
+            TestResult tr2 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr2.ApiSuccess, tr2.ApiError);
+
+            tr2.Run();
+
+            TestResult tr = new TestResult(_bc);
+    
+            string content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}"; 
+            _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvanced(
+                GetUser(Users.UserA).Id,
+                content,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]

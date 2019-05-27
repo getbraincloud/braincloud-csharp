@@ -18,10 +18,14 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Detach = new ServiceOperation("DETACH");
         public static readonly ServiceOperation ResetEmailPassword = new ServiceOperation("RESET_EMAIL_PASSWORD");
         public static readonly ServiceOperation ResetEmailPasswordAdvanced = new ServiceOperation("RESET_EMAIL_PASSWORD_ADVANCED");
+        public static readonly ServiceOperation ResetUniversalIdPassword = new ServiceOperation("RESET_UNIVERSAL_ID_PASSWORD");
+        public static readonly ServiceOperation ResetUniversalIdPasswordAdvanced = new ServiceOperation("RESET_UNIVERSAL_ID_PASSWORD_ADVANCED");
         public static readonly ServiceOperation SwitchToChildProfile = new ServiceOperation("SWITCH_TO_CHILD_PROFILE");
         public static readonly ServiceOperation SwitchToParentProfile = new ServiceOperation("SWITCH_TO_PARENT_PROFILE");
         public static readonly ServiceOperation DetachParent = new ServiceOperation("DETACH_PARENT");
         public static readonly ServiceOperation AttachParentWithIdentity = new ServiceOperation("ATTACH_PARENT_WITH_IDENTITY");
+        public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
+        public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
 
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
@@ -32,6 +36,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation Verify = new ServiceOperation("VERIFY");
         public static readonly ServiceOperation ReadShared = new ServiceOperation("READ_SHARED");
         public static readonly ServiceOperation ReadSharedEntity = new ServiceOperation("READ_SHARED_ENTITY");
+        public static readonly ServiceOperation UpdateEntityIndexedId = new ServiceOperation("UPDATE_INDEXED_ID");
         public static readonly ServiceOperation UpdateEntityOwnerAndAcl = new ServiceOperation("UPDATE_ENTITY_OWNER_AND_ACL");
         public static readonly ServiceOperation MakeSystemEntity = new ServiceOperation("MAKE_SYSTEM_ENTITY");
 
@@ -392,12 +397,13 @@ namespace BrainCloud.Internal
         public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_OR_CREATE_LOBBY");
         public static readonly ServiceOperation GetLobbyData = new ServiceOperation("GET_LOBBY_DATA");
         public static readonly ServiceOperation UpdateReady = new ServiceOperation("UPDATE_READY");
-        public static readonly ServiceOperation UpdateLobbyConfig = new ServiceOperation("UPDATE_SETTINGS");
+        public static readonly ServiceOperation UpdateSettings = new ServiceOperation("UPDATE_SETTINGS");
         public static readonly ServiceOperation SwitchTeam = new ServiceOperation("SWITCH_TEAM");
         public static readonly ServiceOperation SendSignal = new ServiceOperation("SEND_SIGNAL");
         public static readonly ServiceOperation JoinLobby = new ServiceOperation("JOIN_LOBBY");
         public static readonly ServiceOperation LeaveLobby = new ServiceOperation("LEAVE_LOBBY");
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
+        public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
 
         private ServiceOperation(string value)
         {

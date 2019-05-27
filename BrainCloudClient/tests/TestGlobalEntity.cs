@@ -2,7 +2,7 @@ using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 
 namespace BrainCloudTests
@@ -305,6 +305,23 @@ namespace BrainCloudTests
                 id,
                 Helpers.CreateJsonPair("test", 1),
                 tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestUpdateEntityIndexedId()
+        {
+            string entityId = CreateDefaultGlobalEntity(ACL.Access.None, "indexedId");
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.GlobalEntityService.UpdateEntityIndexedId(
+                entityId,
+                -1,
+                "indexedId",
+                tr.ApiSuccess,
+                tr.ApiError);
 
             tr.Run();
         }

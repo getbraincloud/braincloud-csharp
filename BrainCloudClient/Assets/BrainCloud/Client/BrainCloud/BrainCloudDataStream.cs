@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BrainCloud.Internal;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloud
 {

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using BrainCloud;
 using BrainCloud.Entity;
 using System.Collections.Generic;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
 {

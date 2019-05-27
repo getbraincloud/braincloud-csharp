@@ -101,6 +101,7 @@ public class BrainCloudWebSocket
 #elif UNITY_WEBGL && !UNITY_EDITOR
 #else
         WebSocket.TCPClient.NoDelay = true;
+        WebSocket.TCPClient.Client.NoDelay = true;
 #endif
         if (OnOpen != null)
             OnOpen(this);

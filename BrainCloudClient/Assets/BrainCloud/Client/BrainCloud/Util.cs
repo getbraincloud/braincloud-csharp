@@ -183,6 +183,6 @@ namespace BrainCloud
             return (long)((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
                    new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
         }
-        #endregion
+#endregion
     }
 }

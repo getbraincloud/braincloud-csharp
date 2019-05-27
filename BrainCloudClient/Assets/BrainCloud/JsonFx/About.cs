@@ -28,61 +28,63 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
-
-namespace JsonFx
+namespace BrainCloud
 {
-	using System;
-	using System.Reflection;
-	
-	/// <summary>
-	/// JsonFx metadata
-	/// </summary>
-	public sealed class About
-	{
-		#region Fields
+    namespace JsonFx
+    {
+        using System;
+        using System.Reflection;
 
-		public static readonly About Fx = new About(typeof(About).Assembly);
+        /// <summary>
+        /// JsonFx metadata
+        /// </summary>
+        public sealed class About
+        {
+            #region Fields
 
-		public readonly Version Version;
-		public readonly string FullName;
-		public readonly string Name;
-		public readonly string Configuration;
-		public readonly string Copyright;
-		public readonly string Title;
-		public readonly string Description;
-		public readonly string Company;
+            public static readonly About Fx = new About(typeof(About).Assembly);
 
-		#endregion Fields
+            public readonly Version Version;
+            public readonly string FullName;
+            public readonly string Name;
+            public readonly string Configuration;
+            public readonly string Copyright;
+            public readonly string Title;
+            public readonly string Description;
+            public readonly string Company;
 
-		#region Init
+            #endregion Fields
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		public About(Assembly assembly)
-		{
-			AssemblyName name = assembly.GetName();
+            #region Init
 
-			this.FullName = assembly.FullName;
-			this.Version = name.Version;
-			this.Name = name.Name;
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            public About(Assembly assembly)
+            {
+                AssemblyName name = assembly.GetName();
 
-			AssemblyCopyrightAttribute copyright = Attribute.GetCustomAttribute(assembly, typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
-			this.Copyright = (copyright != null) ? copyright.Copyright : String.Empty;
+                this.FullName = assembly.FullName;
+                this.Version = name.Version;
+                this.Name = name.Name;
 
-			AssemblyDescriptionAttribute description = Attribute.GetCustomAttribute(assembly, typeof(AssemblyDescriptionAttribute)) as AssemblyDescriptionAttribute;
-			this.Description = (description != null) ? description.Description : String.Empty;
+                AssemblyCopyrightAttribute copyright = Attribute.GetCustomAttribute(assembly, typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
+                this.Copyright = (copyright != null) ? copyright.Copyright : String.Empty;
 
-			AssemblyTitleAttribute title = Attribute.GetCustomAttribute(assembly, typeof(AssemblyTitleAttribute)) as AssemblyTitleAttribute;
-			this.Title = (title != null) ? title.Title : String.Empty;
+                AssemblyDescriptionAttribute description = Attribute.GetCustomAttribute(assembly, typeof(AssemblyDescriptionAttribute)) as AssemblyDescriptionAttribute;
+                this.Description = (description != null) ? description.Description : String.Empty;
 
-			AssemblyCompanyAttribute company = Attribute.GetCustomAttribute(assembly, typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
-			this.Company = (company != null) ? company.Company : String.Empty;
+                AssemblyTitleAttribute title = Attribute.GetCustomAttribute(assembly, typeof(AssemblyTitleAttribute)) as AssemblyTitleAttribute;
+                this.Title = (title != null) ? title.Title : String.Empty;
 
-			AssemblyConfigurationAttribute config = Attribute.GetCustomAttribute(assembly, typeof(AssemblyConfigurationAttribute)) as AssemblyConfigurationAttribute;
-			this.Configuration = (config != null) ? config.Configuration : String.Empty;
-		}
+                AssemblyCompanyAttribute company = Attribute.GetCustomAttribute(assembly, typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
+                this.Company = (company != null) ? company.Company : String.Empty;
 
-		#endregion Init
-	}
+                AssemblyConfigurationAttribute config = Attribute.GetCustomAttribute(assembly, typeof(AssemblyConfigurationAttribute)) as AssemblyConfigurationAttribute;
+                this.Configuration = (config != null) ? config.Configuration : String.Empty;
+            }
+
+            #endregion Init
+        }
+    }
 }

@@ -132,6 +132,34 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Resets player currency to zero
+        /// </summary>
+        /// <remarks>
+        /// Service Name - VirtalCurrency
+        /// Service Operation - ResetCurrency
+        /// </remarks>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ResetCurrency(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.ResetPlayerVC, data, callback);
+            _client.SendRequest(sc);
+        }
+
         #region Obsolete
         [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
         public void AwardCurrency(
