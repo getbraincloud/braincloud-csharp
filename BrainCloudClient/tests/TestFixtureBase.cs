@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;

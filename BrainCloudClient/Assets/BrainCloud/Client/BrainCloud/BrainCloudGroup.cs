@@ -5,7 +5,7 @@
 
 using BrainCloud.Common;
 using BrainCloud.Internal;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 using System.Collections;
 using System.Collections.Generic;
 

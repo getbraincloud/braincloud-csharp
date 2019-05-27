@@ -31,66 +31,69 @@
 using System;
 using System.Reflection;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// Specifies the name of the property which specifies if member should be serialized.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Property|AttributeTargets.Field, AllowMultiple=false)]
-	public class JsonSpecifiedPropertyAttribute : Attribute
-	{
-		#region Fields
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// Specifies the name of the property which specifies if member should be serialized.
+        /// </summary>
+        [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+        public class JsonSpecifiedPropertyAttribute : Attribute
+        {
+            #region Fields
 
-		private string specifiedProperty = null;
+            private string specifiedProperty = null;
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Init
+            #region Init
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		/// <param name="propertyName">the name of the property which controls serialization for this member</param>
-		public JsonSpecifiedPropertyAttribute(string propertyName)
-		{
-			this.specifiedProperty = propertyName;
-		}
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            /// <param name="propertyName">the name of the property which controls serialization for this member</param>
+            public JsonSpecifiedPropertyAttribute(string propertyName)
+            {
+                this.specifiedProperty = propertyName;
+            }
 
-		#endregion Init
+            #endregion Init
 
-		#region Properties
+            #region Properties
 
-		/// <summary>
-		/// Gets and sets the name of the property which
-		/// specifies if member should be serialized
-		/// </summary>
-		public string SpecifiedProperty
-		{
-			get { return this.specifiedProperty; }
-			set { this.specifiedProperty = value; }
-		}
+            /// <summary>
+            /// Gets and sets the name of the property which
+            /// specifies if member should be serialized
+            /// </summary>
+            public string SpecifiedProperty
+            {
+                get { return this.specifiedProperty; }
+                set { this.specifiedProperty = value; }
+            }
 
-		#endregion Properties
+            #endregion Properties
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Gets the name specified for use in Json serialization.
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static string GetJsonSpecifiedProperty(MemberInfo memberInfo)
-		{
-			if (memberInfo == null ||
-				!Attribute.IsDefined(memberInfo, typeof(JsonSpecifiedPropertyAttribute)))
-			{
-				return null;
-			}
+            /// <summary>
+            /// Gets the name specified for use in Json serialization.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            public static string GetJsonSpecifiedProperty(MemberInfo memberInfo)
+            {
+                if (memberInfo == null ||
+                    !Attribute.IsDefined(memberInfo, typeof(JsonSpecifiedPropertyAttribute)))
+                {
+                    return null;
+                }
 
-			JsonSpecifiedPropertyAttribute attribute = (JsonSpecifiedPropertyAttribute)Attribute.GetCustomAttribute(memberInfo, typeof(JsonSpecifiedPropertyAttribute));
-			return attribute.SpecifiedProperty;
-		}
+                JsonSpecifiedPropertyAttribute attribute = (JsonSpecifiedPropertyAttribute)Attribute.GetCustomAttribute(memberInfo, typeof(JsonSpecifiedPropertyAttribute));
+                return attribute.SpecifiedProperty;
+            }
 
-		#endregion Methods
-	}
+            #endregion Methods
+        }
+    }
 }

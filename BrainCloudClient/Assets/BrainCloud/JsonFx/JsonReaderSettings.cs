@@ -30,73 +30,76 @@
 
 using System;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// Controls the deserialization settings for JsonReader
-	/// </summary>
-	public class JsonReaderSettings
-	{
-		#region Fields
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// Controls the deserialization settings for JsonReader
+        /// </summary>
+        public class JsonReaderSettings
+        {
+            #region Fields
 
-		internal readonly TypeCoercionUtility Coercion = new TypeCoercionUtility();
-		private bool allowUnquotedObjectKeys = false;
-		private string typeHintName;
+            internal readonly TypeCoercionUtility Coercion = new TypeCoercionUtility();
+            private bool allowUnquotedObjectKeys = false;
+            private string typeHintName;
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Properties
+            #region Properties
 
-		/// <summary>
-		/// Gets and sets if ValueTypes can accept values of null
-		/// </summary>
-		/// <remarks>
-		/// Only affects deserialization: if a ValueType is assigned the
-		/// value of null, it will receive the value default(TheType).
-		/// Setting this to false, throws an exception if null is
-		/// specified for a ValueType member.
-		/// </remarks>
-		public bool AllowNullValueTypes
-		{
-			get { return this.Coercion.AllowNullValueTypes; }
-			set { this.Coercion.AllowNullValueTypes = value; }
-		}
+            /// <summary>
+            /// Gets and sets if ValueTypes can accept values of null
+            /// </summary>
+            /// <remarks>
+            /// Only affects deserialization: if a ValueType is assigned the
+            /// value of null, it will receive the value default(TheType).
+            /// Setting this to false, throws an exception if null is
+            /// specified for a ValueType member.
+            /// </remarks>
+            public bool AllowNullValueTypes
+            {
+                get { return this.Coercion.AllowNullValueTypes; }
+                set { this.Coercion.AllowNullValueTypes = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets if objects can have unquoted property names
-		/// </summary>
-		public bool AllowUnquotedObjectKeys
-		{
-			get { return this.allowUnquotedObjectKeys; }
-			set { this.allowUnquotedObjectKeys = value; }
-		}
+            /// <summary>
+            /// Gets and sets if objects can have unquoted property names
+            /// </summary>
+            public bool AllowUnquotedObjectKeys
+            {
+                get { return this.allowUnquotedObjectKeys; }
+                set { this.allowUnquotedObjectKeys = value; }
+            }
 
-		/// <summary>
-		/// Gets and sets the property name used for type hinting.
-		/// </summary>
-		public string TypeHintName
-		{
-			get { return this.typeHintName; }
-			set { this.typeHintName = value; }
-		}
+            /// <summary>
+            /// Gets and sets the property name used for type hinting.
+            /// </summary>
+            public string TypeHintName
+            {
+                get { return this.typeHintName; }
+                set { this.typeHintName = value; }
+            }
 
-		#endregion Properties
+            #endregion Properties
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Determines if the specified name is the TypeHint property
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		internal bool IsTypeHintName(string name)
-		{
-			return
-				!String.IsNullOrEmpty(name) &&
-				!String.IsNullOrEmpty(this.typeHintName) &&
-				StringComparer.Ordinal.Equals(this.typeHintName, name);
-		}
+            /// <summary>
+            /// Determines if the specified name is the TypeHint property
+            /// </summary>
+            /// <param name="key"></param>
+            /// <returns></returns>
+            internal bool IsTypeHintName(string name)
+            {
+                return
+                    !String.IsNullOrEmpty(name) &&
+                    !String.IsNullOrEmpty(this.typeHintName) &&
+                    StringComparer.Ordinal.Equals(this.typeHintName, name);
+            }
 
-		#endregion Methods
-	}
+            #endregion Methods
+        }
+    }
 }

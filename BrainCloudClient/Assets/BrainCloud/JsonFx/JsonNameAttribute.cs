@@ -32,147 +32,150 @@ using System;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace JsonFx.Json
+namespace BrainCloud
 {
-	/// <summary>
-	/// Specifies the naming to use for a property or field when serializing
-	/// </summary>
-	[AttributeUsage(AttributeTargets.All, AllowMultiple=false)]
-	public class JsonNameAttribute : Attribute
-	{
-		#region Fields
+    namespace JsonFx.Json
+    {
+        /// <summary>
+        /// Specifies the naming to use for a property or field when serializing
+        /// </summary>
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+        public class JsonNameAttribute : Attribute
+        {
+            #region Fields
 
-		private string jsonName = null;
+            private string jsonName = null;
 
-		#endregion Fields
+            #endregion Fields
 
-		#region Init
+            #region Init
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		public JsonNameAttribute()
-		{
-		}
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            public JsonNameAttribute()
+            {
+            }
 
-		/// <summary>
-		/// Ctor
-		/// </summary>
-		/// <param name="jsonName"></param>
-		public JsonNameAttribute(string jsonName)
-		{
-			this.jsonName = EcmaScriptIdentifier.EnsureValidIdentifier(jsonName, false);
-		}
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            /// <param name="jsonName"></param>
+            public JsonNameAttribute(string jsonName)
+            {
+                this.jsonName = EcmaScriptIdentifier.EnsureValidIdentifier(jsonName, false);
+            }
 
-		#endregion Init
+            #endregion Init
 
-		#region Properties
+            #region Properties
 
-		/// <summary>
-		/// Gets and sets the name to be used in JSON
-		/// </summary>
-		public string Name
-		{
-			get { return this.jsonName; }
-			set { this.jsonName = EcmaScriptIdentifier.EnsureValidIdentifier(value, false); }
-		}
+            /// <summary>
+            /// Gets and sets the name to be used in JSON
+            /// </summary>
+            public string Name
+            {
+                get { return this.jsonName; }
+                set { this.jsonName = EcmaScriptIdentifier.EnsureValidIdentifier(value, false); }
+            }
 
-		#endregion Properties
+            #endregion Properties
 
-		#region Methods
+            #region Methods
 
-		/// <summary>
-		/// Gets the name specified for use in Json serialization.
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static string GetJsonName(object value)
-		{
-			if (value == null)
-			{
-				return null;
-			}
+            /// <summary>
+            /// Gets the name specified for use in Json serialization.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            public static string GetJsonName(object value)
+            {
+                if (value == null)
+                {
+                    return null;
+                }
 
-			Type type = value.GetType();
-			MemberInfo memberInfo = null;
+                Type type = value.GetType();
+                MemberInfo memberInfo = null;
 
-			if (type.IsEnum)
-			{
-				string name = Enum.GetName(type, value);
-				if (String.IsNullOrEmpty(name))
-				{
-					return null;
-				}
-				memberInfo = type.GetField(name);
-			}
-			else
-			{
-				memberInfo = value as MemberInfo;
-			}
+                if (type.IsEnum)
+                {
+                    string name = Enum.GetName(type, value);
+                    if (String.IsNullOrEmpty(name))
+                    {
+                        return null;
+                    }
+                    memberInfo = type.GetField(name);
+                }
+                else
+                {
+                    memberInfo = value as MemberInfo;
+                }
 
-			if (memberInfo == null)
-			{
-				throw new ArgumentException();
-			}
+                if (memberInfo == null)
+                {
+                    throw new ArgumentException();
+                }
 
-			if (!Attribute.IsDefined(memberInfo, typeof(JsonNameAttribute)))
-			{
-				return null;
-			}
-			JsonNameAttribute attribute = (JsonNameAttribute)Attribute.GetCustomAttribute(memberInfo, typeof(JsonNameAttribute));
+                if (!Attribute.IsDefined(memberInfo, typeof(JsonNameAttribute)))
+                {
+                    return null;
+                }
+                JsonNameAttribute attribute = (JsonNameAttribute)Attribute.GetCustomAttribute(memberInfo, typeof(JsonNameAttribute));
 
-			return attribute.Name;
-		}
+                return attribute.Name;
+            }
 
-		///// <summary>
-		///// Gets the name specified for use in Json serialization.
-		///// </summary>
-		///// <param name="value"></param>
-		///// <returns></returns>
-		//public static string GetXmlName(object value)
-		//{
-		//    if (value == null)
-		//    {
-		//        return null;
-		//    }
+            ///// <summary>
+            ///// Gets the name specified for use in Json serialization.
+            ///// </summary>
+            ///// <param name="value"></param>
+            ///// <returns></returns>
+            //public static string GetXmlName(object value)
+            //{
+            //    if (value == null)
+            //    {
+            //        return null;
+            //    }
 
-		//    Type type = value.GetType();
-		//    ICustomAttributeProvider memberInfo = null;
+            //    Type type = value.GetType();
+            //    ICustomAttributeProvider memberInfo = null;
 
-		//    if (type.IsEnum)
-		//    {
-		//        string name = Enum.GetName(type, value);
-		//        if (String.IsNullOrEmpty(name))
-		//        {
-		//            return null;
-		//        }
-		//        memberInfo = type.GetField(name);
-		//    }
-		//    else
-		//    {
-		//        memberInfo = value as ICustomAttributeProvider;
-		//    }
+            //    if (type.IsEnum)
+            //    {
+            //        string name = Enum.GetName(type, value);
+            //        if (String.IsNullOrEmpty(name))
+            //        {
+            //            return null;
+            //        }
+            //        memberInfo = type.GetField(name);
+            //    }
+            //    else
+            //    {
+            //        memberInfo = value as ICustomAttributeProvider;
+            //    }
 
-		//    if (memberInfo == null)
-		//    {
-		//        throw new ArgumentException();
-		//    }
+            //    if (memberInfo == null)
+            //    {
+            //        throw new ArgumentException();
+            //    }
 
-		//    XmlAttributes xmlAttributes = new XmlAttributes(memberInfo);
-		//    if (xmlAttributes.XmlElements.Count == 1 &&
-		//        !String.IsNullOrEmpty(xmlAttributes.XmlElements[0].ElementName))
-		//    {
-		//        return xmlAttributes.XmlElements[0].ElementName;
-		//    }
-		//    if (xmlAttributes.XmlAttribute != null &&
-		//        !String.IsNullOrEmpty(xmlAttributes.XmlAttribute.AttributeName))
-		//    {
-		//        return xmlAttributes.XmlAttribute.AttributeName;
-		//    }
+            //    XmlAttributes xmlAttributes = new XmlAttributes(memberInfo);
+            //    if (xmlAttributes.XmlElements.Count == 1 &&
+            //        !String.IsNullOrEmpty(xmlAttributes.XmlElements[0].ElementName))
+            //    {
+            //        return xmlAttributes.XmlElements[0].ElementName;
+            //    }
+            //    if (xmlAttributes.XmlAttribute != null &&
+            //        !String.IsNullOrEmpty(xmlAttributes.XmlAttribute.AttributeName))
+            //    {
+            //        return xmlAttributes.XmlAttribute.AttributeName;
+            //    }
 
-		//    return null;
-		//}
+            //    return null;
+            //}
 
-		#endregion Methods
-	}
+            #endregion Methods
+        }
+    }
 }

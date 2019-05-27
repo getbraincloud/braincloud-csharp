@@ -12,7 +12,7 @@ using System.IO;
 
 #if !DOT_NET
 using UnityEngine;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 #if USE_WEB_REQUEST
 #if UNITY_5_3
 using UnityEngine.Experimental.Networking;

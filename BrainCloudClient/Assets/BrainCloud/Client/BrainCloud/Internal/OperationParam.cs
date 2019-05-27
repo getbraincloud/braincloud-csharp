@@ -45,6 +45,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthenticationType = new OperationParam("authenticationType");
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthenticationToken = new OperationParam("authenticationToken");
         public static readonly OperationParam AuthenticateServiceAuthenticateExternalId = new OperationParam("externalId");
+        public static readonly OperationParam AuthenticateServiceAuthenticateUniversalId = new OperationParam("universalId");
         public static readonly OperationParam AuthenticateServiceAuthenticateGameId = new OperationParam("gameId");
         public static readonly OperationParam AuthenticateServiceAuthenticateDeviceId = new OperationParam("deviceId");
         public static readonly OperationParam AuthenticateServiceAuthenticateForceMergeFlag = new OperationParam("forceMergeFlag");

@@ -861,6 +861,64 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Attaches a univeral id to the current profile with no login capability.
+        /// </summary>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachNonLoginUniversalId(
+            string externalId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachNonLoginUniversalId, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Updates univeral id of the current profile.
+        /// </summary>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateUniversalIdLogin(
+            string externalId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.UpdateUniversalIdLogin, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Attach a new identity to a parent app
         /// </summary>
         /// <param name="externalId">

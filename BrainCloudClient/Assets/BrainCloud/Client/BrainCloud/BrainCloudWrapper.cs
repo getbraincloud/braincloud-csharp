@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Entity;
 using BrainCloud.Internal;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 #if !DOT_NET
 using UnityEngine;
@@ -98,7 +98,8 @@ public class BrainCloudWrapper
 
     private void OnApplicationQuit()
     {
-        Client.DisableRTT();
+        RTTService.DisableRTT();
+        RelayService.Disconnect();
         Client.Update();
     }
 
@@ -294,6 +295,10 @@ public class BrainCloudWrapper
     public BrainCloudMessaging MessagingService
     {
         get { return Client.MessagingService; }
+    }
+    public BrainCloudRelay RelayService
+    {
+        get { return Client.RelayService; }
     }
     #endregion
 
@@ -1542,6 +1547,7 @@ public class BrainCloudWrapper
         PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
         PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
         PlayerPrefs.SetString(prefix + PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
+        PlayerPrefs.Save();
 #endif
     }
 

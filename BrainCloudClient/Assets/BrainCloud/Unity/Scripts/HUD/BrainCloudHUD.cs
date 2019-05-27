@@ -45,10 +45,6 @@ namespace BrainCloudUnity.HUD
             }
         }
 
-        void Update()
-        {
-        }
-
         void Start()
         {
             m_screens = new List<IHUDElement>();

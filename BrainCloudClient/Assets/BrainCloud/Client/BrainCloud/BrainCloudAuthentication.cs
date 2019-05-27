@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
-using JsonFx.Json;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloud
 {
@@ -581,6 +581,85 @@ namespace BrainCloud
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvanced, data, callback);
+            _client.SendRequest(sc);
+        }
+///////////////////////////////////
+        /// <summary>
+        /// Reset Universal ID password.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetUniversalIdPassword
+        /// </remarks>
+        /// <param name="universalId">
+        /// The universalId that you want to have change password.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetUniversalIdPassword(
+            string universalId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateUniversalId.Value] = universalId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPassword, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Advanced universalId password reset using templates
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetUniversalIdPasswordAdvanced
+        /// </remarks>
+        /// <param name="appId">
+        /// The app id
+        /// </param>
+        /// <param name="universalId">
+        /// The email address to send the reset email to
+        /// </param>
+        /// <param name="serviceParams">
+        /// The parameters to send the email service. See documentation for full list
+        /// http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetUniversalIdPasswordAdvanced(
+            string universalId,
+            string serviceParams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateUniversalId.Value] = universalId;
+
+            var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
+            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordAdvanced, data, callback);
             _client.SendRequest(sc);
         }
 
