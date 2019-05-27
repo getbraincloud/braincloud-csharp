@@ -856,7 +856,7 @@ namespace BrainCloud.Internal
             Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
-            string data = "";
+            string data = "";      
             Dictionary<string, object> responseData = null;
             for (int j = 0; j < responseBundle.Length; ++j)
             {
@@ -897,7 +897,7 @@ namespace BrainCloud.Internal
                         responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
                         // send the data back as not formatted
                         data = JsonWriter.Serialize(response);
-
+                    }
                         if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
                         {
                             SaveProfileAndSessionIds(responseData, data);
