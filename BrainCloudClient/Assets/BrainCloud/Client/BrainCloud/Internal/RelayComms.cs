@@ -392,7 +392,6 @@ namespace BrainCloud.Internal
                     constructReliableHeader(out data1, out data2, in_reliable, in_ordered, in_channel);
                 }
                 header = new byte[] { in_header, data1, data2 };
-                destination = concatenateByteArrays(header, in_data);
             }
 
             destination = concatenateByteArrays(header, in_data);

@@ -27,10 +27,7 @@ namespace BrainCloudUnity
             public void OnEnable()
             {
                 BrainCloudDebugInfo.Instance.ClearSettingsData();
-
-            
                 BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
-
             }
             
             private void OnDisable()
