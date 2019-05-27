@@ -810,6 +810,33 @@ namespace BrainCloud.Internal
             return _identicalFailedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold;
         }
 
+        //save profileid and sessionId of response
+        void SaveProfileAndSessionIds(Dictionary<string, object> response)
+        {
+            if (response[OperationParam.ServiceMessageData.Value] != null)
+            {
+                responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
+
+                // send the data back as not formatted
+                data = JsonWriter.Serialize(response);
+
+                // save the session ID
+                string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
+                if (sessionId != null)
+                {
+                    SessionID = sessionId;
+                    _isAuthenticated = true;
+                }
+
+                // save the profile Id
+                string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
+                if (profileId != null)
+                {
+                    _clientRef.AuthenticationService.ProfileId = profileId;
+                }
+            }
+        }
+
         /// <summary>
         /// Handles the response bundle and calls registered callbacks.
         /// </summary>
@@ -871,30 +898,6 @@ namespace BrainCloud.Internal
                 {
                     ResetKillSwitch();
 
-                    Dictionary<string, object> responseData = null;
-                    if (response[OperationParam.ServiceMessageData.Value] != null)
-                    {
-                        responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
-
-                        // send the data back as not formatted
-                        data = JsonWriter.Serialize(response);
-
-                        // save the session ID
-                        string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
-                        if (sessionId != null)
-                        {
-                            SessionID = sessionId;
-                            _isAuthenticated = true;
-                        }
-
-                        // save the profile Id
-                        string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
-                        if (profileId != null)
-                        {
-                            _clientRef.AuthenticationService.ProfileId = profileId;
-                        }
-                    }
-
                     // now try to execute the callback
                     if (sc != null)
                     {
@@ -920,9 +923,15 @@ namespace BrainCloud.Internal
                             _clientRef.AuthenticationService.ClearSavedProfileID();
                             ResetErrorCache();
                         }
+                        //either off of authenticate or identity call, be sure to save the profileId and sessionId
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(data);
+                            SaveProfileAndSessionIds(response);
+                        }
+                        else if (operation == ServiceOperation.identity.Value)
+                        {
+                            SaveProfileAndSessionIds(response);
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
