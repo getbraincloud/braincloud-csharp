@@ -1056,7 +1056,7 @@ namespace BrainCloud.Internal
                     string errorJson = "";
 
                     //if it was an authentication call 
-                    if (sc.GetOperation() == "AUTHENTICATE")
+                    if (sc.GetOperation() == ServiceOperation.Authenticate.Value)
                     {
                         //swap the recent responses, so you have the newest one, and the one last time you came through.
                         _recentResponseJsonData[1] = _recentResponseJsonData[0];
