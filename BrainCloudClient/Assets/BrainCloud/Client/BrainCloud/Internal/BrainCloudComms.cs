@@ -856,12 +856,14 @@ namespace BrainCloud.Internal
             Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
-            string data = "";
+            string data = "";      
+            Dictionary<string, object> responseData = null;
             for (int j = 0; j < responseBundle.Length; ++j)
             {
                 response = responseBundle[j];
                 int statusCode = (int)response["status"];
                 data = "";
+                responseData = null;
                 //
                 // It's important to note here that a user error callback *might* call
                 // ResetCommunications() based on the error being returned.
@@ -889,18 +891,17 @@ namespace BrainCloud.Internal
                 if (statusCode == 200)
                 {
                     ResetKillSwitch();
-                    Dictionary<string, object> responseData = null;
+                    string service = sc.GetService();
                     if (response[OperationParam.ServiceMessageData.Value] != null)
                     {
                         responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
                         // send the data back as not formatted
                         data = JsonWriter.Serialize(response);
                     }
-
-                    string service = sc.GetService();
-                    if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
-                    {
-                        SaveProfileAndSessionIds(responseData, data);
+                        if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
+                        {
+                            SaveProfileAndSessionIds(responseData, data);
+                        }
                     }
 
                     // now try to execute the callback
