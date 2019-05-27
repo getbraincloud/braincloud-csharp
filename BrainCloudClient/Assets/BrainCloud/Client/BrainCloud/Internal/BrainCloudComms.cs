@@ -813,24 +813,27 @@ namespace BrainCloud.Internal
         //save profileid and sessionId of response
         void SaveProfileAndSessionIds(Dictionary<string, object> response)
         {
-            responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
-
-            // send the data back as not formatted
-            data = JsonWriter.Serialize(response);
-
-            // save the session ID
-            string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
-            if (sessionId != null)
+            if (response[OperationParam.ServiceMessageData.Value] != null)
             {
-                SessionID = sessionId;
-                _isAuthenticated = true;
-            }
+                responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
 
-            // save the profile Id
-            string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
-            if (profileId != null)
-            {
-                _clientRef.AuthenticationService.ProfileId = profileId;
+                // send the data back as not formatted
+                data = JsonWriter.Serialize(response);
+
+                // save the session ID
+                string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
+                if (sessionId != null)
+                {
+                    SessionID = sessionId;
+                    _isAuthenticated = true;
+                }
+
+                // save the profile Id
+                string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
+                if (profileId != null)
+                {
+                    _clientRef.AuthenticationService.ProfileId = profileId;
+                }
             }
         }
 
@@ -894,30 +897,6 @@ namespace BrainCloud.Internal
                 if (statusCode == 200)
                 {
                     ResetKillSwitch();
-
-                    // Dictionary<string, object> responseData = null;
-                    // if (response[OperationParam.ServiceMessageData.Value] != null)
-                    // {
-                    //     responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
-
-                    //     // send the data back as not formatted
-                    //     data = JsonWriter.Serialize(response);
-
-                    //     // save the session ID
-                    //     string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId.Value, null);
-                    //     if (sessionId != null)
-                    //     {
-                    //         SessionID = sessionId;
-                    //         _isAuthenticated = true;
-                    //     }
-
-                    //     // save the profile Id
-                    //     string profileId = GetJsonString(responseData, OperationParam.ProfileId.Value, null);
-                    //     if (profileId != null)
-                    //     {
-                    //         _clientRef.AuthenticationService.ProfileId = profileId;
-                    //     }
-                    // }
 
                     // now try to execute the callback
                     if (sc != null)
