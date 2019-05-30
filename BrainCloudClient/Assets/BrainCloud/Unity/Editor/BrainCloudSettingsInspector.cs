@@ -1,6 +1,7 @@
 ﻿#if !DOT_NET
 
 using UnityEditor;
+using UnityEngine;
 
 namespace BrainCloudUnity
 {
