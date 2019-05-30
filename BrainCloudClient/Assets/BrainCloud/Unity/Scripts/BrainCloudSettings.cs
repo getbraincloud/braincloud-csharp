@@ -27,13 +27,13 @@ namespace BrainCloudUnity
             public override void OnEnable()
             {
                 BrainCloudDebugInfo.Instance.ClearSettingsData();
-                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated = UpdateSettings;
+                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
                 base.OnEnable();
             }
             
             private void OnDisable()
             {
-                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated =  null;
+                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated -= UpdateSettings;
             }
             
             private void UpdateSettings()
