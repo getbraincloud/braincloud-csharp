@@ -15,7 +15,7 @@ namespace BrainCloudUnity
         /// 
         /// When in the Editor, brainCloud | Select Settings 
         /// </summary>
-
+        [InitializeOnLoad]
         public class BrainCloudSettings : BaseBrainCloudSettings
         {
             public static bool IsManualSettingsEnabled()
@@ -24,15 +24,16 @@ namespace BrainCloudUnity
                        Instance.SettingsState == BrainCloudSettingsState.DISABLED;
             }
 
-            public void OnEnable()
+            public override void OnEnable()
             {
                 BrainCloudDebugInfo.Instance.ClearSettingsData();
                 BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
+                base.OnEnable();
             }
             
             private void OnDisable()
             {
-                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated -=  UpdateSettings;
+                BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated -= UpdateSettings;
             }
             
             private void UpdateSettings()
