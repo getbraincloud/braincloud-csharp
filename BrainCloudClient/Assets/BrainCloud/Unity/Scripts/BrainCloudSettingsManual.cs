@@ -1,6 +1,4 @@
 ﻿#if !DOT_NET
-
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -55,7 +53,10 @@ namespace BrainCloudUnity
 #endif
                 }
                 s_instance.name = "BrainCloudSettingsManual";
+
+#if UNITY_EDITOR
                 BrainCloudDebugInfo.Instance.ClearSettingsData();
+#endif
                 return s_instance;
             }
         }
@@ -65,11 +66,13 @@ namespace BrainCloudUnity
          */
         private static void handlingNameUpdate()
         {
+#if UNITY_EDITOR
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudPluginSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/BrainCloudSettings.asset");
             AssetDatabase.DeleteAsset("Assets/BrainCloud/Resources/Debug/BrainCloudPluginDebugInfo.asset");
             BaseBrainCloudSettings tempBaseBrainCloudSettings = BrainCloudSettings.Instance;
             BaseBrainCloudDebugInfo tempBaseBrainCloudDebugInfo = BrainCloudDebugInfo.Instance;
+#endif
         }
 
         public string DispatcherURL
