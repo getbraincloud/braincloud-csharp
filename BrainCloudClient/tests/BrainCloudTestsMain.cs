@@ -5,7 +5,6 @@ using NUnit.Framework;
 using BrainCloud.JsonFx.Json;
 using BrainCloud;
 
-
 namespace BrainCloudTests
 {
     public class BrainCloudTestsMain
