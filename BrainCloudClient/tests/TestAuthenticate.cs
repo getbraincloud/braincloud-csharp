@@ -341,6 +341,13 @@ namespace BrainCloudTests
             TestResult tr3 = new TestResult(_bc);
             // bad errors!
             _bc.InitWithApps(ServerUrl, AppId, updatedAppSecretMap, Version);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.RunExpectFail();
             _bc.PlayerStateService.ReadUserState(tr3.ApiSuccess, tr3.ApiError);
             tr3.RunExpectFail();
 
