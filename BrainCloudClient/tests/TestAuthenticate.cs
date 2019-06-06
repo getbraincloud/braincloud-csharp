@@ -370,11 +370,11 @@ namespace BrainCloudTests
                 GetUser(Users.UserA).Password,
                 true,
                 tr5.ApiSuccess, tr5.ApiError);
-            tr5.Run();
+            tr5.RunExpectFail();
 
-            TestResult tr6 = new TestResult(_bc);
-            _bc.PlayerStateService.ReadUserState(tr6.ApiSuccess, tr6.ApiError);
-            tr6.Run();
+            // TestResult tr6 = new TestResult(_bc);
+            // _bc.PlayerStateService.ReadUserState(tr6.ApiSuccess, tr6.ApiError);
+            // tr6.Run();
         }
 
     }
