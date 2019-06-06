@@ -32,7 +32,7 @@ namespace BrainCloudTests
             LoadIds();
 
             _bc = new BrainCloudWrapper();
-            Dictionary<String, String> secretMap = new Dictionary<String, String>();
+            Dictionary<string, string> secretMap = new Dictionary<string, string>();
             secretMap.Add(AppId, Secret);
             secretMap.Add(ChildAppId, ChildSecret);
             _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);

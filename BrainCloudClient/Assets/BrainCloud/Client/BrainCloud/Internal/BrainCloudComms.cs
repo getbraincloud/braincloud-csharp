@@ -845,7 +845,10 @@ namespace BrainCloud.Internal
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             long receivedPacketId = (long)bundleObj.packetId;
-            if (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId)
+            // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
+            // errors for whcih NO_PACKET_EXPECTED are:
+            // json parsing error, missing packet id, app secret changed via the portal
+            if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
                 _clientRef.Log("Dropping duplicate packet");
                 return;
