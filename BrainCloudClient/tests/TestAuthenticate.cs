@@ -306,5 +306,67 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        [Test]
+        public void TestBadSignature()
+        {
+            //our problem is that users who refresh their app secret via the portal, the client would fail to read the response, and would retry infinitely.
+            //This threatens our servers, because huge numbers of errors related to bad signature show up, and infinitely retry to get out of this error. 
+            //Instead of updating the signature via the portal, we will put in mimic a bad signature from the client. 
+
+            Dictionary<string, string> originalAppSecretMap = new Dictionary<string, string>();
+            originalAppSecretMap.Add(AppId, Secret);
+            originalAppSecretMap.Add(ChildAppId, ChildSecret);
+
+            // mess up the app 
+            Dictionary<string, string> updatedAppSecretMap = new Dictionary<string,string>(originalAppSecretMap);
+            foreach (var kvPair in originalAppSecretMap)
+            {
+                updatedAppSecretMap[kvPair.Key] = kvPair.Value + "123";
+            }
+
+            // authenticate
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.PlayerStateService.ReadUserState(tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+
+            TestResult tr3 = new TestResult(_bc);
+            // bad errors!
+            _bc.InitWithApps(ServerUrl, AppId, updatedAppSecretMap, Version);
+            _bc.PlayerStateService.ReadUserState(tr3.ApiSuccess, tr3.ApiError);
+            tr3.RunExpectFail();
+
+            // try doing this for five seconds
+            DateTime _testPauseStart = DateTime.Now;
+            TimeSpan _testPauseDuration = TimeSpan.FromSeconds(5);
+
+            //now that we've had out tests exceed the max failed tests, we will make a timer for the test to wait out the timer in comms.
+            while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+            {
+                //putting the test into a while loop until it passes this condition
+            }
+
+            TestResult tr5 = new TestResult(_bc);
+            // back to normal
+            _bc.InitWithApps(ServerUrl, AppId, originalAppSecretMap, _bc.Client.AppVersion);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr5.ApiSuccess, tr5.ApiError);
+
+            _bc.PlayerStateService.ReadUserState(tr5.ApiSuccess, tr5.ApiError);
+            tr5.Run();
+        }
+
     }
 }
