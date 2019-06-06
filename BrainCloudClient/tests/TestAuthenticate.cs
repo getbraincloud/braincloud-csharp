@@ -311,7 +311,7 @@ namespace BrainCloudTests
         {
             //our problem is that users who refresh their app secret via the portal, the client would fail to read the response, and would retry infinitely.
             //This threatens our servers, because huge numbers of errors related to bad signature show up, and infinitely retry to get out of this error. 
-            //Instead of updating the signature via the portal, we will put in mimic a bad signature from the client. 
+            //Instead of updating the signature via the portal, we will mimic a bad signature from the client. 
 
             Dictionary<string, string> originalAppSecretMap = new Dictionary<string, string>();
             originalAppSecretMap.Add(AppId, Secret);
@@ -363,9 +363,11 @@ namespace BrainCloudTests
                 GetUser(Users.UserA).Password,
                 true,
                 tr5.ApiSuccess, tr5.ApiError);
-
-            _bc.PlayerStateService.ReadUserState(tr5.ApiSuccess, tr5.ApiError);
             tr5.Run();
+
+            TestResult tr6 = new TestResult(_bc);
+            _bc.PlayerStateService.ReadUserState(tr6.ApiSuccess, tr6.ApiError);
+            tr6.Run();
         }
 
     }
