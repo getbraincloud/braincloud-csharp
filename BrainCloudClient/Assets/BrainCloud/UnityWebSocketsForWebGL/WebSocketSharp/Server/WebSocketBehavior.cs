@@ -31,7 +31,6 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 
 using System;
 using System.Collections.Specialized;
-using System.IO;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
@@ -917,7 +916,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The file could not be opened.
     ///   </para>
     /// </exception>
-    protected void Send (FileInfo fileInfo)
+    protected void Send (System.IO.FileInfo fileInfo)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
@@ -990,7 +989,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    protected void Send (Stream stream, int length)
+    protected void Send (System.IO.Stream stream, int length)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
@@ -1084,7 +1083,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The file could not be opened.
     ///   </para>
     /// </exception>
-    protected void SendAsync (FileInfo fileInfo, Action<bool> completed)
+    protected void SendAsync (System.IO.FileInfo fileInfo, Action<bool> completed)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
@@ -1190,7 +1189,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    protected void SendAsync (Stream stream, int length, Action<bool> completed)
+    protected void SendAsync (System.IO.Stream stream, int length, Action<bool> completed)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
