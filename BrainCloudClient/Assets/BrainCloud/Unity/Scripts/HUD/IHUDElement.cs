@@ -1,8 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿
 namespace BrainCloudUnity.HUD
 {
+
+using UnityEngine;
+using System.Collections;
+
 	public interface IHUDElement
 	{
 		string GetHUDTitle();

@@ -37,12 +37,13 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.IO;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   internal class ResponseStream : Stream
   {
     #region Private Fields

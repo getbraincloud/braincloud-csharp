@@ -7,11 +7,12 @@
 // Silly class to fool unity into NOT stripping
 // conversion classes required by JsonFx
 
-#if !DOT_NET
-using System.ComponentModel;
 
+#if !DOT_NET
 namespace BrainCloud.Internal
 {
+    using System.ComponentModel;
+
     internal class JsonFxAOT
     {
         static JsonFxAOT m_aot = new JsonFxAOT();

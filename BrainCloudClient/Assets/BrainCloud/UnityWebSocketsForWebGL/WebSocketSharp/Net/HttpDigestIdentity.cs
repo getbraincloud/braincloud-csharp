@@ -26,11 +26,12 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   /// <summary>
   /// Holds the username and other parameters from
   /// an HTTP Digest authentication attempt.

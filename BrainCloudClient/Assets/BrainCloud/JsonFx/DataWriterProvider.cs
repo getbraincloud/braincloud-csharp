@@ -28,12 +28,13 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
+namespace BrainCloud
+{
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BrainCloud
-{
     namespace JsonFx.Json
     {
         public interface IDataWriterProvider

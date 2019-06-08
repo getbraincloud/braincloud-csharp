@@ -26,10 +26,11 @@
  */
 #endregion
 
-using System;
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
+
+using System;
+
   [Flags]
   internal enum HttpHeaderType
   {

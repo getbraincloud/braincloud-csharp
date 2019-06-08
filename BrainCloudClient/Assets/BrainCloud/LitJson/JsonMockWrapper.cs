@@ -9,13 +9,13 @@
  **/
 #endregion
 
+namespace BrainCloud
+{
 
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace BrainCloud
-{
     namespace LitJson
     {
         public class JsonMockWrapper : IJsonWrapper

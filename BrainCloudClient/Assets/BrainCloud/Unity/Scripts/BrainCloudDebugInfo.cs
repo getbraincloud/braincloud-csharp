@@ -1,4 +1,8 @@
-﻿#if !DOT_NET
+﻿namespace BrainCloudUnity
+{
+
+
+#if !DOT_NET
 
 #if UNITY_EDITOR
 
@@ -9,8 +13,6 @@ using UnityEditor;
 
 #endif
 
-namespace BrainCloudUnity
-{
     namespace BrainCloudSettingsDLL
     {
         /// <inheritdoc />

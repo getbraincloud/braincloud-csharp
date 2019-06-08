@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿namespace BrainCloudUnity.HUD
+{
+
+using UnityEngine;
 using System.Collections.Generic;
 
-namespace BrainCloudUnity.HUD
-{
+
     public class BrainCloudHUD : MonoBehaviour
     {
         protected int m_activeScreen;

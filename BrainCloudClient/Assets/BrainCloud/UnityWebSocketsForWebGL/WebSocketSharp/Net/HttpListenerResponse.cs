@@ -44,14 +44,15 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   /// <summary>
   /// Provides the access to a response to a request received by the <see cref="HttpListener"/>.
   /// </summary>

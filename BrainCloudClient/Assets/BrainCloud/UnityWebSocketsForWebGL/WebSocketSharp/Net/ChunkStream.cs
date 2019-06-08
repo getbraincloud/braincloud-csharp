@@ -37,6 +37,10 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -44,8 +48,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   internal class ChunkStream
   {
     #region Private Fields

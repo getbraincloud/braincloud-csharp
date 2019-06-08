@@ -40,12 +40,14 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Globalization;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   /// <summary>
   /// Provides a set of methods and properties used to manage an HTTP Cookie.
   /// </summary>

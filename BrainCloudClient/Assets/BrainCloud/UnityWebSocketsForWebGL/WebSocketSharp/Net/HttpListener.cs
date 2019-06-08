@@ -44,14 +44,15 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Principal;
 
 // TODO: Logging.
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   /// <summary>
   /// Provides a simple, programmatically controlled HTTP listener.
   /// </summary>

@@ -26,6 +26,10 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
+{
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -34,8 +38,6 @@ using System.Text;
 using System.Threading;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
-{
   internal abstract class HttpBase
   {
     #region Private Fields

@@ -44,13 +44,14 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   internal sealed class EndPointManager
   {
     #region Private Fields

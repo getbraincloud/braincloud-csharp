@@ -3,10 +3,9 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-
 namespace BrainCloud
 {
+    using System;
 //[Serializable]
     public class ServerCallback
     {

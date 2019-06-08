@@ -3,13 +3,15 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud.Internal
+{
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using BrainCloud.JsonFx.Json;
 
-namespace BrainCloud.Internal
-{
+
     internal sealed class RTTComms
     {
         /// <summary>

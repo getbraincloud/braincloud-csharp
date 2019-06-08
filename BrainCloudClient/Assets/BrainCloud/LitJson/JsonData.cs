@@ -9,15 +9,14 @@
  **/
 #endregion
 
-
+namespace BrainCloud
+{
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 
-namespace BrainCloud
-{
     namespace LitJson
     {
         public class JsonData : IJsonWrapper, IEquatable<JsonData>

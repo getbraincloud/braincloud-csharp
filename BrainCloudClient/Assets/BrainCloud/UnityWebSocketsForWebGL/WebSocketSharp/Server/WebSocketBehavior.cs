@@ -26,14 +26,15 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
+{
+
 using System;
 using System.Collections.Specialized;
 using System.IO;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
-{
   /// <summary>
   /// Exposes a set of methods and properties used to define the behavior of
   /// a WebSocket service provided by the <see cref="WebSocketServer"/> or

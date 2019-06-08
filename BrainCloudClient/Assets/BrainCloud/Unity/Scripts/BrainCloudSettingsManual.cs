@@ -1,4 +1,8 @@
-﻿#if !DOT_NET
+﻿
+namespace BrainCloudUnity
+{
+
+#if !DOT_NET
 
 using System;
 using System.Collections.Generic;
@@ -12,8 +16,6 @@ using UnityEditor;
 using BrainCloudUnity.BrainCloudSettingsDLL;
 #endif
 
-namespace BrainCloudUnity
-{
     public class BrainCloudSettingsManual : ScriptableObject
     {
 

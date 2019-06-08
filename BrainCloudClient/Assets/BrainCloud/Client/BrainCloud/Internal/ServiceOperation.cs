@@ -3,10 +3,12 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
-
 namespace BrainCloud.Internal
 {
+
+using System;
+
+
     /**
      * List of all available service operations. The values are mapped to server keys which represent that operation.
      */

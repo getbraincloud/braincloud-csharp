@@ -3,33 +3,39 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System.Runtime.InteropServices;
+namespace BrainCloud
+{
+
+    using System.Runtime.InteropServices;
 #if !DOT_NET
-using UnityEngine;
+    using UnityEngine;
+
 #endif
 
-public class RegionLocale
-{
+    public class RegionLocale
+    {
 #if UNITY_IPHONE && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern string _GetUsersCountryLocale();
 #endif
 
-    protected static string m_countryLocale = "";
-    public static string UsersCountryLocale
-    {
-        get
-        {
-            if (m_countryLocale == "")
-            {
-                GetCountryLocale();
-            }
-            return m_countryLocale;
-        }
-    }
+        protected static string m_countryLocale = "";
 
-    protected static void GetCountryLocale()
-    {
+        public static string UsersCountryLocale
+        {
+            get
+            {
+                if (m_countryLocale == "")
+                {
+                    GetCountryLocale();
+                }
+
+                return m_countryLocale;
+            }
+        }
+
+        protected static void GetCountryLocale()
+        {
 #if UNITY_IPHONE && !UNITY_EDITOR
         m_countryLocale = _GetUsersCountryLocale();
 #elif UNITY_ANDROID && !UNITY_EDITOR
@@ -41,5 +47,7 @@ public class RegionLocale
             m_countryLocale = regionLocaleNative.CallStatic<string>("GetUsersCountryLocale", activityContext);
         }
 #endif
+        }
     }
+
 }

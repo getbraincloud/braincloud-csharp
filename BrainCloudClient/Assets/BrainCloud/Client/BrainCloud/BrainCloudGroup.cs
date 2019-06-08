@@ -3,14 +3,15 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using BrainCloud.Common;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace BrainCloud
-{
     public class BrainCloudGroup
     {
         public enum Role
