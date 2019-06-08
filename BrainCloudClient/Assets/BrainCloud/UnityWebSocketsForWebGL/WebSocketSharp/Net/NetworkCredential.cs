@@ -26,10 +26,11 @@
  */
 #endregion
 
-using System;
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
+
+using System;
+
   /// <summary>
   /// Provides the credentials for the password-based authentication.
   /// </summary>

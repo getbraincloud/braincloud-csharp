@@ -3,13 +3,14 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
 using System;
 
-namespace BrainCloud
-{
     public class BrainCloudFriend
     {
         public enum FriendPlatform

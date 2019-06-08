@@ -3,12 +3,13 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 using System.Collections.Generic;
 
-namespace BrainCloud
-{
     public class BrainCloudRedemptionCode
     {
         private BrainCloudClient _client;

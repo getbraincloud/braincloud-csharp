@@ -26,13 +26,15 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets
+{
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets
-{
   /// <summary>
   /// Exposes the access to the information in a WebSocket handshake request.
   /// </summary>

@@ -37,11 +37,13 @@
  */
 #endregion
 
-using System;
-using System.IO;
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
+
+using System;
+using System.IO;
+
   internal class ChunkedRequestStream : RequestStream
   {
     #region Private Fields

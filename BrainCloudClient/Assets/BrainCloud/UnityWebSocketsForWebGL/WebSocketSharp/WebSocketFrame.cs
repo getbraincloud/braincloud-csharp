@@ -33,14 +33,16 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
+{
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
-{
   internal class WebSocketFrame : IEnumerable<byte>
   {
     #region Private Fields

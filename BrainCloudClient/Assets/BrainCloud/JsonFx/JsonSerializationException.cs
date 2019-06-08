@@ -28,10 +28,11 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
-using System;
-
 namespace BrainCloud
 {
+
+using System;
+
     namespace JsonFx.Json
     {
         public class JsonSerializationException : InvalidOperationException

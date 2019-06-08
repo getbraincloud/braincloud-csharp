@@ -3,13 +3,14 @@
 // Copyright 2018 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 using System;
 
-namespace BrainCloud
-{
 
     public class BrainCloudPresence
     {

@@ -37,6 +37,9 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -44,8 +47,6 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   /// <summary>
   /// Represents an incoming request to a <see cref="HttpListener"/> instance.
   /// </summary>

@@ -3,6 +3,9 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
@@ -19,8 +22,6 @@ using System.Globalization;
 using System;
 #endif
 
-namespace BrainCloud
-{
     #region Enums
     public enum eBrainCloudUpdateType
     {

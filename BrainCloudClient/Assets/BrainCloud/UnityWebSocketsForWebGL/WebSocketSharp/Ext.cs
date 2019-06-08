@@ -45,6 +45,10 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
+{
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -54,8 +58,6 @@ using System.Net.Sockets;
 using System.Text;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
-{
   /// <summary>
   /// Provides a set of static methods for websocket-sharp.
   /// </summary>

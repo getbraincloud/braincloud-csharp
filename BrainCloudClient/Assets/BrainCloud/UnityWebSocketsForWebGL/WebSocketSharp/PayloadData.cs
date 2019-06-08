@@ -26,12 +26,14 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
+{
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
-{
   internal class PayloadData : IEnumerable<byte>
   {
     #region Private Fields

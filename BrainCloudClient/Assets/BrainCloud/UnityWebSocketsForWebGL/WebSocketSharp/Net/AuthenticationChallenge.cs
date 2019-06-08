@@ -26,12 +26,14 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections.Specialized;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   internal class AuthenticationChallenge : AuthenticationBase
   {
     #region Private Constructors

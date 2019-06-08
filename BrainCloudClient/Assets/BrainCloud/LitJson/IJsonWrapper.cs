@@ -10,12 +10,12 @@
  **/
 #endregion
 
+namespace BrainCloud
+{
 
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace BrainCloud
-{
     namespace LitJson
     {
         public enum JsonType

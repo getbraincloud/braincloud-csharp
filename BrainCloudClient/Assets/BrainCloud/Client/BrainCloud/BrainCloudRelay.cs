@@ -3,10 +3,12 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
 namespace BrainCloud
 {
+
+using System.Collections.Generic;
+using BrainCloud.Internal;
+
     public class BrainCloudRelay
     {
         /// <summary>

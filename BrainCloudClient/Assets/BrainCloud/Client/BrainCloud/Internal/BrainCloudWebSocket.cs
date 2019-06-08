@@ -1,26 +1,30 @@
-﻿using System;
+﻿
+namespace BrainCloud.Internal
+{
+	using System;
 #if DOT_NET
 using System.Net.WebSockets;
 #elif UNITY_WEBGL && !UNITY_EDITOR
 using AOT;
 using System.Collections.Generic;
 #else
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
+	using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
+
 #endif
 
-public class BrainCloudWebSocket
-{
+	public class BrainCloudWebSocket
+	{
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
 	private NativeWebSocket NativeWebSocket;   
     private static Dictionary<int, BrainCloudWebSocket> webSocketInstances =
         new Dictionary<int, BrainCloudWebSocket>();
 #else
-    private BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket WebSocket;
+		private BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket WebSocket;
 #endif
 
-    public BrainCloudWebSocket(string url)
-    {
+		public BrainCloudWebSocket(string url)
+		{
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
 		NativeWebSocket = new NativeWebSocket(url);
@@ -30,17 +34,17 @@ public class BrainCloudWebSocket
 		NativeWebSocket.SetOnClose(NativeSocket_OnClose);
 		webSocketInstances.Add(NativeWebSocket.Id, this);
 #else
-        WebSocket = new BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket(url);
-        WebSocket.ConnectAsync();
-        WebSocket.OnOpen += WebSocket_OnOpen;
-        WebSocket.OnMessage += WebSocket_OnMessage;
-        WebSocket.OnError += WebSocket_OnError;
-        WebSocket.OnClose += WebSocket_OnClose;
+			WebSocket = new BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.WebSocket(url);
+			WebSocket.ConnectAsync();
+			WebSocket.OnOpen += WebSocket_OnOpen;
+			WebSocket.OnMessage += WebSocket_OnMessage;
+			WebSocket.OnError += WebSocket_OnError;
+			WebSocket.OnClose += WebSocket_OnClose;
 #endif
-    }
+		}
 
-    public void Close()
-    {
+		public void Close()
+		{
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
         if (NativeWebSocket == null)
@@ -49,16 +53,16 @@ public class BrainCloudWebSocket
 		NativeWebSocket.CloseAsync();
 		NativeWebSocket = null;
 #else
-        if (WebSocket == null)
-            return;
-        WebSocket.CloseAsync();
-        WebSocket.OnOpen -= WebSocket_OnOpen;
-        WebSocket.OnMessage -= WebSocket_OnMessage;
-        WebSocket.OnError -= WebSocket_OnError;
-        WebSocket.OnClose -= WebSocket_OnClose;
-        WebSocket = null;
+			if (WebSocket == null)
+				return;
+			WebSocket.CloseAsync();
+			WebSocket.OnOpen -= WebSocket_OnOpen;
+			WebSocket.OnMessage -= WebSocket_OnMessage;
+			WebSocket.OnError -= WebSocket_OnError;
+			WebSocket.OnClose -= WebSocket_OnClose;
+			WebSocket = null;
 #endif
-    }
+		}
 
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
@@ -95,66 +99,70 @@ public class BrainCloudWebSocket
 			webSocketInstances[id].OnClose(webSocketInstances[id], errorInfo.Code, errorInfo.Message);
 	}
 #else
-    private void WebSocket_OnOpen(object sender, EventArgs e)
-    {
+		private void WebSocket_OnOpen(object sender, EventArgs e)
+		{
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
 #else
-        WebSocket.TCPClient.NoDelay = true;
-        WebSocket.TCPClient.Client.NoDelay = true;
+			WebSocket.TCPClient.NoDelay = true;
+			WebSocket.TCPClient.Client.NoDelay = true;
 #endif
-        if (OnOpen != null)
-            OnOpen(this);
-    }
+			if (OnOpen != null)
+				OnOpen(this);
+		}
 
-    private void WebSocket_OnMessage(object sender, MessageEventArgs e)
-    {
-        if (OnMessage != null)
-            OnMessage(this, e.RawData);
-    }
+		private void WebSocket_OnMessage(object sender, MessageEventArgs e)
+		{
+			if (OnMessage != null)
+				OnMessage(this, e.RawData);
+		}
 
-    private void WebSocket_OnError(object sender, ErrorEventArgs e)
-    {
-        if (OnError != null)
-            OnError(this, e.Message);
-    }
+		private void WebSocket_OnError(object sender, ErrorEventArgs e)
+		{
+			if (OnError != null)
+				OnError(this, e.Message);
+		}
 
-    private void WebSocket_OnClose(object sender, CloseEventArgs e)
-    {
-        if (OnClose != null)
-            OnClose(this, e.Code, e.Reason);
-    }
+		private void WebSocket_OnClose(object sender, CloseEventArgs e)
+		{
+			if (OnClose != null)
+				OnClose(this, e.Code, e.Reason);
+		}
 #endif
 
-    public void SendAsync(byte[] packet)
-    {
-#if DOT_NET
-#elif UNITY_WEBGL && !UNITY_EDITOR
-    	NativeWebSocket.SendAsync(packet);
-#else
-        WebSocket.SendAsync(packet, null);
-#endif
-    }
-
-    public void Send(byte[] packet)
-    {
+		public void SendAsync(byte[] packet)
+		{
 #if DOT_NET
 #elif UNITY_WEBGL && !UNITY_EDITOR
     	NativeWebSocket.SendAsync(packet);
 #else
-        WebSocket.Send(packet);
+			WebSocket.SendAsync(packet, null);
 #endif
-    }
+		}
+
+		public void Send(byte[] packet)
+		{
+#if DOT_NET
+#elif UNITY_WEBGL && !UNITY_EDITOR
+    	NativeWebSocket.SendAsync(packet);
+#else
+			WebSocket.Send(packet);
+#endif
+		}
 
 
 
-    public delegate void OnOpenHandler(BrainCloudWebSocket accepted);
-    public delegate void OnMessageHandler(BrainCloudWebSocket sender, byte[] data);
-    public delegate void OnErrorHandler(BrainCloudWebSocket sender, string message);
-    public delegate void OnCloseHandler(BrainCloudWebSocket sender, int code, string reason);
+		public delegate void OnOpenHandler(BrainCloudWebSocket accepted);
 
-    public event OnOpenHandler OnOpen;
-    public event OnMessageHandler OnMessage;
-    public event OnErrorHandler OnError;
-    public event OnCloseHandler OnClose;
+		public delegate void OnMessageHandler(BrainCloudWebSocket sender, byte[] data);
+
+		public delegate void OnErrorHandler(BrainCloudWebSocket sender, string message);
+
+		public delegate void OnCloseHandler(BrainCloudWebSocket sender, int code, string reason);
+
+		public event OnOpenHandler OnOpen;
+		public event OnMessageHandler OnMessage;
+		public event OnErrorHandler OnError;
+		public event OnCloseHandler OnClose;
+	}
 }

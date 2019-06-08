@@ -1,4 +1,7 @@
-﻿#if !DOT_NET
+﻿namespace BrainCloudUnity
+{
+
+#if !DOT_NET
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -10,8 +13,6 @@ using UnityEditor;
 using BrainCloudUnity.BrainCloudSettingsDLL;
 #endif
 
-namespace BrainCloudUnity
-{
 #if UNITY_EDITOR
     [InitializeOnLoad]
 #endif

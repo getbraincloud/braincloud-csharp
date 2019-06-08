@@ -3,21 +3,26 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+
+namespace BrainCloud.Internal
+{
+
 #if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
+    
 
-using System;
-using System.IO;
+    using System;
+    using System.IO;
 
 #if !DOT_NET
-using UnityEngine;
-using BrainCloud.JsonFx.Json;
+    using UnityEngine;
+    using BrainCloud.JsonFx.Json;
 #if USE_WEB_REQUEST
 #if UNITY_5_3
 using UnityEngine.Experimental.Networking;
 #else
-using UnityEngine.Networking;
+    using UnityEngine.Networking;
 #endif
 #endif
 #else
@@ -26,9 +31,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 #endif
-
-namespace BrainCloud.Internal
-{
+    
     /*
      * FileUploader is not supported in WebPlayer && WebGL
      */

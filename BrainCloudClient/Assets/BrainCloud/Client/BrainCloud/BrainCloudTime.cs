@@ -3,10 +3,11 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using BrainCloud.Internal;
-
 namespace BrainCloud
 {
+
+using BrainCloud.Internal;
+
     public class BrainCloudTime
     {
         private BrainCloudClient _client;

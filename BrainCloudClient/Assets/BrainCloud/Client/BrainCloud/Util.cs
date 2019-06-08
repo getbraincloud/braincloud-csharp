@@ -3,6 +3,9 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+namespace BrainCloud
+{
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,10 +16,7 @@ using SysLanguageObject = UnityEngine.SystemLanguage;
 #else
 using SysLanguageObject = System.String; // todo
 #endif
-
-
-namespace BrainCloud
-{
+    
     //[Serializable]
     public class Util
     {

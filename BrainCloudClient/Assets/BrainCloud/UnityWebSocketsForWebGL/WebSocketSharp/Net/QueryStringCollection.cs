@@ -40,12 +40,13 @@
  */
 #endregion
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Collections.Specialized;
 using System.Text;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
   internal sealed class QueryStringCollection : NameValueCollection
   {
     #region Public Constructors

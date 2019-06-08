@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
-
+﻿
 namespace BrainCloud.Internal
 {
+    using System;
+    using System.IO;
+
+    
     /// <summary>
     /// Wraps another stream and provides reporting for when bytes are read or written to the stream.
     /// </summary>

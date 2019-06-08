@@ -28,11 +28,12 @@
 \*---------------------------------------------------------------------------------*/
 #endregion License
 
+namespace BrainCloud
+{
+
 using System;
 using System.Reflection;
 
-namespace BrainCloud
-{
     namespace JsonFx.Json
     {
         /// <summary>

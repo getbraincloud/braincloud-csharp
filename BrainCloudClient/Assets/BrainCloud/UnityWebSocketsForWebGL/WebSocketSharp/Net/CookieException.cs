@@ -36,12 +36,14 @@
  */
 #endregion
 
+
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
+
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
     /// <summary>
     /// The exception that is thrown when a <see cref="Cookie"/> gets an error.
     /// </summary>

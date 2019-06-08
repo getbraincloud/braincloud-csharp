@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿namespace BrainCloudUnity.HUD
+{
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using BrainCloud;
 
-namespace BrainCloudUnity.HUD
-{
 	public class HUDInfo : IHUDElement
 	{
 		public void OnHUDActivate()

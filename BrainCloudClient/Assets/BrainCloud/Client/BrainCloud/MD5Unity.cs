@@ -40,6 +40,9 @@
 
 // note that we've changed the namespace.
 
+
+namespace BrainCloud
+{
 using System;
 using System.IO;
 using System.Text;
@@ -599,4 +602,6 @@ public class MD5 : IDisposable
         Dispose(true);
     }
 }
+}
+
 }

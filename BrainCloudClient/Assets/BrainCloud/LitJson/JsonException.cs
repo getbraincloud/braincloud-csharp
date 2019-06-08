@@ -8,11 +8,11 @@
  **/
 #endregion
 
+namespace BrainCloud
+{
 
 using System;
 
-namespace BrainCloud
-{
     namespace LitJson
     {
         public class JsonException : ApplicationException
