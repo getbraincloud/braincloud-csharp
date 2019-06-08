@@ -1166,7 +1166,6 @@ using System;
 #if UNITY_EDITOR
             BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.AppendLog(log);
 #endif
-
             if (_loggingEnabled)
             {
                 string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");

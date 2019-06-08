@@ -3,11 +3,13 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-namespace BrainCloud.Internal
-{
 #if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
+
+
+namespace BrainCloud.Internal
+{
 
 using System;
 using System.Collections.Generic;
@@ -847,7 +849,10 @@ using BrainCloud.JsonFx.Json;
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             long receivedPacketId = (long)bundleObj.packetId;
-            if (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId)
+            // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
+            // errors for whcih NO_PACKET_EXPECTED are:
+            // json parsing error, missing packet id, app secret changed via the portal
+            if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
                 _clientRef.Log("Dropping duplicate packet");
                 return;

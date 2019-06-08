@@ -8,10 +8,7 @@
 
 using System.IO;
 using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-
-#endif
 
     namespace BrainCloudSettingsDLL
     {
@@ -63,7 +60,6 @@ using UnityEditor;
                 {
                     AssetDatabase.CreateFolder("Assets/BrainCloud/Resources", "Debug");
                 }
-
 
                 const string fullPath = "Assets/BrainCloud/Resources/Debug/BrainCloudDebugInfo.asset";
                 AssetDatabase.CreateAsset(_instance, fullPath);
