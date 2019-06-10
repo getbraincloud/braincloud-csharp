@@ -228,6 +228,7 @@ using BrainCloudUnity.BrainCloudSettingsDLL;
             }
         }
     }
-}
 
 #endif
+}
+
