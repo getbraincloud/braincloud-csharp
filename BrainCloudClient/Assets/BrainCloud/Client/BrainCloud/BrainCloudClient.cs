@@ -691,6 +691,11 @@ using System;
             return Authenticated;
         }
 
+        public long GetReceivedPacketId()
+        {
+            return _comms.GetReceivedPacketId();
+        }
+
         /// <summary>
         /// Returns true if brainCloud has been initialized.
         /// </summary>

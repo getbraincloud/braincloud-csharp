@@ -154,6 +154,9 @@ using BrainCloud.JsonFx.Json;
         /// </summary>
         private DateTime _authenticationTimeoutStart;
 
+        /// a checker to see what the packet Id we are receiving is 
+        private long receivedPacketIdChecker = 0;
+
         /// <summary>
         /// Debug value to introduce packet loss for testing retries etc.
         /// </summary>
@@ -201,6 +204,11 @@ using BrainCloud.JsonFx.Json;
             {
                 return _isAuthenticated;
             }
+        }
+
+        public long GetReceivedPacketId()
+        {
+            return receivedPacketIdChecker;
         }
 
         internal void setAuthenticated()
@@ -849,6 +857,7 @@ using BrainCloud.JsonFx.Json;
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             long receivedPacketId = (long)bundleObj.packetId;
+            receivedPacketIdChecker = receivedPacketId;
             // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
             // errors for whcih NO_PACKET_EXPECTED are:
             // json parsing error, missing packet id, app secret changed via the portal
