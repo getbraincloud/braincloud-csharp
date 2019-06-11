@@ -448,6 +448,7 @@ namespace BrainCloud
 
         // lobby
         public static readonly OperationParam LobbyRoomType = new OperationParam("lobbyType");
+        public static readonly OperationParam LobbyTypes = new OperationParam("lobbyTypes");
         public static readonly OperationParam LobbyRating = new OperationParam("rating");
         public static readonly OperationParam LobbyAlgorithm = new OperationParam("algo");
         public static readonly OperationParam LobbyMaxSteps = new OperationParam("maxSteps");
@@ -465,6 +466,7 @@ namespace BrainCloud
         public static readonly OperationParam LobbyToTeamName = new OperationParam("toTeamCode");
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
+        public static readonly OperationParam PingData = new OperationParam("pingData");
 
         private OperationParam(string value)
         {

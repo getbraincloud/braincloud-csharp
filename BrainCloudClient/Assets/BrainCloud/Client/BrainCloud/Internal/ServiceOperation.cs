@@ -395,18 +395,23 @@ using System;
 
         // lobby
         public static readonly ServiceOperation FindLobby = new ServiceOperation("FIND_LOBBY");
+        public static readonly ServiceOperation FindLobbyWithPingData = new ServiceOperation("FIND_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation CreateLobby = new ServiceOperation("CREATE_LOBBY");
+        public static readonly ServiceOperation CreateLobbyWithPingData = new ServiceOperation("CREATE_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_OR_CREATE_LOBBY");
+        public static readonly ServiceOperation FindOrCreateLobbyWithPingData = new ServiceOperation("FIND_OR_CREATE_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation GetLobbyData = new ServiceOperation("GET_LOBBY_DATA");
         public static readonly ServiceOperation UpdateReady = new ServiceOperation("UPDATE_READY");
         public static readonly ServiceOperation UpdateSettings = new ServiceOperation("UPDATE_SETTINGS");
         public static readonly ServiceOperation SwitchTeam = new ServiceOperation("SWITCH_TEAM");
         public static readonly ServiceOperation SendSignal = new ServiceOperation("SEND_SIGNAL");
         public static readonly ServiceOperation JoinLobby = new ServiceOperation("JOIN_LOBBY");
+        public static readonly ServiceOperation JoinLobbyWithPingData = new ServiceOperation("JOIN_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation LeaveLobby = new ServiceOperation("LEAVE_LOBBY");
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
         public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
-
+        public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
+        
         private ServiceOperation(string value)
         {
             Value = value;
