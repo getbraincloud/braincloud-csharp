@@ -107,7 +107,7 @@ using System;
        #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
-        private static BrainCloudClient s_instance;
+
 
         private string _appVersion = "";
         private Platform _platform;
@@ -183,8 +183,18 @@ using System;
         #endregion
 
         #region Constructors
-
         public BrainCloudClient()
+        {
+            init();
+        }
+
+        public BrainCloudClient(BrainCloudWrapper in_wrapper)
+        {
+            Wrapper = in_wrapper;
+            init();
+        }
+
+        private void init()
         {
             _comms = new BrainCloudComms(this);
             _rttComms = new RTTComms(this);
@@ -240,7 +250,6 @@ using System;
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms);
         }
-
         //---------------------------------------------------------------
 
         #endregion
@@ -313,6 +322,12 @@ using System;
         #endregion
 
         #region Service Properties
+
+        public BrainCloudWrapper Wrapper
+        {
+            get;
+            set;
+        }
 
         internal BrainCloudComms Comms
         {

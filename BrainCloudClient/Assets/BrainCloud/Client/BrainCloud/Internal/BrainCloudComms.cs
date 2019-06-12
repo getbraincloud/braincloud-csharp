@@ -7,7 +7,6 @@
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
-
 namespace BrainCloud.Internal
 {
 

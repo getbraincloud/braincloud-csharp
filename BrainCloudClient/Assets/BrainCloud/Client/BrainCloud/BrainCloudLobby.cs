@@ -2,13 +2,25 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
+#if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+#endif
 
 namespace BrainCloud
 {
-    using System.Collections.Generic;
-    using System.Net.NetworkInformation;
+#if USE_WEB_REQUEST
+#if UNITY_5_3
+using UnityEngine.Experimental.Networking;
+#else
+    using UnityEngine.Networking;
+#endif
+#endif
+
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
+    using System.Collections.Generic;
+    using System.Collections;
+    using System;
 
     public class BrainCloudLobby
     {
@@ -403,16 +415,12 @@ namespace BrainCloud
                 {
                     m_cachedPingResponses[regionMap.Key] = new List<long>();
                     targetStr = (string)regionInner["target"];
-
-                    pingHost(regionMap.Key, targetStr);
-                    pingHost(regionMap.Key, targetStr);
-                    pingHost(regionMap.Key, targetStr);
                     pingHost(regionMap.Key, targetStr, numRegionProcessed == m_regionPingData.Count);
                 }
             }
         }
 
-        #region private
+    #region private
         private void onRegionForLobbiesSuccess(string in_json, object in_obj)
         {
             PingData = new Dictionary<string, long>();
@@ -423,47 +431,41 @@ namespace BrainCloud
             m_lobbyTypeRegions = (Dictionary<string, object>)data["lobbyTypeRegions"];
         }
 
+        private const int MAX_PING_CALLS = 4;
         private void pingHost(string in_region, string in_target, bool in_bLastItem = false)
         {
-            Ping pinger = null;
+#if DOT_NET
+            for (int i = 0; i < MAX_PING_CALLS; ++i)
+            {
+                PingUpdateSystem(in_region, in_target, in_bLastItem);
+            }
+#else
+            in_target = "http://" + in_target;
+            for (int i = 0; i < MAX_PING_CALLS; ++i)
+            {
+                if (m_clientRef.Wrapper != null)
+                    m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target, in_bLastItem));
+            }
+#endif
+        }
 
+#if DOT_NET
+        private void PingUpdateSystem(string in_region, string in_target, bool in_bLastItem = false)
+        {
+            System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping();
             try
             {
-                pinger = new Ping();
                 pinger.PingCompleted += (o, e) =>
                 {
-                    if (e.Error == null && e.Reply.Status == IPStatus.Success)
+                    if (e.Error == null && e.Reply.Status == System.Net.NetworkInformation.IPStatus.Success)
                     {
-                        m_cachedPingResponses[in_region].Add(e.Reply.RoundtripTime);
-                        if (m_cachedPingResponses[in_region].Count == 4)
-                        {
-                            // we have all four, accumulate the top 3, and average them
-                            long totalAccumulated = 0;
-                            long highestValue = 0;
-                            foreach (var pingResponse in m_cachedPingResponses[in_region])
-                            {
-                                totalAccumulated += pingResponse;
-                                if (pingResponse > highestValue)
-                                {
-                                    highestValue = pingResponse;
-                                }
-                            }
-
-                            // accumulated ALL, now subtract the highest value
-                            totalAccumulated -= highestValue;
-                            PingData[in_region] = totalAccumulated / (m_cachedPingResponses[in_region].Count - 1);
-
-                            if (in_bLastItem && m_pingRegionSuccessCallback != null)
-                            {
-                                m_pingRegionSuccessCallback("", m_pingRegionObject);
-                            }
-                        }
+                        handlePingTimeResponse(e.Reply.RoundtripTime, in_region, in_bLastItem);
                     }
                 };
 
                 pinger.SendAsync(in_target, null);
             }
-            catch (PingException)
+            catch (System.Net.NetworkInformation.PingException)
             {
                 // Discard PingExceptions and return false;
             }
@@ -472,6 +474,50 @@ namespace BrainCloud
                 if (pinger != null)
                 {
                     pinger.Dispose();
+                }
+            }
+        }
+#else
+        private IEnumerator HandlePingReponse(string in_region, string in_target, bool in_bLastItem = false)
+        {
+            long sentPing = DateTime.Now.Ticks;
+#if USE_WEB_REQUEST
+            UnityWebRequest _request = UnityWebRequest.Get(in_target);
+            yield return _request.SendWebRequest();
+#else
+            WWWForm postForm = new WWWForm();
+            WWW _request = new WWW(in_target, postForm);
+#endif
+            if (_request.error == null && !_request.isNetworkError)
+            {
+                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region, in_bLastItem);
+            }
+        }
+#endif
+
+        private void handlePingTimeResponse(long in_responseTime, string in_region, bool in_bLastItem)
+        {
+            m_cachedPingResponses[in_region].Add(in_responseTime);
+            if (m_cachedPingResponses[in_region].Count == MAX_PING_CALLS)
+            {
+                long totalAccumulated = 0;
+                long highestValue = 0;
+                foreach (var pingResponse in m_cachedPingResponses[in_region])
+                {
+                    totalAccumulated += pingResponse;
+                    if (pingResponse > highestValue)
+                    {
+                        highestValue = pingResponse;
+                    }
+                }
+
+                // accumulated ALL, now subtract the highest value
+                totalAccumulated -= highestValue;
+                PingData[in_region] = totalAccumulated / (m_cachedPingResponses[in_region].Count - 1);
+
+                if (in_bLastItem && m_pingRegionSuccessCallback != null)
+                {
+                    m_pingRegionSuccessCallback("", m_pingRegionObject);
                 }
             }
         }
@@ -486,6 +532,6 @@ namespace BrainCloud
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-        #endregion
+#endregion
     }
 }

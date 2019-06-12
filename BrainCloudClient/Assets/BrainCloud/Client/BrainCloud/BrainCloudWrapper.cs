@@ -3,7 +3,6 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Entity;
@@ -86,7 +85,6 @@ public class BrainCloudWrapper
 
     private WrapperData _wrapperData = new WrapperData();
 
-
     //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
     //Switch to BrainCloudWrapper.GetBC();
     public BrainCloudClient Client { get; private set; }
@@ -102,6 +100,12 @@ public class BrainCloudWrapper
         RelayService.Disconnect();
         Client.Update();
     }
+#if !DOT_NET
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+#endif
 
     /// <summary>
     /// Name of this wrapper instance. Used for data loading
@@ -307,7 +311,7 @@ public class BrainCloudWrapper
     /// </summary>
     public BrainCloudWrapper()
     {
-        Client = new BrainCloudClient();
+        Client = new BrainCloudClient(this);
     }
 
     /// <summary>
@@ -317,6 +321,7 @@ public class BrainCloudWrapper
     private BrainCloudWrapper(BrainCloudClient client)
     {
         Client = client;
+        Client.Wrapper = this;
     }
 
     /// <summary>
@@ -326,7 +331,7 @@ public class BrainCloudWrapper
     /// <param name="wrapperName">string value used to differentiate saved wrapper data</param>
     public BrainCloudWrapper(string wrapperName)
     {
-        Client = new BrainCloudClient();
+        Client = new BrainCloudClient(this);
         WrapperName = wrapperName;
     }
 
