@@ -333,13 +333,13 @@ namespace BrainCloudTests
 
 
             // authenticate
-            TestResult tr = new TestResult(_bc);
+            TestResult tr1 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
-                tr.ApiSuccess, tr.ApiError);
-            if(tr.Run())
+                tr1.ApiSuccess, tr1.ApiError);
+            if(tr1.Run())
             {
                 //Check the packet coming in and compare it to the last recevied packet. if they're both -1, we may be in a repeating scenario.
                 if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
@@ -367,40 +367,9 @@ namespace BrainCloudTests
                     Assert.Fail("Repeating bad sig error");
                 }
             }
-
 
             //check state
-            TestResult tr2 = new TestResult(_bc);
-            _bc.PlayerStateService.ReadUserState(tr2.ApiSuccess, tr2.ApiError);
-            if(tr2.Run())
-            {
-                //Check the packet coming in and compare it to the last recevied packet. if they're both -1, we may be in a repeating scenario.
-                if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
-                {
-                    mostRecentPacket = _bc.Client.GetReceivedPacketId();
-                    Console.WriteLine("MOST RECENT PACKET " + _bc.Client.GetReceivedPacketId());
-                }
-                else
-                {
-                    secondMostRecentPacket = mostRecentPacket;
-                    mostRecentPacket = _bc.Client.GetReceivedPacketId();
-                    Console.WriteLine("MOST RECENT PACKET " + mostRecentPacket);
-                    Console.WriteLine("SECOND MOST RECENT PACKET " + secondMostRecentPacket);
-                }
-
-                //Is there the sign of a repeat?
-                if(mostRecentPacket == -1 && secondMostRecentPacket == -1)
-                {
-                    numRepeatBadSigFailures++;
-                }
-
-                //we shouldnt expect more than 2 times that most recent and second most recent are both bad sig errors for this test, else its repeating itself. 
-                if(numRepeatBadSigFailures > 2)
-                {
-                    Assert.Fail("Repeating bad sig error");
-                }
-            }
-
+            _bc.PlayerStateService.ReadUserState(tr1.ApiSuccess, tr1.ApiError);
 
             //init with bad secret
             TestResult tr3 = new TestResult(_bc);
@@ -441,10 +410,7 @@ namespace BrainCloudTests
 
 
             //check state
-            TestResult tr4 = new TestResult(_bc);
-            _bc.PlayerStateService.ReadUserState(tr4.ApiSuccess, tr4.ApiError);
-            //going to have a bad sig because of bad initialize.
-            tr4.RunExpectFail();
+            _bc.PlayerStateService.ReadUserState(tr3.ApiSuccess, tr3.ApiError);
 
 
             // wait some time
@@ -471,7 +437,7 @@ namespace BrainCloudTests
                 true,
                 tr5.ApiSuccess, tr5.ApiError);
             //the packetId upon re-initializinf is going to change 
-            if(tr5.RunExpectFail())
+            if(tr5.Run())
             {
                 if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
                 {
@@ -499,9 +465,7 @@ namespace BrainCloudTests
                 }
             }
 
-            TestResult tr6 = new TestResult(_bc);
-            _bc.PlayerStateService.ReadUserState(tr6.ApiSuccess, tr6.ApiError);
-            tr6.RunExpectFail();
+            _bc.PlayerStateService.ReadUserState(tr5.ApiSuccess, tr5.ApiError);
         }
     }
 }
