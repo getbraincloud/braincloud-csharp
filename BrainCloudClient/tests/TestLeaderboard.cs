@@ -12,6 +12,8 @@ namespace BrainCloudTests
         private readonly string _globalLeaderboardId = "testLeaderboard";
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
         private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
+
+        private readonly string _groupLeaderboardId = "testGroupLeaderboard";
       
         private static Random _random = new Random();
 
@@ -440,14 +442,14 @@ namespace BrainCloudTests
         // {
         //     TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
         //     tr.Run();
 
         //     var data = tr.m_response["data"] as Dictionary<string, object>;
         //     var id = (string)data["groupId"];
 
         //     _bc.LeaderboardService.PostScoreToGroupLeaderboard(
-        //         _socialLeaderboardId,
+        //         _groupLeaderboardId,
         //         id,
         //         0,
         //         Helpers.CreateJsonPair("testy", 400),
@@ -463,14 +465,14 @@ namespace BrainCloudTests
         // {
         //     TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
         //     tr.Run();
 
         //     var data = tr.m_response["data"] as Dictionary<string, object>;
         //     var id = (string)data["groupId"];
 
         //     _bc.LeaderboardService.PostScoreToGroupLeaderboard(
-        //         _socialLeaderboardId,
+        //         _groupLeaderboardId,
         //         id,
         //         100,
         //         Helpers.CreateJsonPair("testy", 400),
@@ -494,14 +496,14 @@ namespace BrainCloudTests
         // {
         //     TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
         //     tr.Run();
 
         //     var data = tr.m_response["data"] as Dictionary<string, object>;
         //     var id = (string)data["groupId"];
 
         //     _bc.LeaderboardService.GetGroupLeaderboardView(
-        //         _socialLeaderboardId,
+        //         _groupLeaderboardId,
         //         id,
         //         BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
         //         5,
@@ -526,7 +528,7 @@ namespace BrainCloudTests
         //     var id = (string)data["groupId"];
 
         //     _bc.LeaderboardService.GetGroupLeaderboardViewByVersion(
-        //         _socialLeaderboardId,
+        //         _groupLeaderboardId,
         //         id,
         //         BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
         //         5,
