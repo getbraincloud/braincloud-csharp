@@ -116,6 +116,10 @@ using System;
         public static readonly ServiceOperation GetGlobalLeaderboardEntryCount = new ServiceOperation("GET_GLOBAL_LEADERBOARD_ENTRY_COUNT");
         public static readonly ServiceOperation GetPlayerScore = new ServiceOperation("GET_PLAYER_SCORE");
         public static readonly ServiceOperation GetPlayerScoresFromLeaderboards = new ServiceOperation("GET_PLAYER_SCORES_FROM_LEADERBOARDS");
+        public static readonly ServiceOperation PostScoreToGroupLeaderboard = new ServiceOperation("POST_SCORE_TO_GROUP_LEADERBOARD");
+        public static readonly ServiceOperation RemoveGroupScore = new ServiceOperation("REMOVE_GROUP_SCORE");
+        public static readonly ServiceOperation GetGroupLeaderboardView = new ServiceOperation("GET_GROUP_LEADERBOARD_VIEW");
+        public static readonly ServiceOperation GetGroupLeaderboardViewByVersion = new ServiceOperation("GET_GROUP_LEADERBOARD_VIEW_BY_VERSION");
 
         public static readonly ServiceOperation ReadFriendsPlayerState = new ServiceOperation("READ_FRIEND_PLAYER_STATE");
 
