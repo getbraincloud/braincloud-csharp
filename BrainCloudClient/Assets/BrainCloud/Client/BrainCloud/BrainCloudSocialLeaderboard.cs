@@ -1169,10 +1169,10 @@ using BrainCloud.Internal;
         public void GetGroupLeaderboardViewByVersion(
             string leaderboardId,
             string groupId,
+            int versionId,
             SortOrder sort,
             int beforeCount,
             int afterCount,
-            int versionId,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -1186,7 +1186,7 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupLeaderboardViewByVersion, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupLeaderboardView, data, callback);
             _client.SendRequest(sc);
         }
     }

@@ -437,109 +437,109 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        // [Test]
-        // public void TestPostScoreToGroupLeaderboard()
-        // {
-        //     TestResult tr = new TestResult(_bc);
+        [Test]
+        public void TestPostScoreToGroupLeaderboard()
+        {
+            TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     var data = tr.m_response["data"] as Dictionary<string, object>;
-        //     var id = (string)data["groupId"];
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
 
-        //     _bc.LeaderboardService.PostScoreToGroupLeaderboard(
-        //         _groupLeaderboardId,
-        //         id,
-        //         0,
-        //         Helpers.CreateJsonPair("testy", 400),
-        //         tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.LeaderboardService.PostScoreToGroupLeaderboard(
+                _groupLeaderboardId,
+                id,
+                0,
+                Helpers.CreateJsonPair("testy", 400),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
-        // }
+            _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
 
-        // [Test]
-        // public void TestRemoveGroupScore()
-        // {
-        //     TestResult tr = new TestResult(_bc);
+        [Test]
+        public void TestRemoveGroupScore()
+        {
+            TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     var data = tr.m_response["data"] as Dictionary<string, object>;
-        //     var id = (string)data["groupId"];
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
 
-        //     _bc.LeaderboardService.PostScoreToGroupLeaderboard(
-        //         _groupLeaderboardId,
-        //         id,
-        //         100,
-        //         Helpers.CreateJsonPair("testy", 400),
-        //         tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.LeaderboardService.PostScoreToGroupLeaderboard(
+                _groupLeaderboardId,
+                id,
+                100,
+                Helpers.CreateJsonPair("testy", 400),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     _bc.LeaderboardService.RemoveGroupScore(
-        //         _socialLeaderboardId,
-        //         id,
-        //         -1,
-        //         tr.ApiSuccess, tr.ApiError);
+            _bc.LeaderboardService.RemoveGroupScore(
+                _groupLeaderboardId,
+                id,
+                -1,
+                tr.ApiSuccess, tr.ApiError);
 
-        //     tr.Run();
+            tr.Run();
 
-        //     _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
-        // }
+            _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
 
-        // [Test]
-        // public void TestGetGroupLeaderboardView()
-        // {
-        //     TestResult tr = new TestResult(_bc);
+        [Test]
+        public void TestGetGroupLeaderboardView()
+        {
+            TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.GroupService.CreateGroup("testGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     var data = tr.m_response["data"] as Dictionary<string, object>;
-        //     var id = (string)data["groupId"];
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
 
-        //     _bc.LeaderboardService.GetGroupLeaderboardView(
-        //         _groupLeaderboardId,
-        //         id,
-        //         BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
-        //         5,
-        //         5,
-        //         tr.ApiSuccess, tr.ApiError);
+            _bc.LeaderboardService.GetGroupLeaderboardView(
+                _groupLeaderboardId,
+                id,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                tr.ApiSuccess, tr.ApiError);
 
-        //     tr.Run();
+            tr.Run();
 
-        //     _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
-        // }
+            _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
 
-        // [Test]
-        // public void TestGetGroupLeaderboardViewByVersion()
-        // {
-        //     TestResult tr = new TestResult(_bc);
+        [Test]
+        public void TestGetGroupLeaderboardViewByVersion()
+        {
+            TestResult tr = new TestResult(_bc);
 
-        //     _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
+            _bc.GroupService.CreateGroup("testLBGroup", "test", null, null, null, null, null, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
 
-        //     var data = tr.m_response["data"] as Dictionary<string, object>;
-        //     var id = (string)data["groupId"];
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var id = (string)data["groupId"];
 
-        //     _bc.LeaderboardService.GetGroupLeaderboardViewByVersion(
-        //         _groupLeaderboardId,
-        //         id,
-        //         BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
-        //         5,
-        //         5,
-        //         1,
-        //         tr.ApiSuccess, tr.ApiError);
+            _bc.LeaderboardService.GetGroupLeaderboardViewByVersion(
+                _groupLeaderboardId,
+                id,
+                1,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                tr.ApiSuccess, tr.ApiError);
 
-        //     tr.Run();
+            tr.Run();
 
-        //     _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
-        //     tr.Run();
-        // }
+            _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
