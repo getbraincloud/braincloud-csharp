@@ -13,7 +13,7 @@ namespace BrainCloudTests
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
         private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
 
-        private readonly string _groupLeaderboardId = "testGroupLeaderboard";
+        private readonly string _groupLeaderboardId = "groupLeaderboardConfig";
       
         private static Random _random = new Random();
 
