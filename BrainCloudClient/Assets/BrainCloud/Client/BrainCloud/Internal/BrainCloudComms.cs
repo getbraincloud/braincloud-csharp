@@ -1332,7 +1332,7 @@ using UnityEngine.Experimental.Networking;
                     if (_serviceCallsWaiting.Count > 1)
                     {
                         //put auth first
-                        for (int i = 0; i < _serviceCallsWaiting.Count; ++i)
+                        for (int i = 0; i < _serviceCallsWaiting.Count && !bFoundAuthCallInCurrentMarker; ++i)
                         {
                             if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
                                 break;
