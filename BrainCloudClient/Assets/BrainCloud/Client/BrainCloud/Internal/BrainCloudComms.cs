@@ -3,16 +3,15 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-#if (UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)
+#if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
 namespace BrainCloud.Internal
 {
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
 
 #if (DOT_NET || DISABLE_SSL_CHECK)
 using System.Net;
@@ -26,13 +25,13 @@ using System.Threading;
 #if UNITY_5_3
 using UnityEngine.Experimental.Networking;
 #else
-using UnityEngine.Networking;
+    using UnityEngine.Networking;
 #endif
 #endif
-using UnityEngine;
+    using UnityEngine;
 #endif
 
-using BrainCloud.JsonFx.Json;
+    using BrainCloud.JsonFx.Json;
 
 
     #region Processed Server Call Class
@@ -871,7 +870,7 @@ using BrainCloud.JsonFx.Json;
             Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
-            string data = "";      
+            string data = "";
             Dictionary<string, object> responseData = null;
             for (int j = 0; j < responseBundle.Length; ++j)
             {
@@ -1326,15 +1325,14 @@ using BrainCloud.JsonFx.Json;
                     _serviceCallsInProgress.InsertRange(0, _serviceCallsInTimeoutQueue);
                     _serviceCallsInTimeoutQueue.Clear();
                 }
-                else
+                else if (_serviceCallsWaiting.Count > 0)
                 {
-                    if (_serviceCallsWaiting.Count > 0)
+                    bool bFoundAuthCallInCurrentMarker = false;
+
+                    if (_serviceCallsWaiting.Count > 1)
                     {
-
-                        int numMessagesWaiting = _serviceCallsWaiting.Count;
-
                         //put auth first
-                        for (int i = 0; i < numMessagesWaiting; ++i)
+                        for (int i = 0; i < _serviceCallsWaiting.Count; ++i)
                         {
                             if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
                                 break;
@@ -1343,56 +1341,38 @@ using BrainCloud.JsonFx.Json;
                             {
                                 if (i != 0)
                                 {
-                                    var call = _serviceCallsWaiting[i];
+                                    var cal2 = _serviceCallsWaiting[i];
                                     _serviceCallsWaiting.RemoveAt(i);
-                                    _serviceCallsWaiting.Insert(0, call);
-                                }
+                                    _serviceCallsWaiting.Insert(0, cal2);
 
-                                numMessagesWaiting = 1;
+                                }
+                                bFoundAuthCallInCurrentMarker = true;
                                 break;
                             }
                         }
+                    }
 
-                        if (numMessagesWaiting > _maxBundleMessages)
+                    ServerCall call = null;
+                    for (int i = 0; i < _serviceCallsWaiting.Count && i < _maxBundleMessages; ++i)
+                    {
+                        call = _serviceCallsWaiting[i];
+                        _serviceCallsWaiting.RemoveAt(i);
+                        if (call.GetType() == typeof(EndOfBundleMarker))
                         {
-                            numMessagesWaiting = _maxBundleMessages;
-                        }
-
-                        // check for end of bundle markers
-                        for (int i = 0; i < numMessagesWaiting; ++i)
-                        {
-                            if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
+                            // if the first message is marker, just throw it away
+                            if (i == 0)
                             {
-                                // if the first message is marker, just throw it away
-                                if (i == 0)
-                                {
-                                    _serviceCallsWaiting.RemoveAt(0);
-                                    --i;
-                                    --numMessagesWaiting;
-                                }
-                                else // otherwise cut off the bundle at the marker and toss marker away
-                                {
-                                    numMessagesWaiting = i;
-                                    _serviceCallsWaiting.RemoveAt(i);
-                                    break;
-                                }
+                                continue;
+                            }
+                            else // otherwise cut off the bundle at the marker and toss marker away
+                            {
+                                break;
                             }
                         }
-
-                        if (numMessagesWaiting <= 0)
-                        {
-                            return null;
-                        }
-
-                        if (_serviceCallsInProgress.Count > 0)
-                        {
-                            // this should never happen
-                            _clientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
-                            _serviceCallsInProgress.Clear();
-                        }
-
-                        _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
-                        _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
+                        _serviceCallsInProgress.Add(call);
+                        // should be the first one
+                        if (bFoundAuthCallInCurrentMarker)
+                            break;
                     }
                 }
 
@@ -1591,7 +1571,7 @@ using BrainCloud.JsonFx.Json;
                     formTable["X-APPID"] = AppId;
                 }
 #if USE_WEB_REQUEST
-                UnityWebRequest request  = UnityWebRequest.Post(ServerURL, formTable);
+                UnityWebRequest request = UnityWebRequest.Post(ServerURL, formTable);
                 request.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
                 request.SetRequestHeader("X-SIG", sig);
                 UploadHandler uh = new UploadHandlerRaw(byteArray);
