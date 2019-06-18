@@ -1325,14 +1325,14 @@ using UnityEngine.Experimental.Networking;
                     _serviceCallsInProgress.InsertRange(0, _serviceCallsInTimeoutQueue);
                     _serviceCallsInTimeoutQueue.Clear();
                 }
-                else if (_serviceCallsWaiting.Count > 0)
+                else
                 {
-                    bool bFoundAuthCallInCurrentMarker = false;
-
-                    if (_serviceCallsWaiting.Count > 1)
+                    if (_serviceCallsWaiting.Count > 0)
                     {
+                        int numMessagesWaiting = _serviceCallsWaiting.Count;
+
                         //put auth first
-                        for (int i = 0; i < _serviceCallsWaiting.Count && !bFoundAuthCallInCurrentMarker; ++i)
+                        for (int i = 0; i < numMessagesWaiting; ++i)
                         {
                             if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
                                 break;
@@ -1341,38 +1341,56 @@ using UnityEngine.Experimental.Networking;
                             {
                                 if (i != 0)
                                 {
-                                    var cal2 = _serviceCallsWaiting[i];
+                                    var call = _serviceCallsWaiting[i];
                                     _serviceCallsWaiting.RemoveAt(i);
-                                    _serviceCallsWaiting.Insert(0, cal2);
-
+                                    _serviceCallsWaiting.Insert(0, call);
                                 }
-                                bFoundAuthCallInCurrentMarker = true;
-                                break;
-                            }
-                        }
-                    }
 
-                    ServerCall call = null;
-                    for (int i = 0; i < _serviceCallsWaiting.Count && i < _maxBundleMessages; ++i)
-                    {
-                        call = _serviceCallsWaiting[i];
-                        _serviceCallsWaiting.RemoveAt(i);
-                        if (call.GetType() == typeof(EndOfBundleMarker))
-                        {
-                            // if the first message is marker, just throw it away
-                            if (i == 0)
-                            {
-                                continue;
-                            }
-                            else // otherwise cut off the bundle at the marker and toss marker away
-                            {
+                                numMessagesWaiting = 1;
                                 break;
                             }
                         }
-                        _serviceCallsInProgress.Add(call);
-                        // should be the first one
-                        if (bFoundAuthCallInCurrentMarker)
-                            break;
+
+                        if (numMessagesWaiting > _maxBundleMessages)
+                        {
+                            numMessagesWaiting = _maxBundleMessages;
+                        }
+
+                        // check for end of bundle markers
+                        for (int i = 0; i < numMessagesWaiting; ++i)
+                        {
+                            if (_serviceCallsWaiting[i].GetType() == typeof(EndOfBundleMarker))
+                            {
+                                // if the first message is marker, just throw it away
+                                if (i == 0)
+                                {
+                                    _serviceCallsWaiting.RemoveAt(0);
+                                    --i;
+                                    --numMessagesWaiting;
+                                }
+                                else // otherwise cut off the bundle at the marker and toss marker away
+                                {
+                                    numMessagesWaiting = i;
+                                    _serviceCallsWaiting.RemoveAt(i);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (numMessagesWaiting <= 0)
+                        {
+                            return null;
+                        }
+
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            // this should never happen
+                            _clientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            _serviceCallsInProgress.Clear();
+                        }
+
+                        _serviceCallsInProgress = _serviceCallsWaiting.GetRange(0, numMessagesWaiting);
+                        _serviceCallsWaiting.RemoveRange(0, numMessagesWaiting);
                     }
                 }
 
