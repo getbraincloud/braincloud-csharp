@@ -332,6 +332,8 @@ using System;
         public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
         public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
         public static readonly ServiceOperation SetGroupOpen = new ServiceOperation("SET_GROUP_OPEN");
+        public static readonly ServiceOperation GetRandomGroupsMatching = new ServiceOperation("GET_RANDOM_GROUPS_MATCHING");
+        public static readonly ServiceOperation UpdateGroupSummaryData = new ServiceOperation("UPDATE_GROUP_SUMMARY_DATA");
 
         //mail
         public static readonly ServiceOperation SendBasicEmail = new ServiceOperation("SEND_BASIC_EMAIL");

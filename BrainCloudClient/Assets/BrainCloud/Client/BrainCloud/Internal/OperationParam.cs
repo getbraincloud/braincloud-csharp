@@ -389,12 +389,15 @@ namespace BrainCloud
         public static readonly OperationParam GroupOwnerAttributes = new OperationParam("ownerAttributes");
         public static readonly OperationParam GroupDefaultMemberAttributes = new OperationParam("defaultMemberAttributes");
         public static readonly OperationParam GroupIsOwnedByGroupMember = new OperationParam("isOwnedByGroupMember");
+        public static readonly OperationParam GroupSummaryData = new OperationParam("summaryData");
         public static readonly OperationParam GroupEntityId = new OperationParam("entityId");
         public static readonly OperationParam GroupVersion = new OperationParam("version");
         public static readonly OperationParam GroupContext = new OperationParam("context");
         public static readonly OperationParam GroupPageOffset = new OperationParam("pageOffset");
         public static readonly OperationParam GroupAutoJoinStrategy = new OperationParam("autoJoinStrategy");
         public static readonly OperationParam GroupWhere = new OperationParam("where");
+        public static readonly OperationParam GroupMaxReturn = new OperationParam("maxReturn");
+        
 
         //mail
         public static readonly OperationParam Subject = new OperationParam("subject");

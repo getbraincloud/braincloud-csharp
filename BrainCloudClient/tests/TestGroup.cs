@@ -153,6 +153,16 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestCreateGroupWithSummaryData()
+        {
+            Authenticate(Users.UserA);
+            CreateGroupWithSummaryData();
+            DeleteGroup();
+            Logout();
+        }
+
+
+        [Test]
         public void TestCreateGroupEntity()
         {
             Authenticate(Users.UserA);
@@ -646,6 +656,42 @@ namespace BrainCloudTests
             Logout();
         }
 
+        
+        [Test]
+        public void TestUpdateGroupSummaryData()
+        {
+            Authenticate(Users.UserA);
+            CreateGroupWithSummaryData();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.UpdateGroupSummaryData(
+                _groupId,
+                1,
+                Helpers.CreateJsonPair("testInc", 123),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+            Logout();
+        }
+
+        [Test]
+        public void TestGetRandomGroupsMatching()
+        {
+            Authenticate(Users.UserA);
+            CreateGroupWithSummaryData();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.GetRandomGroupsMatching(
+                "{\"groupType\": \"BLUE\"}",
+                20,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            DeleteGroup();
+            Logout();
+        }
+
         #region Helpers
 
         private void CreateGroupAsUserA(bool isOpen = false)
@@ -694,6 +740,27 @@ namespace BrainCloudTests
                 Helpers.CreateJsonPair("testInc", 123),
                 Helpers.CreateJsonPair("test", "test"),
                 Helpers.CreateJsonPair("test", "test"),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            _groupId = (string)data["groupId"];
+        }
+
+        private void CreateGroupWithSummaryData(bool isOpen = false)
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.GroupService.CreateGroup(
+                "testGroup",
+                _groupType,
+                isOpen,
+                new GroupACL(GroupACL.Access.ReadWrite, GroupACL.Access.ReadWrite),
+                Helpers.CreateJsonPair("testInc", 123),
+                Helpers.CreateJsonPair("test", "test"),
+                Helpers.CreateJsonPair("test", "test"),
+                Helpers.CreateJsonPair("summaryData", "summary"),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
