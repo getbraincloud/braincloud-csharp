@@ -370,8 +370,8 @@ using UnityEngine.Experimental.Networking;
         }
 
         /// <summary>
-        /// Retrieves the region settings for each of the given lobby types. Upon SuccessCallback, will start to PING all 
-        /// regions within response.  Once that completes, the associated region Ping Data is retrievable via PingData
+        /// Retrieves the region settings for each of the given lobby types. Upon SuccessCallback or afterwards, call PingRegions to start retrieving appropriate data.  
+        /// Once that completes, the associated region Ping Data is retrievable via PingData and all associated <>WithPingData APIs are useable
         /// </summary>
         /// 
         public void GetRegionsForLobbies(string[] in_roomTypes, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -384,6 +384,11 @@ using UnityEngine.Experimental.Networking;
             m_clientRef.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Retrieves associated PingData averages to be used with all associated <>WithPingData APIs.
+        /// Call anytime after GetRegionsForLobbies before proceeding. 
+        /// </summary>
+        /// 
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             m_pingRegionSuccessCallback = success;
@@ -410,7 +415,7 @@ using UnityEngine.Experimental.Networking;
             else
             {
                 buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
-                    "Please call GetRegionsForLobbies and await the response before calling PingRegions.", cbObject);
+                    "No Regions to Ping. Please call GetRegionsForLobbies and await the response before calling PingRegions.", cbObject);
             }
         }
 
