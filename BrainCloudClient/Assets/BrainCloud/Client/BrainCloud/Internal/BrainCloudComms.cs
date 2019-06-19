@@ -685,7 +685,6 @@ using UnityEngine.Experimental.Networking;
             HandleResponseBundle(jsonError);
         }
 
-
         /// <summary>
         /// Shuts down the communications layer.
         /// Make sure to only call this from the main thread!

@@ -87,11 +87,8 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-            data[OperationParam.PingData.Value] = PingData;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindLobbyWithPingData, data, callback);
-            m_clientRef.SendRequest(sc);
+            attachPingDataAndSend(data, ServiceOperation.FindLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -141,11 +138,7 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-            data[OperationParam.PingData.Value] = PingData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CreateLobbyWithPingData, data, callback);
-            m_clientRef.SendRequest(sc);
+            attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -209,11 +202,8 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-            data[OperationParam.PingData.Value] = PingData;
 
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindOrCreateLobbyWithPingData, data, callback);
-            m_clientRef.SendRequest(sc);
+            attachPingDataAndSend(data, ServiceOperation.FindOrCreateLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -332,11 +322,7 @@ using UnityEngine.Experimental.Networking;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
-            data[OperationParam.PingData.Value] = PingData;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.JoinLobbyWithPingData, data, callback);
-            m_clientRef.SendRequest(sc);
+            attachPingDataAndSend(data, ServiceOperation.JoinLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -407,20 +393,62 @@ using UnityEngine.Experimental.Networking;
             Dictionary<string, object> regionInner = null;
             string targetStr = "";
             int numRegionProcessed = 0;
-            foreach (var regionMap in m_regionPingData)
+            if (m_regionPingData.Count > 0)
             {
-                regionInner = (Dictionary<string, object>)regionMap.Value;
-                ++numRegionProcessed;
-                if ((string)regionInner["type"] == "PING")
+                foreach (var regionMap in m_regionPingData)
                 {
-                    m_cachedPingResponses[regionMap.Key] = new List<long>();
-                    targetStr = (string)regionInner["target"];
-                    pingHost(regionMap.Key, targetStr, numRegionProcessed == m_regionPingData.Count);
+                    regionInner = (Dictionary<string, object>)regionMap.Value;
+                    ++numRegionProcessed;
+                    if ((string)regionInner["type"] == "PING")
+                    {
+                        m_cachedPingResponses[regionMap.Key] = new List<long>();
+                        targetStr = (string)regionInner["target"];
+                        pingHost(regionMap.Key, targetStr, numRegionProcessed == m_regionPingData.Count);
+                    }
                 }
+            }
+            else
+            {
+                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                    "Please call GetRegionsForLobbies and await the response before calling PingRegions.", cbObject);
             }
         }
 
-    #region private
+        #region private
+        private void attachPingDataAndSend(Dictionary<string, object> in_data, ServiceOperation in_operation,
+                                SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            bool hasPingData = PingData.Count > 0;
+            if (hasPingData)
+            {
+                in_data[OperationParam.PingData.Value] = PingData;
+
+                ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+                ServerCall sc = new ServerCall(ServiceName.Lobby, in_operation, in_data, callback);
+                m_clientRef.SendRequest(sc);
+            }
+            else 
+            {
+                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER, 
+                    "Processing exception (message): Required message parameter 'pingData' is missing.  Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.", cbObject);
+            }
+        }
+
+        private void buildAndSendFailure(FailureCallback in_failure, int reasonCode, string status_message, object cbObject = null)
+        {
+            if (in_failure != null)
+            {
+                Dictionary<string, object> jsonError = new Dictionary<string, object>();
+                jsonError["reason_code"] = reasonCode;
+                jsonError["status"] = 400;
+                jsonError["status_message"] = status_message;
+                jsonError["severity"] = "ERROR";
+
+                // fail out right away with missing parameters error
+                in_failure(400, reasonCode, JsonWriter.Serialize(jsonError), cbObject);
+            }   
+        }
+
         private void onRegionForLobbiesSuccess(string in_json, object in_obj)
         {
             PingData = new Dictionary<string, long>();
@@ -431,7 +459,6 @@ using UnityEngine.Experimental.Networking;
             m_lobbyTypeRegions = (Dictionary<string, object>)data["lobbyTypeRegions"];
         }
 
-        private const int MAX_PING_CALLS = 4;
         private void pingHost(string in_region, string in_target, bool in_bLastItem = false)
         {
 #if DOT_NET
@@ -528,6 +555,7 @@ using UnityEngine.Experimental.Networking;
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;
 
+        private const int MAX_PING_CALLS = 4;
         /// <summary>
         /// Reference to the brainCloud client object
         /// </summary>
