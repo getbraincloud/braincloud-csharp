@@ -73,6 +73,7 @@ using UnityEngine.Experimental.Networking;
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Console.WriteLine("TRYING TO FIND LOBBY WITH PING DATA");
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
             data[OperationParam.LobbyRating.Value] = in_rating;
@@ -87,8 +88,10 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+            Console.WriteLine("DATA IS SET");
 
             attachPingDataAndSend(data, ServiceOperation.FindLobbyWithPingData, success, failure, cbObject);
+            Console.WriteLine("ATTACHED AND SENT");
         }
 
         /// <summary>
@@ -127,6 +130,7 @@ using UnityEngine.Experimental.Networking;
             Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Console.WriteLine("TRYING TO CREATE LOBBY WITH PING DATA");
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
             data[OperationParam.LobbyRating.Value] = in_rating;
@@ -138,7 +142,10 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
+            Console.WriteLine("DATA IS SET");
             attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithPingData, success, failure, cbObject);
+            Console.WriteLine("ATTACHED AND SENT");
         }
 
         /// <summary>
@@ -312,6 +319,7 @@ using UnityEngine.Experimental.Networking;
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Console.WriteLine("TRYING TO JOIN LOBBY WITH PING DATA");
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             if (in_otherUserCxIds != null)
@@ -322,7 +330,10 @@ using UnityEngine.Experimental.Networking;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            Console.WriteLine("DATA IS SET");
+
             attachPingDataAndSend(data, ServiceOperation.JoinLobbyWithPingData, success, failure, cbObject);
+            Console.WriteLine("ATTACHED AND SENT");
         }
 
         /// <summary>
@@ -376,6 +387,7 @@ using UnityEngine.Experimental.Networking;
         /// 
         public void GetRegionsForLobbies(string[] in_roomTypes, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Console.WriteLine("GETTING REGIONS");
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyTypes.Value] = in_roomTypes;
 
@@ -391,6 +403,7 @@ using UnityEngine.Experimental.Networking;
         /// 
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
+            Console.WriteLine("PINGING ALL REGIONS");
             m_pingRegionSuccessCallback = success;
             m_pingRegionObject = cbObject;
 
@@ -400,6 +413,7 @@ using UnityEngine.Experimental.Networking;
             int numRegionProcessed = 0;
             if (m_regionPingData.Count > 0)
             {
+                Console.WriteLine("THERES REGIONS!! " + m_regionPingData.Count);
                 foreach (var regionMap in m_regionPingData)
                 {
                     regionInner = (Dictionary<string, object>)regionMap.Value;
@@ -414,6 +428,7 @@ using UnityEngine.Experimental.Networking;
             }
             else
             {
+                Console.WriteLine("FAIIIIIIIL - NO REGIONS TO PING");
                 buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
                     "No Regions to Ping. Please call GetRegionsForLobbies and await the response before calling PingRegions.", cbObject);
             }
@@ -423,17 +438,23 @@ using UnityEngine.Experimental.Networking;
         private void attachPingDataAndSend(Dictionary<string, object> in_data, ServiceOperation in_operation,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            bool hasPingData = PingData.Count > 0;
+            Console.WriteLine("WE ARE IN THE ATTACH AND SEND DATA CALL");
+
+            bool hasPingData = PingData != null && PingData.Count > 0;
+            Console.WriteLine(PingData);
             if (hasPingData)
             {
+                Console.WriteLine("THERE'S PING DATA");
                 in_data[OperationParam.PingData.Value] = PingData;
 
                 ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
                 ServerCall sc = new ServerCall(ServiceName.Lobby, in_operation, in_data, callback);
                 m_clientRef.SendRequest(sc);
+                Console.WriteLine("SO WE MAKE A CALL!");
             }
             else 
             {
+                Console.WriteLine("YOUVE FAILED ME!!!!!!! PING DATA IS MISSING :(");
                 buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER, 
                     "Processing exception (message): Required message parameter 'pingData' is missing.  Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.", cbObject);
             }
@@ -512,6 +533,7 @@ using UnityEngine.Experimental.Networking;
 #else
         private IEnumerator HandlePingReponse(string in_region, string in_target, bool in_bLastItem = false)
         {
+            Console.WriteLine("WE ARE HANDLING THE PING RESPONSE");
             long sentPing = DateTime.Now.Ticks;
 #if USE_WEB_REQUEST
             UnityWebRequest _request = UnityWebRequest.Get(in_target);
@@ -529,11 +551,16 @@ using UnityEngine.Experimental.Networking;
 
         private void handlePingTimeResponse(long in_responseTime, string in_region, bool in_bLastItem)
         {
+            Console.WriteLine("WE ARE HANDLING THE PING TIME RESPONSE");
+            Console.WriteLine("RESPONSE TIME: " + in_responseTime);
+            Console.WriteLine("REGION: " + in_region);
             m_cachedPingResponses[in_region].Add(in_responseTime);
             if (m_cachedPingResponses[in_region].Count == MAX_PING_CALLS)
             {
+                Console.WriteLine("WE'VE REACHED MAX PING CALLS");
                 long totalAccumulated = 0;
                 long highestValue = 0;
+                Console.WriteLine("NOW SORTING TO FIND PING");
                 foreach (var pingResponse in m_cachedPingResponses[in_region])
                 {
                     totalAccumulated += pingResponse;
@@ -549,13 +576,14 @@ using UnityEngine.Experimental.Networking;
 
                 if (in_bLastItem && m_pingRegionSuccessCallback != null)
                 {
+                    Console.WriteLine("SUCCESS, REGIONS FOUND AND PINGED");
                     m_pingRegionSuccessCallback("", m_pingRegionObject);
                 }
             }
         }
 
-        private Dictionary<string, object> m_regionPingData;
-        private Dictionary<string, object> m_lobbyTypeRegions;
+        private Dictionary<string, object> m_regionPingData = new Dictionary<string, object>();
+        private Dictionary<string, object> m_lobbyTypeRegions = new Dictionary<string, object>();
         private Dictionary<string, List<long>> m_cachedPingResponses = new Dictionary<string, List<long>>();
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;

@@ -8,81 +8,168 @@ using System.Threading;
 using System.Collections.Generic;
 
 
-// namespace BrainCloudTests
-// {   
-//     public class RTTCallback : BrainCloud :: RTTCallback
-//     {
-//         BrainCloudClient m_pBC;
-//         String m_expectedServiceName;
-//         String m_expectedOperation;
-//         int m_waitTime;
-//         bool m_receivedCallback;
-//         public RTTCallback(
-//             BrainCloudClient pBC,
-//             string expectedServiceName,
-//             string expectedOperation, 
-//             int waitTime)
-//             {
-//                 m_pBC = pBC;
-//                 m_expectedServiceName = expectedServiceName;
-//                 m_expectedOperation = expectedOperation;
-//                 m_waitTime = waitTime;
-//             }
+namespace BrainCloudTests
+{   
+    [TestFixture]
+    public class TestRTT : TestFixtureBase
+    {
+        // [Test]
+        // public void TestEnableRTTAfterRegister()
+        // {
+        //     TestResult trA = new TestResult(_bc);
+        //     _bc.Client.AuthenticationService.AuthenticateUniversal(GetUser(Users.UserA).Id, GetUser(Users.UserA).Password, false, trA.ApiSuccess, trA.ApiError);
+        //     trA.Run();
+            
+        //     TestResult tr4 = new TestResult(_bc);
+        //     _bc.RTTService.RegisterRTTChatCallback(onRTTCallback);
+        //     tr4.Run();
 
-//         public void rTTCallback(string eventJson)
-//         {
-//             Dictionary<string, object> data = new Dictionary<string, object>();
-//             data = JsonReader.Deserialize<Dictionary<string, object>>(eventJson);
-//             string service = data["service"].ToString();
-//             string operation = data["operation"].ToString();
+        //     TestResult tr = new TestResult(_bc);
+        //     _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+        //     tr.Run();
 
-//             if(service == m_expectedServiceName && (operation == m_expectedOperation || m_expectedOperation == ""))
-//             {
-//                 m_receivedCallback = true;
-//             }
-//         }
+        //     TestResult tr2 = new TestResult(_bc);
+        //     _bc.ChatService.GetChannelId("gl", "valid", tr2.ApiSuccess, tr2.ApiError);
+        //     tr2.Run();
+        //     var data = tr.m_response["data"] as Dictionary<string, object>;
+        //     string channelId = data["channelId"] as string;
 
-//         bool receivedCallback()
-//         {
-//             TimeSpan timeToWait = TimeSpan.FromSeconds(m_waitTime);
-//             DateTime startTime = DateTime.Now;
-//             ///wait the time
-//             while((DateTime.Now.Subtract(startTime) <= timeToWait))
-//             {
-//                 m_pBC.Update();
-//                 if(m_receivedCallback)
-//                 {
-//                     return true;
-//                 }
-//                 Thread.Sleep(100);
-//             }
-//             return false; //timed out
-//         }
+        //     TestResult tr3 = new TestResult(_bc);
+        //     _bc.ChatService.ChannelConnect(channelId, 50, tr3.ApiSuccess, tr3.ApiError);
+        //     tr3.Run();
 
-//         void reset()
-//         {
-//             m_receivedCallback = false;
-//         }
-//     }
+        //     // wait some time
+        //     DateTime _testPauseStart = DateTime.Now;
+        //     TimeSpan _testPauseDuration = TimeSpan.FromSeconds(0.25);
 
-//     [TestFixture]
-//     public class TestRTT : TestFixtureBase
-//     {
-// 		//these tests also test requestClientConnection because its called first in EnableRtt. Authenticates and registers automatically.
-//         [Test]
-//         public void TestRTTCalls()
-//         {
-//             TestResult tr = new TestResult(_bc);
-//             _bc.Client.EnableRTT(eRTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
-//             tr.Run();
+        //     //make a timer for the test.
+        //     while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+        //     {
+        //         //putting the test into a while loop until it passes this condition
+        //         float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
+        //         Console.WriteLine(time);
+        //     }
 
-//             RTTCallback rttcallback = new RTTCallback(_bc.Client, "event", "SEND", 10);
-//             TestResult tr2 = new TestResult(_bc);
-//             _bc.Client.RegisterRTTEventCallback(rttcallback);
+        //     TestResult tr5 = new TestResult(_bc);
+        //     _bc.ChatService.PostChatMessageSimple(channelId, "test message", true, tr5.ApiSuccess, tr5.ApiError);
+        //     tr5.Run();
 
-//             TestResult trx = new TestResult(_bc);
-//             _bc.Client.DisableRTT();
-//             trx.Run();
-//         }
-//     }
-// }
+        //     //now to to check that we received callback.
+        //     //Is there a way we do this usually?
+
+        //     //make a timer for the test.
+        //     while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+        //     {
+        //         //putting the test into a while loop until it passes this condition
+        //         float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
+        //         Console.WriteLine(time);
+        //     }
+
+        //     TestResult tr6 = new TestResult(_bc);
+        //     _bc.RTTService.DeregisterRTTChatCallback();
+        //     tr6.Run();
+        // }
+
+        // [Test]
+        // public void TestEnableRTTBeforeRegister()
+        // {
+        //     TestResult trA = new TestResult(_bc);
+        //     _bc.Client.AuthenticationService.AuthenticateUniversal(GetUser(Users.UserA).Id, GetUser(Users.UserA).Password, false, trA.ApiSuccess, trA.ApiError);
+        //     trA.Run();
+            
+        //     TestResult tr = new TestResult(_bc);
+        //     _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+        //     tr.Run();
+
+        //     // wait some time
+        //     DateTime _testPauseStart = DateTime.Now;
+        //     TimeSpan _testPauseDuration = TimeSpan.FromSeconds(2);
+
+        //     //make a timer for the test.
+        //     while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+        //     {
+        //         //putting the test into a while loop until it passes this condition
+        //         float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
+        //         Console.WriteLine(time);
+        //     }
+
+        //     TestResult tr2 = new TestResult(_bc);
+        //     _bc.ChatService.GetChannelId("gl", "valid", tr2.ApiSuccess, tr2.ApiError);
+        //     tr2.Run();
+        //     var data = tr.m_response["data"] as Dictionary<string, object>;
+        //     string channelId = data["channelId"] as string;
+
+        //     TestResult tr3 = new TestResult(_bc);
+        //     _bc.ChatService.ChannelConnect(channelId, 50, tr3.ApiSuccess, tr3.ApiError);
+        //     tr3.Run();
+
+        //     TestResult tr4 = new TestResult(_bc);
+        //     _bc.RTTService.RegisterRTTChatCallback(onRTTCallback);
+        //     tr4.Run();
+
+        //     _testPauseStart = DateTime.Now;
+        //     _testPauseDuration = TimeSpan.FromSeconds(1);
+        //     //make a timer for the test.
+        //     while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+        //     {
+        //         //putting the test into a while loop until it passes this condition
+        //         float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
+        //         Console.WriteLine(time);
+        //     }
+
+        //     TestResult tr5 = new TestResult(_bc);
+        //     _bc.ChatService.PostChatMessageSimple(channelId, "test message", true, tr5.ApiSuccess, tr5.ApiError);
+        //     tr5.Run();
+
+        //     //now to to check that we received callback.
+        //     //Is there a way we do this usually?
+
+        //     _testPauseStart = DateTime.Now;
+        //     _testPauseDuration = TimeSpan.FromSeconds(1);
+
+        //     //make a timer for the test.
+        //     while (!(DateTime.Now.Subtract(_testPauseStart) >= _testPauseDuration))
+        //     {
+        //         //putting the test into a while loop until it passes this condition
+        //         float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
+        //         Console.WriteLine(time);
+        //     }
+
+        //     TestResult tr6 = new TestResult(_bc);
+        //     _bc.RTTService.DeregisterRTTChatCallback();
+        //     tr6.Run();
+        // }
+
+        [Test]
+        public void TestEnableRTTWithRegister()
+        {
+            TestResult tr1 = new TestResult(_bc);
+            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, (SuccessCallback)OnEnableRTTSuccess + tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.RTTService.RegisterRTTChatCallback(onRTTChatCallback);
+            tr2.Run();
+        }
+
+        public void OnEnableRTTSuccess(string eventJson, object obj)
+        {
+            TestResult tr1 = new TestResult(_bc);
+            _bc.ChatService.GetChannelId("gl", "valid", tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            var data = tr1.m_response["data"] as Dictionary<string, object>;
+            string channelId = data["channelId"] as string;
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.ChatService.ChannelConnect(channelId, 50, tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+        }
+
+        public void onRTTChatCallback(string eventJson)
+        { 
+              // the callback responded to
+              Console.WriteLine("CHAT CALLBACK");
+        }
+    }
+}

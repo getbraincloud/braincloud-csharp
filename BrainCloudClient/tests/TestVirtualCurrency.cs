@@ -38,12 +38,12 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestResetCurrency()
+        public void TestHEARTBEAT()
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.VirtualCurrencyService.ResetCurrency(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            _bc.VirtualCurrencyService.GetPeerCurrency(null, "_invalid_peer_code_", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.PROFILE_PEER_NOT_FOUND);
         }
     }
 }

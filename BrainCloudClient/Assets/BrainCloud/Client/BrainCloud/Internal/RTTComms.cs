@@ -36,8 +36,10 @@ using BrainCloud.JsonFx.Json;
         /// <param name="cb_object"></param>
         public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
+            Console.WriteLine("WE ARE USING ENABLE RTT NOW");
             if (!m_bIsConnected)
             {
+                Console.WriteLine("WE'RE NOT CONNECTED< SO LETS TRY REQUEST ONE");
                 m_connectedSuccessCallback = in_success;
                 m_connectionFailureCallback = in_failure;
                 m_connectedObj = cb_object;
@@ -69,6 +71,8 @@ using BrainCloud.JsonFx.Json;
         public void RegisterRTTCallback(ServiceName in_serviceName, RTTCallback in_callback)
         {
             m_registeredCallbacks[in_serviceName.Value.ToLower()] = in_callback;
+
+            Console.WriteLine("LETS REGISTER THIS KIND OF CALLBACK : " + in_serviceName.ToString());
         }
 
         /// <summary>
@@ -375,6 +379,7 @@ using BrainCloud.JsonFx.Json;
 
                 connectWebSocket();
             }
+            Console.WriteLine("EHHHHHHHHHHHHHHHHH RTTCONNECTION SUCCESS!!!!!!!");
         }
 
         /// <summary>
@@ -417,6 +422,8 @@ using BrainCloud.JsonFx.Json;
             m_bIsConnected = false;
             m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
+
+            Console.WriteLine("GASSSSSSSSSSP WE'VE FAILED!!!!!!!!!!!!!!");
         }
 
         private void addRTTCommandResponse(RTTCommandResponse in_command)
