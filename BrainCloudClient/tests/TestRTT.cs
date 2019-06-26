@@ -159,11 +159,19 @@ namespace BrainCloudTests
             tr1.Run();
 
             var data = tr1.m_response["data"] as Dictionary<string, object>;
-            string channelId = data["channelId"] as string;
+            m_channelId = data["channelId"] as string;
 
             TestResult tr2 = new TestResult(_bc);
-            _bc.ChatService.ChannelConnect(channelId, 50, tr2.ApiSuccess, tr2.ApiError);
+            _bc.ChatService.ChannelConnect(m_channelId, 50, (SuccessCallback)onChannelConnect + tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
+        }
+        private string m_channelId = "";
+        public void onChannelConnect(string json, object obj)
+        {
+            // the callback responded to
+            Console.WriteLine("onChannelConnect");
+
+            _bc.ChatService.PostChatMessageSimple(m_channelId, "test message", true, null, OnError_Chat);
         }
 
         public void onRTTChatCallback(string eventJson)
