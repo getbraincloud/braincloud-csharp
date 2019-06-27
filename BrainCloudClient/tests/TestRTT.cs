@@ -154,6 +154,9 @@ namespace BrainCloudTests
 
         public void OnEnableRTTSuccess(string eventJson, object obj)
         {
+            // the callback responded to
+            Console.WriteLine("OnEnableRTTSuccess");
+
             TestResult tr1 = new TestResult(_bc);
             _bc.ChatService.GetChannelId("gl", "valid", tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
@@ -166,18 +169,22 @@ namespace BrainCloudTests
             tr2.Run();
         }
         private string m_channelId = "";
-        public void onChannelConnect(string json, object obj)
-        {
-            // the callback responded to
-            Console.WriteLine("onChannelConnect");
 
-            _bc.ChatService.PostChatMessageSimple(m_channelId, "test message", true, null, OnError_Chat);
+        private void onChannelConnect(string json, object obj)
+        {
+
+            // the callback responded to
+            Console.WriteLine("CHANNEL Connected");
+            TestResult tr5 = new TestResult(_bc);
+            _bc.ChatService.PostChatMessageSimple(channelId, "test message", true, tr5.ApiSuccess, tr5.ApiError);
+            tr5.Run();
+
         }
 
-        public void onRTTChatCallback(string eventJson)
-        { 
-              // the callback responded to
-              Console.WriteLine("CHAT CALLBACK");
+        private void onRTTChatCallback(string json, object obj)
+        {
+            // the callback responded to
+            Console.WriteLine("CHANNEL Connected");
         }
     }
 }

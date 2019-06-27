@@ -25,6 +25,7 @@ namespace BrainCloudTests
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
         public BrainCloudWrapper _bc;
+        private Timer timer = new Timer();
 
         [SetUp]
         public void Setup()
@@ -49,6 +50,16 @@ namespace BrainCloudTests
                     tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
+
+            timer.Tick += new EventHandler(timer_Tick); // Everytime timer ticks, timer_Tick will be called
+            timer.Interval = (1000) * (0.25);           // Timer will tick evert second
+            timer.Enabled = true;                       // Enable the timer
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            _bc.Update();
         }
 
         [TearDown]
