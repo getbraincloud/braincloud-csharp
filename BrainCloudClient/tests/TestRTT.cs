@@ -175,12 +175,12 @@ namespace BrainCloudTests
             // the callback responded to
             Console.WriteLine("CHANNEL Connected");
             TestResult tr5 = new TestResult(_bc);
-            _bc.ChatService.PostChatMessageSimple(channelId, "test message", true, tr5.ApiSuccess, tr5.ApiError);
+            _bc.ChatService.PostChatMessageSimple(m_channelId, "test message", true, tr5.ApiSuccess, tr5.ApiError);
             tr5.Run();
 
         }
 
-        private void onRTTChatCallback(string json, object obj)
+        private void onRTTChatCallback(string json)
         {
             // the callback responded to
             Console.WriteLine("CHANNEL Connected");
