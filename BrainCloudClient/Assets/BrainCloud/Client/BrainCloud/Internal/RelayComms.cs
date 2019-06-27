@@ -187,6 +187,7 @@ namespace BrainCloud.Internal
 
                     if (!isConnected && toProcessResponse.Operation == "connect")
                     {
+                        m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest(), true, true, 0);
                     }
 

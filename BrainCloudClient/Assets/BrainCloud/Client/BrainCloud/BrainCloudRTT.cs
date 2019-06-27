@@ -83,7 +83,6 @@ using BrainCloud.Internal;
             m_commsLayer.DeregisterRTTCallback(ServiceName.Chat);
         }
 
-
         /// <summary>
         /// 
         /// </summary>

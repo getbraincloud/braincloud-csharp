@@ -22,7 +22,7 @@ namespace BrainCloudTests
             string eventId = "";
 
             _bc.EventService.SendEvent(
-                "profileId",
+                GetUser(Users.UserB).ProfileId,
                 _eventType,
                 Helpers.CreateJsonPair(_eventDataKey, 117),
                 tr.ApiSuccess, tr.ApiError);

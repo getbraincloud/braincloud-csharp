@@ -134,11 +134,13 @@ using SysLanguageObject = System.String; // todo
             double utcOffset = 0;
             try
             {
-#if NET_4_6
+#if NET_4_1
                 TimeZoneInfo localZone = TimeZoneInfo.Local;
                 utcOffset = localZone.BaseUtcOffset.TotalHours;
 #else
                 DateTime baseUTC = new DateTime();
+                // Re : warning CS0618: 'TimeZone' is obsolete: 'System.TimeZone has been deprecated.  Please investigate the use of System.TimeZoneInfo instead.'
+                // Set the API Compatibility Level to .NET 4.x within Project Settings
                 TimeZone localZone = TimeZone.CurrentTimeZone;
                 DateTime localTime = localZone.ToLocalTime(baseUTC);
                 // Calculate the local time and UTC offset

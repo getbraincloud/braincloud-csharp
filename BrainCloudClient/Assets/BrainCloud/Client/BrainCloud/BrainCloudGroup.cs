@@ -275,6 +275,71 @@ using System.Collections.Generic;
         }
 
         /// <summary>
+        /// Create a group. With additional summary data
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - CREATE_GROUP
+        /// </remarks>
+        /// <param name="name">
+        /// Name of the group.
+        /// </param>
+        /// <param name="groupType">
+        /// Name of the type of group.
+        /// </param>
+        /// <param name="isOpenGroup">
+        /// true if group is open; false if closed.
+        /// </param>
+        /// <param name="acl">
+        /// The group's access control list. A null ACL implies default.
+        /// </param>
+        /// <param name="jsonOwnerAttributes">
+        /// Attributes for the group owner (current user).
+        /// </param>
+        /// <param name="jsonDefaultMemberAttributes">
+        /// Default attributes for group members.
+        /// </param>
+        /// <param name="jsonData">
+        /// Custom application data.
+        /// </param>
+        /// </param>
+        /// <param name="jsonSummaryData">
+        /// Custom application data.
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void CreateGroup(
+            string name,
+            string groupType,
+            bool? isOpenGroup,
+            GroupACL acl,
+            string jsonData,
+            string jsonOwnerAttributes,
+            string jsonDefaultMemberAttributes,
+            string jsonSummaryData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(name)) data[OperationParam.GroupName.Value] = name;
+            data[OperationParam.GroupType.Value] = groupType;
+            if (isOpenGroup.HasValue) data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup.Value;
+            if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+            if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
+            if (!string.IsNullOrEmpty(jsonOwnerAttributes))
+                data[OperationParam.GroupOwnerAttributes.Value] = JsonReader.Deserialize(jsonOwnerAttributes);
+            if (!string.IsNullOrEmpty(jsonDefaultMemberAttributes))
+                data[OperationParam.GroupDefaultMemberAttributes.Value] = JsonReader.Deserialize(jsonDefaultMemberAttributes);
+            if (!string.IsNullOrEmpty(jsonSummaryData))
+                data[OperationParam.GroupSummaryData.Value] = JsonReader.Deserialize(jsonSummaryData);
+
+            SendRequest(ServiceOperation.CreateGroup, success, failure, cbObject, data);
+        }
+
+        /// <summary>
         /// Create a group entity.
         /// </summary>
         /// <remarks>
@@ -1053,6 +1118,77 @@ using System.Collections.Generic;
             data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup;
 
             SendRequest(ServiceOperation.SetGroupOpen, success, failure, cbObject, data);
+        }        
+        
+        /// <summary>
+        /// Update a group's summary data
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - UPDATE_SUMMARY_DATA
+        /// </remarks>
+        /// <param name="groupId">
+        /// ID of the group.
+        /// </param>
+        /// <param name="version">
+        /// Current version of the group
+        /// </param>
+        /// <param name="jsonSummaryData">
+        /// Custom application data.
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void UpdateGroupSummaryData(
+            string groupId,
+            int version,
+            string jsonSummaryData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.GroupVersion.Value] = version;
+            if (!string.IsNullOrEmpty(jsonSummaryData))
+                data[OperationParam.GroupSummaryData.Value] = JsonReader.Deserialize(jsonSummaryData);
+
+            SendRequest(ServiceOperation.UpdateGroupSummaryData, success, failure, cbObject, data);
+        }
+
+        /// <summary>
+        /// Gets a list of up to maxReturn randomly selected groups from the server based on the where condition.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - UPDATE_SUMMARY_DATA
+        /// </remarks>
+        /// <param name="jsonWhere">
+        /// where to search
+        /// ex . "where": {"groupType": "BLUE"}
+        /// </param>
+        /// <param name="maxReturn">
+        /// max num groups wanted
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void GetRandomGroupsMatching(
+            string jsonWhere,
+            int maxReturn,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            if (Util.IsOptionalParameterValid(jsonWhere))
+            {
+                Dictionary<string, object> customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonWhere);
+                data[OperationParam.GroupWhere.Value] = customData;
+            }
+            data[OperationParam.GroupMaxReturn.Value] = maxReturn;
+
+            SendRequest(ServiceOperation.GetRandomGroupsMatching, success, failure, cbObject, data);
         }
 
         private void SendRequest(ServiceOperation operation, SuccessCallback success, FailureCallback failure, object cbObject, IDictionary data)
@@ -1061,5 +1197,5 @@ using System.Collections.Generic;
             ServerCall sc = new ServerCall(ServiceName.Group, operation, data, callback);
             _bcClient.SendRequest(sc);
         }
-    }
+    } 
 }

@@ -1,4 +1,5 @@
-﻿namespace BrainCloudUnity
+﻿
+namespace BrainCloudUnity
 {
 
 #if !DOT_NET
