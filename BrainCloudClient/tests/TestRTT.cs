@@ -180,7 +180,7 @@ namespace BrainCloudTests
 
         }
 
-        private void onRTTChatCallback(string json, object obj)
+        private void onRTTChatCallback(string json)
         {
             // the callback responded to
             Console.WriteLine("CHANNEL Connected");
