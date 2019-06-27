@@ -7,6 +7,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using System.Text;
 using BrainCloud.Common;
+using System.Timers;
 
 namespace BrainCloudTests
 {
@@ -25,7 +26,7 @@ namespace BrainCloudTests
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
         public BrainCloudWrapper _bc;
-        private Timer timer = new Timer();
+        private Timer timer;
 
         [SetUp]
         public void Setup()
@@ -51,13 +52,13 @@ namespace BrainCloudTests
                 tr.Run();
             }
 
-            timer.Tick += new EventHandler(timer_Tick); // Everytime timer ticks, timer_Tick will be called
-            timer.Interval = (1000) * (0.25);           // Timer will tick evert second
-            timer.Enabled = true;                       // Enable the timer
-            timer.Start();
+            timer = new Timer(250);
+            timer.Elapsed += timer_Tick;
+            timer.AutoReset = true;
+            timer.Enabled = true;
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void timer_Tick(Object source, ElapsedEventArgs e)
         {
             _bc.Update();
         }
