@@ -3,7 +3,6 @@ namespace BrainCloudUnity
 {
     
 
-    
 #if !DOT_NET
 
 #if UNITY_EDITOR

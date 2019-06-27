@@ -982,6 +982,213 @@ using BrainCloud.Internal;
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScoresFromLeaderboards, data, callback);
             _client.SendRequest(sc);
         }
+    
+
+        /// <summary>
+        /// Posts score to Group's leaderboard - NOTE the user must be a member of the group
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - POST_SCORE_TO_GROUP_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// the id of the leaderboard
+        /// </param>
+        /// <param name="groupId">
+        /// The groups Id
+        /// </param>
+        /// <param name="score">
+        /// The score you wish to post
+        /// </param>
+        /// <param name="data">
+        /// Extra data json
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PostScoreToGroupLeaderboard(
+            string leaderboardId,
+            string groupId,
+            int score,
+            string jsonData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                var customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
+            }
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreToGroupLeaderboard, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Posts score to Group's leaderboard - NOTE the user must be a member of the group
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - POST_SCORE_TO_GROUP_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// the id of the leaderboard
+        /// </param>
+        /// <param name="groupId">
+        /// The groups Id
+        /// </param>
+        /// <param name="versionId">
+        /// The version defaults to -1
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void RemoveGroupScore(
+            string leaderboardId,
+            string groupId,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.RemoveGroupScore, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve a view of the group leaderboard surrounding the current group
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GROUP_LEADERBOARD_VIEW
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// the id of the leaderboard
+        /// </param>
+        /// <param name="groupId">
+        /// The groups Id
+        /// </param>
+        /// <param name="sort">
+        /// The groups Id
+        /// </param>
+        /// <param name="beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGroupLeaderboardView(
+            string leaderboardId,
+            string groupId,
+            SortOrder sort,
+            int beforeCount,
+            int afterCount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupLeaderboardView, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve a view of the group leaderboard surrounding the current group
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GROUP_LEADERBOARD_VIEW_BY_VERSION
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// the id of the leaderboard
+        /// </param>
+        /// <param name="groupId">
+        /// The groups Id
+        /// </param>
+        /// <param name="sort">
+        /// The groups Id
+        /// </param>
+        /// <param name="beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="versionId">
+        /// The version
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGroupLeaderboardViewByVersion(
+            string leaderboardId,
+            string groupId,
+            int versionId,
+            SortOrder sort,
+            int beforeCount,
+            int afterCount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGroupLeaderboardView, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }
 
