@@ -138,6 +138,7 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
             attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithPingData, success, failure, cbObject);
         }
 
@@ -322,6 +323,7 @@ using UnityEngine.Experimental.Networking;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
+
             attachPingDataAndSend(data, ServiceOperation.JoinLobbyWithPingData, success, failure, cbObject);
         }
 
@@ -397,20 +399,26 @@ using UnityEngine.Experimental.Networking;
             // now we have the region ping data, we can start pinging each region and its defined target, if its a PING type.
             Dictionary<string, object> regionInner = null;
             string targetStr = "";
-            int numRegionProcessed = 0;
             if (m_regionPingData.Count > 0)
             {
                 foreach (var regionMap in m_regionPingData)
                 {
                     regionInner = (Dictionary<string, object>)regionMap.Value;
-                    ++numRegionProcessed;
-                    if ((string)regionInner["type"] == "PING")
+
+                    if (regionInner.ContainsKey("type") && regionInner["type"] as string == "PING")
                     {
                         m_cachedPingResponses[regionMap.Key] = new List<long>();
                         targetStr = (string)regionInner["target"];
-                        pingHost(regionMap.Key, targetStr, numRegionProcessed == m_regionPingData.Count);
+
+                        lock (m_regionTargetsToProcess)
+                        {
+                            for (int i = 0; i < MAX_PING_CALLS; ++i)
+                                m_regionTargetsToProcess.Add(new KeyValuePair<string, string>(regionMap.Key, targetStr));
+                        }
                     }
                 }
+
+                pingNextItemToProcess();
             }
             else
             {
@@ -420,10 +428,30 @@ using UnityEngine.Experimental.Networking;
         }
 
         #region private
+        private void pingNextItemToProcess()
+        {
+            lock(m_regionTargetsToProcess)
+            {
+                if (m_regionTargetsToProcess.Count > 0)
+                {
+                    for (int i = 0; i < NUM_PING_CALLS_IN_PARRALLEL && m_regionTargetsToProcess.Count > 0; ++i)
+                    {
+                        KeyValuePair<string, string> pair = m_regionTargetsToProcess[0];
+                        m_regionTargetsToProcess.RemoveAt(0);
+                        pingHost(pair.Key, pair.Value);
+                    }   
+                }
+                else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
+                {
+                    m_pingRegionSuccessCallback(JsonWriter.Serialize(PingData), m_pingRegionObject);
+                }
+            }
+        }
+
         private void attachPingDataAndSend(Dictionary<string, object> in_data, ServiceOperation in_operation,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            bool hasPingData = PingData.Count > 0;
+            bool hasPingData = PingData != null && PingData.Count > 0;
             if (hasPingData)
             {
                 in_data[OperationParam.PingData.Value] = PingData;
@@ -432,9 +460,9 @@ using UnityEngine.Experimental.Networking;
                 ServerCall sc = new ServerCall(ServiceName.Lobby, in_operation, in_data, callback);
                 m_clientRef.SendRequest(sc);
             }
-            else 
+            else
             {
-                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER, 
+                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
                     "Processing exception (message): Required message parameter 'pingData' is missing.  Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.", cbObject);
             }
         }
@@ -451,7 +479,7 @@ using UnityEngine.Experimental.Networking;
 
                 // fail out right away with missing parameters error
                 in_failure(400, reasonCode, JsonWriter.Serialize(jsonError), cbObject);
-            }   
+            }
         }
 
         private void onRegionForLobbiesSuccess(string in_json, object in_obj)
@@ -464,25 +492,20 @@ using UnityEngine.Experimental.Networking;
             m_lobbyTypeRegions = (Dictionary<string, object>)data["lobbyTypeRegions"];
         }
 
-        private void pingHost(string in_region, string in_target, bool in_bLastItem = false)
+        private void pingHost(string in_region, string in_target)
         {
 #if DOT_NET
-            for (int i = 0; i < MAX_PING_CALLS; ++i)
-            {
-                PingUpdateSystem(in_region, in_target, in_bLastItem);
-            }
-#else
+            PingUpdateSystem(in_region, in_target);
+#else       
             in_target = "http://" + in_target;
-            for (int i = 0; i < MAX_PING_CALLS; ++i)
-            {
-                if (m_clientRef.Wrapper != null)
-                    m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target, in_bLastItem));
-            }
+
+            if (m_clientRef.Wrapper != null)
+                m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
 #endif
         }
 
 #if DOT_NET
-        private void PingUpdateSystem(string in_region, string in_target, bool in_bLastItem = false)
+        private void PingUpdateSystem(string in_region, string in_target)
         {
             System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping();
             try
@@ -491,7 +514,7 @@ using UnityEngine.Experimental.Networking;
                 {
                     if (e.Error == null && e.Reply.Status == System.Net.NetworkInformation.IPStatus.Success)
                     {
-                        handlePingTimeResponse(e.Reply.RoundtripTime, in_region, in_bLastItem);
+                        handlePingTimeResponse(e.Reply.RoundtripTime, in_region);
                     }
                 };
 
@@ -510,7 +533,7 @@ using UnityEngine.Experimental.Networking;
             }
         }
 #else
-        private IEnumerator HandlePingReponse(string in_region, string in_target, bool in_bLastItem = false)
+        private IEnumerator HandlePingReponse(string in_region, string in_target)
         {
             long sentPing = DateTime.Now.Ticks;
 #if USE_WEB_REQUEST
@@ -522,12 +545,12 @@ using UnityEngine.Experimental.Networking;
 #endif
             if (_request.error == null && !_request.isNetworkError)
             {
-                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region, in_bLastItem);
+                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region);
             }
         }
 #endif
 
-        private void handlePingTimeResponse(long in_responseTime, string in_region, bool in_bLastItem)
+        private void handlePingTimeResponse(long in_responseTime, string in_region)
         {
             m_cachedPingResponses[in_region].Add(in_responseTime);
             if (m_cachedPingResponses[in_region].Count == MAX_PING_CALLS)
@@ -546,25 +569,25 @@ using UnityEngine.Experimental.Networking;
                 // accumulated ALL, now subtract the highest value
                 totalAccumulated -= highestValue;
                 PingData[in_region] = totalAccumulated / (m_cachedPingResponses[in_region].Count - 1);
-
-                if (in_bLastItem && m_pingRegionSuccessCallback != null)
-                {
-                    m_pingRegionSuccessCallback("", m_pingRegionObject);
-                }
             }
+
+            pingNextItemToProcess();
         }
 
-        private Dictionary<string, object> m_regionPingData;
-        private Dictionary<string, object> m_lobbyTypeRegions;
+        private Dictionary<string, object> m_regionPingData = new Dictionary<string, object>();
+        private Dictionary<string, object> m_lobbyTypeRegions = new Dictionary<string, object>();
         private Dictionary<string, List<long>> m_cachedPingResponses = new Dictionary<string, List<long>>();
+        private List<KeyValuePair<string, string>> m_regionTargetsToProcess = new List<KeyValuePair<string, string>>();
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;
 
         private const int MAX_PING_CALLS = 4;
+        private const int NUM_PING_CALLS_IN_PARRALLEL = 2;
+
         /// <summary>
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-#endregion
+        #endregion
     }
 }
