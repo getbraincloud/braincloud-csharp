@@ -852,8 +852,8 @@ using UnityEngine.Experimental.Networking;
                 return;
             }
 
-            Dictionary<string, object> bundleObj = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-            long receivedPacketId = Convert.ToInt64(bundleObj["packetId"]);
+            JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
+            long receivedPacketId = (long)bundleObj.packetId;
             receivedPacketIdChecker = receivedPacketId;
             // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
             // errors for whcih NO_PACKET_EXPECTED are:
@@ -865,7 +865,7 @@ using UnityEngine.Experimental.Networking;
             }
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
 
-            Dictionary<string, object>[] responseBundle = (Dictionary<string, object>[])bundleObj["responses"];
+            Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
@@ -1215,13 +1215,13 @@ using UnityEngine.Experimental.Networking;
 
 #if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
             //Send Events to the Unity Plugin
-            if (bundleObj.ContainsKey("events"))
+            if (bundleObj.events != null)
             {
                 try
                 {
                     Dictionary<string, Dictionary<string, object>[]> eventsJsonObjUnity =
                         new Dictionary<string, Dictionary<string, object>[]>();
-                    eventsJsonObjUnity["events"] = (Dictionary<string, object>[])bundleObj["events"];
+                    eventsJsonObjUnity["events"] = bundleObj.events;
                     string eventsAsJsonUnity = JsonWriter.Serialize(eventsJsonObjUnity);
 
                     BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(eventsAsJsonUnity);
@@ -1233,10 +1233,11 @@ using UnityEngine.Experimental.Networking;
             }
 #endif
 
-            if (_eventCallback != null && bundleObj.ContainsKey("events"))
+
+            if (bundleObj.events != null && _eventCallback != null)
             {
                 Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
-                eventsJsonObj["events"] = (Dictionary<string, object>[])bundleObj["events"];
+                eventsJsonObj["events"] = bundleObj.events;
                 string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
                 try
                 {
