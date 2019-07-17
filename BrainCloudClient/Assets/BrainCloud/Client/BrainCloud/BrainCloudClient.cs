@@ -6,17 +6,17 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.Common;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
 #if !XAMARIN
-using BrainCloud.Entity;
-using System;
+    using BrainCloud.Entity;
+    using System;
 #endif
 
 #if !(DOT_NET)
-using UnityEngine;
-using UnityEngine.Assertions;
+    using UnityEngine;
+    using UnityEngine.Assertions;
 #else
 using System.Globalization;
 using System;
@@ -104,7 +104,7 @@ using System;
 
     public class BrainCloudClient
     {
-       #region Private Data
+        #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
 
@@ -1181,9 +1181,11 @@ using System;
         }
 
         /// <summary>Method writes log if logging is enabled</summary>
+        /// 
+        [System.Diagnostics.Conditional("BC_DEBUG_LOG_ENABLED")]
         internal void Log(string log)
         {
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
             BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.AppendLog(log);
 #endif
             if (_loggingEnabled)
