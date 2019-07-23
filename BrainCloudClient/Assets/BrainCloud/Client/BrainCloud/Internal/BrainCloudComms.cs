@@ -1073,6 +1073,7 @@ using UnityEngine.Experimental.Networking;
                     int reasonCode = 0;
                     string errorJson = "";
                     callback = sc.GetCallback();
+                    operation = sc.GetOperation();
 
                     //if it was an authentication call 
                     if (operation == ServiceOperation.Authenticate.Value)
