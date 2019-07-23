@@ -1072,6 +1072,7 @@ using UnityEngine.Experimental.Networking;
                     object reasonCodeObj = null, statusMessageObj = null;
                     int reasonCode = 0;
                     string errorJson = "";
+                    callback = sc.GetCallback();
 
                     //if it was an authentication call 
                     if (operation == ServiceOperation.Authenticate.Value)
