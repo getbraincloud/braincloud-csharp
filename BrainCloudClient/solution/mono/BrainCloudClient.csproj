@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -47,12 +47,7 @@
     <DefineConstants>DOT_NET</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="LitJson\" />
-    <Folder Include="BrainCloud\" />
-    <Folder Include="JsonFx\" />
-    <Folder Include="BrainCloud\Unity\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="..\..\src\BrainCloud\LitJson\AssemblyInfo.cs.in">
       <Link>LitJson\AssemblyInfo.cs.in</Link>
@@ -347,6 +342,7 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
       <Link>BrainCloud\BrainCloudTournament.cs</Link>
     </Compile>
+    <Compile Include="BrainCloud\BrainCloudItemCatalog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
