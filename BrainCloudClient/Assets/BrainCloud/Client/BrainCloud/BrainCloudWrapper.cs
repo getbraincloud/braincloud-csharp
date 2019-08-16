@@ -166,6 +166,16 @@ public class BrainCloudWrapper
         get { return Client.IdentityService; }
     }
 
+    public BrainCloudItemCatalog ItemCatalogService
+    {
+        get { return Client.ItemCatalogService; }
+    }
+
+    public BrainCloudUserInventoryManagement UserInventoryManagementService
+    {
+        get { return Client.UserInventoryManagementService; }
+    }
+
     public BrainCloudScript ScriptService
     {
         get { return Client.ScriptService; }
