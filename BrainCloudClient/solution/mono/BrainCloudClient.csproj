@@ -114,6 +114,12 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
       <Link>BrainCloud\BrainCloudIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudItemCatalog.cs">
+      <Link>BrainCloud\BrainCloudItemCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudUserInventoryManagement.cs">
+      <Link>BrainCloud\BrainCloudUserInventoryManagement.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudMatchMaking.cs">
       <Link>BrainCloud\BrainCloudMatchMaking.cs</Link>
     </Compile>

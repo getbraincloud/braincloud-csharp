@@ -135,7 +135,7 @@
       <Link>BrainCloud\BrainCloudItemCatalog.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudUserInventoryManagement.cs">
-      <Link>BrainCloud\BrainCloudItemCatalog.cs</Link>
+      <Link>BrainCloud\BrainCloudUserInventoryManagement.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMail.cs">
       <Link>BrainCloud\BrainCloudMail.cs</Link>
