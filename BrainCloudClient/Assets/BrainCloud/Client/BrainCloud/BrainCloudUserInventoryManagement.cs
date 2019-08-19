@@ -212,7 +212,7 @@ using System;
         /// The user object sent to the callback.
         /// </param>
         public void GetUserInventoryPageOffset(
-        String context,
+        string context,
         int pageOffset,
         bool includeDef,
         SuccessCallback success = null,
@@ -452,10 +452,6 @@ using System;
             data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
             data[OperationParam.UserInventoryManagementServiceShopId.Value] = shopId;
             data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
-
-
-
-
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.SellUserItem, data, callback);

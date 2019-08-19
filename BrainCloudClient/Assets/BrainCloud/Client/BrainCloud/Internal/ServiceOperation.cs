@@ -419,8 +419,8 @@ using System;
         
         //ItemCatalog
         public static readonly ServiceOperation GetCatalogItemDefinition = new ServiceOperation("GET_CATALOG_ITEM_DEFINITION");
-        public static readonly ServiceOperation GetCatalogItemsPage = new ServiceOperation("GET_CATALOG_ITEM_PAGE");
-        public static readonly ServiceOperation GetCatalogItemsPageOffset = new ServiceOperation("GET_CATALOG_ITEM_PAGE_OFFSET");
+        public static readonly ServiceOperation GetCatalogItemsPage = new ServiceOperation("GET_CATALOG_ITEMS_PAGE");
+        public static readonly ServiceOperation GetCatalogItemsPageOffset = new ServiceOperation("GET_CATALOG_ITEMS_PAGE_OFFSET");
 
 
         //UserInventoryManagement

@@ -11,21 +11,6 @@ namespace BrainCloudTests
     public class TestItemCatalog : TestFixtureBase
     {
         [Test]
-        public void TestSwitchToChildProfile()
-        {
-            TestResult tr = new TestResult(_bc);
-            _bc.IdentityService.SwitchToChildProfile(
-                null,
-                ChildAppId,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-
-            _bc.PlayerStateService.DeleteUser(
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-        [Test]
         public void TestGetCatalogItemDefinition()
         {
             TestResult tr = new TestResult(_bc);
@@ -42,17 +27,29 @@ namespace BrainCloudTests
             Dictionary<string, object> pagination = new Dictionary<string, object>();
             Dictionary<string, object> searchCriteria = new Dictionary<string, object>();
             Dictionary<string, object> sortCriteria = new Dictionary<string, object>();
-            pagination.add("rowsPerPage", 50);
-            pagination.add("pageNumber", 1);
-            searchCriteria.add("category", "sword");
-            sortCriteria.add("createdAt", 1);
-            sortCriteria.add("updatedAt", -1);
-            criteria.add("pagination", pagination);
-            criteria.add("searchCriteria", searchCriteria);
-            criteria.add("sortCriteria", sortCriteria);
+            pagination.Add("rowsPerPage", 50);
+            pagination.Add("pageNumber", 1);
+            searchCriteria.Add("category", "sword");
+            sortCriteria.Add("createdAt", 1);
+            sortCriteria.Add("updatedAt", -1);
+            criteria.Add("pagination", pagination);
+            criteria.Add("searchCriteria", searchCriteria);
+            criteria.Add("sortCriteria", sortCriteria);
             TestResult tr = new TestResult(_bc);
             _bc.ItemCatalogService.GetCatalogItemsPage(
+                criteria,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetCatalogItemsPageOffset()
+        {
+            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJjYXRlZ29yeSI6InN3b3JkIiwiZ2FtZUlkIjoiMjAwMDEifSwic29ydENyaXRlcmlhIjp7ImNyZWF0ZWRBdCI6MSwidXBkYXRlZEF0IjotMX0sInBhZ2luYXRpb24iOnsicm93c1BlclBhZ2UiOjUwLCJwYWdlTnVtYmVyIjoxfSwib3B0aW9ucyI6bnVsbH0";
+            TestResult tr = new TestResult(_bc);
+            _bc.ItemCatalogService.GetCatalogItemsPageOffset(
                 context,
+                1,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

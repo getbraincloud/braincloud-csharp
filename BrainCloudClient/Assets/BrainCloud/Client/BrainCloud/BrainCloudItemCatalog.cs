@@ -112,7 +112,7 @@ using BrainCloud.Common;
         /// The user object sent to the callback.
         /// </param>
         public void GetCatalogItemsPageOffset(
-        Dictionary<string, object> context,
+        string context,
         int pageOffset,
         SuccessCallback success = null,
         FailureCallback failure = null,
