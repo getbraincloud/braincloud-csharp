@@ -417,6 +417,35 @@ using System;
         public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
         public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
         
+        //ItemCatalog
+        public static readonly ServiceOperation GetCatalogItemDefinition = new ServiceOperation("GET_CATALOG_ITEM_DEFINITION");
+        public static readonly ServiceOperation GetCatalogItemsPage = new ServiceOperation("GET_CATALOG_ITEMS_PAGE");
+        public static readonly ServiceOperation GetCatalogItemsPageOffset = new ServiceOperation("GET_CATALOG_ITEMS_PAGE_OFFSET");
+
+
+        //UserInventoryManagement
+
+        public static readonly ServiceOperation AwardUserItem = new ServiceOperation("AWARD_USER_ITEM");
+        public static readonly ServiceOperation DropUserItem = new ServiceOperation("DROP_USER_ITEM");
+        public static readonly ServiceOperation GetUserInventory = new ServiceOperation("GET_USER_INVENTORY");
+        public static readonly ServiceOperation GetUserInventoryPage = new ServiceOperation("GET_USER_INVENTORY_PAGE");
+        public static readonly ServiceOperation GetUserInventoryPageOffset = new ServiceOperation("GET_USER_INVENTORY_PAGE_OFFSET");
+        public static readonly ServiceOperation GetUserItem = new ServiceOperation("GET_USER_ITEM");
+        public static readonly ServiceOperation GiveUserItemTo = new ServiceOperation("GIVE_USER_ITEM_TO");
+        public static readonly ServiceOperation PurchaseUserItem = new ServiceOperation("PURCHASE_USER_ITEM");
+        public static readonly ServiceOperation ReceiveUserItemFrom = new ServiceOperation("RECEIVE_USER_ITEM_FROM");
+        public static readonly ServiceOperation SellUserItem = new ServiceOperation("SELL_USER_ITEM");
+        public static readonly ServiceOperation UpdateUserItemData = new ServiceOperation("UPDATE_USER_ITEM_DATA");
+        public static readonly ServiceOperation UseUserItem = new ServiceOperation("USE_USER_ITEM");
+
+
+
+
+
+
+
+
+
         private ServiceOperation(string value)
         {
             Value = value;
