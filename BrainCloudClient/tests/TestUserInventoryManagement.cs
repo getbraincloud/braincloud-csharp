@@ -110,9 +110,9 @@ namespace BrainCloudTests
         public void ReceiveUserItemFrom()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.ReceiveUserItemFrom(GetUser(Users.UserA).ProfileId, testItems[3] as string,
+            _bc.UserInventoryManagementService.ReceiveUserItemFrom(GetUser(Users.UserB).ProfileId, testItems[2] as string,
                 tr2.ApiSuccess, tr2.ApiError);
-            tr2.RunExpectFail(StatusCodes.BAD_REQUEST, 40660);
+            tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.ITEM_NOT_FOUND);
         }
         
         [Test]
