@@ -23,21 +23,11 @@ namespace BrainCloudTests
         [Test]
         public void TestGetCatalogItemsPage()
         {
-            Dictionary<string, object> criteria = new Dictionary<string, object>();
-            Dictionary<string, object> pagination = new Dictionary<string, object>();
-            Dictionary<string, object> searchCriteria = new Dictionary<string, object>();
-            Dictionary<string, object> sortCriteria = new Dictionary<string, object>();
-            pagination.Add("rowsPerPage", 50);
-            pagination.Add("pageNumber", 1);
-            searchCriteria.Add("category", "sword");
-            sortCriteria.Add("createdAt", 1);
-            sortCriteria.Add("updatedAt", -1);
-            criteria.Add("pagination", pagination);
-            criteria.Add("searchCriteria", searchCriteria);
-            criteria.Add("sortCriteria", sortCriteria);
+            string context = "{\"test\": \"Testing\"}";
             TestResult tr = new TestResult(_bc);
+
             _bc.ItemCatalogService.GetCatalogItemsPage(
-                criteria,
+                context,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

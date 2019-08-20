@@ -8,6 +8,7 @@ namespace BrainCloud
 
 using System.Collections.Generic;
 using BrainCloud.Internal;
+using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 
     public class BrainCloudItemCatalog
@@ -74,13 +75,15 @@ using BrainCloud.Common;
         /// The user object sent to the callback.
         /// </param>
         public void GetCatalogItemsPage(
-        Dictionary<string, object> context,
+        string context,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ItemCatalogServiceContext.Value] = context;
+
+            var contextData = JsonReader.Deserialize<Dictionary<string, object>>(context);
+            data[OperationParam.ItemCatalogServiceContext.Value] = contextData;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPage, data, callback);
