@@ -40,8 +40,7 @@ namespace BrainCloudTests
         [Test]
         public void GetUserInventory()
         {
-            Dictionary<string, object> criteria = new Dictionary<string, object>();
-            criteria.Add("itemData.bonus", 1);
+            string criteria = "{\"itemData.bonus\": \"1\"}";
             TestResult tr = new TestResult(_bc);
             _bc.UserInventoryManagementService.GetUserInventory(criteria, true,
                 tr.ApiSuccess, tr.ApiError);
@@ -51,18 +50,7 @@ namespace BrainCloudTests
         [Test]
         public void GetUserInventoryPage()
         {
-            Dictionary<string, object> criteria = new Dictionary<string, object>();
-            Dictionary<string, object> pagination = new Dictionary<string, object>();
-            Dictionary<string, object> searchCriteria = new Dictionary<string, object>();
-            Dictionary<string, object> sortCriteria = new Dictionary<string, object>();
-            pagination.Add("rowsPerPage", 50);
-            pagination.Add("pageNumber", 1);
-            searchCriteria.Add("category", "sword");
-            sortCriteria.Add("createdAt", 1);
-            sortCriteria.Add("updatedAt", -1);
-            criteria.Add("itemData.pagination", pagination);
-            criteria.Add("itemData.searchCriteria", searchCriteria);
-            criteria.Add("itemData.sortCriteria", sortCriteria);
+            string criteria = "{\"test\": \"Testing\"}";
             TestResult tr = new TestResult(_bc);
             _bc.UserInventoryManagementService.GetUserInventoryPage(criteria, true,
                 tr.ApiSuccess, tr.ApiError);
@@ -127,7 +115,7 @@ namespace BrainCloudTests
         [Test]
         public void UpdateUserItemData()
         {
-            Dictionary<string, object> newItemData = new Dictionary<string,object>();
+            string newItemData = "{\"test\": \"Testing\"}";
             TestResult tr2 = new TestResult(_bc);
             _bc.UserInventoryManagementService.UpdateUserItemData(testItems[4] as string, 1, newItemData,
                 tr2.ApiSuccess, tr2.ApiError);
@@ -137,7 +125,7 @@ namespace BrainCloudTests
                 [Test]
         public void UseUserItem()
         {
-            Dictionary<string, object> newItemData = new Dictionary<string,object>();
+            string newItemData = "{\"test\": \"Testing\"}";
             TestResult tr2 = new TestResult(_bc);
             _bc.UserInventoryManagementService.UseUserItem(testItems[4] as string, 2, newItemData, true,
                 tr2.ApiSuccess, tr2.ApiError);
