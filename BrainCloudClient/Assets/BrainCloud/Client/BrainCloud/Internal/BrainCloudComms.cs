@@ -20,6 +20,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
+using BrainCloud.ModernHttpClient;
+using BrainCloud.ModernHttpClient.NativeMesssageHandler;
 #else
 #if USE_WEB_REQUEST
 #if UNITY_5_3
@@ -181,7 +183,7 @@ using UnityEngine.Experimental.Networking;
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
 #if DOT_NET
-        private HttpClient _httpClient = new HttpClient();
+        private HttpClient _httpClient = new HttpClient(new NativeMesssageHandler());
 #endif
 
         //For handling local session errors
@@ -855,18 +857,50 @@ using UnityEngine.Experimental.Networking;
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             long receivedPacketId = (long)bundleObj.packetId;
             receivedPacketIdChecker = receivedPacketId;
+            Dictionary<string, object>[] responseBundle = bundleObj.responses;
+            Dictionary<string, object> response = null;
+
             // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
             // errors for whcih NO_PACKET_EXPECTED are:
             // json parsing error, missing packet id, app secret changed via the portal
             if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
                 _clientRef.Log("Dropping duplicate packet");
+
+                for (int j = 0; j < responseBundle.Length; ++j)
+                {
+                    response = responseBundle[j];
+                    //System.Diagnostics.Debug.WriteLine("RESPONSE: " + response);
+                    int statusCode = (int)response["status"];
+                    //string data = "";
+
+                    System.Diagnostics.Debug.WriteLine("RESPONSE STATUS: " + statusCode);
+                    //
+                    // It's important to note here that a user error callback *might* call
+                    // ResetCommunications() based on the error being returned.
+                    // ResetCommunications will clear the _serviceCallsInProgress List
+                    // effectively removing all registered callbacks for this message bundle.
+                    // It's also likely that the developer will want to call authenticate next.
+                    // We need to ensure that this is supported as it's the best way to 
+                    // reset the brainCloud communications after a session invalid or network
+                    // error is triggered.
+                    //
+                    // This is safe to do from the main thread but just in case someone
+                    // calls this method from another thread, we lock on _serviceCallsWaiting
+                    //
+                    //ServerCall sc = null;
+                    lock (_serviceCallsInProgress)
+                    {
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            _serviceCallsInProgress.RemoveAt(0);
+                        }
+                    }
+                }
+
                 return;
             }
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
-
-            Dictionary<string, object>[] responseBundle = bundleObj.responses;
-            Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
             string data = "";
