@@ -547,5 +547,67 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.UseUserItem, data, callback);
             _client.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Publishes the specified item to the item management attached blockchain. Results are reported asynchronously via an RTT event.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserInventoryManagement
+        /// Service Operation - PublishUserItemToBlockchain
+        /// </remarks>
+        /// <param name="itemId">
+        /// </param>
+        /// <param name="version">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PublishUserItemToBlockchain(
+        string itemId,
+        int version, 
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
+            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.PublishUserItemToBlockchain, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Syncs the caller's user items with the item management attached blockchain. Results are reported asynchronously via an RTT event.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserInventoryManagement
+        /// Service Operation - RefreshBlockchainUserItems
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void RefreshBlockchainUserItems(
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.RefreshBlockchainUserItems, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }

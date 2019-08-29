@@ -142,6 +142,22 @@ using BrainCloud.Internal;
         /// <summary>
         /// 
         /// </summary>
+        public void RegisterRTTBlockchainRefresh(RTTCallback in_callback)
+        {
+            m_commsLayer.RegisterRTTCallback(ServiceName.UserInventoryManagement, in_callback);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTBlockchainRefresh()
+        {
+            m_commsLayer.DeregisterRTTCallback(ServiceName.UserInventoryManagement);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void DeregisterRTTAsyncMatchCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.AsyncMatch);

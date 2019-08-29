@@ -16,7 +16,7 @@ namespace BrainCloudTests
         public void AwardUserItem()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.AwardUserItem("sword001", 5, true,
+            _bc.UserInventoryManagementService.AwardUserItem("sword001", 6, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -122,12 +122,30 @@ namespace BrainCloudTests
             tr2.Run();
         }
 
-                [Test]
+        [Test]
         public void UseUserItem()
         {
             string newItemData = "{\"test\": \"Testing\"}";
             TestResult tr2 = new TestResult(_bc);
             _bc.UserInventoryManagementService.UseUserItem(testItems[4] as string, 2, newItemData, true,
+                tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+        }
+
+        [Test]
+        public void PublishUserItemToBlockchain()
+        {
+            TestResult tr2 = new TestResult(_bc);
+            _bc.UserInventoryManagementService.PublishUserItemToBlockchain(testItems[5] as string, 1,
+                tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+        }
+
+        [Test]
+        public void RefreshBlockchainUserItems()
+        {
+            TestResult tr2 = new TestResult(_bc);
+            _bc.UserInventoryManagementService.RefreshBlockchainUserItems(
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
         }

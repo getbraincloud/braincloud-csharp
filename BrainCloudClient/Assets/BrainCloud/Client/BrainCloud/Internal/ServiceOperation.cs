@@ -437,6 +437,8 @@ using System;
         public static readonly ServiceOperation SellUserItem = new ServiceOperation("SELL_USER_ITEM");
         public static readonly ServiceOperation UpdateUserItemData = new ServiceOperation("UPDATE_USER_ITEM_DATA");
         public static readonly ServiceOperation UseUserItem = new ServiceOperation("USE_USER_ITEM");
+        public static readonly ServiceOperation PublishUserItemToBlockchain = new ServiceOperation("PUBLISH_USER_ITEM_TO_BLOCKCHAIN");
+        public static readonly ServiceOperation RefreshBlockchainUserItems = new ServiceOperation("REFRESH_BLOCKCHAIN_USER_ITEMS");
 
 
 
