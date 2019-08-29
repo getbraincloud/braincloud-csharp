@@ -21,7 +21,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using BrainCloud.ModernHttpClient;
-using BrainCloud.ModernHttpClient.NativeMesssageHandler;
 #else
 #if USE_WEB_REQUEST
 #if UNITY_5_3
@@ -183,7 +182,7 @@ using UnityEngine.Experimental.Networking;
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
 #if DOT_NET
-        private HttpClient _httpClient = new HttpClient(new NativeMesssageHandler());
+        private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
         //For handling local session errors
