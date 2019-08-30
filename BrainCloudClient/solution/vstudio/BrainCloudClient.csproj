@@ -390,7 +390,7 @@
       <Link>LitJson\ParserToken.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\CaptiveNetworkException.cs">
-      <Link>ModernHttpClient\ParserToken.cs</Link>
+      <Link>ModernHttpClient\CaptiveNetworkException.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\FailureMessages.cs">
       <Link>ModernHttpClient\FailureMessages.cs</Link>
@@ -411,7 +411,7 @@
       <Link>ModernHttpClient\TLSConfig.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
-      <Link>BrainCloud\Unity\CaptiveNetworkException.cs</Link>
+      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
     <Content Include="ids.txt" />
   </ItemGroup>
