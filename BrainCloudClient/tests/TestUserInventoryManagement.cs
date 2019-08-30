@@ -136,9 +136,9 @@ namespace BrainCloudTests
         public void PublishUserItemToBlockchain()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.PublishUserItemToBlockchain(testItems[5] as string, 1,
+            _bc.UserInventoryManagementService.PublishUserItemToBlockchain("invalidForNow", 1,
                 tr2.ApiSuccess, tr2.ApiError);
-            tr2.Run();
+            tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.ITEM_NOT_FOUND);
         }
 
         [Test]
