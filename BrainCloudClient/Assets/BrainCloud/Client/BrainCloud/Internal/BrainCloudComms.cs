@@ -854,10 +854,10 @@ using UnityEngine.Experimental.Networking;
             }
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
-            long receivedPacketId = (long)bundleObj.packetId;
-            receivedPacketIdChecker = receivedPacketId;
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
+            long receivedPacketId = (long)bundleObj.packetId;
+            receivedPacketIdChecker = receivedPacketId;
 
             // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
             // errors for whcih NO_PACKET_EXPECTED are:
@@ -868,26 +868,6 @@ using UnityEngine.Experimental.Networking;
 
                 for (int j = 0; j < responseBundle.Length; ++j)
                 {
-                    response = responseBundle[j];
-                    //System.Diagnostics.Debug.WriteLine("RESPONSE: " + response);
-                    int statusCode = (int)response["status"];
-                    //string data = "";
-
-                    System.Diagnostics.Debug.WriteLine("RESPONSE STATUS: " + statusCode);
-                    //
-                    // It's important to note here that a user error callback *might* call
-                    // ResetCommunications() based on the error being returned.
-                    // ResetCommunications will clear the _serviceCallsInProgress List
-                    // effectively removing all registered callbacks for this message bundle.
-                    // It's also likely that the developer will want to call authenticate next.
-                    // We need to ensure that this is supported as it's the best way to 
-                    // reset the brainCloud communications after a session invalid or network
-                    // error is triggered.
-                    //
-                    // This is safe to do from the main thread but just in case someone
-                    // calls this method from another thread, we lock on _serviceCallsWaiting
-                    //
-                    //ServerCall sc = null;
                     lock (_serviceCallsInProgress)
                     {
                         if (_serviceCallsInProgress.Count > 0)
@@ -896,9 +876,9 @@ using UnityEngine.Experimental.Networking;
                         }
                     }
                 }
-
                 return;
             }
+            
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
             IList<Exception> exceptions = new List<Exception>();
 
