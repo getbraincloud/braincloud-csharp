@@ -20,6 +20,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
+using BrainCloud.ModernHttpClient;
 #else
 #if USE_WEB_REQUEST
 #if UNITY_5_3
@@ -181,7 +182,7 @@ using UnityEngine.Experimental.Networking;
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
 #if DOT_NET
-        private HttpClient _httpClient = new HttpClient();
+        private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
         //For handling local session errors
@@ -853,20 +854,32 @@ using UnityEngine.Experimental.Networking;
             }
 
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
+            Dictionary<string, object>[] responseBundle = bundleObj.responses;
+            Dictionary<string, object> response = null;
             long receivedPacketId = (long)bundleObj.packetId;
             receivedPacketIdChecker = receivedPacketId;
+
             // if the receivedPacketId is NO_PACKET_EXPECTED (-1), its a serious error, which cannot be retried
             // errors for whcih NO_PACKET_EXPECTED are:
             // json parsing error, missing packet id, app secret changed via the portal
             if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
                 _clientRef.Log("Dropping duplicate packet");
+
+                for (int j = 0; j < responseBundle.Length; ++j)
+                {
+                    lock (_serviceCallsInProgress)
+                    {
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            _serviceCallsInProgress.RemoveAt(0);
+                        }
+                    }
+                }
                 return;
             }
+            
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
-
-            Dictionary<string, object>[] responseBundle = bundleObj.responses;
-            Dictionary<string, object> response = null;
             IList<Exception> exceptions = new List<Exception>();
 
             string data = "";
