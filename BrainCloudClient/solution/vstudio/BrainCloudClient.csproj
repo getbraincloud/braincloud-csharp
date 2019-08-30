@@ -383,6 +383,27 @@
     <Compile Include="..\..\Assets\BrainCloud\LitJson\ParserToken.cs">
       <Link>LitJson\ParserToken.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\CaptiveNetworkException.cs">
+      <Link>ModernHttpClient\CaptiveNetworkException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\FailureMessages.cs">
+      <Link>ModernHttpClient\FailureMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\NativeCookieHandler.cs">
+      <Link>ModernHttpClient\NativeCookieHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\NativeMessageHandler.cs">
+      <Link>ModernHttpClient\NativeMessageHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\ProgressStreamContent.cs">
+      <Link>ModernHttpClient\ProgressStreamContent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\\ModernHttpClient\ReasonPhrases.cs">
+      <Link>ModernHttpClient\ReasonPhrases.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\TLSConfig.cs">
+      <Link>ModernHttpClient\TLSConfig.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
       <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
