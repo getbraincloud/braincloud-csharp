@@ -157,5 +157,50 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+
+        [Test]
+        public void TestClearUserStatus()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.PlayerStateService.ClearUserStatus(
+                "status",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestExtendUserStatus()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.PlayerStateService.ExtendUserStatus(
+                "status", 5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetUserStatus()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.PlayerStateService.GetUserStatus(
+                "status",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestSetUserStatus()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.PlayerStateService.SetUserStatus(
+                "status", 5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
     }
 }
