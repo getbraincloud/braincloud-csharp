@@ -15,7 +15,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.CreateCustomEntity(
-                "sword001",
+                "sword001", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -23,7 +23,8 @@ namespace BrainCloudTests
         [Test]
         public void TestGetCustomEntityPage()
         {
-            string context = "{\"test\": \"Testing\"}";
+            //string context = "{\"test\": \"Testing\"}";
+            //pass in context
             TestResult tr = new TestResult(_bc);
 
             _bc.ItemCatalogService.GetCustomEntityPage(

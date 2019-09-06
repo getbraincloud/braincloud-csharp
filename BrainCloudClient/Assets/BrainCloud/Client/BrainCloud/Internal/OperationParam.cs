@@ -479,7 +479,6 @@ namespace BrainCloud
         public static readonly OperationParam CustomEntityServiceSearchJson = new OperationParam("searchJson");
         public static readonly OperationParam CustomEntityServiceSortJson = new OperationParam("sortJson");
         public static readonly OperationParam CustomEntityServiceDoCount = new OperationParam("doCount");
-        public static readonly OperationParam CustomEntityServiceEntityType = new OperationParam("entityType");
         public static readonly OperationParam CustomEntityServiceContext = new OperationParam("context");
         public static readonly OperationParam CustomEntityServicePageOffset= new OperationParam("pageOffset");
         public static readonly OperationParam CustomEntityServiceTimeToLive = new OperationParam("timeToLive");
