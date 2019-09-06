@@ -11,11 +11,11 @@ using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 
-    public class BrainCloudItemCatalog
+    public class BrainCloudCustomEntity
     {
         private BrainCloudClient _client;
 
-        public BrainCloudItemCatalog(BrainCloudClient client)
+        public BrainCloudCustomEntity(BrainCloudClient client)
         {
             _client = client;
         }
@@ -58,12 +58,12 @@ using BrainCloud.Common;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.CustomEntityServiceEntityDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
-            data[OperationParam.CustomEntityServiceEntityAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
+            data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
+            data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemDefinition, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemDefinition, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -111,13 +111,13 @@ using BrainCloud.Common;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.CustomEntityServiceEntityRowsPerPage.Value] = rowsPerPage;
-            data[OperationParam.CustomEntityServiceEntitySearchJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(searchJson);
-            data[OperationParam.CustomEntityServiceEntitySortJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(sortJson);
-            data[OperationParam.CustomEntityServiceEntityDoCount.Value] = doCount;
+            data[OperationParam.CustomEntityServiceRowsPerPage.Value] = rowsPerPage;
+            data[OperationParam.CustomEntityServiceSearchJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(searchJson);
+            data[OperationParam.CustomEntityServiceSortJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(sortJson);
+            data[OperationParam.CustomEntityServiceDoCount.Value] = doCount;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPage, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPage, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -156,27 +156,21 @@ using BrainCloud.Common;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-        // data[OperationParam.ItemCatalogServiceContext.Value] = context;
-        //data[OperationParam.ItemCatalogServicePageOffset.Value] = pageOffset;
 
             data[OperationParam.CustomEntityServiceContext.Value] = context;
             data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
         /// <summary>
-        /// Gets the page of catalog items from the 
-        ///server based on the encoded context and 
-        ///specified page offset, with language fields 
-        ///limited to the text for the current or default 
-        ///language.
+        ///
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
-        /// Service Operation - GetCatalogItemDefinition
+        /// Service Name - CustomEntity
+        /// Service Operation - ReadCustomEntity
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -199,24 +193,20 @@ using BrainCloud.Common;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ItemCatalogServiceEntityType.Value] = entityType;
-            data[OperationParam.ItemCatalogServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
                 /// <summary>
-        /// Gets the page of catalog items from the 
-        ///server based on the encoded context and 
-        ///specified page offset, with language fields 
-        ///limited to the text for the current or default 
-        ///language.
+        ///
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
-        /// Service Operation - GetCatalogItemDefinition
+        /// Service Name - Custom Entity
+        /// Service Operation - UpdateCustomEntity
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -251,26 +241,23 @@ using BrainCloud.Common;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ItemCatalogServiceContext.Value] = context;
-            data[OperationParam.ItemCatalogServicePageOffset.Value] = pageOffset;
+            data[OperationParam.CustomEntityServiceContext.Value] = context;
+            data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
         
 
         /// <summary>
-        /// Gets the page of catalog items from the 
-        ///server based on the encoded context and 
-        ///specified page offset, with language fields 
-        ///limited to the text for the current or default 
-        ///language.
+        ///
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
-        /// Service Operation - GetCatalogItemDefinition
+        /// Service Name - CustomEntity
+        /// Service Operation - UpdateCustomEntityFields
         /// </remarks>
         /// <param name="context">
         /// </param>
@@ -293,11 +280,11 @@ using BrainCloud.Common;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.ItemCatalogServiceContext.Value] = context;
-            data[OperationParam.ItemCatalogServicePageOffset.Value] = pageOffset;
+            data[OperationParam.CustomEntityServiceContext.Value] = context;
+            data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.ItemCatalog, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
     }
