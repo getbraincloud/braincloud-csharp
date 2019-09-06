@@ -175,7 +175,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.PlayerStateService.ExtendUserStatus(
-                "status", 5, "{\test\":\"7\"}",
+                "status", 5, "{\"test\":\"7\"}",
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
