@@ -54,7 +54,6 @@ namespace BrainCloudTests
             _bc.DataStreamService.SubmitCrashReport(
                 "testCrashReport", "test", "{\"test\":\"7\"}", "test", "test", "test", "test", true,
                 tr.ApiSuccess, tr.ApiError);
-                //Helpers.CreateJsonPair("test4", 12),
 
             tr.Run();
         }

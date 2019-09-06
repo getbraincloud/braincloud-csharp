@@ -420,7 +420,7 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceStatus.Value] = statusName;
+            data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.ClearUserStatus, data, callback);
@@ -452,15 +452,16 @@ using BrainCloud.Internal;
         public void ExtendUserStatus(
             string statusName,
             int additionalSecs,
+            string details,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Dictionary<string, object> details = new Dictionary<string,object>();
+            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string,object>>(details);
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceStatus.Value] = statusName;
-            data[OperationParam.PlayerStateServiceAdditionalSeconds.Value] =additionalSecs;
-            data[OperationParam.PlayerStateServiceDetails.Value] =details;
+            data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
+            data[OperationParam.PlayerStateServiceAdditionalSecs.Value] =additionalSecs;
+            data[OperationParam.PlayerStateServiceDetails.Value] =detailsInfo;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.ExtendUserStatus, data, callback);
@@ -492,7 +493,7 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceStatus.Value] = statusName;
+            data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.GetUserStatus, data, callback);
@@ -524,15 +525,16 @@ using BrainCloud.Internal;
         public void SetUserStatus(
             string statusName,
             int durationSecs,
+            string details,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Dictionary<string, object> details = new Dictionary<string,object>();
+            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string,object>>(details);
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceStatus.Value] = statusName;
-            data[OperationParam.PlayerStateServiceDurationSeconds.Value] =durationSecs;
-            data[OperationParam.PlayerStateServiceDetails.Value] =details;
+            data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
+            data[OperationParam.PlayerStateServiceDurationSecs.Value] =durationSecs;
+            data[OperationParam.PlayerStateServiceDetails.Value] =detailsInfo;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.SetUserStatus, data, callback);

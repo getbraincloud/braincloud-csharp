@@ -206,13 +206,13 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStatisticsExperiencePoints = new OperationParam("xp_points");
 
         // Player Statistics Service - Status Param
-        public static readonly OperationParam PlayerStateServiceStatus = new OperationParam("statusName");
+        public static readonly OperationParam PlayerStateServiceStatusName = new OperationParam("statusName");
         
         // Player Statistics Service - Extend User Status Params
-        public static readonly OperationParam PlayerStateServiceAdditionalSeconds = new OperationParam("additionalSecs");
+        public static readonly OperationParam PlayerStateServiceAdditionalSecs = new OperationParam("additionalSecs");
         public static readonly OperationParam PlayerStateServiceDetails = new OperationParam("details");
 
-        public static readonly OperationParam PlayerStateServiceDurationSeconds = new OperationParam("durationSecs");
+        public static readonly OperationParam PlayerStateServiceDurationSecs = new OperationParam("durationSecs");
 
         // Player Statistics Service - Read Params
         public static readonly OperationParam PlayerStatisticsServiceReadEntitySubType = new OperationParam("entitySubType");
