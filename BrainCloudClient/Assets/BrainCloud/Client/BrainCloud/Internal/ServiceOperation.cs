@@ -253,7 +253,10 @@ using System;
 
         public static readonly ServiceOperation UpdatePictureUrl = new ServiceOperation("UPDATE_PICTURE_URL");
         public static readonly ServiceOperation UpdateContactEmail = new ServiceOperation("UPDATE_CONTACT_EMAIL");
-
+        public static readonly ServiceOperation SetUserStatus = new ServiceOperation("SET_USER_STATUS");        
+        public static readonly ServiceOperation GetUserStatus = new ServiceOperation("GET_USER_STATUS");
+        public static readonly ServiceOperation ClearUserStatus = new ServiceOperation("CLEAR_USER_STATUS");
+        public static readonly ServiceOperation ExtendUserStatus = new ServiceOperation("EXTEND_USER_STATUS");
         public static readonly ServiceOperation GetAttributes = new ServiceOperation("GET_ATTRIBUTES");
         public static readonly ServiceOperation UpdateAttributes = new ServiceOperation("UPDATE_ATTRIBUTES");
         public static readonly ServiceOperation RemoveAttributes = new ServiceOperation("REMOVE_ATTRIBUTES");
@@ -285,6 +288,7 @@ using System;
         public static readonly ServiceOperation CustomPageEvent = new ServiceOperation("CUSTOM_PAGE_EVENT");
         public static readonly ServiceOperation CustomScreenEvent = new ServiceOperation("CUSTOM_SCREEN_EVENT");
         public static readonly ServiceOperation CustomTrackEvent = new ServiceOperation("CUSTOM_TRACK_EVENT");
+        public static readonly ServiceOperation SubmitCrashReport = new ServiceOperation("SEND_CRASH_REPORT");
 
         //Profanity
         public static readonly ServiceOperation ProfanityCheck = new ServiceOperation("PROFANITY_CHECK");

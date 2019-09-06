@@ -205,6 +205,15 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStatisticsServiceStatNames = new OperationParam("statNames");
         public static readonly OperationParam PlayerStatisticsExperiencePoints = new OperationParam("xp_points");
 
+        // Player Statistics Service - Status Param
+        public static readonly OperationParam PlayerStateServiceStatusName = new OperationParam("statusName");
+        
+        // Player Statistics Service - Extend User Status Params
+        public static readonly OperationParam PlayerStateServiceAdditionalSecs = new OperationParam("additionalSecs");
+        public static readonly OperationParam PlayerStateServiceDetails = new OperationParam("details");
+
+        public static readonly OperationParam PlayerStateServiceDurationSecs = new OperationParam("durationSecs");
+
         // Player Statistics Service - Read Params
         public static readonly OperationParam PlayerStatisticsServiceReadEntitySubType = new OperationParam("entitySubType");
 
@@ -356,6 +365,14 @@ namespace BrainCloud
         //DataStream
         public static readonly OperationParam DataStreamEventName = new OperationParam("eventName");
         public static readonly OperationParam DataStreamEventProperties = new OperationParam("eventProperties");
+        public static readonly OperationParam DataStreamCrashType = new OperationParam("crashType");
+        public static readonly OperationParam DataStreamErrorMsg = new OperationParam("errorMsg");
+        public static readonly OperationParam DataStreamCrashInfo = new OperationParam("crashJson");
+        public static readonly OperationParam DataStreamCrashLog = new OperationParam("crashLog");
+        public static readonly OperationParam DataStreamUserName = new OperationParam("userName");
+        public static readonly OperationParam DataStreamUserEmail = new OperationParam("userEmail");
+        public static readonly OperationParam DataStreamUserNotes = new OperationParam("userNotes");
+        public static readonly OperationParam DataStreamUserSubmitted = new OperationParam("userSubmitted");
 
         // Profanity
         public static readonly OperationParam ProfanityText = new OperationParam("text");
