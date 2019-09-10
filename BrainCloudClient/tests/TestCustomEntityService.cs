@@ -10,9 +10,6 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestCustomEntityService : TestFixtureBase
     {
-        string entityId;
-        int version;
-
         [Test]
         public void TestCreateCustomEntity()
         {
@@ -21,16 +18,11 @@ namespace BrainCloudTests
                 "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-
-            entityId= (string)((Dictionary<string, object>)tr.m_response["data"])["entityId"];
-            version= (int)((Dictionary<string, object>)tr.m_response["data"])["version"];
         }
 
         [Test]
         public void TestGetCustomEntityPage()
         {
-            //string context = "{\"test\": \"Testing\"}";
-            //pass in context
             TestResult tr = new TestResult(_bc);
 
             _bc.CustomEntityService.GetCustomEntityPage(
@@ -55,7 +47,16 @@ namespace BrainCloudTests
         [Test]
         public void TestReadCustomEntity()
         {
-            TestCreateCustomEntity();
+
+            TestResult tr1 = new TestResult(_bc);
+            _bc.CustomEntityService.CreateCustomEntity(
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
+                tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            string entityId;
+            entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
+
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.ReadCustomEntity(
                 "athletes",
@@ -67,6 +68,16 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateCustomEntity()
         {
+            TestResult tr1 = new TestResult(_bc);
+            _bc.CustomEntityService.CreateCustomEntity(
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
+                tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            string entityId;
+
+            entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
+
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.UpdateCustomEntity(
                 "athletes",
@@ -82,7 +93,18 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateCustomEntityFields()
         {
-            TestCreateCustomEntity();
+            TestResult tr1 = new TestResult(_bc);
+            _bc.CustomEntityService.CreateCustomEntity(
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
+                tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            string entityId;
+            int version;
+
+            entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
+            version= (int)((Dictionary<string, object>)tr1.m_response["data"])["version"];
+
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.UpdateCustomEntityFields(
                 "athletes",
