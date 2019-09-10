@@ -246,7 +246,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceVersion.Value] = version;
             data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
             data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl);
-            data[OperationParam.CustomEntityServiceVersion.Value] = timeToLive;
+            data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntity, data, callback);
@@ -284,13 +284,11 @@ using BrainCloud.Common;
         FailureCallback failure = null,
         object cbObject = null)
         {
-             Dictionary<string, object> fields = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);
-
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
             data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
             data[OperationParam.CustomEntityServiceVersion.Value] = version;
-            data[OperationParam.CustomEntityServiceFieldsJson.Value] = fields;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFields, data, callback);
