@@ -199,6 +199,8 @@
     <Compile Include="..\..\..\tests\TestTournament.cs">
       <Link>TestTournament.cs</Link>
     </Compile>
-    <Compile Include="TestItemCatalog.cs" />
+    <Compile Include="..\..\..\tests\TestCustomEntityService.cs">
+      <Link>TestCustomEntityService.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -150,6 +150,7 @@ using System;
         private BrainCloudAsyncMatch _asyncMatchService;
         private BrainCloudTime _timeService;
         private BrainCloudTournament _tournamentService;
+        private BrainCloudCustomEntity _customEntityService;
         private BrainCloudAuthentication _authenticationService;
         private BrainCloudPushNotification _pushNotificationService;
         private BrainCloudPlayerStatisticsEvent _playerStatisticsEventService;
@@ -234,6 +235,7 @@ using System;
             _asyncMatchService = new BrainCloudAsyncMatch(this);
             _timeService = new BrainCloudTime(this);
             _tournamentService = new BrainCloudTournament(this);
+            _customEntityService = new BrainCloudCustomEntity(this);
 
             _authenticationService = new BrainCloudAuthentication(this);
             _pushNotificationService = new BrainCloudPushNotification(this);
@@ -469,7 +471,10 @@ using System;
         {
             get { return _tournamentService; }
         }
-
+        public BrainCloudCustomEntity CustomEntityService
+        {
+            get { return _customEntityService; }
+        }
         public BrainCloudAuthentication AuthenticationService
         {
             get { return _authenticationService; }
@@ -662,6 +667,10 @@ using System;
         public BrainCloudTournament GetTournamentService()
         {
             return _tournamentService;
+        }
+        public BrainCloudCustomEntity GetCustomEntityService()
+        {
+            return _customEntityService;
         }
 
         public BrainCloudAuthentication GetAuthenticationService()

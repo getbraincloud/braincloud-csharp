@@ -488,6 +488,21 @@ namespace BrainCloud
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
         public static readonly OperationParam PingData = new OperationParam("pingData");
 
+        //custom entity
+        public static readonly OperationParam CustomEntityServiceEntityType = new OperationParam("entityType");
+        public static readonly OperationParam CustomEntityServiceEntityId = new OperationParam("entityId");
+        public static readonly OperationParam CustomEntityServiceVersion = new OperationParam("version");
+        public static readonly OperationParam CustomEntityServiceFieldsJson = new OperationParam("fieldsJson");
+        public static readonly OperationParam CustomEntityServiceRowsPerPage = new OperationParam("rowsPerPage");
+        public static readonly OperationParam CustomEntityServiceSearchJson = new OperationParam("searchJson");
+        public static readonly OperationParam CustomEntityServiceSortJson = new OperationParam("sortJson");
+        public static readonly OperationParam CustomEntityServiceDoCount = new OperationParam("doCount");
+        public static readonly OperationParam CustomEntityServiceContext = new OperationParam("context");
+        public static readonly OperationParam CustomEntityServicePageOffset= new OperationParam("pageOffset");
+        public static readonly OperationParam CustomEntityServiceTimeToLive = new OperationParam("timeToLive");
+        public static readonly OperationParam CustomEntityServiceAcl = new OperationParam("acl");
+        public static readonly OperationParam CustomEntityServiceDataJson = new OperationParam("dataJson");
+
         //item catalog
         public static readonly OperationParam ItemCatalogServiceDefId = new OperationParam("defId");
         public static readonly OperationParam ItemCatalogServiceContext = new OperationParam("context");

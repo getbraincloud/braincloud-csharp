@@ -245,6 +245,10 @@ public class BrainCloudWrapper
     {
         get { return Client.TournamentService; }
     }
+    public BrainCloudCustomEntity CustomEntityService
+    {
+        get { return Client.CustomEntityService; }
+    }
 
     public BrainCloudPushNotification PushNotificationService
     {
