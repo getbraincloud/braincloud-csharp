@@ -10,14 +10,20 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestCustomEntityService : TestFixtureBase
     {
+        string entityId;
+        int version;
+
         [Test]
         public void TestCreateCustomEntity()
         {
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.CreateCustomEntity(
-                "sword001", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
+
+            entityId= (string)((Dictionary<string, object>)tr.m_response["data"])["entityId"];
+            version= (int)((Dictionary<string, object>)tr.m_response["data"])["version"];
         }
 
         [Test]
@@ -27,8 +33,8 @@ namespace BrainCloudTests
             //pass in context
             TestResult tr = new TestResult(_bc);
 
-            _bc.ItemCatalogService.GetCustomEntityPage(
-                context,
+            _bc.CustomEntityService.GetCustomEntityPage(
+                "athletes", 20, "{\"data.position\": \"defense\"}","{\"createdAt\": 1 }", false,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -36,9 +42,10 @@ namespace BrainCloudTests
         [Test]
         public void TestGetCustomEntityPageOffset()
         {
-            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJjYXRlZ29yeSI6InN3b3JkIiwiZ2FtZUlkIjoiMjAwMDEifSwic29ydENyaXRlcmlhIjp7ImNyZWF0ZWRBdCI6MSwidXBkYXRlZEF0IjotMX0sInBhZ2luYXRpb24iOnsicm93c1BlclBhZ2UiOjUwLCJwYWdlTnVtYmVyIjoxfSwib3B0aW9ucyI6bnVsbH0";
+            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJkYXRhLnBvc2l0aW9uIjoiZGVmZW5zZSIsIiRvciI6W3sib3duZXJJZCI6IjJhYmYwODNhLTc1Y2QtNGE4My05YTQyLWIzNTIwNzI5ZWY4YiJ9LHsiYWNsLm90aGVyIjp7IiRuZSI6MH19XX0sInNvcnRDcml0ZXJpYSI6eyJjcmVhdGVkQXQiOjF9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjoyMCwicGFnZU51bWJlciI6MSwiZG9Db3VudCI6ZmFsc2V9LCJvcHRpb25zIjpudWxsfQ";
             TestResult tr = new TestResult(_bc);
-            _bc.ItemCatalogService.GetCustomEntityPageOffset(
+            _bc.CustomEntityService.GetCustomEntityPageOffset(
+                "athletes",
                 context,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -46,13 +53,13 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ReadCustomEntity()
+        public void TestReadCustomEntity()
         {
-            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJjYXRlZ29yeSI6InN3b3JkIiwiZ2FtZUlkIjoiMjAwMDEifSwic29ydENyaXRlcmlhIjp7ImNyZWF0ZWRBdCI6MSwidXBkYXRlZEF0IjotMX0sInBhZ2luYXRpb24iOnsicm93c1BlclBhZ2UiOjUwLCJwYWdlTnVtYmVyIjoxfSwib3B0aW9ucyI6bnVsbH0";
+            TestCreateCustomEntity();
             TestResult tr = new TestResult(_bc);
-            _bc.ItemCatalogService.ReadCustomEntity(
-                context,
-                1,
+            _bc.CustomEntityService.ReadCustomEntity(
+                "athletes",
+                entityId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -60,11 +67,14 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateCustomEntity()
         {
-            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJjYXRlZ29yeSI6InN3b3JkIiwiZ2FtZUlkIjoiMjAwMDEifSwic29ydENyaXRlcmlhIjp7ImNyZWF0ZWRBdCI6MSwidXBkYXRlZEF0IjotMX0sInBhZ2luYXRpb24iOnsicm93c1BlclBhZ2UiOjUwLCJwYWdlTnVtYmVyIjoxfSwib3B0aW9ucyI6bnVsbH0";
             TestResult tr = new TestResult(_bc);
-            _bc.ItemCatalogService.TestCustomEntity(
-                context,
+            _bc.CustomEntityService.UpdateCustomEntity(
+                "athletes",
+                entityId,
                 1,
+                "{\"test\": \"Testing\"}",
+                "{\"test\": \"Testing\"}",
+                null,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -72,11 +82,13 @@ namespace BrainCloudTests
         [Test]
         public void TestUpdateCustomEntityFields()
         {
-            string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJjYXRlZ29yeSI6InN3b3JkIiwiZ2FtZUlkIjoiMjAwMDEifSwic29ydENyaXRlcmlhIjp7ImNyZWF0ZWRBdCI6MSwidXBkYXRlZEF0IjotMX0sInBhZ2luYXRpb24iOnsicm93c1BlclBhZ2UiOjUwLCJwYWdlTnVtYmVyIjoxfSwib3B0aW9ucyI6bnVsbH0";
+            TestCreateCustomEntity();
             TestResult tr = new TestResult(_bc);
-            _bc.ItemCatalogService.UpdateCustomEntityFields(
-                context,
-                1,
+            _bc.CustomEntityService.UpdateCustomEntityFields(
+                "athletes",
+                entityId,
+                version,
+                "{\"test\": \"Testing\"}",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

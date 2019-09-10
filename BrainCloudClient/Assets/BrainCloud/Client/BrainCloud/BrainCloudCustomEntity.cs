@@ -63,7 +63,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemDefinition, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.CreateCustomEntity, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -117,7 +117,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceDoCount.Value] = doCount;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPage, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPage, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -161,7 +161,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -197,7 +197,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.ReadCustomEntity, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -249,7 +249,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceVersion.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntity, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -276,18 +276,24 @@ using BrainCloud.Common;
         /// The user object sent to the callback.
         /// </param>
         public void UpdateCustomEntityFields(
-        string context,
-        int pageOffset,
+        string entityType,
+        string entityId,
+        int version,
+        string fieldsJson,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
         {
+             Dictionary<string, object> fields = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);
+
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.CustomEntityServiceContext.Value] = context;
-            data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = fields;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCatalogItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFields, data, callback);
             _client.SendRequest(sc);
         }
     }
