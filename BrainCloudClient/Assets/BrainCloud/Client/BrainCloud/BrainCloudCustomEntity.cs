@@ -294,5 +294,79 @@ using BrainCloud.Common;
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFields, data, callback);
             _client.SendRequest(sc);
         }
+
+                /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - GetCount
+        /// </remarks>
+        /// <param name="context">
+        /// </param>
+        /// <param name="pageOffset">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetCount(
+        string entityType,
+        string whereJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceWhereJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(whereJson);;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCount, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - DeleteCustomEntity
+        /// </remarks>
+        /// <param name="context">
+        /// </param>
+        /// <param name="pageOffset">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteCustomEntity(
+        string entityType,
+        string entityId,
+        int version,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteCustomEntity, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }

@@ -433,6 +433,8 @@ using System;
         public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");
+        public static readonly ServiceOperation DeleteCustomEntity = new ServiceOperation("DELETE_ENTITY");
+        public static readonly ServiceOperation GetCount = new ServiceOperation("GET_COUNT");
 
         //UserInventoryManagement
 

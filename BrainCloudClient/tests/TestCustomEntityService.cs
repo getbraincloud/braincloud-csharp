@@ -91,7 +91,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestUpdateCustomEntityFields()
+        public void TestDeleteCustomEntity()
         {
             TestResult tr1 = new TestResult(_bc);
             _bc.CustomEntityService.CreateCustomEntity(
@@ -106,11 +106,21 @@ namespace BrainCloudTests
             version= (int)((Dictionary<string, object>)tr1.m_response["data"])["version"];
 
             TestResult tr = new TestResult(_bc);
-            _bc.CustomEntityService.UpdateCustomEntityFields(
+            _bc.CustomEntityService.DeleteCustomEntity(
                 "athletes",
                 entityId,
                 version,
-                "{\"test\": \"Testing\"}",
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetCount()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.CustomEntityService.GetCount(
+                "athletes",
+                "{\"data.position\": \"defense\"}",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
