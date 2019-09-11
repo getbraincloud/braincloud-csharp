@@ -135,8 +135,8 @@
     <Compile Include="..\..\..\tests\TestItemCatalog.cs">
       <Link>TestItemCatalog.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\TestUserInventoryManagement.cs">
-      <Link>TestUserInventoryManagement.cs</Link>
+    <Compile Include="..\..\..\tests\TestUserItemsService.cs">
+      <Link>TestUserItemsService.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestLeaderboard.cs">
       <Link>TestLeaderboard.cs</Link>

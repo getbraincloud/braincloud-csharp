@@ -510,18 +510,18 @@ namespace BrainCloud
         public static readonly OperationParam ItemCatalogServicePageOffset = new OperationParam("pageOffset");
 
         //userInventory
-        public static readonly OperationParam UserInventoryManagementServiceDefId = new OperationParam("defId");
-        public static readonly OperationParam UserInventoryManagementServiceQuantity = new OperationParam("quantity");
-        public static readonly OperationParam UserInventoryManagementServiceIncludeDef = new OperationParam("includeDef");
-        public static readonly OperationParam UserInventoryManagementServiceItemId = new OperationParam("itemId");
-        public static readonly OperationParam UserInventoryManagementServiceCriteria = new OperationParam("criteria");
-        public static readonly OperationParam UserInventoryManagementServiceContext = new OperationParam("context");
-        public static readonly OperationParam UserInventoryManagementServicePageOffset = new OperationParam("pageOffset");
-        public static readonly OperationParam UserInventoryManagementServiceVersion = new OperationParam("version");
-        public static readonly OperationParam UserInventoryManagementServiceImmediate = new OperationParam("immediate");
-        public static readonly OperationParam UserInventoryManagementServiceProfileId = new OperationParam("profileId");
-        public static readonly OperationParam UserInventoryManagementServiceShopId = new OperationParam("shopId");
-        public static readonly OperationParam UserInventoryManagementServiceNewItemData = new OperationParam("newItemData");
+        public static readonly OperationParam UserItemsServiceDefId = new OperationParam("defId");
+        public static readonly OperationParam UserItemsServiceQuantity = new OperationParam("quantity");
+        public static readonly OperationParam UserItemsServiceIncludeDef = new OperationParam("includeDef");
+        public static readonly OperationParam UserItemsServiceItemId = new OperationParam("itemId");
+        public static readonly OperationParam UserItemsServiceCriteria = new OperationParam("criteria");
+        public static readonly OperationParam UserItemsServiceContext = new OperationParam("context");
+        public static readonly OperationParam UserItemsServicePageOffset = new OperationParam("pageOffset");
+        public static readonly OperationParam UserItemsServiceVersion = new OperationParam("version");
+        public static readonly OperationParam UserItemsServiceImmediate = new OperationParam("immediate");
+        public static readonly OperationParam UserItemsServiceProfileId = new OperationParam("profileId");
+        public static readonly OperationParam UserItemsServiceShopId = new OperationParam("shopId");
+        public static readonly OperationParam UserItemsServiceNewItemData = new OperationParam("newItemData");
 
         private OperationParam(string value)
         {

@@ -436,13 +436,12 @@ using System;
         public static readonly ServiceOperation DeleteCustomEntity = new ServiceOperation("DELETE_ENTITY");
         public static readonly ServiceOperation GetCount = new ServiceOperation("GET_COUNT");
 
-        //UserInventoryManagement
+        //UserItemsService
 
         public static readonly ServiceOperation AwardUserItem = new ServiceOperation("AWARD_USER_ITEM");
         public static readonly ServiceOperation DropUserItem = new ServiceOperation("DROP_USER_ITEM");
-        public static readonly ServiceOperation GetUserInventory = new ServiceOperation("GET_USER_INVENTORY");
-        public static readonly ServiceOperation GetUserInventoryPage = new ServiceOperation("GET_USER_INVENTORY_PAGE");
-        public static readonly ServiceOperation GetUserInventoryPageOffset = new ServiceOperation("GET_USER_INVENTORY_PAGE_OFFSET");
+        public static readonly ServiceOperation GetUserItemsPage = new ServiceOperation("GET_USER_ITEMS_PAGE");
+        public static readonly ServiceOperation GetUserItemsPageOffset = new ServiceOperation("GET_USER_ITEMS_PAGE_OFFSET");
         public static readonly ServiceOperation GetUserItem = new ServiceOperation("GET_USER_ITEM");
         public static readonly ServiceOperation GiveUserItemTo = new ServiceOperation("GIVE_USER_ITEM_TO");
         public static readonly ServiceOperation PurchaseUserItem = new ServiceOperation("PURCHASE_USER_ITEM");
