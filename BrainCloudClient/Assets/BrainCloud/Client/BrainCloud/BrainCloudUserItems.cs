@@ -12,11 +12,11 @@ using BrainCloud.JsonFx.Json;
 using System;
 
 
-    public class BrainCloudUserItemsService
+    public class BrainCloudUserItems
     {
         private BrainCloudClient _client;
 
-        public BrainCloudUserItemsService(BrainCloudClient client)
+        public BrainCloudUserItems(BrainCloudClient client)
         {
             _client = client;
         }
@@ -60,7 +60,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.AwardUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.AwardUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -104,7 +104,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.DropUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.DropUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -144,7 +144,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.GetUserItemsPage, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItemsPage, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -189,7 +189,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.GetUserItemsPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -230,7 +230,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.GetUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -281,7 +281,7 @@ using System;
             data[OperationParam.UserItemsServiceImmediate.Value] = immediate;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.GiveUserItemTo, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GiveUserItemTo, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -328,7 +328,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.PurchaseUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PurchaseUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -369,7 +369,7 @@ using System;
             data[OperationParam.UserItemsServiceItemId.Value] = itemId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.ReceiveUserItemFrom, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.ReceiveUserItemFrom, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -422,7 +422,7 @@ using System;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.SellUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.SellUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -463,7 +463,7 @@ using System;
             data[OperationParam.UserItemsServiceNewItemData.Value] = newItemDataDict;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.UpdateUserItemData, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.UpdateUserItemData, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -509,7 +509,7 @@ using System;
             data[OperationParam.UserItemsServiceNewItemData.Value] = newItemDataDict;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.UseUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.UseUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -545,7 +545,7 @@ using System;
             data[OperationParam.UserItemsServiceVersion.Value] = version;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.PublishUserItemToBlockchain, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PublishUserItemToBlockchain, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -571,7 +571,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserItemsService, ServiceOperation.RefreshBlockchainUserItems, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RefreshBlockchainUserItems, data, callback);
             _client.SendRequest(sc);
         }
     }

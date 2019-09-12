@@ -171,7 +171,7 @@ public class BrainCloudWrapper
         get { return Client.ItemCatalogService; }
     }
 
-    public BrainCloudUserItemsService UserItemsService
+    public BrainCloudUserItems UserItemsService
     {
         get { return Client.UserItemsService; }
     }

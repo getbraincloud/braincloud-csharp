@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace BrainCloudTests
 {
     [TestFixture]
-    public class TestUserItemsService : TestFixtureBase
+    public class TestUserItems : TestFixtureBase
     {
 
         List<object> testItems = new List<object>();
