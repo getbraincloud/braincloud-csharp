@@ -144,7 +144,7 @@ using BrainCloud.Internal;
         /// </summary>
         public void RegisterRTTBlockchainRefresh(RTTCallback in_callback)
         {
-            m_commsLayer.RegisterRTTCallback(ServiceName.UserInventoryManagement, in_callback);
+            m_commsLayer.RegisterRTTCallback(ServiceName.UserItems, in_callback);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ using BrainCloud.Internal;
         /// </summary>
         public void DeregisterRTTBlockchainRefresh()
         {
-            m_commsLayer.DeregisterRTTCallback(ServiceName.UserInventoryManagement);
+            m_commsLayer.DeregisterRTTCallback(ServiceName.UserItems);
         }
 
         /// <summary>

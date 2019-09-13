@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace BrainCloudTests
 {
     [TestFixture]
-    public class TestUserInventoryManagement : TestFixtureBase
+    public class TestUserItems : TestFixtureBase
     {
 
         List<object> testItems = new List<object>();
@@ -16,7 +16,7 @@ namespace BrainCloudTests
         public void AwardUserItem()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.AwardUserItem("sword001", 6, true,
+            _bc.UserItemsService.AwardUserItem("sword001", 6, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -32,37 +32,27 @@ namespace BrainCloudTests
         public void DropUserItem()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.DropUserItem(testItems[0] as string, 1, true,
+            _bc.UserItemsService.DropUserItem(testItems[0] as string, 1, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 
         [Test]
-        public void GetUserInventory()
-        {
-            string criteria = "{\"itemData.bonus\": \"1\"}";
-            TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.GetUserInventory(criteria, true,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void GetUserInventoryPage()
+        public void GetUserItemsPage()
         {
             string criteria = "{\"test\": \"Testing\"}";
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.GetUserInventoryPage(criteria, true,
+            _bc.UserItemsService.GetUserItemsPage(criteria, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 
         [Test]
-        public void GetUserInventoryPageOffset()
+        public void GetUserItemsPageOffset()
         {
             string context = "eyJzZWFyY2hDcml0ZXJpYSI6eyJnYW1lSWQiOiIyMDAwMSIsInBsYXllcklkIjoiNmVhYWU4M2EtYjZkMy00NTM5LWExZjAtZTIxMmMzYjUzMGIwIiwiZ2lmdGVkVG8iOm51bGx9LCJzb3J0Q3JpdGVyaWEiOnt9LCJwYWdpbmF0aW9uIjp7InJvd3NQZXJQYWdlIjoxMDAsInBhZ2VOdW1iZXIiOm51bGx9LCJvcHRpb25zIjpudWxsfQ";
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.GetUserInventoryPageOffset(context, 1, true,
+            _bc.UserItemsService.GetUserItemsPageOffset(context, 1, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -71,7 +61,7 @@ namespace BrainCloudTests
         public void GetUserItem()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.GetUserItem(testItems[1] as string, true,
+            _bc.UserItemsService.GetUserItem(testItems[1] as string, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -80,7 +70,7 @@ namespace BrainCloudTests
         public void GiveUserItemTo()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.GiveUserItemTo(GetUser(Users.UserB).ProfileId, testItems[2] as string, 1, true,
+            _bc.UserItemsService.GiveUserItemTo(GetUser(Users.UserB).ProfileId, testItems[2] as string, 1, 1, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -89,7 +79,7 @@ namespace BrainCloudTests
         public void PurchaseUserItem()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.UserInventoryManagementService.PurchaseUserItem("sword001", 1, null, true,
+            _bc.UserItemsService.PurchaseUserItem("sword001", 1, null, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -98,7 +88,7 @@ namespace BrainCloudTests
         public void ReceiveUserItemFrom()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.ReceiveUserItemFrom(GetUser(Users.UserB).ProfileId, testItems[2] as string,
+            _bc.UserItemsService.ReceiveUserItemFrom(GetUser(Users.UserB).ProfileId, testItems[2] as string,
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.ITEM_NOT_FOUND);
         }
@@ -107,7 +97,7 @@ namespace BrainCloudTests
         public void SellUserItem()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.SellUserItem(testItems[3] as string, 1, 1, null, true,
+            _bc.UserItemsService.SellUserItem(testItems[3] as string, 1, 1, null, true,
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
         }
@@ -117,7 +107,7 @@ namespace BrainCloudTests
         {
             string newItemData = "{\"test\": \"Testing\"}";
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.UpdateUserItemData(testItems[4] as string, 1, newItemData,
+            _bc.UserItemsService.UpdateUserItemData(testItems[4] as string, 1, newItemData,
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
         }
@@ -127,7 +117,7 @@ namespace BrainCloudTests
         {
             string newItemData = "{\"test\": \"Testing\"}";
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.UseUserItem(testItems[4] as string, 2, newItemData, true,
+            _bc.UserItemsService.UseUserItem(testItems[4] as string, 2, newItemData, true,
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
         }
@@ -136,7 +126,7 @@ namespace BrainCloudTests
         public void PublishUserItemToBlockchain()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.PublishUserItemToBlockchain("invalidForNow", 1,
+            _bc.UserItemsService.PublishUserItemToBlockchain("invalidForNow", 1,
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.ITEM_NOT_FOUND);
         }
@@ -145,7 +135,7 @@ namespace BrainCloudTests
         public void RefreshBlockchainUserItems()
         {
             TestResult tr2 = new TestResult(_bc);
-            _bc.UserInventoryManagementService.RefreshBlockchainUserItems(
+            _bc.UserItemsService.RefreshBlockchainUserItems(
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
         }

@@ -137,7 +137,7 @@ using System;
         private BrainCloudGlobalStatistics _globalStatisticsService;
         private BrainCloudIdentity _identityService;
         private BrainCloudItemCatalog _itemCatalogService;
-        private BrainCloudUserInventoryManagement _userInventoryManagementService;
+        private BrainCloudUserItems _userItemsService;
         private BrainCloudScript _scriptService;
         private BrainCloudMatchMaking _matchMakingService;
         private BrainCloudOneWayMatch _oneWayMatchService;
@@ -220,7 +220,7 @@ using System;
 
             _identityService = new BrainCloudIdentity(this);
             _itemCatalogService = new BrainCloudItemCatalog(this);
-            _userInventoryManagementService = new BrainCloudUserInventoryManagement(this);
+            _userItemsService = new BrainCloudUserItems(this);
             _scriptService = new BrainCloudScript(this);
             _matchMakingService = new BrainCloudMatchMaking(this);
             _oneWayMatchService = new BrainCloudOneWayMatch(this);
@@ -402,9 +402,9 @@ using System;
             get { return _itemCatalogService; }
         }
 
-        public BrainCloudUserInventoryManagement UserInventoryManagementService
+        public BrainCloudUserItems UserItemsService
         {
-            get { return _userInventoryManagementService; }
+            get { return _userItemsService; }
         }
 
         public BrainCloudScript ScriptService
@@ -604,9 +604,9 @@ using System;
         {
             return ItemCatalogService;
         }
-        public BrainCloudUserInventoryManagement GetUserInventoryManagementService()
+        public BrainCloudUserItems GetUserItemsService()
         {
-            return UserInventoryManagementService;
+            return UserItemsService;
         }
 
         public BrainCloudScript GetScriptService()

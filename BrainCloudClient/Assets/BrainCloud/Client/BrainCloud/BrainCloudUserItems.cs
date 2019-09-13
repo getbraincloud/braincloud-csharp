@@ -12,11 +12,11 @@ using BrainCloud.JsonFx.Json;
 using System;
 
 
-    public class BrainCloudUserInventoryManagement
+    public class BrainCloudUserItems
     {
         private BrainCloudClient _client;
 
-        public BrainCloudUserInventoryManagement(BrainCloudClient client)
+        public BrainCloudUserItems(BrainCloudClient client)
         {
             _client = client;
         }
@@ -55,12 +55,12 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceDefId.Value] = defId;
-            data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.AwardUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.AwardUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -99,51 +99,12 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.DropUserItem, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Retrieves the user's inventory from the server (or inventory specified by criteria). 
-        //If includeDef is true, response includes associated itemDef with each user item, with
-        // language fields limited to the current or default language.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserInventory
-        /// </remarks>
-        /// <param name="criteria">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-        public void GetUserInventory(
-        string criteria,
-        bool includeDef,
-        SuccessCallback success = null,
-        FailureCallback failure = null,
-        object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            var criteriaData = JsonReader.Deserialize<Dictionary<string, object>>(criteria);
-            data[OperationParam.UserInventoryManagementServiceCriteria.Value] = criteriaData;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GetUserInventory, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.DropUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -170,7 +131,7 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void GetUserInventoryPage(
+        public void GetUserItemsPage(
         string context,
         bool includeDef,
         SuccessCallback success = null,
@@ -179,11 +140,11 @@ using System;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             var contextData = JsonReader.Deserialize<Dictionary<string, object>>(context);
-            data[OperationParam.UserInventoryManagementServiceContext.Value] = contextData;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceContext.Value] = contextData;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GetUserInventoryPage, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItemsPage, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -214,7 +175,7 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void GetUserInventoryPageOffset(
+        public void GetUserItemsPageOffset(
         string context,
         int pageOffset,
         bool includeDef,
@@ -223,12 +184,12 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceContext.Value] = context;
-            data[OperationParam.UserInventoryManagementServicePageOffset.Value] = pageOffset;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceContext.Value] = context;
+            data[OperationParam.UserItemsServicePageOffset.Value] = pageOffset;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GetUserInventoryPageOffset, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItemsPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -265,11 +226,11 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GetUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -289,6 +250,8 @@ using System;
         /// </param>
         /// <param name="version">
         /// </param>
+        /// <param name="quantity">
+        /// </param>
         /// <param name="immediate">
         /// </param>
         /// <param name="success">
@@ -304,19 +267,21 @@ using System;
         String profileId,
         String itemId,
         int version,
+        int quantity,
         bool immediate,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceProfileId.Value] = profileId;
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
-            data[OperationParam.UserInventoryManagementServiceImmediate.Value] = immediate;
+            data[OperationParam.UserItemsServiceProfileId.Value] = profileId;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceImmediate.Value] = immediate;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GiveUserItemTo, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GiveUserItemTo, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -357,13 +322,13 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceDefId.Value] = defId;
-            data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
-            data[OperationParam.UserInventoryManagementServiceShopId.Value] = shopId;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.PurchaseUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PurchaseUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -400,11 +365,11 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceProfileId.Value] = profileId;
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceProfileId.Value] = profileId;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.ReceiveUserItemFrom, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.ReceiveUserItemFrom, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -450,14 +415,14 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
-            data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
-            data[OperationParam.UserInventoryManagementServiceShopId.Value] = shopId;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.SellUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.SellUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -492,13 +457,13 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
             var newItemDataDict = JsonReader.Deserialize<Dictionary<string, object>>(newItemData);
-            data[OperationParam.UserInventoryManagementServiceNewItemData.Value] = newItemDataDict;
+            data[OperationParam.UserItemsServiceNewItemData.Value] = newItemDataDict;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.UpdateUserItemData, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.UpdateUserItemData, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -536,15 +501,15 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
-            data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
 
             var newItemDataDict = JsonReader.Deserialize<Dictionary<string, object>>(newItemData);
-            data[OperationParam.UserInventoryManagementServiceNewItemData.Value] = newItemDataDict;
+            data[OperationParam.UserItemsServiceNewItemData.Value] = newItemDataDict;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.UseUserItem, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.UseUserItem, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -576,11 +541,11 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserInventoryManagementServiceItemId.Value] = itemId;
-            data[OperationParam.UserInventoryManagementServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.PublishUserItemToBlockchain, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PublishUserItemToBlockchain, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -606,7 +571,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.RefreshBlockchainUserItems, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RefreshBlockchainUserItems, data, callback);
             _client.SendRequest(sc);
         }
     }
