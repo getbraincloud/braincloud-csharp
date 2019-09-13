@@ -35,6 +35,8 @@ using BrainCloud.Common;
         /// </param>
         /// <param name="acl">
         /// 
+        /// <param name="isOwned">
+        /// The entity data
         /// <param name="timeToLive">
         /// The Entity Type
         /// </param>
@@ -47,11 +49,12 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void CreateCustomEntity(
+        public void CreateEntity(
         string entityType,
         string dataJson,
         string acl,
         string timeToLive,
+        bool isOwned,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -61,6 +64,7 @@ using BrainCloud.Common;
             data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
             data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
+            data[OperationParam.CustomEntityServiceIsOwned.Value] = isOwned;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.CreateCustomEntity, data, callback);
@@ -99,7 +103,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>//this good
-        public void GetCustomEntityPage(
+        public void GetEntityPage(
         string entityType,
         int rowsPerPage,
         string searchJson,
@@ -147,7 +151,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>this good
-        public void GetCustomEntityPageOffset(
+        public void GetEntityPageOffset(
         string entityType,
         string context,
         int pageOffset,
@@ -185,7 +189,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void ReadCustomEntity(
+        public void ReadEntity(
         string entityType,
         string entityId,
         SuccessCallback success = null,
@@ -229,7 +233,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void UpdateCustomEntity(
+        public void UpdateEntity(
         string entityType,
         string entityId,
         int version,
@@ -275,7 +279,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void UpdateCustomEntityFields(
+        public void UpdateEntityFields(
         string entityType,
         string entityId,
         int version,
@@ -302,9 +306,9 @@ using BrainCloud.Common;
         /// Service Name - CustomEntity
         /// Service Operation - GetCount
         /// </remarks>
-        /// <param name="context">
+        /// <param name="entityType">
         /// </param>
-        /// <param name="pageOffset">
+        /// <param name="whereJson">
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -338,9 +342,9 @@ using BrainCloud.Common;
         /// Service Name - CustomEntity
         /// Service Operation - DeleteCustomEntity
         /// </remarks>
-        /// <param name="context">
+        /// <param name="entityType">
         /// </param>
-        /// <param name="pageOffset">
+        /// <param name="entityId">
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -351,7 +355,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void DeleteCustomEntity(
+        public void DeleteEntity(
         string entityType,
         string entityId,
         int version,

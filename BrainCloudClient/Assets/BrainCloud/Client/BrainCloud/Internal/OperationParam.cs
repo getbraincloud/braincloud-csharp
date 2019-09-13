@@ -503,6 +503,7 @@ namespace BrainCloud
         public static readonly OperationParam CustomEntityServiceTimeToLive = new OperationParam("timeToLive");
         public static readonly OperationParam CustomEntityServiceAcl = new OperationParam("acl");
         public static readonly OperationParam CustomEntityServiceDataJson = new OperationParam("dataJson");
+        public static readonly OperationParam CustomEntityServiceIsOwned = new OperationParam("isOwned");
 
         //item catalog
         public static readonly OperationParam ItemCatalogServiceDefId = new OperationParam("defId");
