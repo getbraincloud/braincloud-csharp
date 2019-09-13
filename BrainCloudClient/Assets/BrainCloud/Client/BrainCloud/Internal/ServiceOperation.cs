@@ -29,6 +29,8 @@ using System;
         public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
         public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
 
+        public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
+        public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");

@@ -184,5 +184,34 @@ namespace BrainCloudTests
             _bc.IdentityService.UpdateUniversalIdLogin("braincloudtest@gmail.com", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, ReasonCodes.NEW_CREDENTIAL_IN_USE);
         }
+
+        [Test]
+        public void TestAttachBlockChain()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachBlockChain(
+                "config",
+                "ehhhhhhhhhhhhhh2",
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestDetachBlockChain()
+        {
+
+              TestResult tr1 = new TestResult(_bc);
+            _bc.IdentityService.AttachBlockChain(
+                "config",
+                "ehhhhhhhhhhhhhh",                
+                tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.DetachBlockChain(
+                "config",
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
