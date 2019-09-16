@@ -191,9 +191,15 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChain(
                 "config",
-                "ehhhhhhhhhhhhhh2",
+                "ehhhwwwwhhhhh2",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
+
+            TestResult tr1 = new TestResult(_bc);
+            _bc.IdentityService.DetachBlockChain(
+                "config",
+                tr1.ApiSuccess, tr1.ApiError);
+            tr1.Run();
         }
 
         [Test]
@@ -203,7 +209,7 @@ namespace BrainCloudTests
               TestResult tr1 = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChain(
                 "config",
-                "ehhhhhhhhhhhhhh",                
+                "ew2",                
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
