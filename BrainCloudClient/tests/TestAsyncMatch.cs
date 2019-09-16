@@ -101,7 +101,7 @@ namespace BrainCloudTests
         [Test]
         public void TestReadMatch()
         {
-            string matchId = CreateMatch();
+            string matchId = CreateMatchWithInitialTurn();
             TestResult tr = new TestResult(_bc);
 
             _bc.AsyncMatchService.ReadMatch(
@@ -194,6 +194,18 @@ namespace BrainCloudTests
             tr.Run();
 
             AbandonMatch(matchId);
+        }
+
+        [Test]
+        public void TestCompleteMatchWithSummaryData()
+        {
+
+        }
+
+        [Test]
+        public void TestAbandonMatchWithSummaryData()
+        {
+
         }
 
         #region Helper functions
