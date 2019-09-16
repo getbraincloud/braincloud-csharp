@@ -15,7 +15,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.CustomEntityService.CreateEntity(
-                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, false,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -50,7 +50,7 @@ namespace BrainCloudTests
 
             TestResult tr1 = new TestResult(_bc);
             _bc.CustomEntityService.CreateEntity(
-                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, false,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
@@ -70,7 +70,7 @@ namespace BrainCloudTests
         {
             TestResult tr1 = new TestResult(_bc);
             _bc.CustomEntityService.CreateEntity(
-                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, false,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
@@ -95,7 +95,7 @@ namespace BrainCloudTests
         {
             TestResult tr1 = new TestResult(_bc);
             _bc.CustomEntityService.CreateEntity(
-                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, false,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
@@ -119,7 +119,7 @@ namespace BrainCloudTests
         {
             TestResult tr1 = new TestResult(_bc);
             _bc.CustomEntityService.CreateEntity(
-                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, false,
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
