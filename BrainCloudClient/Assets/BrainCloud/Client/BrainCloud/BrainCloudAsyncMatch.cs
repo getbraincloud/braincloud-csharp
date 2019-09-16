@@ -546,9 +546,6 @@ using BrainCloud.Internal;
         /// <param name="summary">
         /// Match owner identifier
         /// </param>
-        /// <param name="completedBy">
-        /// Match owner identifier
-        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -563,7 +560,6 @@ using BrainCloud.Internal;
             string matchId,
             string pushContent,
             string summary,
-            string completedBy,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -573,7 +569,7 @@ using BrainCloud.Internal;
             data["ownerId"] = ownerId;
             data["matchId"] = matchId;
             data["pushContent"] =pushContent;
-            data["summary"] =summary;
+            data["summary"] =JsonReader.Deserialize<Dictionary<string, object>>(summary);
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.CompleteMatchWithSummaryData, data, callback);
