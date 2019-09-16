@@ -29,6 +29,8 @@ using System;
         public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
         public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
 
+        public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
+        public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");
@@ -181,6 +183,8 @@ using System;
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");
+        public static readonly ServiceOperation AbandonMatchWithSummaryData = new ServiceOperation("ABANDON_MATCH_WITH_SUMMARY_DATA");
+        public static readonly ServiceOperation CompleteMatchWithSummaryData = new ServiceOperation("COMPLETE_MATCH_WITH_SUMMARY_DATA");
         public static readonly ServiceOperation Complete = new ServiceOperation("COMPLETE");
         public static readonly ServiceOperation ReadMatch = new ServiceOperation("READ_MATCH");
         public static readonly ServiceOperation ReadMatchHistory = new ServiceOperation("READ_MATCH_HISTORY");
