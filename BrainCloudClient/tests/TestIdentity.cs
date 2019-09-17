@@ -190,8 +190,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChain(
-                "config",
-                "ehhhwwwwhhhhh2",
+                "default",
+                "ehhhwwwhhhhh2",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 

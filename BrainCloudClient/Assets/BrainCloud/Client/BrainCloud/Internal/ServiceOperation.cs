@@ -455,6 +455,7 @@ using System;
         public static readonly ServiceOperation UseUserItem = new ServiceOperation("USE_USER_ITEM");
         public static readonly ServiceOperation PublishUserItemToBlockchain = new ServiceOperation("PUBLISH_USER_ITEM_TO_BLOCKCHAIN");
         public static readonly ServiceOperation RefreshBlockchainUserItems = new ServiceOperation("REFRESH_BLOCKCHAIN_USER_ITEMS");
+        public static readonly ServiceOperation RemoveUserItemFromBlockchain = new ServiceOperation("REMOVE_USER_ITEM_FROM_BLOCKCHAIN");
 
 
 
