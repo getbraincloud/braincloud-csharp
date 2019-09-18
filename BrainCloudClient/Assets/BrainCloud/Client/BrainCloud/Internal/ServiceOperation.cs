@@ -29,6 +29,8 @@ using System;
         public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
         public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
 
+        public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
+        public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");
@@ -181,6 +183,8 @@ using System;
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");
+        public static readonly ServiceOperation AbandonMatchWithSummaryData = new ServiceOperation("ABANDON_MATCH_WITH_SUMMARY_DATA");
+        public static readonly ServiceOperation CompleteMatchWithSummaryData = new ServiceOperation("COMPLETE_MATCH_WITH_SUMMARY_DATA");
         public static readonly ServiceOperation Complete = new ServiceOperation("COMPLETE");
         public static readonly ServiceOperation ReadMatch = new ServiceOperation("READ_MATCH");
         public static readonly ServiceOperation ReadMatchHistory = new ServiceOperation("READ_MATCH_HISTORY");
@@ -253,7 +257,10 @@ using System;
 
         public static readonly ServiceOperation UpdatePictureUrl = new ServiceOperation("UPDATE_PICTURE_URL");
         public static readonly ServiceOperation UpdateContactEmail = new ServiceOperation("UPDATE_CONTACT_EMAIL");
-
+        public static readonly ServiceOperation SetUserStatus = new ServiceOperation("SET_USER_STATUS");        
+        public static readonly ServiceOperation GetUserStatus = new ServiceOperation("GET_USER_STATUS");
+        public static readonly ServiceOperation ClearUserStatus = new ServiceOperation("CLEAR_USER_STATUS");
+        public static readonly ServiceOperation ExtendUserStatus = new ServiceOperation("EXTEND_USER_STATUS");
         public static readonly ServiceOperation GetAttributes = new ServiceOperation("GET_ATTRIBUTES");
         public static readonly ServiceOperation UpdateAttributes = new ServiceOperation("UPDATE_ATTRIBUTES");
         public static readonly ServiceOperation RemoveAttributes = new ServiceOperation("REMOVE_ATTRIBUTES");
@@ -285,6 +292,7 @@ using System;
         public static readonly ServiceOperation CustomPageEvent = new ServiceOperation("CUSTOM_PAGE_EVENT");
         public static readonly ServiceOperation CustomScreenEvent = new ServiceOperation("CUSTOM_SCREEN_EVENT");
         public static readonly ServiceOperation CustomTrackEvent = new ServiceOperation("CUSTOM_TRACK_EVENT");
+        public static readonly ServiceOperation SubmitCrashReport = new ServiceOperation("SEND_CRASH_REPORT");
 
         //Profanity
         public static readonly ServiceOperation ProfanityCheck = new ServiceOperation("PROFANITY_CHECK");
@@ -417,6 +425,46 @@ using System;
         public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
         public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
         
+        //ItemCatalog
+        public static readonly ServiceOperation GetCatalogItemDefinition = new ServiceOperation("GET_CATALOG_ITEM_DEFINITION");
+        public static readonly ServiceOperation GetCatalogItemsPage = new ServiceOperation("GET_CATALOG_ITEMS_PAGE");
+        public static readonly ServiceOperation GetCatalogItemsPageOffset = new ServiceOperation("GET_CATALOG_ITEMS_PAGE_OFFSET");
+
+        //CustomEntity
+        public static readonly ServiceOperation CreateCustomEntity = new ServiceOperation("CREATE_ENTITY");
+        public static readonly ServiceOperation GetCustomEntityPage = new ServiceOperation("GET_PAGE");
+        public static readonly ServiceOperation GetCustomEntityPageOffset = new ServiceOperation("GET_PAGE_BY_OFFSET");
+        public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
+        public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
+        public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");
+        public static readonly ServiceOperation DeleteCustomEntity = new ServiceOperation("DELETE_ENTITY");
+        public static readonly ServiceOperation GetCount = new ServiceOperation("GET_COUNT");
+
+        //UserItemsService
+
+        public static readonly ServiceOperation AwardUserItem = new ServiceOperation("AWARD_USER_ITEM");
+        public static readonly ServiceOperation DropUserItem = new ServiceOperation("DROP_USER_ITEM");
+        public static readonly ServiceOperation GetUserItemsPage = new ServiceOperation("GET_USER_ITEMS_PAGE");
+        public static readonly ServiceOperation GetUserItemsPageOffset = new ServiceOperation("GET_USER_ITEMS_PAGE_OFFSET");
+        public static readonly ServiceOperation GetUserItem = new ServiceOperation("GET_USER_ITEM");
+        public static readonly ServiceOperation GiveUserItemTo = new ServiceOperation("GIVE_USER_ITEM_TO");
+        public static readonly ServiceOperation PurchaseUserItem = new ServiceOperation("PURCHASE_USER_ITEM");
+        public static readonly ServiceOperation ReceiveUserItemFrom = new ServiceOperation("RECEIVE_USER_ITEM_FROM");
+        public static readonly ServiceOperation SellUserItem = new ServiceOperation("SELL_USER_ITEM");
+        public static readonly ServiceOperation UpdateUserItemData = new ServiceOperation("UPDATE_USER_ITEM_DATA");
+        public static readonly ServiceOperation UseUserItem = new ServiceOperation("USE_USER_ITEM");
+        public static readonly ServiceOperation PublishUserItemToBlockchain = new ServiceOperation("PUBLISH_USER_ITEM_TO_BLOCKCHAIN");
+        public static readonly ServiceOperation RefreshBlockchainUserItems = new ServiceOperation("REFRESH_BLOCKCHAIN_USER_ITEMS");
+        public static readonly ServiceOperation RemoveUserItemFromBlockchain = new ServiceOperation("REMOVE_USER_ITEM_FROM_BLOCKCHAIN");
+
+
+
+
+
+
+
+
+
         private ServiceOperation(string value)
         {
             Value = value;

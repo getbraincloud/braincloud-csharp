@@ -526,6 +526,107 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Removes the match and match history from the server. DEBUG ONLY, in production it is recommended
+        /// the user leave it as completed.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - AsyncMatch
+        /// Service Operation - Delete
+        /// </remarks>
+        /// <param name="ownerId">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="matchId">
+        /// Match identifier
+        /// </param>
+        /// <param name="pushContent">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="summary">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void CompleteMatchWithSummaryData(
+            string ownerId,
+            string matchId,
+            string pushContent,
+            string summary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            //completedby not needed?
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
+            data["pushContent"] =pushContent;
+            data["summary"] =JsonReader.Deserialize<Dictionary<string, object>>(summary);
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.CompleteMatchWithSummaryData, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Removes the match and match history from the server. DEBUG ONLY, in production it is recommended
+        /// the user leave it as completed.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - AsyncMatch
+        /// Service Operation - Delete
+        /// </remarks>
+        /// <param name="ownerId">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="matchId">
+        /// Match identifier
+        /// </param>
+        /// <param name="pushContent">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="summary">
+        /// Match owner identifier
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        //string abandonedBy,
+        public void AbandonMatchWithSummaryData(
+            string ownerId,
+            string matchId,
+            string pushContent,
+            string summary,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            //abandoneddby not needed?
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
+            data["pushContent"] =pushContent;
+            data["summary"] =JsonReader.Deserialize<Dictionary<string, object>>(summary);
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.AbandonMatchWithSummaryData, data, callback);
+            _client.SendRequest(sc);
+        }
+
         private void CreateMatchInternal(
             string jsonOpponentIds,
             string jsonMatchState,
@@ -571,5 +672,7 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.Create, data, callback);
             _client.SendRequest(sc);
         }
+
+        
     }
 }
