@@ -574,5 +574,45 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RefreshBlockchainUserItems, data, callback);
             _client.SendRequest(sc);
         }
+
+        
+        /// <summary>
+        /// removes item from a blockchain.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserInventoryManagement
+        /// Service Operation - RemoveUserItemFromBlockchain
+        /// 
+        /// </param>
+        /// <param name="itemId">
+        /// 
+        /// </param>
+        /// <param name="version">
+        /// 
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void RemoveUserItemFromBlockchain(
+        string itemId,
+        int version,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RemoveUserItemFromBlockchain, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }
