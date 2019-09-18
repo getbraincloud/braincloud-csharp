@@ -196,6 +196,62 @@ namespace BrainCloudTests
             AbandonMatch(matchId);
         }
 
+        [Test]
+        public void TestCompleteMatchWithSummaryData()
+        {
+            string matchId = CreateMatch();
+            TestResult tr2 = new TestResult(_bc);
+            _bc.AsyncMatchService.SubmitTurn(
+                GetUser(Users.UserA).ProfileId,
+                matchId,
+                0,
+                Helpers.CreateJsonPair("blob", 1),
+                null,
+                GetUser(Users.UserB).ProfileId,
+                Helpers.CreateJsonPair("map", "level1"),
+                Helpers.CreateJsonPair("map", "level1"),
+                tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.AsyncMatchService.CompleteMatchWithSummaryData(
+                GetUser(Users.UserA).ProfileId,
+                matchId,
+                Helpers.CreateJsonPair("map", "level1"),
+                Helpers.CreateJsonPair("map", "level1"),
+                tr3.ApiSuccess, tr3.ApiError
+            );
+            tr3.Run();
+        }
+
+        [Test]
+        public void TestAbandonMatchWithSummaryData()
+        {
+            string matchId = CreateMatch();
+            TestResult tr2 = new TestResult(_bc);
+            _bc.AsyncMatchService.SubmitTurn(
+                GetUser(Users.UserA).ProfileId,
+                matchId,
+                0,
+                Helpers.CreateJsonPair("blob", 1),
+                null,
+                GetUser(Users.UserB).ProfileId,
+                Helpers.CreateJsonPair("map", "level1"),
+                Helpers.CreateJsonPair("map", "level1"),
+                tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.AsyncMatchService.AbandonMatchWithSummaryData(
+                GetUser(Users.UserA).ProfileId,
+                matchId,
+                Helpers.CreateJsonPair("map", "level1"),
+                Helpers.CreateJsonPair("map", "level1"),
+                tr3.ApiSuccess, tr3.ApiError
+            );
+            tr3.Run();
+        }
+
         #region Helper functions
 
         private string CreateMatch()

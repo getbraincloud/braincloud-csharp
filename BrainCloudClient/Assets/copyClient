@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#bombers rtt - playbrains
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/BombersRTT/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/BombersRTT/Assets/
+
+#casino 
+rm -rf ../../../pb-casinoslots/Development/pbCasino/Assets/BrainCloud/
+cp -rf BrainCloud/ ../../../pb-casinoslots/Development/pbCasino/Assets/
+
+#unity examples  ------ START 
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/Authentication/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/Authentication/Assets/
+
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/AuthenticationErrorHandling/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/AuthenticationErrorHandling/Assets/
+
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/BombersRTT/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/BombersRTT/Assets/
+
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/PushNotifications/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/PushNotifications/Assets/
+
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/SpaceShooterWithStats/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/SpaceShooterWithStats/Assets/
+
+rm -rf C:/Users/ryanr/Desktop/BrainCloud/examples-unity/TicTacToe/Assets/BrainCloud
+cp -rf BrainCloud/ C:/Users/ryanr/Desktop/BrainCloud/examples-unity/TicTacToe/Assets/
+#unity examples  ------ END 

@@ -364,6 +364,8 @@ namespace BrainCloud
         public const int LEADERBOARD_TOURNAMENT_TEMPLATE_ONLY = 40640;
         public const int INVALID_TOURNAMENT_JOB_ID = 40641;
         public const int LEADERBOARD_ROTATION_ERROR = 40642;
+        public const int RECEIVE_ITEM_FROM_SELF = 40660;
+        public const int ITEM_NOT_FOUND = 40663;
         public const int INVALID_STORE_ID = 40700;
         public const int METHOD_DEPRECATED = 40701;
         public const int INVALID_BILLING_PROVIDER_ID = 40702;

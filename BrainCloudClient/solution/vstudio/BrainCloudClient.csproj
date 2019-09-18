@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET;BC_DEBUG_LOG_ENABLED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -131,6 +131,12 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudIdentity.cs">
       <Link>BrainCloud\BrainCloudIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudItemCatalog.cs">
+      <Link>BrainCloud\BrainCloudItemCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudUserItems.cs">
+      <Link>BrainCloud\BrainCloudUserItems.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMail.cs">
       <Link>BrainCloud\BrainCloudMail.cs</Link>
     </Compile>
@@ -187,6 +193,9 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
       <Link>BrainCloud\BrainCloudTournament.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudCustomEntity.cs">
+      <Link>BrainCloud\BrainCloudCustomEntity.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
