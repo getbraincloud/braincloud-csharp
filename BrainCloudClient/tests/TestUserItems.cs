@@ -125,32 +125,33 @@ namespace BrainCloudTests
         [Test]
         public void PublishUserItemToBlockchain()
         {
-            TestResult tr = new TestResult(_bc);
-            _bc.IdentityService.AttachBlockChain(
-               "default",
-                "bcbctest14",
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            //TODO
+            // TestResult tr = new TestResult(_bc);
+            // _bc.IdentityService.AttachBlockChain(
+            //    "default",
+            //     "bcbctest14",
+            //     tr.ApiSuccess, tr.ApiError);
+            // tr.Run();
 
-            TestResult tr2 = new TestResult(_bc);
-            _bc.UserItemsService.PublishUserItemToBlockchain(
-                testItems[4] as string, 
-                1,
-                tr2.ApiSuccess, tr2.ApiError);
-            tr2.Run();
+            // TestResult tr2 = new TestResult(_bc);
+            // _bc.UserItemsService.PublishUserItemToBlockchain(
+            //     testItems[4] as string, 
+            //     1,
+            //     tr2.ApiSuccess, tr2.ApiError);
+            // tr2.Run();
 
-            TestResult tr1 = new TestResult(_bc);
-            _bc.UserItemsService.RemoveUserItemFromBlockchain(
-            testItems[4] as string,
-            1,
-            tr1.ApiSuccess, tr1.ApiError);
-            tr1.Run();
+            // TestResult tr1 = new TestResult(_bc);
+            // _bc.UserItemsService.RemoveUserItemFromBlockchain(
+            // testItems[4] as string,
+            // 1,
+            // tr1.ApiSuccess, tr1.ApiError);
+            // tr1.Run();
 
-            TestResult tr3 = new TestResult(_bc);
-            _bc.IdentityService.DetachBlockChain(
-                "default",
-                tr3.ApiSuccess, tr3.ApiError);
-            tr3.Run();
+            // TestResult tr3 = new TestResult(_bc);
+            // _bc.IdentityService.DetachBlockChain(
+            //     "default",
+            //     tr3.ApiSuccess, tr3.ApiError);
+            // tr3.Run();
         }
 
         [Test]
@@ -165,32 +166,33 @@ namespace BrainCloudTests
         [Test]
         public void RemoveUserItemFromBlockchain()
         {
-            TestResult tr = new TestResult(_bc);
-            _bc.IdentityService.AttachBlockChain(
-               "default",
-               "bcbctest14",
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            //TODO
+            // TestResult tr = new TestResult(_bc);
+            // _bc.IdentityService.AttachBlockChain(
+            //    "default",
+            //    "bcbctest14",
+            //     tr.ApiSuccess, tr.ApiError);
+            // tr.Run();
 
-            TestResult tr1 = new TestResult(_bc);
-            _bc.UserItemsService.PublishUserItemToBlockchain(
-                testItems[4] as string, 
-                1,
-                tr1.ApiSuccess, tr1.ApiError);
-            tr1.Run();
+            // TestResult tr1 = new TestResult(_bc);
+            // _bc.UserItemsService.PublishUserItemToBlockchain(
+            //     testItems[4] as string, 
+            //     1,
+            //     tr1.ApiSuccess, tr1.ApiError);
+            // tr1.Run();
 
-            TestResult tr2 = new TestResult(_bc);
-            _bc.UserItemsService.RemoveUserItemFromBlockchain(
-                testItems[4] as string,
-                1,
-                tr2.ApiSuccess, tr2.ApiError);
-            tr2.Run();
+            // TestResult tr2 = new TestResult(_bc);
+            // _bc.UserItemsService.RemoveUserItemFromBlockchain(
+            //     testItems[4] as string,
+            //     1,
+            //     tr2.ApiSuccess, tr2.ApiError);
+            // tr2.Run();
 
-            TestResult tr3 = new TestResult(_bc);
-            _bc.IdentityService.DetachBlockChain(
-                "default",
-                tr3.ApiSuccess, tr3.ApiError);
-            tr3.Run();
+            // TestResult tr3 = new TestResult(_bc);
+            // _bc.IdentityService.DetachBlockChain(
+            //     "default",
+            //     tr3.ApiSuccess, tr3.ApiError);
+            // tr3.Run();
         }
     }
 }
