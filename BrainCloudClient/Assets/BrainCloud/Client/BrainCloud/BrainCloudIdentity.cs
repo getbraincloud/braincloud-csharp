@@ -1313,6 +1313,68 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Attach blockchain
+        /// </summary>
+        /// <param name="blockchainConfig">
+        /// 
+        /// </param>
+        /// <param name="publicKey">
+        /// 
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachBlockChain(
+            string blockchainConfig,
+            string publicKey,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+            data[OperationParam.PublicKey.Value] = publicKey;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// detach blockchain
+        /// </summary>
+        /// <param name="blockchainConfig">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachBlockChain(
+            string blockchainConfig,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
 
         #region Private Methods
 

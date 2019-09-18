@@ -22,6 +22,8 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Group = new ServiceName("group");
         public static readonly ServiceName HeartBeat = new ServiceName("heartbeat");
         public static readonly ServiceName Identity = new ServiceName("identity");
+        public static readonly ServiceName ItemCatalog = new ServiceName("itemCatalog");
+        public static readonly ServiceName UserItems = new ServiceName("userItems");
         public static readonly ServiceName Mail = new ServiceName("mail");
         public static readonly ServiceName MatchMaking = new ServiceName("matchMaking");
         public static readonly ServiceName OneWayMatch = new ServiceName("onewayMatch");
@@ -41,6 +43,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Twitter = new ServiceName("twitter");
         public static readonly ServiceName Time = new ServiceName("time");
         public static readonly ServiceName Tournament = new ServiceName("tournament");
+        public static readonly ServiceName CustomEntity = new ServiceName("customEntity");
         public static readonly ServiceName RTTRegistration = new ServiceName("rttRegistration");
         public static readonly ServiceName RTT = new ServiceName("rtt");
         public static readonly ServiceName Relay = new ServiceName("relay");

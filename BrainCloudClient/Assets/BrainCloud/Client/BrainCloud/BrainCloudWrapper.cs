@@ -166,6 +166,16 @@ public class BrainCloudWrapper
         get { return Client.IdentityService; }
     }
 
+    public BrainCloudItemCatalog ItemCatalogService
+    {
+        get { return Client.ItemCatalogService; }
+    }
+
+    public BrainCloudUserItems UserItemsService
+    {
+        get { return Client.UserItemsService; }
+    }
+
     public BrainCloudScript ScriptService
     {
         get { return Client.ScriptService; }
@@ -234,6 +244,10 @@ public class BrainCloudWrapper
     public BrainCloudTournament TournamentService
     {
         get { return Client.TournamentService; }
+    }
+    public BrainCloudCustomEntity CustomEntityService
+    {
+        get { return Client.CustomEntityService; }
     }
 
     public BrainCloudPushNotification PushNotificationService
@@ -335,17 +349,21 @@ public class BrainCloudWrapper
         WrapperName = wrapperName;
     }
 
-    public void Update()
+    public void RunCallbacks()
     {
         if (Client != null)
         {
-            // MonoBehavior runs every update Tick
             // for further control please review eBrainCloudUpdateType
             // from the direct Client Updates
             Client.Update();
         }
     }
 
+    // MonoBehavior runs every update Tick
+    public void Update()
+    {
+        RunCallbacks();
+    }
 
 #if !DOT_NET
     /// <summary>
@@ -1503,7 +1521,7 @@ public class BrainCloudWrapper
             }
         }
 
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
         BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateSuccess(json);
 #endif
     }
@@ -1526,7 +1544,7 @@ public class BrainCloudWrapper
             }
         }
 
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
         BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
 #endif
     }
