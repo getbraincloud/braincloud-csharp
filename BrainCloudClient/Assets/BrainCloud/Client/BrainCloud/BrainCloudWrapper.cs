@@ -477,6 +477,7 @@ public class BrainCloudWrapper
     public void AuthenticateAnonymous(
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -487,7 +488,7 @@ public class BrainCloudWrapper
         InitializeIdentity(true);
 
         Client.AuthenticationService.AuthenticateAnonymous(
-            true, AuthSuccessCallback, AuthFailureCallback, aco);
+            true, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -527,6 +528,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -537,7 +539,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateEmailPassword(
-            email, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            email, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -576,6 +578,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -586,7 +589,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateExternal(
-            userid, token, externalAuthName, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, externalAuthName, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -621,6 +624,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -631,7 +635,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateFacebook(
-            fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -661,6 +665,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -671,7 +676,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateGameCenter(
-            gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -705,6 +710,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -715,7 +721,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateGoogle(
-            userid, token, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -749,6 +755,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -759,7 +766,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateSteam(
-            userid, sessionticket, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, sessionticket, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -797,6 +804,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -807,7 +815,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateTwitter(
-            userid, token, secret, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            userid, token, secret, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -843,6 +851,7 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
@@ -853,7 +862,7 @@ public class BrainCloudWrapper
         InitializeIdentity();
 
         Client.AuthenticationService.AuthenticateUniversal(
-            username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, supportsCompression, aco);
     }
 
     /// <summary>
@@ -895,11 +904,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateEmailPassword(email, password, forceCreate, success, failure, cbObject);
+            AuthenticateEmailPassword(email, password, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -945,11 +955,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateExternal(userid, token, externalAuthName, forceCreate, success, failure, cbObject);
+            AuthenticateExternal(userid, token, externalAuthName, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -991,11 +1002,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateFacebook(fbUserId, fbAuthToken, forceCreate, success, failure, cbObject);
+            AuthenticateFacebook(fbUserId, fbAuthToken, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1032,11 +1044,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateGameCenter(gameCenterId, forceCreate, success, failure, cbObject);
+            AuthenticateGameCenter(gameCenterId, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1077,11 +1090,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateGoogle(userid, token, forceCreate, success, failure, cbObject);
+            AuthenticateGoogle(userid, token, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1122,11 +1136,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateSteam(userid, sessionticket, forceCreate, success, failure, cbObject);
+            AuthenticateSteam(userid, sessionticket, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1171,11 +1186,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateTwitter(userid, token, secret, forceCreate, success, failure, cbObject);
+            AuthenticateTwitter(userid, token, secret, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1218,11 +1234,12 @@ public class BrainCloudWrapper
         bool forceCreate,
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticateUniversal(username, password, forceCreate, success, failure, cbObject);
+            AuthenticateUniversal(username, password, forceCreate, success, failure, supportsCompression, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -1284,9 +1301,10 @@ public class BrainCloudWrapper
     public void Reconnect(
         SuccessCallback success = null,
         FailureCallback failure = null,
+        bool supportsCompression = true,
         object cbObject = null)
     {
-        AuthenticateAnonymous(success, failure, cbObject);
+        AuthenticateAnonymous(success, failure, supportsCompression, cbObject);
     }
 
     /// <summary>
@@ -1483,13 +1501,13 @@ public class BrainCloudWrapper
     /// Provides a way to reauthenticate with the stored anonymous and profile id.
     /// Only works for Anonymous authentications.
     /// </summary>
-    protected virtual void Reauthenticate()
+    protected virtual void Reauthenticate(bool supportCompression = true)
     {
         Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {
-            AuthenticateAnonymous(null, null);
+            AuthenticateAnonymous(null, null, supportCompression);
         }
     }
 
