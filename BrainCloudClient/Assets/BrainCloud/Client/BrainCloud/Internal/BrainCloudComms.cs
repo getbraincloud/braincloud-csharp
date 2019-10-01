@@ -1846,12 +1846,13 @@ using UnityEngine.Experimental.Networking;
             using (var outputStream = new MemoryStream())
             {
                 gZipStream.CopyTo(outputStream);
-                var outputBytes = outputStream.ToArray();
+                outputStream.Read(compressedBytes, 0, compressedBytes.Length);
+               // var outputBytes = outputStream.ToArray();
             
                 //string decompressed = Encoding.UTF8.GetString(outputBytes);
                 //Console.WriteLine(decompressed);
-                Console.ReadLine();
-                return outputBytes;
+               // Console.ReadLine();
+                return outputStream.ToArray();
             }
         }
 
