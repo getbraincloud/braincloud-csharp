@@ -35,7 +35,7 @@ using UnityEngine.Experimental.Networking;
     using BrainCloud.JsonFx.Json;
     using System.IO;
     using System.IO.Compression;
-    using DotZLib;
+    //using DotZLib;
 
     #region Processed Server Call Class
     public class ServerCallProcessed
@@ -64,7 +64,7 @@ using UnityEngine.Experimental.Networking;
         /// Byte size threshold that determines if the message size is something we want to compress or not.
         //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
-        private static int _serverCompressIfLarger = 50000;
+        private static int _serverCompressIfLarger = 50;
         private static int _clientCompressIfLarger = _serverCompressIfLarger;
 
 
@@ -1665,11 +1665,22 @@ using UnityEngine.Experimental.Networking;
                     //compress packet message!
                     Console.WriteLine("GOING TO COMPRESS");
                     //set the header
-                    request.SetRequestHeader("Accept-Encoding", "gzip, deflate");
-                    request.SetRequestHeader("Content-Encoding", "gzip");
+                                        Console.WriteLine("1");
+                    request.SetRequestHeader("Accept-Encoding", "gzip");
+                                        Console.WriteLine("2");
+                    //request.SetRequestHeader("Content-Encoding", "gzip");
+                    //                    Console.WriteLine("3");
 
                     //then compress
                     //
+                    Console.WriteLine("The size before: " +  byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Compress(byteArray);
+                    Console.WriteLine("The size after: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Decompress(byteArray);
+                    Console.WriteLine("Decompressed: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
                     //
                 }
                 //////////////////////////////////////////////////////////////////////
@@ -1693,11 +1704,22 @@ using UnityEngine.Experimental.Networking;
                     //compress packet message!
                     Console.WriteLine("GOING TO COMPRESS");
                     //set the header
+                                        Console.WriteLine("1");
                     formTable["Accept-Encoding"] = "gzip";
-                    formTable["Content-Encoding"] = "gzip";
+                                        Console.WriteLine("2");
+                    //formTable["Content-Encoding"] = "gzip";
+                    //                    Console.WriteLine("3");
 
                     //then compress
                     //
+                    Console.WriteLine("The size before: " +  byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Compress(byteArray);
+                    Console.WriteLine("The size after: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Decompress(byteArray);
+                    Console.WriteLine("Decompressed: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
                     //
                 }
                 //////////////////////////////////////////////////////////////////////
@@ -1724,11 +1746,21 @@ using UnityEngine.Experimental.Networking;
                     //compress packet message!
                     Console.WriteLine("GOING TO COMPRESS");
                     //set the header
+                    Console.WriteLine("1");
                     req.Headers.Add("Accept-Encoding", "gzip");
-                    req.Headers.Add("Content-Encoding", "gzip");
+                    Console.WriteLine("2");
+                    //req.Headers.Add("Content-Encoding", "gzip");
+                    //Console.WriteLine("3");
 
                     //then compress
-                    //Compress(byteArray);
+                    Console.WriteLine("The size before: " +  byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Compress(byteArray);
+                    Console.WriteLine("The size after: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    byteArray = Decompress(byteArray);
+                    Console.WriteLine("Decompressed: " + byteArray.Length);
+                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
                     //
                 }
                 //////////////////////////////////////////////////////////////////////
@@ -1756,48 +1788,72 @@ using UnityEngine.Experimental.Networking;
             }
         }
 
-        //private byte[] Compress(byte[] raw)
-        //{
-            // using(var compress = new GZipStream(outputFile, CompressionMode.Compress, false)) {
-            //     byte[] b = new byte[inFile.Length];
-            //     int read = inFile.Read(b, 0, b.Length);
-            //     while (read > 0) {
-            //         compress.Write(b, 0, read);
-            //         read = inFile.Read(b, 0, b.Length);
-            //     }
-            // }
+        private byte[] Compress(byte[] raw)
+        {
+            var outputStream = new MemoryStream();
+            using (var stream = new GZipStream(outputStream, CompressionMode.Compress, true))
+            {
+                stream.Write(raw, 0, raw.Length);
+            }
+            return outputStream.ToArray();
+        }
 
-            // using (System.IO.Stream outputStream = new MemoryStream())
-            //     {
-            //         using (DotZLib.GZipStream gzip = new DotZLib.GZipStream(outputStream,
-            //             CompressionMode.Compress))
-            //         {
-            //             gzip.Write(raw, 0, raw.Length);
-            //         }
-            //         //return memory.ToArray();
-            //     }
-
-            //////////////////////////////////////////////////////////////////////////            
-            // supportsCompression = true;
-            // //byte[] ascii = System.Text.Encoding.ASCII.GetBytes (JsonWriter.Serialize(JsonWriter.Serialize(packet)));
-            // Console.WriteLine ("THIS IS THE SIZE" + jsonRequestString.Length);
-            // //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-            // if(supportsCompression && byteArray.Length > _clientCompressIfLarger)
+        private byte[] Decompress(byte[] compressedBytes)
+        {
+            // using (var inputStream = new MemoryStream(compressedBytes))
+            // using (var gZipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+            // using (var streamReader = new StreamReader(gZipStream))
             // {
-            //     //compress packet message!
-            //     Console.WriteLine("GOING TO COMPRESS");
-            //     compressMessage = true;
+            //     var decompressed = streamReader.ReadToEnd();
 
-            //     //set the header
-            //     request.SetRequestHeader("Content-Encoding", "gzip");
+            //     return decompressed;
+            //     Console.WriteLine(decompressed);
+            //     Console.ReadLine();
             // }
-            // //for test 
-            // else{
-            //     Console.WriteLine("NOT GOING TO COMPRESS");
+
+            // using (var inputStream = new MemoryStream(compressedBytes))
+            // using (var gZipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+            // using (var outputStream = new MemoryStream())
+            // {
+            //     //copy gzipstream to third stream 
+            //     gZipStream.CopyTo(outputStream);
+
+            //     var outputBytes = outputStream.ToArray();
+            
+            //     //string decompressed = Encoding.UTF8.GetString(outputBytes);
+            
+            //     //Console.WriteLine("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEY" + decompressed);
+            //     //Console.ReadLine();
+
+            //     return compressedBytes;
             // }
-          
-            //////////////////////////////////////////////////////////////////////
-        //}
+
+            // var memoryStream = new MemoryStream();
+            // using (var stream = new GZipStream(memoryStream, CompressionMode.Decompress, true))
+            // {
+            //     while (true) {
+            //         int count = stream.Read(compressedBytes, 0, compressedBytes.Length);
+            //         if (count != 0)
+            //             memoryStream.Write(compressedBytes, 0, count);
+            //             if (count != compressedBytes.Length)
+            //                 break;
+            //     }
+            // }
+            // return memoryStream.ToArray();
+
+            using (var inputStream = new MemoryStream(compressedBytes))
+            using (var gZipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+            using (var outputStream = new MemoryStream())
+            {
+                gZipStream.CopyTo(outputStream);
+                var outputBytes = outputStream.ToArray();
+            
+                //string decompressed = Encoding.UTF8.GetString(outputBytes);
+                //Console.WriteLine(decompressed);
+                Console.ReadLine();
+                return outputBytes;
+            }
+        }
 
         /// <summary>
         /// Resends a message bundle. Returns true if sent or
