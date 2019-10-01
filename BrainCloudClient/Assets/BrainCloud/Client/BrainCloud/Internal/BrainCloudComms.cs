@@ -46,8 +46,7 @@ using UnityEngine.Experimental.Networking;
 
     internal sealed class BrainCloudComms
     {
-        bool supportsCompression = false;
-        bool compressMessage = false;
+        bool _supportsCompression = false;
 
         /// <summary>
         /// The compressIfLarger server flag value when we NEVER compress the message
@@ -64,7 +63,7 @@ using UnityEngine.Experimental.Networking;
         //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
         private static int _serverCompressIfLarger = 30000;
-        private static int _maxBytesBeforeCompress = _serverCompressIfLarger;
+        private int _clientCompressIfLarger = _serverCompressIfLarger;
 
 
         /// <summary>
@@ -943,6 +942,12 @@ using UnityEngine.Experimental.Networking;
                     }
                 }
 
+                //if we have a response off of an authenticate
+                if (sc.GetOperation() == ServiceOperation.Authenticate.Value)
+                {
+
+                }
+
                 // its a success response
                 if (statusCode == 200)
                 {
@@ -987,9 +992,15 @@ using UnityEngine.Experimental.Networking;
                             ResetErrorCache();
                         }
                         //either off of authenticate or identity call, be sure to save the profileId and sessionId
+                        //and want to update the compressIfLarger flag
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
+                            _supportsCompression = bool.Parse(responseData["supportsCompression"] as string);
+                            if(_supportsCompression && responseData.ContainsKey("compressIfLarger")) 
+                            {
+                                _clientCompressIfLarger = int.Parse(responseData["compressIfLarger"] as string);
+                            } 
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
@@ -1114,12 +1125,6 @@ using UnityEngine.Experimental.Networking;
                     //if it was an authentication call 
                     if (operation == ServiceOperation.Authenticate.Value)
                     {
-                        //check the response data 
-                        if(response.ContainsValue("compressIfLarger"))
-                        {
-                            //_serverCompressIfLarger = response["data"].TryGetValue("compressIfLarger");
-                        }
-
                         //swap the recent responses, so you have the newest one, and the one last time you came through.
                         _recentResponseJsonData[1] = _recentResponseJsonData[0];
                         _recentResponseJsonData[0] = response;
@@ -1483,18 +1488,6 @@ using UnityEngine.Experimental.Networking;
                         message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
                         message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
 
-                        //Goals
-                        //1. figure out how to get the size of the message
-                        //2. Compare the message to the amoutn being sent out
-                        //3. How do I compress the message. 
-                        byte[] ascii = System.Text.Encoding.ASCII.GetBytes (JsonWriter.Serialize(message));
-                        Console.WriteLine (ascii.Length);
-                        totalfileSizeSoFar += ascii.Length;
-
-
-                        Console.WriteLine("BYTE SIZE OF CURRENT MESSAGE: " + ascii.Length);
-                        Console.WriteLine("BYTE SIZE OF ALL THE MESSAGES: " + totalfileSizeSoFar);
-
                         Console.WriteLine("MESSAGE :" + message);
 
                         messageList.Add(message);
@@ -1611,36 +1604,44 @@ using UnityEngine.Experimental.Networking;
                 packet[OperationParam.ServiceMessageGameId.Value] = AppId;
             }
 
-            supportsCompression = true;
-            byte[] ascii = System.Text.Encoding.ASCII.GetBytes (JsonWriter.Serialize(requestState.MessageList));
-            Console.WriteLine (ascii.Length);
-            //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-            if(supportsCompression && ascii.Length > _maxBytesBeforeCompress)
-            {
-                //compress packet message!
-                Console.WriteLine("GOING TO COMPRESS");
+            // //for testing
+            // _supportsCompression = true;
 
-            //compress
-            System.IO.Stream stream = new System.IO.MemoryStream();
-            stream.Write(ascii, 0, ascii.Length);
-            GZipStream compressionStream = new GZipStream(stream, CompressionMode.Compress);
-            compressionStream.Write(ascii, 0, ascii.Length);
-            compressionStream.Flush();
+            // //grab the bytes of the bundle
+            // //byte[] ascii = System.Text.Encoding.ASCII.GetBytes (JsonWriter.Serialize(requestState.MessageList));
+            // byte[] ascii = System.Text.Encoding.ASCII.GetBytes (JsonWriter.Serialize(packet));
+            // Console.WriteLine("BYTE SIZE OF CURRENT MESSAGE: " + ascii.Length);
+            
+            // //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
+            // //do we compress?
+            // //if yes
+            // if(_supportsCompression && ascii.Length > _clientCompressIfLarger)
+            // {
+            //     //compress packet message!
+            //     Console.WriteLine("GOING TO COMPRESS");
 
-            Console.WriteLine("CompressionStream " + compressionStream);
+            //     //compress
+            //     // System.IO.Stream stream = new System.IO.MemoryStream();
+            //     // stream.Write(ascii, 0, ascii.Length);
+            //     // GZipStream compressionStream = new GZipStream(stream, CompressionMode.Compress);
+            //     // compressionStream.Write(ascii, 0, ascii.Length);
+            //     // compressionStream.Flush();
 
-            //We want add compression in the header of a request so the server knows if its compressed. 
-                packet["compressed"] = compressMessage;
-                //reset for next message
-                compressMessage = false;
-                packet[OperationParam.ServiceMessageMessages.Value] = compressionStream;
-                Console.WriteLine("ATTACHING COMPRESSION TO MESSAGE");
-            }
-            else
-            {
-                Console.WriteLine("NOT GOING TO COMPRESS");
-                packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
-            }
+            //     //Console.WriteLine("CompressionStream " + compressionStream);
+
+            //     //We want add compression in the header of a request so the server knows if its compressed. 
+            //     //reset for next message
+
+            //     packet["compressed"] = true;
+            //     //compressMessage = false;
+            //     //packet[OperationParam.ServiceMessageMessages.Value] = compressionStream;
+            //     Console.WriteLine("ATTACHING COMPRESSION TO MESSAGE");
+            // }
+            // else
+            // {
+            //     Console.WriteLine("NOT GOING TO COMPRESS");
+            //     packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
+            // }
 
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
