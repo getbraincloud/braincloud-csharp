@@ -1733,6 +1733,7 @@ using UnityEngine.Experimental.Networking;
 
                 //////////////////////////////////////////////////////////////////////////            
                 supportsCompression = true;
+                bool compressed = false;
                 Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
                 //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
                 if(supportsCompression && byteArray.Length > _clientCompressIfLarger)
@@ -1754,6 +1755,7 @@ using UnityEngine.Experimental.Networking;
                     byteArray = Compress(byteArray);
                     Console.WriteLine("The size after: " + byteArray.Length);
                     Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                    compressed = true;
                     //byteArray = Decompress(byteArray);
                     //Console.WriteLine("Decompressed: " + byteArray.Length);
                     //Console.WriteLine(Encoding.UTF8.GetString(byteArray));
@@ -1765,7 +1767,10 @@ using UnityEngine.Experimental.Networking;
                 req.Content = new ByteArrayContent(byteArray);
                 //comment this to get the zipped output, uncomment this to get java.util.zip.zipexception trying to get json 
                 Console.WriteLine("4");
-                //req.Content.Headers.Add("Content-Encoding", "gzip");
+                if(compressed == true)
+                {
+                    req.Content.Headers.Add("Content-Encoding", "gzip");
+                }
                 Console.WriteLine("5");
                 req.Headers.Add("X-SIG", sig);
                 if (AppId != null && AppId.Length > 0) 
