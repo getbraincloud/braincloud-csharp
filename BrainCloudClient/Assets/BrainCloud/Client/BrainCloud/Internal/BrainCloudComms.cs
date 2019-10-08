@@ -1926,7 +1926,7 @@ using UnityEngine.Experimental.Networking;
                 // Console.WriteLine("BLEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEh");
                 // Console.WriteLine(response);
                 bool compressed = true;
-                if (!compressed && !supportsCompression) // whats this condition! ? 
+                if (!compressed && !supportsCompression) 
                    response = _activeRequest.WebRequest.downloadHandler.text;
                 else {
                    var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
@@ -2099,7 +2099,6 @@ using UnityEngine.Experimental.Networking;
 
                 if (!compressed&& !supportsCompression)
                 {
-                    Console.WriteLine("We should not be here....");
                     requestState.DotNetResponseString = await content.ReadAsStringAsync();
                 }
                 else
