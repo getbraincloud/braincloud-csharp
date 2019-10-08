@@ -1829,25 +1829,6 @@ using UnityEngine.Experimental.Networking;
             }
         }
 
-        // private string Decompress(string compressedBytes)
-        // {
-        //     byte[] inputBytes = Convert.FromBase64String(compressedBytes);
-            
-        //     using (var inputStream = new MemoryStream(inputBytes))
-        //     using (var gZipStream = new GZipStream(inputStream, CompressionMode.Decompress))
-        //     using (var outputStream = new MemoryStream())
-        //     {
-        //         gZipStream.CopyTo(outputStream);
-        //         var outputBytes = outputStream.ToArray();
-            
-        //         string decompressed = Encoding.UTF8.GetString(outputBytes);
-            
-        //         Console.WriteLine(decompressed);
-        //         Console.ReadLine();
-        //         return decompressed;
-        //     }
-        // }
-
         /// <summary>
         /// Resends a message bundle. Returns true if sent or
         /// false if max retries has been reached.

@@ -1483,13 +1483,13 @@ public class BrainCloudWrapper
     /// Provides a way to reauthenticate with the stored anonymous and profile id.
     /// Only works for Anonymous authentications.
     /// </summary>
-    protected virtual void Reauthenticate(bool supportCompression = true)
+    protected virtual void Reauthenticate()
     {
         Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {
-            AuthenticateAnonymous(null, null, supportCompression);
+            AuthenticateAnonymous(null, null);
         }
     }
 
