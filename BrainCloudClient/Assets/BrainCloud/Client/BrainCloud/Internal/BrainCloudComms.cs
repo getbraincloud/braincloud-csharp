@@ -64,7 +64,9 @@ using UnityEngine.Experimental.Networking;
         //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
         private static int _serverCompressIfLarger = 50;
-        private static int _clientCompressIfLarger = _serverCompressIfLarger;
+        private static int _compressIfLarger = _serverCompressIfLarger;
+
+        private static int _clientSideCompressionThreshold = 50000;
 
 
         /// <summary>
@@ -993,7 +995,7 @@ using UnityEngine.Experimental.Networking;
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            Console.WriteLine(responseData);
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
@@ -1630,6 +1632,19 @@ using UnityEngine.Experimental.Networking;
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
             requestState.Signature = sig;
+            
+            bool compressMessage = supportsCompression && byteArray.Length > _compressIfLarger;
+            Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
+            //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
+            if(compressMessage)
+            {
+                Console.WriteLine("The size before: " +  byteArray.Length);
+                Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+                byteArray = Compress(byteArray);
+                Console.WriteLine("The size after: " + byteArray.Length);
+                Console.WriteLine(Encoding.UTF8.GetString(byteArray));
+            }
+
             requestState.ByteArray = byteArray;
 
             /*
@@ -1654,33 +1669,12 @@ using UnityEngine.Experimental.Networking;
                     request.SetRequestHeader("X-APPID", AppId);
                 }
 
-                //////////////////////////////////////////////////////////////////////////            
-                Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
-                //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-                if(supportsCompression && byteArray.Length > _clientCompressIfLarger)
+                if(compressMessage)
                 {
-                    //compress packet message!
-                    Console.WriteLine("GOING TO COMPRESS");
-                    //set the header
-                                        Console.WriteLine("1");
+                    Console.WriteLine("adding gzip headers");
                     request.SetRequestHeader("Accept-Encoding", "gzip");
-                                        Console.WriteLine("2");
                     request.SetRequestHeader("Content-Encoding", "gzip");
-                                        Console.WriteLine("3");
-
-                    //then compress
-                    //
-                    Console.WriteLine("The size before: " +  byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    byteArray = Compress(byteArray);
-                    Console.WriteLine("The size after: " + byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    //byteArray = Decompress(byteArray);
-                    //Console.WriteLine("Decompressed: " + byteArray.Length);
-                    //Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    //
-                }
-                //////////////////////////////////////////////////////////////////////
+                }          
 
                 request.uploadHandler = new UploadHandlerRaw(byteArray);
                 request.SendWebRequest();
@@ -1692,33 +1686,12 @@ using UnityEngine.Experimental.Networking;
                     formTable["X-APPID"] = AppId;
                 }
 
-                //////////////////////////////////////////////////////////////////////////            
-                Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
-                //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-                if(supportsCompression && byteArray.Length > _clientCompressIfLarger)
+                if(compressMessage)
                 {
-                    //compress packet message!
-                    Console.WriteLine("GOING TO COMPRESS");
-                    //set the header
-                                        Console.WriteLine("1");
+                    Console.WriteLine("adding gzip headers");
                     formTable["Accept-Encoding"] = "gzip";
-                                        Console.WriteLine("2");
                     formTable["Content-Encoding"] = "gzip";
-                                        Console.WriteLine("3");
-
-                    //then compress
-                    //
-                    Console.WriteLine("The size before: " +  byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    byteArray = Compress(byteArray);
-                    Console.WriteLine("The size after: " + byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    //byteArray = Decompress(byteArray);
-                    //Console.WriteLine("Decompressed: " + byteArray.Length);
-                    //Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    //
                 }
-                //////////////////////////////////////////////////////////////////////
 
                 WWW request = new WWW(ServerURL, byteArray, formTable);
 #endif
@@ -1727,49 +1700,16 @@ using UnityEngine.Experimental.Networking;
 
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(ServerURL));
 
-                //////////////////////////////////////////////////////////////////////////            
-                bool compressed = false;
-                Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
-                //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-                if(supportsCompression && byteArray.Length > _clientCompressIfLarger)
-                {
-                    //compress packet message!
-                    Console.WriteLine("GOING TO COMPRESS");
-                    //set the header
-                    Console.WriteLine("1");
-                    
-                    Console.WriteLine("2");
-                    //req.Headers.Add("Content-Encoding", "gzip");
-                    //req.Content.HttpContent.Headers.HttpContentHeaderCollection.ContentEncoding.
-                    //req.content.Headers.ContentEncoding.TryParseAdd("gzip");
-                    Console.WriteLine("3");
-
-                    //then compress
-                    Console.WriteLine("The size before: " +  byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    byteArray = Compress(byteArray);
-                    Console.WriteLine("The size after: " + byteArray.Length);
-                    Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    compressed = true;
-                    //byteArray = Decompress(byteArray);
-                    //Console.WriteLine("Decompressed: " + byteArray.Length);
-                    //Console.WriteLine(Encoding.UTF8.GetString(byteArray));
-                    //
-                }
-                //////////////////////////////////////////////////////////////////////
-
                 //need to figure out if this happens before or after.
                 req.Content = new ByteArrayContent(byteArray);
                 //comment this to get the zipped output, uncomment this to get java.util.zip.zipexception trying to get json 
-                Console.WriteLine("4");
-                Console.WriteLine(compressed);
-                if(compressed == true)
+                if(compressMessage)
                 {
                     Console.WriteLine("adding gzip headers");
                     req.Headers.Add("Accept-Encoding", "gzip");
                     req.Content.Headers.Add("Content-Encoding", "gzip");
                 }
-                Console.WriteLine("5");
+
                 req.Headers.Add("X-SIG", sig);
                 if (AppId != null && AppId.Length > 0) 
                 {
