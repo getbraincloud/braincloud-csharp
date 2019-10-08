@@ -63,7 +63,7 @@ using UnityEngine.Experimental.Networking;
         /// Byte size threshold that determines if the message size is something we want to compress or not.
         //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
-        private static int _serverCompressIfLarger = 50000;
+        private static int _serverCompressIfLarger = 50;
         private static int _clientCompressIfLarger = _serverCompressIfLarger;
 
 
@@ -2066,8 +2066,7 @@ using UnityEngine.Experimental.Networking;
             {
                 message = asyncResult.Result;
                 HttpContent content = message.Content;
-                requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
-                    RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
+
                 // End the operation
                 Console.WriteLine(content.Headers.ContentEncoding);
                 //if its gzipped, the message is compressed
@@ -2078,8 +2077,9 @@ using UnityEngine.Experimental.Networking;
                     compressed = true; //this needs to be interpreted.
                 }
 
-                if (!compressed&& !supportsCompression)
+                if (!compressed)
                 {
+                    Console.WriteLine("WE READ AS STRING ASYNC");
                     requestState.DotNetResponseString = await content.ReadAsStringAsync();
                 }
                 else
@@ -2088,7 +2088,12 @@ using UnityEngine.Experimental.Networking;
                     var decompressedByteArray = Decompress(byteArray);
                     Console.WriteLine("ASYNC TASK CALLBACK!" + decompressedByteArray);
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+                    Console.WriteLine("ASYNC TASK CALLBACK! DOTNETSTRING " + requestState.DotNetResponseString);
                 }
+                //////////////////////////////////////////////////////////////////////////////
+                Console.WriteLine("STATUS");
+                requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
+                    RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
             }
 
             catch (WebException wex)
