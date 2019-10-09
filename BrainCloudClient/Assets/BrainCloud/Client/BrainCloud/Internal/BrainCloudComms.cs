@@ -50,28 +50,10 @@ using UnityEngine.Experimental.Networking;
         private bool supportsCompression = true;
 
         /// <summary>
-        /// The compressIfLarger server flag value when we NEVER compress the message
-        /// </summary>
-        private static int _neverCompressMessage = -1;
-        
-        /// <summary>
-        /// The compressIfLarger server flag value when we ALWAYS compress the message
-        /// </summary>
-        private static int _alwaysCompressMessage = 0;
-
-        /// <summary>
-        /// Byte size threshold that determines if the message size is something we want to compress or not.
-        //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// </summary>
-        private static int _serverCompressIfLarger = 50;
-        private static int _compressIfLarger = _serverCompressIfLarger;
-
-        /// <summary>
         /// Byte size threshold that determines if the message size is something we want to compress or not.
         //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
         private static int _clientSideCompressionThreshold = 50000;
-
 
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
@@ -501,9 +483,7 @@ using UnityEngine.Experimental.Networking;
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
                     ResetIdleTimer();
-                    Console.WriteLine("WE GUNNA HANDLE THINGS?");
                     HandleResponseBundle(GetWebRequestResponse(_activeRequest));
-                    Console.WriteLine("yeah WE handled it");
 
                     _activeRequest = null;
                 }
@@ -568,7 +548,6 @@ using UnityEngine.Experimental.Networking;
             else // send the next message if we're ready
             {
                 _activeRequest = CreateAndSendNextRequestBundle();
-                Console.WriteLine("ACTIVE REQUEST: " + _activeRequest);
             }
 
             // is it time for a heartbeat?
@@ -876,7 +855,6 @@ using UnityEngine.Experimental.Networking;
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
-            Console.WriteLine("In Handle Response Bundle");
             _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
 
             if (string.IsNullOrEmpty(jsonData))
@@ -896,7 +874,6 @@ using UnityEngine.Experimental.Networking;
             // json parsing error, missing packet id, app secret changed via the portal
             if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
-                Console.WriteLine("DROPPING");
                 _clientRef.Log("Dropping duplicate packet");
 
                 for (int j = 0; j < responseBundle.Length; ++j)
@@ -997,17 +974,12 @@ using UnityEngine.Experimental.Networking;
                             ResetErrorCache();
                         }
                         //either off of authenticate or identity call, be sure to save the profileId and sessionId
-                        //we also want to extract the compressIfLarger amount//////////////////////////////
+                        //we also want to extract the compressIfLarger amount
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
-                            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                            Console.WriteLine(responseData.ContainsKey("compressIfLarger"));
                             if(responseData.ContainsKey("compressIfLarger"))
                                 _clientSideCompressionThreshold = (int) responseData["compressIfLarger"];
-
-                            //_clientSideCompressionThreshold = 50000;
-                            Console.WriteLine(_clientSideCompressionThreshold);
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
@@ -1468,12 +1440,8 @@ using UnityEngine.Experimental.Networking;
                     for (int i = 0; i < _serviceCallsInProgress.Count; ++i)
                     {
                         scIndex = _serviceCallsInProgress[i];
-                        Console.WriteLine("INDEX: " + scIndex);
                         operation = scIndex.GetOperation();
                         service = scIndex.GetService();
-
-                        Console.WriteLine("OPERATION: " + operation);
-                        Console.WriteLine("SERVICE: " + service);
 
                         // don't send heartbeat if it was generated by comms (null callbacks)
                         // and there are other messages in the bundle - it's unnecessary
@@ -1521,8 +1489,6 @@ using UnityEngine.Experimental.Networking;
                     _expectedIncomingPacketId = _packetId;
                     requestState.MessageList = messageList;
 
-                    Console.WriteLine("MESSAGE LIST :" + messageList);
-
                     ++_packetId;
 
                     if (!_killSwitchEngaged && !tooManyAuthenticationAttempts())
@@ -1530,7 +1496,6 @@ using UnityEngine.Experimental.Networking;
                         if (_isAuthenticated || isAuth)
                         {
                             _clientRef.Log("SENDING REQUEST");
-                            Console.WriteLine("THIS IS WHERE WE SEND OUR REQUESTS");
                             InternalSendMessage(requestState);
                         }
                         else
@@ -1557,7 +1522,6 @@ using UnityEngine.Experimental.Networking;
                 }
             } // unlock _serviceCallsWaiting
 
-            Console.WriteLine("REQUEST: " + requestState);
             return requestState;
         }
 
@@ -1577,7 +1541,6 @@ using UnityEngine.Experimental.Networking;
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            Console.WriteLine("in fake Error response");
             _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
 
             ResetIdleTimer();
@@ -1598,11 +1561,9 @@ using UnityEngine.Experimental.Networking;
             // During retry, the RequestState is reused so we have to make sure its state goes back to PENDING.
             // Unity uses the info stored in the WWW object and it's recreated here so it's not an issue.
             requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
-            Console.WriteLine("WE DOIN DOTNET");
 #endif
 
             // bundle up the data into a string
-            Console.WriteLine("Lets bundle things up");
             Dictionary<string, object> packet = new Dictionary<string, object>();
             packet[OperationParam.ServiceMessagePacketId.Value] = requestState.PacketId;
             packet[OperationParam.ServiceMessageSessionId.Value] = SessionID;
@@ -1613,7 +1574,6 @@ using UnityEngine.Experimental.Networking;
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
             string jsonRequestString = JsonWriter.Serialize(packet);
-            Console.WriteLine(jsonRequestString);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
 #if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
@@ -1647,20 +1607,11 @@ using UnityEngine.Experimental.Networking;
             
             //if we support compression, and its not -1, then we check if the threshold is 0 or the byte array length is larger than the threshold if we are to compress.
             //-1 means never compress, 0 means always compress, anything over the thrshold also compresses.
-            Console.WriteLine(supportsCompression);
-            Console.WriteLine(_clientSideCompressionThreshold != -1);
-            Console.WriteLine(_clientSideCompressionThreshold == 0);
-            Console.WriteLine(byteArray.Length > _clientSideCompressionThreshold);
             bool compressMessage = supportsCompression && _clientSideCompressionThreshold != -1 && (_clientSideCompressionThreshold == 0 || byteArray.Length > _clientSideCompressionThreshold);
-            Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
             //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
             if(compressMessage)
             {
-                Console.WriteLine("The size before: " +  byteArray.Length);
-                Console.WriteLine(Encoding.UTF8.GetString(byteArray));
                 byteArray = Compress(byteArray);
-                Console.WriteLine("The size after: " + byteArray.Length);
-                Console.WriteLine(Encoding.UTF8.GetString(byteArray));
             }
 
             requestState.ByteArray = byteArray;
@@ -1689,7 +1640,6 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
-                    Console.WriteLine("adding gzip headers");
                     request.SetRequestHeader("Accept-Encoding", "gzip");
                     request.SetRequestHeader("Content-Encoding", "gzip");
                 }          
@@ -1706,7 +1656,6 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
-                    Console.WriteLine("adding gzip headers");
                     formTable["Accept-Encoding"] = "gzip";
                     formTable["Content-Encoding"] = "gzip";
                 }
@@ -1723,7 +1672,6 @@ using UnityEngine.Experimental.Networking;
                 //comment this to get the zipped output, uncomment this to get java.util.zip.zipexception trying to get json 
                 if(compressMessage)
                 {
-                    Console.WriteLine("adding gzip headers");
                     req.Headers.Add("Accept-Encoding", "gzip");
                     req.Content.Headers.Add("Content-Encoding", "gzip");
                 }
@@ -1735,19 +1683,14 @@ using UnityEngine.Experimental.Networking;
                 }
 
                 req.Method = HttpMethod.Post;
-                Console.WriteLine("METHOD: " + req.Method);
 
                 CancellationTokenSource source = new CancellationTokenSource();
                 requestState.CancelToken = source;
-                Console.WriteLine("Cancel Token " + requestState.CancelToken);
 
-                Console.WriteLine("REQ " + req);
                 Task<HttpResponseMessage> httpRequest = _httpClient.SendAsync(req, HttpCompletionOption.ResponseContentRead, source.Token);
-                Console.WriteLine("HTTP REQ: " + httpRequest);
                 requestState.WebRequest = httpRequest;
                 httpRequest.ContinueWith(async (t) =>
                 {
-                    Console.WriteLine("awaiting httpRequest");
                     await AsyncHttpTaskCallback(t, requestState);
                 });
 #endif
@@ -1757,11 +1700,7 @@ using UnityEngine.Experimental.Networking;
 
                 ResetIdleTimer();
                 
-                Console.WriteLine("in Internal Send Message");
-                Console.WriteLine(byteArray);
                 _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
-                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, byteArray));
-
             }
         }
 
@@ -1855,13 +1794,11 @@ using UnityEngine.Experimental.Networking;
 #if !(DOT_NET)
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
-                Console.WriteLine("are we getting errors?");
                 response = _activeRequest.WebRequest.error;
             }
             else
             {
 #if USE_WEB_REQUEST
-                Debug.Log("BLEH");
                 if(_activeRequest.WebRequest.GetRequestHeader("Content-Encoding") != "gzip")
                 {
                     response = _activeRequest.WebRequest.downloadHandler.text;
@@ -1886,8 +1823,6 @@ using UnityEngine.Experimental.Networking;
             }
 #else
             response = _activeRequest.DotNetResponseString;
-            Console.WriteLine("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEH");
-            Console.WriteLine("Blargh " + response);
 #endif
             return response;
         }
@@ -2031,26 +1966,19 @@ using UnityEngine.Experimental.Networking;
                 message = asyncResult.Result;
                 HttpContent content = message.Content;
 
-                // End the operation
-                Console.WriteLine(content.Headers.ContentEncoding);
-                
                 //if its gzipped, the message is compressed
                 if(content.Headers.ContentEncoding.ToString() != "gzip")
                 {
-                    Console.WriteLine("WE READ AS STRING ASYNC");
                     requestState.DotNetResponseString = await content.ReadAsStringAsync();
                 }
                 else
                 {
-                    Console.WriteLine("SHE's COMPRESSSSED");
                     var byteArray = await content.ReadAsByteArrayAsync();
                     var decompressedByteArray = Decompress(byteArray);
-                    Console.WriteLine("ASYNC TASK CALLBACK!" + decompressedByteArray);
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
-                    Console.WriteLine("ASYNC TASK CALLBACK! DOTNETSTRING " + requestState.DotNetResponseString);
                 }
                 
-                Console.WriteLine("STATUS");
+                // End the operation
                 requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
                     RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
             }
