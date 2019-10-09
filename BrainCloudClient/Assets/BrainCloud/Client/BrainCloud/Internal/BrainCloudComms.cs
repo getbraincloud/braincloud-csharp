@@ -47,7 +47,7 @@ using UnityEngine.Experimental.Networking;
 
     internal sealed class BrainCloudComms
     {
-        bool supportsCompression = true;
+        private bool supportsCompression = true;
 
         /// <summary>
         /// The compressIfLarger server flag value when we NEVER compress the message
@@ -1002,6 +1002,7 @@ using UnityEngine.Experimental.Networking;
                         {
                             ProcessAuthenticate(responseData);
                             Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                            Console.WriteLine(responseData.ContainsKey("compressIfLarger"));
                             if(responseData.ContainsKey("compressIfLarger"))
                                 _clientSideCompressionThreshold = (int) responseData["compressIfLarger"];
 
@@ -1860,24 +1861,30 @@ using UnityEngine.Experimental.Networking;
             else
             {
 #if USE_WEB_REQUEST
-                // response = _activeRequest.WebRequest.downloadHandler.text;
-                // Console.WriteLine("BLEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEh");
-                // Console.WriteLine(response);
-                bool compressed = true;
-                if (!compressed && !supportsCompression) 
-                   response = _activeRequest.WebRequest.downloadHandler.text;
-                else {
-                   var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
-                   response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+                Debug.Log("BLEH");
+                if(_activeRequest.WebRequest.GetRequestHeader("Content-Encoding") != "gzip")
+                {
+                    response = _activeRequest.WebRequest.downloadHandler.text;
+                }
+                else 
+                {
+                    var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
+                    response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
 #else
-                response = _activeRequest.WebRequest.text;
-                Console.WriteLine("EEEEEEEEEEEEEPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
-                Console.WriteLine(response);
+                if(!_activeRequest.WebRequest.responseHeaders.ContainsKey("Content-Encoding") &&
+                    _activeRequest.WebRequest.responseHeaders["Content-Encoding"] != "gzip")
+                {
+                    response = _activeRequest.WebRequest.text;
+                }
+                else
+                {
+                    var decompressedByteArray = Decompress(_activeRequest.WebRequest.bytes);
+                    response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+                }
 #endif
             }
 #else
-            //req.Content.Headers.Add("Content-Encoding", "gzip");
             response = _activeRequest.DotNetResponseString;
             Console.WriteLine("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEH");
             Console.WriteLine("Blargh " + response);
@@ -2028,7 +2035,12 @@ using UnityEngine.Experimental.Networking;
                 Console.WriteLine(content.Headers.ContentEncoding);
                 
                 //if its gzipped, the message is compressed
-                if(content.Headers.ContentEncoding.ToString() == "gzip")
+                if(content.Headers.ContentEncoding.ToString() != "gzip")
+                {
+                    Console.WriteLine("WE READ AS STRING ASYNC");
+                    requestState.DotNetResponseString = await content.ReadAsStringAsync();
+                }
+                else
                 {
                     Console.WriteLine("SHE's COMPRESSSSED");
                     var byteArray = await content.ReadAsByteArrayAsync();
@@ -2036,11 +2048,6 @@ using UnityEngine.Experimental.Networking;
                     Console.WriteLine("ASYNC TASK CALLBACK!" + decompressedByteArray);
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                     Console.WriteLine("ASYNC TASK CALLBACK! DOTNETSTRING " + requestState.DotNetResponseString);
-                }
-                else
-                {
-                    Console.WriteLine("WE READ AS STRING ASYNC");
-                    requestState.DotNetResponseString = await content.ReadAsStringAsync();
                 }
                 
                 Console.WriteLine("STATUS");
