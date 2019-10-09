@@ -35,7 +35,6 @@ using UnityEngine.Experimental.Networking;
     using BrainCloud.JsonFx.Json;
     using System.IO;
     using System.IO.Compression;
-    //using DotZLib;
 
     #region Processed Server Call Class
     public class ServerCallProcessed
@@ -50,8 +49,8 @@ using UnityEngine.Experimental.Networking;
         private bool supportsCompression = true;
 
         /// <summary>
-        /// Byte size threshold that determines if the message size is something we want to compress or not.
-        //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
+        ///auth response
         /// </summary>
         private static int _clientSideCompressionThreshold = 50000;
 
@@ -1104,7 +1103,6 @@ using UnityEngine.Experimental.Networking;
                     //if it was an authentication call 
                     if (operation == ServiceOperation.Authenticate.Value)
                     {
-
                         //swap the recent responses, so you have the newest one, and the one last time you came through.
                         _recentResponseJsonData[1] = _recentResponseJsonData[0];
                         _recentResponseJsonData[0] = response;
@@ -1350,8 +1348,6 @@ using UnityEngine.Experimental.Networking;
         /// <returns>The and send next request bundle.</returns>
         private RequestState CreateAndSendNextRequestBundle()
         {
-            ///////need to be able to mark a message as compressed for bundle compression
-
             RequestState requestState = null;
             lock (_serviceCallsWaiting)
             {
@@ -1434,9 +1430,6 @@ using UnityEngine.Experimental.Networking;
                     ServerCall scIndex;
                     string operation = "";
                     string service = "";
-
-                    int totalfileSizeSoFar = 0;
-
                     for (int i = 0; i < _serviceCallsInProgress.Count; ++i)
                     {
                         scIndex = _serviceCallsInProgress[i];
@@ -1459,7 +1452,6 @@ using UnityEngine.Experimental.Networking;
                         }
 
                         Dictionary<string, object> message = new Dictionary<string, object>();
-
                         message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
                         message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
                         message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
@@ -1488,7 +1480,6 @@ using UnityEngine.Experimental.Networking;
                     requestState.PacketId = _packetId;
                     _expectedIncomingPacketId = _packetId;
                     requestState.MessageList = messageList;
-
                     ++_packetId;
 
                     if (!_killSwitchEngaged && !tooManyAuthenticationAttempts())
@@ -1667,9 +1658,8 @@ using UnityEngine.Experimental.Networking;
 
                 HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, new Uri(ServerURL));
 
-                //need to figure out if this happens before or after.
                 req.Content = new ByteArrayContent(byteArray);
-                //comment this to get the zipped output, uncomment this to get java.util.zip.zipexception trying to get json 
+
                 if(compressMessage)
                 {
                     req.Headers.Add("Accept-Encoding", "gzip");
@@ -1948,18 +1938,6 @@ using UnityEngine.Experimental.Networking;
             if (asyncResult.IsCanceled) return;
 
             HttpResponseMessage message = null;
-
-            //a callback method to end receiving the data
-            /*try
-            {
-                message = asyncResult.Result;
-                HttpContent content = message.Content;
-
-                // End the operation
-                requestState.DotNetResponseString = await content.ReadAsStringAsync();
-                requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
-                    RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
-            }*/
 
             try
             {
