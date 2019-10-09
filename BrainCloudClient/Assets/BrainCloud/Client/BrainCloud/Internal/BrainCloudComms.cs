@@ -66,6 +66,10 @@ using UnityEngine.Experimental.Networking;
         private static int _serverCompressIfLarger = 50;
         private static int _compressIfLarger = _serverCompressIfLarger;
 
+        /// <summary>
+        /// Byte size threshold that determines if the message size is something we want to compress or not.
+        //THE SERVER WILL BE SENDING THIS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// </summary>
         private static int _clientSideCompressionThreshold = 50000;
 
 
@@ -248,6 +252,8 @@ using UnityEngine.Experimental.Networking;
         {
             get; private set;
         }
+
+        void setSupportCompression(bool compressMessages) { supportsCompression = compressMessages; }
 
         public string SecretKey
         {
@@ -995,7 +1001,12 @@ using UnityEngine.Experimental.Networking;
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
-                            Console.WriteLine(responseData);
+                            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                            if(responseData.ContainsKey("compressIfLarger"))
+                                _clientSideCompressionThreshold = (int) responseData["compressIfLarger"];
+
+                            //_clientSideCompressionThreshold = 50000;
+                            Console.WriteLine(_clientSideCompressionThreshold);
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
@@ -1633,7 +1644,13 @@ using UnityEngine.Experimental.Networking;
 
             requestState.Signature = sig;
             
-            bool compressMessage = supportsCompression && byteArray.Length > _compressIfLarger;
+            //if we support compression, and its not -1, then we check if the threshold is 0 or the byte array length is larger than the threshold if we are to compress.
+            //-1 means never compress, 0 means always compress, anything over the thrshold also compresses.
+            Console.WriteLine(supportsCompression);
+            Console.WriteLine(_clientSideCompressionThreshold != -1);
+            Console.WriteLine(_clientSideCompressionThreshold == 0);
+            Console.WriteLine(byteArray.Length > _clientSideCompressionThreshold);
+            bool compressMessage = supportsCompression && _clientSideCompressionThreshold != -1 && (_clientSideCompressionThreshold == 0 || byteArray.Length > _clientSideCompressionThreshold);
             Console.WriteLine ("THIS IS THE SIZE" + byteArray.Length);
             //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
             if(compressMessage)
@@ -2009,28 +2026,23 @@ using UnityEngine.Experimental.Networking;
 
                 // End the operation
                 Console.WriteLine(content.Headers.ContentEncoding);
+                
                 //if its gzipped, the message is compressed
-                bool compressed = false;
                 if(content.Headers.ContentEncoding.ToString() == "gzip")
                 {
                     Console.WriteLine("SHE's COMPRESSSSED");
-                    compressed = true; //this needs to be interpreted.
-                }
-
-                if (!compressed)
-                {
-                    Console.WriteLine("WE READ AS STRING ASYNC");
-                    requestState.DotNetResponseString = await content.ReadAsStringAsync();
-                }
-                else
-                {
                     var byteArray = await content.ReadAsByteArrayAsync();
                     var decompressedByteArray = Decompress(byteArray);
                     Console.WriteLine("ASYNC TASK CALLBACK!" + decompressedByteArray);
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                     Console.WriteLine("ASYNC TASK CALLBACK! DOTNETSTRING " + requestState.DotNetResponseString);
                 }
-                //////////////////////////////////////////////////////////////////////////////
+                else
+                {
+                    Console.WriteLine("WE READ AS STRING ASYNC");
+                    requestState.DotNetResponseString = await content.ReadAsStringAsync();
+                }
+                
                 Console.WriteLine("STATUS");
                 requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
                     RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
