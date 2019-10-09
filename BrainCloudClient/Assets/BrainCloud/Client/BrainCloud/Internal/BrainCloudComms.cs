@@ -46,13 +46,13 @@ using UnityEngine.Experimental.Networking;
 
     internal sealed class BrainCloudComms
     {
-        private bool supportsCompression = true;
+        public bool SupportsCompression {get; private set;} = true;
 
         /// <summary>
         /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
         ///auth response
         /// </summary>
-        private static int _clientSideCompressionThreshold = 50000;
+        public int ClientSideCompressionThreshold{get; private set;} = 50000;
 
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
@@ -206,6 +206,7 @@ using UnityEngine.Experimental.Networking;
         private string _killSwitchOperation;
 
         private bool _isAuthenticated = false;
+
         public bool Authenticated
         {
             get
@@ -233,8 +234,6 @@ using UnityEngine.Experimental.Networking;
         {
             get; private set;
         }
-
-        void setSupportCompression(bool compressMessages) { supportsCompression = compressMessages; }
 
         public string SecretKey
         {
@@ -977,8 +976,6 @@ using UnityEngine.Experimental.Networking;
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
-                            if(responseData.ContainsKey("compressIfLarger"))
-                                _clientSideCompressionThreshold = (int) responseData["compressIfLarger"];
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile.Value) ||
@@ -1598,7 +1595,7 @@ using UnityEngine.Experimental.Networking;
             
             //if we support compression, and its not -1, then we check if the threshold is 0 or the byte array length is larger than the threshold if we are to compress.
             //-1 means never compress, 0 means always compress, anything over the thrshold also compresses.
-            bool compressMessage = supportsCompression && _clientSideCompressionThreshold != -1 && (_clientSideCompressionThreshold == 0 || byteArray.Length > _clientSideCompressionThreshold);
+            bool compressMessage = SupportsCompression && ClientSideCompressionThreshold != -1 && (ClientSideCompressionThreshold == 0 || byteArray.Length > ClientSideCompressionThreshold);
             //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
             if(compressMessage)
             {
@@ -2008,6 +2005,9 @@ using UnityEngine.Experimental.Networking;
         /// <param name="jsonString"></param>
         private void ProcessAuthenticate(Dictionary<string, object> jsonData)
         {
+            if(jsonData.ContainsKey("compressIfLarger"))
+                ClientSideCompressionThreshold = (int) jsonData["compressIfLarger"];
+
             long playerSessionExpiry = GetJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 5 * 60);
             long idleTimeout = (long)(playerSessionExpiry * 0.85);
 
