@@ -272,6 +272,11 @@ using System;
             get { return _initialized; }
         }
 
+        public void EnableCompression(bool compress)
+        {
+            _comms.EnableCompression(compress);
+        }
+
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
         public string SessionID
         {

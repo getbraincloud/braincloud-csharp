@@ -273,7 +273,7 @@ namespace BrainCloudTests
             _bc.Client.RegisterGlobalErrorCallback(GlobalErrorHandler);
             TestResult tr = new TestResult(_bc);
 
-            _bc.AuthenticateUniversal("", "zzz", true, tr.ApiSuccess, tr.ApiError, this);
+            _bc.AuthenticateUniversal("", "zzz", true, tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
 
             Assert.AreEqual(_globalErrorCount, 1);

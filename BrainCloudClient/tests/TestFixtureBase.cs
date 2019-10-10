@@ -21,6 +21,7 @@ namespace BrainCloudTests
         protected string ChildSecret = "";
         protected string ParentLevel = "";
         protected string PeerName = "";
+        protected string SupportsCompression = "";
 
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
@@ -38,6 +39,10 @@ namespace BrainCloudTests
             _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
+
+            //set to enable compression
+            if(SupportsCompression != "")
+                _bc.Client.EnableCompression(Boolean.Parse(SupportsCompression));
 
             if (ShouldAuthenticate())
             {
@@ -220,6 +225,11 @@ namespace BrainCloudTests
                     {
                         PeerName = line.Substring(("peerName=").Length);
                         PeerName.Trim();
+                    }
+                    else if (line.StartsWith("supportsCompression="))
+                    {
+                        SupportsCompression = line.Substring(("supportsCompression=").Length);
+                        SupportsCompression.Trim();
                     }
                 }
             }
