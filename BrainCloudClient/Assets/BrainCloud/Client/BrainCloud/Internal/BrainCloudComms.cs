@@ -49,7 +49,7 @@ using UnityEngine.Experimental.Networking;
         /// <summary>
         ///Compress bundles sent from the client to the server for faster sending of large bundles.
         /// </summary>
-        public bool SupportsCompression {get; private set;} = true;
+        public bool SupportsCompression {get; private set;} = false;
         
         public void EnableCompression(bool compress)
         {
