@@ -46,7 +46,15 @@ using UnityEngine.Experimental.Networking;
 
     internal sealed class BrainCloudComms
     {
+        /// <summary>
+        ///Compress bundles sent from the client to the server for faster sending of large bundles.
+        /// </summary>
         public bool SupportsCompression {get; private set;} = true;
+        
+        public void EnableCompression(bool compress)
+        {
+            SupportsCompression = compress;
+        } 
 
         /// <summary>
         /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
@@ -334,11 +342,6 @@ using UnityEngine.Experimental.Networking;
         {
             _cacheMessagesOnNetworkError = enabled;
         }
-
-        public void EnableCompression(bool compress)
-        {
-            SupportsCompression = compress;
-        } 
 
         /// <summary>
         /// This flag is set when _cacheMessagesOnNetworkError is true
