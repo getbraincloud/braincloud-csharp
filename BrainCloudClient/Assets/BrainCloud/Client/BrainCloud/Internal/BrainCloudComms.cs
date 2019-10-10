@@ -46,7 +46,7 @@ using UnityEngine.Experimental.Networking;
 
     internal sealed class BrainCloudComms
     {
-        public bool SupportsCompression {get; private set;} = false;
+        public bool SupportsCompression {get; private set;} = true;
 
         /// <summary>
         /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
@@ -977,7 +977,6 @@ using UnityEngine.Experimental.Networking;
                             ResetErrorCache();
                         }
                         //either off of authenticate or identity call, be sure to save the profileId and sessionId
-                        //we also want to extract the compressIfLarger amount
                         else if (operation == ServiceOperation.Authenticate.Value)
                         {
                             ProcessAuthenticate(responseData);
@@ -1598,9 +1597,10 @@ using UnityEngine.Experimental.Networking;
 
             requestState.Signature = sig;
             
-            //if we support compression, and its not -1, then we check if the threshold is 0 or the byte array length is larger than the threshold if we are to compress.
-            //-1 means never compress, 0 means always compress, anything over the thrshold also compresses.
-            bool compressMessage = SupportsCompression && ClientSideCompressionThreshold != -1 && (ClientSideCompressionThreshold == 0 || byteArray.Length > ClientSideCompressionThreshold);
+            bool compressMessage = SupportsCompression &&                               // compression enabled
+                                   ClientSideCompressionThreshold >= 0 &&               // server says we can compress
+                                   byteArray.Length >= ClientSideCompressionThreshold;  // and byte array is greater or equal to the threshold
+
             //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
             if(compressMessage)
             {
@@ -1801,7 +1801,7 @@ using UnityEngine.Experimental.Networking;
                     response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
 #else
-                if(!_activeRequest.WebRequest.responseHeaders.ContainsKey("Content-Encoding") &&
+                if(!_activeRequest.WebRequest.responseHeaders.ContainsKey("Content-Encoding") ||
                     _activeRequest.WebRequest.responseHeaders["Content-Encoding"] != "gzip")
                 {
                     response = _activeRequest.WebRequest.text;
@@ -2010,6 +2010,7 @@ using UnityEngine.Experimental.Networking;
         /// <param name="jsonString"></param>
         private void ProcessAuthenticate(Dictionary<string, object> jsonData)
         {
+            //we want to extract the compressIfLarger amount
             if(jsonData.ContainsKey("compressIfLarger"))
                 ClientSideCompressionThreshold = (int) jsonData["compressIfLarger"];
 
