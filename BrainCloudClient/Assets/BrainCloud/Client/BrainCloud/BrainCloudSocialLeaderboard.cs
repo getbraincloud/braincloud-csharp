@@ -659,7 +659,7 @@ using BrainCloud.Internal;
         }
 
                 /// <summary>
-        /// Post the players score to the given social leaderboard.
+        /// Post the group score to the given social group leaderboard.
         /// Pass leaderboard config data to dynamically create if necessary.
         /// You can optionally send a user-defined json string of data
         /// with the posted score. This string could include information
