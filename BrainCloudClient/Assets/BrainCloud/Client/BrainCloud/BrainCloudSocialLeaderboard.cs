@@ -667,10 +667,13 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
-        /// Service Operation - PostScoreDynamic
+        /// Service Operation - PostScoreToDynamicLeaderboard
         /// </remarks>
         /// <param name="leaderboardId">
         /// The leaderboard to post to
+        /// </param>
+        /// <param name="groupId">
+        /// group ID the leaderboard belongs to
         /// </param>
         /// <param name="score">
         /// The score to post
@@ -701,6 +704,7 @@ using BrainCloud.Internal;
         /// </param>
         public void PostScoreToDynamicGroupLeaderboard(
             string leaderboardId,
+            string groupId,
             long score,
             string jsonData,
             SocialLeaderboardType leaderboardType,
@@ -713,6 +717,7 @@ using BrainCloud.Internal;
         {
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
             data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -728,7 +733,7 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreToDynamicGroupLeaderboard, data, callback);
             _client.SendRequest(sc);
         }
 
