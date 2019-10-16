@@ -430,7 +430,7 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Authenticate the user using a handoffId and authentication token
+        /// Authenticate the user using a SettopHandoffId and authentication token
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate

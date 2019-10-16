@@ -115,15 +115,74 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateHandoff()
         {
-            TestResult tr = new TestResult(_bc);
+            string handoffId;
+            string handoffToken;
 
+            TestResult tr3 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr3.ApiSuccess, tr3.ApiError);
+
+            tr3.Run();
+
+             TestResult tr2 = new TestResult(_bc);
+             _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+             tr2.Run();
+
+            // Console.WriteLine("RESPONNNNNSE" + tr2.m_response);
+
+//response then go deeper
+            handoffId= (string)((Dictionary<string, object>)tr2.m_response["data"])["handoffId"];
+            handoffToken= (string)((Dictionary<string, object>)tr2.m_response["data"])["securityToken"];
+
+            // Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAA" + handoffId);
+            // Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBB" + handoffToken);
+
+            //handoffId= tr2.m_response.GetObjectData().handoffId;
+
+                        // string entityId;
+            // entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
+            TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateHandoff(
-                "invalid_handOffId",
-                "invalid_securityToken",
+                handoffId,
+                handoffToken,
                 tr.ApiSuccess, tr.ApiError);
 
             //expect token to not match user
-            tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+            //tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+            tr.Run();
+        }
+
+            //         TestResult tr1 = new TestResult(_bc);
+            // _bc.CustomEntityService.CreateEntity(
+            //     "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
+            //     tr1.ApiSuccess, tr1.ApiError);
+            // tr1.Run();
+
+            // string entityId;
+            // entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
+
+            // TestResult tr = new TestResult(_bc);
+            // _bc.CustomEntityService.ReadEntity(
+            //     "athletes",
+            //     entityId,
+            //     tr.ApiSuccess, tr.ApiError);
+            // tr.Run();
+
+        [Test]
+        public void TestAuthenticateSettopHandoff()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateSettopHandoff(
+                "handoffCode",
+                tr.ApiSuccess, tr.ApiError);
+
+            //expect token to not match user
+           // tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+           tr.Run();
         }
 
         [Test]
