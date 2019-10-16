@@ -490,46 +490,45 @@ public class BrainCloudWrapper
             true, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
-//     /// <summary>
-//     /// Authenticate the user using a Pase userid and authentication token
-//     /// </summary>
-//     /// <remarks>
-//     /// Service Name - Authenticate
-//     /// Service Operation - Authenticate
-//     /// </remarks>
-//     /// <param name="success">
-//     /// The method to call in event of successful login
-//     /// </param>
-//     /// <param name="handoffId">
-//     /// The method to call in event of successful login
-//     /// </param>
-//     /// <param name="securityToken">
-//     /// The method to call in event of successful login
-//     /// </param>
-//     /// <param name="failure">
-//     /// The method to call in the event of an error during authentication
-//     /// </param>
-//     /// <param name="cbObject">
-//     /// The user supplied callback object
-//     /// </param>
-//     public void AuthenticateHandoff(
-//         string handoffId,
-//         string securityToken,
-//         SuccessCallback success = null,
-//         FailureCallback failure = null,
-//         object cbObject = null)
-//     {
-//         WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-//         aco._successCallback = success;
-//         aco._failureCallback = failure;
-//         aco._cbObject = cbObject;
+    /// <summary>
+    /// Authenticate the user using a Pase userid and authentication token
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="handoffId">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="securityToken">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateHandoff(
+        string handoffId,
+        string securityToken,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
 
-//         InitializeIdentity(true);
-// //null? false?
-//         Client.AuthenticationService.AuthenticateHandoff(
-//             handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
+        InitializeIdentity(true);
+        Client.AuthenticationService.AuthenticateHandoff(
+            handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
 
-//     }
+    }
 
     /// <summary>
     /// Authenticate user with handoffCode
@@ -562,10 +561,8 @@ public class BrainCloudWrapper
         aco._cbObject = cbObject;
 
         InitializeIdentity(true);
-//null? false?
-//aco.authenticate
         Client.AuthenticationService.AuthenticateSettopHandoff(
-            handoffCode, "", AuthenticationType.SettopHandoff, true, AuthSuccessCallback, AuthFailureCallback, aco);
+            handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
