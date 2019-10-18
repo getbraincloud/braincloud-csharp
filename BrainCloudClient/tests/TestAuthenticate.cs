@@ -78,7 +78,6 @@ namespace BrainCloudTests
             {
                 //putting the test into a while loop until it passes this condition
             }
-
             //based on the order of logic in comms, this test will get a fake response before the timer is finished so we expect the fake response.
             TestResult tr5 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -118,6 +117,8 @@ namespace BrainCloudTests
             string handoffId;
             string handoffToken;
 
+             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
+
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
@@ -131,19 +132,13 @@ namespace BrainCloudTests
              _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
              tr2.Run();
 
-            // Console.WriteLine("RESPONNNNNSE" + tr2.m_response);
+            Dictionary<string, object>[] myObject = (Dictionary<string, object>[])((Dictionary<string, object>)tr2.m_response["data"])["response"];
+            ///////t/his//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            
+            handoffId = (string)myObject[0]["thething i'm looking for"];
+            handoffToken = (string)myObject[0]["thething i'm looking for"];
 
-//response then go deeper
-            handoffId= (string)((Dictionary<string, object>)tr2.m_response["data"])["handoffId"];
-            handoffToken= (string)((Dictionary<string, object>)tr2.m_response["data"])["securityToken"];
-
-            // Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAA" + handoffId);
-            // Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBB" + handoffToken);
-
-            //handoffId= tr2.m_response.GetObjectData().handoffId;
-
-                        // string entityId;
-            // entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateHandoff(
                 handoffId,
@@ -154,22 +149,7 @@ namespace BrainCloudTests
             //tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
             tr.Run();
         }
-
-            //         TestResult tr1 = new TestResult(_bc);
-            // _bc.CustomEntityService.CreateEntity(
-            //     "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
-            //     tr1.ApiSuccess, tr1.ApiError);
-            // tr1.Run();
-
-            // string entityId;
-            // entityId= (string)((Dictionary<string, object>)tr1.m_response["data"])["entityId"];
-
-            // TestResult tr = new TestResult(_bc);
-            // _bc.CustomEntityService.ReadEntity(
-            //     "athletes",
-            //     entityId,
-            //     tr.ApiSuccess, tr.ApiError);
-            // tr.Run();
+        
 
         [Test]
         public void TestAuthenticateSettopHandoff()
