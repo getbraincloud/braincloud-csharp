@@ -114,10 +114,10 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateHandoff()
         {
-            string handoffId;
-            string handoffToken;
+            string handoffId = "";
+            string handoffToken = "";
 
-             Dictionary<string, object>[] players = new Dictionary<string, object>[1];
+            Dictionary<string, object>[] players = new Dictionary<string, object>[1];
 
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
@@ -128,25 +128,21 @@ namespace BrainCloudTests
 
             tr3.Run();
 
-             TestResult tr2 = new TestResult(_bc);
-             _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
-             tr2.Run();
-
-            Dictionary<string, object>[] myObject = (Dictionary<string, object>[])((Dictionary<string, object>)tr2.m_response["data"])["response"];
-            ///////t/his//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            
-            
-            handoffId = (string)myObject[0]["thething i'm looking for"];
-            handoffToken = (string)myObject[0]["thething i'm looking for"];
+            TestResult tr2 = new TestResult(_bc);
+            _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            if (tr2.Run())
+            {
+                var data = tr2.m_response["data"] as Dictionary<string, object>;
+                var response = data["response"] as Dictionary<string, object>;
+                handoffId = (string)response["handoffId"];
+                handoffToken = (string)response["securityToken"];
+            }
 
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateHandoff(
                 handoffId,
                 handoffToken,
                 tr.ApiSuccess, tr.ApiError);
-
-            //expect token to not match user
-            //tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
             tr.Run();
         }
         
