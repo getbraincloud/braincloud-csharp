@@ -187,6 +187,43 @@ using System.Collections.Generic;
         }
 
         /// <summary>
+        /// Find and join an open group in the pool of groups in multiple group types provided as input arguments.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - AUTO_JOIN_GROUP_MULTI
+        /// </remarks>
+        /// <param name="groupTypes">
+        /// Name of the associated group types.
+        /// </param>
+        /// <param name="autoJoinStrategy">
+        /// Selection strategy to employ when there are multiple matches
+        /// </param>
+        /// <param name="dataQueryJson">
+        /// Query parameters (optional)
+        /// </param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void AutoJoinGroupMulti(
+            string[] groupTypes,
+            AutoJoinStrategy autoJoinStrategy,
+            string dataQueryJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupTypes.Value] = groupTypes;
+            data[OperationParam.GroupAutoJoinStrategy.Value] = autoJoinStrategy.ToString();
+
+            if (Util.IsOptionalParameterValid(dataQueryJson))
+                data[OperationParam.GroupWhere.Value] = dataQueryJson;
+
+            SendRequest(ServiceOperation.AutoJoinGroupMulti, success, failure, cbObject, data);
+        }
+
+        /// <summary>
         /// Cancel an outstanding invitation to the group.
         /// </summary>
         /// <remarks>

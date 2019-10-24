@@ -294,7 +294,7 @@ using UnityEngine.Experimental.Networking;
         /// <summary>
         /// A list of packet timeouts. Index represents the packet attempt number.
         /// </summary>
-        private List<int> _packetTimeouts = new List<int> { 15, 10, 10 };
+        private List<int> _packetTimeouts = new List<int> { 15, 20, 35, 50 };
         public List<int> PacketTimeouts
         {
             get

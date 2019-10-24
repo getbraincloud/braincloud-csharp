@@ -13,6 +13,8 @@ namespace BrainCloudTests
         private readonly string _groupType = "test";
         private readonly string _entityType = "test";
 
+        private readonly string[] _groupTypes = {"test","test"};
+
         private string _groupId = "";
 
         [TearDown]
@@ -110,6 +112,24 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.GroupService.AutoJoinGroup(
                 _groupType,
+                BrainCloudGroup.AutoJoinStrategy.JoinFirstGroup,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            Logout();
+            DeleteGroupAsUserA();
+        }
+
+                [Test]
+        public void TestAutoJoinGroupMulti()
+        {
+            CreateGroupAsUserA(true);
+            Authenticate(Users.UserB);
+
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.AutoJoinGroupMulti(
+                _groupTypes,
                 BrainCloudGroup.AutoJoinStrategy.JoinFirstGroup,
                 null,
                 tr.ApiSuccess, tr.ApiError);

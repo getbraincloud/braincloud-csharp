@@ -312,6 +312,7 @@ using System;
         public static readonly ServiceOperation AddGroupMember = new ServiceOperation("ADD_GROUP_MEMBER");
         public static readonly ServiceOperation ApproveGroupJoinRequest = new ServiceOperation("APPROVE_GROUP_JOIN_REQUEST");
         public static readonly ServiceOperation AutoJoinGroup = new ServiceOperation("AUTO_JOIN_GROUP");
+        public static readonly ServiceOperation AutoJoinGroupMulti = new ServiceOperation("AUTO_JOIN_GROUP_MULTI");
         public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
         public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
         public static readonly ServiceOperation CreateGroupEntity = new ServiceOperation("CREATE_GROUP_ENTITY");
