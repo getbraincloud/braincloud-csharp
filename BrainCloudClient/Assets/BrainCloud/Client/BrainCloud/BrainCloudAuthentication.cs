@@ -430,17 +430,46 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
+        /// Authenticate the user using a SettopHandoffId and authentication token
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="handoffCode">
+        /// braincloud handoffId that is generated from cloud script
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateSettopHandoff(
+            string handoffCode,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(handoffCode, "", AuthenticationType.SettopHandoff,
+                null, false, success, failure, cbObject);
+        }
+
+        
+        /// <summary>
         /// Authenticate the user using a handoffId and authentication token
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="handoffId">
+        /// <param name="handoffID">
         /// braincloud handoffId that is generated from cloud script
-        /// </param>
         /// <param name="securityToken">
-        /// The authentication token
+        /// braincloud handoffId that is generated from cloud script
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login

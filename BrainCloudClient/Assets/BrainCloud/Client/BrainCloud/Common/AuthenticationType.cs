@@ -20,8 +20,9 @@ namespace BrainCloud.Common
         public static readonly AuthenticationType Google = new AuthenticationType("Google");
         public static readonly AuthenticationType Twitter = new AuthenticationType("Twitter");
         public static readonly AuthenticationType Parse = new AuthenticationType("Parse");
-        public static readonly AuthenticationType Handoff = new AuthenticationType("Handoff");
         public static readonly AuthenticationType External = new AuthenticationType("External");
+        public static readonly AuthenticationType Handoff = new AuthenticationType("Handoff");
+        public static readonly AuthenticationType SettopHandoff = new AuthenticationType("SettopHandoff");
         public static readonly AuthenticationType Unknown = new AuthenticationType("UNKNOWN");
 
         private static readonly Dictionary<string, AuthenticationType> _typesForString = new Dictionary<string, AuthenticationType>
@@ -37,6 +38,7 @@ namespace BrainCloud.Common
             { Parse.value, Parse },
             { Handoff.value, Handoff},
             { External.value, External },
+            {SettopHandoff.value , SettopHandoff},
             { Unknown.value, Unknown }
         };
 

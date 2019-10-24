@@ -226,6 +226,25 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        public void PostScoreToDynamicGroupLeaderboard()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboard(
+                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
+                _groupLeaderboardId,
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
+                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
+                System.DateTime.Now.AddDays(5),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+        
+
         [Test]
         public void TestPostScoreToDynamicLeaderboardDays()
         {
