@@ -437,7 +437,7 @@ using BrainCloud.JsonFx.Json;
         /// Service Operation - Authenticate
         /// </remarks>
         /// <param name="handoffCode">
-        /// braincloud handoffId that is generated from cloud script
+        /// brainCloud handoffId that is generated from cloud script createSettopHandoffCode
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -466,10 +466,10 @@ using BrainCloud.JsonFx.Json;
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="handoffID">
-        /// braincloud handoffId that is generated from cloud script
+        /// <param name="handoffId">
+        /// brainCloud handoffId that is generated from cloud script createHandoffId()
         /// <param name="securityToken">
-        /// braincloud handoffId that is generated from cloud script
+        /// brainCloud securityToken that is generated from cloud script createHandoffId()
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
