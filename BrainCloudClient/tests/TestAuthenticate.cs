@@ -117,8 +117,6 @@ namespace BrainCloudTests
             string handoffId = "";
             string handoffToken = "";
 
-            Dictionary<string, object>[] players = new Dictionary<string, object>[1];
-
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
@@ -150,15 +148,31 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateSettopHandoff()
         {
+            string handoffCode = "";
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr3.ApiSuccess, tr3.ApiError);
+
+            tr3.Run();
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.ScriptService.RunScript("CreateSettopHandoffCode", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            if (tr2.Run())
+            {
+                var data = tr2.m_response["data"] as Dictionary<string, object>;
+                var response = data["response"] as Dictionary<string, object>;
+                handoffCode= (string)response["handoffCode"];
+            }
+
             TestResult tr = new TestResult(_bc);
-
             _bc.Client.AuthenticationService.AuthenticateSettopHandoff(
-                "handoffCode",
+                handoffCode,
                 tr.ApiSuccess, tr.ApiError);
-
-            //expect token to not match user
-           // tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
-           tr.Run();
+            tr.Run();
         }
 
         [Test]
