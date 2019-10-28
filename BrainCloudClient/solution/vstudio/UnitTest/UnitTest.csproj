@@ -132,6 +132,12 @@
     <Compile Include="..\..\..\tests\TestIdentity.cs">
       <Link>TestIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestItemCatalog.cs">
+      <Link>TestItemCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestUserItems.cs">
+      <Link>TestUserItems.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestLeaderboard.cs">
       <Link>TestLeaderboard.cs</Link>
     </Compile>
@@ -197,6 +203,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestTournament.cs">
       <Link>TestTournament.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestCustomEntityService.cs">
+      <Link>TestCustomEntityService.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestWrapper.cs">
       <Link>TestWrapper.cs</Link>

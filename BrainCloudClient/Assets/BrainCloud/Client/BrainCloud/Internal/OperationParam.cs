@@ -40,6 +40,8 @@ namespace BrainCloud
         public static readonly OperationParam TwitterServiceTweetTweet = new OperationParam("tweet");
         public static readonly OperationParam TwitterServiceTweetPic = new OperationParam("pic");
 
+        public static readonly OperationParam BlockChainConfig = new OperationParam("blockchainConfig");
+        public static readonly OperationParam PublicKey = new OperationParam("publicKey");
 
         // Authenticate Service - Authenticate Params
         public static readonly OperationParam AuthenticateServiceAuthenticateAuthenticationType = new OperationParam("authenticationType");
@@ -205,6 +207,15 @@ namespace BrainCloud
         public static readonly OperationParam PlayerStatisticsServiceStatNames = new OperationParam("statNames");
         public static readonly OperationParam PlayerStatisticsExperiencePoints = new OperationParam("xp_points");
 
+        // Player Statistics Service - Status Param
+        public static readonly OperationParam PlayerStateServiceStatusName = new OperationParam("statusName");
+        
+        // Player Statistics Service - Extend User Status Params
+        public static readonly OperationParam PlayerStateServiceAdditionalSecs = new OperationParam("additionalSecs");
+        public static readonly OperationParam PlayerStateServiceDetails = new OperationParam("details");
+
+        public static readonly OperationParam PlayerStateServiceDurationSecs = new OperationParam("durationSecs");
+
         // Player Statistics Service - Read Params
         public static readonly OperationParam PlayerStatisticsServiceReadEntitySubType = new OperationParam("entitySubType");
 
@@ -356,6 +367,14 @@ namespace BrainCloud
         //DataStream
         public static readonly OperationParam DataStreamEventName = new OperationParam("eventName");
         public static readonly OperationParam DataStreamEventProperties = new OperationParam("eventProperties");
+        public static readonly OperationParam DataStreamCrashType = new OperationParam("crashType");
+        public static readonly OperationParam DataStreamErrorMsg = new OperationParam("errorMsg");
+        public static readonly OperationParam DataStreamCrashInfo = new OperationParam("crashJson");
+        public static readonly OperationParam DataStreamCrashLog = new OperationParam("crashLog");
+        public static readonly OperationParam DataStreamUserName = new OperationParam("userName");
+        public static readonly OperationParam DataStreamUserEmail = new OperationParam("userEmail");
+        public static readonly OperationParam DataStreamUserNotes = new OperationParam("userNotes");
+        public static readonly OperationParam DataStreamUserSubmitted = new OperationParam("userSubmitted");
 
         // Profanity
         public static readonly OperationParam ProfanityText = new OperationParam("text");
@@ -382,6 +401,7 @@ namespace BrainCloud
         public static readonly OperationParam GroupAttributes = new OperationParam("attributes");
         public static readonly OperationParam GroupName = new OperationParam("name");
         public static readonly OperationParam GroupType = new OperationParam("groupType");
+        public static readonly OperationParam GroupTypes = new OperationParam("groupTypes");
         public static readonly OperationParam GroupEntityType = new OperationParam("entityType");
         public static readonly OperationParam GroupIsOpenGroup = new OperationParam("isOpenGroup");
         public static readonly OperationParam GroupAcl = new OperationParam("acl");
@@ -470,6 +490,42 @@ namespace BrainCloud
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
         public static readonly OperationParam PingData = new OperationParam("pingData");
+
+        //custom entity
+        public static readonly OperationParam CustomEntityServiceEntityType = new OperationParam("entityType");
+        public static readonly OperationParam CustomEntityServiceEntityId = new OperationParam("entityId");
+        public static readonly OperationParam CustomEntityServiceVersion = new OperationParam("version");
+        public static readonly OperationParam CustomEntityServiceFieldsJson = new OperationParam("fieldsJson");
+        public static readonly OperationParam CustomEntityServiceWhereJson = new OperationParam("whereJson");
+        public static readonly OperationParam CustomEntityServiceRowsPerPage = new OperationParam("rowsPerPage");
+        public static readonly OperationParam CustomEntityServiceSearchJson = new OperationParam("searchJson");
+        public static readonly OperationParam CustomEntityServiceSortJson = new OperationParam("sortJson");
+        public static readonly OperationParam CustomEntityServiceDoCount = new OperationParam("doCount");
+        public static readonly OperationParam CustomEntityServiceContext = new OperationParam("context");
+        public static readonly OperationParam CustomEntityServicePageOffset= new OperationParam("pageOffset");
+        public static readonly OperationParam CustomEntityServiceTimeToLive = new OperationParam("timeToLive");
+        public static readonly OperationParam CustomEntityServiceAcl = new OperationParam("acl");
+        public static readonly OperationParam CustomEntityServiceDataJson = new OperationParam("dataJson");
+        public static readonly OperationParam CustomEntityServiceIsOwned = new OperationParam("isOwned");
+
+        //item catalog
+        public static readonly OperationParam ItemCatalogServiceDefId = new OperationParam("defId");
+        public static readonly OperationParam ItemCatalogServiceContext = new OperationParam("context");
+        public static readonly OperationParam ItemCatalogServicePageOffset = new OperationParam("pageOffset");
+
+        //userInventory
+        public static readonly OperationParam UserItemsServiceDefId = new OperationParam("defId");
+        public static readonly OperationParam UserItemsServiceQuantity = new OperationParam("quantity");
+        public static readonly OperationParam UserItemsServiceIncludeDef = new OperationParam("includeDef");
+        public static readonly OperationParam UserItemsServiceItemId = new OperationParam("itemId");
+        public static readonly OperationParam UserItemsServiceCriteria = new OperationParam("criteria");
+        public static readonly OperationParam UserItemsServiceContext = new OperationParam("context");
+        public static readonly OperationParam UserItemsServicePageOffset = new OperationParam("pageOffset");
+        public static readonly OperationParam UserItemsServiceVersion = new OperationParam("version");
+        public static readonly OperationParam UserItemsServiceImmediate = new OperationParam("immediate");
+        public static readonly OperationParam UserItemsServiceProfileId = new OperationParam("profileId");
+        public static readonly OperationParam UserItemsServiceShopId = new OperationParam("shopId");
+        public static readonly OperationParam UserItemsServiceNewItemData = new OperationParam("newItemData");
 
         private OperationParam(string value)
         {

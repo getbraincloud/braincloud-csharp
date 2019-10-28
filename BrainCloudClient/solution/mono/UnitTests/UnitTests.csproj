@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -149,7 +149,7 @@
       <Link>TestPushNotification.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestPresence.cs">
-    <Link>TestPresence.cs</Link>
+      <Link>TestPresence.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestScript.cs">
       <Link>TestScript.cs</Link>
@@ -198,6 +198,9 @@
     </Compile>
     <Compile Include="..\..\..\tests\TestTournament.cs">
       <Link>TestTournament.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestCustomEntityService.cs">
+      <Link>TestCustomEntityService.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

@@ -166,6 +166,16 @@ public class BrainCloudWrapper
         get { return Client.IdentityService; }
     }
 
+    public BrainCloudItemCatalog ItemCatalogService
+    {
+        get { return Client.ItemCatalogService; }
+    }
+
+    public BrainCloudUserItems UserItemsService
+    {
+        get { return Client.UserItemsService; }
+    }
+
     public BrainCloudScript ScriptService
     {
         get { return Client.ScriptService; }
@@ -234,6 +244,10 @@ public class BrainCloudWrapper
     public BrainCloudTournament TournamentService
     {
         get { return Client.TournamentService; }
+    }
+    public BrainCloudCustomEntity CustomEntityService
+    {
+        get { return Client.CustomEntityService; }
     }
 
     public BrainCloudPushNotification PushNotificationService
@@ -335,17 +349,21 @@ public class BrainCloudWrapper
         WrapperName = wrapperName;
     }
 
-    public void Update()
+    public void RunCallbacks()
     {
         if (Client != null)
         {
-            // MonoBehavior runs every update Tick
             // for further control please review eBrainCloudUpdateType
             // from the direct Client Updates
             Client.Update();
         }
     }
 
+    // MonoBehavior runs every update Tick
+    public void Update()
+    {
+        RunCallbacks();
+    }
 
 #if !DOT_NET
     /// <summary>
@@ -470,6 +488,81 @@ public class BrainCloudWrapper
 
         Client.AuthenticationService.AuthenticateAnonymous(
             true, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using a Pase userid and authentication token
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="handoffId">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="securityToken">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateHandoff(
+        string handoffId,
+        string securityToken,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+
+        InitializeIdentity(true);
+        Client.AuthenticationService.AuthenticateHandoff(
+            handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
+
+    }
+
+    /// <summary>
+    /// Authenticate user with handoffCode
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="handoffCode">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateSettopHandoff(
+        string handoffCode,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+
+        InitializeIdentity(true);
+        Client.AuthenticationService.AuthenticateSettopHandoff(
+            handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -1503,7 +1596,7 @@ public class BrainCloudWrapper
             }
         }
 
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
         BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateSuccess(json);
 #endif
     }
@@ -1526,7 +1619,7 @@ public class BrainCloudWrapper
             }
         }
 
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
         BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
 #endif
     }

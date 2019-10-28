@@ -6,17 +6,17 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.Common;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
 #if !XAMARIN
-using BrainCloud.Entity;
-using System;
+    using BrainCloud.Entity;
+    using System;
 #endif
 
 #if !(DOT_NET)
-using UnityEngine;
-using UnityEngine.Assertions;
+    using UnityEngine;
+    using UnityEngine.Assertions;
 #else
 using System.Globalization;
 using System;
@@ -104,7 +104,7 @@ using System;
 
     public class BrainCloudClient
     {
-       #region Private Data
+        #region Private Data
 
         private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
 
@@ -136,6 +136,8 @@ using System;
         private BrainCloudPlayerStatistics _playerStatisticsService;
         private BrainCloudGlobalStatistics _globalStatisticsService;
         private BrainCloudIdentity _identityService;
+        private BrainCloudItemCatalog _itemCatalogService;
+        private BrainCloudUserItems _userItemsService;
         private BrainCloudScript _scriptService;
         private BrainCloudMatchMaking _matchMakingService;
         private BrainCloudOneWayMatch _oneWayMatchService;
@@ -148,6 +150,7 @@ using System;
         private BrainCloudAsyncMatch _asyncMatchService;
         private BrainCloudTime _timeService;
         private BrainCloudTournament _tournamentService;
+        private BrainCloudCustomEntity _customEntityService;
         private BrainCloudAuthentication _authenticationService;
         private BrainCloudPushNotification _pushNotificationService;
         private BrainCloudPlayerStatisticsEvent _playerStatisticsEventService;
@@ -216,6 +219,8 @@ using System;
             _globalStatisticsService = new BrainCloudGlobalStatistics(this);
 
             _identityService = new BrainCloudIdentity(this);
+            _itemCatalogService = new BrainCloudItemCatalog(this);
+            _userItemsService = new BrainCloudUserItems(this);
             _scriptService = new BrainCloudScript(this);
             _matchMakingService = new BrainCloudMatchMaking(this);
             _oneWayMatchService = new BrainCloudOneWayMatch(this);
@@ -230,6 +235,7 @@ using System;
             _asyncMatchService = new BrainCloudAsyncMatch(this);
             _timeService = new BrainCloudTime(this);
             _tournamentService = new BrainCloudTournament(this);
+            _customEntityService = new BrainCloudCustomEntity(this);
 
             _authenticationService = new BrainCloudAuthentication(this);
             _pushNotificationService = new BrainCloudPushNotification(this);
@@ -264,6 +270,11 @@ using System;
         public bool Initialized
         {
             get { return _initialized; }
+        }
+
+        public void EnableCompression(bool compress)
+        {
+            _comms.EnableCompression(compress);
         }
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>
@@ -391,6 +402,16 @@ using System;
             get { return _identityService; }
         }
 
+        public BrainCloudItemCatalog ItemCatalogService
+        {
+            get { return _itemCatalogService; }
+        }
+
+        public BrainCloudUserItems UserItemsService
+        {
+            get { return _userItemsService; }
+        }
+
         public BrainCloudScript ScriptService
         {
             get { return _scriptService; }
@@ -455,7 +476,10 @@ using System;
         {
             get { return _tournamentService; }
         }
-
+        public BrainCloudCustomEntity CustomEntityService
+        {
+            get { return _customEntityService; }
+        }
         public BrainCloudAuthentication AuthenticationService
         {
             get { return _authenticationService; }
@@ -581,6 +605,15 @@ using System;
             return IdentityService;
         }
 
+        public BrainCloudItemCatalog GetItemCatalogService()
+        {
+            return ItemCatalogService;
+        }
+        public BrainCloudUserItems GetUserItemsService()
+        {
+            return UserItemsService;
+        }
+
         public BrainCloudScript GetScriptService()
         {
             return ScriptService;
@@ -639,6 +672,10 @@ using System;
         public BrainCloudTournament GetTournamentService()
         {
             return _tournamentService;
+        }
+        public BrainCloudCustomEntity GetCustomEntityService()
+        {
+            return _customEntityService;
         }
 
         public BrainCloudAuthentication GetAuthenticationService()
@@ -1181,9 +1218,11 @@ using System;
         }
 
         /// <summary>Method writes log if logging is enabled</summary>
+        /// 
+        [System.Diagnostics.Conditional("BC_DEBUG_LOG_ENABLED")]
         internal void Log(string log)
         {
-#if UNITY_EDITOR
+#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
             BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.AppendLog(log);
 #endif
             if (_loggingEnabled)

@@ -78,7 +78,6 @@ namespace BrainCloudTests
             {
                 //putting the test into a while loop until it passes this condition
             }
-
             //based on the order of logic in comms, this test will get a fake response before the timer is finished so we expect the fake response.
             TestResult tr5 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -115,15 +114,65 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateHandoff()
         {
+            string handoffId = "";
+            string handoffToken = "";
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr3.ApiSuccess, tr3.ApiError);
+
+            tr3.Run();
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            if (tr2.Run())
+            {
+                var data = tr2.m_response["data"] as Dictionary<string, object>;
+                var response = data["response"] as Dictionary<string, object>;
+                handoffId = (string)response["handoffId"];
+                handoffToken = (string)response["securityToken"];
+            }
+
             TestResult tr = new TestResult(_bc);
-
             _bc.Client.AuthenticationService.AuthenticateHandoff(
-                "invalid_handOffId",
-                "invalid_securityToken",
+                handoffId,
+                handoffToken,
                 tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
 
-            //expect token to not match user
-            tr.RunExpectFail(403, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
+        [Test]
+        public void TestAuthenticateSettopHandoff()
+        {
+            string handoffCode = "";
+
+            TestResult tr3 = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr3.ApiSuccess, tr3.ApiError);
+
+            tr3.Run();
+
+            TestResult tr2 = new TestResult(_bc);
+            _bc.ScriptService.RunScript("CreateSettopHandoffCode", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            if (tr2.Run())
+            {
+                var data = tr2.m_response["data"] as Dictionary<string, object>;
+                var response = data["response"] as Dictionary<string, object>;
+                handoffCode= (string)response["handoffCode"];
+            }
+
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateSettopHandoff(
+                handoffCode,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]
