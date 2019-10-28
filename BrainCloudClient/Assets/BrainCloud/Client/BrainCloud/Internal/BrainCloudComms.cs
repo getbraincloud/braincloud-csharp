@@ -561,6 +561,7 @@ using UnityEngine.Experimental.Networking;
             {
                 if (DateTime.Now.Subtract(_lastTimePacketSent) >= _idleTimeout)
                 {
+                    _clientRef.Log("THIIIIIIIIS IS THISSSSSSSSSS");
                     SendHeartbeat();
                 }
             }

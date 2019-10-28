@@ -772,7 +772,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.GroupService.CreateGroup(
+            _bc.GroupService.CreateGroupWithSummaryData(
                 "testGroup",
                 _groupType,
                 isOpen,

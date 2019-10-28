@@ -346,7 +346,7 @@ using System.Collections.Generic;
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
-        public void CreateGroup(
+        public void CreateGroupWithSummaryData(
             string name,
             string groupType,
             bool? isOpenGroup,
