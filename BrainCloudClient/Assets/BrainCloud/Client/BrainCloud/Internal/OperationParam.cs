@@ -401,6 +401,7 @@ namespace BrainCloud
         public static readonly OperationParam GroupAttributes = new OperationParam("attributes");
         public static readonly OperationParam GroupName = new OperationParam("name");
         public static readonly OperationParam GroupType = new OperationParam("groupType");
+        public static readonly OperationParam GroupTypes = new OperationParam("groupTypes");
         public static readonly OperationParam GroupEntityType = new OperationParam("entityType");
         public static readonly OperationParam GroupIsOpenGroup = new OperationParam("isOpenGroup");
         public static readonly OperationParam GroupAcl = new OperationParam("acl");

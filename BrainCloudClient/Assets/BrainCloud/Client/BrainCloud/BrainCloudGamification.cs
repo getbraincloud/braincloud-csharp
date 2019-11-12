@@ -552,7 +552,8 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Sets the specified milestones' statuses to LOCKED.
+        /// Deprecated
+        /// Sets the specified milestones' statuses to LOCKED. 
         /// </summary>
         /// <remarks>
         /// Service Name - Gamification
@@ -570,6 +571,7 @@ using UnityEngine;
         /// <param name="cbObject">
         /// The callback object
         /// </param>
+        [System.Obsolete("this method is no longer supported")]
         public void ResetMilestones(
             IList<string> milestoneIds,
             SuccessCallback success = null,
