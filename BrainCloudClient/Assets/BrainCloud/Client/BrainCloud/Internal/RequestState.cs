@@ -29,7 +29,6 @@ using UnityEngine.Experimental.Networking;
     using UnityEngine;
 #endif
 
-
     // This class stores the request state of the request.
     public class RequestState
     {

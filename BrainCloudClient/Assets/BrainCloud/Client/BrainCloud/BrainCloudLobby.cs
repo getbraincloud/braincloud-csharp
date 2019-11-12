@@ -138,7 +138,6 @@ using UnityEngine.Experimental.Networking;
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-
             attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithPingData, success, failure, cbObject);
         }
 
@@ -323,7 +322,6 @@ using UnityEngine.Experimental.Networking;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
             data[OperationParam.LobbyIdentifier.Value] = in_lobbyID;
             data[OperationParam.LobbyIsReady.Value] = in_isReady;
-
             attachPingDataAndSend(data, ServiceOperation.JoinLobbyWithPingData, success, failure, cbObject);
         }
 
@@ -588,6 +586,6 @@ using UnityEngine.Experimental.Networking;
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-        #endregion
+#endregion
     }
 }

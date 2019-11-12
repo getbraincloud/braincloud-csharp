@@ -31,6 +31,7 @@ using UnityEditor;
                 base.OnEnable();
                 BrainCloudDebugInfo.Instance.ClearSettingsData();
                 BaseBrainCloudSettings.Instance.BrainCloudSettingsUpdated += UpdateSettings;
+                base.OnEnable();
             }
             
             private void OnDisable()
