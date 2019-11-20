@@ -293,13 +293,13 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
-            m_clientRef.Log("Connection closed: " + reason);
+            m_clientRef.Log("RTT: Connection closed: " + reason);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
-            m_clientRef.Log("Connection established.");
+            m_clientRef.Log("RTT: Connection established.");
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
 
@@ -311,7 +311,7 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
-            m_clientRef.Log("Error: " + message);
+            m_clientRef.Log("RTT Error: " + message);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(message)));
         }
 
