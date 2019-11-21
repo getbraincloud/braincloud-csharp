@@ -135,6 +135,11 @@ namespace BrainCloud.Internal
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                     }
+                    else
+                    {
+                        //TODOO
+                       m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
+                    }
 
                     // first time connecting? send the server connection call
                     if (!m_bIsConnected && toProcessResponse.Operation == "connect")
@@ -143,6 +148,8 @@ namespace BrainCloud.Internal
                         m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest());
                     }
+
+
                 }
 
                 m_queuedRTTCommands.Clear();
