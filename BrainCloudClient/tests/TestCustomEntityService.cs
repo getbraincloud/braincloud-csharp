@@ -26,7 +26,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.CustomEntityService.GetEntityPage(
-                "athletes", 20, "{\"data.position\": \"defense\"}","{\"createdAt\": 1 }", false,
+                "athletes", CreateContext(125, 1, "athletes"),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -148,6 +148,22 @@ namespace BrainCloudTests
                 "{\"data.position\": \"defense\"}",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
+        }
+
+        private string CreateContext(int numberOfEntitiesPerPage, int startPage, string entityType)
+        {
+            Dictionary<string, object> context = new Dictionary<string, object>();
+
+            Dictionary<string, object> pagination = new Dictionary<string, object>();
+            pagination.Add("rowsPerPage", numberOfEntitiesPerPage);
+            pagination.Add("pageNumber", startPage);
+            context.Add("pagination", pagination);
+
+            // Dictionary<string, object> searchCriteria = new Dictionary<string, object>();
+            // searchCriteria.Add("entityType", entityType);
+            // context.Add("searchCriteria", searchCriteria);
+
+            return JsonWriter.Serialize(context);
         }
     }
 }
