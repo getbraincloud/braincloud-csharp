@@ -5,7 +5,7 @@
 
 namespace BrainCloud
 {
-
+using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
@@ -103,36 +103,38 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>//this good
-        // [Obsolete("This has been deprecated in favor of using a context")]
-        // public void GetEntityPage(
-        // string entityType,
-        // int rowsPerPage,
-        // string searchJson,
-        // string sortJson,
-        // bool doCount,
-        // SuccessCallback success = null,
-        // FailureCallback failure = null,
-        // object cbObject = null)
-        // {
-        //     Dictionary<string, object> data = new Dictionary<string, object>();
-        //     data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
-        //     data[OperationParam.CustomEntityServiceRowsPerPage.Value] = rowsPerPage;
-        //     data[OperationParam.CustomEntityServiceSearchJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(searchJson);
-        //     data[OperationParam.CustomEntityServiceSortJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(sortJson);
-        //     data[OperationParam.CustomEntityServiceDoCount.Value] = doCount;
-
-        //     ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-        //     ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPage, data, callback);
-        //     _client.SendRequest(sc);
-        // }
-
+        [Obsolete("This has been deprecated in favor of using a context")]
         public void GetEntityPage(
         string entityType,
-        string context,
+        int rowsPerPage,
+        string searchJson,
+        string sortJson,
+        bool doCount,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
         {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceRowsPerPage.Value] = rowsPerPage;
+            data[OperationParam.CustomEntityServiceSearchJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(searchJson);
+            data[OperationParam.CustomEntityServiceSortJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(sortJson);
+            data[OperationParam.CustomEntityServiceDoCount.Value] = doCount;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPage, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        public void GetEntityPage(
+        string entityType,
+        string jsonContext,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+
+            var context = JsonReader.Deserialize<Dictionary<string, object>>(jsonContext);
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
             data[OperationParam.CustomEntityServiceContext.Value] = context;
