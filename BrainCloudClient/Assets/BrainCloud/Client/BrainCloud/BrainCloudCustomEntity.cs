@@ -170,7 +170,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>this good
-        [Obsolete("This has been deprecated in favor of using a context")]
+        [Obsolete("This has been deprecated use GetEntityByPageOffset instead")]
         public void GetEntityPageOffset(
         string entityType,
         string context,
