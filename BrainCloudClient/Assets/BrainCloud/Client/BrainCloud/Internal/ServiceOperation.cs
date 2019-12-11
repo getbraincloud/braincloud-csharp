@@ -435,9 +435,8 @@ using System;
         //CustomEntity
         public static readonly ServiceOperation CreateCustomEntity = new ServiceOperation("CREATE_ENTITY");
         public static readonly ServiceOperation GetCustomEntityPage = new ServiceOperation("GET_PAGE");
-        public static readonly ServiceOperation GetCustomEntityPageOffset = new ServiceOperation("GET_PAGE_BY_OFFSET");
+        public static readonly ServiceOperation GetCustomEntityPageOffset = new ServiceOperation("GET_ENTITY_PAGE_OFFSET");
         public static readonly ServiceOperation GetEntityPage = new ServiceOperation("GET_ENTITY_PAGE");
-        public static readonly ServiceOperation GetEntityPageOffset = new ServiceOperation("GET_ENTITY_PAGE_OFFSET");
         public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");

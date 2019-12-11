@@ -103,7 +103,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>//this good
-        [Obsolete("This has been deprecated in favor of using a context")]
+        [Obsolete("This has been deprecated use overload with 2 arguments entityType and context")]
         public void GetEntityPage(
         string entityType,
         int rowsPerPage,
@@ -170,7 +170,6 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>this good
-        [Obsolete("This has been deprecated use GetEntityByPageOffset instead")]
         public void GetEntityPageOffset(
         string entityType,
         string context,
@@ -186,50 +185,6 @@ using BrainCloud.Common;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPageOffset, data, callback);
-            _client.SendRequest(sc);
-        }
-
-                /// <summary>
-        /// Gets the page of custom entity from the 
-        ///server based on the encoded context and 
-        ///specified page offset, with language fields 
-        ///limited to the text for the current or default 
-        ///language.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - GetCustomEntityPageOffset
-        /// </remarks>
-        /// <param name="entityType">
-        /// </param>
-        /// <param name="context">
-        /// </param>
-        /// <param name="pageOffset">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>this good
-        public void GetEntityPageByOffset(
-        string entityType,
-        string context,
-        int pageOffset,
-        SuccessCallback success = null,
-        FailureCallback failure = null,
-        object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.CustomEntityServiceEntityType.Value]= entityType;
-            data[OperationParam.CustomEntityServiceContext.Value] = context;
-            data[OperationParam.CustomEntityServicePageOffset.Value] = pageOffset;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetEntityPageOffset, data, callback);
             _client.SendRequest(sc);
         }
 
