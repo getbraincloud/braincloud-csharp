@@ -5,7 +5,7 @@
 
 namespace BrainCloud
 {
-
+using System;
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
@@ -103,6 +103,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>//this good
+        [Obsolete("This has been deprecated use overload with 2 arguments entityType and context")]
         public void GetEntityPage(
         string entityType,
         int rowsPerPage,
@@ -122,6 +123,24 @@ using BrainCloud.Common;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPage, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        public void GetEntityPage(
+        string entityType,
+        string jsonContext,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+
+            var context = JsonReader.Deserialize<Dictionary<string, object>>(jsonContext);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceContext.Value] = context;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetEntityPage, data, callback);
             _client.SendRequest(sc);
         }
 
