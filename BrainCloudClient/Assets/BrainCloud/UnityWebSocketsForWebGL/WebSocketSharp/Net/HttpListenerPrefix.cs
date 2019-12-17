@@ -38,11 +38,11 @@
  */
 #endregion
 
+using System;
+using System.Net;
+
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-using System;
-
   internal sealed class HttpListenerPrefix
   {
     #region Private Fields

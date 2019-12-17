@@ -47,7 +47,8 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-using System;
+
+    using System;
 using System.Threading;
 
   internal class HttpListenerAsyncResult : IAsyncResult

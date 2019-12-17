@@ -26,12 +26,10 @@
  */
 #endregion
 
+using System;
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-using System;
-
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnMessage"/> event.
   /// </summary>
@@ -173,7 +171,10 @@ using System;
         return;
       }
 
-      _data = _rawData.UTF8Decode ();
+      string data;
+      if (_rawData.TryGetUTF8DecodedString (out data))
+        _data = data;
+
       _dataSet = true;
     }
 

@@ -26,15 +26,15 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-using System;
+    using System;
 using System.IO;
 using System.Security.Principal;
 using System.Text;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+
 
   /// <summary>
   /// Represents the event data for the HTTP request events of

@@ -26,15 +26,15 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-using System;
+    using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+
 
   internal class HttpResponse : HttpBase
   {
@@ -47,7 +47,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Private Constructors
 
-    private HttpResponse (string code, string reason, System.Version version, NameValueCollection headers)
+    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
       : base (version, headers)
     {
       _code = code;
@@ -166,7 +166,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
         headers.InternalSet (headerParts[i], true);
 
       return new HttpResponse (
-        statusLine[1], statusLine[2], new System.Version (statusLine[0].Substring (5)), headers);
+        statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
     }
 
     internal static HttpResponse Read (Stream stream, int millisecondsTimeout)

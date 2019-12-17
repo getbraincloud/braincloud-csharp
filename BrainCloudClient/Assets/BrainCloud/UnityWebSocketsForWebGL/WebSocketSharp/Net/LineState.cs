@@ -37,6 +37,8 @@
  */
 #endregion
 
+using System;
+
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
   internal enum LineState

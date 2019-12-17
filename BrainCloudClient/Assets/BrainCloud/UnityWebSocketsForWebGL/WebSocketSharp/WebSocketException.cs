@@ -26,12 +26,10 @@
  */
 #endregion
 
+using System;
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-using System;
-
   /// <summary>
   /// The exception that is thrown when a fatal error occurs in
   /// the WebSocket communication.

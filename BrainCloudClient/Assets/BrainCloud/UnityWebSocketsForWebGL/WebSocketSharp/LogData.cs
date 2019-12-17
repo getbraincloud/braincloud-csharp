@@ -26,13 +26,13 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-using System;
+    using System;
 using System.Diagnostics;
 using System.Text;
+
 
   /// <summary>
   /// Represents a log data used by the <see cref="Logger"/> class.

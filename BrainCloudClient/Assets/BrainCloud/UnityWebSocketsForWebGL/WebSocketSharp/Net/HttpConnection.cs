@@ -48,7 +48,7 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-using System;
+    using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -56,6 +56,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+
 
   internal sealed class HttpConnection
   {
