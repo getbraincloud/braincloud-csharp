@@ -37,13 +37,12 @@
  */
 #endregion
 
-namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
-{
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
+{
   /// <summary>
   /// Provides the collection used to store the URI prefixes for the <see cref="HttpListener"/>.
   /// </summary>

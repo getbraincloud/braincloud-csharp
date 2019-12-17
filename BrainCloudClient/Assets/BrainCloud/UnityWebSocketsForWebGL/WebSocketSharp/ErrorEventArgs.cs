@@ -33,11 +33,11 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-using System;
+    using System;
+
 
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnError"/> event.

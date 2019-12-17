@@ -26,12 +26,10 @@
  */
 #endregion
 
+using System;
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
-
-using System;
-
   internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
     where TBehavior : WebSocketBehavior
   {
