@@ -47,10 +47,11 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-using System;
+    using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+
 
   internal sealed class EndPointManager
   {

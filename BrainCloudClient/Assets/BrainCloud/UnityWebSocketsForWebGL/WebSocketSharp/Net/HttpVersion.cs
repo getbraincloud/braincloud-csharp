@@ -38,6 +38,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
+    using System;
+
+
   /// <summary>
   /// Provides the HTTP version numbers.
   /// </summary>
@@ -46,14 +49,14 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
     #region Public Fields
 
     /// <summary>
-    /// Provides a <see cref="System.Version"/> instance for the HTTP/1.0.
+    /// Provides a <see cref="Version"/> instance for the HTTP/1.0.
     /// </summary>
-    public static readonly System.Version Version10 = new System.Version (1, 0);
+    public static readonly Version Version10 = new Version (1, 0);
 
     /// <summary>
-    /// Provides a <see cref="System.Version"/> instance for the HTTP/1.1.
+    /// Provides a <see cref="Version"/> instance for the HTTP/1.1.
     /// </summary>
-    public static readonly System.Version Version11 = new System.Version (1, 1);
+    public static readonly Version Version11 = new Version (1, 1);
 
     #endregion
 

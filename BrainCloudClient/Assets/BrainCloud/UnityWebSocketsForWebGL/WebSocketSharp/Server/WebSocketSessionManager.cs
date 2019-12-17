@@ -26,16 +26,18 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-using System;
+    using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Timers;
+
 
   /// <summary>
   /// Provides the management function for the sessions in a WebSocket service.

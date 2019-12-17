@@ -29,8 +29,10 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
+    using System;
 using System.Collections.Specialized;
 using System.Security.Principal;
+
 
   /// <summary>
   /// Holds the username and other parameters from
