@@ -50,17 +50,6 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-        [Obsolete("This has been deprecated. Use DeleteUser instead - removal after September 1 2017")]
-        public void DeletePlayer(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.FullReset, null, callback);
-            _client.SendRequest(sc);
-        }
-
         /// <summary>
         /// Completely deletes the user record and all data fully owned
         /// by the user. After calling this method, the user will need

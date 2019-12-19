@@ -39,6 +39,36 @@ using UnityEngine.Experimental.Networking;
         /// </summary>
         /// 
         public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
+            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindLobby, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Finds a lobby matching the specified parameters
+        /// note: timeoutSecs is deprecated and doesn't have any effect, you can pass 0.
+        /// </summary>
+        /// 
+        [Obsolete("Will be removed December 2020, use overload without the timeoutSecs argument.")]
+        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -68,6 +98,35 @@ using UnityEngine.Experimental.Networking;
         /// prior to calling.
         /// </summary>
         /// 
+        public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
+            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
+            attachPingDataAndSend(data, ServiceOperation.FindLobbyWithPingData, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Finds a lobby matching the specified parameters WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
+        /// prior to calling.
+        /// note: timeoutSecs is deprecated and doesn't have any effect, you can pass 0.
+        /// </summary>
+        /// 
+        [Obsolete("Will be removed December 2020, use overload without the timeoutSecs argument.")]
         public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -147,6 +206,40 @@ using UnityEngine.Experimental.Networking;
         /// 
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
+            Dictionary<string, object> in_filterJson,
+            bool in_isReady,
+            Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
+            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindOrCreateLobby, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Finds a lobby matching the specified parameters, or creates one
+        /// note: timeoutSecs is deprecated and doesn't have any effect, you can pass 0.
+        /// </summary>
+        /// 
+        [Obsolete("Will be removed December 2020, use overload without the timeoutSecs argument.")]
+        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson, int in_timeoutSecs,
             bool in_isReady,
             Dictionary<string, object> in_extraJson, string in_teamCode,
@@ -179,6 +272,39 @@ using UnityEngine.Experimental.Networking;
         /// prior to calling.
         /// </summary>
         /// 
+        public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
+            Dictionary<string, object> in_algo,
+            Dictionary<string, object> in_filterJson,
+            bool in_isReady,
+            Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
+            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
+            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
+            data[OperationParam.LobbySettings.Value] = in_settings;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
+            attachPingDataAndSend(data, ServiceOperation.FindOrCreateLobbyWithPingData, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Finds a lobby matching the specified parameters, or creates one WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
+        /// prior to calling.
+        /// note: timeoutSecs is deprecated and doesn't have any effect, you can pass 0.
+        /// </summary>
+        /// 
+        [Obsolete("Will be removed December 2020, use overload without the timeoutSecs argument.")]
         public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson, int in_timeoutSecs,

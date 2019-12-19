@@ -103,7 +103,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>//this good
-        [Obsolete("This has been deprecated use overload with 2 arguments entityType and context")]
+        [Obsolete("Will be removed December 2020, This has been deprecated use overload with 2 arguments entityType and context")]
         public void GetEntityPage(
         string entityType,
         int rowsPerPage,

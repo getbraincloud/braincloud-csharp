@@ -49,7 +49,7 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        [Obsolete("Use findUserByExactUniversalId instead")]
+        [Obsolete("Will be removed December 2020, Use findUserByExactUniversalId instead")]
         public void FindUserByUniversalId(
             string searchText,
             int maxResults,
