@@ -391,14 +391,23 @@ using UnityEngine.Experimental.Networking;
         /// 
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            m_pingRegionSuccessCallback = success;
-            m_pingRegionObject = cbObject;
+            if (m_pingRegionSuccessCallback != null)
+            {
+                queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                    "Ping is already happening.", cbObject);
+                return;
+            }
+
+            PingData = new Dictionary<string, long>();
 
             // now we have the region ping data, we can start pinging each region and its defined target, if its a PING type.
             Dictionary<string, object> regionInner = null;
             string targetStr = "";
             if (m_regionPingData.Count > 0)
             {
+                m_pingRegionSuccessCallback = success;
+                m_pingRegionObject = cbObject;
+
                 foreach (var regionMap in m_regionPingData)
                 {
                     regionInner = (Dictionary<string, object>)regionMap.Value;
@@ -420,7 +429,7 @@ using UnityEngine.Experimental.Networking;
             }
             else
             {
-                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
                     "No Regions to Ping. Please call GetRegionsForLobbies and await the response before calling PingRegions.", cbObject);
             }
         }
@@ -441,7 +450,10 @@ using UnityEngine.Experimental.Networking;
                 }
                 else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
                 {
-                    m_pingRegionSuccessCallback(JsonWriter.Serialize(PingData), m_pingRegionObject);
+                    string pingStr = JsonWriter.Serialize(PingData);
+                    m_clientRef.Log("PINGS: " + pingStr);
+                    m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
+                    m_pingRegionSuccessCallback = null;
                 }
             }
         }
@@ -460,12 +472,12 @@ using UnityEngine.Experimental.Networking;
             }
             else
             {
-                buildAndSendFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
                     "Processing exception (message): Required message parameter 'pingData' is missing.  Please ensure PingData exists by first calling GetRegionsForLobbies and PingRegions, and waiting for response before proceeding.", cbObject);
             }
         }
 
-        private void buildAndSendFailure(FailureCallback in_failure, int reasonCode, string status_message, object cbObject = null)
+        private void queueFailure(FailureCallback in_failure, int reasonCode, string status_message, object cbObject = null)
         {
             if (in_failure != null)
             {
@@ -475,9 +487,25 @@ using UnityEngine.Experimental.Networking;
                 jsonError["status_message"] = status_message;
                 jsonError["severity"] = "ERROR";
 
-                // fail out right away with missing parameters error
-                in_failure(400, reasonCode, JsonWriter.Serialize(jsonError), cbObject);
+                Failure failure = new Failure();
+                failure.callback = in_failure;
+                failure.status = 400;
+                failure.reasonCode = reasonCode;
+                failure.jsonError = JsonWriter.Serialize(jsonError);
+                failure.cbObject = cbObject;
+                m_failureQueue.Add(failure);
             }
+        }
+
+        public void Update()
+        {
+            // trigger failure events
+            for (int i = 0; i < m_failureQueue.Count; ++i)
+            {
+                Failure failure = m_failureQueue[i];
+                failure.callback(failure.status, failure.reasonCode, failure.jsonError, failure.cbObject);
+            }
+            m_failureQueue.Clear();
         }
 
         private void onRegionForLobbiesSuccess(string in_json, object in_obj)
@@ -581,6 +609,16 @@ using UnityEngine.Experimental.Networking;
 
         private const int MAX_PING_CALLS = 4;
         private const int NUM_PING_CALLS_IN_PARRALLEL = 2;
+
+        struct Failure
+        {
+            public FailureCallback callback;
+            public int status;
+            public int reasonCode;
+            public string jsonError;
+            public object cbObject;
+        }
+        private List<Failure> m_failureQueue = new List<Failure>();
 
         /// <summary>
         /// Reference to the brainCloud client object
