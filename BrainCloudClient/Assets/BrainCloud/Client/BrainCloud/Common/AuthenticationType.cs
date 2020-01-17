@@ -35,6 +35,7 @@ namespace BrainCloud.Common
             { GameCenter.value, GameCenter },
             { Steam.value, Steam },
             { Google.value, Google },
+            { GoogleOpenId.value, GoogleOpenId },
             { Twitter.value, Twitter },
             { Parse.value, Parse },
             { Handoff.value, Handoff},
