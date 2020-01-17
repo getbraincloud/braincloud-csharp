@@ -315,17 +315,17 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Authenticate the user using a google userId(email address) and google authentication token.
+        /// Authenticate the user using a google userId and google server authentication code.
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
-        /// <param name="userId">
-        /// String representation of google+ userId (email)
+        /// <param name="googleUserId">
+        /// String representation of google+ userId. Gotten with calls like RequestUserId
         /// </param>
-        /// <param name="token">
-        /// The authentication token derived via the google apis.
+        /// <param name="serverAuthCode">
+        /// The server authentication token derived via the google apis. Gotten with calls like RequestServerAuthCode
         /// </param>
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
@@ -340,14 +340,51 @@ using BrainCloud.JsonFx.Json;
         /// The user supplied callback object
         /// </param>
         public void AuthenticateGoogle(
-            string userId,
-            string token,
+            string googleUserId,
+            string serverAuthCode,
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, AuthenticationType.Google,
+            Authenticate(googleUserId, serverAuthCode, AuthenticationType.Google,
+                null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Authenticate the user using a google openId.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="googleUserAccountEmail"
+        /// The email associated with the google user
+        /// </param>
+        /// <param name="IdToken">
+        /// The id token of the google account. Can get with calls like requestIdToken
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateGoogleOpenId(
+            string googleUserAccountEmail,
+            string IdToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.AuthenticateGoogleOpenId,
                 null, forceCreate, success, failure, cbObject);
         }
 
