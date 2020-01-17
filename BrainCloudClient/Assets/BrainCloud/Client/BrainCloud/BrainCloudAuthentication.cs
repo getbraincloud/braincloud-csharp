@@ -384,7 +384,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.AuthenticateGoogleOpenId,
+            Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId,
                 null, forceCreate, success, failure, cbObject);
         }
 
