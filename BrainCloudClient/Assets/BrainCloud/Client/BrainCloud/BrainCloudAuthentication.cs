@@ -315,6 +315,43 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
+        /// Authenticate the user using an apple id
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="appleUserId">
+        /// This can be the user id OR the email of the user for the account
+        /// </param>
+        /// <param name="identityToken">
+        /// The token confirming the user's identity
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateApple(
+            string appleUserId,
+            string identityToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(appleUserId, identityToken, AuthenticationType.Apple,
+                null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
         /// Authenticate the user using a google userId and google server authentication code.
         /// </summary>
         /// <remarks>
