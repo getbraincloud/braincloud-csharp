@@ -57,6 +57,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateExternalAuthName = new OperationParam("externalAuthName");
         public static readonly OperationParam AuthenticateServiceAuthenticateEmailAddress = new OperationParam("emailAddress");
         public static readonly OperationParam AuthenticateServiceAuthenticateServiceParams = new OperationParam("serviceParams");
+        public static readonly OperationParam AuthenticateServiceAuthenticateExpiryTimeInMin = new OperationParam("tokenTtlInMinutes");
 
         public static readonly OperationParam AuthenticateServiceAuthenticateLevelName = new OperationParam("levelName");
         public static readonly OperationParam AuthenticateServiceAuthenticatePeerCode = new OperationParam("peerCode");
