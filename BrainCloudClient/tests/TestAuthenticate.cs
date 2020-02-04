@@ -258,6 +258,35 @@ namespace BrainCloudTests
                 content,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+            //tr.Run();
+        }
+
+                [Test]
+        public void TestResetEmailPasswordAdvancedWithExpiry()
+        {
+
+            TestResult tr1 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr1.ApiSuccess, tr1.ApiError);
+
+            tr1.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            string email = "braincloudunittest@gmail.com";
+            string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+
+            _bc.Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry(
+                email,
+                content,
+                "1",
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+            //tr.Run();
         }
 
         [Test]
