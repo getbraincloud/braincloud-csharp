@@ -220,6 +220,32 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestResetEmailPasswordWithExpiry()
+        {
+
+            TestResult tr1 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr1.ApiSuccess, tr1.ApiError);
+
+            tr1.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            string email = "braincloudunittest@gmail.com";
+
+            _bc.Client.AuthenticationService.ResetEmailPasswordWithExpiry(
+                email,
+                "1",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestResetEmailPasswordAdvanced()
         {
             TestResult tr = new TestResult(_bc);
@@ -232,6 +258,35 @@ namespace BrainCloudTests
                 content,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+            //tr.Run();
+        }
+
+                [Test]
+        public void TestResetEmailPasswordAdvancedWithExpiry()
+        {
+
+            TestResult tr1 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr1.ApiSuccess, tr1.ApiError);
+
+            tr1.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            string email = "braincloudunittest@gmail.com";
+            string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+
+            _bc.Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry(
+                email,
+                content,
+                "1",
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+            //tr.Run();
         }
 
         [Test]
@@ -257,6 +312,30 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestResetUniversalIdPasswordWithExpiry()
+        {
+            TestResult tr2 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr2.ApiSuccess, tr2.ApiError);
+
+            tr2.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.ResetUniversalIdPasswordWithExpiry(
+                GetUser(Users.UserA).Id,
+                "1",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+
+        [Test]
         public void TestResetUniversalIdPasswordAdvanced()
         {
             TestResult tr2 = new TestResult(_bc);
@@ -275,6 +354,31 @@ namespace BrainCloudTests
             _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvanced(
                 GetUser(Users.UserA).Id,
                 content,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestResetUniversalIdPasswordAdvancedWithExpiry()
+        {
+            TestResult tr2 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr2.ApiSuccess, tr2.ApiError);
+
+            tr2.Run();
+
+            TestResult tr = new TestResult(_bc);
+
+            string content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+            string expiryTime ="1";
+            _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvancedWithExpiry(
+                GetUser(Users.UserA).Id,
+                content,
+                expiryTime,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

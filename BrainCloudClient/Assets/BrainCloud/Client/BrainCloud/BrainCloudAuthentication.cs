@@ -642,6 +642,46 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
+        /// Reset Email password - Sends a password reset email to the specified address with expiry
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetEmailPassword
+        /// </remarks>
+        /// <param name="externalId">
+        /// The email address to send the reset email to.
+        /// </param>
+        /// <param name="expiryTimeInMin">
+        /// expiry time in mins
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetEmailPasswordWithExpiry(
+            string externalId,
+            string expiryTimeInMin,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+
+            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordWithExpiry, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Reset Email password with service parameters - sends a password reset email to 
         ///the specified addresses.
         /// </summary>
@@ -687,7 +727,60 @@ using BrainCloud.JsonFx.Json;
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvanced, data, callback);
             _client.SendRequest(sc);
         }
-///////////////////////////////////
+
+                /// <summary>
+        /// Reset Email password with service parameters - sends a password reset email to 
+        ///the specified addresses with expiry
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetEmailPasswordAdvanced
+        /// </remarks>
+        /// <param name="appId">
+        /// The app id
+        /// </param>
+        /// <param name="emailAddress">
+        /// The email address to send the reset email to
+        /// </param>
+        /// <param name="serviceParams">
+        /// The parameters to send the email service. See documentation for full list
+        /// http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="expiryTimeInMin">
+        /// expiry time in mins
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetEmailPasswordAdvancedWithExpiry(
+            string emailAddress,
+            //Dictionary<string, object> serviceParams,
+            string serviceParams,
+            string expiryTimeInMin,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateEmailAddress.Value] = emailAddress;
+
+            var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
+            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
+
+            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvancedWithExpiry, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Reset Universal ID password.
         /// </summary>
@@ -719,6 +812,44 @@ using BrainCloud.JsonFx.Json;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPassword, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Reset Universal ID password with expiry
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetUniversalIdPassword
+        /// </remarks>
+        /// <param name="universalId">
+        /// The universalId that you want to have change password.
+        /// </param>
+        /// <param name="expiryTimeInMin">
+        /// takes in an Expiry time in mins
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetUniversalIdPasswordWithExpiry(
+            string universalId,
+            string expiryTimeInMin,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateUniversalId.Value] = universalId;
+            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordWithExpiry, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -764,6 +895,57 @@ using BrainCloud.JsonFx.Json;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordAdvanced, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                /// <summary>
+        /// Advanced universalId password reset using templates with expiry
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Operation - ResetUniversalIdPasswordAdvanced
+        /// </remarks>
+        /// <param name="appId">
+        /// The app id
+        /// </param>
+        /// <param name="universalId">
+        /// The email address to send the reset email to
+        /// </param>
+        /// <param name="serviceParams">
+        /// The parameters to send the email service. See documentation for full list
+        /// http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="expiryTimeInMin">
+        /// takes in an Expiry time to determine how long it will stay available
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void ResetUniversalIdPasswordAdvancedWithExpiry(
+            string universalId,
+            string serviceParams,
+            string expiryTimeInMin,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+            data[OperationParam.AuthenticateServiceAuthenticateUniversalId.Value] = universalId;
+
+            var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
+            data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
+
+            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordAdvancedWithExpiry, data, callback);
             _client.SendRequest(sc);
         }
 
