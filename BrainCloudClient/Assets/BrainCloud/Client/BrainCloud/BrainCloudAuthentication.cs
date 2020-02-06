@@ -642,7 +642,7 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Reset Email password - Sends a password reset email to the specified address
+        /// Reset Email password - Sends a password reset email to the specified address with expiry
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
@@ -650,6 +650,9 @@ using BrainCloud.JsonFx.Json;
         /// </remarks>
         /// <param name="externalId">
         /// The email address to send the reset email to.
+        /// </param>
+        /// <param name="expiryTimeInMin">
+        /// expiry time in mins
         /// </param>
         /// <param name="success">
         /// The method to call in event of success
@@ -727,7 +730,7 @@ using BrainCloud.JsonFx.Json;
 
                 /// <summary>
         /// Reset Email password with service parameters - sends a password reset email to 
-        ///the specified addresses.
+        ///the specified addresses with expiry
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
@@ -744,7 +747,7 @@ using BrainCloud.JsonFx.Json;
         /// http://getbraincloud.com/apidocs/apiref/#capi-mail
         /// </param>
         /// <param name="expiryTimeInMin">
-        /// The email address to send the reset email to
+        /// expiry time in mins
         /// </param>
         /// <param name="success">
         /// The method to call in event of success
@@ -778,7 +781,6 @@ using BrainCloud.JsonFx.Json;
             _client.SendRequest(sc);
         }
 
-///////////////////////////////////
         /// <summary>
         /// Reset Universal ID password.
         /// </summary>
@@ -813,9 +815,8 @@ using BrainCloud.JsonFx.Json;
             _client.SendRequest(sc);
         }
 
-        ///////////////////////////////////
         /// <summary>
-        /// Reset Universal ID password.
+        /// Reset Universal ID password with expiry
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
@@ -825,8 +826,7 @@ using BrainCloud.JsonFx.Json;
         /// The universalId that you want to have change password.
         /// </param>
         /// <param name="expiryTimeInMin">
-        /// The universalId that you want to have change password.
-        /// </param>
+        /// takes in an Expiry time in mins
         /// <param name="success">
         /// The method to call in event of success
         /// </param>
@@ -899,7 +899,7 @@ using BrainCloud.JsonFx.Json;
         }
 
                 /// <summary>
-        /// Advanced universalId password reset using templates
+        /// Advanced universalId password reset using templates with expiry
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
@@ -916,7 +916,7 @@ using BrainCloud.JsonFx.Json;
         /// http://getbraincloud.com/apidocs/apiref/#capi-mail
         /// </param>
         /// <param name="expiryTimeInMin">
-        /// takes in an Expiry time to determin how long it will stay available
+        /// takes in an Expiry time to determine how long it will stay available
         /// </param>
         /// <param name="success">
         /// The method to call in event of success
