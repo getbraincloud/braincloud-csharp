@@ -189,6 +189,8 @@ namespace BrainCloud
         // Player State Service - Update Summary Params
         public static readonly OperationParam PlayerStateServiceUpdateSummaryFriendData = new OperationParam("summaryFriendData");
         public static readonly OperationParam PlayerStateServiceUpdateNameData = new OperationParam("playerName");
+        public static readonly OperationParam PlayerStateServiceTimeZoneOffset = new OperationParam("timeZoneOffset");
+        public static readonly OperationParam PlayerStateServiceLanguageCode = new OperationParam("languageCode");
 
         // Player State Service - Atributes
         public static readonly OperationParam PlayerStateServiceAttributes = new OperationParam("attributes");
@@ -202,6 +204,7 @@ namespace BrainCloud
 
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");
+        
 
         // Player Statistics Service - Update Increment Params
         public static readonly OperationParam PlayerStatisticsServiceStats = new OperationParam("statistics");

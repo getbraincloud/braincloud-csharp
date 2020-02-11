@@ -262,6 +262,8 @@ using System;
 
         public static readonly ServiceOperation UpdatePictureUrl = new ServiceOperation("UPDATE_PICTURE_URL");
         public static readonly ServiceOperation UpdateContactEmail = new ServiceOperation("UPDATE_CONTACT_EMAIL");
+        public static readonly ServiceOperation UpdateLanguageCode = new ServiceOperation("UPDATE_LANGUAGE_CODE");
+        public static readonly ServiceOperation UpdateTimeZoneOffset = new ServiceOperation("UPDATE_TIME_ZONE_OFFSET");
         public static readonly ServiceOperation SetUserStatus = new ServiceOperation("SET_USER_STATUS");        
         public static readonly ServiceOperation GetUserStatus = new ServiceOperation("GET_USER_STATUS");
         public static readonly ServiceOperation ClearUserStatus = new ServiceOperation("CLEAR_USER_STATUS");
@@ -284,6 +286,8 @@ using System;
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
 
         public static readonly ServiceOperation ScheduleCloudScript = new ServiceOperation("SCHEDULE_CLOUD_SCRIPT");
+        public static readonly ServiceOperation GetScheduledCloudScripts = new ServiceOperation("GET_SCHEDULED_CLOUD_SCRIPTS");
+        public static readonly ServiceOperation GetRunningOrQueuedCloudScripts = new ServiceOperation("GET_RUNNING_OR_QUEUED_CLOUD_SCRIPTS");
         public static readonly ServiceOperation RunParentScript = new ServiceOperation("RUN_PARENT_SCRIPT");
         public static readonly ServiceOperation CancelScheduledScript = new ServiceOperation("CANCEL_SCHEDULED_SCRIPT");
         public static readonly ServiceOperation RunPeerScript = new ServiceOperation("RUN_PEER_SCRIPT");
