@@ -106,16 +106,16 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        // [Test]
-        // public void TestUpdateTimeZoneOffset()
-        // {
-        //     TestResult tr = new TestResult(_bc);
+        [Test]
+        public void TestUpdateTimeZoneOffset()
+        {
+            TestResult tr = new TestResult(_bc);
 
-        //     _bc.PlayerStateService.UpdateTimeZoneOffset(
-        //        "-2", tr.ApiSuccess, tr.ApiError);
+            _bc.PlayerStateService.UpdateTimeZoneOffset(
+               "-2", tr.ApiSuccess, tr.ApiError);
 
-        //     tr.Run();
-        // }
+            tr.Run();
+        }
 
         [Test]
         public void TestUpdateAttributes()

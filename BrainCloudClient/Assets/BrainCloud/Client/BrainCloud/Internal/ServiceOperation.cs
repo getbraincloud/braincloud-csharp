@@ -263,7 +263,7 @@ using System;
         public static readonly ServiceOperation UpdatePictureUrl = new ServiceOperation("UPDATE_PICTURE_URL");
         public static readonly ServiceOperation UpdateContactEmail = new ServiceOperation("UPDATE_CONTACT_EMAIL");
         public static readonly ServiceOperation UpdateLanguageCode = new ServiceOperation("UPDATE_LANGUAGE_CODE");
-        public static readonly ServiceOperation UpdateTimeZoneOffset = new ServiceOperation("UPDATE_TIME_ZONE_OFFSET");
+        public static readonly ServiceOperation UpdateTimeZoneOffset = new ServiceOperation("UPDATE_TIMEZONE_OFFSET");
         public static readonly ServiceOperation SetUserStatus = new ServiceOperation("SET_USER_STATUS");        
         public static readonly ServiceOperation GetUserStatus = new ServiceOperation("GET_USER_STATUS");
         public static readonly ServiceOperation ClearUserStatus = new ServiceOperation("CLEAR_USER_STATUS");
