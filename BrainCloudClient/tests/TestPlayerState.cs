@@ -95,6 +95,29 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateLanguageCode()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.PlayerStateService.UpdateLanguageCode(
+                "fr",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestUpdateTimeZoneOffset()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.PlayerStateService.UpdateTimeZoneOffset(
+               "-2", tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestUpdateAttributes()
         {
             TestResult tr = new TestResult(_bc);
