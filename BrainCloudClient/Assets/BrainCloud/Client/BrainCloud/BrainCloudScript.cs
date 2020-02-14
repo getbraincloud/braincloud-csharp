@@ -211,7 +211,7 @@ using BrainCloud.Internal;
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
         public void GetScheduledCloudScripts(
-            string startDateUTC,
+            DateTime startDateUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)

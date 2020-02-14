@@ -239,7 +239,7 @@ namespace BrainCloudTests
 
             _bc.Client.AuthenticationService.ResetEmailPasswordWithExpiry(
                 email,
-                "1",
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -283,7 +283,7 @@ namespace BrainCloudTests
             _bc.Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry(
                 email,
                 content,
-                "1",
+                1,
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
             //tr.Run();
@@ -328,7 +328,7 @@ namespace BrainCloudTests
 
             _bc.Client.AuthenticationService.ResetUniversalIdPasswordWithExpiry(
                 GetUser(Users.UserA).Id,
-                "1",
+                1,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -374,11 +374,10 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             string content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
-            string expiryTime ="1";
             _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvancedWithExpiry(
                 GetUser(Users.UserA).Id,
                 content,
-                expiryTime,
+                1,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }

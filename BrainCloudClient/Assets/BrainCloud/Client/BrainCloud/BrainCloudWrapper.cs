@@ -1668,12 +1668,12 @@ public class BrainCloudWrapper
     /// </param>
     public void ResetEmailPasswordWithExpiry(
         string externalId,
-        string expiry,
+        int tokenTtlInMinutes,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
     {
-        Client.AuthenticationService.ResetEmailPasswordWithExpiry(externalId, expiry, success, failure);
+        Client.AuthenticationService.ResetEmailPasswordWithExpiry(externalId, tokenTtlInMinutes, success, failure);
     }
 
     /// <summary>
@@ -1705,13 +1705,13 @@ public class BrainCloudWrapper
     /// </param>
     public void ResetEmailPasswordAdvancedWithExpiry(
         string emailAddress,
-        string expiry,
         string serviceParams,
+        int tokenTtlInMinutes,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
     {
-        Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry(emailAddress, expiry, serviceParams, success, failure);
+        Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry(emailAddress, serviceParams, tokenTtlInMinutes, success, failure);
     }
 
   /// <summary>
@@ -1806,12 +1806,12 @@ public class BrainCloudWrapper
     /// </param>
     public void ResetUniversalIdPasswordWithExpiry(
         string externalId,
-        string expiry,
+        int tokenTtlInMinutes,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
     {
-        Client.AuthenticationService.ResetUniversalIdPasswordWithExpiry(externalId, expiry, success, failure);
+        Client.AuthenticationService.ResetUniversalIdPasswordWithExpiry(externalId, tokenTtlInMinutes, success, failure);
     }
 
     /// <summary>
@@ -1843,13 +1843,13 @@ public class BrainCloudWrapper
     /// </param>
     public void ResetUniversalIdPasswordAdvancedWithExpiry(
         string emailAddress,
-        string expiry,
         string serviceParams,
+        int tokenTtlInMinutes,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
     {
-        Client.AuthenticationService.ResetUniversalIdPasswordAdvancedWithExpiry(emailAddress, expiry, serviceParams, success, failure);
+        Client.AuthenticationService.ResetUniversalIdPasswordAdvancedWithExpiry(emailAddress, serviceParams, tokenTtlInMinutes, success, failure);
     }
 
     #endregion

@@ -665,7 +665,7 @@ using BrainCloud.JsonFx.Json;
         /// </param>
         public void ResetEmailPasswordWithExpiry(
             string externalId,
-            string expiryTimeInMin,
+            int tokenTtlInMinutes,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -674,7 +674,7 @@ using BrainCloud.JsonFx.Json;
             data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = externalId;
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
 
-            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+            data[OperationParam.AuthenticateServiceAuthenticateTokenTtlInMinutes.Value] = tokenTtlInMinutes;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordWithExpiry, data, callback);
@@ -762,7 +762,7 @@ using BrainCloud.JsonFx.Json;
             string emailAddress,
             //Dictionary<string, object> serviceParams,
             string serviceParams,
-            string expiryTimeInMin,
+            int tokenTtlInMinutes,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -774,7 +774,7 @@ using BrainCloud.JsonFx.Json;
             var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
             data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
 
-            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+            data[OperationParam.AuthenticateServiceAuthenticateTokenTtlInMinutes.Value] = tokenTtlInMinutes;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetEmailPasswordAdvancedWithExpiry, data, callback);
@@ -838,7 +838,7 @@ using BrainCloud.JsonFx.Json;
         /// </param>
         public void ResetUniversalIdPasswordWithExpiry(
             string universalId,
-            string expiryTimeInMin,
+            int tokenTtlInMinutes,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -846,7 +846,7 @@ using BrainCloud.JsonFx.Json;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
             data[OperationParam.AuthenticateServiceAuthenticateUniversalId.Value] = universalId;
-            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+            data[OperationParam.AuthenticateServiceAuthenticateTokenTtlInMinutes.Value] = tokenTtlInMinutes;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordWithExpiry, data, callback);
@@ -930,7 +930,7 @@ using BrainCloud.JsonFx.Json;
         public void ResetUniversalIdPasswordAdvancedWithExpiry(
             string universalId,
             string serviceParams,
-            string expiryTimeInMin,
+            int tokenTtlInMinutes,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -942,7 +942,7 @@ using BrainCloud.JsonFx.Json;
             var jsonParams = JsonReader.Deserialize<Dictionary<string, object>>(serviceParams);
             data[OperationParam.AuthenticateServiceAuthenticateServiceParams.Value] = jsonParams;
 
-            data[OperationParam.AuthenticateServiceAuthenticateExpiryTimeInMin.Value] = expiryTimeInMin;
+            data[OperationParam.AuthenticateServiceAuthenticateTokenTtlInMinutes.Value] = tokenTtlInMinutes;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordAdvancedWithExpiry, data, callback);
