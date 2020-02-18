@@ -92,6 +92,33 @@ namespace BrainCloudTests
             tr.Run();
         }
 
+        
+        //  [Test]
+        // public void TestGetScheduledCloudScripts()
+        // {
+        //     //GoToChildProfile();
+
+        //     TestResult tr = new TestResult(_bc);
+        //     _bc.ScriptService.GetScheduledCloudScripts(
+        //         _scriptName,
+        //         tr.ApiSuccess, tr.ApiError);
+
+        //     tr.Run();
+        // }
+
+        
+        // [Test]
+        // public void TestGetRunningOrQueuedCloudScripts()
+        // {
+        //     //GoToChildProfile();
+
+        //     TestResult tr = new TestResult(_bc);
+        //     _bc.ScriptService.GetRunningOrQueuedCloudScripts(
+        //         tr.ApiSuccess, tr.ApiError);
+
+        //     tr.Run();
+        // }
+
         [Test]
         public void TestRunPeerScript()
         {

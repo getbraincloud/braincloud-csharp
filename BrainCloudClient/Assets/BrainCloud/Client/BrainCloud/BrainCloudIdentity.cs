@@ -587,6 +587,204 @@ using BrainCloud.Common;
             DetachIdentity(googleId, AuthenticationType.Google, continueAnon, success, failure, cbObject);
         }
 
+            /// <summary>
+        /// Attach the user's Google credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="googleId">
+        /// The google id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Google SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachGoogleOpenIdentity(
+            string googleId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(googleId, authenticationToken, AuthenticationType.Google, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Google credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="googleId">
+        /// The Google id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Google SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeGoogleOpenIdentity(
+            string googleId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(googleId, authenticationToken, AuthenticationType.Google, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Google identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="googleId">
+        /// The Google id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachGoogleOpenIdentity(
+            string googleId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(googleId, AuthenticationType.Google, continueAnon, success, failure, cbObject);
+        }
+
+               /// <summary>
+        /// Attach the user's Apple credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="appleId">
+        /// The apple id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Apple SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachAppleIdentity(
+            string appleId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(appleId, authenticationToken, AuthenticationType.Apple, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Apple credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="appleId">
+        /// The Apple id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Apple SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeAppleIdentity(
+            string appleId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(appleId, authenticationToken, AuthenticationType.Apple, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Apple identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="appleId">
+        /// The Apple id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachAppleIdentity(
+            string appleId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(appleId, AuthenticationType.Apple, continueAnon, success, failure, cbObject);
+        }
+
         /// <summary>
         /// Attach the user's Twitter credentials to the current profile.
         /// </summary>

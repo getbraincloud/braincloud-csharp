@@ -541,5 +541,69 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
+                /// <summary>
+        /// Gets the Status.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlayerState
+        /// Service Operation - UpdateLanguageCode
+        /// </remarks>
+        /// <param name="statusName">
+        /// The name of the status.
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateLanguageCode(
+            string languageCode,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceLanguageCode.Value] = languageCode;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateLanguageCode, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                        /// <summary>
+        /// Gets the Status.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlayerState
+        /// Service Operation - UpdateLanguageCode
+        /// </remarks>
+        /// <param name="statusName">
+        /// The name of the status.
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateTimeZoneOffset(
+            string timeZoneOffset,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlayerStateServiceTimeZoneOffset.Value] = timeZoneOffset;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateTimeZoneOffset, data, callback);
+            _client.SendRequest(sc);
+        }
+
     }
 }
