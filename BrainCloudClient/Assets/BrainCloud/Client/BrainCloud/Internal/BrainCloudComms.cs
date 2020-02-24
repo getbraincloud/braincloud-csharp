@@ -375,7 +375,15 @@ using UnityEngine.Experimental.Networking;
             ServerURL = serverURL;
 
             string suffix = @"/dispatcherv2";
-            UploadURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
+            string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
+            
+            //get rid of trailing / 
+            while (formatURL.Length > 0 && formatURL.EndsWith("/"))
+            {
+                 formatURL = formatURL.Substring(0, formatURL.Length - 1);
+            }
+
+            UploadURL = formatURL;
             UploadURL += @"/uploader";
 
             AppIdSecretMap[appId] = secretKey;
