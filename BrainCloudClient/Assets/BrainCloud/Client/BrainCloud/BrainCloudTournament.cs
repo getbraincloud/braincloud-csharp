@@ -351,7 +351,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+            data[OperationParam.RoundStartedEpoch.Value] = Util.4Timestamp(roundStartedTime);
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -406,6 +406,8 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+
+        [Obsolete("This has been deprecated use PostTournamentScoreWithResultsUTC")]
         public void PostTournamentScoreWithResults(
              string leaderboardId,
              long score,
@@ -423,6 +425,81 @@ using System;
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
             data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+            data[OperationParam.InitialScore.Value] = initialScore;
+
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.Data.Value] = scoreData;
+            }
+
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.PostTournamentScoreWithResults, data, callback));
+        }
+
+                /// <summary>
+        /// Post the users score to the leaderboard and returns the results
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - POST_TOURNAMENT_SCORE_WITH_RESULTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The leaderboard for the tournament
+        /// </param>
+        /// <param name="score">
+        /// The score to post
+        /// </param>
+        /// <param name="jsonData">
+        /// Optional data attached to the leaderboard entry
+        /// </param>
+        /// <param name="roundStartedTime">
+        /// Time the user started the match resulting in the score
+        /// being posted.  
+        /// </param>
+        /// <param name="sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="initialScore">
+        /// The initial score for players first joining a tournament
+        /// Usually 0, unless leaderboard is LOW_VALUE
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PostTournamentScoreWithResultsUTC(
+             string leaderboardId,
+             long score,
+             string jsonData,
+             DateTime roundStartedTime,
+             BrainCloudSocialLeaderboard.SortOrder sort,
+             int beforeCount,
+             int afterCount,
+             long initialScore,
+             SuccessCallback success = null,
+             FailureCallback failure = null,
+             object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.Score.Value] = score;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
             data[OperationParam.InitialScore.Value] = initialScore;
 
             if (Util.IsOptionalParameterValid(jsonData))

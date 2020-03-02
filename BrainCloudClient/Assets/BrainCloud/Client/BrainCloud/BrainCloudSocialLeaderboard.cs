@@ -610,7 +610,7 @@ using BrainCloud.Internal;
         /// <param name="rotationType">
         /// Type of rotation
         /// </param>
-        /// <param name="rotationReset">
+        /// <param name="rotationResetUTC">
         /// Date to reset the leaderboard UTC
         /// </param>
         /// <param name="retainedCount">
@@ -631,7 +631,7 @@ using BrainCloud.Internal;
             string jsonData,
             SocialLeaderboardType leaderboardType,
             RotationType rotationType,
-            DateTime? rotationReset,
+            DateTime? rotationResetUTC,
             int retainedCount,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -648,8 +648,8 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
 
-            if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationReset.Value);
+            if (rotationResetUTC.HasValue)
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
@@ -687,7 +687,7 @@ using BrainCloud.Internal;
         /// <param name="rotationType">
         /// Type of rotation
         /// </param>
-        /// <param name="rotationReset">
+        /// <param name="rotationResetUTC">
         /// Date to reset the leaderboard UTC
         /// </param>
         /// <param name="retainedCount">
@@ -709,7 +709,7 @@ using BrainCloud.Internal;
             string jsonData,
             SocialLeaderboardType leaderboardType,
             RotationType rotationType,
-            DateTime? rotationReset,
+            DateTime? rotationResetUTC,
             int retainedCount,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -727,8 +727,8 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
 
-            if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationReset.Value);
+            if (rotationResetUTC.HasValue)
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
@@ -760,7 +760,7 @@ using BrainCloud.Internal;
         /// <param name="leaderboardType">
         /// leaderboard type
         /// </param>
-        /// <param name="rotationReset">
+        /// <param name="rotationResetUTC">
         /// Date to reset the leaderboard UTC
         /// </param>
         /// <param name="retainedCount">
@@ -783,7 +783,7 @@ using BrainCloud.Internal;
             long score,
             string jsonData,
             SocialLeaderboardType leaderboardType,
-            DateTime? rotationReset,
+            DateTime? rotationResetUTC,
             int retainedCount,
             int numDaysToRotate,
             SuccessCallback success = null,
@@ -801,8 +801,8 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = "DAYS";
 
-            if (rotationReset.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationReset.Value);
+            if (rotationResetUTC.HasValue)
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
             data[OperationParam.NumDaysToRotate.Value] = numDaysToRotate;

@@ -956,6 +956,8 @@ using System;
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             _client.SendRequest(sc);
+
+
         }
 
 #endregion
