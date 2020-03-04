@@ -351,7 +351,61 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = Util.4Timestamp(roundStartedTime);
+            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.Data.Value] = scoreData;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.PostTournamentScore, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                /// <summary>
+        /// Post the users score to the leaderboard
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - POST_TOURNAMENT_SCORE
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The leaderboard for the tournament
+        /// </param>
+        /// <param name="score">
+        /// The score to post
+        /// </param>
+        /// <param name="jsonData">
+        /// Optional data attached to the leaderboard entry
+        /// </param>
+        /// <param name="roundStartedTime">
+        /// Time the user started the match resulting in the score
+        /// being posted.  
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PostTournamentScoreUTC(
+            string leaderboardId,
+            long score,
+            string jsonData,
+            DateTime roundStartedTime,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.Score.Value] = score;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime.Ticks;
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -499,7 +553,7 @@ using System;
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime.Ticks;
             data[OperationParam.InitialScore.Value] = initialScore;
 
             if (Util.IsOptionalParameterValid(jsonData))

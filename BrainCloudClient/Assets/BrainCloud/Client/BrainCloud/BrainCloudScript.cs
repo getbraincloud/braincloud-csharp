@@ -133,7 +133,7 @@ using BrainCloud.Internal;
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceStartDateUTC.Value] = startDateInUTC;
+            data[OperationParam.ScriptServiceStartDateUTC.Value] = startDateInUTC.Ticks;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);

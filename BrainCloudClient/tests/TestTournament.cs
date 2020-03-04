@@ -139,6 +139,25 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void PostTournamentScoreUTC()
+        {
+            JoinTestTournament();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.PostTournamentScoreUTC(
+                _leaderboardId,
+                _rand.Next(1000),
+                null,
+                DateTime.Now,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            LeaveTestTournament();
+        }
+
+        [Test]
         public void PostTournamentScoreWithResults()
         {
             JoinTestTournament();
@@ -149,12 +168,38 @@ namespace BrainCloudTests
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
-                DateTime.Now,
+                DateTime.UtcNow,
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 10,
                 10,
                 0,
                 tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            LeaveTestTournament();
+        }
+
+        [Test]
+        public void PostTournamentScoreWithResultsUTC()
+        {
+            JoinTestTournament();
+
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.PostTournamentScoreWithResultsUTC(
+                _leaderboardId,
+                _rand.Next(1000),
+                null,
+                DateTime.UtcNow,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                10,
+                10,
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+                Console.WriteLine("//////////////////////////////////////////"+DateTime.Now.Ticks+"//////////////////////////////////////////");
+                Console.WriteLine("//////////////////////////////////////////"+DateTime.Now+"//////////////////////////////////////////");
 
             tr.Run();
 
