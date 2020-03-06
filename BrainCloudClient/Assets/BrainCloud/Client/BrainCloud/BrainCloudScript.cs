@@ -78,7 +78,7 @@ using BrainCloud.Internal;
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
 
-        [Obsolete("This has been deprecated use ScheduleRunScriptUTCv2")]
+        [Obsolete("Will be removed March 2021, Please use ScheduleRunScriptUTCv2")]
         public void ScheduleRunScriptUTC(
             string scriptName,
             string jsonScriptData,
@@ -119,7 +119,7 @@ using BrainCloud.Internal;
         public void ScheduleRunScriptUTCv2(
             string scriptName,
             string jsonScriptData,
-            DateTime startDateInUTC,
+            UInt64 startDateInUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -133,7 +133,7 @@ using BrainCloud.Internal;
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceStartDateUTC.Value] = startDateInUTC.Ticks;
+            data[OperationParam.ScriptServiceStartDateUTC.Value] = startDateInUTC;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);

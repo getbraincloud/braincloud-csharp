@@ -149,7 +149,8 @@ namespace BrainCloudTests
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
-                DateTime.Now,
+                (UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
+                   new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -191,7 +192,7 @@ namespace BrainCloudTests
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
-                DateTime.UtcNow,
+                (UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 10,
                 10,
@@ -200,6 +201,7 @@ namespace BrainCloudTests
 
                 Console.WriteLine("//////////////////////////////////////////"+DateTime.Now.Ticks+"//////////////////////////////////////////");
                 Console.WriteLine("//////////////////////////////////////////"+DateTime.Now+"//////////////////////////////////////////");
+                //Util.DateTimeToBcTimestamp(DateTime.Now)
 
             tr.Run();
 

@@ -49,9 +49,7 @@ namespace BrainCloudTests
             _bc.ScriptService.ScheduleRunScriptUTCv2(
                 _scriptName,
                 Helpers.CreateJsonPair("testParm1", 1),
-                //DateTime.Now.AddDays(1),
-                //1583186010192,
-                DateTime.UtcNow,
+                (UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

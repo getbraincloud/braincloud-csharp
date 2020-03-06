@@ -339,6 +339,8 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+
+        [Obsolete("Will be removed March 2021, Please use PostTournamentScoreUTC")]
         public void PostTournamentScore(
             string leaderboardId,
             long score,
@@ -397,7 +399,7 @@ using System;
             string leaderboardId,
             long score,
             string jsonData,
-            DateTime roundStartedTime,
+            UInt64 roundStartedTime,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -405,14 +407,13 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime.Ticks;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
                 Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
                 data[OperationParam.Data.Value] = scoreData;
             }
-
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.PostTournamentScore, data, callback);
             _client.SendRequest(sc);
@@ -461,7 +462,7 @@ using System;
         /// The user object sent to the callback.
         /// </param>
 
-        [Obsolete("This has been deprecated use PostTournamentScoreWithResultsUTC")]
+        [Obsolete("Will be removed March 2021, Please use PostTournamentScoreWithResultsUTC")]
         public void PostTournamentScoreWithResults(
              string leaderboardId,
              long score,
@@ -541,7 +542,7 @@ using System;
              string leaderboardId,
              long score,
              string jsonData,
-             DateTime roundStartedTime,
+             UInt64 roundStartedTime,
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
@@ -553,9 +554,10 @@ using System;
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime.Ticks;
+            //TimeSpan elapsedSpan = new TimeSpan(roundStartedTime.Ticks);
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
             data[OperationParam.InitialScore.Value] = initialScore;
-
+           
             if (Util.IsOptionalParameterValid(jsonData))
             {
                 Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
@@ -565,6 +567,9 @@ using System;
             data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
             data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
             data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+            //double
+            //totalmilliseconds
+            //UInt64 timeStamp = (UInt64) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds);
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.PostTournamentScoreWithResults, data, callback));
