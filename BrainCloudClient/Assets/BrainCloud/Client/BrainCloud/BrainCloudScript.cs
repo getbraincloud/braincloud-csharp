@@ -108,18 +108,18 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - Script
-        /// Service Operation - ScheduleCloudScript
+        /// Service Operation - ScheduleCloudScriptUTCv2
         /// </remarks>
         /// <param name="scriptName"> Name of script </param>
         /// <param name="jsonScriptData"> JSON bundle to pass to script </param>
-        /// <param name="startDateInUTC">  The start date as a DateTime object </param>
+        /// <param name="roundStartTimeUTC">  use UTC time in milliseconds since epoch </param>
         /// <param name="success"> The success callback. </param>
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
         public void ScheduleRunScriptUTCv2(
             string scriptName,
             string jsonScriptData,
-            UInt64 startDateInUTC,
+            UInt64 roundStartTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -133,7 +133,7 @@ using BrainCloud.Internal;
                 data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
             }
 
-            data[OperationParam.ScriptServiceStartDateUTC.Value] = startDateInUTC;
+            data[OperationParam.ScriptServiceStartDateUTC.Value] = roundStartTimeUTC;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.ScheduleCloudScript, data, callback);

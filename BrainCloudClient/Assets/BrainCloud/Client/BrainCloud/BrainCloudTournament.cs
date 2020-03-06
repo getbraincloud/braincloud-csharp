@@ -345,7 +345,7 @@ using System;
             string leaderboardId,
             long score,
             string jsonData,
-            DateTime roundStartedTime,
+            DateTime roundStartTimeLocal,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -353,7 +353,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartTimeLocal);
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -382,9 +382,8 @@ using System;
         /// <param name="jsonData">
         /// Optional data attached to the leaderboard entry
         /// </param>
-        /// <param name="roundStartedTime">
-        /// Time the user started the match resulting in the score
-        /// being posted.  
+        /// <param name="roundStartTimeUTC">
+        /// Uses UTC time in milliseconds since epoch 
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -399,7 +398,7 @@ using System;
             string leaderboardId,
             long score,
             string jsonData,
-            UInt64 roundStartedTime,
+            UInt64 roundStartTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -407,7 +406,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartTimeUTC;
 
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -435,9 +434,8 @@ using System;
         /// <param name="jsonData">
         /// Optional data attached to the leaderboard entry
         /// </param>
-        /// <param name="roundStartedTime">
-        /// Time the user started the match resulting in the score
-        /// being posted.  
+        /// <param name="roundStartTimeLocal">
+        /// Uses local time
         /// </param>
         /// <param name="sort">
         /// Sort key Sort order of page.
@@ -467,7 +465,7 @@ using System;
              string leaderboardId,
              long score,
              string jsonData,
-             DateTime roundStartedTime,
+             DateTime roundStartTimeLocal,
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
@@ -479,7 +477,7 @@ using System;
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartedTime);
+            data[OperationParam.RoundStartedEpoch.Value] = Util.DateTimeToBcTimestamp(roundStartTimeLocal);
             data[OperationParam.InitialScore.Value] = initialScore;
 
             if (Util.IsOptionalParameterValid(jsonData))
@@ -512,9 +510,8 @@ using System;
         /// <param name="jsonData">
         /// Optional data attached to the leaderboard entry
         /// </param>
-        /// <param name="roundStartedTime">
-        /// Time the user started the match resulting in the score
-        /// being posted.  
+        /// <param name="roundStartTimeUTC">
+        /// Uses UTC time in milliseconds since epoch
         /// </param>
         /// <param name="sort">
         /// Sort key Sort order of page.
@@ -542,7 +539,7 @@ using System;
              string leaderboardId,
              long score,
              string jsonData,
-             UInt64 roundStartedTime,
+             UInt64 roundStartTimeUTC,
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
