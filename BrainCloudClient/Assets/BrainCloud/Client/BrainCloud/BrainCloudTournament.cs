@@ -552,7 +552,7 @@ using System;
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
             //TimeSpan elapsedSpan = new TimeSpan(roundStartedTime.Ticks);
-            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTime;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartTimeUTC;
             data[OperationParam.InitialScore.Value] = initialScore;
            
             if (Util.IsOptionalParameterValid(jsonData))
