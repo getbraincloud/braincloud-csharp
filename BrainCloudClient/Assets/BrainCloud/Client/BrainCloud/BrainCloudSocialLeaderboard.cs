@@ -611,7 +611,7 @@ using BrainCloud.Internal;
         /// Type of rotation
         /// </param>
         /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard UTC
+        /// Date to reset the leaderboard using UTC time in milliseconds since epoch
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep
@@ -687,7 +687,7 @@ using BrainCloud.Internal;
         /// Type of rotation
         /// </param>
         /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard UTC
+        /// Date to reset the leaderboard using UTC time in milliseconds since epoch
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep
@@ -920,7 +920,7 @@ using BrainCloud.Internal;
         /// leaderboard type
         /// </param>
         /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard UTC
+        /// Date to reset using local time
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep
@@ -997,7 +997,7 @@ using BrainCloud.Internal;
         /// leaderboard type
         /// </param>
         /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard UTC
+        /// Date to reset the leaderboard using UTC time since epoch
         /// </param>
         /// <param name="retainedCount">
         /// How many rotations to keep

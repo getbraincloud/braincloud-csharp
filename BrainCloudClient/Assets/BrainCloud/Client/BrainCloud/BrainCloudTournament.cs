@@ -311,7 +311,7 @@ using System;
         }
 
         /// <summary>
-        /// Post the users score to the leaderboard
+        /// Post the users score to the leaderboard using local time
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
@@ -326,7 +326,7 @@ using System;
         /// <param name="jsonData">
         /// Optional data attached to the leaderboard entry
         /// </param>
-        /// <param name="roundStartedTime">
+        /// <param name="roundStartTimeLocal">
         /// Time the user started the match resulting in the score
         /// being posted.  
         /// </param>
@@ -551,7 +551,6 @@ using System;
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
             data[OperationParam.Score.Value] = score;
-            //TimeSpan elapsedSpan = new TimeSpan(roundStartedTime.Ticks);
             data[OperationParam.RoundStartedEpoch.Value] = roundStartTimeUTC;
             data[OperationParam.InitialScore.Value] = initialScore;
            
@@ -564,9 +563,6 @@ using System;
             data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
             data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
             data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
-            //double
-            //totalmilliseconds
-            //UInt64 timeStamp = (UInt64) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds);
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.PostTournamentScoreWithResults, data, callback));

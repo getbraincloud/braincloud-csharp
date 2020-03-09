@@ -3,6 +3,7 @@ using NUnit.Framework;
 using BrainCloud;
 using System;
 using System.Collections.Generic;
+//using BrainCloud.Util;
 
 namespace BrainCloudTests
 {
@@ -12,7 +13,6 @@ namespace BrainCloudTests
         private readonly string _divSetId = "testDivSetId";
         private readonly string _tournamentCode = "testTournament";
         private readonly string _leaderboardId = "testTournamentLeaderboard";
-
         private Random _rand = new Random();
         private bool _didJoin;
 
@@ -149,8 +149,9 @@ namespace BrainCloudTests
                 _leaderboardId,
                 _rand.Next(1000),
                 null,
-                (UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
-                   new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
+                (UInt64)Util.DateTimeToUnixTimestamp(DateTime.UtcNow),
+                //(UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
+                  // new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();

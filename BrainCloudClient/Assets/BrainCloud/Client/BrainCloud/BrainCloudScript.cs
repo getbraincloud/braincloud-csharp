@@ -65,7 +65,7 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Allows cloud script executions to be scheduled
-        /// is using local time instead of UTC
+        /// takes in local time instead of UTC
         /// </summary>
         /// <remarks>
         /// Service Name - Script
