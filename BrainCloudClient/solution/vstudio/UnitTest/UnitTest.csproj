@@ -192,6 +192,9 @@
     <Compile Include="..\..\..\tests\TestRTT.cs">
       <Link>TestRTT.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestRelay.cs">
+      <Link>TestRelay.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestS3Handling.cs">
       <Link>TestS3Handling.cs</Link>
     </Compile>
