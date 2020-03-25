@@ -42,6 +42,20 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestScheduleRunScriptUTCv2()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.ScriptService.ScheduleRunScriptUTCv2(
+                _scriptName,
+                Helpers.CreateJsonPair("testParm1", 1),
+                (UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestScheduleScriptMinutesFromNow()
         {
             TestResult tr = new TestResult(_bc);
