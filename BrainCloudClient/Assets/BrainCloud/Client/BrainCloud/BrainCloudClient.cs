@@ -81,10 +81,16 @@ using System;
     public delegate void RTTCallback(string jsonResponse);
 
     /// <summary>
-    /// Success callback for a Room Server response method.
+    /// Relay callback.
     /// </summary>
     /// <param name="jsonResponse">The JSON response from the server</param>
-    public delegate void RSDataCallback(byte[] jsonResponse);
+    public delegate void RelayCallback(byte[] jsonResponse);
+
+    /// <summary>
+    /// Relay system callback.
+    /// </summary>
+    /// <param name="jsonResponse">The JSON response from the server</param>
+    public delegate void RelaySystemCallback(string jsonResponse);
 
     /// <summary>
     /// Method called when a file upload has completed.
@@ -1235,7 +1241,7 @@ using System;
 #endif
             if (_loggingEnabled)
             {
-                string formattedLog = "#BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
+                string formattedLog = DateTime.Now.ToString("HH:mm:ss.fff") + " #BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
                 lock (_loggingMutex)
                 {
                     if (_logDelegate != null)
