@@ -12,11 +12,11 @@ using System.Text;
 using BrainCloud.JsonFx.Json;
 using BrainCloud.Internal;
 
-    public class BrainCloudGlobalFileV3
+    public class BrainCloudGlobalFile
     {
         private BrainCloudClient _client;
 
-        public BrainCloudGlobalFileV3 (BrainCloudClient client)
+        public BrainCloudGlobalFile (BrainCloudClient client)
         {
             _client = client;
         }
@@ -46,10 +46,10 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalFileV3ServiceFileId.Value] = fileId;
+            data[OperationParam.GlobalFileServiceFileId.Value] = fileId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall serverCall = new ServerCall(ServiceName.GlobalFileV3, ServiceOperation.GetFileInfo, data, callback);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalFile, ServiceOperation.GetFileInfo, data, callback);
             _client.SendRequest(serverCall);
         }
 
@@ -82,11 +82,11 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalFileV3ServiceFolderPath.Value] = folderPath;
-            data[OperationParam.GlobalFileV3ServiceFileName.Value] = filename;
+            data[OperationParam.GlobalFileServiceFolderPath.Value] = folderPath;
+            data[OperationParam.GlobalFileServiceFileName.Value] = filename;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall serverCall = new ServerCall(ServiceName.GlobalFileV3, ServiceOperation.GetFileInfoSimple, data, callback);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalFile, ServiceOperation.GetFileInfoSimple, data, callback);
             _client.SendRequest(serverCall);
         }
 
@@ -116,10 +116,10 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalFileV3ServiceFileId.Value] = fileId;
+            data[OperationParam.GlobalFileServiceFileId.Value] = fileId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall serverCall = new ServerCall(ServiceName.GlobalFileV3, ServiceOperation.GetGlobalCDNUrl, data, callback);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalFile, ServiceOperation.GetGlobalCDNUrl, data, callback);
             _client.SendRequest(serverCall);
         }
 
@@ -152,11 +152,11 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalFileV3ServiceFolderPath.Value] = folderPath;
-            data[OperationParam.GlobalFileV3ServiceRecurse.Value] = recurse;
+            data[OperationParam.GlobalFileServiceFolderPath.Value] = folderPath;
+            data[OperationParam.GlobalFileServiceRecurse.Value] = recurse;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall serverCall = new ServerCall(ServiceName.GlobalFileV3, ServiceOperation.GetGlobalFileList, data, callback);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalFile, ServiceOperation.GetGlobalFileList, data, callback);
             _client.SendRequest(serverCall);
         }
 

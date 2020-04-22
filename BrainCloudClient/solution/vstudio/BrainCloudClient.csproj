@@ -194,8 +194,8 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudTournament.cs">
       <Link>BrainCloud\BrainCloudTournament.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGlobalFileV3.cs">
-      <Link>BrainCloud\BrainCloudGlobalFileV3.cs</Link>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGlobalFile.cs">
+      <Link>BrainCloud\BrainCloudGlobalFile.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudCustomEntity.cs">
       <Link>BrainCloud\BrainCloudCustomEntity.cs</Link>

@@ -207,7 +207,7 @@
     <Compile Include="..\..\..\tests\TestTournament.cs">
       <Link>TestTournament.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\TestGlobalFileV3.cs">
+    <Compile Include="..\..\..\tests\TestGlobalFile.cs">
       <Link>TestTournament.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestCustomEntityService.cs">
