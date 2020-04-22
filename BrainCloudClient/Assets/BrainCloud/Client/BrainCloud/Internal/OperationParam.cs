@@ -422,11 +422,11 @@ namespace BrainCloud
         public static readonly OperationParam GroupWhere = new OperationParam("where");
         public static readonly OperationParam GroupMaxReturn = new OperationParam("maxReturn");
         
-        //GlobalFileV3
-        public static readonly OperationParam GlobalFileV3ServiceFileId = new OperationParam("fileId");
-        public static readonly OperationParam GlobalFileV3ServiceFolderPath = new OperationParam("folderPath");
-        public static readonly OperationParam GlobalFileV3ServiceFileName = new OperationParam("filename");
-        public static readonly OperationParam GlobalFileV3ServiceRecurse = new OperationParam("recurse");
+        //GlobalFile
+        public static readonly OperationParam GlobalFileServiceFileId = new OperationParam("fileId");
+        public static readonly OperationParam GlobalFileServiceFolderPath = new OperationParam("folderPath");
+        public static readonly OperationParam GlobalFileServiceFileName = new OperationParam("filename");
+        public static readonly OperationParam GlobalFileServiceRecurse = new OperationParam("recurse");
 
         //mail
         public static readonly OperationParam Subject = new OperationParam("subject");

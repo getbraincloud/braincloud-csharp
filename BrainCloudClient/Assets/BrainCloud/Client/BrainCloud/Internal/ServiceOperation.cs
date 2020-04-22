@@ -166,7 +166,7 @@ using System;
         public static readonly ServiceOperation SetXpPoints = new ServiceOperation("SET_XPPOINTS");
         public static readonly ServiceOperation ReadSubset = new ServiceOperation("READ_SUBSET");
 
-        //GlobalFileV3
+        //GlobalFile
         public static readonly ServiceOperation GetFileInfo = new ServiceOperation("GET_FILE_INFO");
         public static readonly ServiceOperation GetFileInfoSimple = new ServiceOperation("GET_FILE_INFO_SIMPLE");
         public static readonly ServiceOperation GetGlobalCDNUrl = new ServiceOperation("GET_GLOBAL_CDN_URL");
