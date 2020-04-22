@@ -4,19 +4,19 @@ using BrainCloud;
 
 namespace BrainCloudTests
 {
-    string testfileName = "testGlobalFile.png"
-    string testFileId = "ed2d2924-4650-4a88-b095-94b75ce9aa18";
-    string testFolderPath = "/fname/";
-
     [TestFixture]
     public class TestGlobalFile : TestFixtureBase
-    {
+    {   
+        string testfileName = "testGlobalFile.png";
+        string testFileId = "ed2d2924-4650-4a88-b095-94b75ce9aa18";
+        string testFolderPath = "/fname/";
+
         [Test]
         public void TestGetFileInfo()
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.TestGlobalFile.GetFileInfo(
+            _bc.GlobalFileService.GetFileInfo(
                 testFileId,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -28,7 +28,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.TestGlobalFile.GetFileInfo(
+            _bc.GlobalFileService.GetFileInfoSimple(
                 testFolderPath,
                 testfileName,
                 tr.ApiSuccess, tr.ApiError);
@@ -40,9 +40,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.TestGlobalFile.GetGlobalCDNUrl(
+            _bc.GlobalFileService.GetGlobalCDNUrl(
                 testFileId,
-                testfileName,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -52,7 +51,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.TestGlobalFile.GetGlobalFileList(
+            _bc.GlobalFileService.GetGlobalFileList(
                 testFolderPath,
                 true,
                 tr.ApiSuccess, tr.ApiError);
