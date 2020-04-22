@@ -22,11 +22,11 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Method reads all the global properties of the game
+        /// Returns information on a file using fileId.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - ReadProperties
+        /// Service Name - GlobalFile
+        /// Service Operation - GetFileInfo
         /// <param name="fileId">
         /// The Id of the file
         /// </param>
@@ -54,11 +54,11 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Returns information on a file using path and name.
+        /// Returns information on a file using path and name
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - ReadProperties
+        /// Service Name - GlobalFile
+        /// Service Operation - GetFileInfoSimple
         /// <param name="folderPath">
         /// The folderpath
         /// </param>
@@ -95,8 +95,8 @@ using BrainCloud.Internal;
         /// Return CDN url for file for clients that cannot handle redirect.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - ReadProperties
+        /// Service Name - GlobalFile
+        /// Service Operation - GetGlobalCDNUrl
         /// <param name="fileId">
         /// The Id of the file
         /// </param>
@@ -124,11 +124,11 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Return CDN url for file for clients that cannot handle redirect.
+        /// Returns a list of files.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - ReadProperties
+        /// Service Name - GlobalFile
+        /// Service Operation - GetGlobalFileList
         /// <param name="folderPath">
         /// The folderpath
         /// </param>
