@@ -425,7 +425,7 @@ namespace BrainCloud
         //GlobalFileV3
         public static readonly OperationParam GlobalFileV3ServiceFileId = new OperationParam("fileId");
         public static readonly OperationParam GlobalFileV3ServiceFolderPath = new OperationParam("folderPath");
-        public static readonly OperationParam GlobalFileV3ServiceFileName = new OperationParam("fileName");
+        public static readonly OperationParam GlobalFileV3ServiceFileName = new OperationParam("filename");
         public static readonly OperationParam GlobalFileV3ServiceRecurse = new OperationParam("recurse");
 
         //mail

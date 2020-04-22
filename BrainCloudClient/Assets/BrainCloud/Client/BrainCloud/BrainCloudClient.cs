@@ -243,7 +243,7 @@ using System;
             _asyncMatchService = new BrainCloudAsyncMatch(this);
             _timeService = new BrainCloudTime(this);
             _tournamentService = new BrainCloudTournament(this);
-            _globalFilev3Service = new BrainCloudGlobalFileV3(this);
+            _globalFileV3Service = new BrainCloudGlobalFileV3(this);
             _customEntityService = new BrainCloudCustomEntity(this);
 
             _authenticationService = new BrainCloudAuthentication(this);
