@@ -144,6 +144,18 @@ namespace BrainCloud.Internal
         {
             // appened the target (netId, or all) to the beginning
             byte target = Convert.ToByte(in_target);
+            if (!(target < MAX_PLAYERS || target == TO_ALL_PLAYERS))
+            {
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError("Invalid NetId: " + target.ToString())));
+                return;
+            }
+
+            if (in_data.Length > MAX_PACKETSIZE)
+            {
+                addRSCommandResponse(new RSCommandResponse(ServiceName.Relay.Value, "error", buildRSRequestError("Packet too big: " + in_data.Length.ToString() + " > max " + MAX_PACKETSIZE.ToString())));
+                return;
+            }
+            
             byte[] destination = appendHeaderData(in_data, target, in_reliable, in_ordered, in_channel);
             send(destination, in_reliable, in_ordered, in_channel);
         }

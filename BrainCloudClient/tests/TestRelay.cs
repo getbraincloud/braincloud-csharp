@@ -20,8 +20,13 @@ namespace BrainCloudTests
 
         void FullFlow(RelayConnectionType in_connectionType)
         {
+            successCount = 0;
+            isRunning = true;
             connectionType = in_connectionType;
+
             _bc.Client.EnableLogging(true);
+            _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
+            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, onRTTEnabled, onFailed);
 
             // Main event loop
             var timeStart = DateTime.Now;
@@ -30,24 +35,27 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(10);
 
-                // We timeout after 2minutes
-                if ((DateTime.Now - timeStart).TotalSeconds > 120.0) break;
+                // We timeout after 5 minutes (give it time if the system is slow and no server is up)
+                if ((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0) break;
             }
 
-            Assert.True(successCount == 2);
+            Assert.True(successCount == 3); // Test result
         }
 
         void onFailed(int status, int reasonCode, string jsonError, object cbObject)
         {
             Console.WriteLine("Error: " + jsonError);
+
+            if (jsonError == "{\"status\":403,\"reason_code\":90300,\"status_message\":\"Invalid NetId: 128\",\"severity\":\"ERROR\"}")
+            {
+                // This one was on purpose
+                successCount++;
+                isRunning = false;
+                return;
+            }
+
             isRunning = false;
             successCount = 0;
-        }
-
-        void onAuthenticated(string jsonResponse, object cbObject)
-        {
-            _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, onRTTEnabled, onFailed);
         }
 
         void onRTTEnabled(string jsonResponse, object cbObject)
@@ -124,7 +132,7 @@ namespace BrainCloudTests
                 successCount++;
                 if (successCount >= 2)
                 {
-                    isRunning = false;
+                    sendToWrongNetId();
                 }
             }
         }
@@ -139,28 +147,34 @@ namespace BrainCloudTests
                 successCount++;
                 if (successCount >= 2)
                 {
-                    isRunning = false;
+                    sendToWrongNetId();
                 }
             }
         }
 
+        void sendToWrongNetId()
+        {
+            short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 128 or ALL_PLAYERS (131)
+            byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
+            _bc.RelayService.Send(bytes, myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+        }
 
-        // [Test]
-        // public void TestFullFlowWS()
-        // {
-        //     FullFlow(RelayConnectionType.WEBSOCKET);
-        // }
+        [Test]
+        public void TestFullFlowWS()
+        {
+            FullFlow(RelayConnectionType.WEBSOCKET);
+        }
 
-        // [Test]
-        // public void TestFullFlowTCP()
-        // {
-        //     FullFlow(RelayConnectionType.TCP);
-        // }
+        [Test]
+        public void TestFullFlowTCP()
+        {
+            FullFlow(RelayConnectionType.TCP);
+        }
 
-        // [Test]
-        // public void TestFullFlowUDP()
-        // {
-        //     FullFlow(RelayConnectionType.UDP);
-        // }
+        [Test]
+        public void TestFullFlowUDP()
+        {
+            FullFlow(RelayConnectionType.UDP);
+        }
     }
 }

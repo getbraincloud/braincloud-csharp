@@ -30,6 +30,7 @@ using BrainCloud.Internal;
     public class BrainCloudRelay
     {
         public const int TO_ALL_PLAYERS = 131;
+        public const int MAX_PLAYERS = 128;
         public const int CHANNEL_HIGH_PRIORITY_1 = 0;
         public const int CHANNEL_HIGH_PRIORITY_2 = 1;
         public const int CHANNEL_NORMAL_PRIORITY = 2;
@@ -172,7 +173,7 @@ using BrainCloud.Internal;
         /// <summary>
         /// send byte array representation of data
         /// </summary>
-        /// <param in_message="message to be sent"></param>
+        /// <param in_data="message to be sent"></param>
         /// <param to_netId="the net id to send to, BrainCloudRelay.TO_ALL_PLAYERS to relay to all"></param>
         /// <param in_reliable="send this reliably or not"></param>
         /// <param in_ordered="received this ordered or not"></param>
