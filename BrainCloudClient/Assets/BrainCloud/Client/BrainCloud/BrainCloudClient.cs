@@ -1034,7 +1034,7 @@ using System;
         /// The number of entries in this array determines how many packet
         /// retries will occur.
         ///
-        /// By default, the packet timeout array is {10, 10, 10}
+        /// By default, the packet timeout array is {15, 20, 35, 50}
         ///
         /// Note that this method does not change the timeout for authentication
         /// packets (use SetAuthenticationPacketTimeout method).
