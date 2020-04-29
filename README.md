@@ -171,7 +171,7 @@ http://getbraincloud.com/apidocs/apiref/?java#capi-auth
 Most of our APIs suggest using UTC time, so we have added utility functions for better handling local and UTC time. 
 ```
 Int64 UTCDateTimeToUTCMillis(Date utcDate) //returns the UTC time in milliseconds as an Int64. 
-Date UTCMillisToUTCDateTime(long utcMillis) //returns a Date in UTC based on the milliseconds passed in
+Date UTCMillisToUTCDateTime(Int64 utcMillis) //returns a Date in UTC based on the milliseconds passed in
 Date LocalTimeToUTCTime(Date localDate) //Converts a Local time to UTC time
 Date UTCTimeToLocalTime (Date utcDate) //Converts a UTC time to Local time
 ```
