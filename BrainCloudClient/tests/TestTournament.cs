@@ -3,7 +3,6 @@ using NUnit.Framework;
 using BrainCloud;
 using System;
 using System.Collections.Generic;
-//using BrainCloud.Util;
 
 namespace BrainCloudTests
 {

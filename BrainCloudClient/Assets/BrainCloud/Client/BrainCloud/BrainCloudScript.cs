@@ -78,7 +78,7 @@ using BrainCloud.Internal;
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
 
-        [Obsolete("Will be removed March 2021, Please use ScheduleRunScriptUTCv2")]
+        [Obsolete("Will be removed March 2021, Please use ScheduleRunScriptMillisUTC")]
         public void ScheduleRunScriptUTC(
             string scriptName,
             string jsonScriptData,
@@ -108,7 +108,7 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - Script
-        /// Service Operation - ScheduleCloudScriptUTCv2
+        /// Service Operation - ScheduleCloudScriptMillisUTC
         /// </remarks>
         /// <param name="scriptName"> Name of script </param>
         /// <param name="jsonScriptData"> JSON bundle to pass to script </param>
@@ -116,7 +116,7 @@ using BrainCloud.Internal;
         /// <param name="success"> The success callback. </param>
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
-        public void ScheduleRunScriptUTCv2(
+        public void ScheduleRunScriptMillisUTC(
             string scriptName,
             string jsonScriptData,
             UInt64 roundStartTimeUTC,
