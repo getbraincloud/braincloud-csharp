@@ -52,6 +52,10 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DisableRTT()
         {
+            if (!IsRTTEnabled())
+            {
+                return;
+            }
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
         }
 
@@ -135,21 +139,18 @@ namespace BrainCloud.Internal
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                     }
+                    else if (!m_bIsConnected && toProcessResponse.Operation == "connect")
+                    {
+                        // first time connecting? send the server connection call
+                        m_bIsConnected = true;
+                        m_lastNowMS = DateTime.Now;
+                        send(buildConnectionRequest());
+                    }
                     else
                     {
                         //TODOO
                        m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
                     }
-
-                    // first time connecting? send the server connection call
-                    if (!m_bIsConnected && toProcessResponse.Operation == "connect")
-                    {
-                        m_bIsConnected = true;
-                        m_lastNowMS = DateTime.Now;
-                        send(buildConnectionRequest());
-                    }
-
-
                 }
 
                 m_queuedRTTCommands.Clear();
@@ -166,7 +167,7 @@ namespace BrainCloud.Internal
                 if (m_timeSinceLastRequest >= m_heartBeatTime)
                 {
                     m_timeSinceLastRequest = 0;
-                    send(buildHeartbeatRequest(), false);
+                    send(buildHeartbeatRequest(), true);
                 }
             }
             //////
@@ -354,9 +355,9 @@ namespace BrainCloud.Internal
                 if (data.ContainsKey("evs")) RTTEventServer = (string)data["evs"];
             }
 
+            m_clientRef.Log("RTT RECV: " + in_message);
             if (operation != "HEARTBEAT")
             {
-                m_clientRef.Log("RTT RECV: " + in_message);
                 addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
             }
         }
