@@ -308,7 +308,7 @@ using UnityEngine.Experimental.Networking;
         }
         public void SetPacketTimeoutsToDefault()
         {
-            _packetTimeouts = new List<int> { 15, 10, 10 };
+            _packetTimeouts = new List<int> { 15, 20, 35, 50 };
         }
 
         private int _authPacketTimeoutSecs = 15;

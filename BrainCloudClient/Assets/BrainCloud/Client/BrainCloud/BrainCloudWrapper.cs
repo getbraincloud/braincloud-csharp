@@ -245,6 +245,12 @@ public class BrainCloudWrapper
     {
         get { return Client.TournamentService; }
     }
+
+    public BrainCloudGlobalFile GlobalFileService
+    {
+        get { return Client.GlobalFileService; }
+    }
+
     public BrainCloudCustomEntity CustomEntityService
     {
         get { return Client.CustomEntityService; }

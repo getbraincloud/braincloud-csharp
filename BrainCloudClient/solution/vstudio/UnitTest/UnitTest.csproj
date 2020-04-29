@@ -192,6 +192,9 @@
     <Compile Include="..\..\..\tests\TestRTT.cs">
       <Link>TestRTT.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestRelay.cs">
+      <Link>TestRelay.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestS3Handling.cs">
       <Link>TestS3Handling.cs</Link>
     </Compile>
@@ -202,6 +205,9 @@
       <Link>TestTime.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestTournament.cs">
+      <Link>TestTournament.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestGlobalFile.cs">
       <Link>TestTournament.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestCustomEntityService.cs">

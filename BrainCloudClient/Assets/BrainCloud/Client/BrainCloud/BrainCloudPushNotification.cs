@@ -6,6 +6,7 @@
 namespace BrainCloud
 {
 
+using System;
 using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
@@ -370,7 +371,7 @@ using System;
         /// <param name="facebookContent">
         /// Facebook template string
         /// </param>
-        /// <param name="startTime">
+        /// <param name="startTimeUTC">
         /// Start time of sending the push notification
         /// </param>
         /// <param name="success">
@@ -387,7 +388,7 @@ using System;
             string fcmContent,
             string iosContent,
             string facebookContent,
-            int startTime,
+            UInt64 startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -410,7 +411,7 @@ using System;
                 data[OperationParam.PushNotificationSendParamFacebookContent.Value] = JsonReader.Deserialize<Dictionary<string, object>>(facebookContent);
             }
 
-            data[OperationParam.StartDateUTC.Value] = startTime;
+            data[OperationParam.StartDateUTC.Value] = startTimeUTC;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRawNotification, data, callback);
@@ -662,7 +663,7 @@ using System;
         /// <param name="customDataJson">
         /// Optional custom data
         /// </param>
-        /// <param name="startTime">
+        /// <param name="startTimeUTC">
         /// Start time of sending the push notification
         /// </param>
         /// <param name="success">
@@ -678,7 +679,7 @@ using System;
             string profileId,
             string alertContentJson,
             string customDataJson,
-            int startTime,
+            UInt64 startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -692,7 +693,7 @@ using System;
                 data[OperationParam.CustomData.Value] = JsonReader.Deserialize<Dictionary<string, object>>(customDataJson);
             }
 
-            data[OperationParam.StartDateUTC.Value] = startTime;
+            data[OperationParam.StartDateUTC.Value] = startTimeUTC;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleNormalizedNotification, data, callback);
@@ -762,7 +763,7 @@ using System;
         /// <param name="substitutionsJson">
         /// Optional custom data
         /// </param>
-        /// <param name="startTime">
+        /// <param name="startTimeUTC">
         /// Start time of sending the push notification
         /// </param>
         /// <param name="success">
@@ -778,7 +779,7 @@ using System;
             string profileId,
             int notificationTemplateId,
             string substitutionsJson,
-            int startTime,
+            UInt64 startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -792,7 +793,7 @@ using System;
                 data[OperationParam.PushNotificationSendParamSubstitutions.Value] = JsonReader.Deserialize<Dictionary<string, object>>(substitutionsJson);
             }
 
-            data[OperationParam.StartDateUTC.Value] = startTime;
+            data[OperationParam.StartDateUTC.Value] = startTimeUTC;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.ScheduleRichNotification, data, callback);
@@ -955,6 +956,8 @@ using System;
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             _client.SendRequest(sc);
+
+
         }
 
 #endregion

@@ -23,9 +23,9 @@ using System;
 
         /// <summary>
         /// Allows item(s) to be awarded to a user without collecting
-	    ///the purchase amount. If includeDef is true, response 
-	    ///includes associated itemDef with language fields limited
-	    ///to the current or default language.
+        ///the purchase amount. If includeDef is true, response 
+        ///includes associated itemDef with language fields limited
+        ///to the current or default language.
         /// </summary>
         /// <remarks>
         /// Service Name - UserInventoryManagement
