@@ -981,7 +981,6 @@ namespace BrainCloud.Internal
                     // get the actual message and fill out the source:
                     byte[] data = udpClient.EndReceive(result, ref source);
                     onRecv(data, data.Length);
-
                     // schedule the next receive operation once reading is done:
                     udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
                 }
