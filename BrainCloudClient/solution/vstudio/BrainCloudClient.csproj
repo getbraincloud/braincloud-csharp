@@ -299,6 +299,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\StatusCodes.cs">
       <Link>BrainCloud\StatusCodes.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\TimeUtil.cs">
+      <Link>BrainCloud\TimeUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Util.cs">
       <Link>BrainCloud\Util.cs</Link>
     </Compile>
