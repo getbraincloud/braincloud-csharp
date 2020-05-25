@@ -317,7 +317,10 @@ namespace BrainCloud.Internal
             fromShortBE(lastPingShort, out data1, out data2);
 
             byte[] dataArr = { data1, data2 };
-            Send(dataArr, CL2RS_PING);
+            byte target = Convert.ToByte(CL2RS_PING);
+            
+            byte[] destination = appendHeaderData(dataArr, target, false, false, 0);
+            send(destination, false, false, 0);
         }
 
         private byte[] buildConnectionRequest()
