@@ -447,6 +447,8 @@ using System;
         public static readonly ServiceOperation GetCatalogItemsPageOffset = new ServiceOperation("GET_CATALOG_ITEMS_PAGE_OFFSET");
 
         //CustomEntity
+
+        public static readonly ServiceOperation DeleteEntities = new ServiceOperation("DELETE_ENTITIES");
         public static readonly ServiceOperation CreateCustomEntity = new ServiceOperation("CREATE_ENTITY");
         public static readonly ServiceOperation GetCustomEntityPage = new ServiceOperation("GET_PAGE");
         public static readonly ServiceOperation GetCustomEntityPageOffset = new ServiceOperation("GET_ENTITY_PAGE_OFFSET");
