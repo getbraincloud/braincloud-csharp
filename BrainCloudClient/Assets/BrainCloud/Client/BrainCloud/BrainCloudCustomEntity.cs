@@ -319,24 +319,16 @@ using BrainCloud.Common;
         }
 
                 /// <summary>
-        /// Creates a Custom Entity
+        /// Deletes Entities based on the criteria passed in
         /// </summary>
         /// <remarks>
         /// Service Name - CustomEntity
-        /// Service Operation - CreateCustomEntity
+        /// Service Operation - DeleteEntities
         /// </remarks>
         /// <param name="entityType">
         /// The Entity Type
         /// </param>
-        /// <param name="dataJson">
-        /// The entity data
-        /// </param>
-        /// <param name="acl">
-        /// 
-        /// <param name="isOwned">
-        /// The entity data
-        /// <param name="timeToLive">
-        /// The Entity Type
+        /// <param name="deleteCriteria">
         /// </param>
         /// <param name="success">
         /// The success callback.
