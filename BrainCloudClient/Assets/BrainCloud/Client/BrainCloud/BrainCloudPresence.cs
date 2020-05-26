@@ -91,8 +91,8 @@ using System;
         }
 
         /// <summary>
-        ///	Gets the presence data for the given <groupId>. Will not include
-	    /// offline profiles unless<includeOffline> is set to true.
+        ///    Gets the presence data for the given <groupId>. Will not include
+        /// offline profiles unless<includeOffline> is set to true.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -131,7 +131,7 @@ using System;
 
         /// <summary>
         ///Gets the presence data for the given<profileIds>.Will not include
-	    /// offline profiles unless<includeOffline> is set to true.
+        /// offline profiles unless<includeOffline> is set to true.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -169,10 +169,10 @@ using System;
         }
 
         /// <summary>
-	    /// Registers the caller for RTT presence updates from friends for the
-	    /// given platform. Can be one of "all", "brainCloud", or "facebook".
-	    /// If bidirectional is set to true, then also registers the targeted
-	    /// users for presence updates from the caller.
+        /// Registers the caller for RTT presence updates from friends for the
+        /// given platform. Can be one of "all", "brainCloud", or "facebook".
+        /// If bidirectional is set to true, then also registers the targeted
+        /// users for presence updates from the caller.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -213,7 +213,7 @@ using System;
         }
 
         /// <summary>
-	    /// Registers the caller for RTT presence updates from the members of the given groupId.
+        /// Registers the caller for RTT presence updates from the members of the given groupId.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -251,9 +251,9 @@ using System;
         }
 
         /// <summary>
-	    /// Registers the caller for RTT presence updates for the given
-	    /// profileIds. If bidirectional is set to true, then also registers
-	    /// the targeted users for presence updates from the caller.
+        /// Registers the caller for RTT presence updates for the given
+        /// profileIds. If bidirectional is set to true, then also registers
+        /// the targeted users for presence updates from the caller.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -291,7 +291,7 @@ using System;
         }
 
         /// <summary>
-	    /// Update the presence data visible field for the caller.
+        /// Update the presence data visible field for the caller.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -324,9 +324,9 @@ using System;
         }
 
         /// <summary>
-	    /// Stops the caller from receiving RTT presence updates. Does not
-		/// affect the broadcasting of *their* presence updates to other
-		/// listeners.
+        /// Stops the caller from receiving RTT presence updates. Does not
+        /// affect the broadcasting of *their* presence updates to other
+        /// listeners.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence
@@ -354,7 +354,7 @@ using System;
         }
 
         /// <summary>
-	    /// Update the presence data activity field for the caller.
+        /// Update the presence data activity field for the caller.
         /// </summary>
         /// <remarks>
         /// Service Name - Presence

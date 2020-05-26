@@ -166,3 +166,20 @@ _bc.IdentityService.attachEmailIdentity(_email, _password, _callback);
 
 There are many authentication types. You can also merge profiles and detach idenities. See the brainCloud documentation for more information:
 http://getbraincloud.com/apidocs/apiref/?java#capi-auth
+
+## TimeUtils
+Most of our APIs suggest using UTC time, so we have added utility functions for better handling local and UTC time. 
+```
+Int64 UTCDateTimeToUTCMillis(Date utcDate) //returns the UTC time in milliseconds as an Int64. 
+Date UTCMillisToUTCDateTime(Int64 utcMillis) //returns a Date in UTC based on the milliseconds passed in
+Date LocalTimeToUTCTime(Date localDate) //Converts a Local time to UTC time
+Date UTCTimeToLocalTime (Date utcDate) //Converts a UTC time to Local time
+```
+*Note* We have also made overloads of these utility functions to support DateTimeOffset.
+
+examples of use:
+```
+DateTime _date = TimeUtil.LocalTimeToUTCTime(DateTime.Now); //convert your date to a UTC date time.
+Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your UTC date time to milliseconds
+_bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
+```

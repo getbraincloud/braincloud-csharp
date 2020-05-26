@@ -63,10 +63,10 @@ namespace BrainCloudTests
             Thread.Sleep(61 * 1000);
 
             _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
+            tr.Run();
 
             _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED);
+            tr.Run();
         }
 
         //[Test] //TODO Fix

@@ -9,8 +9,33 @@ namespace BrainCloud
 using System.Collections.Generic;
 using BrainCloud.Internal;
 
+    public struct RelayConnectOptions
+    {
+        public bool ssl;
+        public string host;
+        public int port;
+        public string passcode;
+        public string lobbyId;
+
+        RelayConnectOptions(bool in_ssl, string in_host, int in_port, string in_passcode, string in_lobbyId)
+        {
+            ssl = in_ssl;
+            host = in_host;
+            port = in_port;
+            passcode = in_passcode;
+            lobbyId = in_lobbyId;
+        }
+    }
+
     public class BrainCloudRelay
     {
+        public const int TO_ALL_PLAYERS = 131;
+        public const int MAX_PLAYERS = 128;
+        public const int CHANNEL_HIGH_PRIORITY_1 = 0;
+        public const int CHANNEL_HIGH_PRIORITY_2 = 1;
+        public const int CHANNEL_NORMAL_PRIORITY = 2;
+        public const int CHANNEL_LOW_PRIORITY = 3;
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,25 +50,35 @@ using BrainCloud.Internal;
         public long LastPing { get { return m_commsLayer.Ping; } }
 
         /// <summary>
-        /// NetId retrieved from the connected call
+        /// et the lobby's owner profile Id.
         /// </summary>
-        public short NetId { get { return m_commsLayer.NetId; } }
+        public string OwnerProfileId { get { return m_commsLayer.GetOwnerProfileId(); } }
+
+        /// <summary>
+        /// Returns the profileId associated with a netId.
+        /// </summary>
+        public string GetProfileIdForNetId(short netId)
+        {
+            return m_commsLayer.GetProfileIdForNetId(netId);
+        }
+
+        /// <summary>
+        /// Returns the netId associated with a profileId.
+        /// </summary>
+        public short GetNetIdForProfileId(string profileId)
+        {
+            return m_commsLayer.GetNetIdForProfileId(profileId);
+        }
 
         /// <summary>
         /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
         /// </summary>
         /// <param name="in_connectionType"></param>
-        /// <param name="in_options">
-        ///             in_options["ssl"] = false;
-        ///             in_options["host"] = "168.0.1.192";
-        ///             in_options["port"] = 9000;
-        ///             in_options["passcode"] = "somePasscode"
-        ///             in_options["lobbyId"] = "55555:v5v:001";
-        ///</param>
+        /// <param name="in_options"></param>
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void Connect(RelayConnectionType in_connectionType = RelayConnectionType.WEBSOCKET, Dictionary<string, object> in_options = null, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void Connect(RelayConnectionType in_connectionType, RelayConnectOptions in_options, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             m_commsLayer.Connect(in_connectionType, in_options, in_success, in_failure, cb_object);
         }
@@ -65,29 +100,89 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Register callback, so that data is received on the main thread
+        /// Register callback for relay messages coming from peers on the main thread
         /// </summary>
-        public void RegisterDataCallback(RSDataCallback in_callback)
+        public void RegisterRelayCallback(RelayCallback in_callback)
         {
-            m_commsLayer.RegisterDataCallback(in_callback);
+            m_commsLayer.RegisterRelayCallback(in_callback);
         }
 
         /// <summary>
-        /// Deregister the data callback
+        /// Deregister the relay callback
         /// </summary>
-        public void DeregisterDataCallback()
+        public void DeregisterRelayCallback()
         {
-            m_commsLayer.DeregisterDataCallback();
+            m_commsLayer.DeregisterRelayCallback();
+        }
+
+        /// <summary>
+        /// Register callback for RelayServer system messages.
+        /// 
+        /// # CONNECT
+        /// Received when a new member connects to the server.
+        /// {
+        ///   op: "CONNECT",
+        ///   profileId: "...",
+        ///   ownerId: "...",
+        ///   netId: #
+        /// }
+        /// 
+        /// # NET_ID
+        /// Receive the Net Id assossiated with a profile Id. This is
+        /// sent for each already connected members once you
+        /// successfully connected.
+        /// {
+        ///   op: "NET_ID",
+        ///   profileId: "...",
+        ///   netId: #
+        /// }
+        /// 
+        /// # DISCONNECT
+        /// Received when a member disconnects from the server.
+        /// {
+        ///   op: "DISCONNECT",
+        ///   profileId: "..."
+        /// }
+        /// 
+        /// # MIGRATE_OWNER
+        /// If the owner left or never connected in a timely manner,
+        /// the relay-server will migrate the role to the next member
+        /// with the best ping. If no one else is currently connected
+        /// yet, it will be transferred to the next member in the
+        /// lobby members' list. This last scenario can only occur if
+        /// the owner connected first, then quickly disconnected.
+        /// Leaving only unconnected lobby members.
+        /// {
+        ///   op: "MIGRATE_OWNER",
+        ///   profileId: "..."
+        /// }
+        /// </summary>
+        public void RegisterSystemCallback(RelaySystemCallback in_callback)
+        {
+            m_commsLayer.RegisterSystemCallback(in_callback);
+        }
+
+        /// <summary>
+        /// Deregister the relay callback
+        /// </summary>
+        public void DeregisterSystemCallback()
+        {
+            m_commsLayer.DeregisterSystemCallback();
         }
 
         /// <summary>
         /// send byte array representation of data
         /// </summary>
-        /// <param in_message="message to be sent"></param>
-        /// <param to_netId="the net id to send to, RelayComms.TO_ALL_PLAYERS to relay to all"></param>
+        /// <param in_data="message to be sent"></param>
+        /// <param to_netId="the net id to send to, BrainCloudRelay.TO_ALL_PLAYERS to relay to all"></param>
         /// <param in_reliable="send this reliably or not"></param>
         /// <param in_ordered="received this ordered or not"></param>
-        /// <param in_channel="0,1,2,3 (max of four channels)"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)">
+        /// CHANNEL_HIGH_PRIORITY_1 = 0;
+        /// CHANNEL_HIGH_PRIORITY_2 = 1;
+        /// CHANNEL_NORMAL_PRIORITY = 2;
+        /// CHANNEL_LOW_PRIORITY = 3;
+        /// </param>
         public void Send(byte[] in_data, short to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             m_commsLayer.Send(in_data, to_netId, in_reliable, in_ordered, in_channel);

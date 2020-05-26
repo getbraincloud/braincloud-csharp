@@ -78,11 +78,11 @@ using System.Collections.Generic;
                 GUILayout.FlexibleSpace();
 
                 /** // Debug menu appears to have an issue in the current verion of Unity. Look into adjusting
-				if (GUILayout.Button ("bC Debug"))
-				{
-					Minimized = false;
-				}
-				*/
+                if (GUILayout.Button ("bC Debug"))
+                {
+                    Minimized = false;
+                }
+                */
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
             }
