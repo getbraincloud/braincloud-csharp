@@ -140,6 +140,22 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestDeleteEntities()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            //string context = "";
+            //context = (string)((Dictionary<string, object>)tr.m_response["data"])["context"];
+
+            _bc.CustomEntityService.DeleteEntities(
+                "athletes",
+                "{\"entityId\": \"Testing\"}",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetCount()
         {
             TestResult tr = new TestResult(_bc);

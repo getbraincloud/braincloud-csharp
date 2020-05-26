@@ -319,6 +319,43 @@ using BrainCloud.Common;
         }
 
                 /// <summary>
+        /// Deletes Entities based on the criteria passed in
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - DeleteEntities
+        /// </remarks>
+        /// <param name="entityType">
+        /// The Entity Type
+        /// </param>
+        /// <param name="deleteCriteria">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteEntities(
+        string entityType,
+        string deleteCriteria,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceDeleteCriteria.Value] = JsonReader.Deserialize<Dictionary<string, object>>(deleteCriteria);;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteEntities, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                /// <summary>
         ///
         /// </summary>
         /// <remarks>
