@@ -568,7 +568,10 @@ using BrainCloud.Internal;
             //completedby not needed?
             data["ownerId"] = ownerId;
             data["matchId"] = matchId;
+            if(pushContent != null)
+            {
             data["pushContent"] =pushContent;
+            }
             data["summary"] =JsonReader.Deserialize<Dictionary<string, object>>(summary);
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -619,7 +622,10 @@ using BrainCloud.Internal;
             //abandoneddby not needed?
             data["ownerId"] = ownerId;
             data["matchId"] = matchId;
+            if (pushContent != null)
+            {
             data["pushContent"] =pushContent;
+            }
             data["summary"] =JsonReader.Deserialize<Dictionary<string, object>>(summary);
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
