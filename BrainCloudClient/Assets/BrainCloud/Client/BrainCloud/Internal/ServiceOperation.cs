@@ -454,10 +454,12 @@ using System;
         public static readonly ServiceOperation GetCustomEntityPageOffset = new ServiceOperation("GET_ENTITY_PAGE_OFFSET");
         public static readonly ServiceOperation GetEntityPage = new ServiceOperation("GET_ENTITY_PAGE");
         public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
+        public static readonly ServiceOperation IncrementData = new ServiceOperation("INCREMENT_DATA");
         public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");
         public static readonly ServiceOperation DeleteCustomEntity = new ServiceOperation("DELETE_ENTITY");
         public static readonly ServiceOperation GetCount = new ServiceOperation("GET_COUNT");
+        public static readonly ServiceOperation UpdateSingletonFields = new ServiceOperation("UPDATE_SINGLETON_FIELDS");
 
         //UserItemsService
 
