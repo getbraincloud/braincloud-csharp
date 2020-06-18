@@ -225,11 +225,11 @@ using BrainCloud.Common;
         }
 
        /// <summary>
-        ///
+        ///Increments the specified fields by the specified amount within custom entity data on the server, enforcing ownership/ACL permissions.
         /// </summary>
         /// <remarks>
         /// Service Name - CustomEntity
-        /// Service Operation - ReadCustomEntity
+        /// Service Operation - IncrementData
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -467,12 +467,12 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
-                /// <summary>
-        ///
+        /// <summary>
+        ///Deletes the specified custom entity singleton, owned by the session's user, for the specified entity type, on the server.
         /// </summary>
         /// <remarks>
         /// Service Name - Custom Entity
-        /// Service Operation - UpdateCustomEntity
+        /// Service Operation - DeleteSingleton
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -504,12 +504,12 @@ using BrainCloud.Common;
         }
 
 
-                        /// <summary>
-        ///
+        /// <summary>
+        ///Reads the custom entity singleton owned by the session's user.
         /// </summary>
         /// <remarks>
         /// Service Name - Custom Entity
-        /// Service Operation - UpdateCustomEntity
+        /// Service Operation - ReadSingleton
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -538,10 +538,11 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
-                /// </summary>
+        /// </summary>
+        ///Partially updates the data, of the singleton owned by the user for the specified custom entity type, with the specified fields, on the server
         /// <remarks>
         /// Service Name - CustomEntity
-        /// Service Operation - ReadCustomEntity
+        /// Service Operation - UpdateSingletonFields
         /// </remarks>
         /// <param name="entityType">
         /// </param>
@@ -574,10 +575,11 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
-                        /// </summary>
+        /// </summary>
+        ///Updates the singleton owned by the user for the specified custom entity type on the server, creating the singleton if it does not exist. This operation results in the owned singleton's data being completely replaced by the passed in JSON object.
         /// <remarks>
         /// Service Name - CustomEntity
-        /// Service Operation - ReadCustomEntity
+        /// Service Operation -UpdateSingleton
         /// </remarks>
         /// <param name="entityType">
         /// </param>
