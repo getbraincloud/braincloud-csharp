@@ -496,25 +496,6 @@ public class BrainCloudWrapper
             true, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
-    // public bool testFunction(        SuccessCallback success = null,
-    //     FailureCallback failure = null,
-    //     object cbObject = null)
-    // {
-    //             WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-    //     aco._successCallback = success;
-    //     aco._failureCallback = failure;
-    //     aco._cbObject = cbObject;
-
-    //    return Client.AuthenicationService.testFunction(AuthSuccessCallback, AuthFailureCallback, aco);
-    // }
-
-    public bool testFunction()
-    {
-        //return true;
-        return Client.AuthenticationService.testFunction();
-        //_wrapperData.ProfileId;
-    }
-
     /// <summary>
     /// Authenticate the user using a Pase userid and authentication token
     /// </summary>
@@ -1025,7 +1006,7 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
-    public string AuthenticateUniversal(
+    public void AuthenticateUniversal(
         string username,
         string password,
         bool forceCreate,
@@ -1039,9 +1020,6 @@ public class BrainCloudWrapper
         aco._cbObject = cbObject;
 
         InitializeIdentity();
-
-        return Client.AuthenticationService.AuthenticateUniversal(
-            username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
