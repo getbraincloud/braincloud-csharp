@@ -107,14 +107,15 @@ namespace BrainCloud.Common
 #elif UNITY_TVOS
             return AppleTVOS;
 #elif UNITY_ANDROID
-            if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.Amazon)
-            {
-                return Amazon;
-            }
-            else
-            {
-                return GooglePlayAndroid;
-            }
+       string testString = UnityEngine.SystemInfo.deviceModel;
+        if(testString.Contains("Amazon"))
+        {
+            return Amazon;
+        }
+        else
+        {
+            return GooglePlayAndroid;
+        }
 #elif UNITY_WP8 || UNITY_WP8_1
             return WindowsPhone;
 #elif UNITY_WSA

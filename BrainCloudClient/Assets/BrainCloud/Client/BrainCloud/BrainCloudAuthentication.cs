@@ -84,27 +84,9 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            // won't need any of this just input the right platform id gotten at run time
-            OperatingSystem os = Environment.OSVersion;
-            PlatformID pid = os.Platform;
-            switch (pid) 
-            { case PlatformID.Win32NT: 
-            case PlatformID.Win32S: 
-            case PlatformID.Win32Windows: 
-            case PlatformID.WinCE: Console.WriteLine("I'm on windows!"); 
-            break; 
-            case PlatformID.Unix: Console.WriteLine("I'm a linux box!"); 
-            break; 
-            case PlatformID.MacOSX: Console.WriteLine("I'm a mac!"); 
-            break; 
-            default: Console.WriteLine("No Idea what I'm on!"); 
-            break; 
-            }
-
             Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
                               null, forceCreate, success, failure, cbObject);
         }
-        //add check here
 
         /// <summary>
         /// Overloaded version AuthenticateAnonymous call, takes in more parameters. This is made as temporary
