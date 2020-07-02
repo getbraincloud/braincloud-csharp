@@ -1020,6 +1020,9 @@ public class BrainCloudWrapper
         aco._cbObject = cbObject;
 
         InitializeIdentity();
+
+            Client.AuthenticationService.AuthenticateUniversal(
+        username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>

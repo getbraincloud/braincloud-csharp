@@ -107,8 +107,8 @@ namespace BrainCloud.Common
 #elif UNITY_TVOS
             return AppleTVOS;
 #elif UNITY_ANDROID
-       string testString = UnityEngine.SystemInfo.deviceModel;
-        if(testString.Contains("Amazon"))
+       string amazonCheck = UnityEngine.SystemInfo.deviceModel;
+        if(amazonCheck.Contains("Amazon"))
         {
             return Amazon;
         }
