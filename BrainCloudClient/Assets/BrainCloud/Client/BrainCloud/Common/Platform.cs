@@ -31,10 +31,12 @@ namespace BrainCloud.Common
         public static readonly Platform Windows = new Platform("WINDOWS");
         public static readonly Platform Xbox360 = new Platform("XBOX_360");
         public static readonly Platform XboxOne = new Platform("XBOX_ONE");
+        public static readonly Platform Amazon = new Platform("AMAZON");
 
         private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>
         {
             { AppleTVOS.value, AppleTVOS },
+            { Amazon.value, Amazon },
             { BlackBerry.value, BlackBerry },
             { Facebook.value, Facebook },
             { GooglePlayAndroid.value, GooglePlayAndroid },
@@ -105,7 +107,15 @@ namespace BrainCloud.Common
 #elif UNITY_TVOS
             return AppleTVOS;
 #elif UNITY_ANDROID
-            return GooglePlayAndroid;
+       string amazonCheck = UnityEngine.SystemInfo.deviceModel;
+        if(amazonCheck.Contains("Amazon"))
+        {
+            return Amazon;
+        }
+        else
+        {
+            return GooglePlayAndroid;
+        }
 #elif UNITY_WP8 || UNITY_WP8_1
             return WindowsPhone;
 #elif UNITY_WSA
