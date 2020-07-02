@@ -1021,8 +1021,8 @@ public class BrainCloudWrapper
 
         InitializeIdentity();
 
-            Client.AuthenticationService.AuthenticateUniversal(
-        username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+        Client.AuthenticationService.AuthenticateUniversal(
+            username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
