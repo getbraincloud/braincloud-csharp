@@ -350,7 +350,7 @@ namespace BrainCloudTests
 
             TestResult tr = new TestResult(_bc);
 
-            string content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+            string content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
             _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvanced(
                 GetUser(Users.UserA).Id,
                 content,
@@ -373,7 +373,7 @@ namespace BrainCloudTests
 
             TestResult tr = new TestResult(_bc);
 
-            string content = "{\"templateId\": \"d-template-id-guid\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+            string content = "{\"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
             _bc.Client.AuthenticationService.ResetUniversalIdPasswordAdvancedWithExpiry(
                 GetUser(Users.UserA).Id,
                 content,

@@ -224,6 +224,44 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
+       /// <summary>
+        ///Increments the specified fields by the specified amount within custom entity data on the server, enforcing ownership/ACL permissions.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - IncrementData
+        /// </remarks>
+        /// <param name="entityType">
+        /// </param>
+        /// <param name="entityId">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void IncrementData(
+        string entityType,
+        string entityId,
+        string fieldsJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.IncrementData, data, callback);
+            _client.SendRequest(sc);
+        }
+
                 /// <summary>
         ///
         /// </summary>
@@ -319,6 +357,43 @@ using BrainCloud.Common;
         }
 
                 /// <summary>
+        /// Deletes Entities based on the criteria passed in
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - DeleteEntities
+        /// </remarks>
+        /// <param name="entityType">
+        /// The Entity Type
+        /// </param>
+        /// <param name="deleteCriteria">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteEntities(
+        string entityType,
+        string deleteCriteria,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceDeleteCriteria.Value] = JsonReader.Deserialize<Dictionary<string, object>>(deleteCriteria);;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteEntities, data, callback);
+            _client.SendRequest(sc);
+        }
+
+                /// <summary>
         ///
         /// </summary>
         /// <remarks>
@@ -389,6 +464,155 @@ using BrainCloud.Common;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteCustomEntity, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        ///Deletes the specified custom entity singleton, owned by the session's user, for the specified entity type, on the server.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Custom Entity
+        /// Service Operation - DeleteSingleton
+        /// </remarks>
+        /// <param name="entityType">
+        /// </param>
+        /// <param name="version">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteSingleton(
+        string entityType,
+        int version,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteSingleton, data, callback);
+            _client.SendRequest(sc);
+        }
+
+
+        /// <summary>
+        ///Reads the custom entity singleton owned by the session's user.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Custom Entity
+        /// Service Operation - ReadSingleton
+        /// </remarks>
+        /// <param name="entityType">
+        /// </param>
+        /// <param name="version">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ReadSingleton(
+        string entityType,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.ReadSingleton, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// </summary>
+        ///Partially updates the data, of the singleton owned by the user for the specified custom entity type, with the specified fields, on the server
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - UpdateSingletonFields
+        /// </remarks>
+        /// <param name="entityType">
+        /// </param>
+        /// <param name="entityId">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateSingletonFields(
+        string entityType,
+        int version,
+        string fieldsJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateSingletonFields, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// </summary>
+        ///Updates the singleton owned by the user for the specified custom entity type on the server, creating the singleton if it does not exist. This operation results in the owned singleton's data being completely replaced by the passed in JSON object.
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation -UpdateSingleton
+        /// </remarks>
+        /// <param name="entityType">
+        /// </param>
+        /// <param name="entityId">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateSingleton(
+        string entityType,
+        int version,
+        string dataJson,
+        string acl,
+        string timeToLive,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
+            data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
+            data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateSingleton, data, callback);
             _client.SendRequest(sc);
         }
     }

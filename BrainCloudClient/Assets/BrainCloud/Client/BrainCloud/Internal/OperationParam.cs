@@ -512,6 +512,7 @@ namespace BrainCloud
         public static readonly OperationParam AlignmentCenter = new OperationParam("center");
         //custom entity
         public static readonly OperationParam CustomEntityServiceEntityType = new OperationParam("entityType");
+        public static readonly OperationParam CustomEntityServiceDeleteCriteria = new OperationParam("deleteCriteria");
         public static readonly OperationParam CustomEntityServiceEntityId = new OperationParam("entityId");
         public static readonly OperationParam CustomEntityServiceVersion = new OperationParam("version");
         public static readonly OperationParam CustomEntityServiceFieldsJson = new OperationParam("fieldsJson");
