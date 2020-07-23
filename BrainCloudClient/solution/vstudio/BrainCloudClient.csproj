@@ -246,7 +246,7 @@
       <Link>BrainCloud\Internal\BrainCloudComms.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayComms.cs">
-      <Link>BrainCloud\Entity\Internal\RelayComms.cs</Link>
+      <Link>BrainCloud\Internal\RelayComms.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
