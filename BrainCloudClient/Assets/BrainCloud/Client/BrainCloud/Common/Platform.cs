@@ -4,6 +4,9 @@
 //----------------------------------------------------
 
 using System.Collections.Generic;
+#if XAMARIN
+    using Xamarin.Essentials;
+#endif
 
 namespace BrainCloud.Common
 {
@@ -132,6 +135,16 @@ namespace BrainCloud.Common
             return XboxOne;
 #elif UNITY_TIZEN
             return Tizen;
+#elif XAMARIN
+            string checkAmazon = DeviceInfo.Manufacturer;
+            if(checkAmazon.Contains("Amazon"))
+            {
+                return Amazon;
+            }
+            else
+            {
+                return GooglePlayAndroid;
+            }      
 #else
             return Unknown;
 #endif
