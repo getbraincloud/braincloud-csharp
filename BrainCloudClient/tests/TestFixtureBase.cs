@@ -7,6 +7,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using System.Text;
 using BrainCloud.Common;
+using System.Diagnostics;
 
 namespace BrainCloudTests
 {
@@ -26,6 +27,8 @@ namespace BrainCloudTests
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
         public BrainCloudWrapper _bc;
+
+        private bool initCounter;
 
         [SetUp]
         public void Setup()
