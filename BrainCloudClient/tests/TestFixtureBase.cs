@@ -28,7 +28,7 @@ namespace BrainCloudTests
 
         public BrainCloudWrapper _bc;
 
-        private bool initCounter;
+        private bool initTestPass;
 
         [SetUp]
         public void Setup()
