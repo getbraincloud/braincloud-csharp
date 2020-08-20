@@ -369,6 +369,7 @@ using UnityEngine.Experimental.Networking;
         /// <param name="secretKey">Secret key.</param>
         public void Initialize(string serverURL, string appId, string secretKey)
         {
+            ResetCommunication();
             _packetId = 0;
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
 
