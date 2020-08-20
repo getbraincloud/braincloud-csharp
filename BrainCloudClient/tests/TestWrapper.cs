@@ -173,7 +173,7 @@ namespace BrainCloudTests
             Debug.Assert(initCounter == 3); //inti called a third time
 
             //CASE 2
-            
+
             //if we manage to get an authenticate our re-initializing was successful - now to test out users case 
             //AUTH
             TestResult tr = new TestResult(_bc);
