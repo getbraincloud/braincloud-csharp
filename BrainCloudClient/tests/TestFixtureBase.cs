@@ -14,15 +14,15 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestFixtureBase
     {
-        protected string ServerUrl = "";
-        protected string AppId = "";
-        protected string Secret = "";
-        protected string Version = "1.0.0";
-        protected string ChildAppId = "";
-        protected string ChildSecret = "";
-        protected string ParentLevel = "";
-        protected string PeerName = "";
-        protected string SupportsCompression = "";
+        public string ServerUrl = "";
+        public string AppId = "";
+        public string Secret = "";
+        public string Version = "1.0.0";
+        public string ChildAppId = "";
+        public string ChildSecret = "";
+        public string ParentLevel = "";
+        public string PeerName = "";
+        public string SupportsCompression = "";
 
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
