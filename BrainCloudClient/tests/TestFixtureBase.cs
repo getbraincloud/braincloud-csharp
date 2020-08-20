@@ -7,7 +7,6 @@ using BrainCloud;
 using System.Collections.Generic;
 using System.Text;
 using BrainCloud.Common;
-using System.Diagnostics;
 
 namespace BrainCloudTests
 {
@@ -28,8 +27,6 @@ namespace BrainCloudTests
 
         public BrainCloudWrapper _bc;
 
-        private bool initTestPass;
-
         [SetUp]
         public void Setup()
         {
@@ -39,33 +36,7 @@ namespace BrainCloudTests
             Dictionary<string, string> secretMap = new Dictionary<string, string>();
             secretMap.Add(AppId, Secret);
             secretMap.Add(ChildAppId, ChildSecret);
-
-            //Use check so that we only run this initialization test once per test suite, instead of 3 times per unit test
-            if(!initTestPass)
-            {
-                int initCounter = 1;
-
-                //try to init several times and see if everything works as intended
-                _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-                Debug.Assert(initCounter == 1); //init called once
-                Console.WriteLine("Init test passed: " + initCounter + "/3");
-                initCounter++;
-
-                _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-                Debug.Assert(initCounter == 2); //init called twice
-                Console.WriteLine("Init test passed: " + initCounter + "/3");
-                initCounter++;
-
-                _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-                Debug.Assert(initCounter == 3); //inti called a third time
-                Console.WriteLine("Init test passed: " + initCounter + "/3");
-                initTestPass = true;
-            }
-            else
-            {
-                _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            }
-
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
 

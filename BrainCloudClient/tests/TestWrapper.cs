@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using BrainCloud;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 
 namespace BrainCloudTests
@@ -146,6 +148,55 @@ namespace BrainCloudTests
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
         }
 
+        
+        [Test]
+        public void TestReInit()
+        {
+            Dictionary<string, string> secretMap = new Dictionary<string, string>();
+            secretMap.Add(AppId, Secret);
+            secretMap.Add(ChildAppId, ChildSecret);
+
+            //CASE 1
+
+            //testing muliple attempts at Initializing in a row 
+            int initCounter = 1;
+            //try to init several times and see if everything works as intended
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            Debug.Assert(initCounter == 1); //init called once
+            initCounter++;
+
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            Debug.Assert(initCounter == 2); //init called twice
+            initCounter++;
+
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            Debug.Assert(initCounter == 3); //inti called a third time
+
+            //CASE 2
+            
+            //if we manage to get an authenticate our re-initializing was successful - now to test out users case 
+            //AUTH
+            TestResult tr = new TestResult(_bc);
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            TestResult tr2 = new TestResult(_bc);
+            
+            //DO A CALL
+            _bc.TimeService.ReadServerTime(
+                tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+            
+            //RE-INIT
+            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            TestResult tr3 = new TestResult(_bc);
+            
+            //Call WITHOUT AUTH - should fail because we have re-initialized and will need to authenticate again
+            _bc.TimeService.ReadServerTime(
+                tr3.ApiSuccess, tr3.ApiError);
+            tr3.RunExpectFail();
+
+        }
+
         //[Test] //TODO Jon
         public void TestReconnect()
         {
@@ -163,40 +214,6 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        public void TestReInit()
-        {
-            // string ServerUrl = "https://internal.braincloudservers.com/dispatcherv2";
-            // string AppId = "20001";
-            // string Secret = "4e51b45c-030e-4f21-8457-dc53c9a0ed5f";
-            // string ChildAppId = "20005";
-            // string childSecret = "f8cec1cf-2f95-4989-910c-8caf598f83db"
-            // string Version = "1.0.0";
-            // Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            // secretMap.Add(AppId, Secret);
-            // secretMap.Add(ChildAppId, ChildSecret);
-
-            int initCounter = 1;
-            //try to init several times and see if everything works as intended
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            Debug.Assert(initCounter == 1); //init called once
-            Console.WriteLine("Init test passed: " + initCounter + "/3");
-            initCounter++;
-
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            Debug.Assert(initCounter == 2); //init called twice
-            Console.WriteLine("Init test passed: " + initCounter + "/3");
-            initCounter++;
-
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            Debug.Assert(initCounter == 3); //inti called a third time
-            Console.WriteLine("Init test passed: " + initCounter + "/3");
-            initTestPass = true;
-
-            //if we manage to get an authenticate our re-initializing was successful
-            TestResult tr = new TestResult(_bc);
-            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
 
     }
 }
