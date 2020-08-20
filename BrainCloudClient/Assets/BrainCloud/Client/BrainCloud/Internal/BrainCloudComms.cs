@@ -369,7 +369,7 @@ using UnityEngine.Experimental.Networking;
         /// <param name="secretKey">Secret key.</param>
         public void Initialize(string serverURL, string appId, string secretKey)
         {
-            _packetId = 0;
+            ResetCommunication(); //resets comms, packetId and SessionId
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
 
             ServerURL = serverURL;
@@ -1939,6 +1939,7 @@ using UnityEngine.Experimental.Networking;
                 _activeRequest = null;
                 _clientRef.AuthenticationService.ProfileId = "";
                 SessionID = "";
+                _packetId = 0;
             }
         }
 
