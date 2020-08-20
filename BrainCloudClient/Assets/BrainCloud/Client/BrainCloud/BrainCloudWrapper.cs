@@ -378,6 +378,7 @@ public class BrainCloudWrapper
     /// </summary>
     public void Init()
     {
+        resetWrapper();
         Init(
             BrainCloudSettingsManual.Instance.DispatcherURL,
             BrainCloudSettingsManual.Instance.SecretKey,
@@ -393,6 +394,7 @@ public class BrainCloudWrapper
     /// </summary>
     public void InitWithApps()
     {
+        resetWrapper();
         InitWithApps(
             BrainCloudSettingsManual.Instance.DispatcherURL,
             BrainCloudSettingsManual.Instance.AppId,
@@ -413,6 +415,7 @@ public class BrainCloudWrapper
     /// <param name="version">The app's version</param>
     public void Init(string url, string secretKey, string appId, string version)
     {
+        resetWrapper();
         _lastUrl = url;
         _lastSecretKey = secretKey;
         _lastAppId = appId;
@@ -432,6 +435,7 @@ public class BrainCloudWrapper
     /// <param name="version">The app's version</param>
     public void InitWithApps(string url, string defaultAppId, Dictionary<string, string> appIdSecretMap, string version)
     {
+        resetWrapper();
         _lastUrl = url;
         _lastSecretKey = appIdSecretMap[defaultAppId];
         _lastAppId = defaultAppId;
