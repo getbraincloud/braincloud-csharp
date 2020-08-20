@@ -441,6 +441,27 @@ public class BrainCloudWrapper
         LoadData();
     }
 
+    
+    /// <summary>
+    /// Resets the wrapper.
+    /// Since the WrapperName is set upon re-initialization of the wrapper, the name is reset by choice here. As the user
+    /// may want to reset the wrapper's fields without also restting the name. 
+    /// </summary>
+    public void resetWrapper(bool resetWrapperName = false)
+    {
+        ResetStoredAnonymousId();
+        ResetStoredAuthenticationType();
+        ResetStoredProfileId();
+        _wrapperData = new WrapperData();
+        Client.Wrapper = null;
+        Client = null; 
+        Client = new BrainCloudClient(this);
+        Client.Wrapper = this;
+
+        if(resetWrapperName)
+            WrapperName = "";
+    }
+
     /// <summary>
     /// If set to true, profile id is never sent along with non-anonymous authenticates
     /// thereby ensuring that valid credentials always work but potentially cause a profile switch.
