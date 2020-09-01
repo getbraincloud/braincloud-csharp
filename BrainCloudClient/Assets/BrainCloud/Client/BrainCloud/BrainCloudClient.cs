@@ -19,7 +19,6 @@ namespace BrainCloud
     using UnityEngine.Assertions;
 #else
 using System.Globalization;
-using System;
 #endif
 
     #region Enums
@@ -83,8 +82,8 @@ using System;
     /// <summary>
     /// Relay callback.
     /// </summary>
-    /// <param name="jsonResponse">The JSON response from the server</param>
-    public delegate void RelayCallback(byte[] jsonResponse);
+    /// <param name="data">The data send from netId user</param>
+    public delegate void RelayCallback(short netId, byte[] data);
 
     /// <summary>
     /// Relay system callback.
@@ -263,7 +262,7 @@ using System;
             _lobbyService = new BrainCloudLobby(this);
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(_rttComms, this);
-            _rsService = new BrainCloudRelay(_rsComms);
+            _rsService = new BrainCloudRelay(_rsComms, this);
         }
         //---------------------------------------------------------------
 
