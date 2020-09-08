@@ -46,7 +46,7 @@ namespace BrainCloudTests
         {
             Console.WriteLine("Error: " + jsonError);
 
-            if (jsonError == "{\"status\":403,\"reason_code\":90300,\"status_message\":\"Invalid NetId: 128\",\"severity\":\"ERROR\"}")
+            if (jsonError == "{\"status\":403,\"reason_code\":90300,\"status_message\":\"Invalid NetId: 40\",\"severity\":\"ERROR\"}")
             {
                 // This one was on purpose
                 successCount++;
@@ -66,7 +66,7 @@ namespace BrainCloudTests
             List<int> ranges = new List<int>();
             ranges.Add(1000);
             algo["ranges"] = ranges;
-            _bc.LobbyService.FindOrCreateLobby("READY_START", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, null, onFailed);
+            _bc.LobbyService.FindOrCreateLobby("READY_START_V2", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, null, onFailed);
         }
 
         void onLobbyEvent(string json)
@@ -119,7 +119,7 @@ namespace BrainCloudTests
 
             short myNetId = _bc.RelayService.GetNetIdForProfileId(_bc.Client.AuthenticationService.ProfileId);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("Hello World!");
-            _bc.RelayService.Send(bytes, myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            _bc.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
         }
 
         void systemCallback(string json)
@@ -137,7 +137,7 @@ namespace BrainCloudTests
             }
         }
 
-        void relayCallback(byte[] data)
+        void relayCallback(short netId, byte[] data)
         {
             string message = System.Text.Encoding.ASCII.GetString(data, 0, data.Length);
             Console.WriteLine("relayCallback: " + message);
@@ -154,9 +154,9 @@ namespace BrainCloudTests
 
         void sendToWrongNetId()
         {
-            short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 128 or ALL_PLAYERS (131)
+            short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 40 or ALL_PLAYERS (0x000000FFFFFFFFFF)
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
-            _bc.RelayService.Send(bytes, myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            _bc.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
         }
 
         [Test]

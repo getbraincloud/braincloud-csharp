@@ -183,3 +183,13 @@ DateTime _date = TimeUtil.LocalTimeToUTCTime(DateTime.Now); //convert your date 
 Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your UTC date time to milliseconds
 _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
 ```
+## Enabling Logs
+We added the conditional BC_DEBUG_LOG_ENABLED in our code base becasue our logs were having a heavy impact on profilers. These logs are very useful for debugging purposes however and you may want to turn them back on. There are a couple ways to do this. 
+
+*In Unity*
+1. Go to File -> Build Settings -> Player Settings -> Other Settings then under Configuration you will see "Scripting Define Symbols" in there put BC_DEBUG_LOG_ENABLED.
+
+*In C# or if you have a Unity project with a .csproj*
+1. Right click your .csproj and go to properties.
+2. In properties, go to the BUILD tab, and under 'General' you will see "Conditional Compilation Symbols:"
+3. In that box add BC_DEBUG_LOG_ENABLED;
