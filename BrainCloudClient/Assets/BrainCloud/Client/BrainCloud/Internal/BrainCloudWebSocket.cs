@@ -7,6 +7,7 @@ namespace BrainCloud.Internal
     using System.Threading;
     using System.Threading.Tasks;
     using System.IO;
+    using System.Diagnostics;
 #elif UNITY_WEBGL && !UNITY_EDITOR
     using AOT;
     using System.Collections.Generic;
@@ -96,6 +97,7 @@ namespace BrainCloud.Internal
                             // We probably closed the socket
                             break;
                         }
+
                         ClientWebSocket_OnMessage(ms.ToArray());
                         ms.SetLength(0);
                     }

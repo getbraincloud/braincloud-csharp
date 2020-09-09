@@ -17,7 +17,7 @@ using BrainCloud.Internal;
         public string passcode;
         public string lobbyId;
 
-        RelayConnectOptions(bool in_ssl, string in_host, int in_port, string in_passcode, string in_lobbyId)
+        public RelayConnectOptions(bool in_ssl, string in_host, int in_port, string in_passcode, string in_lobbyId)
         {
             ssl = in_ssl;
             host = in_host;
@@ -29,8 +29,8 @@ using BrainCloud.Internal;
 
     public class BrainCloudRelay
     {
-        public const int TO_ALL_PLAYERS = 131;
-        public const int MAX_PLAYERS = 128;
+        public const ulong TO_ALL_PLAYERS = 0x000000FFFFFFFFFF;
+        public const int MAX_PLAYERS = 40;
         public const int CHANNEL_HIGH_PRIORITY_1 = 0;
         public const int CHANNEL_HIGH_PRIORITY_2 = 1;
         public const int CHANNEL_NORMAL_PRIORITY = 2;
@@ -39,9 +39,10 @@ using BrainCloud.Internal;
         /// <summary>
         /// 
         /// </summary>
-        internal BrainCloudRelay(RelayComms in_comms)
+        internal BrainCloudRelay(RelayComms in_comms, BrainCloudClient in_client)
         {
             m_commsLayer = in_comms;
+            m_clientRef = in_client;
         }
 
         /// <summary>
@@ -171,7 +172,7 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// send byte array representation of data
+        /// Send a packet to peer(s)
         /// </summary>
         /// <param in_data="message to be sent"></param>
         /// <param to_netId="the net id to send to, BrainCloudRelay.TO_ALL_PLAYERS to relay to all"></param>
@@ -183,9 +184,64 @@ using BrainCloud.Internal;
         /// CHANNEL_NORMAL_PRIORITY = 2;
         /// CHANNEL_LOW_PRIORITY = 3;
         /// </param>
-        public void Send(byte[] in_data, short to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
+        public void Send(byte[] in_data, ulong to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
-            m_commsLayer.Send(in_data, to_netId, in_reliable, in_ordered, in_channel);
+            if (to_netId == TO_ALL_PLAYERS)
+            {
+                SendToAll(in_data, in_reliable, in_ordered, in_channel);
+            }
+            else if (to_netId >= MAX_PLAYERS)
+            {
+                // Error. Invalid net id
+                string error = "Invalid NetId: " + to_netId.ToString();
+                m_commsLayer.QueueError(error);
+            }
+            else
+            {
+                ulong playerMask = 1ul << (int)to_netId;
+                m_commsLayer.Send(in_data, playerMask, in_reliable, in_ordered, in_channel);
+            }
+        }
+
+        /// <summary>
+        /// Send a packet to any players by using a mask
+        /// </summary>
+        /// <param in_data="message to be sent"></param>
+        /// <param in_playerMask="Mask of the players to send to. 0001 = netId 0, 0010 = netId 1, etc. If you pass ALL_PLAYER_MASK you will be included and you will get an echo for your message. Use sendToAll instead, you will be filtered out. You can manually filter out by : ALL_PLAYER_MASK &= ~(1 << myNetId)"></param>
+        /// <param in_reliable="send this reliably or not"></param>
+        /// <param in_ordered="received this ordered or not"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)">
+        /// CHANNEL_HIGH_PRIORITY_1 = 0;
+        /// CHANNEL_HIGH_PRIORITY_2 = 1;
+        /// CHANNEL_NORMAL_PRIORITY = 2;
+        /// CHANNEL_LOW_PRIORITY = 3;
+        /// </param>
+        public void SendToPlayers(byte[] in_data, ulong in_playerMask, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
+        {
+            m_commsLayer.Send(in_data, in_playerMask, in_reliable, in_ordered, in_channel);
+        }
+
+        /// <summary>
+        /// Send a packet to all except yourself
+        /// </summary>
+        /// <param in_data="message to be sent"></param>
+        /// <param in_reliable="send this reliably or not"></param>
+        /// <param in_ordered="received this ordered or not"></param>
+        /// <param in_channel="0,1,2,3 (max of four channels)">
+        /// CHANNEL_HIGH_PRIORITY_1 = 0;
+        /// CHANNEL_HIGH_PRIORITY_2 = 1;
+        /// CHANNEL_NORMAL_PRIORITY = 2;
+        /// CHANNEL_LOW_PRIORITY = 3;
+        /// </param>
+        public void SendToAll(byte[] in_data, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
+        {
+            var myProfileId = m_clientRef.AuthenticationService.ProfileId;
+            var myNetId = GetNetIdForProfileId(myProfileId);
+
+            ulong myBit = 1ul << (int)myNetId;
+            ulong myInvertedBits = ~myBit;
+            ulong playerMask = TO_ALL_PLAYERS & myInvertedBits;
+            m_commsLayer.Send(in_data, playerMask, in_reliable, in_ordered, in_channel);
         }
 
         /// <summary>
@@ -201,7 +257,11 @@ using BrainCloud.Internal;
         /// Reference to the Relay Comms
         /// </summary>
         private RelayComms m_commsLayer;
-        #endregion
 
+        /// <summary>
+        /// Reference to the brainCloud client object
+        /// </summary>
+        private BrainCloudClient m_clientRef;
+        #endregion
     }
 }

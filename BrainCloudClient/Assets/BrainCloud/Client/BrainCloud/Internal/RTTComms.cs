@@ -313,6 +313,7 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
+            if (data.Length == 0) return;
             string message = Encoding.UTF8.GetString(data);
             onRecv(message);
         }
@@ -328,12 +329,16 @@ namespace BrainCloud.Internal
         /// </summary>
         private void onRecv(string in_message)
         {
+            m_clientRef.Log("RTT RECV: " + in_message);
+
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
 
             string service = (string)response["service"];
             string operation = (string)response["operation"];
 
-            Dictionary<string, object> data = (Dictionary<string, object>)response["data"];
+            Dictionary<string, object> data = null;
+            if (response.ContainsKey("data"))
+                data = (Dictionary<string, object>)response["data"];
             if (operation == "CONNECT")
             {
                 int heartBeat = m_heartBeatTime / 1000;
@@ -355,7 +360,6 @@ namespace BrainCloud.Internal
                 if (data.ContainsKey("evs")) RTTEventServer = (string)data["evs"];
             }
 
-            m_clientRef.Log("RTT RECV: " + in_message);
             if (operation != "HEARTBEAT")
             {
                 addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
