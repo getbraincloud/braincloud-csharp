@@ -71,6 +71,47 @@ using System;
 #endif
         }
 
+        
+        /// <summary>
+        /// Prepares a user file upload from memory. On success the file will begin uploading
+        /// to the brainCloud server.To be informed of success/failure of the upload
+        /// register an IFileUploadCallback with the BrainCloudClient class.
+        /// </summary>
+        /// <param name="cloudPath">The desired cloud path of the file</param>
+        /// <param name="cloudFilename">The desired cloud fileName of the file</param>
+        /// <param name="shareable">True if the file is shareable</param>
+        /// <param name="replaceIfExists">Whether to replace file if it exists</param>
+        /// <param name="localPath">The path and fileName of the local file</param>
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public bool UploadFileFromMemory(
+            string cloudPath,
+            string cloudFilename,
+            bool shareable,
+            bool replaceIfExists,
+            string fileData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UploadLocalPath.Value] = fileData;
+            data[OperationParam.UploadCloudFilename.Value] = cloudFilename;
+            data[OperationParam.UploadCloudPath.Value] = cloudPath;
+            data[OperationParam.UploadShareable.Value] = shareable;
+            data[OperationParam.UploadReplaceIfExists.Value] = replaceIfExists;
+
+            byte[] file = System.Convert.FromBase64String(fileData);
+            data[OperationParam.UploadFileSize.Value] = file.Length;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.PrepareUserUpload, data, callback);
+            _client.SendRequest(sc);
+
+            return true;
+        }
+
         /// <summary>
         /// Method cancels an upload. If an IFileUploadCallback has been registered with the BrainCloudClient class,
         /// the fileUploadFailed callback method will be called once the upload has been canceled.
