@@ -152,7 +152,7 @@ using System.Threading.Tasks;
 
             if (_peerCode != "") postForm.AddField("peerCode", _peerCode);
             postForm.AddField("uploadId", UploadId);
-            postForm.AddField("fileSize", TotalBytesToTransfer.ToString());
+            postForm.AddField("fileSize", file.Length);
             postForm.AddBinaryData("uploadFile", file, _fileName);
 
 #if USE_WEB_REQUEST
