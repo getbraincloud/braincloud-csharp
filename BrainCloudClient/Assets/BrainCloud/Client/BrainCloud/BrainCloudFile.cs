@@ -82,7 +82,7 @@ using System;
         /// <param name="cloudFilename">The desired cloud fileName of the file</param>
         /// <param name="shareable">True if the file is shareable</param>
         /// <param name="replaceIfExists">Whether to replace file if it exists</param>
-        /// <param name="fileData"> the converted file data from memory in string format. if your memory data is in a byte[] you can use System.Convert.ToBase64String(bytes) to convert into a proper string format</param>
+        /// <param name="fileData">The converted file data from memory in string format. if your memory data is in a byte[] you can use System.Convert.ToBase64String(bytes) to convert into a proper string format</param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
