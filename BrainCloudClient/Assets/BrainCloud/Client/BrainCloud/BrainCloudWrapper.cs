@@ -378,6 +378,7 @@ public class BrainCloudWrapper
     /// </summary>
     public void Init()
     {
+        resetWrapper();
         Init(
             BrainCloudSettingsManual.Instance.DispatcherURL,
             BrainCloudSettingsManual.Instance.SecretKey,
@@ -393,6 +394,7 @@ public class BrainCloudWrapper
     /// </summary>
     public void InitWithApps()
     {
+        resetWrapper();
         InitWithApps(
             BrainCloudSettingsManual.Instance.DispatcherURL,
             BrainCloudSettingsManual.Instance.AppId,
@@ -413,6 +415,7 @@ public class BrainCloudWrapper
     /// <param name="version">The app's version</param>
     public void Init(string url, string secretKey, string appId, string version)
     {
+        resetWrapper();
         _lastUrl = url;
         _lastSecretKey = secretKey;
         _lastAppId = appId;
@@ -432,6 +435,7 @@ public class BrainCloudWrapper
     /// <param name="version">The app's version</param>
     public void InitWithApps(string url, string defaultAppId, Dictionary<string, string> appIdSecretMap, string version)
     {
+        resetWrapper();
         _lastUrl = url;
         _lastSecretKey = appIdSecretMap[defaultAppId];
         _lastAppId = defaultAppId;
@@ -439,6 +443,28 @@ public class BrainCloudWrapper
         Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
 
         LoadData();
+    }
+
+    
+    /// <summary>
+    /// Resets the wrapper.
+    /// Since the WrapperName is set upon re-initialization of the wrapper, the name is reset by choice here. As the user
+    /// may want to reset the wrapper's fields without also restting the name. 
+    /// </summary>
+    public void resetWrapper(bool resetWrapperName = false)
+    {
+        ResetStoredAnonymousId();
+        ResetStoredAuthenticationType();
+        ResetStoredProfileId();
+        _wrapperData = new WrapperData();
+        Client.ResetCommunication(); // just to confirm this is being done on the client when the wrapper is reset. 
+        Client.Wrapper = null;
+        Client = null; 
+        Client = new BrainCloudClient(this);
+        Client.Wrapper = this;
+
+        if(resetWrapperName)
+            WrapperName = "";
     }
 
     /// <summary>
