@@ -45,7 +45,7 @@ using System;
             object cbObject = null)
         {
 #if UNITY_WEBPLAYER || UNITY_WEBGL
-            throw new Exception("File upload API is not supported on Web builds");
+            throw new Exception("FileUpload API is not supported on Web builds use FileUploadFromMemory instead");
 #else
             FileInfo info = new FileInfo(localPath);
 
@@ -73,7 +73,8 @@ using System;
 
         
         /// <summary>
-        /// Prepares a user file upload from memory. On success the file will begin uploading
+        /// Prepares a user file upload from memory, allowing the user to bypass 
+        //the need to read or write on disk before uploading. On success the file will begin uploading
         /// to the brainCloud server.To be informed of success/failure of the upload
         /// register an IFileUploadCallback with the BrainCloudClient class.
         /// </summary>
@@ -81,7 +82,7 @@ using System;
         /// <param name="cloudFilename">The desired cloud fileName of the file</param>
         /// <param name="shareable">True if the file is shareable</param>
         /// <param name="replaceIfExists">Whether to replace file if it exists</param>
-        /// <param name="localPath">The path and fileName of the local file</param>
+        /// <param name="fileData"> the converted file data from memory in string format. if your memory data is in a byte[] you can use System.Convert.ToBase64String(bytes) to convert into a proper string format</param>
         /// <param name="success">The success callback</param>
         /// <param name="failure">The failure callback</param>
         /// <param name="cbObject">The callback object</param>
