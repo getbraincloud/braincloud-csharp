@@ -36,7 +36,11 @@ namespace BrainCloud.Internal
         /// <param name="cb_object"></param>
         public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
-            if (!m_bIsConnected)
+            if(IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
+            {
+                return;
+            }
+            else
             {
                 m_connectedSuccessCallback = in_success;
                 m_connectionFailureCallback = in_failure;
@@ -52,7 +56,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DisableRTT()
         {
-            if (!IsRTTEnabled())
+            if (!IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.DISCONNECTING)
             {
                 return;
             }
@@ -64,7 +68,15 @@ namespace BrainCloud.Internal
         /// </summary>
         public bool IsRTTEnabled()
         {
-            return m_bIsConnected;
+            return m_rttConnectionStatus == RTTConnectionStatus.CONNECTED;
+        }
+
+        ///<summary>
+        ///Returns the status of the connection
+        ///</summary>
+        public RTTConnectionStatus GetConnectionStatus()
+        {
+            return m_rttConnectionStatus;
         }
 
         /// <summary>
@@ -118,46 +130,78 @@ namespace BrainCloud.Internal
                 {
                     toProcessResponse = m_queuedRTTCommands[i];
 
+                    //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
+                    if (m_webSocketStatus == WebsocketStatus.CLOSED)
+                    {
+                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
+                        m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        disconnect();
+                        break;
+                    }
+
                     // does this go to one of our registered service listeners? 
                     if (m_registeredCallbacks.ContainsKey(toProcessResponse.Service))
                     {
                         m_registeredCallbacks[toProcessResponse.Service](toProcessResponse.JsonMessage);
                     }
+
                     // are we actually connected? only pump this back, when the server says we've connected
-                    else if (m_bIsConnected && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
+                    else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
                         m_lastNowMS = DateTime.Now;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
+                        m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
                     }
-                    else if (m_bIsConnected && m_connectionFailureCallback != null &&
-                        toProcessResponse.Operation == "error" || toProcessResponse.Operation == "disconnect")
-                    {
-                        if (toProcessResponse.Operation == "disconnect")
-                            disconnect();
 
-                        // TODO:
-                        if (m_connectionFailureCallback != null)
-                            m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
+                    //if we're connected and we get a disconnect - we disconnect the comms... 
+                    else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED && m_connectionFailureCallback != null && toProcessResponse.Operation == "disconnect")
+                    {
+                        m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        disconnect();
                     }
-                    else if (!m_bIsConnected && toProcessResponse.Operation == "connect")
+
+                    //If there's an error, we send back the error
+                    else if (m_connectionFailureCallback != null && toProcessResponse.Operation == "error")
+                    {
+                        if(toProcessResponse.JsonMessage != null)
+                        {
+                            Dictionary<string, object> messageData = (Dictionary<string, object>)JsonReader.Deserialize(toProcessResponse.JsonMessage);
+                            if(messageData.ContainsKey("status") && messageData.ContainsKey("reason_code"))
+                            {
+                                m_connectionFailureCallback((int)messageData["status"], (int)messageData["reason_code"], toProcessResponse.JsonMessage, m_connectedObj);
+                            }
+                            else
+                            {
+                                //in the rare case the message is differently structured. 
+                                m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
+                            }
+                        }
+                        else
+                        {
+                            m_connectionFailureCallback(400, -1, "Error - No Response from Server", m_connectedObj);
+                        }
+                    }
+
+                    //if we're not connected and we're trying to connect, then start the connection
+                    else if (m_rttConnectionStatus == RTTConnectionStatus.DISCONNECTED && toProcessResponse.Operation == "connect")
                     {
                         // first time connecting? send the server connection call
-                        m_bIsConnected = true;
+                        m_rttConnectionStatus = RTTConnectionStatus.CONNECTING;
                         m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest());
                     }
                     else
                     {
                         //TODOO
-                       m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
+                        m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
                     }
+
                 }
 
                 m_queuedRTTCommands.Clear();
             }
 
-            //////
-            if (m_bIsConnected)
+            if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
                 DateTime nowMS = DateTime.Now;
                 // the heart beat
@@ -170,7 +214,6 @@ namespace BrainCloud.Internal
                     send(buildHeartbeatRequest(), true);
                 }
             }
-            //////
         }
 
         #region private
@@ -179,7 +222,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void connectWebSocket()
         {
-            if (!m_bIsConnected)
+            if (m_rttConnectionStatus == RTTConnectionStatus.DISCONNECTED)
             {
                 startReceivingWebSocket();
             }
@@ -197,7 +240,7 @@ namespace BrainCloud.Internal
 
             m_webSocket = null;
 
-            m_bIsConnected = false;
+            m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
         }
 
         private string buildConnectionRequest()
@@ -302,18 +345,21 @@ namespace BrainCloud.Internal
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
             m_clientRef.Log("RTT: Connection closed: " + reason);
+            m_webSocketStatus = WebsocketStatus.CLOSED;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
             m_clientRef.Log("RTT: Connection established.");
+            m_webSocketStatus = WebsocketStatus.OPEN;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
         {
             if (data.Length == 0) return;
+            m_webSocketStatus = WebsocketStatus.MESSAGE;
             string message = Encoding.UTF8.GetString(data);
             onRecv(message);
         }
@@ -321,6 +367,7 @@ namespace BrainCloud.Internal
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
             m_clientRef.Log("RTT Error: " + message);
+            m_webSocketStatus = WebsocketStatus.ERROR;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(message)));
         }
 
@@ -426,8 +473,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void rttConnectionServerError(int status, int reasonCode, string jsonError, object cbObject)
         {
-            // TODO::
-            m_bIsConnected = false;
+            m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
             m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
         }
@@ -453,7 +499,6 @@ namespace BrainCloud.Internal
 
         private Dictionary<string, object> m_endpoint = null;
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
-        private bool m_bIsConnected = false;
         private BrainCloudWebSocket m_webSocket = null;
 
         private DateTime m_lastNowMS;
@@ -485,6 +530,11 @@ namespace BrainCloud.Internal
             public string Operation { get; set; }
             public string JsonMessage { get; set; }
         }
+
+        private WebsocketStatus m_webSocketStatus = WebsocketStatus.NONE;
+
+        private RTTConnectionStatus m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
+
         #endregion
     }
 }
@@ -492,6 +542,23 @@ namespace BrainCloud.Internal
 namespace BrainCloud
 {
     #region public enums
+    public enum WebsocketStatus
+    {
+        OPEN,
+        CLOSED,
+        MESSAGE, 
+        ERROR,
+        NONE
+    }
+
+    public enum RTTConnectionStatus
+    {
+        CONNECTED,
+        DISCONNECTED,
+        CONNECTING,
+        DISCONNECTING
+    }
+
     public enum RTTConnectionType
     {
         INVALID,
