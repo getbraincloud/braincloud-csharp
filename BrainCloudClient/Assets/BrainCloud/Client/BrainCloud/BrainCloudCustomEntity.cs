@@ -429,7 +429,7 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
-                        /// <summary>
+        /// <summary>
         ///
         /// </summary>
         /// <remarks>
@@ -464,6 +464,50 @@ using BrainCloud.Common;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.DeleteCustomEntity, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        ///Gets a list of up to maxReturn randomly selected custom entities from the server 
+        ///based on the entity type and where condition.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - GetRandomEntitiesMatching
+        /// </remarks>
+        /// <param name="entityType">
+        /// type of entities
+        /// </param>
+        /// <param name="whereJson">
+        /// Mongo style query string
+        /// </param>
+        /// <param name="maxReturn">
+        /// number of max returns
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetRandomEntitiesMatching(
+        string entityType,
+        string whereJson,
+        int maxReturn,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceWhereJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(whereJson);
+            data[OperationParam.CustomEntityServiceMaxReturn.Value] = maxReturn;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetRandomEntitiesMatching, data, callback);
             _client.SendRequest(sc);
         }
 

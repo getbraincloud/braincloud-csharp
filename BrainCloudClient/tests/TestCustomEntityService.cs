@@ -192,6 +192,18 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetRandomEntitiesMatching()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.CustomEntityService.GetRandomEntitiesMatching(
+                "athletes",
+                "{\"data.position\": \"defense\"}",
+                2,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestDeleteSingleton()
         {
             TestResult tr = new TestResult(_bc);
