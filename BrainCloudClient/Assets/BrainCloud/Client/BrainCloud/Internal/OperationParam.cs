@@ -527,6 +527,7 @@ namespace BrainCloud
         public static readonly OperationParam CustomEntityServiceAcl = new OperationParam("acl");
         public static readonly OperationParam CustomEntityServiceDataJson = new OperationParam("dataJson");
         public static readonly OperationParam CustomEntityServiceIsOwned = new OperationParam("isOwned");
+        public static readonly OperationParam CustomEntityServiceMaxReturn = new OperationParam("maxReturn");
 
         //item catalog
         public static readonly OperationParam ItemCatalogServiceDefId = new OperationParam("defId");
