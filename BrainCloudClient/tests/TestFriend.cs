@@ -84,20 +84,6 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-        [Test]
-        public void TestFindUserByUniversalId()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.FriendService.FindUserByUniversalId(
-                "search",
-                10,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
         
         [Test]
         public void TestFindUserByExactUniversalId()

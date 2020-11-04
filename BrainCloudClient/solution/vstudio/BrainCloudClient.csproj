@@ -158,9 +158,6 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudPlayerStatisticsEvent.cs">
       <Link>BrainCloud\BrainCloudPlayerStatisticsEvent.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudProduct.cs">
-      <Link>BrainCloud\BrainCloudProduct.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudVirtualCurrency.cs">
       <Link>BrainCloud\BrainCloudVirtualCurrency.cs</Link>
     </Compile>

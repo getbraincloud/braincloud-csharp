@@ -626,7 +626,7 @@ using BrainCloud.Internal;
         /// The user object sent to the callback.
         /// </param>
 
-        [Obsolete("Will be removed March 2020, Please use PostScoreToDynamicLeaderboardUTC")]
+        [Obsolete("Will be removed March 2021, Please use PostScoreToDynamicLeaderboardUTC")]
         public void PostScoreToDynamicLeaderboard(
             string leaderboardId,
             long score,

@@ -550,41 +550,5 @@ using UnityEngine;
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ReadQuestsByCategory, data, callback);
             _client.SendRequest(sc);
         }
-
-        /// <summary>
-        /// Deprecated
-        /// Sets the specified milestones' statuses to LOCKED. 
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ResetMilestones
-        /// </remarks>
-        /// <param name="milestoneIds">
-        /// List of milestones to reset
-        /// </param>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
-        [System.Obsolete("this method is no longer supported")]
-        public void ResetMilestones(
-            IList<string> milestoneIds,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GamificationServiceMilestones.Value] = milestoneIds;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ResetMilestones, data, callback);
-            _client.SendRequest(sc);
-
-        }
     }
 }

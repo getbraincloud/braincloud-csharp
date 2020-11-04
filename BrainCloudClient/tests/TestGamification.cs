@@ -105,19 +105,7 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-        [Test]
-        public void TestResetMilestones()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.GamificationService.ResetMilestones(
-                new string[] { _milestoneId },
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
+        
         #endregion
 
         #region Quests
