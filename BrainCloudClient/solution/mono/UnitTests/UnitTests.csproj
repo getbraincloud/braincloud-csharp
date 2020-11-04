@@ -133,9 +133,6 @@
     <Compile Include="..\..\..\tests\TestPlayerStatisticsEvent.cs">
       <Link>TestPlayerStatisticsEvent.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\tests\TestProduct.cs">
-      <Link>TestProduct.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\tests\TestVirtualCurrency.cs">
       <Link>VirtualCurrency.cs</Link>
     </Compile>

@@ -136,11 +136,6 @@ public class BrainCloudWrapper
         get { return Client.GlobalAppService; }
     }
 
-    public BrainCloudProduct ProductService
-    {
-        get { return Client.ProductService; }
-    }
-
     public BrainCloudVirtualCurrency VirtualCurrencyService
     {
         get { return Client.VirtualCurrencyService; }
