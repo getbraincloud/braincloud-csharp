@@ -51,6 +51,15 @@ using BrainCloud.Internal;
         {
             return m_commsLayer.IsRTTEnabled();
         }
+
+        /// <summary>
+        /// Returns rtt connectionstatus
+        /// </summary>
+        public RTTConnectionStatus GetConnectionStatus()
+        {
+            return m_commsLayer.GetConnectionStatus();
+        }
+
         /// <summary>
         /// 
         /// </summary>
