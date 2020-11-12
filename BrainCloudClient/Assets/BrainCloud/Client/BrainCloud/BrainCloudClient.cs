@@ -136,7 +136,6 @@ using System.Globalization;
         private BrainCloudGlobalEntity _globalEntityService;
         private BrainCloudGlobalApp _globalAppService;
         private BrainCloudPresence _presenceService;
-        private BrainCloudProduct _productService;
         private BrainCloudVirtualCurrency _virtualCurrencyService;
         private BrainCloudAppStore _appStore;
         private BrainCloudPlayerStatistics _playerStatisticsService;
@@ -218,7 +217,6 @@ using System.Globalization;
 
             _globalAppService = new BrainCloudGlobalApp(this);
             _presenceService = new BrainCloudPresence(this);
-            _productService = new BrainCloudProduct(this);
             _virtualCurrencyService = new BrainCloudVirtualCurrency(this);
             _appStore = new BrainCloudAppStore(this);
 
@@ -378,11 +376,6 @@ using System.Globalization;
         public BrainCloudPresence PresenceService
         {
             get { return _presenceService; }
-        }
-
-        public BrainCloudProduct ProductService
-        {
-            get { return _productService; }
         }
 
         public BrainCloudVirtualCurrency VirtualCurrencyService
@@ -598,11 +591,6 @@ using System.Globalization;
         public BrainCloudPresence GetPresenceService()
         {
             return PresenceService;
-        }
-
-        public BrainCloudProduct GetProductService()
-        {
-            return ProductService;
         }
 
         public BrainCloudPlayerStatistics GetPlayerStatisticsService()

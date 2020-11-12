@@ -84,7 +84,7 @@ using System;
         /// inventory for. This is only used for Steam and Facebook stores.
         /// </param>
         /// <param name="category">
-        /// The product category
+        /// The AppStore category
         /// </param>
         /// <param name="success">
         /// The success callback.

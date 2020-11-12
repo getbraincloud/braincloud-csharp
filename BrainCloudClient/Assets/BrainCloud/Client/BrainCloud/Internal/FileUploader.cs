@@ -111,9 +111,6 @@ using System.Threading.Tasks;
         {
             _client = client;
 
-#if UNITY_WEBPLAYER || UNITY_WEBGL
-            throw new Exception("File upload API is not supported on Web builds");
-#else
             UploadId = uploadId;
             _localPath = localPath;
             _serverUrl = serverUrl;
@@ -134,20 +131,28 @@ using System.Threading.Tasks;
             TotalBytesToTransfer = info.Length;
 
             Status = FileUploaderStatus.Pending;
-#endif
         }
 
         public void Start()
         {
 #if !UNITY_WEBPLAYER
 #if !DOT_NET
-            byte[] file = File.ReadAllBytes(_localPath);
+            FileInfo info = new FileInfo(_localPath);
+            byte[] file;
+            if (info.Exists)
+            {
+                file = File.ReadAllBytes(_localPath);
+            }
+            else
+            {
+                file = System.Convert.FromBase64String(_localPath);
+            }
             WWWForm postForm = new WWWForm();
             postForm.AddField("sessionId", _sessionId);
 
             if (_peerCode != "") postForm.AddField("peerCode", _peerCode);
             postForm.AddField("uploadId", UploadId);
-            postForm.AddField("fileSize", TotalBytesToTransfer.ToString());
+            postForm.AddField("fileSize", file.Length);
             postForm.AddBinaryData("uploadFile", file, _fileName);
 
 #if USE_WEB_REQUEST
