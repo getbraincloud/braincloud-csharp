@@ -4,6 +4,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
+using System.Threading;
 
 namespace BrainCloudTests
 {
@@ -112,6 +113,10 @@ namespace BrainCloudTests
                 version,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
+
+            var datadict = tr.m_response["data"] as Dictionary<string, object>;
+            Assert.True(datadict == null);
+            Assert.True((int)tr.m_response["status"]==200);
         }
 
         [Test]
