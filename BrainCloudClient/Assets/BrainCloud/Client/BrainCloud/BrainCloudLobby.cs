@@ -391,41 +391,39 @@ using UnityEngine.Experimental.Networking;
         /// 
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            if (m_pingRegionSuccessCallback != null)
+            if (m_regionPingRequest.successCallback != null)
             {
                 queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
                     "Ping is already happening.", cbObject);
                 return;
             }
 
-            PingData = new Dictionary<string, long>();
+            createPingRegionRequest(success, cbObject);
 
             // now we have the region ping data, we can start pinging each region and its defined target, if its a PING type.
             Dictionary<string, object> regionInner = null;
             string targetStr = "";
             if (m_regionPingData.Count > 0)
             {
-                m_pingRegionSuccessCallback = success;
-                m_pingRegionObject = cbObject;
-
                 foreach (var regionMap in m_regionPingData)
                 {
                     regionInner = (Dictionary<string, object>)regionMap.Value;
 
                     if (regionInner.ContainsKey("type") && regionInner["type"] as string == "PING")
                     {
-                        m_cachedPingResponses[regionMap.Key] = new List<long>();
+                        m_regionPingRequest.cachedPingResponses[regionMap.Key] = new List<long>();
                         targetStr = (string)regionInner["target"];
 
-                        lock (m_regionTargetsToProcess)
+                        lock (m_regionPingRequest.targetsToProcess)
                         {
-                            for (int i = 0; i < MAX_PING_CALLS; ++i)
-                                m_regionTargetsToProcess.Add(new KeyValuePair<string, string>(regionMap.Key, targetStr));
+                            for (int i = 0; i < PingUtil.MAX_PING_CALLS; ++i)
+                            {
+                                m_regionPingRequest.targetsToProcess.Add(new KeyValuePair<string, string>(regionMap.Key, targetStr));
+                            }
                         }
                     }
                 }
-
-                pingNextItemToProcess();
+                PingUtil.PingNextItemToProcess(m_regionPingRequest);
             }
             else
             {
@@ -434,29 +432,44 @@ using UnityEngine.Experimental.Networking;
             }
         }
 
-        #region private
-        private void pingNextItemToProcess()
+        public void PingServers(Dictionary<string, object> in_serverUrlMap, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
-            lock(m_regionTargetsToProcess)
+            if (m_serverPingRequest.successCallback != null)
             {
-                if (m_regionTargetsToProcess.Count > 0)
+                queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                    "Ping Servers is already happening.", cbObject);
+                return;
+            }
+
+            createPingServerRequest(in_serverUrlMap, success, cbObject);
+
+            // start setting up the data to ping each target, the target is the value of the keyvalue pair
+            string targetStr = "";
+            if (in_serverUrlMap.Count > 0)
+            {
+                foreach (var regionMap in in_serverUrlMap)
                 {
-                    for (int i = 0; i < NUM_PING_CALLS_IN_PARRALLEL && m_regionTargetsToProcess.Count > 0; ++i)
+                    m_serverPingRequest.cachedPingResponses[regionMap.Key] = new List<long>();
+                    targetStr = (string)regionMap.Value;
+                    lock (m_serverPingRequest.targetsToProcess)
                     {
-                        KeyValuePair<string, string> pair = m_regionTargetsToProcess[0];
-                        m_regionTargetsToProcess.RemoveAt(0);
-                        pingHost(pair.Key, pair.Value);
-                    }   
+                        for (int i = 0; i < PingUtil.MAX_PING_CALLS; ++i)
+                        {
+                            m_serverPingRequest.targetsToProcess.Add(new KeyValuePair<string, string>(regionMap.Key, targetStr));
+                        }
+                    }
                 }
-                else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
-                {
-                    string pingStr = JsonWriter.Serialize(PingData);
-                    m_clientRef.Log("PINGS: " + pingStr);
-                    m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
-                    m_pingRegionSuccessCallback = null;
-                }
+                PingUtil.PingNextItemToProcess(m_serverPingRequest);
+            }
+            else
+            {
+                queueFailure(failure, ReasonCodes.MISSING_REQUIRED_PARAMETER,
+                    "No Servers to Ping. Please ensure the in_serverUrlMap is defined with targets.", cbObject);
             }
         }
+
+        #region private
+
 
         private void attachPingDataAndSend(Dictionary<string, object> in_data, ServiceOperation in_operation,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -518,97 +531,42 @@ using UnityEngine.Experimental.Networking;
             m_lobbyTypeRegions = (Dictionary<string, object>)data["lobbyTypeRegions"];
         }
 
-        private void pingHost(string in_region, string in_target)
+        private void createPingRegionRequest(SuccessCallback in_successCallback, object in_object)
         {
-#if DOT_NET
-            PingUpdateSystem(in_region, in_target);
-#else       
-            in_target = "http://" + in_target;
+            PingData = new Dictionary<string, long>();
 
-            if (m_clientRef.Wrapper != null)
-                m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
-#endif
+            m_regionPingRequest = new PingUtil.PingRequest();
+            m_serverPingRequest.name = "PingRegions";
+
+            m_regionPingRequest.targetsToProcess = new List<KeyValuePair<string, string>>();
+            m_regionPingRequest.pingData = PingData;
+            m_regionPingRequest.responsePingData = m_regionPingData;
+            m_regionPingRequest.cachedPingResponses = new Dictionary<string, List<long>>();
+            m_regionPingRequest.clientRef = m_clientRef;
+            m_regionPingRequest.successCallback = in_successCallback;
+            m_regionPingRequest.callbackObject = in_object;
         }
 
-#if DOT_NET
-        private void PingUpdateSystem(string in_region, string in_target)
+        private void createPingServerRequest(Dictionary<string, object> in_responsePingData, SuccessCallback in_successCallback, object in_object)
         {
-            System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping();
-            try
-            {
-                pinger.PingCompleted += (o, e) =>
-                {
-                    if (e.Error == null && e.Reply.Status == System.Net.NetworkInformation.IPStatus.Success)
-                    {
-                        handlePingTimeResponse(e.Reply.RoundtripTime, in_region);
-                    }
-                };
+            m_serverPingRequest = new PingUtil.PingRequest();
+            m_serverPingRequest.name = "PingServers";
 
-                pinger.SendAsync(in_target, null);
-            }
-            catch (System.Net.NetworkInformation.PingException)
-            {
-                // Discard PingExceptions and return false;
-            }
-            finally
-            {
-                if (pinger != null)
-                {
-                    pinger.Dispose();
-                }
-            }
-        }
-#else
-        private IEnumerator HandlePingReponse(string in_region, string in_target)
-        {
-            long sentPing = DateTime.Now.Ticks;
-#if USE_WEB_REQUEST
-            UnityWebRequest _request = UnityWebRequest.Get(in_target);
-            yield return _request.SendWebRequest();
-#else
-            WWWForm postForm = new WWWForm();
-            WWW _request = new WWW(in_target, postForm);
-#endif
-            if (_request.error == null && !_request.isNetworkError)
-            {
-                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region);
-            }
-        }
-#endif
-
-        private void handlePingTimeResponse(long in_responseTime, string in_region)
-        {
-            m_cachedPingResponses[in_region].Add(in_responseTime);
-            if (m_cachedPingResponses[in_region].Count == MAX_PING_CALLS)
-            {
-                long totalAccumulated = 0;
-                long highestValue = 0;
-                foreach (var pingResponse in m_cachedPingResponses[in_region])
-                {
-                    totalAccumulated += pingResponse;
-                    if (pingResponse > highestValue)
-                    {
-                        highestValue = pingResponse;
-                    }
-                }
-
-                // accumulated ALL, now subtract the highest value
-                totalAccumulated -= highestValue;
-                PingData[in_region] = totalAccumulated / (m_cachedPingResponses[in_region].Count - 1);
-            }
-
-            pingNextItemToProcess();
+            m_serverPingRequest.targetsToProcess = new List<KeyValuePair<string, string>>();
+            m_serverPingRequest.pingData = new Dictionary<string, long>();
+            m_serverPingRequest.responsePingData = in_responsePingData;
+            m_serverPingRequest.cachedPingResponses = new Dictionary<string, List<long>>();
+            m_serverPingRequest.clientRef = m_clientRef;
+            m_serverPingRequest.successCallback = in_successCallback;
+            m_serverPingRequest.callbackObject = in_object;
         }
 
+        private PingUtil.PingRequest m_regionPingRequest;
         private Dictionary<string, object> m_regionPingData = new Dictionary<string, object>();
         private Dictionary<string, object> m_lobbyTypeRegions = new Dictionary<string, object>();
-        private Dictionary<string, List<long>> m_cachedPingResponses = new Dictionary<string, List<long>>();
-        private List<KeyValuePair<string, string>> m_regionTargetsToProcess = new List<KeyValuePair<string, string>>();
-        private SuccessCallback m_pingRegionSuccessCallback = null;
-        private object m_pingRegionObject = null;
 
-        private const int MAX_PING_CALLS = 4;
-        private const int NUM_PING_CALLS_IN_PARRALLEL = 2;
+
+        private PingUtil.PingRequest m_serverPingRequest;
 
         struct Failure
         {
@@ -624,6 +582,6 @@ using UnityEngine.Experimental.Networking;
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-#endregion
+        #endregion
     }
 }

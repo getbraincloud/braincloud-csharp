@@ -106,6 +106,7 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudRelay.cs">
       <Link>BrainCloud\BrainCloudRelay.cs</Link>
     </Compile>
+    <Compile Include="BrainCloud\PingUtil.cs" />
     <Content Include="C:\Codez\Libs\Folder\OtherFolder\**\*.*">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
