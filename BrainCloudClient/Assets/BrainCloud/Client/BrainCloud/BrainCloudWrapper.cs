@@ -375,12 +375,12 @@ public class BrainCloudWrapper
     {
         resetWrapper();
         Init(
-            BrainCloudSettingsManual.Instance.DispatcherURL,
-            BrainCloudSettingsManual.Instance.SecretKey,
-            BrainCloudSettingsManual.Instance.AppId,
-            BrainCloudSettingsManual.Instance.GameVersion);
+            BrainCloud.Plugin.Interface.DispatcherURL,
+            BrainCloud.Plugin.Interface.AppSecret,
+            BrainCloud.Plugin.Interface.AppId,
+            BrainCloud.Plugin.Interface.AppVersion);
 
-        Client.EnableLogging(BrainCloudSettingsManual.Instance.EnableLogging);
+        Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
     }
 
     /// <summary>
@@ -391,12 +391,12 @@ public class BrainCloudWrapper
     {
         resetWrapper();
         InitWithApps(
-            BrainCloudSettingsManual.Instance.DispatcherURL,
-            BrainCloudSettingsManual.Instance.AppId,
-            BrainCloudSettingsManual.Instance.AppIdSecrets,
-            BrainCloudSettingsManual.Instance.GameVersion);
+            BrainCloud.Plugin.Interface.DispatcherURL,
+            BrainCloud.Plugin.Interface.AppId,
+            BrainCloud.Plugin.Interface.AppIdSecrets,
+            BrainCloud.Plugin.Interface.AppVersion);
 
-        Client.EnableLogging(BrainCloudSettingsManual.Instance.EnableLogging);
+        Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
     }
 #endif
 
