@@ -545,10 +545,6 @@ using UnityEngine.Experimental.Networking;
                                 _serviceCallsInProgress.Clear();
                             }
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                            BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnNetworkError("NetworkError");
-#endif
-
                             _networkErrorCallback();
                         }
                         else
@@ -605,10 +601,6 @@ using UnityEngine.Experimental.Networking;
                 {
                     if (_fileUploadSuccessCallback != null)
                     {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
-#endif
-
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
                     }
 
@@ -619,12 +611,7 @@ using UnityEngine.Experimental.Networking;
                 {
                     if (_fileUploadFailedCallback != null)
                     {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
-#endif
-
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
-
                     }
 
                     _clientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
@@ -1027,9 +1014,6 @@ using UnityEngine.Experimental.Networking;
                         {
                             try
                             {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSuccess(data);
-#endif
                                 callback.OnSuccessCallback(data);
                             }
                             catch (Exception e)
@@ -1092,10 +1076,6 @@ using UnityEngine.Experimental.Networking;
                                     apiRewards["apiRewards"] = rewardList;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnReward(rewardsAsJson);
-#endif
 
                                     _rewardCallback(rewardsAsJson);
                                 }
@@ -1245,37 +1225,12 @@ using UnityEngine.Experimental.Networking;
                             }
                         }
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(errorJson);
-#endif
-
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
 
                     UpdateKillSwitch(sc.Service, sc.Operation, statusCode);
                 }
             }
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-            //Send Events to the Unity Plugin
-            if (bundleObj.events != null)
-            {
-                try
-                {
-                    Dictionary<string, Dictionary<string, object>[]> eventsJsonObjUnity =
-                        new Dictionary<string, Dictionary<string, object>[]>();
-                    eventsJsonObjUnity["events"] = bundleObj.events;
-                    string eventsAsJsonUnity = JsonWriter.Serialize(eventsJsonObjUnity);
-
-                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(eventsAsJsonUnity);
-                }
-                catch (Exception)
-                {
-                    //Ignored
-                }
-            }
-#endif
-
 
             if (bundleObj.events != null && _eventCallback != null)
             {
@@ -1582,31 +1537,6 @@ using UnityEngine.Experimental.Networking;
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-            //Sending Data to the brainCloud Debug Info for ease of developer debugging when in the Unity Editor
-            try
-            {
-                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.ClearLastSentRequest();
-                Dictionary<string, object> requestData =
-                    JsonReader.Deserialize<Dictionary<string, object>>(jsonRequestString);
-                Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[])requestData["messages"];
-
-                foreach (var messagesData in messagesDataList)
-                {
-                    var serviceValue = messagesData["service"];
-                    var operationValue = messagesData["operation"];
-                    var dataList = messagesData["data"];
-                    var dataValue = JsonWriter.Serialize(dataList);
-
-                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSentRequest(
-                        string.Format("{0} {1}", serviceValue, operationValue), dataValue);
-                }
-            }
-            catch (Exception)
-            {
-                //Ignored
-            }
-#endif
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
             requestState.Signature = sig;
