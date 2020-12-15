@@ -1238,9 +1238,6 @@ using System.Globalization;
         [System.Diagnostics.Conditional("BC_DEBUG_LOG_ENABLED")]
         internal void Log(string log)
         {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-            BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.AppendLog(log);
-#endif
             if (_loggingEnabled)
             {
                 string formattedLog = DateTime.Now.ToString("HH:mm:ss.fff") + " #BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");

@@ -2003,10 +2003,6 @@ public class BrainCloudWrapper
                 aco._successCallback(json, aco._cbObject);
             }
         }
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateSuccess(json);
-#endif
     }
 
     /// <summary>
@@ -2026,10 +2022,6 @@ public class BrainCloudWrapper
                 aco._failureCallback(statusCode, reasonCode, errorJson, aco._cbObject);
             }
         }
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnAuthenticateFailed(string.Format("statusCode[{0}] reasonCode[{1}] errorJson[{2}]", statusCode, reasonCode, errorJson));
-#endif
     }
 
     private void SaveData()
