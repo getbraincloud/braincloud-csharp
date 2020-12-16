@@ -74,7 +74,10 @@ namespace BrainCloud.Internal
 #if UNITY_WEBGL
             if (in_connectionType != RelayConnectionType.WEBSOCKET)
             {
-                m_clientRef.Log("Non-WebSocket Connection Type Requested, on WEBGL.  Please connect via WebSocket.");
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("Non-WebSocket Connection Type Requested, on WEBGL.  Please connect via WebSocket.");
+                }
 
                 if (in_failure != null)
                     in_failure(403, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, buildRSRequestError("Non-WebSocket Connection Type Requested, on WEBGL.  Please connect via WebSocket."), cb_object);
@@ -551,7 +554,10 @@ namespace BrainCloud.Internal
             }
             catch (Exception socketException)
             {
-                m_clientRef.Log("send exception: " + socketException);
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("send exception: " + socketException);
+                }
                 queueSocketErrorEvent(socketException.ToString());
             }
 
@@ -589,13 +595,19 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
-            m_clientRef.Log("Relay: Connection closed: " + reason);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Relay: Connection closed: " + reason);
+            }
             queueErrorEvent(reason);
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
-            m_clientRef.Log("Relay: Connection established.");
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Relay: Connection established.");
+            }
             // initial connect call, sets connection requests if not connected
             queueSocketConnectedEvent();
         }
@@ -607,7 +619,10 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
-            m_clientRef.Log("Relay Error: " + message);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Relay Error: " + message);
+            }
             queueErrorEvent(message);
         }
 
@@ -649,7 +664,10 @@ namespace BrainCloud.Internal
                     if (m_rsmgHistory[i] == rsmgPacketId)
                     {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                        m_clientRef.Log("Duplicated System Msg: " + rsmgPacketId.ToString());
+                        if (m_clientRef.LoggingEnabled)
+                        {
+                            m_clientRef.Log("Duplicated System Msg: " + rsmgPacketId.ToString());
+                        }
 #endif
                         return;
                     }
@@ -675,7 +693,10 @@ namespace BrainCloud.Internal
 
             string jsonMessage = Encoding.ASCII.GetString(in_data, stringOffset, stringLen);
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-            m_clientRef.Log("Relay System Msg: " + jsonMessage);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Relay System Msg: " + jsonMessage);
+            }
 #endif
 
             Dictionary<string, object> parsedDict = (Dictionary<string, object>)JsonReader.Deserialize(jsonMessage);
@@ -733,7 +754,10 @@ namespace BrainCloud.Internal
         {
             Ping = DateTime.Now.Ticks - m_sentPing;
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-            m_clientRef.Log("Relay LastPing: " + (Ping * 0.0001f).ToString() + "ms");
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Relay LastPing: " + (Ping * 0.0001f).ToString() + "ms");
+            }
 #endif
         }
 
@@ -790,7 +814,10 @@ namespace BrainCloud.Internal
                     return;
                 }
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                m_clientRef.Log("RELAY RECV: " + in_data.Length + " bytes, msg: " + Encoding.ASCII.GetString(in_data, 11, in_data.Length - 11));
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("RELAY RECV: " + in_data.Length + " bytes, msg: " + Encoding.ASCII.GetString(in_data, 11, in_data.Length - 11));
+                }
 #endif
                 onRelay(in_data);
             }
@@ -866,7 +893,10 @@ namespace BrainCloud.Internal
                             // We already received that packet if it's lower than the last confirmed
                             // packetId. This must be a duplicate
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                            m_clientRef.Log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                            if (m_clientRef.LoggingEnabled)
+                            {
+                                m_clientRef.Log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                            }
 #endif
                             return;
                         }
@@ -893,7 +923,10 @@ namespace BrainCloud.Internal
                                 if (packet.Id == packetId)
                                 {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                                    m_clientRef.Log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                                    if (m_clientRef.LoggingEnabled)
+                                    {
+                                        m_clientRef.Log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                                    }
 #endif
                                     return;
                                 }
@@ -902,7 +935,10 @@ namespace BrainCloud.Internal
                             var newPacket = new UDPPacket(in_data, channel, packetId, netId);
                             orderedReliablePackets.Insert(insertIdx, newPacket);
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                            m_clientRef.Log("Queuing out of order reliable from " + netId.ToString() + ". got " + packetId.ToString());
+                            if (m_clientRef.LoggingEnabled)
+                            {
+                                m_clientRef.Log("Queuing out of order reliable from " + netId.ToString() + ". got " + packetId.ToString());
+                            }
 #endif
                             return;
                         }
@@ -933,7 +969,10 @@ namespace BrainCloud.Internal
                         {
                             // Just drop out of order packets for unreliables
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                            m_clientRef.Log("Out of order packet from " + netId.ToString() + ". Expecting " + ((prevPacketId + 1) & MAX_PACKET_ID).ToString() + ", got " + packetId.ToString());
+                            if (m_clientRef.LoggingEnabled)
+                            {
+                                m_clientRef.Log("Out of order packet from " + netId.ToString() + ". Expecting " + ((prevPacketId + 1) & MAX_PACKET_ID).ToString() + ", got " + packetId.ToString());
+                            }
 #endif
                             return;
                         }
@@ -951,7 +990,10 @@ namespace BrainCloud.Internal
             m_reliables.Remove(ackId);
 
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-            m_clientRef.Log("RELAY RECV ACK: " + ackId.ToString());
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RELAY RECV ACK: " + ackId.ToString());
+            }
 #endif
         }
 
@@ -1076,7 +1118,10 @@ namespace BrainCloud.Internal
                 m_tcpBytesRead += read;
                 if (m_tcpBytesRead < m_tcpBytesToRead)
                 {
-                    //m_clientRef.Log("m_tcpBytesRead < m_tcpBuffer.Length " + m_tcpBytesRead + " " + m_tcpBytesToRead);
+                    //if (m_clientRef.LoggingEnabled)
+                    //{
+                        //m_clientRef.Log("m_tcpBytesRead < m_tcpBuffer.Length " + m_tcpBytesRead + " " + m_tcpBytesToRead);
+                    //}
                     m_tcpStream.BeginRead(m_tcpReadBuffer, m_tcpBytesRead, m_tcpBytesToRead - m_tcpBytesRead, onTCPFinishRead, null);
                     return;
                 }
@@ -1121,7 +1166,10 @@ namespace BrainCloud.Internal
                     m_tcpClient = new TcpClient();
                     m_tcpClient.NoDelay = true;
                     m_tcpClient.Client.NoDelay = true;
-                    m_clientRef.Log("Starting TCP connect ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                    if (m_clientRef.LoggingEnabled)
+                    {
+                        m_clientRef.Log("Starting TCP connect ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                    }
                     await m_tcpClient.ConnectAsync(host, port);
                 }
                 catch (Exception e)
@@ -1140,7 +1188,10 @@ namespace BrainCloud.Internal
                 m_tcpBytesToRead = 0;
                 m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
 
-                m_clientRef.Log("Connected! ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("Connected! ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                }
             }
         }
 

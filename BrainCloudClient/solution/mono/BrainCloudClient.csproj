@@ -327,9 +327,6 @@
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
-      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
       <Link>BrainCloud\Internal\ProgressStream.cs</Link>
     </Compile>

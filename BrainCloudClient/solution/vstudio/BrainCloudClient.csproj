@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET;BC_DEBUG_LOG_ENABLED</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -415,9 +415,6 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\TLSConfig.cs">
       <Link>ModernHttpClient\TLSConfig.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Unity\Scripts\BrainCloudSettings.cs">
-      <Link>BrainCloud\Unity\BrainCloudSettings.cs</Link>
     </Compile>
     <Content Include="ids.txt" />
   </ItemGroup>
