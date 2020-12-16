@@ -193,7 +193,10 @@ namespace BrainCloud.Internal
                     else
                     {
                         //TODOO
-                        m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
+                        if (m_clientRef.LoggingEnabled)
+                        {
+                            m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
+                        }
                     }
 
                 }
@@ -291,7 +294,12 @@ namespace BrainCloud.Internal
             try
             {
                 if (in_bLogMessage)
-                    m_clientRef.Log("RTT SEND: " + in_message);
+                {
+                    if (m_clientRef.LoggingEnabled)
+                    {
+                        m_clientRef.Log("RTT SEND: " + in_message);
+                    }
+                }
 
                 // Web Socket 
                 if (m_useWebSocket)
@@ -302,7 +310,10 @@ namespace BrainCloud.Internal
             }
             catch (Exception socketException)
             {
-                m_clientRef.Log("send exception: " + socketException);
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("send exception: " + socketException);
+                }
                 addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(socketException.ToString())));
             }
 
@@ -344,14 +355,20 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
         {
-            m_clientRef.Log("RTT: Connection closed: " + reason);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RTT: Connection closed: " + reason);
+            }
             m_webSocketStatus = WebsocketStatus.CLOSED;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
         {
-            m_clientRef.Log("RTT: Connection established.");
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RTT: Connection established.");
+            }
             m_webSocketStatus = WebsocketStatus.OPEN;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
@@ -366,7 +383,10 @@ namespace BrainCloud.Internal
 
         private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
         {
-            m_clientRef.Log("RTT Error: " + message);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RTT Error: " + message);
+            }
             m_webSocketStatus = WebsocketStatus.ERROR;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(message)));
         }
@@ -376,7 +396,10 @@ namespace BrainCloud.Internal
         /// </summary>
         private void onRecv(string in_message)
         {
-            m_clientRef.Log("RTT RECV: " + in_message);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RTT RECV: " + in_message);
+            }
 
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
 
@@ -474,7 +497,10 @@ namespace BrainCloud.Internal
         private void rttConnectionServerError(int status, int reasonCode, string jsonError, object cbObject)
         {
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
-            m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
+            }
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
         }
 

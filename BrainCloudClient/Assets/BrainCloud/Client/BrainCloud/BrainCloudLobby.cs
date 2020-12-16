@@ -451,7 +451,12 @@ using UnityEngine.Experimental.Networking;
                 else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
                 {
                     string pingStr = JsonWriter.Serialize(PingData);
-                    m_clientRef.Log("PINGS: " + pingStr);
+                    
+                    if (m_clientRef.LoggingEnabled)
+                    {
+                        m_clientRef.Log("PINGS: " + pingStr);
+                    }
+
                     m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
                     m_pingRegionSuccessCallback = null;
                 }

@@ -982,6 +982,9 @@ using System.Globalization;
             _loggingEnabled = enable;
         }
 
+        /// <summary> Check if logging of brainCloud transactions is enabled</summary>
+        public bool LoggingEnabled { get { return _loggingEnabled; } }
+
         /// <summary>Allow developers to register their own log handling routine</summary>
         /// <param name="logDelegate">The log delegate</param>
         public void RegisterLogDelegate(LogCallback logDelegate)
@@ -1235,7 +1238,6 @@ using System.Globalization;
 
         /// <summary>Method writes log if logging is enabled</summary>
         /// 
-        [System.Diagnostics.Conditional("BC_DEBUG_LOG_ENABLED")]
         internal void Log(string log)
         {
             if (_loggingEnabled)
