@@ -22,7 +22,7 @@ namespace BrainCloudTests
             _bc.Client.OverrideLanguageCode(null);
         }
 
-        [Test]
+  /*      [Test]
         public void TestAuthenticateSpam()
         {
             // //our problem is that users who find they can't log in, will retry over and over until they have success. They do not change their credentials while doing this.
@@ -109,8 +109,31 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-        }
+        }*/
 
+        [Test]
+        public void TestAuthenticateWithoutWait()
+        {
+            TestResult tr1 = new TestResult(_bc);
+            TestResult tr2 = new TestResult(_bc);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr1.ApiSuccess, tr1.ApiError);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                true,
+                tr2.ApiSuccess, tr2.ApiError);
+
+            tr1.Run();
+
+            // This will only show log, second auth should be dropped
+        }
+/*
         [Test]
         public void TestAuthenticateHandoff()
         {
@@ -618,6 +641,6 @@ namespace BrainCloudTests
             }
 
             _bc.PlayerStateService.ReadUserState(tr5.ApiSuccess, tr5.ApiError);
-        }
+        }*/
     }
 }
