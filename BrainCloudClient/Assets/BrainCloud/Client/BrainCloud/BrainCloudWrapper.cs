@@ -11,7 +11,6 @@ using BrainCloud.JsonFx.Json;
 
 #if !DOT_NET
 using UnityEngine;
-using BrainCloudUnity;
 #else
 using System.IO;
 using System.IO.IsolatedStorage;
