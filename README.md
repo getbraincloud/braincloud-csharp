@@ -183,3 +183,33 @@ DateTime _date = TimeUtil.LocalTimeToUTCTime(DateTime.Now); //convert your date 
 Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your UTC date time to milliseconds
 _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
 ```
+
+## BrainCloud Unity Plugin 4.7
+### Implementing the New Plugin
+*If braincloud is not yet added:*
+- Simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
+- Then click on the newly added braincloud drop down, and click on settings to configure your app
+
+*If you already have a version of the braincloud plugin:*
+- With your project closed, navigate to your project folders, and delete the braincloud folder and all of its contents entirely.
+- Then open your project and simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
+- Then click on the newly added braincloud drop down, and click on settings to configure your app
+
+*If errors pop up, you may not have completely deleted braincloud and all of its contents, try again to make sure.*
+
+### Upgrade Notes
+1. If you used or called upon the BrainCloudSettingsDLL or the BrainCloudEditorSettingsDLL before, these have been replaced with BraincloudPlugin and BrainCloudPluginEditor respectively.
+You may have some new errors where you hadn't before. You will need to make adjustments for the new plugin.
+BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic.
+
+*The readable values are:* 
+- DispatcherURL 
+- AppId 
+- AppSecret 
+- AppIdSecrets
+- AppVersion
+
+2. The app version is now handled through the Build Settings, where you put in company name, version etc.
+3. You no longer need to call Enable Logging in code, you can toggle on and off logging with the check box in the plugin window. This needs to be done in between running your app. 
+4. To sign into other apps, you will need to re-sign in for security purposes. 
+5. The plugin now has a version we will update when future changes are made.
