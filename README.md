@@ -60,6 +60,7 @@ Once installed, you will need to configure a few settings from the brainCloud me
 **If errors pop up, you may not have completely deleted braincloud and all of its contents, try again to make sure.**
 
 Login or Signup to brainCloud then select your team and your app!
+
 ![screenshot](/screenshots/newbcSettings.png?raw=true)
 ![screenshot](/screenshots/newbcSettings2.png?raw=true)
 
