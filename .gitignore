@@ -72,3 +72,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+!BrainCloudPlugin.dll
+!BrainCloudPluginEditor.dll
