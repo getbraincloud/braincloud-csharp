@@ -36,6 +36,8 @@ namespace BrainCloud.Internal
         /// <param name="cb_object"></param>
         public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
+            m_disconnectedWithReason = false;
+            
             if(IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
             {
                 return;
@@ -129,7 +131,7 @@ namespace BrainCloud.Internal
                 for (int i = 0; i < m_queuedRTTCommands.Count; ++i)
                 {
                     toProcessResponse = m_queuedRTTCommands[i];
-
+ 
                     //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
                     if (m_webSocketStatus == WebsocketStatus.CLOSED)
                     {
@@ -164,7 +166,7 @@ namespace BrainCloud.Internal
                     else if (m_connectionFailureCallback != null && toProcessResponse.Operation == "error")
                     {
                         if(toProcessResponse.JsonMessage != null)
-                        {
+                        {   
                             Dictionary<string, object> messageData = (Dictionary<string, object>)JsonReader.Deserialize(toProcessResponse.JsonMessage);
                             if(messageData.ContainsKey("status") && messageData.ContainsKey("reason_code"))
                             {
@@ -192,7 +194,6 @@ namespace BrainCloud.Internal
                     }
                     else
                     {
-                        //TODOO
                         if (m_clientRef.LoggingEnabled)
                         {
                             m_clientRef.Log("WARNING no handler registered for RTT callbacks ");
@@ -243,6 +244,13 @@ namespace BrainCloud.Internal
 
             m_webSocket = null;
 
+            if (m_disconnectedWithReason == true)
+            {
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("RTT: Disconnect: " + JsonWriter.Serialize(m_disconnectJson));
+                }
+            }
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
         }
 
@@ -423,6 +431,13 @@ namespace BrainCloud.Internal
 
                 SetRTTHeartBeatSeconds(heartBeat);
             }
+            else if (operation == "DISCONNECT")
+            {
+                m_disconnectedWithReason = true;
+                m_disconnectJson["reason_code"] = (int)data["reasonCode"];
+                m_disconnectJson["reason"] = (string)data["reason"];
+                m_disconnectJson["severity"] = "ERROR";
+            }
 
             if (data != null)
             {
@@ -523,6 +538,9 @@ namespace BrainCloud.Internal
             return JsonWriter.Serialize(json);
         }
 
+        private bool m_disconnectedWithReason = false;
+        private Dictionary<string, object> m_disconnectJson = new Dictionary<string, object>();
+        
         private Dictionary<string, object> m_endpoint = null;
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private BrainCloudWebSocket m_webSocket = null;
