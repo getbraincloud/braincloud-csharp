@@ -67,7 +67,45 @@ using System;
             {
                 return false;
             }
+        }
 
+        /// <summary>
+        /// Registers the given device token with the server to enable this device
+        /// to receive push notifications.
+        /// </param>
+        /// <param name="token">
+        /// The platform-dependant device token needed for push notifications.
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public bool RegisterPushNotificationDeviceToken(
+            string token,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            if (token != null || token.Length < 1)
+            {
+                Platform platform = Platform.FromUnityRuntime();
+                RegisterPushNotificationDeviceToken(platform,
+                        token,
+                        success,
+                        failure,
+                        cbObject);
+                return true;
+            }
+            // there was an error
+            else
+            {
+                return false;
+            }
         }
 #endif
 
