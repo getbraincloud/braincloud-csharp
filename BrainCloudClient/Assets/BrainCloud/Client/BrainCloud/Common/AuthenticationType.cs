@@ -15,6 +15,7 @@ namespace BrainCloud.Common
         public static readonly AuthenticationType Universal = new AuthenticationType("Universal");
         public static readonly AuthenticationType Email = new AuthenticationType("Email");
         public static readonly AuthenticationType Facebook = new AuthenticationType("Facebook");
+        public static readonly AuthenticationType PlaystationNetwork = new AuthenticationType("PlaystationNetwork");
         public static readonly AuthenticationType GameCenter = new AuthenticationType("GameCenter");
         public static readonly AuthenticationType Steam = new AuthenticationType("Steam");
         public static readonly AuthenticationType Apple = new AuthenticationType("Apple");
