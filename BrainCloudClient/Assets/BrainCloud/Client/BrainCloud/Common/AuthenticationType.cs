@@ -34,6 +34,7 @@ namespace BrainCloud.Common
             { Universal.value, Universal },
             { Email.value, Email },
             { Facebook.value, Facebook },
+            { PlaystationNetwork.value, PlaystationNetwork },
             { GameCenter.value, GameCenter },
             { Steam.value, Steam },
             { Apple.value, Apple },
