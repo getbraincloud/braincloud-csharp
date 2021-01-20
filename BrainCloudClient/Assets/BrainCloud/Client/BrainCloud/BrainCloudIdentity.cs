@@ -119,6 +119,105 @@ using BrainCloud.Common;
         }
 
         /// <summary>
+        /// Attach the user's PSN credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The PSN account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Playstation SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachPSNIdentity(
+            string psnAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided PSN credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The psn account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Playstation SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergePSNIdentity(
+            string psnAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the PSN identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The PSN Account id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachPSNIdentity(
+            string psnAccountId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(psnAccountId, AuthenticationType.PlaystationNetwork, continueAnon, success, failure, cbObject);
+        }
+
+        /// <summary>
         /// Attach a Game Center identity to the current profile.
         /// </summary>
         /// <remarks>
