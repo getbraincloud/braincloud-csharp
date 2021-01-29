@@ -438,6 +438,14 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetPlayerScores()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.LeaderboardService.GetPlayerScores(_globalLeaderboardId, -1, 4, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetPlayerScoresFromLeaderboards()
         {
             PostScoreToGlobalLeaderboard();
