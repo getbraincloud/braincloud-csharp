@@ -294,6 +294,8 @@ using System.Globalization;
             get { return _comms != null ? _comms.AppId : ""; }
         }
 
+        public string GetAppId() { return AppId; }
+
         public string ProfileId
         {
             get { return AuthenticationService != null ? AuthenticationService.ProfileId : ""; }
@@ -313,6 +315,8 @@ using System.Globalization;
         {
             get { return _appVersion; }
         }
+        
+        public string GetAppVersion() { return AppVersion; }
 
         public string BrainCloudClientVersion
         {
@@ -836,6 +840,15 @@ using System.Globalization;
         /// to process incoming and outgoing messages.
         /// </summary>
         /// 
+        public void RunCallbacks(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
+        {
+            Update(in_updateType);
+        }
+
+        /// <summary>Update method needs to be called regularly in order
+        /// to process incoming and outgoing messages.
+        /// </summary>
+        /// 
         public void Update(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
             switch (in_updateType)
@@ -925,10 +938,22 @@ using System.Globalization;
             _comms.DeregisterRewardCallback();
         }
 
+        [Obsolete("This has been deprecated, use RegisterFileUploadCallback instead")]
+        public void RegisterFileUploadCallbacks(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
+        {
+            _comms.RegisterFileUploadCallbacks(success, failure);
+        }
+
+        [Obsolete("This has been deprecated, use DeregisterFileUploadCallback instead")]
+        public void DeregisterFileUploadCallbacks()
+        {
+            _comms.DeregisterFileUploadCallbacks();
+        }
+
         /// <summary>
         /// Registers the file upload callbacks.
         /// </summary>
-        public void RegisterFileUploadCallbacks(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
+        public void RegisterFileUploadCallback(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
         {
             _comms.RegisterFileUploadCallbacks(success, failure);
         }
@@ -936,7 +961,7 @@ using System.Globalization;
         /// <summary>
         /// De-registers the file upload callbacks.
         /// </summary>
-        public void DeregisterFileUploadCallbacks()
+        public void DeregisterFileUploadCallback()
         {
             _comms.DeregisterFileUploadCallbacks();
         }
