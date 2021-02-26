@@ -15,6 +15,7 @@ namespace BrainCloud.Common
         public static readonly AuthenticationType Universal = new AuthenticationType("Universal");
         public static readonly AuthenticationType Email = new AuthenticationType("Email");
         public static readonly AuthenticationType Facebook = new AuthenticationType("Facebook");
+        public static readonly AuthenticationType Oculus = new AuthenticationType("Oculus");
         public static readonly AuthenticationType PlaystationNetwork = new AuthenticationType("PlaystationNetwork");
         public static readonly AuthenticationType GameCenter = new AuthenticationType("GameCenter");
         public static readonly AuthenticationType Steam = new AuthenticationType("Steam");
@@ -34,6 +35,7 @@ namespace BrainCloud.Common
             { Universal.value, Universal },
             { Email.value, Email },
             { Facebook.value, Facebook },
+            {Oculus.value, Oculus},
             { PlaystationNetwork.value, PlaystationNetwork },
             { GameCenter.value, GameCenter },
             { Steam.value, Steam },

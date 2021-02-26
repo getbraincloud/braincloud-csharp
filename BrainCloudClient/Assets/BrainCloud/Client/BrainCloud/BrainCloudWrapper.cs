@@ -732,6 +732,50 @@ public class BrainCloudWrapper
             fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
+      /// <summary>
+    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="oculusUserId">
+    /// The oculus id of the user
+    /// </param>
+    /// <param name="oculusNonce">
+    /// Validation token from Oculus gotten through the Oculus sdk
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateOculus(
+        string oculusUserId,
+        string oculusNonce,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+
+        InitializeIdentity();
+
+        Client.AuthenticationService.AuthenticateOculus(
+            oculusUserId, oculusNonce, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
     /// <summary>
     /// Authenticate the user using their psn account id and an auth token
     /// </summary>
@@ -1229,6 +1273,52 @@ public class BrainCloudWrapper
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="oculusUserId">
+    /// The Oculus id of the user
+    /// </param>
+    /// <param name="oculusNonce">
+    /// Validation token from Oculus gotten through the Oculus sdk
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateOculus(
+        string oculusUserId,
+        string oculusNonce,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateOculus(oculusUserId, oculusNonce, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+
     }
 
     /// <summary>
