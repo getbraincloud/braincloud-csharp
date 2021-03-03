@@ -244,6 +244,43 @@ using BrainCloud.JsonFx.Json;
                               null, forceCreate, success, failure, cbObject);
         }
 
+                /// <summary>
+        /// Authenticate the user with brainCloud using their Facebook Credentials
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="oculuslId">
+        /// The Oculus id of the user
+        /// </param>
+        /// <param name="oculusNonce">
+        /// Validation token from oculus gotten through the oculus sdk
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateOculus(
+            string oculusId,
+            string oculusNonce,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(oculusId, oculusNonce, AuthenticationType.Oculus,
+                              null, forceCreate, success, failure, cbObject);
+        }
+
         /// <summary>
         /// Authenticate the user using their psn account id and an auth token
         /// </summary>
