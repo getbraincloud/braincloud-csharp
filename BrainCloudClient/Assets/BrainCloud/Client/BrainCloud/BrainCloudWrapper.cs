@@ -801,7 +801,7 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
-    public void AuthenticatePSN(
+    public void AuthenticatePlaystationNetwork(
         string accountId,
         string authToken,
         bool forceCreate,
@@ -1351,7 +1351,7 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
-    public virtual void SmartSwitchAuthenticatePSN(
+    public virtual void SmartSwitchAuthenticatePlaystationNetwork(
         string psnAccountId,
         string psnAuthToken,
         bool forceCreate,
@@ -1361,7 +1361,7 @@ public class BrainCloudWrapper
     {
         SuccessCallback authenticateCallback = (response, o) =>
         {
-            AuthenticatePSN(psnAccountId, psnAuthToken, forceCreate, success, failure, cbObject);
+            AuthenticatePlaystationNetwork(psnAccountId, psnAuthToken, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
