@@ -244,7 +244,45 @@ using BrainCloud.JsonFx.Json;
                               null, forceCreate, success, failure, cbObject);
         }
 
-                /// <summary>
+        /// <summary>
+        /// Authenticate the user with brainCloud using their Facebook Limited Credentials
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="externalId">
+        /// The facebook Limited id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Facebook SDK (that will be further
+        /// validated when sent to the bC service)
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateFacebookLimited(
+            string externalId,
+            string authenticationToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(externalId, authenticationToken, AuthenticationType.FacebookLimited,
+                              null, forceCreate, success, failure, cbObject);
+        }
+
+        /// <summary>
         /// Authenticate the user with brainCloud using their Facebook Credentials
         /// </summary>
         /// <remarks>

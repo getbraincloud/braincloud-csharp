@@ -732,8 +732,53 @@ public class BrainCloudWrapper
             fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
-      /// <summary>
-    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// <summary>
+    /// Authenticate the user with brainCloud using their FacebookLimited Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="externalId">
+    /// The facebookLimited id of the user
+    /// </param>
+    /// <param name="authenticationToken">
+    /// The validated token from the FacebookLimited SDK (that will be further
+    /// validated when sent to the bC service)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateFacebookLimited(
+        string fbLimitedUserId,
+        string fbAuthToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+
+        InitializeIdentity();
+
+        Client.AuthenticationService.AuthenticateFacebookLimited(
+            fbLimitedUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user with brainCloud using their Oculus Credentials
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1275,12 +1320,58 @@ public class BrainCloudWrapper
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
 
+        /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user with brainCloud using their FacebookLimited Credentials
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="externalId">
+    /// The facebookLimited id of the user
+    /// </param>
+    /// <param name="authenticationToken">
+    /// The validated token from the Facebook SDK (that will be further
+    /// validated when sent to the bC service)
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateFacebookLimited(
+        string fbLimitedUserId,
+        string fbAuthToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateFacebookLimited(fbLimitedUserId, fbAuthToken, forceCreate, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// Authenticate the user with brainCloud using their Oculus Credentials
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
