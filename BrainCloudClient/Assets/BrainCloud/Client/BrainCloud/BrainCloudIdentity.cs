@@ -9,6 +9,7 @@ namespace BrainCloud
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+using System;
 
     public class BrainCloudIdentity
     {

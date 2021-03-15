@@ -11,6 +11,7 @@ using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
     public class BrainCloudGroup
     {
