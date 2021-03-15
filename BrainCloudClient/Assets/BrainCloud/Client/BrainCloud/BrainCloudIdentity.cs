@@ -240,7 +240,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void AttachPSNIdentity(
+        public void AttachPlaystationNetworkIdentity(
             string psnAccountId,
             string authenticationToken,
             SuccessCallback success = null,
@@ -274,7 +274,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void MergePSNIdentity(
+        public void MergePlaystationNetworkIdentity(
             string psnAccountId,
             string authenticationToken,
             SuccessCallback success = null,
@@ -306,7 +306,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void DetachPSNIdentity(
+        public void DetachPlaystationNetworkIdentity(
             string psnAccountId,
             bool continueAnon,
             SuccessCallback success = null,
@@ -1705,6 +1705,38 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated, use AttachBlockChainIdentity instead. Removal on Match 1, 2022")]
+        public void AttachBlockChain(
+            string blockchainConfig,
+            string publicKey,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+            data[OperationParam.PublicKey.Value] = publicKey;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        [Obsolete("This has been deprecated, use DetachBlockChainIdentity instead. Removal on Match 1, 2022")]
+        public void DetachBlockChain(
+            string blockchainConfig,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Attach blockchain
         /// </summary>
@@ -1723,7 +1755,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void AttachBlockChain(
+        public void AttachBlockChainIdentity(
             string blockchainConfig,
             string publicKey,
             SuccessCallback success = null,
@@ -1753,7 +1785,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void DetachBlockChain(
+        public void DetachBlockChainIdentity(
             string blockchainConfig,
             SuccessCallback success = null,
             FailureCallback failure = null,
