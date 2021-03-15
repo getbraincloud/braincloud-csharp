@@ -9,6 +9,7 @@ namespace BrainCloud
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.Common;
+using System;
 
     public class BrainCloudIdentity
     {
@@ -116,6 +117,302 @@ using BrainCloud.Common;
             object cbObject = null)
         {
             DetachIdentity(facebookId, AuthenticationType.Facebook, continueAnon, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Attach the user's Oculus credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The oculus id of the user
+        /// </param>
+        /// <param name="oculusNonce">
+        /// token from the Oculus SDK
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachOculusIdentity(
+            string oculusId,
+            string oculusNonce,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Oculus credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The oculus id of the user
+        /// </param>
+        /// <param name="oculusNonce">
+        /// token from the Oculus SDK
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeOculusIdentity(
+            string oculusId,
+            string oculusNonce,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Facebook identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The facebook id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachOculusIdentity(
+            string oculusId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(oculusId, AuthenticationType.Oculus, continueAnon, success, failure, cbObject);
+        }
+
+
+                /// <summary>
+        /// Attach the user's FacebookLimited credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="facebookLimitedId">
+        /// The facebook Limited id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Facebook SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachFacebookLimitedIdentity(
+            string facebookLimitedId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(facebookLimitedId, authenticationToken, AuthenticationType.FacebookLimited, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Facebook Limited credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="facebookLimitedId">
+        /// The facebook Limited id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Facebook SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeFacebookLimitedIdentity(
+            string facebookLimitedId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(facebookLimitedId, authenticationToken, AuthenticationType.FacebookLimited, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the FacebookLimited identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="facebookLimitedId">
+        /// The facebook Limited id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachFacebookLimitedIdentity(
+            string facebookLimitedId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(facebookLimitedId, AuthenticationType.FacebookLimited, continueAnon, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Attach the user's PSN credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The PSN account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Playstation SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachPlaystationNetworkIdentity(
+            string psnAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided PSN credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The psn account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Playstation SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergePlaystationNetworkIdentity(
+            string psnAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the PSN identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="psnAccountId">
+        /// The PSN Account id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachPlaystationNetworkIdentity(
+            string psnAccountId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(psnAccountId, AuthenticationType.PlaystationNetwork, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
@@ -1507,6 +1804,38 @@ using BrainCloud.Common;
             _client.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated, use AttachBlockChainIdentity instead. Removal on Match 1, 2022")]
+        public void AttachBlockChain(
+            string blockchainConfig,
+            string publicKey,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+            data[OperationParam.PublicKey.Value] = publicKey;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        [Obsolete("This has been deprecated, use DetachBlockChainIdentity instead. Removal on Match 1, 2022")]
+        public void DetachBlockChain(
+            string blockchainConfig,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachBlockChain, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Attach blockchain
         /// </summary>
@@ -1525,7 +1854,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void AttachBlockChain(
+        public void AttachBlockChainIdentity(
             string blockchainConfig,
             string publicKey,
             SuccessCallback success = null,
@@ -1555,7 +1884,7 @@ using BrainCloud.Common;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void DetachBlockChain(
+        public void DetachBlockChainIdentity(
             string blockchainConfig,
             SuccessCallback success = null,
             FailureCallback failure = null,

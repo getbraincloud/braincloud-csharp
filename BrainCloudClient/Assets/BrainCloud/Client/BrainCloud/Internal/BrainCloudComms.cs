@@ -521,13 +521,16 @@ using UnityEngine.Experimental.Networking;
                     if (!ResendMessage(_activeRequest))
                     {
                         // we've reached the retry limit - send timeout error to all client callbacks
-                        if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
+                        if (_clientRef.LoggingEnabled)
                         {
-                            _clientRef.Log("Timeout with network error: " + errorResponse);
-                        }
-                        else
-                        {
-                            _clientRef.Log("Timeout no reply from server");
+                            if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
+                            {
+                                _clientRef.Log("Timeout with network error: " + errorResponse);
+                            }
+                            else
+                            {
+                                _clientRef.Log("Timeout no reply from server");
+                            }
                         }
 
                         _activeRequest = null;
@@ -535,7 +538,10 @@ using UnityEngine.Experimental.Networking;
                         // if we're doing caching of messages on timeout, kick it in now!
                         if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
                         {
-                            _clientRef.Log("Caching messages");
+                            if (_clientRef.LoggingEnabled)
+                            {
+                                _clientRef.Log("Caching messages");
+                            }
                             _blockingQueue = true;
 
                             // and insert the inProgress messages into head of wait queue
@@ -544,10 +550,6 @@ using UnityEngine.Experimental.Networking;
                                 _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
                                 _serviceCallsInProgress.Clear();
                             }
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                            BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnNetworkError("NetworkError");
-#endif
 
                             _networkErrorCallback();
                         }
@@ -576,12 +578,18 @@ using UnityEngine.Experimental.Networking;
             //if the client is currently locked on authentication calls. 
             if (tooManyAuthenticationAttempts())
             {
-                _clientRef.Log("TIMER ON");
-                _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("TIMER ON");
+                    _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
+                }
                 //check the timeout, has enough time passed?
                 if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
                 {
-                    _clientRef.Log("TIMER FINISHED");
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log("TIMER FINISHED");
+                    }
                     //if the wait time is up they're free to make authentication calls again
                     _killSwitchEngaged = false;
                     ResetKillSwitch();
@@ -605,29 +613,26 @@ using UnityEngine.Experimental.Networking;
                 {
                     if (_fileUploadSuccessCallback != null)
                     {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(string.Format("{0} {1}", _fileUploads[i].UploadId, _fileUploads[i].Response));
-#endif
-
                         _fileUploadSuccessCallback(_fileUploads[i].UploadId, _fileUploads[i].Response);
                     }
 
-                    _clientRef.Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log("Upload success: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    }
                     _fileUploads.RemoveAt(i);
                 }
                 else if (_fileUploads[i].Status == FileUploader.FileUploaderStatus.CompleteFailed)
                 {
                     if (_fileUploadFailedCallback != null)
                     {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(_fileUploads[i].Response);
-#endif
-
                         _fileUploadFailedCallback(_fileUploads[i].UploadId, _fileUploads[i].StatusCode, _fileUploads[i].ReasonCode, _fileUploads[i].Response);
-
                     }
 
-                    _clientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log("Upload failed: " + _fileUploads[i].UploadId + " | " + _fileUploads[i].StatusCode + "\n" + _fileUploads[i].Response);
+                    }
                     _fileUploads.RemoveAt(i);
                 }
             }
@@ -666,7 +671,11 @@ using UnityEngine.Experimental.Networking;
             {
                 if (_fileUploads[i].UploadId == uploadId) return _fileUploads[i];
             }
-            _clientRef.Log("GetUploadProgress could not find upload ID " + uploadId);
+            
+            if (_clientRef.LoggingEnabled)
+            {
+                _clientRef.Log("GetUploadProgress could not find upload ID " + uploadId);
+            }
             return null;
         }
 
@@ -740,14 +749,20 @@ using UnityEngine.Experimental.Networking;
         {
             if (_blockingQueue)
             {
-                _clientRef.Log("Retrying cached messages");
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Retrying cached messages");
+                }
 
                 if (_activeRequest != null)
                 {
                     // this is definitely an error in the comms lib if it happens. 
                     // we attempt to cancel it but this is uncharted territory.
 
-                    _clientRef.Log("ERROR - retrying cached messages but there is an active request!");
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log("ERROR - retrying cached messages but there is an active request!");
+                    }
                     _activeRequest.CancelRequest();
                     _activeRequest = null;
                 }
@@ -763,7 +778,10 @@ using UnityEngine.Experimental.Networking;
         {
             if (_blockingQueue)
             {
-                _clientRef.Log("Flushing cached messages");
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Flushing cached messages");
+                }
 
                 // try to cancel if request is in progress (shouldn't happen)
                 if (_activeRequest != null)
@@ -869,11 +887,17 @@ using UnityEngine.Experimental.Networking;
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
-            _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
+            if (_clientRef.LoggingEnabled)
+            {
+                _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
+            }
 
             if (string.IsNullOrEmpty(jsonData))
             {
-                _clientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("ERROR - Incoming packet data was null or empty! This is probably a network issue.");
+                }
                 return;
             }
 
@@ -888,7 +912,10 @@ using UnityEngine.Experimental.Networking;
             // json parsing error, missing packet id, app secret changed via the portal
             if (receivedPacketId != NO_PACKET_EXPECTED && (_expectedIncomingPacketId == NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
-                _clientRef.Log("Dropping duplicate packet");
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Dropping duplicate packet");
+                }
 
                 for (int j = 0; j < responseBundle.Length; ++j)
                 {
@@ -1027,14 +1054,14 @@ using UnityEngine.Experimental.Networking;
                         {
                             try
                             {
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSuccess(data);
-#endif
                                 callback.OnSuccessCallback(data);
                             }
                             catch (Exception e)
                             {
-                                _clientRef.Log(e.StackTrace);
+                                if (_clientRef.LoggingEnabled)
+                                {
+                                    _clientRef.Log(e.StackTrace);
+                                }
                                 exceptions.Add(e);
                             }
                         }
@@ -1093,16 +1120,15 @@ using UnityEngine.Experimental.Networking;
 
                                     string rewardsAsJson = JsonWriter.Serialize(apiRewards);
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnReward(rewardsAsJson);
-#endif
-
                                     _rewardCallback(rewardsAsJson);
                                 }
                             }
                             catch (Exception e)
                             {
-                                _clientRef.Log(e.StackTrace);
+                                if (_clientRef.LoggingEnabled)
+                                {
+                                    _clientRef.Log(e.StackTrace);
+                                }
                                 exceptions.Add(e);
                             }
                         }
@@ -1194,7 +1220,11 @@ using UnityEngine.Experimental.Networking;
                     {
                         _isAuthenticated = false;
                         SessionID = "";
-                        _clientRef.Log("Received session expired or not found, need to re-authenticate");
+                        
+                        if (_clientRef.LoggingEnabled)
+                        {
+                            _clientRef.Log("Received session expired or not found, need to re-authenticate");
+                        }
 
                         // cache error if session related
                         _cachedStatusCode = statusCode;
@@ -1213,7 +1243,10 @@ using UnityEngine.Experimental.Networking;
                         {
                             _isAuthenticated = false;
                             SessionID = "";
-                            _clientRef.Log("Could not communicate with the server on logout due to network timeout");
+                            if (_clientRef.LoggingEnabled)
+                            {
+                                _clientRef.Log("Could not communicate with the server on logout due to network timeout");
+                            }
                         }
                     }
 
@@ -1226,7 +1259,10 @@ using UnityEngine.Experimental.Networking;
                         }
                         catch (Exception e)
                         {
-                            _clientRef.Log(e.StackTrace);
+                            if (_clientRef.LoggingEnabled)
+                            {
+                                _clientRef.Log(e.StackTrace);
+                            }
                             exceptions.Add(e);
                         }
                     }
@@ -1245,37 +1281,12 @@ using UnityEngine.Experimental.Networking;
                             }
                         }
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-                        BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnFailedResponse(errorJson);
-#endif
-
                         _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
                     }
 
                     UpdateKillSwitch(sc.Service, sc.Operation, statusCode);
                 }
             }
-
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-            //Send Events to the Unity Plugin
-            if (bundleObj.events != null)
-            {
-                try
-                {
-                    Dictionary<string, Dictionary<string, object>[]> eventsJsonObjUnity =
-                        new Dictionary<string, Dictionary<string, object>[]>();
-                    eventsJsonObjUnity["events"] = bundleObj.events;
-                    string eventsAsJsonUnity = JsonWriter.Serialize(eventsJsonObjUnity);
-
-                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnEvent(eventsAsJsonUnity);
-                }
-                catch (Exception)
-                {
-                    //Ignored
-                }
-            }
-#endif
-
 
             if (bundleObj.events != null && _eventCallback != null)
             {
@@ -1288,7 +1299,10 @@ using UnityEngine.Experimental.Networking;
                 }
                 catch (Exception e)
                 {
-                    _clientRef.Log(e.StackTrace);
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log(e.StackTrace);
+                    }
                     exceptions.Add(e);
                 }
             }
@@ -1319,18 +1333,27 @@ using UnityEngine.Experimental.Networking;
             if (!_killSwitchEngaged && _killSwitchErrorCount >= _killSwitchThreshold)
             {
                 _killSwitchEngaged = true;
-                _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Client disabled due to repeated errors from a single API call: " + service + " | " + operation);
+                }
             }
 
             //Authentication check for kill switch. 
             //did the client make an authentication call?
             if (operation == ServiceOperation.Authenticate.Value)
             {
-                _clientRef.Log("Failed Authentication Call");
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Failed Authentication Call");
+                }
 
                 string num;
                 num = _identicalFailedAuthenticationAttempts.ToString();
-                _clientRef.Log("Current number of identical failed authentications: " + num);
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("Current number of identical failed authentications: " + num);
+                }
 
                 //have the attempts gone beyond the threshold?
                 if (tooManyAuthenticationAttempts())
@@ -1338,7 +1361,10 @@ using UnityEngine.Experimental.Networking;
                     //we have a problem now, it seems they are contiuously trying to authenticate and sending us too many errors.
                     //we are going to now engage the killswitch and disable the client. This will act differently however. client will not
                     //be able to send an authentication request for a time. 
-                    _clientRef.Log("Too many identical repeat authentication failures");
+                    if (_clientRef.LoggingEnabled)
+                    {
+                        _clientRef.Log("Too many identical repeat authentication failures");
+                    }
                     _killSwitchEngaged = true;
                     ResetAuthenticationTimer();
                 }
@@ -1426,7 +1452,10 @@ using UnityEngine.Experimental.Networking;
                         if (_serviceCallsInProgress.Count > 0)
                         {
                             // this should never happen
-                            _clientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            if (_clientRef.LoggingEnabled)
+                            {
+                                _clientRef.Log("ERROR - in progress queue is not empty but we're ready for the next message!");
+                            }
                             _serviceCallsInProgress.Clear();
                         }
 
@@ -1501,7 +1530,10 @@ using UnityEngine.Experimental.Networking;
                     {
                         if (_isAuthenticated || isAuth)
                         {
-                            _clientRef.Log("SENDING REQUEST");
+                            if (_clientRef.LoggingEnabled)
+                            {
+                                _clientRef.Log("SENDING REQUEST");
+                            }
                             InternalSendMessage(requestState);
                         }
                         else
@@ -1547,7 +1579,10 @@ using UnityEngine.Experimental.Networking;
 
             string jsonRequestString = JsonWriter.Serialize(packet);
 
-            _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
+            if (_clientRef.LoggingEnabled)
+            {
+                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
+            }
 
             ResetIdleTimer();
 
@@ -1582,31 +1617,6 @@ using UnityEngine.Experimental.Networking;
             string jsonRequestString = JsonWriter.Serialize(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
-#if BC_DEBUG_LOG_ENABLED && UNITY_EDITOR
-            //Sending Data to the brainCloud Debug Info for ease of developer debugging when in the Unity Editor
-            try
-            {
-                BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.ClearLastSentRequest();
-                Dictionary<string, object> requestData =
-                    JsonReader.Deserialize<Dictionary<string, object>>(jsonRequestString);
-                Dictionary<string, object>[] messagesDataList = (Dictionary<string, object>[])requestData["messages"];
-
-                foreach (var messagesData in messagesDataList)
-                {
-                    var serviceValue = messagesData["service"];
-                    var operationValue = messagesData["operation"];
-                    var dataList = messagesData["data"];
-                    var dataValue = JsonWriter.Serialize(dataList);
-
-                    BrainCloudUnity.BrainCloudSettingsDLL.ResponseEvent.OnSentRequest(
-                        string.Format("{0} {1}", serviceValue, operationValue), dataValue);
-                }
-            }
-            catch (Exception)
-            {
-                //Ignored
-            }
-#endif
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
             requestState.Signature = sig;
@@ -1705,7 +1715,10 @@ using UnityEngine.Experimental.Networking;
 
                 ResetIdleTimer();
 
-                _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log(string.Format("{0} - {1}\n{2}", "REQUEST" + (requestState.Retries > 0 ? " Retry(" + requestState.Retries + ")" : ""), DateTime.Now, jsonRequestString));
+                }
             }
         }
 
@@ -1979,12 +1992,18 @@ using UnityEngine.Experimental.Networking;
 
             catch (WebException wex)
             {
-                _clientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
+                }
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
             catch (Exception ex)
             {
-                _clientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
+                }
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
 

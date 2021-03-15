@@ -1130,6 +1130,17 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
+        [Obsolete("This has been deprecated, use ListAllLeaderboards instead - removal after Match 1 2022")]
+        public void ListLeaderboards(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.ListAllLeaderboards, null, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Retrieve a list of all leaderboards
         /// </summary>
@@ -1146,7 +1157,7 @@ using BrainCloud.Internal;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void ListLeaderboards(
+        public void ListAllLeaderboards(
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -1259,6 +1270,49 @@ using BrainCloud.Internal;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScore, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Gets a player's highest scores from a leaderboard
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYER_SCORES
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="versionId">
+        /// The version of the leaderboard. Use -1 for current.
+        /// </param>
+        /// <param name="maxResults">
+        /// The number of max results to return.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayerScores(
+            string leaderboardId,
+            int versionId,
+            int maxResults,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceMaxResults.Value] = maxResults;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayerScores, data, callback);
             _client.SendRequest(sc);
         }
 

@@ -404,6 +404,35 @@ using System;
         }
 
         /// <summary>
+        /// Retrieves the social information associated with the logged in user. Includes summary data if includeSummaryData is true.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_MY_SOCIAL_INFO
+        /// </remarks>
+        /// <param name="friendPlatform">Friend platform to query.</param>
+        /// <param name="includeSummaryData">True if including summary data; false otherwise.</param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
+        public void GetMySocialInfo(
+            FriendPlatform friendPlatform,
+            bool includeSummaryData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceFriendPlatform.Value] = friendPlatform.ToString();
+            data[OperationParam.FriendServiceIncludeSummaryData.Value] = includeSummaryData;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.ListFriends, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Links the current user and the specified users as brainCloud friends.
         /// </summary>
         /// <remarks>

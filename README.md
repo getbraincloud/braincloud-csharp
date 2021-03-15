@@ -23,6 +23,11 @@ http://getbraincloud.com/apidocs/apiref/#capi-auth
 
 To install the brainCloud library, open the brainCloudClient_unity_X.X.X.unitypackage file with your Unity Project open, and click the import prompt:
 
+**It is essential to first delete the Assets/BrainCloud folder to ensure a clean import, when updating to a new version of the brainCloud SDK.**
+
+*Note that the plugin has gone through major updates since BrainCloud 4.7 release, please refer to the appropriate plugin guide.* 
+
+### BrainCloud Unity Plugin 4.6 and under
 Once installed, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
 -   Open brainCloud | Select Settings.
@@ -41,7 +46,40 @@ Once installed, you will need to configure a few settings from the brainCloud me
 
     ![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
 
-**It is recommend to first delete the Assets/BrainCloud folder to ensure a clean import, when updating to a new version of the brainCloud SDK.**
+### BrainCloud Unity Plugin 4.7
+#### Implementing the New Plugin
+*If braincloud is not yet added:*
+- Simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
+- Then click on the newly added braincloud drop down, and click on settings to configure your app
+
+*If you already have a version of the braincloud plugin:*
+- With your project closed, navigate to your project folders, and delete the braincloud folder and all of its contents entirely.
+- Then open your project and simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
+- Then click on the newly added braincloud drop down, and click on settings to configure your app
+
+**If errors pop up, you may not have completely deleted braincloud and all of its contents, try again to make sure.**
+
+Login or Signup to brainCloud then select your team and your app!
+
+![screenshot](/screenshots/newbcSettings.png?raw=true)
+![screenshot](/screenshots/newbcSettings2.png?raw=true)
+
+#### Upgrade Notes
+1. If you used or called upon the BrainCloudSettingsDLL or the BrainCloudEditorSettingsDLL before, these have been replaced with BraincloudPlugin and BrainCloudPluginEditor respectively.
+You may have some new errors where you hadn't before. You will need to make adjustments for the new plugin.
+BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic.
+
+*The readable values are:* 
+- DispatcherURL 
+- AppId 
+- AppSecret 
+- AppIdSecrets
+- AppVersion
+
+2. The app version is now handled through the Build Settings, where you put in company name, version etc.
+3. You no longer need to call Enable Logging in code, you can toggle on and off logging with the check box in the plugin window. This needs to be done in between running your app. 
+4. To sign into other apps, you will need to re-sign in for security purposes. 
+5. The plugin now has a version we will update when future changes are made.
 
 ## Example Projects
 
@@ -183,13 +221,3 @@ DateTime _date = TimeUtil.LocalTimeToUTCTime(DateTime.Now); //convert your date 
 Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your UTC date time to milliseconds
 _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
 ```
-## Enabling Logs
-We added the conditional BC_DEBUG_LOG_ENABLED in our code base becasue our logs were having a heavy impact on profilers. These logs are very useful for debugging purposes however and you may want to turn them back on. There are a couple ways to do this. 
-
-*In Unity*
-1. Go to File -> Build Settings -> Player Settings -> Other Settings then under Configuration you will see "Scripting Define Symbols" in there put BC_DEBUG_LOG_ENABLED.
-
-*In C# or if you have a Unity project with a .csproj*
-1. Right click your .csproj and go to properties.
-2. In properties, go to the BUILD tab, and under 'General' you will see "Conditional Compilation Symbols:"
-3. In that box add BC_DEBUG_LOG_ENABLED;
