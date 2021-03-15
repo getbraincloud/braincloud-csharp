@@ -99,6 +99,7 @@ using System;
         public static readonly ServiceOperation FindUsersByExactName = new ServiceOperation("FIND_USERS_BY_EXACT_NAME");
         public static readonly ServiceOperation FindUsersBySubstrName = new ServiceOperation("FIND_USERS_BY_SUBSTR_NAME");
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
+        public static readonly ServiceOperation GetMySocialInfo = new ServiceOperation("GET_MY_SOCIAL_INFO");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
         public static readonly ServiceOperation GetUsersOnlineStatus = new ServiceOperation("GET_USERS_ONLINE_STATUS");

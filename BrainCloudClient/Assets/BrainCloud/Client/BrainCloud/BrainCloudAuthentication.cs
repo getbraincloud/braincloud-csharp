@@ -344,7 +344,7 @@ using BrainCloud.JsonFx.Json;
         /// <param name="cbObject">
         /// The user supplied callback object
         /// </param>
-        public void AuthenticatePSN(
+        public void AuthenticatePlaystationNetwork(
             string accountId,
             string authToken,
             bool forceCreate,

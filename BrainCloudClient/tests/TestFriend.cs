@@ -111,6 +111,19 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetMySocialInfo()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.FriendService.GetMySocialInfo(
+                BrainCloudFriend.FriendPlatform.All,
+                false,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestAddFriends()
         {
             AddFriends();

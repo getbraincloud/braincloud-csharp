@@ -118,6 +118,104 @@ using BrainCloud.Common;
             DetachIdentity(facebookId, AuthenticationType.Facebook, continueAnon, success, failure, cbObject);
         }
 
+        /// <summary>
+        /// Attach the user's Oculus credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The oculus id of the user
+        /// </param>
+        /// <param name="oculusNonce">
+        /// token from the Oculus SDK
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachOculusIdentity(
+            string oculusId,
+            string oculusNonce,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Oculus credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The oculus id of the user
+        /// </param>
+        /// <param name="oculusNonce">
+        /// token from the Oculus SDK
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeOculusIdentity(
+            string oculusId,
+            string oculusNonce,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(oculusId, oculusNonce, AuthenticationType.Oculus, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Facebook identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="oculusId">
+        /// The facebook id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachOculusIdentity(
+            string oculusId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(oculusId, AuthenticationType.Oculus, continueAnon, success, failure, cbObject);
+        }
+
+
                 /// <summary>
         /// Attach the user's FacebookLimited credentials to the current profile.
         /// </summary>
