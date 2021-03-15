@@ -37,7 +37,7 @@ namespace BrainCloud.Internal
         public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             m_disconnectedWithReason = false;
-            
+
             if(IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
             {
                 return;
@@ -132,6 +132,15 @@ namespace BrainCloud.Internal
                 {
                     toProcessResponse = m_queuedRTTCommands[i];
  
+                    //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
+                    if (m_webSocketStatus == WebsocketStatus.CLOSED)
+                    {
+                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
+                        m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        disconnect();
+                        break;
+                    }
+
                     //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
                     if (m_webSocketStatus == WebsocketStatus.CLOSED)
                     {
