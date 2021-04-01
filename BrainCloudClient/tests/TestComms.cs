@@ -370,5 +370,14 @@ namespace BrainCloudTests
             _bc.ScriptService.RunScript("TestTimeoutRetry45", Helpers.CreateJsonPair("testParm1", 1), tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+
+        [Test]
+        public void TestRetry45SecSwitchChild()
+        {
+            // _bc.Client.SetPacketTimeouts(new List<int>(new int[]{60}));
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunScript("TestTimeoutRetry45SwitchChild", Helpers.CreateJsonPair("testParm1", 1), tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
