@@ -116,26 +116,6 @@ namespace BrainCloudTests
             JoinTestTournament();
             LeaveTestTournament();
         }
-        
-
-        [Test]
-        public void PostTournamentScore()
-        {
-            JoinTestTournament();
-
-            TestResult tr = new TestResult(_bc);
-
-            _bc.TournamentService.PostTournamentScore(
-                _leaderboardId,
-                _rand.Next(1000),
-                null,
-                DateTime.Now,
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-
-            LeaveTestTournament();
-        }
 
         [Test]
         public void PostTournamentScoreUTC()
@@ -151,29 +131,6 @@ namespace BrainCloudTests
                 (UInt64)Util.DateTimeToUnixTimestamp(DateTime.UtcNow),
                 //(UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
                   // new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-
-            LeaveTestTournament();
-        }
-
-        [Test]
-        public void PostTournamentScoreWithResults()
-        {
-            JoinTestTournament();
-
-            TestResult tr = new TestResult(_bc);
-
-            _bc.TournamentService.PostTournamentScoreWithResults(
-                _leaderboardId,
-                _rand.Next(1000),
-                null,
-                DateTime.UtcNow,
-                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
-                10,
-                10,
-                0,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
