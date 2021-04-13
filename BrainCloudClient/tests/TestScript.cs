@@ -28,20 +28,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestScheduleScriptUTC()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.ScriptService.ScheduleRunScriptUTC(
-                _scriptName,
-                Helpers.CreateJsonPair("testParm1", 1),
-                DateTime.Now.AddDays(1),
-                tr.ApiSuccess, tr.ApiError);
-
-            tr.Run();
-        }
-
-        [Test]
         public void TestScheduleRunScriptMillisUTC()
         {
             TestResult tr = new TestResult(_bc);

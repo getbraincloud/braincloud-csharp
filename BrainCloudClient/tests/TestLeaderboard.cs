@@ -213,13 +213,13 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
-                System.DateTime.Now.AddDays(5),
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -230,14 +230,14 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
                 _groupLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
-                System.DateTime.Now.AddDays(5),
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -250,7 +250,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboardDays(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardDaysUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -268,7 +268,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -286,13 +286,13 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE,
                 BrainCloudSocialLeaderboard.RotationType.WEEKLY,
-                System.DateTime.Now.AddDays(5),
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -304,13 +304,13 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
                 BrainCloudSocialLeaderboard.RotationType.DAILY,
-                System.DateTime.Now.AddHours(15),
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddHours(15))),
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
@@ -322,7 +322,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.LeaderboardService.PostScoreToDynamicLeaderboard(
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
