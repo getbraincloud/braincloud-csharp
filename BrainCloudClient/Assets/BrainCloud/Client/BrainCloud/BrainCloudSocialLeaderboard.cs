@@ -625,89 +625,13 @@ using BrainCloud.Internal;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-
-        [Obsolete("Will be removed March 2021, Please use PostScoreToDynamicLeaderboardUTC")]
-        public void PostScoreToDynamicLeaderboard(
-            string leaderboardId,
-            long score,
-            string jsonData,
-            SocialLeaderboardType leaderboardType,
-            RotationType rotationType,
-            DateTime? rotationResetUTC,
-            int retainedCount,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
-            if (Util.IsOptionalParameterValid(jsonData))
-            {
-                var customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
-            }
-            data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
-
-            if (rotationResetUTC.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
-
-            data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
-            _client.SendRequest(sc);
-        }
-
-                /// <summary>
-        /// Post the players score to the given social leaderboard.
-        /// Pass leaderboard config data to dynamically create if necessary.
-        /// You can optionally send a user-defined json string of data
-        /// with the posted score. This string could include information
-        /// relevant to the posted score.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - leaderboard
-        /// Service Operation - PostScoreDynamic
-        /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard to post to
-        /// </param>
-        /// <param name="score">
-        /// The score to post
-        /// </param>
-        /// <param name="data">
-        /// Optional user-defined data to post with the score
-        /// </param>
-        /// <param name="leaderboardType">
-        /// leaderboard type
-        /// </param>
-        /// <param name="rotationType">
-        /// Type of rotation
-        /// </param>
-        /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard using UTC time in milliseconds since epoch
-        /// </param>
-        /// <param name="retainedCount">
-        /// How many rotations to keep
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
         public void PostScoreToDynamicLeaderboardUTC(
             string leaderboardId,
             long score,
             string jsonData,
             SocialLeaderboardType leaderboardType,
             RotationType rotationType,
-            UInt64 rotationResetUTC,
+            UInt64? rotationResetUTC,
             int retainedCount,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -715,87 +639,6 @@ using BrainCloud.Internal;
         {
             var data = new Dictionary<string, object>();
             data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
-            if (Util.IsOptionalParameterValid(jsonData))
-            {
-                var customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
-            }
-            data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
-
-            //if (rotationResetUTC.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = rotationResetUTC;
-
-            data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
-            _client.SendRequest(sc);
-        }
-
-                /// <summary>
-        /// Post the group score to the given social group leaderboard.
-        /// Pass leaderboard config data to dynamically create if necessary.
-        /// You can optionally send a user-defined json string of data
-        /// with the posted score. This string could include information
-        /// relevant to the posted score.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - leaderboard
-        /// Service Operation - PostScoreToDynamicLeaderboard
-        /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard to post to
-        /// </param>
-        /// <param name="groupId">
-        /// group ID the leaderboard belongs to
-        /// </param>
-        /// <param name="score">
-        /// The score to post
-        /// </param>
-        /// <param name="data">
-        /// Optional user-defined data to post with the score
-        /// </param>
-        /// <param name="leaderboardType">
-        /// leaderboard type
-        /// </param>
-        /// <param name="rotationType">
-        /// Type of rotation
-        /// </param>
-        /// <param name="rotationResetUTC">
-        /// Date to reset the leaderboard UTC
-        /// </param>
-        /// <param name="retainedCount">
-        /// How many rotations to keep
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-
-        [Obsolete("Will be removed March 2021, Please use PostScoreToDynamicGroupLeaderboardUTC")]
-        public void PostScoreToDynamicGroupLeaderboard(
-            string leaderboardId,
-            string groupId,
-            long score,
-            string jsonData,
-            SocialLeaderboardType leaderboardType,
-            RotationType rotationType,
-            DateTime? rotationResetUTC,
-            int retainedCount,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
             data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
             if (Util.IsOptionalParameterValid(jsonData))
             {
@@ -806,16 +649,16 @@ using BrainCloud.Internal;
             data[OperationParam.SocialLeaderboardServiceRotationType.Value] = rotationType.ToString();
 
             if (rotationResetUTC.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = rotationResetUTC.Value;
 
             data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreToDynamicGroupLeaderboard, data, callback);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
             _client.SendRequest(sc);
         }
 
-                        /// <summary>
+        /// <summary>
         /// Post the group score to the given social group leaderboard.
         /// Pass leaderboard config data to dynamically create if necessary.
         /// You can optionally send a user-defined json string of data
@@ -894,86 +737,7 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-        
-
         /// <summary>
-        /// Post the players score to the given social leaderboard with a rotation type of DAYS.
-        /// Pass leaderboard config data to dynamically create if necessary.
-        /// You can optionally send a user-defined json string of data
-        /// with the posted score. This string could include information
-        /// relevant to the posted score.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - leaderboard
-        /// Service Operation - PostScoreDynamic
-        /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard to post to
-        /// </param>
-        /// <param name="score">
-        /// The score to post
-        /// </param>
-        /// <param name="data">
-        /// Optional user-defined data to post with the score
-        /// </param>
-        /// <param name="leaderboardType">
-        /// leaderboard type
-        /// </param>
-        /// <param name="rotationResetUTC">
-        /// Date to reset using local time
-        /// </param>
-        /// <param name="retainedCount">
-        /// How many rotations to keep
-        /// </param>
-        /// <param name="numDaysToRotate">
-        /// How many days between each rotation
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
-
-        [Obsolete("Will be removed March 2021, Please use PostScoreToDynamicLeaderboardDaysUTC")]
-        public void PostScoreToDynamicLeaderboardDays(
-            string leaderboardId,
-            long score,
-            string jsonData,
-            SocialLeaderboardType leaderboardType,
-            DateTime? rotationResetUTC,
-            int retainedCount,
-            int numDaysToRotate,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var data = new Dictionary<string, object>();
-            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
-            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
-            if (Util.IsOptionalParameterValid(jsonData))
-            {
-                var customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
-                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
-            }
-            data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
-            data[OperationParam.SocialLeaderboardServiceRotationType.Value] = "DAYS";
-
-            if (rotationResetUTC.HasValue)
-                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = Util.DateTimeToUnixTimestamp(rotationResetUTC.Value);
-
-            data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
-            data[OperationParam.NumDaysToRotate.Value] = numDaysToRotate;
-
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
-            _client.SendRequest(sc);
-        }
-
-                /// <summary>
         /// Post the players score to the given social leaderboard with a rotation type of DAYS.
         /// Pass leaderboard config data to dynamically create if necessary.
         /// You can optionally send a user-defined json string of data
