@@ -250,7 +250,7 @@ namespace BrainCloudTests
             if (!_init)
             {
                 Console.Write(">> Initializing New Random Users");
-                _bc.Client.EnableLogging(false);
+                _bc.Client.EnableLogging(true);
                 _testUsers = new TestUser[Enum.GetNames(typeof(Users)).Length];
                 Random rand = new Random();
 
