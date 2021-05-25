@@ -3,6 +3,7 @@ using System.Threading;
 using NUnit.Framework;
 using BrainCloud.JsonFx.Json;
 using BrainCloud;
+using System;
 
 
 namespace BrainCloudTests
@@ -150,12 +151,11 @@ namespace BrainCloudTests
 
         private void Spin()
         {
-            long maxWait = m_timeToWaitSecs * 1000;
-            while (!m_done && maxWait > 0)
+            var timeBefore = DateTime.Now;
+            while (!m_done && (DateTime.Now - timeBefore).TotalSeconds < (double)m_timeToWaitSecs)
             {
                 _bc.Update();
-                Thread.Sleep(10);
-                maxWait -= 10;
+                Thread.Sleep(16);
             }
         }
 

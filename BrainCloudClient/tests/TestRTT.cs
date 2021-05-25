@@ -30,8 +30,8 @@ namespace BrainCloudTests
             tr.Run();
 
             // Run for 90sec and see if the heartbeat did its job
-            var timeBefore = new DateTime();
-            while ((new DateTime() - timeBefore).TotalSeconds > 90.0) // 90sec
+            var timeBefore = DateTime.Now;
+            while ((DateTime.Now - timeBefore).TotalSeconds < 90.0) // 90sec
             {
                 _bc.Update();
                 Thread.Sleep(16);
@@ -74,8 +74,8 @@ namespace BrainCloudTests
             tr.Run();
 
             // Now check if we get the chat message
-            var timeBefore = new DateTime();
-            while (!receivedChat && (new DateTime() - timeBefore).TotalSeconds > 30.0) // 30sec wait is enough (heck, 10sec is enough)
+            var timeBefore = DateTime.Now;
+            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 30.0) // 30sec wait is enough (heck, 10sec is enough)
             {
                 _bc.Update();
                 Thread.Sleep(16); // Simulate 60 fps
@@ -91,8 +91,8 @@ namespace BrainCloudTests
             tr.Run();
 
             // Wait 10sec, and make sure we don't get the event this time
-            timeBefore = new DateTime();
-            while (!receivedChat && (new DateTime() - timeBefore).TotalSeconds > 10.0) // 90sec
+            timeBefore = DateTime.Now;
+            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 10.0) // 10sec
             {
                 _bc.Update();
                 Thread.Sleep(16);
@@ -126,8 +126,8 @@ namespace BrainCloudTests
 
             // Now check if we get the lobby message
             // Wait 300sec, creating lobby can take time
-            var timeBefore = new DateTime();
-            while (!receivedLobby && (new DateTime() - timeBefore).TotalSeconds > 300.0)
+            var timeBefore = DateTime.Now;
+            while (!receivedLobby && (DateTime.Now - timeBefore).TotalSeconds < 300.0)
             {
                 _bc.Update();
                 Thread.Sleep(16);
@@ -161,8 +161,8 @@ namespace BrainCloudTests
             tr.Run();
 
             // Now check if we get the event message
-            var timeBefore = new DateTime();
-            while (!receivedEvent && (new DateTime() - timeBefore).TotalSeconds > 30.0)
+            var timeBefore = DateTime.Now;
+            while (!receivedEvent && (DateTime.Now - timeBefore).TotalSeconds < 30.0)
             {
                 _bc.Update();
                 Thread.Sleep(16);
