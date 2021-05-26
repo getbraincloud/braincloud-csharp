@@ -155,6 +155,7 @@ using System;
         public static readonly ServiceOperation GetPeerVC = new ServiceOperation("GET_PEER_VC");
         public static readonly ServiceOperation StartPurchase = new ServiceOperation("START_PURCHASE");
         public static readonly ServiceOperation FinalizePurchase = new ServiceOperation("FINALIZE_PURCHASE");
+        public static readonly ServiceOperation RefreshPromotions = new ServiceOperation("REFRESH_PROMOTIONS");
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");

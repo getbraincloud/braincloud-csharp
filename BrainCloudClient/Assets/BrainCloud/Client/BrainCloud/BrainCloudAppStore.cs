@@ -294,5 +294,17 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.FinalizePurchase, data, callback);
             _client.SendRequest(sc);
         }
+        /// <summary>
+        /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing
+        /// Service Name - appStore
+        /// Service Operation - Refresh Promotions
+        /// </summary>
+        /// <param name="callback"></param>
+        public void RefreshPromotions(ServerCallback callback)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.RefreshPromotions, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }
