@@ -69,9 +69,8 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.AppStoreService.RefreshPromotions(new ServerCallback(tr.ApiSuccess, tr.ApiError, null));
+            _bc.AppStoreService.RefreshPromotions(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
-
     }
 }
