@@ -352,6 +352,9 @@ using UnityEngine.Experimental.Networking;
 
         public BrainCloudComms(BrainCloudClient client)
         {
+#if DOT_NET
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+#endif
 #if DISABLE_SSL_CHECK
             ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
 #endif
