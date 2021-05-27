@@ -89,6 +89,53 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+        
+        [Test]
+        public void TestDeleteIncomingEvents()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            string eventId = SendDefaultMessage();
+            string[] eventIds = {eventId};
+            
+            _bc.EventService.DeleteIncomingEvents(
+                eventIds,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+        
+        [Test]
+        public void DeleteIncomingEventsOlderThan()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            DateTime now = DateTime.UtcNow;
+            int dateInMillis = new DateTimeOffset(now).Millisecond;
+            
+            _bc.EventService.DeleteIncomingEventsOlderThan(
+                dateInMillis,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+        
+        [Test]
+        public void DeleteIncomingEventsByTypeOlderThan()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            string eventId = SendDefaultMessage();
+            DateTime now = DateTime.UtcNow;
+            int dateInMillis = new DateTimeOffset(now).Millisecond;
+            
+            _bc.EventService.DeleteIncomingEventsByTypeOlderThan(
+                eventId,
+                dateInMillis,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
 
         [Test]
         public void TestUpdateIncomingEventData()
