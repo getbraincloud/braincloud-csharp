@@ -298,7 +298,7 @@ using System;
         /// <summary>
         /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing
         /// Service Name - appStore
-        /// Service Operation - Refresh Promotions
+        /// Service Operation - RefreshPromotions
         /// /// <param name="success">
         /// The success callback.
         /// </param>
