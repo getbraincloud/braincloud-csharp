@@ -4,6 +4,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
 using System;
+using NUnit.Core.Tests;
 
 namespace BrainCloudTests
 {
@@ -95,46 +96,56 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             
-            string eventId = SendDefaultMessage();
-            string[] eventIds = {eventId};
+            string eventId1 = SendDefaultMessage();
+            string eventId2 = SendDefaultMessage();
+            string[] eventIds = {eventId1,eventId2};
             
             _bc.EventService.DeleteIncomingEvents(
                 eventIds,
                 tr.ApiSuccess, tr.ApiError);
-
             tr.Run();
+            
+            _bc.EventService.GetEvents();
+            tr.RunExpectFail();
         }
         
         [Test]
-        public void DeleteIncomingEventsOlderThan()
+        public void TestDeleteIncomingEventsOlderThan()
         {
             TestResult tr = new TestResult(_bc);
 
+            SendDefaultMessage();
+            
             DateTime now = DateTime.UtcNow;
             int dateInMillis = new DateTimeOffset(now).Millisecond;
             
             _bc.EventService.DeleteIncomingEventsOlderThan(
                 dateInMillis,
                 tr.ApiSuccess, tr.ApiError);
-
             tr.Run();
+            
+            _bc.EventService.GetEvents();
+            tr.RunExpectFail();
         }
         
         [Test]
-        public void DeleteIncomingEventsByTypeOlderThan()
+        public void TestDeleteIncomingEventsByTypeOlderThan()
         {
             TestResult tr = new TestResult(_bc);
 
-            string eventId = SendDefaultMessage();
+            string eventType = SendDefaultMessage();
             DateTime now = DateTime.UtcNow;
             int dateInMillis = new DateTimeOffset(now).Millisecond;
             
             _bc.EventService.DeleteIncomingEventsByTypeOlderThan(
-                eventId,
+                eventType,
                 dateInMillis,
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+            
+            _bc.EventService.GetEvents();
+            tr.RunExpectFail();
         }
 
         [Test]
