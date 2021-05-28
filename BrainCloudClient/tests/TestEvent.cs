@@ -104,9 +104,6 @@ namespace BrainCloudTests
                 eventIds,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
-            _bc.EventService.GetEvents();
-            tr.RunExpectFail();
         }
         
         [Test]
@@ -115,7 +112,6 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             SendDefaultMessage();
-            
             DateTime now = DateTime.UtcNow;
             int dateInMillis = new DateTimeOffset(now).Millisecond;
             
@@ -123,9 +119,6 @@ namespace BrainCloudTests
                 dateInMillis,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
-            _bc.EventService.GetEvents();
-            tr.RunExpectFail();
         }
         
         [Test]
@@ -133,19 +126,15 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            string eventType = SendDefaultMessage();
+            SendDefaultMessage();
             DateTime now = DateTime.UtcNow;
             int dateInMillis = new DateTimeOffset(now).Millisecond;
             
             _bc.EventService.DeleteIncomingEventsByTypeOlderThan(
-                eventType,
+                _eventType,
                 dateInMillis,
                 tr.ApiSuccess, tr.ApiError);
-
             tr.Run();
-            
-            _bc.EventService.GetEvents();
-            tr.RunExpectFail();
         }
 
         [Test]
