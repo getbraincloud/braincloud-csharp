@@ -294,5 +294,31 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.FinalizePurchase, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing
+        /// Service Name - appStore
+        /// Service Operation - RefreshPromotions
+        /// /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        /// </summary>
+        public void RefreshPromotions(
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            
+            ServerCallback callback = new ServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.RefreshPromotions, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }

@@ -63,5 +63,14 @@ namespace BrainCloudTests
             _bc.AppStoreService.FinalizePurchase("_invalid_store_id_", "_invalid_transaction_id_", "{}", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
         }
+
+        [Test]
+        public void TestRefreshPromotions()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AppStoreService.RefreshPromotions(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
