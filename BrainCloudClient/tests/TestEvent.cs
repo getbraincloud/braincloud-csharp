@@ -4,6 +4,7 @@ using BrainCloud;
 using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
 using System;
+using NUnit.Core.Tests;
 
 namespace BrainCloudTests
 {
@@ -87,6 +88,52 @@ namespace BrainCloudTests
                 eventId,
                 tr.ApiSuccess, tr.ApiError);
 
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestDeleteIncomingEvents()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            string eventId1 = SendDefaultMessage();
+            string eventId2 = SendDefaultMessage();
+            string[] eventIds = {eventId1,eventId2};
+            
+            _bc.EventService.DeleteIncomingEvents(
+                eventIds,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestDeleteIncomingEventsOlderThan()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            SendDefaultMessage();
+            DateTime now = DateTime.UtcNow;
+            int dateInMillis = new DateTimeOffset(now).Millisecond;
+            
+            _bc.EventService.DeleteIncomingEventsOlderThan(
+                dateInMillis,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestDeleteIncomingEventsByTypeOlderThan()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            SendDefaultMessage();
+            DateTime now = DateTime.UtcNow;
+            int dateInMillis = new DateTimeOffset(now).Millisecond;
+            
+            _bc.EventService.DeleteIncomingEventsByTypeOlderThan(
+                _eventType,
+                dateInMillis,
+                tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 

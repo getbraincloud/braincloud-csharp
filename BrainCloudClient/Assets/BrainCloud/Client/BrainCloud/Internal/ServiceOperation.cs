@@ -160,6 +160,9 @@ using System;
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
         public static readonly ServiceOperation DeleteIncoming = new ServiceOperation("DELETE_INCOMING");
+        public static readonly ServiceOperation DeleteIncomingEvents = new ServiceOperation("DELETE_INCOMING_EVENTS");
+        public static readonly ServiceOperation DeleteIncomingEventsOlderThan = new ServiceOperation("DELETE_INCOMING_EVENTS_OLDER_THAN");
+        public static readonly ServiceOperation DeleteIncomingEventsByTypeOlderThan = new ServiceOperation("DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN");
         public static readonly ServiceOperation GetEvents = new ServiceOperation("GET_EVENTS");
 
         public static readonly ServiceOperation UpdateIncrement = new ServiceOperation("UPDATE_INCREMENT");
