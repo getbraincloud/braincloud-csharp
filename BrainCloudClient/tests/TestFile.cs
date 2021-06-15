@@ -7,7 +7,6 @@ using System.IO;
 using System.Threading;
 using System;
 using System.Net;
-using System.Text;
 
 namespace BrainCloudTests
 {
