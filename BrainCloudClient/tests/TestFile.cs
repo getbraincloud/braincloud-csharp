@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System;
 using System.Net;
+using System.Text;
 
 namespace BrainCloudTests
 {
@@ -46,7 +47,7 @@ namespace BrainCloudTests
             _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
-
+            
             _bc.FileService.UploadFile(
                 _cloudPath,
                 info.Name,
@@ -63,7 +64,36 @@ namespace BrainCloudTests
 
             Assert.IsFalse(_failCount > 0);
         }
+        
+        [Test]
+        public void TestUploadFromMemory()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
+            string path = "D:/GitHub/braincloud-csharp/BrainCloudClient/tests/bitheads-logo.jpg";
+            
+            FileInfo info = new FileInfo(path);
+            Stream buffInfo = new FileStream(path, FileMode.Open);
+            string fileData = ConvertToBase64(buffInfo);
+            buffInfo.Close();
+            _bc.FileService.UploadFileFromMemory(
+                _cloudPath,
+                info.Name,
+                true,
+                true,
+                fileData,
+                path,
+                tr.ApiSuccess, tr.ApiError);
+            
+            tr.Run();
+            
+            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            
+            WaitForReturn(new[] { GetUploadId(tr.m_response) });
+
+            Assert.IsFalse(_failCount > 0);
+        }
 
         private string GetFullPath(string cloudPath, string cloudFileName)
         {
@@ -354,7 +384,7 @@ namespace BrainCloudTests
             _bc.FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
-
+        
         /// <summary>
         /// Creates a test file filled with garbage
         /// </summary>
@@ -370,6 +400,16 @@ namespace BrainCloudTests
             }
 
             return path;
+        }
+        
+        public static string ConvertToBase64(Stream stream)
+        {
+            var bytes = new Byte[(int)stream.Length];
+
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(bytes, 0, (int)stream.Length);
+
+            return Convert.ToBase64String(bytes);
         }
     }
 }
