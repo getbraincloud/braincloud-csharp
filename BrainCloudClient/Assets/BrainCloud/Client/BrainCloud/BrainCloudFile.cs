@@ -74,7 +74,7 @@ using System;
         
         /// <summary>
         /// Prepares a user file upload from memory, allowing the user to bypass 
-        //the need to read or write on disk before uploading. On success the file will begin uploading
+        /// the need to read or write on disk before uploading. On success the file will begin uploading
         /// to the brainCloud server.To be informed of success/failure of the upload
         /// register an IFileUploadCallback with the BrainCloudClient class.
         /// </summary>
@@ -93,13 +93,12 @@ using System;
             bool shareable,
             bool replaceIfExists,
             string fileData,
-            string localPath,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UploadLocalPath.Value] = localPath;
+            data[OperationParam.UploadLocalPath.Value] = fileData;
             data[OperationParam.UploadCloudFilename.Value] = cloudFilename;
             data[OperationParam.UploadCloudPath.Value] = cloudPath;
             data[OperationParam.UploadShareable.Value] = shareable;

@@ -70,19 +70,17 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            string path = "D:/GitHub/braincloud-csharp/BrainCloudClient/tests/bitheads-logo.jpg";
-            
-            FileInfo info = new FileInfo(path);
-            Stream buffInfo = new FileStream(path, FileMode.Open);
+            string fileName = "file.txt";
+            FileStream file = File.Create(Path.Combine(Path.GetTempPath(), fileName), 100);
+            Stream buffInfo = file;
             string fileData = ConvertToBase64(buffInfo);
             buffInfo.Close();
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
-                info.Name,
+                fileName,
                 true,
                 true,
                 fileData,
-                path,
                 tr.ApiSuccess, tr.ApiError);
             
             tr.Run();
