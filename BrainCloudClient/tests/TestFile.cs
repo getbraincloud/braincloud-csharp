@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System;
 using System.Net;
+using System.Text;
 
 namespace BrainCloudTests
 {
@@ -57,8 +58,6 @@ namespace BrainCloudTests
 
             tr.Run();
 
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
-
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
             Assert.IsFalse(_failCount > 0);
@@ -70,11 +69,10 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
-            string fileName = "file.txt";
-            FileStream file = File.Create(Path.Combine(Path.GetTempPath(), fileName), 100);
-            Stream buffInfo = file;
-            string fileData = ConvertToBase64(buffInfo);
-            buffInfo.Close();
+            string fileName = "testFile.txt";
+            string fileContent = "Hello, I'm a file";
+            byte[] fileData = ConvertByteFromFile(fileContent);
+
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 fileName,
@@ -84,9 +82,42 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             
             tr.Run();
-            
+
+            WaitForReturn(new[] { GetUploadId(tr.m_response) });
+
+            Assert.IsFalse(_failCount > 0);
+        }
+
+        [Test]
+        public void TestUploadFromMemoryMultiFiles()
+        {
+            TestResult tr = new TestResult(_bc);
             _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
             
+            string fileName1 = "testFile1.txt";
+            string fileContent1 = "Hello, I'm a file !";
+            byte[] fileData1 = ConvertByteFromFile(fileContent1);
+            _bc.FileService.UploadFileFromMemory(
+                _cloudPath,
+                fileName1,
+                true,
+                true,
+                fileData1,
+                tr.ApiSuccess, tr.ApiError);
+
+            string fileName2 = "testFile2.txt";
+            string fileContent2 = "Hey look ! Another file !";
+            byte[] fileData2 = ConvertByteFromFile(fileContent2);
+            _bc.FileService.UploadFileFromMemory(
+                _cloudPath,
+                fileName2,
+                true,
+                true,
+                fileData2,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
             Assert.IsFalse(_failCount > 0);
@@ -125,8 +156,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
         
             tr.Run();
-        
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
@@ -169,8 +198,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
-
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) }, 500);
 
@@ -398,15 +425,20 @@ namespace BrainCloudTests
 
             return path;
         }
-        
-        public static string ConvertToBase64(Stream stream)
+
+        private byte[] ConvertByteFromFile(string fileContent)
         {
-            var bytes = new Byte[(int)stream.Length];
+            if (Uri.IsWellFormedUriString(fileContent, UriKind.Absolute))
+            {
+                Stream info = new FileStream(fileContent, FileMode.Open);
+                byte[] fileData = new Byte[(int) info.Length];
+                info.Seek(0, SeekOrigin.Begin);
+                info.Read(fileData, 0, (int) info.Length);
+                info.Close();
+                return fileData;
+            }
 
-            stream.Seek(0, SeekOrigin.Begin);
-            stream.Read(bytes, 0, (int)stream.Length);
-
-            return Convert.ToBase64String(bytes);
+            return Encoding.ASCII.GetBytes(fileContent);
         }
     }
 }
