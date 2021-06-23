@@ -457,6 +457,38 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.AddFriends, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Links the profiles for the specified externalIds for the given friend platform as internal friends.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - ADD_FRIENDS_FROM_PLATFORM
+        /// </remarks>
+        /// <param name="friendPlatform">Platform to add from (i.e: FriendPlatform:Facebook)</param>
+        /// <param name="mode">ADD or SYNC</param>
+        /// <param name="externalIds">Collection of external ID's from the friend platform</param>
+        /// <param name="success"> The success callback. </param>
+        /// <param name="failure"> The failure callback. </param>
+        /// <param name="cbObject"> The user object sent to the callback. </param>
+        public void AddFriendsFromPlatform(
+            FriendPlatform friendPlatform, 
+            string mode,
+            IList<string> externalIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject=null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.FriendServiceFriendPlatform.Value] = friendPlatform.ToString();
+            data[OperationParam.FriendServiceMode.Value] = mode;
+            data[OperationParam.FriendServiceExternalIds.Value] = externalIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall serverCall = new ServerCall(ServiceName.Friend, ServiceOperation.AddFriendsFromPlatform, data, callback);
+            _client.SendRequest(serverCall);
+        }
 
         /// <summary>
         /// Unlinks the current user and the specified users as brainCloud friends.

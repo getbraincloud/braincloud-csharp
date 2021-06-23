@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -127,6 +128,23 @@ namespace BrainCloudTests
         public void TestAddFriends()
         {
             AddFriends();
+        }
+        
+        [Test]
+        public void TestAddFriendsFromPlatform()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            string [] ids = { };
+            
+            _bc.FriendService.AddFriendsFromPlatform(
+                BrainCloudFriend.FriendPlatform.Facebook, 
+                "ADD", 
+                ids, 
+                tr.ApiSuccess,
+                tr.ApiError);
+
+            tr.Run();
         }
 
         [Test]
