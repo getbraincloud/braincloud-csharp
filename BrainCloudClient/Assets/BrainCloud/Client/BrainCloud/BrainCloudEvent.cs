@@ -148,6 +148,110 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncoming, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Delete a list of events out of the user's incoming mailbox.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - event
+        /// Service Operation - DELETE_INCOMING_EVENTS
+        /// </remarks>
+        /// <param name="in_eventIds">
+        /// Collection of event ids
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteIncomingEvents(
+            string[] in_eventIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EventServiceEvIds.Value] = in_eventIds;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEvents, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        /// /// <summary>
+        /// Delete any events older than the given date out of the user's incoming mailbox.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - event
+        /// Service Operation - DELETE_INCOMING_EVENTS_OLDER_THAN
+        /// </remarks>
+        /// <param name="in_dateMillis">
+        /// CreatedAt cut-off time whereby older events will be deleted (In UTC since Epoch)
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteIncomingEventsOlderThan(
+            int in_dateMillis,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EventServiceDateMillis.Value] = in_dateMillis;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEventsOlderThan, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        /// <summary>
+        /// Delete any events of the given type older than the given date out of the user's incoming mailbox.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - event
+        /// Service Operation - DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN
+        /// </remarks>
+        /// <param name="in_eventId">
+        /// The event id
+        /// </param>
+        /// <param name="in_dateMillis">
+        /// CreatedAt cut-off time whereby older events will be deleted (In UTC since Epoch)
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DeleteIncomingEventsByTypeOlderThan(
+            string in_eventId,
+            int in_dateMillis,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EventServiceDateMillis.Value] = in_dateMillis;
+            data[OperationParam.EventServiceEventType.Value] = in_eventId;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEventsByTypeOlderThan, data, callback);
+            _client.SendRequest(sc);
+        }
 
         /// <summary>
         /// Get the events currently queued for the user.

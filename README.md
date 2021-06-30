@@ -2,7 +2,7 @@
 
 Thanks for downloading the brainCloud Unity / C# client library! Here are a few notes to get you started. Further information about the brainCloud API and a few example Tutorials can be found here:
 
-http://apidocs.braincloudservers.com/
+https://getbraincloud.com/apidocs/tutorials/
 
 If you haven't signed up or you want to log into the brainCloud portal, you can do that here:
 

@@ -101,6 +101,7 @@ using System;
         public static readonly ServiceOperation ListFriends = new ServiceOperation("LIST_FRIENDS");
         public static readonly ServiceOperation GetMySocialInfo = new ServiceOperation("GET_MY_SOCIAL_INFO");
         public static readonly ServiceOperation AddFriends = new ServiceOperation("ADD_FRIENDS");
+        public static readonly ServiceOperation AddFriendsFromPlatform = new ServiceOperation("ADD_FRIENDS_FROM_PLATFORM");
         public static readonly ServiceOperation RemoveFriends = new ServiceOperation("REMOVE_FRIENDS");
         public static readonly ServiceOperation GetUsersOnlineStatus = new ServiceOperation("GET_USERS_ONLINE_STATUS");
         public static readonly ServiceOperation GetSocialLeaderboard = new ServiceOperation("GET_SOCIAL_LEADERBOARD");
@@ -155,11 +156,15 @@ using System;
         public static readonly ServiceOperation GetPeerVC = new ServiceOperation("GET_PEER_VC");
         public static readonly ServiceOperation StartPurchase = new ServiceOperation("START_PURCHASE");
         public static readonly ServiceOperation FinalizePurchase = new ServiceOperation("FINALIZE_PURCHASE");
+        public static readonly ServiceOperation RefreshPromotions = new ServiceOperation("REFRESH_PROMOTIONS");
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
         public static readonly ServiceOperation DeleteIncoming = new ServiceOperation("DELETE_INCOMING");
+        public static readonly ServiceOperation DeleteIncomingEvents = new ServiceOperation("DELETE_INCOMING_EVENTS");
+        public static readonly ServiceOperation DeleteIncomingEventsOlderThan = new ServiceOperation("DELETE_INCOMING_EVENTS_OLDER_THAN");
+        public static readonly ServiceOperation DeleteIncomingEventsByTypeOlderThan = new ServiceOperation("DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN");
         public static readonly ServiceOperation GetEvents = new ServiceOperation("GET_EVENTS");
 
         public static readonly ServiceOperation UpdateIncrement = new ServiceOperation("UPDATE_INCREMENT");

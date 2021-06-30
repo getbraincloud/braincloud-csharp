@@ -123,7 +123,10 @@ namespace BrainCloud
         public static readonly OperationParam EventServiceUpdateEventDataEventId = new OperationParam("eventId");
         public static readonly OperationParam EventServiceUpdateEventDataData = new OperationParam("eventData");
         public static readonly OperationParam EvId = new OperationParam("evId");
-
+        public static readonly OperationParam EventServiceEvIds  = new OperationParam("evIds");
+        public static readonly OperationParam EventServiceDateMillis  = new OperationParam("dateMillis");
+        public static readonly OperationParam EventServiceEventType   = new OperationParam("eventType");
+        
         // Event Service - Delete Incoming Params
         public static readonly OperationParam EventServiceDeleteIncomingEventId = new OperationParam("eventId");
         public static readonly OperationParam EventServiceDeleteIncomingFromId = new OperationParam("fromId");
@@ -137,6 +140,7 @@ namespace BrainCloud
         // Friend Service - Params
         public static readonly OperationParam FriendServiceEntityId = new OperationParam("entityId");
         public static readonly OperationParam FriendServiceExternalId = new OperationParam("externalId");
+        public static readonly OperationParam FriendServiceExternalIds = new OperationParam("externalIds");
         public static readonly OperationParam FriendServiceProfileId = new OperationParam("profileId");
         public static readonly OperationParam FriendServiceFriendId = new OperationParam("friendId");
         public static readonly OperationParam FriendServiceAuthenticationType = new OperationParam("authenticationType");
@@ -146,6 +150,7 @@ namespace BrainCloud
         public static readonly OperationParam FriendServiceIncludeSummaryData = new OperationParam("includeSummaryData");
         public static readonly OperationParam FriendServiceFriendPlatform = new OperationParam("friendPlatform");
         public static readonly OperationParam FriendServiceProfileIds = new OperationParam("profileIds");
+        public static readonly OperationParam FriendServiceMode = new OperationParam("mode");
 
         // Friend Service operations
         //public static readonly Operation FriendServiceReadFriends = new Operation("READ_FRIENDS");

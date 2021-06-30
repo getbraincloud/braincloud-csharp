@@ -30,11 +30,11 @@ namespace BrainCloudTests
             tr.Run();
 
             // Run for 90sec and see if the heartbeat did its job
-            int startTime = Environment.TickCount;
-            while (Environment.TickCount - startTime < 90000) // 90sec
+            var timeBefore = DateTime.Now;
+            while ((DateTime.Now - timeBefore).TotalSeconds < 90.0) // 90sec
             {
                 _bc.Update();
-                Thread.Sleep(100);
+                Thread.Sleep(16);
             }
             Assert.True(_bc.RTTService.IsRTTEnabled());
         }
@@ -74,12 +74,11 @@ namespace BrainCloudTests
             tr.Run();
 
             // Now check if we get the chat message
-            int timeout = 100; // 10 seconds
-            while (!receivedChat && timeout > 0)
+            var timeBefore = DateTime.Now;
+            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 30.0) // 30sec wait is enough (heck, 10sec is enough)
             {
                 _bc.Update();
-                Thread.Sleep(100);
-                timeout--;
+                Thread.Sleep(16); // Simulate 60 fps
             }
             Assert.True(receivedChat);
 
@@ -92,12 +91,11 @@ namespace BrainCloudTests
             tr.Run();
 
             // Wait 10sec, and make sure we don't get the event this time
-            timeout = 100; // 10 seconds
-            while (!receivedChat && timeout > 0)
+            timeBefore = DateTime.Now;
+            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 10.0) // 10sec
             {
                 _bc.Update();
-                Thread.Sleep(100);
-                timeout--;
+                Thread.Sleep(16);
             }
             Assert.False(receivedChat);
         }
@@ -127,13 +125,12 @@ namespace BrainCloudTests
             tr.Run();
 
             // Now check if we get the lobby message
-            // Wait 60sec, creating lobby can take time
-            int timeout = 600; // 60 seconds
-            while (!receivedLobby && timeout > 0)
+            // Wait 300sec, creating lobby can take time
+            var timeBefore = DateTime.Now;
+            while (!receivedLobby && (DateTime.Now - timeBefore).TotalSeconds < 300.0)
             {
                 _bc.Update();
-                Thread.Sleep(100);
-                timeout--;
+                Thread.Sleep(16);
             }
             Assert.True(receivedLobby);
         }
@@ -164,12 +161,11 @@ namespace BrainCloudTests
             tr.Run();
 
             // Now check if we get the event message
-            int timeout = 100; // 10 seconds
-            while (!receivedEvent && timeout > 0)
+            var timeBefore = DateTime.Now;
+            while (!receivedEvent && (DateTime.Now - timeBefore).TotalSeconds < 30.0)
             {
                 _bc.Update();
-                Thread.Sleep(100);
-                timeout--;
+                Thread.Sleep(16);
             }
             Assert.True(receivedEvent);
         }

@@ -60,7 +60,7 @@ namespace BrainCloudTests
             tr.Run();
 
             Console.WriteLine("\nWaiting for session to expire...");
-            Thread.Sleep(61 * 1000);
+            Thread.Sleep(61 * 1000); // [dsl] Sessions doesn't expire in 61 sec, what is this. Pointless test
 
             _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.Run();
