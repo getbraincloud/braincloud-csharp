@@ -1659,7 +1659,9 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
+#if !(DOT_NET)
                     request.SetRequestHeader("Accept-Encoding", "gzip");
+#endif
                     request.SetRequestHeader("Content-Encoding", "gzip");
                 }          
 
@@ -1826,7 +1828,11 @@ using UnityEngine.Experimental.Networking;
                 }
                 else 
                 {
+#if !(DOT_NET)
                     var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
+#else
+                    var decompressedByteArray = _activeRequest.WebRequest.downloadHandler.data;
+#endif
                     response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
 #else
