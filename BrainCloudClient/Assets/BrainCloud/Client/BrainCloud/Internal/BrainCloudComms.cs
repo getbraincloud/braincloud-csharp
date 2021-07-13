@@ -1659,7 +1659,7 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
-#if UNITYENG
+#if !(DOT_NET)
                     request.SetRequestHeader("Accept-Encoding", "gzip");
 #endif
                     request.SetRequestHeader("Content-Encoding", "gzip");
