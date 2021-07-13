@@ -1828,7 +1828,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 else 
                 {
-#if UNITYENG
+#if !(DOT_NET)
                     var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
 #else
                     var decompressedByteArray = _activeRequest.WebRequest.downloadHandler.data;
