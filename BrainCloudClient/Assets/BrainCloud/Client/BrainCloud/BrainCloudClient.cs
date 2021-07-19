@@ -281,6 +281,7 @@ using System.Globalization;
         public void EnableCompression(bool compress)
         {
             _comms.EnableCompression(compress);
+            _authenticationService.CompressResponses = compress;
         }
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>

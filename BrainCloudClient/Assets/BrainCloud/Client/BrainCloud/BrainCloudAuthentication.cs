@@ -15,7 +15,7 @@ using BrainCloud.JsonFx.Json;
     public class BrainCloudAuthentication
     {
         private BrainCloudClient _client;
-
+        public bool CompressResponses { get; set; }
         public string AnonymousId { get; set; }
         public string ProfileId { get; set; }
 
@@ -47,6 +47,7 @@ using BrainCloud.JsonFx.Json;
         {
             ProfileId = profileId;
             AnonymousId = anonymousId;
+            CompressResponses = false;
         }
 
         /// <summary>
@@ -82,11 +83,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -119,11 +119,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             AnonymousId = anonymousId;
-            AuthenticateAnonymous(forceCreate, success, failure, cbObject, compressResponses);
+            AuthenticateAnonymous(forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -163,11 +162,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(email, password, AuthenticationType.Email,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -203,11 +201,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(userId, password, AuthenticationType.Universal,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -242,11 +239,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(externalId, authenticationToken, AuthenticationType.Facebook,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -281,11 +277,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(externalId, authenticationToken, AuthenticationType.FacebookLimited,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -319,11 +314,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(oculusId, oculusNonce, AuthenticationType.Oculus,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -357,11 +351,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(accountId, authToken, AuthenticationType.PlaystationNetwork,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -391,11 +384,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(gameCenterId, "", AuthenticationType.GameCenter,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -429,11 +421,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(userId, sessionticket, AuthenticationType.Steam,
-                              null, forceCreate, success, failure, cbObject, compressResponses);
+                              null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -467,11 +458,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(appleUserId, identityToken, AuthenticationType.Apple,
-                null, forceCreate, success, failure, cbObject, compressResponses);
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -505,11 +495,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(googleUserId, serverAuthCode, AuthenticationType.Google,
-                null, forceCreate, success, failure, cbObject, compressResponses);
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -543,11 +532,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId,
-                null, forceCreate, success, failure, cbObject, compressResponses);
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -585,11 +573,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(userId, token + ":" + secret, AuthenticationType.Twitter,
-                null, forceCreate, success, failure, cbObject, compressResponses);
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -623,11 +610,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(userId, token, AuthenticationType.Parse,
-                null, forceCreate, success, failure, cbObject, compressResponses);
+                null, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -653,11 +639,10 @@ using BrainCloud.JsonFx.Json;
             string handoffCode,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(handoffCode, "", AuthenticationType.SettopHandoff,
-                null, false, success, failure, cbObject, compressResponses);
+                null, false, success, failure, cbObject);
         }
 
         
@@ -687,11 +672,10 @@ using BrainCloud.JsonFx.Json;
             string securityToken,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(handoffId, securityToken, AuthenticationType.Handoff,
-                null, false, success, failure, cbObject, compressResponses);
+                null, false, success, failure, cbObject);
         }
 
         /// <summary>
@@ -730,11 +714,10 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             Authenticate(userId, token, AuthenticationType.External,
-                externalAuthName, forceCreate, success, failure, cbObject, compressResponses);
+                externalAuthName, forceCreate, success, failure, cbObject);
         }
 
         /// <summary>
@@ -1087,8 +1070,7 @@ using BrainCloud.JsonFx.Json;
             bool forceCreate,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject = null,
-            bool compressResponses = false)
+            object cbObject = null)
         {
             string languageCode = _client.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
@@ -1099,7 +1081,7 @@ using BrainCloud.JsonFx.Json;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
-            data[OperationParam.AuthenticateServiceAuthenticateCompressResponses.Value] = compressResponses;
+            data[OperationParam.AuthenticateServiceAuthenticateCompressResponses.Value] = CompressResponses;
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
