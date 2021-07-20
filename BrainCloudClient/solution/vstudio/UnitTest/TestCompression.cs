@@ -39,7 +39,8 @@ namespace BrainCloudTests
             }
             
             //Compression
-            _bc.Client.EnableCompression(true);
+            _bc.Client.EnableCompressedRequests(true);
+            _bc.Client.EnableCompressedResponses(true);
             _bc.EntityService.CreateEntity
                 (
                     _defaultEntityType,
