@@ -201,7 +201,7 @@ using BrainCloud.Internal;
         /// <summary>
         /// 
         /// </summary>
-        public string RTTConnectionID()
+        public string getRTTConnectionID()
         {
             return m_commsLayer.RTTConnectionID;
         }
