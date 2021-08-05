@@ -7,9 +7,9 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestGlobalFile : TestFixtureBase
     {   
-        string testfileName = "testGlobalFile.png";
-        string testFileId = "ed2d2924-4650-4a88-b095-94b75ce9aa18";
-        string testFolderPath = "/fname/";
+        string testfileName = "png1.png";
+        string testFileId = "34802251-0da0-419e-91b5-59d91790af15";
+        string testFolderPath = "/existingfolder/";
 
         [Test]
         public void TestGetFileInfo()
