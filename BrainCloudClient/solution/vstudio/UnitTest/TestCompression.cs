@@ -13,16 +13,23 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestCompression : TestFixtureBase
     {
-        
         private readonly string _defaultEntityType = "placeholderText";
         private readonly string _defaultEntityValueName = "Lorem ipsum";
-        private readonly string _entityValuePath = "C:/Users/Public/TestFile.txt";
         [Test]
         public void TestCompressEntity()
         {
             TestResult tr = new TestResult(_bc);
-            var entityValueFromFile =  File.ReadAllText(_entityValuePath);;
-            //No compression
+            //Getting file path
+            var entityValuePath = AppDomain.CurrentDomain.BaseDirectory;
+            var resultPath = entityValuePath;
+            string search = "BrainCloudClient";
+            if (resultPath.Contains(search))
+            {
+                resultPath = resultPath.Substring(0, resultPath.LastIndexOf(search));
+                resultPath += search + Path.DirectorySeparatorChar + "tests" + Path.DirectorySeparatorChar + "TestCompressionFile.txt";
+            }
+            var entityValueFromFile =  File.ReadAllText(resultPath);;
+            // Setting up a non compressed entity
             _bc.EntityService.CreateEntity
             (
                 _defaultEntityType,
@@ -38,7 +45,7 @@ namespace BrainCloudTests
                 ReadResponsePacketSize(tr.m_response, false);
             }
             
-            //Compression
+            //Setting up a compressed entity
             _bc.Client.EnableCompressedRequests(true);
             _bc.Client.EnableCompressedResponses(true);
             _bc.EntityService.CreateEntity
