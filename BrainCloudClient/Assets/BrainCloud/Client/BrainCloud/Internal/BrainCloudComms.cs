@@ -1828,11 +1828,8 @@ using UnityEngine.Experimental.Networking;
                 }
                 else 
                 {
-#if DOT_NET
-                    var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
-#else
+                    //With Unity Web Request, unity will detect a compressed response and will decompress the response under the hood
                     var decompressedByteArray = _activeRequest.WebRequest.downloadHandler.data;
-#endif
                     response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
 #else

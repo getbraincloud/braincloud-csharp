@@ -15,7 +15,7 @@ using BrainCloud.JsonFx.Json;
     public class BrainCloudAuthentication
     {
         private BrainCloudClient _client;
-
+        public bool CompressResponses { get; set; }
         public string AnonymousId { get; set; }
         public string ProfileId { get; set; }
 
@@ -47,6 +47,7 @@ using BrainCloud.JsonFx.Json;
         {
             ProfileId = profileId;
             AnonymousId = anonymousId;
+            CompressResponses = false;
         }
 
         /// <summary>
@@ -1080,6 +1081,7 @@ using BrainCloud.JsonFx.Json;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
+            data[OperationParam.AuthenticateServiceAuthenticateCompressResponses.Value] = CompressResponses;
 
             data[OperationParam.AuthenticateServiceAuthenticateProfileId.Value] = ProfileId;
             data[OperationParam.AuthenticateServiceAuthenticateAnonymousId.Value] = AnonymousId;
