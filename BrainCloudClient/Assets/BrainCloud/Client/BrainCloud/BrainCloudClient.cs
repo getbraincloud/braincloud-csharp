@@ -278,9 +278,14 @@ using System.Globalization;
             get { return _initialized; }
         }
 
-        public void EnableCompression(bool compress)
+        public void EnableCompressedRequests(bool isEnabled)
         {
-            _comms.EnableCompression(compress);
+            _comms.EnableCompression(isEnabled);
+        }
+
+        public void EnableCompressedResponses(bool isEnabled)
+        {
+            _authenticationService.CompressResponses = isEnabled;
         }
 
         /// <summary>Returns the sessionId or empty string if no session present.</summary>

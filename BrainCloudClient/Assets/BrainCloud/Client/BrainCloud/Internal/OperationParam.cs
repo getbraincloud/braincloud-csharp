@@ -70,6 +70,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateAnonymousId = new OperationParam("anonymousId");
         public static readonly OperationParam AuthenticateServiceAuthenticateProfileId = new OperationParam("profileId");
         public static readonly OperationParam AuthenticateServiceAuthenticateForceCreate = new OperationParam("forceCreate");
+        public static readonly OperationParam AuthenticateServiceAuthenticateCompressResponses = new OperationParam("compressResponses");
         public static readonly OperationParam AuthenticateServicePlayerSessionExpiry = new OperationParam("playerSessionExpiry");
 
         // Authenticate Service - Authenticate Params
