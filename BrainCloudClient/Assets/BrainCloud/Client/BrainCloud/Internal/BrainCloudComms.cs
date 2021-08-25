@@ -903,7 +903,26 @@ using UnityEngine.Experimental.Networking;
                 }
                 return;
             }
-
+            
+            if (!IsJsonValid(jsonData))
+            {
+                _cachedReasonCode = ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT;
+                _cachedStatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
+                _cachedStatusMessage = "Received an invalid json format response, check your network settings.";
+                _cacheMessagesOnNetworkError = true;
+                lock (_serviceCallsWaiting)
+                {
+                    if (_serviceCallsInProgress.Count > 0)
+                    {
+                        var serverCall = _serviceCallsInProgress[0];
+                        serverCall.GetCallback().OnErrorCallback(_cachedStatusCode,_cachedReasonCode,_cachedStatusMessage);
+                        _serviceCallsInProgress.RemoveAt(0);
+                    }
+                }
+                _clientRef.Log(_cachedStatusMessage);
+                return;
+            }
+            
             JsonResponseBundleV2 bundleObj = JsonReader.Deserialize<JsonResponseBundleV2>(jsonData);
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
@@ -1944,6 +1963,28 @@ using UnityEngine.Experimental.Networking;
         public void EnableComms(bool value)
         {
             _enabled = value;
+        }
+        
+        private static bool IsJsonValid(string strInput)
+        {
+            if (string.IsNullOrWhiteSpace(strInput)) { return false;}
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JsonReader.Deserialize<JsonResponseBundleV2>(strInput);
+                    return true;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+            
+            return false;
         }
 
         /// <summary>
