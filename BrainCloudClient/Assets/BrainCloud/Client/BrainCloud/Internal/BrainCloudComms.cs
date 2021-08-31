@@ -906,7 +906,7 @@ using UnityEngine.Experimental.Networking;
             
             if (!IsJsonValid(jsonData))
             {
-                _cachedReasonCode = ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT;
+                _cachedReasonCode = ReasonCodes.JSON_PARSING_ERROR;
                 _cachedStatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
                 _cachedStatusMessage = "Received an invalid json format response, check your network settings.";
                 _cacheMessagesOnNetworkError = true;

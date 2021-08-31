@@ -79,7 +79,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             tr.SetTimeToWaitSecs(120);
             _bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
+            tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.JSON_PARSING_ERROR);
 
             DateTime timeEnd = DateTime.Now;
             TimeSpan delta = timeEnd.Subtract(timeStart);
