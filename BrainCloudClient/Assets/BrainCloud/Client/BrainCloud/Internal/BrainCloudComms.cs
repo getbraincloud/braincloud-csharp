@@ -499,10 +499,41 @@ using UnityEngine.Experimental.Networking;
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
+#if USE_WEB_REQUEST
+                    if (_activeRequest.WebRequest.responseCode == 200)
+                    {
+                        ResetIdleTimer();
+                        HandleResponseBundle(GetWebRequestResponse(_activeRequest));
+
+                        _activeRequest = null;        
+                    }
+                    else if (_activeRequest.WebRequest.responseCode == 503)
+                    {
+                        //Packet in progress
+                        _clientRef.Log("Packet in progress");
+                        RetryRequest(status, bypassTimeout);
+                        return;
+                    }
+                    else
+                    {
+                        //Error Callback
+                        var errorResponse = GetWebRequestResponse(_activeRequest);
+                        if (_serviceCallsInProgress.Count > 0)
+                        {
+                            ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
+                            if (sc != null)
+                            {
+                                sc.OnErrorCallback(404,(int)_activeRequest.WebRequest.responseCode, errorResponse);    
+                            }
+                        }
+                    }
+#elif DOT_NET
+                    
                     ResetIdleTimer();
                     HandleResponseBundle(GetWebRequestResponse(_activeRequest));
 
                     _activeRequest = null;
+#endif
                 }
             }
 
@@ -1801,24 +1832,21 @@ using UnityEngine.Experimental.Networking;
             {
                 return status;
             }
-
-#if !(DOT_NET)
+#if USE_WEB_REQUEST
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
-#if USE_WEB_REQUEST
+
             else if (_activeRequest.WebRequest.downloadHandler.isDone)
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
-#else
             else if (_activeRequest.WebRequest.isDone)
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
-#endif
-#else
+#elif DOT_NET
             status = _activeRequest.DotNetRequestStatus;
 #endif
             return status;
@@ -1833,38 +1861,25 @@ using UnityEngine.Experimental.Networking;
         private string GetWebRequestResponse(RequestState requestState)
         {
             string response = "";
-#if !(DOT_NET)
+#if USE_WEB_REQUEST
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
             }
+
+            //Uncompressed response
+            if(!_activeRequest.WebRequest.responseHeaders.ContainsKey("Content-Encoding") ||
+               _activeRequest.WebRequest.responseHeaders["Content-Encoding"] != "gzip")
+            {
+                response = _activeRequest.WebRequest.text;
+            }
+            //Compressed response
             else
             {
-#if USE_WEB_REQUEST
-                if(_activeRequest.WebRequest.GetRequestHeader("Content-Encoding") != "gzip")
-                {
-                    response = _activeRequest.WebRequest.downloadHandler.text;
-                }
-                else 
-                {
-                    //With Unity Web Request, unity will detect a compressed response and will decompress the response under the hood
-                    var decompressedByteArray = _activeRequest.WebRequest.downloadHandler.data;
-                    response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
-                }
-#else
-                if(!_activeRequest.WebRequest.responseHeaders.ContainsKey("Content-Encoding") ||
-                    _activeRequest.WebRequest.responseHeaders["Content-Encoding"] != "gzip")
-                {
-                    response = _activeRequest.WebRequest.text;
-                }
-                else
-                {
-                    var decompressedByteArray = Decompress(_activeRequest.WebRequest.bytes);
-                    response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
-                }
-#endif
+                var decompressedByteArray = Decompress(_activeRequest.WebRequest.bytes);
+                response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
             }
-#else
+#elif DOT_NET
             response = _activeRequest.DotNetResponseString;
 #endif
             return response;
@@ -2141,7 +2156,65 @@ using UnityEngine.Experimental.Networking;
 
             return defaultReturn;
         }
+        /// <summary>
+        /// Attempts to create and send next request bundle.
+        /// If to many attempts have been made, the request becomes an error
+        /// </summary>
+        /// <param name="status">Current Request Status</param>
+        /// <param name="bypassTimeout">Was there an error on the request?</param>
+        private void RetryRequest(RequestState.eWebRequestStatus status, bool bypassTimeout)
+        {   
+            if (bypassTimeout || DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(_activeRequest))
+            {
+                if (_clientRef.LoggingEnabled)
+                {
+                    string errorResponse = "";
+                    // we've reached the retry limit - send timeout error to all client callbacks
+                    if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
+                    {
+                        errorResponse = GetWebRequestResponse(_activeRequest);
+                        _clientRef.Log("Timeout with network error: " + errorResponse);
+                    }
+                    else
+                    {
+                        _clientRef.Log("Timeout no reply from server");
+                    }
+                }
+                if (!ResendMessage(_activeRequest))
+                {
+                    _activeRequest = null;
 
+                    // if we're doing caching of messages on timeout, kick it in now!
+                    if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
+                    {
+                        if (_clientRef.LoggingEnabled)
+                        {
+                            _clientRef.Log("Caching messages");
+                        }
+                        _blockingQueue = true;
+
+                        // and insert the inProgress messages into head of wait queue
+                        lock (_serviceCallsInTimeoutQueue)
+                        {
+                            _serviceCallsInTimeoutQueue.InsertRange(0, _serviceCallsInProgress);
+                            _serviceCallsInProgress.Clear();
+                        }
+
+                        _networkErrorCallback();
+                    }
+                    else
+                    {
+                        // Fake a message bundle to keep the callback logic in one place
+                        TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
+                    }
+                }    
+            }
+            else // send the next message if we're ready
+            {
+                _activeRequest = CreateAndSendNextRequestBundle();
+            }
+        }
+        
         /// <summary>
         /// Resets the cached error message for local session error handling to default
         /// </summary>
