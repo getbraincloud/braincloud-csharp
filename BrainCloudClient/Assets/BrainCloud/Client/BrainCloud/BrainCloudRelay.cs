@@ -56,6 +56,14 @@ using BrainCloud.Internal;
         public string OwnerProfileId { get { return m_commsLayer.GetOwnerProfileId(); } }
 
         /// <summary>
+        /// et the lobby's owner profile Id.
+        /// </summary>
+        public string GetOwnerProfileId()
+        {
+            return m_commsLayer.GetOwnerProfileId();
+        }
+
+        /// <summary>
         /// Returns the profileId associated with a netId.
         /// </summary>
         public string GetProfileIdForNetId(short netId)
@@ -69,6 +77,35 @@ using BrainCloud.Internal;
         public short GetNetIdForProfileId(string profileId)
         {
             return m_commsLayer.GetNetIdForProfileId(profileId);
+        }
+
+        /// <summary>
+        /// et the lobby's owner RTT connection Id.
+        /// </summary>
+        public string OwnerCxId { get { return m_commsLayer.GetOwnerCxId(); } }
+
+        /// <summary>
+        /// et the lobby's owner profile Id.
+        /// </summary>
+        public string GetOwnerCxId()
+        {
+            return m_commsLayer.GetOwnerCxId();
+        }
+
+        /// <summary>
+        /// Returns the RTT connection Id associated with a netId.
+        /// </summary>
+        public string GetCxIdForNetId(short netId)
+        {
+            return m_commsLayer.GetCxIdForNetId(netId);
+        }
+
+        /// <summary>
+        /// Returns the netId associated with an RTT connection Id.
+        /// </summary>
+        public short GetNetIdForCxId(string cxId)
+        {
+            return m_commsLayer.GetNetIdForCxId(cxId);
         }
 
         /// <summary>
