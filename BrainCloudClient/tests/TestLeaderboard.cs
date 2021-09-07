@@ -3,6 +3,7 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
 using System;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -332,6 +333,26 @@ namespace BrainCloudTests
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestPostScoreToDynamicGroupLeaderboardDaysUTC()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardDaysUTC(
+                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
+                _groupLeaderboardId,
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
+                5,
+                2,
+                tr.ApiSuccess, 
+                tr.ApiError);
+            
             tr.Run();
         }
 
