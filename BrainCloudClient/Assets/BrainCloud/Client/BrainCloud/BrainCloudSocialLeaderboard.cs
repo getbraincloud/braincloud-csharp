@@ -811,7 +811,82 @@ using BrainCloud.Internal;
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
             _client.SendRequest(sc);
         }
-     
+        
+        /// <summary>
+        /// Post the group score to the given group leaderboard
+        /// and dynamically create if necessary. LeaderboardType,
+        /// rotationType, rotationReset, and retainedCount are required.
+        /// </summary>
+        /// <param name="leaderboardId">
+        /// The leaderboard to post to
+        /// </param>
+        /// <param name="groupId">
+        /// The id of the group.
+        /// </param>
+        /// <param name="score">
+        /// The score to post
+        /// </param>
+        /// <param name="data">
+        /// Optional user-defined data to post with the score
+        /// </param>
+        /// <param name="leaderboardType">
+        /// leaderboard type
+        /// </param>
+        /// <param name="rotationResetUTC">
+        /// Date to reset the leaderboard using UTC time since epoch
+        /// </param>
+        /// <param name="retainedCount">
+        /// How many rotations to keep
+        /// </param>
+        /// <param name="numDaysToRotate">
+        /// How many days between each rotation
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PostScoreToDynamicGroupLeaderboardDaysUTC(
+            string leaderboardId,
+            string groupId,
+            long score,
+            string jsonData,
+            SocialLeaderboardType leaderboardType,
+            UInt64? rotationResetUTC,
+            int retainedCount,
+            int numDaysToRotate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null
+        )
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
+            data[OperationParam.PresenceServiceGroupId.Value] = groupId;
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                var customData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.SocialLeaderboardServiceData.Value] = customData;
+            }
+            data[OperationParam.SocialLeaderboardServiceLeaderboardType.Value] = leaderboardType.ToString();
+            data[OperationParam.SocialLeaderboardServiceRotationType.Value] = "DAYS";
+
+            if (rotationResetUTC.HasValue)
+                data[OperationParam.SocialLeaderboardServiceRotationResetTime.Value] = rotationResetUTC;
+
+            data[OperationParam.SocialLeaderboardServiceRetainedCount.Value] = retainedCount;
+            data[OperationParam.NumDaysToRotate.Value] = numDaysToRotate;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Retrieve the social leaderboard for a list of players.
         /// </summary>
