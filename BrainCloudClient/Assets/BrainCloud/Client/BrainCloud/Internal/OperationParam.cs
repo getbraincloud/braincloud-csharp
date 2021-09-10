@@ -505,6 +505,8 @@ namespace BrainCloud
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
         public static readonly OperationParam PingData = new OperationParam("pingData");
+        public static readonly OperationParam LobbyMinRating = new OperationParam("minRating");
+        public static readonly OperationParam LobbyMaxRating = new OperationParam("maxRating");
 
         public static readonly OperationParam CompoundAlgos = new OperationParam("algos");
         public static readonly OperationParam CompoundRanges = new OperationParam("compound-ranges");
