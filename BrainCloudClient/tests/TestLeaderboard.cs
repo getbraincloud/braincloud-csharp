@@ -347,7 +347,7 @@ namespace BrainCloudTests
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
-                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now)),
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now).AddMinutes(1)),
                 5,
                 2,
                 tr.ApiSuccess, 
