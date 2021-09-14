@@ -69,24 +69,19 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        //[Test] //TODO Fix
+        [Test] 
         public void TestBadUrl()
         {
             _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
             _bc.Client.EnableLogging(true);
 
-            DateTime timeStart = DateTime.Now;
             TestResult tr = new TestResult(_bc);
             tr.SetTimeToWaitSecs(120);
             _bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
-
-            DateTime timeEnd = DateTime.Now;
-            TimeSpan delta = timeEnd.Subtract(timeStart);
-            Assert.True(delta >= TimeSpan.FromSeconds(13) && delta <= TimeSpan.FromSeconds(17));
+            tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.JSON_PARSING_ERROR);
         }
 
-        //[Test] //TODO Fix
+        //[Test] //ToDo Fix? 
         public void TestPacketTimeouts()
         {
             try
@@ -133,15 +128,13 @@ namespace BrainCloudTests
                 _bc.Client.EnableLogging(true);
                 _bc.Client.SetPacketTimeouts(new List<int> { 1, 1, 1 });
 
-                DateTime timeStart = DateTime.Now;
                 TestResult tr = new TestResult(_bc);
-                tr.SetTimeToWaitSecs(30);
+                tr.SetTimeToWaitSecs(1);
                 _bc.Client.RegisterNetworkErrorCallback(tr.NetworkError);
                 _bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
-
+                
                 _bc.Client.RetryCachedMessages();
-                tr.Reset();
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
 
                 _bc.Client.FlushCachedMessages(true);
