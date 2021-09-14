@@ -383,7 +383,29 @@ using UnityEngine.Experimental.Networking;
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetRegionsForLobbies, data, callback);
             m_clientRef.SendRequest(sc);
         }
+        
+        /**
+		 * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+		 *
+		 * Service Name - Lobby
+		 * Service Operation - GetVisibleLobbyInstances
+		 *
+		 * @param lobbyType The type of lobby to look for.
+		 * @param minRating Minimum lobby rating.
+		 * @param maxRating Maximum lobby rating.
+		 */
+        public void GetVisibleLobbyInstances(string in_roomType, int in_minRating, int in_maxRating, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyMinRating.Value] = in_minRating;
+            data[OperationParam.LobbyMaxRating.Value] = in_maxRating;
 
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetVisibleLobbyInstances, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+        
         /// <summary>
         /// Retrieves associated PingData averages to be used with all associated <>WithPingData APIs.
         /// Call anytime after GetRegionsForLobbies before proceeding. 

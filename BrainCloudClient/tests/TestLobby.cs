@@ -144,6 +144,20 @@ namespace BrainCloudTests
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.LOBBY_NOT_FOUND);
         }
 
+        [Test]
+        public void TestGetVisibleLobbyInstance()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.LobbyService.GetVisibleLobbyInstances(
+                "MATCH_UNRANKED",
+                1,
+                100,
+                tr.ApiSuccess,
+                tr.ApiError
+                );
+            tr.Run();
+        }
+
         //TODO: cancelFindRequest, needs RTT
 
         // We include all tests regarding pings in there
