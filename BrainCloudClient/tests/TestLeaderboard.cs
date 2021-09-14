@@ -15,7 +15,7 @@ namespace BrainCloudTests
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
         private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
 
-        private string _groupLeaderboardId;
+        private readonly string _groupLeaderboardId = "groupLeaderboardConfig";
       
         private static Random _random = new Random();
 
@@ -356,12 +356,12 @@ namespace BrainCloudTests
 
             var response = tr.m_response;
             var objData = response["data"] as Dictionary<string, object>;
-            _groupLeaderboardId = objData["groupId"] as string;
+            var leaderboardId = objData["groupId"] as string;
             
             
             _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardUTC(
                 _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
-                _groupLeaderboardId,
+                leaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
@@ -372,7 +372,7 @@ namespace BrainCloudTests
 
             tr.Run();
             
-            _bc.GroupService.DeleteGroup(_groupLeaderboardId,-1,tr.ApiSuccess,tr.ApiError);
+            _bc.GroupService.DeleteGroup(leaderboardId,-1,tr.ApiSuccess,tr.ApiError);
             tr.Run();
         }
 
