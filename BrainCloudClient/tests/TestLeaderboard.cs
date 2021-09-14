@@ -3,6 +3,7 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
 using System;
+using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
@@ -14,7 +15,7 @@ namespace BrainCloudTests
         private readonly string _socialLeaderboardId = "testSocialLeaderboard";
         private readonly string _dynamicLeaderboardId = "csTestDynamicLeaderboard";
 
-        private readonly string _groupLeaderboardId = "groupLeaderboardConfig";
+        private string _groupLeaderboardId;
       
         private static Random _random = new Random();
 
@@ -340,19 +341,38 @@ namespace BrainCloudTests
         public void TestPostScoreToDynamicGroupLeaderboardDaysUTC()
         {
             TestResult tr = new TestResult(_bc);
+            GroupACL groupAcl = new GroupACL();
+            _bc.GroupService.CreateGroup(
+                "a-group-id",
+                "test",
+                false,
+                groupAcl,
+                "",
+                "",
+                "",
+                tr.ApiSuccess,
+                tr.ApiError);
+            tr.Run();
 
-            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardDaysUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
+            var response = tr.m_response;
+            var objData = response["data"] as Dictionary<string, object>;
+            _groupLeaderboardId = objData["groupId"] as string;
+            
+            
+            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardUTC(
+                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
                 _groupLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
-                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now).AddMinutes(1)),
+                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
                 5,
-                2,
-                tr.ApiSuccess, 
-                tr.ApiError);
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
             
+            _bc.GroupService.DeleteGroup(_groupLeaderboardId,-1,tr.ApiSuccess,tr.ApiError);
             tr.Run();
         }
 
