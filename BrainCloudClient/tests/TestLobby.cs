@@ -143,18 +143,65 @@ namespace BrainCloudTests
 
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.LOBBY_NOT_FOUND);
         }
-
+        
         [Test]
-        public void TestGetVisibleLobbyInstance()
+        public void TestGetLobbyInstance()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.LobbyService.GetVisibleLobbyInstances(
+
+            Dictionary<string, int> ratings = new Dictionary<string, int>();
+            ratings["min"] = 50;
+            ratings["max"] = 70;
+            
+            Dictionary<string, int> ping = new Dictionary<string, int>();
+            ping["max"] = 100;
+            
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["rating"] = ratings;
+            data["ping"] = ping;
+
+            _bc.LobbyService.GetLobbyInstances(
                 "MATCH_UNRANKED",
-                1,
-                100,
+                data,
                 tr.ApiSuccess,
                 tr.ApiError
-                );
+            );
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestGetLobbyInstanceWithPingData()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            Dictionary<string, int> ratings = new Dictionary<string, int>();
+            ratings["min"] = 50;
+            ratings["max"] = 70;
+            
+            Dictionary<string, int> ping = new Dictionary<string, int>();
+            ping["max"] = 100;
+            
+            Dictionary<string, object> criteriaJson = new Dictionary<string, object>();
+            criteriaJson["rating"] = ratings;
+            criteriaJson["ping"] = ping;
+
+            string[] roomTypes =
+            {
+                "MATCH_UNRANKED"
+            };
+            _bc.LobbyService.GetRegionsForLobbies(roomTypes, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            _bc.LobbyService.PingRegions(tr.ApiSuccess,tr.ApiError);
+            tr.Run();
+            
+            _bc.LobbyService.GetLobbyInstancesWithPingData
+            (
+                "MATCH_UNRANKED",
+                criteriaJson,
+                tr.ApiSuccess,
+                tr.ApiError
+            );
             tr.Run();
         }
 

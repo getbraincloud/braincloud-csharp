@@ -447,7 +447,9 @@ using System;
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
         public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
         public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
-        public static readonly ServiceOperation GetVisibleLobbyInstances = new ServiceOperation("GET_VISIBLE_LOBBY_INSTANCES");
+        public static readonly ServiceOperation GetLobbyInstances = new ServiceOperation("GET_LOBBY_INSTANCES");
+        public static readonly ServiceOperation GetLobbyInstancesWithPingData = new ServiceOperation("GET_LOBBY_INSTANCES_WITH_PING_DATA");
+
         
         //ItemCatalog
         public static readonly ServiceOperation GetCatalogItemDefinition = new ServiceOperation("GET_CATALOG_ITEM_DEFINITION");
