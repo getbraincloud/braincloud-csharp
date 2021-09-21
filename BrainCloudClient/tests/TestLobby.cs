@@ -178,12 +178,8 @@ namespace BrainCloudTests
             ratings["min"] = 50;
             ratings["max"] = 70;
             
-            Dictionary<string, int> ping = new Dictionary<string, int>();
-            ping["max"] = 100;
-            
             Dictionary<string, object> criteriaJson = new Dictionary<string, object>();
             criteriaJson["rating"] = ratings;
-            criteriaJson["ping"] = ping;
 
             string[] roomTypes =
             {
