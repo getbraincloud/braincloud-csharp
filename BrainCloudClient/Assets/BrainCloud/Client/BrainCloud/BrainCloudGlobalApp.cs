@@ -48,7 +48,8 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Method reads all the global properties of the game
+        /// Returns a list of properties, identified by the propertyIds provided.
+        /// If a property from the list isn't found, it just isn't returned (no error).
         /// </summary>
         /// <remarks>
         /// Service Name - GlobalApp
@@ -110,7 +111,7 @@ using BrainCloud.Internal;
             data[OperationParam.GlobalAppReadPropertiesInCategories.Value] = categories;
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadProperties, data, callback);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadPropertiesInCategories, data, callback);
             _client.SendRequest(serverCall);
         }
     }
