@@ -47,5 +47,71 @@ using BrainCloud.Internal;
             _client.SendRequest(serverCall);
         }
 
+        /// <summary>
+        /// Method reads all the global properties of the game
+        /// </summary>
+        /// <remarks>
+        /// Service Name - GlobalApp
+        /// Service Operation - ReadSelectedProperties
+        /// </remarks>
+        /// <param name="propertyIds">
+        /// Specifies which property to return
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ReadSelectedProperties(
+            string[] propertyIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GlobalAppReadSelectedProperties.Value] = propertyIds;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadSelectedProperties, data, callback);
+            _client.SendRequest(serverCall);
+        }
+        
+        /// <summary>
+        /// Returns a list of properties, identified by the categories provided.
+        /// If a category from the list isn't found, it just isn't returned (no error).
+        /// </summary>
+        /// <remarks>
+        /// Service Name - GlobalApp
+        /// Service Operation - ReadPropertiesInCategories
+        /// </remarks>
+        /// <param name="categories">
+        /// Specifies which category to return
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ReadPropertiesInCategories(
+            string[] categories,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GlobalAppReadPropertiesInCategories.Value] = categories;
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadProperties, data, callback);
+            _client.SendRequest(serverCall);
+        }
     }
 }

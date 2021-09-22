@@ -294,6 +294,8 @@ using System;
         public static readonly ServiceOperation GooglePlayConfirmPurchase = new ServiceOperation("CONFIRM_GOOGLEPLAY_PURCHASE");
 
         public static readonly ServiceOperation ReadProperties = new ServiceOperation("READ_PROPERTIES");
+        public static readonly ServiceOperation ReadSelectedProperties = new ServiceOperation("READ_SELECTED_PROPERTIES");
+        public static readonly ServiceOperation ReadPropertiesInCategories = new ServiceOperation("READ_PROPERTIES_IN_CATEGORIES");
 
         public static readonly ServiceOperation GetUpdatedFiles = new ServiceOperation("GET_UPDATED_FILES");
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
