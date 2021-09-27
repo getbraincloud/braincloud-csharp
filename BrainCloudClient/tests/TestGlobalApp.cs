@@ -38,7 +38,11 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             string[] categories =
             {
-                "pack"
+                "Test",
+                "pack",
+                "prop1",
+                "prop2",
+                "prop3"
             };
             _bc.GlobalAppService.ReadPropertiesInCategories(categories, tr.ApiSuccess, tr.ApiError);
 
