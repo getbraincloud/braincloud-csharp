@@ -24,7 +24,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             string[] propertyIds =
             {
-                "Test"
+                "prop1"
             };
 
             _bc.GlobalAppService.ReadSelectedProperties(propertyIds,tr.ApiSuccess, tr.ApiError);
@@ -38,7 +38,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             string[] categories =
             {
-                "Test"
+                "pack"
             };
             _bc.GlobalAppService.ReadPropertiesInCategories(categories, tr.ApiSuccess, tr.ApiError);
 
