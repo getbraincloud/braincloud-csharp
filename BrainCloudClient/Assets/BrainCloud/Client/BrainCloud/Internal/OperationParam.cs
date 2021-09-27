@@ -557,8 +557,8 @@ namespace BrainCloud
         public static readonly OperationParam UserItemsServiceNewItemData = new OperationParam("newItemData");
 
         //global app
-        public static readonly OperationParam GlobalAppReadSelectedProperties = new OperationParam("propertyNames");
-        public static readonly OperationParam GlobalAppReadPropertiesInCategories = new OperationParam("categories");
+        public static readonly OperationParam GlobalAppPropertyNames = new OperationParam("propertyNames");
+        public static readonly OperationParam GlobalAppCategories = new OperationParam("categories");
         
         private OperationParam(string value)
         {

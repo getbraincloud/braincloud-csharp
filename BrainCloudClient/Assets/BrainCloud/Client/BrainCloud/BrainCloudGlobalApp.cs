@@ -48,15 +48,15 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Returns a list of properties, identified by the propertyIds provided.
+        /// Returns a list of properties, identified by the propertyNames provided.
         /// If a property from the list isn't found, it just isn't returned (no error).
         /// </summary>
         /// <remarks>
         /// Service Name - GlobalApp
         /// Service Operation - ReadSelectedProperties
         /// </remarks>
-        /// <param name="propertyIds">
-        /// Specifies which property to return
+        /// <param name="propertyNames">
+        /// Specifies which properties to return
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -68,13 +68,13 @@ using BrainCloud.Internal;
         /// The user object sent to the callback.
         /// </param>
         public void ReadSelectedProperties(
-            string[] propertyIds,
+            string[] propertyNames,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalAppReadSelectedProperties.Value] = propertyIds;
+            data[OperationParam.GlobalAppPropertyNames.Value] = propertyNames;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadSelectedProperties, data, callback);
@@ -90,7 +90,7 @@ using BrainCloud.Internal;
         /// Service Operation - ReadPropertiesInCategories
         /// </remarks>
         /// <param name="categories">
-        /// Specifies which category to return
+        /// Specifies which categories to return
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -108,7 +108,7 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.GlobalAppReadPropertiesInCategories.Value] = categories;
+            data[OperationParam.GlobalAppCategories.Value] = categories;
             
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall serverCall = new ServerCall(ServiceName.GlobalApp, ServiceOperation.ReadPropertiesInCategories, data, callback);
