@@ -22,28 +22,34 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestS2SWithEnumeratorPasses()
         {
-            GameObject gameObject = MonoBehaviour.Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
-            _bc = gameObject.AddComponent<BrainCloudWrapper>();
-            TestFixtureBase tf = new TestFixtureBase(_bc);
-            
-            _bc.Client.EnableLogging(true);
-            _bc.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, OnRTTEnabled, OnFailed);
-            //yield return new WaitUntil(() => tf.Run());
+            _testingContainer.RunAuth();
+            while (_testingContainer.m_done)
+                yield return new WaitForFixedUpdate();
+            _testingContainer._bc.Client.EnableLogging(true);
+            _testingContainer._bc.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
+            _testingContainer._bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, OnRTTEnabled, OnFailed);
+            _testingContainer.StartRun();
+
             var timeStart = DateTime.Now;
-            while ((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0)
+            Debug.Log("Final Run");
+            while (successCount < 4)
             {
-                _bc.Update();
-                //Thread.Sleep(10);
+                _testingContainer._bc.Update();
+                if((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0)
+                {
+                    Debug.Log("Times Up");
+                    break;
+                }
                 yield return new WaitForFixedUpdate();
             }
+            
             Assert.True(successCount == 3);
         }
         
         void OnAuthenticated(string jsonResponse, object cbObject)
         {
-            _bc.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, 
+            _testingContainer._bc.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
+            _testingContainer._bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, 
                 OnRTTEnabled, OnFailed);
         }
         
@@ -60,7 +66,7 @@ namespace Tests.PlayMode
             List<int> ranges = new List<int>();
             ranges.Add(1000);
             algo["ranges"] = ranges;
-            _bc.LobbyService.FindOrCreateLobby(
+            _testingContainer._bc.LobbyService.FindOrCreateLobby(
                 "READY_START_V2", 0, 1, algo, 
                 new Dictionary<string, object>(), 0, true, 
                 new Dictionary<string, object>(), "all", 
@@ -78,9 +84,10 @@ namespace Tests.PlayMode
                     var reason = data["reason"] 
                         as Dictionary<string, object>;
                     var reasonCode = (int)reason["code"];
+                    Debug.Log("Disbanded" + reasonCode);
                     if (reasonCode == ReasonCodes.RTT_ROOM_READY)
                     {
-                        ConnectToServer();
+                        //ConnectToServer();
                     }
                     else
                         OnFailed(0, 0, "DISBANDED != RTT_ROOM_READY", null);
@@ -90,23 +97,33 @@ namespace Tests.PlayMode
                 // relay server.
                 case "ROOM_READY":
                     //_message += "Room Ready\n";
-
+                    Debug.Log("Room Ready");
                     var connectData = data["connectData"]
                         as Dictionary<string, object>;
                     var ports = connectData["ports"] 
                         as Dictionary<string, object>;
-
+                    _testingContainer.Server = new Server(data);
                     _address = (string)connectData["address"];
-                    _port = (int)ports["7777/tcp"];
+                    _port = (int)ports["tcp"];
+                    ConnectToServer();
                     break;
             }
         }
 
         void ConnectToServer()
         {
-            _bc.RelayService.RegisterSystemCallback(systemCallback);
-            _bc.RelayService.RegisterRelayCallback(relayCallback);
-            _bc.RelayService.Connect(connectionType, connectOptions, onRelayConnected, OnFailed);
+            _testingContainer._bc.RelayService.RegisterSystemCallback(systemCallback);
+            _testingContainer._bc.RelayService.RegisterRelayCallback(relayCallback);
+            connectOptions = new RelayConnectOptions
+            (
+                false,
+                _testingContainer.Server.Host,
+                _testingContainer.Server.TcpPort,
+                _testingContainer.Server.Passcode,
+                _testingContainer.Server.LobbyId
+            );
+            
+            _testingContainer._bc.RelayService.Connect(connectionType, connectOptions, onRelayConnected, OnFailed);
         }
 
         void systemCallback(string json)
@@ -143,16 +160,16 @@ namespace Tests.PlayMode
         {
             short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 40 or ALL_PLAYERS (0x000000FFFFFFFFFF)
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
-            _bc.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            _testingContainer._bc.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
         }
         
         void onRelayConnected(string jsonResponse, object cbObject)
         {
             Debug.Log("On Relay Connected");
 
-            short myNetId = _bc.RelayService.GetNetIdForProfileId(_bc.Client.AuthenticationService.ProfileId);
+            short myNetId = _testingContainer._bc.RelayService.GetNetIdForProfileId(_bc.Client.AuthenticationService.ProfileId);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("Hello World!");
-            _bc.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            _testingContainer._bc.RelayService.Send(bytes, (ulong)myNetId);
         }
     }
 }

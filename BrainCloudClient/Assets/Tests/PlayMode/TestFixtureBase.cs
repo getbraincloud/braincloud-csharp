@@ -13,7 +13,7 @@ using Random = System.Random;
 
 namespace Tests.PlayMode
 {
-    public class TestFixtureBase
+    public class TestFixtureBase : MonoBehaviour
     {
         public string ServerUrl = "https://internal.braincloudservers.com/dispatcherv2";
         public string AppId = "20001";
@@ -24,16 +24,24 @@ namespace Tests.PlayMode
         public string ParentLevel = "Master";
         public string PeerName = "peerapp";
         public string SupportsCompression = "false";
-    
-        private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
-    
+
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings
+        {
+            PrettyPrint = true,
+            Tab = "  "
+        };
         public BrainCloudWrapper _bc;
     
         public enum Users { UserA, UserB, UserC }
-
+        protected TestUser _currentUser;
         private static TestUser[] _testUsers;
         private static bool _init = false;
-    
+        private bool _isSpinning;
+        public bool _isRunning;
+
+        protected GameObject _gameObject;
+        protected TestFixtureBase _testingContainer;
+        public Server Server;
         public TestFixtureBase(BrainCloudWrapper bc)
         {
             _bc = bc;
@@ -59,36 +67,55 @@ namespace Tests.PlayMode
         [TearDown]
         public void TearDown()
         {
-            _bc.Client.ResetCommunication();
-            _bc.Client.DeregisterEventCallback();
-            _bc.Client.DeregisterRewardCallback();
+            _testingContainer._bc.Client.ResetCommunication();
+            _testingContainer._bc.Client.DeregisterEventCallback();
+            _testingContainer._bc.Client.DeregisterRewardCallback();
         }
     
         [SetUp]
         public void SetUp()
         {
-            //LoadIds();
-
-            _bc = new BrainCloudWrapper();
+            _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
+            _testingContainer = _gameObject.AddComponent<TestFixtureBase>();
+            _testingContainer._bc = _gameObject.AddComponent<BrainCloudWrapper>();
+            _testingContainer._gameObject = _gameObject;
             Dictionary<string, string> secretMap = new Dictionary<string, string>();
             secretMap.Add(AppId, Secret);
             secretMap.Add(ChildAppId, ChildSecret);
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            _bc.Client.EnableLogging(true);
-            _bc.Client.RegisterLogDelegate(HandleLog);
+            _testingContainer._bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _testingContainer._bc.Client.EnableLogging(true);
+            _testingContainer._bc.Client.RegisterLogDelegate(HandleLog);
 
             //set to enable compression
             if(SupportsCompression != "")
             {
-                _bc.Client.EnableCompression(Boolean.Parse(SupportsCompression));
+                _testingContainer._bc.Client.EnableCompression(Boolean.Parse(SupportsCompression));
             }
+            Debug.Log("Done Set Up");
+            /*
+            if (ShouldAuthenticate())
+            {
+                TestResult tr = new TestResult(_bc);
+                _bc.Client.AuthenticationService.AuthenticateUniversal(
+                    GetUser(Users.UserA).Id,
+                    GetUser(Users.UserA).Password,
+                    true,
+                    tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+            }
+            */
+            
+            //yield return StartCoroutine(Run());
+        }
         
-            _bc.Client.AuthenticationService.AuthenticateUniversal(
-                GetUser(Users.UserA).Id,
-                GetUser(Users.UserA).Password,
-                true,
-                ApiSuccess, ApiError);
-            Run();
+        /// <summary>
+        /// Overridable method which if set to true, will cause unit test "SetUp" to
+        /// attempt an authentication before calling the test method.
+        /// </summary>
+        /// <returns><c>true</c>, if authenticate was shoulded, <c>false</c> otherwise.</returns>
+        public virtual bool ShouldAuthenticate()
+        {
+            return true;
         }
     
         public void Reset()
@@ -103,20 +130,52 @@ namespace Tests.PlayMode
             m_globalErrorCount = 0;
             m_networkErrorCount = 0;
         }
-    
-        public bool Run(int in_apiCount = 1)
+
+        public void StartRun()
         {
+            m_done = false;
+            StartCoroutine(Run());
+        }
+    
+        public IEnumerator Run(int in_apiCount = 1)
+        {
+            Debug.Log("Running...");
+            _isRunning = true;
             Reset();
             m_apiCountExpected = in_apiCount;
             
-            //replaced from Spin() because the while loop hurts
-            _bc.Update();
-
-            Assert.True(m_result);
-
-            return m_result;
+            var timeBefore = DateTime.Now;
+            while (!m_done && (DateTime.Now - timeBefore).TotalSeconds < m_timeToWaitSecs)
+            {
+                if (_bc)
+                {
+                    _bc.Update();    
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            
+            _isRunning = false;
         }
-    
+
+        private IEnumerator Spin()
+        {
+            _isSpinning = false;
+            yield return null;
+        }
+        
+        public void RunAuth()
+        {
+            StartCoroutine(SetUpAuth());
+        }
+
+        public IEnumerator SetUpAuth()
+        {
+            Debug.Log("Set Up Authentication Started...");
+
+            StartCoroutine(SetUpNewUser(Users.UserA));
+            while (!_init) 
+                yield return new WaitForFixedUpdate();
+        }
 
         /// <summary>
         /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
@@ -231,31 +290,32 @@ namespace Tests.PlayMode
             }
             Debug.Log(message);
         }
-    
-        /// <summary>
-        /// Returns the specified user's data
-        /// </summary>
-        /// <param name="user"> User's data to return </param>
-        /// <returns> Object contining the user's Id, Password, and profileId </returns>
-        protected TestUser GetUser(Users user)
+        
+        public IEnumerator SetUpNewUser(Users user)
         {
             if (!_init)
             {
                 Debug.Log(">> Initializing New Random Users");
                 _bc.Client.EnableLogging(true);
-                _testUsers = new TestUser[Enum.GetNames(typeof(Users)).Length];
+                
                 Random rand = new Random();
 
-                for (int i = _testUsers.Length; i-- > 0;)
-                {
-                    _testUsers[i] = new TestUser(_bc, ((Users)i).ToString() + "_CS" + "-", rand.Next());
-                }
+                _currentUser = _gameObject.AddComponent<TestUser>();
+                IEnumerator routine = _currentUser.SetUp
+                (
+                    _bc,
+                    Users.UserA + "_CS" + "-",
+                    rand.Next(),
+                    this
+                );
                 
-                _bc.Client.EnableLogging(true);
+                StartCoroutine(routine);
+                while (_currentUser.IsRunning) 
+                    yield return new WaitForFixedUpdate();
                 _init = true;
             }
-
-            return _testUsers[(int)user];
+            //_currentUser = _testUsers[(int)user];
+            yield return null;
         }
     
         public bool m_done;
@@ -263,7 +323,7 @@ namespace Tests.PlayMode
         public int m_apiCountExpected;
 
         // if success
-        public Dictionary<string, object> m_response;
+        public Dictionary<string, object> m_response =  new Dictionary<string, object>();
 
         // if error
         public int m_statusCode;
@@ -283,6 +343,7 @@ namespace Tests.PlayMode
             m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
             m_result = true;
             --m_apiCountExpected;
+            
             if (m_apiCountExpected <= 0)
             {
                 m_done = true;
@@ -303,10 +364,7 @@ namespace Tests.PlayMode
         }
     }
 
-    /// <summary>
-    /// Holds data for a randomly generated user
-    /// </summary>
-    public class TestUser
+    public class TestUser : MonoBehaviour
     {
         public string Id = "";
         public string Password = "";
@@ -314,7 +372,8 @@ namespace Tests.PlayMode
         public string Email = "";
 
         BrainCloudWrapper _bc;
-
+        public bool IsRunning;
+        private TestFixtureBase _tf;
         public TestUser(BrainCloudWrapper bc, string idPrefix, int suffix)
         {
             _bc = bc;
@@ -322,32 +381,84 @@ namespace Tests.PlayMode
             Id = idPrefix + suffix;
             Password = Id;
             Email = Id + "@bctestuser.com";
-            Authenticate();
+            StartCoroutine(Authenticate());
         }
 
-        private void Authenticate()
+        public IEnumerator SetUp(BrainCloudWrapper bc, string idPrefix, int suffix, TestFixtureBase testFixtureBase)
         {
-            TestFixtureBase tr = new TestFixtureBase(_bc);
+            _bc = bc;
+            _tf = testFixtureBase;
+            Id = idPrefix + suffix;
+            Password = Id;
+            Email = Id + "@bctestuser.com";
+            IsRunning = true;
+            StartCoroutine(Authenticate());
+            while (!IsRunning) 
+                yield return new WaitForFixedUpdate();
+        }
+
+        private IEnumerator Authenticate()
+        {
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 Id,
                 Password,
                 true,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+                _tf.ApiSuccess, _tf.ApiError);
+            StartCoroutine(_tf.Run());
+            while (_tf._isRunning) 
+                yield return new WaitForFixedUpdate();
+            
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
-
-            if (((string)((Dictionary<string, object>)tr.m_response["data"])["newUser"]) == "true")
+            
+            if (_tf.m_response.Count > 0 && ((string)((Dictionary<string, object>)_tf.m_response["data"])["newUser"]) == "true")
             {
-                _bc.MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
-                tr.Run();
-                _bc.PlayerStateService.UpdateUserName(Id, tr.ApiSuccess, tr.ApiError);
-                tr.Run();
-                _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
-                tr.Run();
+                _bc.MatchMakingService.EnableMatchMaking(_tf.ApiSuccess, _tf.ApiError);
+                StartCoroutine(_tf.Run());
+                while (_tf._isRunning) 
+                    yield return new WaitForFixedUpdate();
+                _bc.PlayerStateService.UpdateUserName(Id, _tf.ApiSuccess, _tf.ApiError);
+                StartCoroutine(_tf.Run());
+                while (_tf._isRunning) 
+                    yield return new WaitForFixedUpdate();
+                _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", _tf.ApiSuccess, _tf.ApiError);
+                StartCoroutine(_tf.Run());
+                while (_tf._isRunning) 
+                    yield return new WaitForFixedUpdate();
+            }
+            else
+            {
+                Debug.Log("Got no response from Authentication");
             }
 
-            _bc.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            /*_bc.PlayerStateService.Logout(_tf.ApiSuccess, _tf.ApiError);
+            StartCoroutine(_tf.Run());
+            while (_tf._isRunning) 
+                yield return new WaitForFixedUpdate();*/
+            IsRunning = false;
         }
+    }
+}
+
+
+public class Server
+{
+    public string Host;
+    public int WsPort = -1;
+    public int TcpPort = -1;
+    public int UdpPort = -1;
+    public string Passcode;
+    public string LobbyId;
+
+    public Server(Dictionary<string, object> serverJson)
+    {
+        var connectData = serverJson["connectData"] as Dictionary<string, object>;
+        var ports = connectData["ports"] as Dictionary<string, object>;
+
+        Host = connectData["address"] as string;
+        WsPort = (int)ports["ws"];
+        TcpPort = (int)ports["tcp"];
+        UdpPort = (int)ports["udp"];
+        Passcode = serverJson["passcode"] as string;
+        LobbyId = serverJson["lobbyId"] as string;
     }
 }
