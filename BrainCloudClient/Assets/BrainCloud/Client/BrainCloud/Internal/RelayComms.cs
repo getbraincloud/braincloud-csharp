@@ -221,19 +221,49 @@ namespace BrainCloud.Internal
 
         public string GetOwnerProfileId()
         {
-            return m_ownerId;
+            string[] splits = m_ownerCxId.Split(':');
+            if (splits.Length != 3) return "";
+            return splits[1];
         }
 
         public string GetProfileIdForNetId(short netId)
         {
-            return m_netIdToProfileId[(int)netId];
+            if (m_netIdToCxId.ContainsKey((int)netId))
+            {
+                string cxId = m_netIdToCxId[(int)netId];
+                string[] splits = cxId.Split(':');
+                if (splits.Length != 3) return null;
+                return splits[1];
+            }
+            return null;
         }
 
         public short GetNetIdForProfileId(string profileId)
         {
-            if (m_profileIdToNetId.ContainsKey(profileId))
+            foreach (KeyValuePair<string, int> entry in m_cxIdToNetId)
             {
-                return (short)m_profileIdToNetId[profileId];
+                string[] splits = entry.Key.Split(':');
+                if (splits.Length != 3) continue;
+                if (profileId == splits[1]) return (short)entry.Value;
+            }
+            return (short)INVALID_NET_ID;
+        }
+
+        public string GetOwnerCxId()
+        {
+            return m_ownerCxId;
+        }
+
+        public string GetCxIdForNetId(short netId)
+        {
+            return m_netIdToCxId[(int)netId];
+        }
+
+        public short GetNetIdForCxId(string cxId)
+        {
+            if (m_cxIdToNetId.ContainsKey(cxId))
+            {
+                return (short)m_cxIdToNetId[cxId];
             }
             return (short)INVALID_NET_ID;
         }
@@ -397,7 +427,7 @@ namespace BrainCloud.Internal
         private byte[] buildConnectionRequest()
         {
             Dictionary<string, object> json = new Dictionary<string, object>();
-            json["profileId"] = m_clientRef.ProfileId;
+            json["cxId"] = m_clientRef.RTTConnectionID;
             json["lobbyId"] = m_connectOptions.lobbyId;
             json["passcode"] = m_connectOptions.passcode;
             json["version"] = m_clientRef.BrainCloudClientVersion;
@@ -435,9 +465,9 @@ namespace BrainCloud.Internal
 
             m_connectionType = RelayConnectionType.INVALID;
 
-            m_profileIdToNetId.Clear();
-            m_netIdToProfileId.Clear();
-            m_ownerId = "";
+            m_cxIdToNetId.Clear();
+            m_netIdToCxId.Clear();
+            m_ownerCxId = "";
             m_netId = INVALID_NET_ID;
 
             if (m_webSocket != null) m_webSocket.Close();
@@ -705,13 +735,13 @@ namespace BrainCloud.Internal
                 case "CONNECT":
                     {
                         int netId = (int)parsedDict["netId"];
-                        string profileId = parsedDict["profileId"] as string;
-                        m_profileIdToNetId[profileId] = netId;
-                        m_netIdToProfileId[netId] = profileId;
-                        if (profileId == m_clientRef.AuthenticationService.ProfileId && !m_bIsConnected)
+                        string cxId = parsedDict["cxId"] as string;
+                        m_cxIdToNetId[cxId] = netId;
+                        m_netIdToCxId[netId] = cxId;
+                        if (cxId == m_clientRef.RTTConnectionID && !m_bIsConnected)
                         {
                             m_netId = netId;
-                            m_ownerId = parsedDict["ownerId"] as string;
+                            m_ownerCxId = parsedDict["ownerCxId"] as string;
                             m_bIsConnected = true;
                             m_lastNowMS = DateTime.Now;
                             m_resendConnectRequest = false;
@@ -722,15 +752,15 @@ namespace BrainCloud.Internal
                 case "NET_ID":
                     {
                         int netId = (int)parsedDict["netId"];
-                        string profileId = parsedDict["profileId"] as string;
+                        string cxId = parsedDict["cxId"] as string;
 
-                        m_profileIdToNetId[profileId] = netId;
-                        m_netIdToProfileId[netId] = profileId;
+                        m_cxIdToNetId[cxId] = netId;
+                        m_netIdToCxId[netId] = cxId;
                         break;
                     }
                 case "MIGRATE_OWNER":
                     {
-                        m_ownerId = parsedDict["profileId"] as string;
+                        m_ownerCxId = parsedDict["cxId"] as string;
                         break;
                     }
                 case "DISCONNECT":
@@ -1361,9 +1391,9 @@ namespace BrainCloud.Internal
         private const int PACKET_LOWER_THRESHOLD = MAX_PACKET_ID * 25 / 100;
         private const int PACKET_HIGHER_THRESHOLD = MAX_PACKET_ID * 75 / 100;
 
-        private string m_ownerId = "";
-        private Dictionary<string, int> m_profileIdToNetId = new Dictionary<string, int>();
-        private Dictionary<int, string> m_netIdToProfileId = new Dictionary<int, string>();
+        private string m_ownerCxId = "";
+        private Dictionary<string, int> m_cxIdToNetId = new Dictionary<string, int>();
+        private Dictionary<int, string> m_netIdToCxId = new Dictionary<int, string>();
         private int m_netId = INVALID_NET_ID;
 
         // start

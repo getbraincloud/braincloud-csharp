@@ -294,6 +294,8 @@ using System;
         public static readonly ServiceOperation GooglePlayConfirmPurchase = new ServiceOperation("CONFIRM_GOOGLEPLAY_PURCHASE");
 
         public static readonly ServiceOperation ReadProperties = new ServiceOperation("READ_PROPERTIES");
+        public static readonly ServiceOperation ReadSelectedProperties = new ServiceOperation("READ_SELECTED_PROPERTIES");
+        public static readonly ServiceOperation ReadPropertiesInCategories = new ServiceOperation("READ_PROPERTIES_IN_CATEGORIES");
 
         public static readonly ServiceOperation GetUpdatedFiles = new ServiceOperation("GET_UPDATED_FILES");
         public static readonly ServiceOperation GetFileList = new ServiceOperation("GET_FILE_LIST");
@@ -447,6 +449,9 @@ using System;
         public static readonly ServiceOperation RemoveMember = new ServiceOperation("REMOVE_MEMBER");
         public static readonly ServiceOperation CancelFindRequest = new ServiceOperation("CANCEL_FIND_REQUEST");
         public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
+        public static readonly ServiceOperation GetLobbyInstances = new ServiceOperation("GET_LOBBY_INSTANCES");
+        public static readonly ServiceOperation GetLobbyInstancesWithPingData = new ServiceOperation("GET_LOBBY_INSTANCES_WITH_PING_DATA");
+
         
         //ItemCatalog
         public static readonly ServiceOperation GetCatalogItemDefinition = new ServiceOperation("GET_CATALOG_ITEM_DEFINITION");

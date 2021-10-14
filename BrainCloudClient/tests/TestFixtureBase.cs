@@ -42,7 +42,7 @@ namespace BrainCloudTests
 
             //set to enable compression
             if(SupportsCompression != "")
-                _bc.Client.EnableCompression(Boolean.Parse(SupportsCompression));
+                _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
 
             if (ShouldAuthenticate())
             {

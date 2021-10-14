@@ -70,6 +70,7 @@ namespace BrainCloud
         public static readonly OperationParam AuthenticateServiceAuthenticateAnonymousId = new OperationParam("anonymousId");
         public static readonly OperationParam AuthenticateServiceAuthenticateProfileId = new OperationParam("profileId");
         public static readonly OperationParam AuthenticateServiceAuthenticateForceCreate = new OperationParam("forceCreate");
+        public static readonly OperationParam AuthenticateServiceAuthenticateCompressResponses = new OperationParam("compressResponses");
         public static readonly OperationParam AuthenticateServicePlayerSessionExpiry = new OperationParam("playerSessionExpiry");
 
         // Authenticate Service - Authenticate Params
@@ -504,10 +505,12 @@ namespace BrainCloud
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
         public static readonly OperationParam PingData = new OperationParam("pingData");
+        public static readonly OperationParam LobbyMinRating = new OperationParam("minRating");
+        public static readonly OperationParam LobbyMaxRating = new OperationParam("maxRating");
 
         public static readonly OperationParam CompoundAlgos = new OperationParam("algos");
         public static readonly OperationParam CompoundRanges = new OperationParam("compound-ranges");
-        public static readonly OperationParam LobbyCritera = new OperationParam("criteria");
+        public static readonly OperationParam LobbyCritera = new OperationParam("criteriaJson");
         public static readonly OperationParam CriteraPing = new OperationParam("ping");
         public static readonly OperationParam CriteraRating = new OperationParam("rating");
         public static readonly OperationParam StrategyRangedPercent = new OperationParam("ranged-percent");
@@ -553,6 +556,10 @@ namespace BrainCloud
         public static readonly OperationParam UserItemsServiceShopId = new OperationParam("shopId");
         public static readonly OperationParam UserItemsServiceNewItemData = new OperationParam("newItemData");
 
+        //global app
+        public static readonly OperationParam GlobalAppPropertyNames = new OperationParam("propertyNames");
+        public static readonly OperationParam GlobalAppCategories = new OperationParam("categories");
+        
         private OperationParam(string value)
         {
             Value = value;

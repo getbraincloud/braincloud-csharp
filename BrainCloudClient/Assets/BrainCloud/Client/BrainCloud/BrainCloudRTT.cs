@@ -197,6 +197,15 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.RTTRegistration, ServiceOperation.RequestClientConnection, null, callback);
                 m_clientRef.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string getRTTConnectionID()
+        {
+            return m_commsLayer.RTTConnectionID;
+        }
+        
         #region private
 
         /// <summary>

@@ -3,6 +3,8 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Collections.Generic;
 using System;
+using BrainCloud.Common;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -332,6 +334,45 @@ namespace BrainCloudTests
                 5,
                 tr.ApiSuccess, tr.ApiError);
 
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestPostScoreToDynamicGroupLeaderboardDaysUTC()
+        {
+            TestResult tr = new TestResult(_bc);
+            GroupACL groupAcl = new GroupACL();
+            _bc.GroupService.CreateGroup(
+                "a-group-id",
+                "test",
+                false,
+                groupAcl,
+                "",
+                "",
+                "",
+                tr.ApiSuccess,
+                tr.ApiError);
+            tr.Run();
+
+            var response = tr.m_response;
+            var objData = response["data"] as Dictionary<string, object>;
+            var leaderboardId = objData["groupId"] as string;
+            
+            
+            _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardUTC(
+                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
+                leaderboardId,
+                100,
+                Helpers.CreateJsonPair("testDataKey", 400),
+                BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
+                BrainCloudSocialLeaderboard.RotationType.WEEKLY,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5))),
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+            
+            _bc.GroupService.DeleteGroup(leaderboardId,-1,tr.ApiSuccess,tr.ApiError);
             tr.Run();
         }
 
