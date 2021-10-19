@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine.TestTools;
 using BrainCloud;
 using BrainCloud.JsonFx.Json;
@@ -72,6 +71,7 @@ namespace Tests.PlayMode
                 }
                 yield return new WaitForFixedUpdate();
             }
+            _testingContainer.Reset();
         }
         
         void OnFailed(int status, int reasonCode, string jsonError, object cbObject)
