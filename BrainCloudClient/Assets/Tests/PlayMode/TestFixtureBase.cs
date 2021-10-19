@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BrainCloud.JsonFx.Json;
@@ -8,21 +6,31 @@ using UnityEngine;
 
 namespace Tests.PlayMode
 {
+    /*
+     * TestFixtureBase is mainly used
+     *  - Hold braincloud init parameters
+     *  - Set up UnityTests
+     *  - Tear down UnityTests
+     *  - Handle console logging
+     *  - Load Id's from file with a given path with "pathToIds" string variable
+     */
     public class TestFixtureBase : MonoBehaviour
     {
-        public string ServerUrl = "https://internal.braincloudservers.com/dispatcherv2";
-        public string AppId = "20001";
-        public string Secret = "4e51b45c-030e-4f21-8457-dc53c9a0ed5f";
-        public string Version = "1.0.0";
-        public string ChildAppId = "20005";
-        public string ChildSecret = "f8cec1cf-2f95-4989-910c-8caf598f83db";
-        public string ParentLevel = "Master";
-        public string PeerName = "peerapp";
-        public string SupportsCompression = "false";
+        public string ServerUrl;
+        public string AppId;
+        public string Secret;
+        public string Version;
+        public string ChildAppId;
+        public string ChildSecret;
+        public string ParentLevel;
+        public string PeerName;
+        public string SupportsCompression;
         
         protected int _successCount = 0;
         protected GameObject _gameObject;
         protected TestContainer _testingContainer;
+
+        private string pathToIds = "D:/ids.txt";
         
         private JsonWriterSettings _writerSettings = new JsonWriterSettings
         {
@@ -46,7 +54,7 @@ namespace Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            //LoadIds();
+            LoadIds();
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
             _testingContainer = _gameObject.AddComponent<TestContainer>();
             
@@ -61,21 +69,9 @@ namespace Tests.PlayMode
         /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
         /// in a platform agnostic way.
         /// </summary>
-        /// ToDo FL : Getting error for not having access to read ids.txt & unity doesnt like 'new StreamReader', need to come back later once a test is set up
         private void LoadIds()
         {
-            string exePath = Application.dataPath;
-            string absPath = exePath;
-            string search = "tests";
-            if (absPath.Contains(search))
-            {
-                absPath = absPath.Substring(0, absPath.LastIndexOf(search));
-                absPath += search + Path.DirectorySeparatorChar + "Tests" + Path.DirectorySeparatorChar + "ids.txt";
-            }
-            //Console.Out.WriteLine(absPath);
-            //Console.Out.WriteLine(search);
-
-            using (var reader = new StreamReader(absPath))
+            using (var reader = new StreamReader(pathToIds))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)

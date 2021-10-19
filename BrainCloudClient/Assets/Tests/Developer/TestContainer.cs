@@ -6,28 +6,12 @@ using Tests.PlayMode;
 using UnityEngine;
 using Random = System.Random;
 
-public class Server
-{
-    public string Host;
-    public int WsPort = -1;
-    public int TcpPort = -1;
-    public int UdpPort = -1;
-    public string Passcode;
-    public string LobbyId;
-
-    public Server(Dictionary<string, object> serverJson)
-    {
-        var connectData = serverJson["connectData"] as Dictionary<string, object>;
-        var ports = connectData["ports"] as Dictionary<string, object>;
-
-        Host = connectData["address"] as string;
-        WsPort = (int)ports["ws"];
-        TcpPort = (int)ports["tcp"];
-        UdpPort = (int)ports["udp"];
-        Passcode = serverJson["passcode"] as string;
-        LobbyId = serverJson["lobbyId"] as string;
-    }
-}
+/*
+ * The main unit testing object that will run with an Update loop with the following features:
+ * - Sets Up new user for authentication
+ * - Will "Spin" to allow tests to be updated over time
+ * - Generic Api Success and Fail callbacks
+ */
 
 public enum Users { UserA, UserB, UserC }
 public class TestContainer : MonoBehaviour
@@ -169,5 +153,28 @@ public class TestContainer : MonoBehaviour
         IsRunning = false;
         m_response =  new Dictionary<string, object>();
         _currentUser = null;
+    }
+}
+
+public class Server
+{
+    public string Host;
+    public int WsPort = -1;
+    public int TcpPort = -1;
+    public int UdpPort = -1;
+    public string Passcode;
+    public string LobbyId;
+
+    public Server(Dictionary<string, object> serverJson)
+    {
+        var connectData = serverJson["connectData"] as Dictionary<string, object>;
+        var ports = connectData["ports"] as Dictionary<string, object>;
+
+        Host = connectData["address"] as string;
+        WsPort = (int)ports["ws"];
+        TcpPort = (int)ports["tcp"];
+        UdpPort = (int)ports["udp"];
+        Passcode = serverJson["passcode"] as string;
+        LobbyId = serverJson["lobbyId"] as string;
     }
 }
