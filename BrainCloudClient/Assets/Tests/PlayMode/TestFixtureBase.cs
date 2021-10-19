@@ -24,52 +24,45 @@ namespace Tests.PlayMode
         public string ParentLevel = "Master";
         public string PeerName = "peerapp";
         public string SupportsCompression = "false";
-
+        
+        protected int _successCount = 0;
+        
         private JsonWriterSettings _writerSettings = new JsonWriterSettings
         {
             PrettyPrint = true,
             Tab = "  "
         };
-        public BrainCloudWrapper _bc;
+        public BrainCloudWrapper bcWrapper;
     
         public enum Users { UserA, UserB, UserC }
         protected TestUser _currentUser;
-        private static TestUser[] _testUsers;
-        private static bool _init = false;
-        private bool _isSpinning;
-        public bool _isRunning;
+        private static bool _init;
+        public bool IsRunning;
 
         protected GameObject _gameObject;
         protected TestFixtureBase _testingContainer;
         public Server Server;
-        public TestFixtureBase(BrainCloudWrapper bc)
+        
+        public TestFixtureBase(BrainCloudWrapper wrapper)
         {
-            _bc = bc;
-        }
-    
-        // A Test behaves as an ordinary method
-        //[Test]
-        public void TestFixtureBaseSimplePasses()
-        {
-            // Use the Assert class to test conditions
+            bcWrapper = wrapper;
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        //[UnityTest]
-        public IEnumerator TestFixtureBaseWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
-        }
-    
         [TearDown]
         public void TearDown()
         {
-            _testingContainer._bc.Client.ResetCommunication();
-            _testingContainer._bc.Client.DeregisterEventCallback();
-            _testingContainer._bc.Client.DeregisterRewardCallback();
+            _testingContainer.bcWrapper.Client.ResetCommunication();
+            _testingContainer.bcWrapper.Client.DeregisterEventCallback();
+            _testingContainer.bcWrapper.Client.DeregisterRewardCallback();
+            Destroy(_gameObject);
+            _init = false;
+            _currentUser = null;
+            _testingContainer = null;
+            IsRunning = false;
+            Server = null;
+            _successCount = 0;
+            bcWrapper = null;
+            Debug.Log("Tearing Down....");
         }
     
         [SetUp]
@@ -77,47 +70,17 @@ namespace Tests.PlayMode
         {
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
             _testingContainer = _gameObject.AddComponent<TestFixtureBase>();
-            _testingContainer._bc = _gameObject.AddComponent<BrainCloudWrapper>();
+            _testingContainer.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
             _testingContainer._gameObject = _gameObject;
-            Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            secretMap.Add(AppId, Secret);
-            secretMap.Add(ChildAppId, ChildSecret);
-            _testingContainer._bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            _testingContainer._bc.Client.EnableLogging(true);
-            _testingContainer._bc.Client.RegisterLogDelegate(HandleLog);
+            //Dictionary<string, string> secretMap = new Dictionary<string, string>();
+            //secretMap.Add(AppId, Secret);
+            //secretMap.Add(ChildAppId, ChildSecret);
+            //_testingContainer.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _testingContainer.bcWrapper.Init(ServerUrl, Secret, AppId, Version);
+            _testingContainer.bcWrapper.Client.EnableLogging(true);
+            _testingContainer.bcWrapper.Client.RegisterLogDelegate(HandleLog);
+        }
 
-            //set to enable compression
-            if(SupportsCompression != "")
-            {
-                _testingContainer._bc.Client.EnableCompression(Boolean.Parse(SupportsCompression));
-            }
-            Debug.Log("Done Set Up");
-            /*
-            if (ShouldAuthenticate())
-            {
-                TestResult tr = new TestResult(_bc);
-                _bc.Client.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id,
-                    GetUser(Users.UserA).Password,
-                    true,
-                    tr.ApiSuccess, tr.ApiError);
-                tr.Run();
-            }
-            */
-            
-            //yield return StartCoroutine(Run());
-        }
-        
-        /// <summary>
-        /// Overridable method which if set to true, will cause unit test "SetUp" to
-        /// attempt an authentication before calling the test method.
-        /// </summary>
-        /// <returns><c>true</c>, if authenticate was shoulded, <c>false</c> otherwise.</returns>
-        public virtual bool ShouldAuthenticate()
-        {
-            return true;
-        }
-    
         public void Reset()
         {
             m_done = false;
@@ -140,29 +103,24 @@ namespace Tests.PlayMode
         public IEnumerator Run(int in_apiCount = 1)
         {
             Debug.Log("Running...");
-            _isRunning = true;
+            IsRunning = true;
             Reset();
             m_apiCountExpected = in_apiCount;
             
             var timeBefore = DateTime.Now;
+            //Spin()
             while (!m_done && (DateTime.Now - timeBefore).TotalSeconds < m_timeToWaitSecs)
             {
-                if (_bc)
+                if (bcWrapper)
                 {
-                    _bc.Update();    
+                    bcWrapper.Update();    
                 }
                 yield return new WaitForFixedUpdate();
             }
             
-            _isRunning = false;
+            IsRunning = false;
         }
 
-        private IEnumerator Spin()
-        {
-            _isSpinning = false;
-            yield return null;
-        }
-        
         public void RunAuth()
         {
             StartCoroutine(SetUpAuth());
@@ -173,15 +131,19 @@ namespace Tests.PlayMode
             Debug.Log("Set Up Authentication Started...");
 
             StartCoroutine(SetUpNewUser(Users.UserA));
-            while (!_init) 
+            
+            //Loop until user is set up
+            while (!_init)
+            {
                 yield return new WaitForFixedUpdate();
+            }
         }
 
         /// <summary>
         /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
         /// in a platform agnostic way.
         /// </summary>
-        /// ToDo FL : Doesn't have access to read ids.txt. Lame
+        /// ToDo FL : Getting error have access to read ids.txt, need to come back later once a test is set up
         private void LoadIds()
         {
             string exePath = Application.dataPath;
@@ -296,15 +258,15 @@ namespace Tests.PlayMode
             if (!_init)
             {
                 Debug.Log(">> Initializing New Random Users");
-                _bc.Client.EnableLogging(true);
+                bcWrapper.Client.EnableLogging(true);
                 
                 Random rand = new Random();
 
                 _currentUser = _gameObject.AddComponent<TestUser>();
                 IEnumerator routine = _currentUser.SetUp
                 (
-                    _bc,
-                    Users.UserA + "_CS" + "-",
+                    bcWrapper,
+                    user + "_CS" + "-",
                     rand.Next(),
                     this
                 );
@@ -405,7 +367,7 @@ namespace Tests.PlayMode
                 true,
                 _tf.ApiSuccess, _tf.ApiError);
             StartCoroutine(_tf.Run());
-            while (_tf._isRunning) 
+            while (_tf.IsRunning) 
                 yield return new WaitForFixedUpdate();
             
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
@@ -414,15 +376,15 @@ namespace Tests.PlayMode
             {
                 _bc.MatchMakingService.EnableMatchMaking(_tf.ApiSuccess, _tf.ApiError);
                 StartCoroutine(_tf.Run());
-                while (_tf._isRunning) 
+                while (_tf.IsRunning) 
                     yield return new WaitForFixedUpdate();
                 _bc.PlayerStateService.UpdateUserName(Id, _tf.ApiSuccess, _tf.ApiError);
                 StartCoroutine(_tf.Run());
-                while (_tf._isRunning) 
+                while (_tf.IsRunning) 
                     yield return new WaitForFixedUpdate();
                 _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", _tf.ApiSuccess, _tf.ApiError);
                 StartCoroutine(_tf.Run());
-                while (_tf._isRunning) 
+                while (_tf.IsRunning) 
                     yield return new WaitForFixedUpdate();
             }
             else
