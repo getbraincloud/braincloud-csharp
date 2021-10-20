@@ -4,8 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "BrainCloud",
-        "TesterReferences"
+        "BrainCloud"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
