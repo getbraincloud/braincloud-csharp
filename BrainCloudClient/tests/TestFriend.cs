@@ -71,7 +71,7 @@ namespace BrainCloudTests
                 "test",
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(400, ReasonCodes.INVALID_CREDENTIAL);
+            tr.RunExpectFail(400, ReasonCodes.INVALID_EXT_AUTH_TYPE);
         }
 
         [Test]
