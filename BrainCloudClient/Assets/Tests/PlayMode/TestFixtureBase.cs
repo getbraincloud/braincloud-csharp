@@ -30,7 +30,7 @@ namespace Tests.PlayMode
         protected GameObject _gameObject;
         protected TestContainer _testingContainer;
 
-        private string pathToIds = "D:/ids.txt";
+        private string pathToIds = "C:/ids.txt";
         
         private JsonWriterSettings _writerSettings = new JsonWriterSettings
         {
