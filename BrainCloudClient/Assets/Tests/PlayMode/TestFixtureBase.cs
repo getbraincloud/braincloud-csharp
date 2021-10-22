@@ -28,9 +28,13 @@ namespace Tests.PlayMode
         
         protected int _successCount = 0;
         protected GameObject _gameObject;
-        protected TestContainer _testingContainer;
-
+        protected TestContainer _tc;
+        protected bool _isRunning;
         private string pathToIds = "C:/ids.txt";
+        
+        protected string username = "UnityTestUser";
+        protected string password = "testPass";
+        protected bool forceCreate = true;
         
         private JsonWriterSettings _writerSettings = new JsonWriterSettings
         {
@@ -41,12 +45,12 @@ namespace Tests.PlayMode
         [TearDown]
         public void TearDown()
         {
-            _testingContainer.bcWrapper.Client.ResetCommunication();
-            _testingContainer.bcWrapper.Client.DeregisterEventCallback();
-            _testingContainer.bcWrapper.Client.DeregisterRewardCallback();
-            _testingContainer.CleanUp();
+            _tc.bcWrapper.Client.ResetCommunication();
+            _tc.bcWrapper.Client.DeregisterEventCallback();
+            _tc.bcWrapper.Client.DeregisterRewardCallback();
+            _tc.CleanUp();
             Destroy(_gameObject);
-            _testingContainer = null;
+            _tc = null;
             _successCount = 0;
             Debug.Log("Tearing Down....");
         }
@@ -56,13 +60,13 @@ namespace Tests.PlayMode
         {
             LoadIds();
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
-            _testingContainer = _gameObject.AddComponent<TestContainer>();
+            _tc = _gameObject.AddComponent<TestContainer>();
             
-            _testingContainer.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
-            _testingContainer.bcWrapper.Init(ServerUrl, Secret, AppId, Version);
+            _tc.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
+            _tc.bcWrapper.Init(ServerUrl, Secret, AppId, Version);
             
-            _testingContainer.bcWrapper.Client.EnableLogging(true);
-            _testingContainer.bcWrapper.Client.RegisterLogDelegate(HandleLog);
+            _tc.bcWrapper.Client.EnableLogging(true);
+            _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
         }
 
         /// <summary>

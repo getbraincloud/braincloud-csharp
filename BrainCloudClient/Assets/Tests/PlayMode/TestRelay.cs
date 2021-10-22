@@ -10,8 +10,7 @@ namespace Tests.PlayMode
 {
     public class TestRelay : TestFixtureBase
     {
-        private bool _isRunning;
-        
+
         private RelayConnectOptions connectOptions;
         private RelayConnectionType connectionType = RelayConnectionType.UDP; // Change this to try different connection type
         
@@ -20,9 +19,8 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayWebSocket()
         {
-            yield return _testingContainer.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
+            yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
             
-            Debug.Log($"Successful Counts: {_successCount}");
             Assert.True(_successCount == 3);
         }
         
@@ -31,9 +29,8 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayUDP()
         {
-            yield return _testingContainer.StartCoroutine(FullFlow(RelayConnectionType.UDP));
+            yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.UDP));
             
-            Debug.Log($"Successful Counts: {_successCount}");
             Assert.True(_successCount == 3);
         }
         
@@ -42,36 +39,22 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayTCP()
         {
-            yield return _testingContainer.StartCoroutine(FullFlow(RelayConnectionType.TCP));
+            yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.TCP));
             
-            Debug.Log($"Successful Counts: {_successCount}");
             Assert.True(_successCount == 3);
         }
 
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
         {
             connectionType = in_connectionType;
+
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _testingContainer.RunAuth();
-            while (_testingContainer.m_done)
-                yield return new WaitForFixedUpdate();
-            _testingContainer.bcWrapper.Client.EnableLogging(true);
-            _testingContainer.bcWrapper.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
-            _testingContainer.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, OnRTTEnabled, OnFailed);
-            _testingContainer.StartRun();
-            _isRunning = true;
-            var timeStart = DateTime.Now;
-            while (_isRunning)
-            {
-                _testingContainer.bcWrapper.Update();
-                if((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0)
-                {
-                    Debug.Log("Times Up");
-                    break;
-                }
-                yield return new WaitForFixedUpdate();
-            }
-            _testingContainer.Reset();
+            _tc.bcWrapper.Client.EnableLogging(true);
+            _tc.bcWrapper.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
+            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, OnRTTEnabled, OnFailed);
+            
+            yield return _tc.StartCoroutine(_tc.Run());
         }
         
         void OnFailed(int status, int reasonCode, string jsonError, object cbObject)
@@ -96,7 +79,7 @@ namespace Tests.PlayMode
             List<int> ranges = new List<int>();
             ranges.Add(1000);
             algo["ranges"] = ranges;
-            _testingContainer.bcWrapper.LobbyService.FindOrCreateLobby
+            _tc.bcWrapper.LobbyService.FindOrCreateLobby
                 (
                     "READY_START_V2", 
                     0,  //rating
@@ -137,38 +120,38 @@ namespace Tests.PlayMode
                 // ROOM_READY contains information on how to connect to the 
                 // relay server.
                 case "ROOM_READY":
-                    _testingContainer.Server = new Server(data);
+                    _tc.Server = new Server(data);
                     break;
             }
         }
 
         void ConnectToServer()
         {
-            _testingContainer.bcWrapper.RelayService.RegisterSystemCallback(systemCallback);
-            _testingContainer.bcWrapper.RelayService.RegisterRelayCallback(relayCallback);
+            _tc.bcWrapper.RelayService.RegisterSystemCallback(systemCallback);
+            _tc.bcWrapper.RelayService.RegisterRelayCallback(relayCallback);
             var port = 0;
             switch (connectionType)
             {
                 case RelayConnectionType.TCP:
-                    port = _testingContainer.Server.TcpPort;
+                    port = _tc.Server.TcpPort;
                     break;
                 case RelayConnectionType.UDP:
-                    port = _testingContainer.Server.UdpPort;
+                    port = _tc.Server.UdpPort;
                     break;
                 case RelayConnectionType.WEBSOCKET:
-                    port = _testingContainer.Server.WsPort;
+                    port = _tc.Server.WsPort;
                     break;
             }
             connectOptions = new RelayConnectOptions
             (
                 false,
-                _testingContainer.Server.Host,
+                _tc.Server.Host,
                 port,
-                _testingContainer.Server.Passcode,
-                _testingContainer.Server.LobbyId
+                _tc.Server.Passcode,
+                _tc.Server.LobbyId
             );
             
-            _testingContainer.bcWrapper.RelayService.Connect(connectionType, connectOptions, onRelayConnected, OnFailed);
+            _tc.bcWrapper.RelayService.Connect(connectionType, connectOptions, onRelayConnected, OnFailed);
         }
 
         void systemCallback(string json)
@@ -201,15 +184,15 @@ namespace Tests.PlayMode
         {
             short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 40 or ALL_PLAYERS (0x000000FFFFFFFFFF)
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
-            _testingContainer.bcWrapper.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            _tc.bcWrapper.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
         }
         
         void onRelayConnected(string jsonResponse, object cbObject)
         {
-            var profileId = _testingContainer.bcWrapper.Client.AuthenticationService.ProfileId;
-            short myNetId = _testingContainer.bcWrapper.RelayService.GetNetIdForProfileId(profileId);
+            var profileId = _tc.bcWrapper.Client.AuthenticationService.ProfileId;
+            short myNetId = _tc.bcWrapper.RelayService.GetNetIdForProfileId(profileId);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes("Hello World!");
-            _testingContainer.bcWrapper.RelayService.Send(bytes, (ulong)myNetId);
+            _tc.bcWrapper.RelayService.Send(bytes, (ulong)myNetId);
         }
     }
 }

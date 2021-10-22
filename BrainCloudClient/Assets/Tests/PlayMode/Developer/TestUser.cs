@@ -21,7 +21,6 @@ namespace Tests.PlayMode
             Id = idPrefix + suffix;
             Password = Id;
             Email = Id + "@bctestuser.com";
-            StartCoroutine(Authenticate());
         }
 
         public IEnumerator SetUp(BrainCloudWrapper bc, string idPrefix, int suffix, TestContainer testContainer)
@@ -32,11 +31,8 @@ namespace Tests.PlayMode
             Password = Id;
             Email = Id + "@bctestuser.com";
             IsRunning = true;
-            StartCoroutine(Authenticate());
-            while (!IsRunning)
-            {
-                yield return new WaitForFixedUpdate();
-            }
+            
+            yield return StartCoroutine(Authenticate());
         }
 
         private IEnumerator Authenticate()
@@ -49,34 +45,21 @@ namespace Tests.PlayMode
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
-            StartCoroutine(_tc.Run());
-            while (_tc.IsRunning)
-            {
-                yield return new WaitForFixedUpdate();
-            }
+
+            yield return StartCoroutine(_tc.Run());
             
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
             
             if (_tc.m_response.Count > 0 && ((string)((Dictionary<string, object>)_tc.m_response["data"])["newUser"]) == "true")
             {
                 _bc.MatchMakingService.EnableMatchMaking(_tc.ApiSuccess, _tc.ApiError);
-                StartCoroutine(_tc.Run());
-                while (_tc.IsRunning)
-                {
-                    yield return new WaitForFixedUpdate();
-                }
+                yield return StartCoroutine(_tc.Run());
+                
                 _bc.PlayerStateService.UpdateUserName(Id, _tc.ApiSuccess, _tc.ApiError);
-                StartCoroutine(_tc.Run());
-                while (_tc.IsRunning)
-                {
-                    yield return new WaitForFixedUpdate();
-                }
+                yield return StartCoroutine(_tc.Run());
+                
                 _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", _tc.ApiSuccess, _tc.ApiError);
-                StartCoroutine(_tc.Run());
-                while (_tc.IsRunning)
-                {
-                    yield return new WaitForFixedUpdate();
-                }
+                yield return StartCoroutine(_tc.Run());
             }
             else
             {

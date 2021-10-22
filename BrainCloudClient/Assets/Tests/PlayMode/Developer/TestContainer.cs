@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
+using NUnit.Framework;
 using Tests.PlayMode;
 using UnityEngine;
 using Random = System.Random;
@@ -21,7 +23,7 @@ public class TestContainer : MonoBehaviour
     public bool IsRunning;
     private static bool _init;
     
-    protected TestUser _currentUser;
+    public TestUser TestUserA;
     
     public bool m_done;
     public bool m_result;
@@ -41,21 +43,49 @@ public class TestContainer : MonoBehaviour
         m_done = false;
         StartCoroutine(Run());
     }
-    
-    public void RunAuth()
+
+    public IEnumerator Run(int in_apiCount = 1, bool resetValues = true)
     {
-        StartCoroutine(SetUpAuth());
-    }
-    
-    public IEnumerator Run(int in_apiCount = 1)
-    {
+        m_done = false;
         Debug.Log("Running...");
         IsRunning = true;
-        Reset();
+        if (resetValues)
+        {
+            Reset();
+        }
         m_apiCountExpected = in_apiCount;
             
+        yield return StartCoroutine(Spin());
+            
+        IsRunning = false;
+    }
+
+    public IEnumerator RunExpectFail(int in_expectedStatusCode, int in_expectedReasonCode, bool resetValues = true)
+    {
+        m_done = false;
+        Debug.Log("Running...");
+        IsRunning = true;
+        if (resetValues)
+        {
+            Reset();
+        }
+        
+        yield return StartCoroutine(Spin());
+        
+        IsRunning = false;
+        if (in_expectedStatusCode != -1)
+        {
+            Assert.AreEqual(in_expectedStatusCode, m_statusCode);
+        }
+        if (in_expectedReasonCode != -1)
+        {
+            Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+        }
+    }
+
+    public IEnumerator Spin()
+    {
         var timeBefore = DateTime.Now;
-        //Spin()
         while (!m_done && (DateTime.Now - timeBefore).TotalSeconds < m_timeToWaitSecs)
         {
             if (bcWrapper)
@@ -64,24 +94,9 @@ public class TestContainer : MonoBehaviour
             }
             yield return new WaitForFixedUpdate();
         }
-            
-        IsRunning = false;
     }
-    
-    public IEnumerator SetUpAuth()
-    {
-        Debug.Log("Set Up Authentication Started...");
 
-        StartCoroutine(SetUpNewUser(Users.UserA));
-            
-        //Loop until user is set up
-        while (!_init)
-        {
-            yield return new WaitForFixedUpdate();
-        }
-    }
-    
-    private IEnumerator SetUpNewUser(Users user)
+    public IEnumerator SetUpNewUser(Users user)
     {
         if (!_init)
         {
@@ -90,20 +105,52 @@ public class TestContainer : MonoBehaviour
                 
             Random rand = new Random();
 
-            _currentUser = gameObject.AddComponent<TestUser>();
-            IEnumerator routine = _currentUser.SetUp
+            TestUserA = gameObject.AddComponent<TestUser>();
+            IEnumerator setUpUserRoutine = TestUserA.SetUp
             (
                 bcWrapper,
                 user + "_CS" + "-",
                 rand.Next(),
                 this
             );
-                
-            StartCoroutine(routine);
-            while (_currentUser.IsRunning) 
-                yield return new WaitForFixedUpdate();
+            
+            yield return StartCoroutine(setUpUserRoutine);
             _init = true;
         }
+    }
+
+    public IEnumerator GoToChildProfile(string in_childAppId)
+    {
+        bcWrapper.IdentityService.SwitchToSingletonChildProfile
+        (
+            in_childAppId,
+            true,
+            ApiSuccess,
+            ApiError
+        );
+        yield return StartCoroutine(Run());
+    }
+
+    public IEnumerator DetachPeer(string in_peerName)
+    {
+        bcWrapper.IdentityService.DetachPeer(in_peerName, ApiSuccess, ApiError);
+        yield return StartCoroutine(Run());
+    }
+
+    public IEnumerator AttachPeer(string in_peerName, AuthenticationType authType)
+    {
+        bcWrapper.IdentityService.AttachPeerProfile
+            (
+                in_peerName, 
+                TestUserA.Id + "_peer",
+                TestUserA.Password,
+                authType,
+                null,
+                true, 
+                ApiSuccess, 
+                ApiError
+            );
+        yield return StartCoroutine(Run());
     }
     
     public void ApiSuccess(string json, object cb)
@@ -152,7 +199,7 @@ public class TestContainer : MonoBehaviour
         _init = false;
         IsRunning = false;
         m_response =  new Dictionary<string, object>();
-        _currentUser = null;
+        TestUserA = null;
     }
 }
 
