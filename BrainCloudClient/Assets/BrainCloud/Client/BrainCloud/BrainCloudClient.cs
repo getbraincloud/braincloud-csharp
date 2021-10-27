@@ -1266,6 +1266,15 @@ using System.Globalization;
             _comms.AddToQueue(sc);
         }
 
+        /// <summary>
+        /// Manually adjust client to if comms should send heartbeat.
+        /// </summary>
+        /// <param name="isBlockingQueue"></param>
+        public void BlockSendingHeartbeats(bool isBlockingQueue)
+        {
+            _comms.BlockSendingHeartbeats(isBlockingQueue);
+        }
+
         /// <summary>Method writes log if logging is enabled</summary>
         /// 
         internal void Log(string log)

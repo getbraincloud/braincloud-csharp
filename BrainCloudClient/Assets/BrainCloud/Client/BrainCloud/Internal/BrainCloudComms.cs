@@ -2207,6 +2207,15 @@ using UnityEngine.Experimental.Networking;
             _cachedReasonCode = ReasonCodes.NO_SESSION;
             _cachedStatusMessage = "No session";
         }
+
+        /// <summary>
+        /// Manually adjust client to if comms should send heartbeat.
+        /// </summary>
+        /// <param name="isBlockingQueue"></param>
+        public void BlockSendingHeartbeats(bool isBlockingQueue)
+        {
+            _blockingQueue = isBlockingQueue;
+        }
     }
 
     #region Json parsing objects
