@@ -49,7 +49,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.bcWrapper.Client.EnableCommunications(true);
-            _tc.bcWrapper.Client.BlockSendingHeartbeats(true);
+            _tc.bcWrapper.Client.SetHeartbeatInterval(310000);
 
             var timeElapsed = 0;
             var heartBeatInterval = 0;
@@ -62,7 +62,6 @@ namespace Tests.PlayMode
                 yield return new WaitForSeconds(10);
             }
             
-            _tc.bcWrapper.Client.BlockSendingHeartbeats(false);
             _tc.bcWrapper.TimeService.ReadServerTime(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.PLAYER_SESSION_EXPIRED));
             Debug.Log($"Status: {_tc.m_statusCode}");

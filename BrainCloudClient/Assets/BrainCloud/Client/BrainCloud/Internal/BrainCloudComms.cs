@@ -2209,12 +2209,12 @@ using UnityEngine.Experimental.Networking;
         }
 
         /// <summary>
-        /// Manually adjust client to if comms should send heartbeat.
+        /// Set the interval for when to send a heartbeat in milliseconds
         /// </summary>
-        /// <param name="isBlockingQueue"></param>
-        public void BlockSendingHeartbeats(bool isBlockingQueue)
+        /// <param name="milliseconds"></param>
+        public void SetHeartbeatInterval(int milliseconds)
         {
-            _blockingQueue = isBlockingQueue;
+            _idleTimeout = TimeSpan.FromMilliseconds(milliseconds);
         }
     }
 

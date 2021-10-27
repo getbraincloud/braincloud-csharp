@@ -1267,12 +1267,12 @@ using System.Globalization;
         }
 
         /// <summary>
-        /// Manually adjust client to if comms should send heartbeat.
+        /// Set the interval for when to send a heartbeat in milliseconds
         /// </summary>
-        /// <param name="isBlockingQueue"></param>
-        public void BlockSendingHeartbeats(bool isBlockingQueue)
+        /// <param name="in_intervalInMilliseconds"></param>
+        public void SetHeartbeatInterval(int in_intervalInMilliseconds)
         {
-            _comms.BlockSendingHeartbeats(isBlockingQueue);
+            _comms.SetHeartbeatInterval(in_intervalInMilliseconds);
         }
 
         /// <summary>Method writes log if logging is enabled</summary>
