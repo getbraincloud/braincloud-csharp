@@ -161,6 +161,7 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(400,40464));
+            Assert.IsTrue(_tc.failCount == 2);
         }
 
         [UnityTest]
@@ -218,6 +219,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.IdentityService.AttachNonLoginUniversalId(testerEmail, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(202,ReasonCodes.DUPLICATE_IDENTITY_TYPE));
+            Assert.IsTrue(_tc.failCount == 2);
         }
 
         [UnityTest]
@@ -228,6 +230,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.IdentityService.UpdateUniversalIdLogin(testerEmail, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(400,ReasonCodes.NEW_CREDENTIAL_IN_USE));
+            Assert.IsTrue(_tc.failCount == 2);
         }
 
         [UnityTest]

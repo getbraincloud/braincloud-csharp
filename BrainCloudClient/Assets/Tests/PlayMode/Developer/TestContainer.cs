@@ -34,15 +34,10 @@ public class TestContainer : MonoBehaviour
     public int m_statusCode;
     public int m_reasonCode;
     public string m_statusMessage;
-    public int m_timeToWaitSecs = 120;
+    public int m_timeToWaitSecs = 300;
     public int m_globalErrorCount;
     public int m_networkErrorCount;
-
-    public void StartRun()
-    {
-        m_done = false;
-        StartCoroutine(Run());
-    }
+    public int failCount;
 
     public IEnumerator Run(int in_apiCount = 1, bool resetValues = true)
     {
@@ -73,13 +68,15 @@ public class TestContainer : MonoBehaviour
         yield return StartCoroutine(Spin());
         
         IsRunning = false;
-        if (in_expectedStatusCode != -1)
+        if (in_expectedStatusCode != -1 && in_expectedStatusCode == m_statusCode)
         {
-            Assert.AreEqual(in_expectedStatusCode, m_statusCode);
+            failCount++;
+            //Assert.AreEqual(in_expectedStatusCode, m_statusCode);
         }
-        if (in_expectedReasonCode != -1)
+        if (in_expectedReasonCode != -1 && in_expectedReasonCode == m_reasonCode)
         {
-            Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+            failCount++;
+            //Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
         }
     }
 
@@ -95,20 +92,34 @@ public class TestContainer : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
+    
+    public IEnumerator Spin(BrainCloudWrapper wrapper)
+    {
+        var timeBefore = DateTime.Now;
+        while (!m_done && (DateTime.Now - timeBefore).TotalSeconds < m_timeToWaitSecs)
+        {
+            if (wrapper)
+            {
+                wrapper.Update();    
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
 
-    public IEnumerator SetUpNewUser(Users user)
+    public IEnumerator SetUpNewUser(Users user, BrainCloudWrapper wrapper = null)
     {
         if (!_init)
         {
             Debug.Log(">> Initializing New Random Users");
-            bcWrapper.Client.EnableLogging(true);
+            BrainCloudWrapper userWrapper = wrapper != null ? wrapper : bcWrapper;
+            userWrapper.Client.EnableLogging(true);
                 
             Random rand = new Random();
 
             TestUserA = gameObject.AddComponent<TestUser>();
             IEnumerator setUpUserRoutine = TestUserA.SetUp
             (
-                bcWrapper,
+                userWrapper,
                 user + "_CS" + "-",
                 rand.Next(),
                 this
@@ -189,6 +200,7 @@ public class TestContainer : MonoBehaviour
         m_statusMessage = null;
         m_globalErrorCount = 0;
         m_networkErrorCount = 0;
+        failCount = 0;
     }
     
     public void CleanUp()
