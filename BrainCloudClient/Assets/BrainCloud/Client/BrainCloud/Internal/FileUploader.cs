@@ -297,7 +297,7 @@ using System.Threading.Tasks;
             if (StatusCode != StatusCodes.OK)
             {
                 Status = FileUploaderStatus.CompleteFailed;
-
+                _client.FileService.FileStorage.Remove(_guidLocalPath);
                 if (_request.error != null)
                 {
                     ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_UNKNOWN;
@@ -331,7 +331,7 @@ using System.Threading.Tasks;
             else
             {
                 Status = FileUploaderStatus.CompleteSuccess;
-
+                _client.FileService.FileStorage.Remove(_guidLocalPath);
 #if USE_WEB_REQUEST
                 Response = _request.downloadHandler.text;
 #else
