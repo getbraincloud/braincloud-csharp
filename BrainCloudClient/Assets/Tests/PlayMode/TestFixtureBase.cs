@@ -48,6 +48,10 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.ResetCommunication();
             _tc.bcWrapper.Client.DeregisterEventCallback();
             _tc.bcWrapper.Client.DeregisterRewardCallback();
+            _tc.bcWrapper.Client.DeregisterFileUploadCallback();
+            _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
+            _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
+            _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();
             _tc.CleanUp();
             Destroy(_gameObject);
             _tc = null;
