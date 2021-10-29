@@ -2,7 +2,9 @@ using System.IO;
 using System.Text;
 using BrainCloud.JsonFx.Json;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Tests.PlayMode
 {
@@ -43,8 +45,11 @@ namespace Tests.PlayMode
         };
         
         [TearDown]
-        public void TearDown()
+        public virtual void TearDown()
         {
+            Debug.Log("Tearing Down....");
+            _tc.bcWrapper.Client.FlushCachedMessages(false);
+            
             _tc.bcWrapper.Client.ResetCommunication();
             _tc.bcWrapper.Client.DeregisterEventCallback();
             _tc.bcWrapper.Client.DeregisterRewardCallback();
@@ -52,16 +57,28 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
             _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
             _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();
+            _tc.bcWrapper.Client.ShutDown();
             _tc.CleanUp();
-            Destroy(_gameObject);
-            _tc = null;
+            
             _successCount = 0;
-            Debug.Log("Tearing Down....");
+            Destroy(_tc.bcWrapper);
+            var listOfContainers = FindObjectsOfType<Transform>();
+            foreach (Transform container in listOfContainers)
+            {
+                if (container.name.Contains("TestingContainer"))
+                {
+                    Destroy(container.gameObject);
+                }
+            }
+            
+            _tc = null;
         }
     
         [SetUp]
         public void SetUp()
         {
+            Debug.Log("Setting Up......");
+            
             LoadIds();
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
             _tc = _gameObject.AddComponent<TestContainer>();

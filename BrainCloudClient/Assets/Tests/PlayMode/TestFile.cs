@@ -24,8 +24,9 @@ namespace Tests.PlayMode
         private bool _replaceIfExists = true;
         
         [TearDown]
-        public void Cleanup()
+        public override void TearDown()
         {
+            base.TearDown();
             _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
             _tc.StartCoroutine(DeleteAllFiles());
             _returnCount = 0;
