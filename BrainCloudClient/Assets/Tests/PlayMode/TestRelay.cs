@@ -64,6 +64,10 @@ namespace Tests.PlayMode
                 // This one was on purpose
                 _successCount++;
                 _isRunning = false;
+                if (_successCount == 3)
+                {
+                    _tc.m_done = true;    
+                }
                 return;
             }
             _isRunning = false;

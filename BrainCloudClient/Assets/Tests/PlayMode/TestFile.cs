@@ -26,9 +26,9 @@ namespace Tests.PlayMode
         [TearDown]
         public override void TearDown()
         {
-            base.TearDown();
             _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
             _tc.StartCoroutine(DeleteAllFiles());
+            base.TearDown();
             _returnCount = 0;
             _successCount = 0;
             _failCount = 0;
