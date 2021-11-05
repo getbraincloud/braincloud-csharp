@@ -154,8 +154,8 @@ using System.Threading.Tasks;
             };
 
             var requestContent = new MultipartFormDataContent();
-            byte[] fileData = _client.FileService.FileStorage[_localPath];
-            _client.FileService.FileStorage.Remove(_localPath);
+            byte[] fileData = _client.FileService.FileStorage[_guidLocalPath];
+            _client.FileService.FileStorage.Remove(_guidLocalPath);
             if (fileData == null)
             {
                 ThrowError(ReasonCodes.FILE_DOES_NOT_EXIST,"Local path is wrong or file doesn't exist");
