@@ -1,0 +1,69 @@
+{
+    "templatePinStates": [],
+    "dependencyTypeInfos": [
+        {
+            "userAdded": false,
+            "type": "UnityEngine.ComputeShader",
+            "ignore": true,
+            "defaultInstantiationMode": 1,
+            "supportsModification": true
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEngine.GameObject",
+            "ignore": false,
+            "defaultInstantiationMode": 0,
+            "supportsModification": true
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEditor.LightingDataAsset",
+            "ignore": false,
+            "defaultInstantiationMode": 0,
+            "supportsModification": false
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEditor.MonoScript",
+            "ignore": true,
+            "defaultInstantiationMode": 1,
+            "supportsModification": true
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEditor.SceneAsset",
+            "ignore": false,
+            "defaultInstantiationMode": 0,
+            "supportsModification": false
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEngine.Shader",
+            "ignore": true,
+            "defaultInstantiationMode": 1,
+            "supportsModification": true
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEngine.ShaderVariantCollection",
+            "ignore": true,
+            "defaultInstantiationMode": 1,
+            "supportsModification": true
+        },
+        {
+            "userAdded": false,
+            "type": "UnityEngine.Timeline.TimelineAsset",
+            "ignore": false,
+            "defaultInstantiationMode": 0,
+            "supportsModification": true
+        }
+    ],
+    "defaultDependencyTypeInfo": {
+        "userAdded": false,
+        "type": "<default_scene_template_dependencies>",
+        "ignore": false,
+        "defaultInstantiationMode": 1,
+        "supportsModification": true
+    },
+    "newSceneOverride": 0
+}

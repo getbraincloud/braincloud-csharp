@@ -68,7 +68,7 @@ using System.Threading.Tasks;
 #pragma warning disable 649
         private BrainCloudClient _client;
         private string _sessionId;
-        private string _localPath;
+        private string _guidLocalPath;
         private string _serverUrl;
         private string _fileName;
         private string _peerCode;
@@ -106,7 +106,7 @@ using System.Threading.Tasks;
 
         public FileUploader(
             string uploadId,
-            string localPath,
+            string guidLocalPath,
             string serverUrl,
             string sessionId,
             int timeout,
@@ -117,7 +117,7 @@ using System.Threading.Tasks;
             _client = client;
 
             UploadId = uploadId;
-            _localPath = localPath;
+            _guidLocalPath = guidLocalPath;
             _serverUrl = serverUrl;
             _sessionId = sessionId;
             _peerCode = peerCode;
@@ -131,16 +131,7 @@ using System.Threading.Tasks;
         {
 #if !UNITY_WEBPLAYER
 #if !DOT_NET
-            FileInfo info = new FileInfo(_localPath);
-            byte[] file;
-            if (info.Exists)
-            {
-                file = File.ReadAllBytes(_localPath);
-            }
-            else
-            {
-                file = System.Convert.FromBase64String(_localPath);
-            }
+            byte[] file = _client.FileService.FileStorage[_guidLocalPath];
             WWWForm postForm = new WWWForm();
             postForm.AddField("sessionId", _sessionId);
 
@@ -149,12 +140,12 @@ using System.Threading.Tasks;
             postForm.AddField("fileSize", file.Length);
             postForm.AddBinaryData("uploadFile", file, _fileName);
 
-#if USE_WEB_REQUEST
+    #if USE_WEB_REQUEST
             _request = UnityWebRequest.Post(_serverUrl, postForm);
             _request.SendWebRequest();
-#else
+    #else
             _request = new WWW(_serverUrl, postForm);
-#endif
+    #endif
 #else
             var requestMessage = new HttpRequestMessage()
             {
@@ -163,8 +154,8 @@ using System.Threading.Tasks;
             };
 
             var requestContent = new MultipartFormDataContent();
-            byte[] fileData = _client.FileService.FileStorage[_localPath];
-            _client.FileService.FileStorage.Remove(_localPath);
+            byte[] fileData = _client.FileService.FileStorage[_guidLocalPath];
+            _client.FileService.FileStorage.Remove(_guidLocalPath);
             if (fileData == null)
             {
                 ThrowError(ReasonCodes.FILE_DOES_NOT_EXIST,"Local path is wrong or file doesn't exist");
@@ -306,7 +297,7 @@ using System.Threading.Tasks;
             if (StatusCode != StatusCodes.OK)
             {
                 Status = FileUploaderStatus.CompleteFailed;
-
+                _client.FileService.FileStorage.Remove(_guidLocalPath);
                 if (_request.error != null)
                 {
                     ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_UNKNOWN;
@@ -340,7 +331,7 @@ using System.Threading.Tasks;
             else
             {
                 Status = FileUploaderStatus.CompleteSuccess;
-
+                _client.FileService.FileStorage.Remove(_guidLocalPath);
 #if USE_WEB_REQUEST
                 Response = _request.downloadHandler.text;
 #else

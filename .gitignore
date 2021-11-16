@@ -29,13 +29,6 @@ Thumbs.db
 /BrainCloudClient/tests/NUnit/TestResult.xml
 /BrainCloudClient/tests/NUnit/UnitTests.VisualState.xml
 
-
-
-
-.idea/
-
-------------------
-
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -62,16 +55,15 @@ ExportedObj/
 *.pdb
 *.vs
 
-# Unity3D generated meta files
-*.pidb.meta
-*.pdb.meta
 
-# Unity3D Generated File On Crash Reports
-sysinfo.txt
+*.asset
+*.asset.meta
+*.idea
+*.meta
+*.log
 
-# Builds
-*.apk
-*.unitypackage
+/BrainCloudClient/Logs/
 
-!BrainCloudPlugin.dll
-!BrainCloudPluginEditor.dll
+/Logs/
+*/.idea/*
+*/.vs/*
