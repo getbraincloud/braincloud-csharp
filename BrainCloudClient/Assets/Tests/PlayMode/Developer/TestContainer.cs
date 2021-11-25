@@ -106,7 +106,7 @@ public class TestContainer : MonoBehaviour
         }
     }
 
-    public IEnumerator SetUpNewUser(Users user, BrainCloudWrapper wrapper = null)
+    public IEnumerator SetUpNewUser(Users user,bool resetCount = true, BrainCloudWrapper wrapper = null)
     {
         if (!_init)
         {
@@ -127,7 +127,8 @@ public class TestContainer : MonoBehaviour
             
             yield return StartCoroutine(setUpUserRoutine);
             _init = true;
-            successCount = 0;
+            
+            successCount = resetCount ? 0 : successCount;
         }
     }
 
