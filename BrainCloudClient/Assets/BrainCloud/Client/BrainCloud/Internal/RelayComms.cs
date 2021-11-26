@@ -765,8 +765,8 @@ namespace BrainCloud.Internal
                     }
                 case "DISCONNECT":
                     {
-                        string profileId = parsedDict["profileId"] as string;
-                        if (profileId == m_clientRef.AuthenticationService.ProfileId)
+                        string cxId = parsedDict["cxId"] as string;
+                        if (cxId == m_clientRef.RTTService.getRTTConnectionID())
                         {
                             // We are the one that got disconnected!
                             disconnect();
