@@ -32,7 +32,7 @@ namespace Tests.PlayMode
         protected GameObject _gameObject;
         protected TestContainer _tc;
         protected bool _isRunning;
-        private string pathToIds = "D:/ids.txt";
+        private string pathToIds = "C:/ids.txt";
         
         protected string username = "UnityTestUser";
         protected string password = "testPass";
