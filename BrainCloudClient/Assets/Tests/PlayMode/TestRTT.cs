@@ -20,8 +20,9 @@ namespace Tests.PlayMode
             _tc.bcWrapper.RTTService.DisableRTT();  //This shouldn't callback error
             _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to enable or disable RTT with WS", _tc.successCount == 1);
         }
-
+        
         [UnityTest]
         public IEnumerator TestRTTHeartBeat()
         {
@@ -34,7 +35,8 @@ namespace Tests.PlayMode
             {
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(_tc.bcWrapper.RTTService.IsRTTEnabled());
+            
+            LogResults("Failed to get RTT Heartbeat", _tc.bcWrapper.RTTService.IsRTTEnabled());
         }
 
         [UnityTest]
@@ -78,8 +80,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedChat);
-
+            //Assert.True(receivedChat);
+            LogResults("Didn't receive chat message", receivedChat);
             //Now deregister and make sure we dont receive it
             _tc.bcWrapper.RTTService.DeregisterRTTChatCallback();
             
@@ -95,7 +97,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.False(receivedChat);
+            //Assert.False(receivedChat);
+            LogResults("Did receive chat message, expected to not receive message", !receivedChat);
         }
 
         [UnityTest]
@@ -140,7 +143,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedLobby);
+            //Assert.True(receivedLobby);
+            LogResults("Didn't receive lobby message", receivedLobby);
         }
 
         [UnityTest]
@@ -182,7 +186,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedEvent);
+            //Assert.True(receivedEvent);
+            LogResults("Didn't receive event message", receivedEvent);
         }
     }
 }

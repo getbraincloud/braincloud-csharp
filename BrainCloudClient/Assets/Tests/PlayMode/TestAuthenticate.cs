@@ -19,10 +19,11 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             Assert.True(_tc.bcWrapper.Client.Authenticated);
+            LogResults($"Failed to authenticate", _tc.bcWrapper.Client.Authenticated);
         }
 
         [UnityTest]
-        public IEnumerator TestAuthenticateAnonymous()
+        public IEnumerator TestFailAuthenticateAnonymous()
         {
             string anonId = _tc.bcWrapper.Client.AuthenticationService.GenerateAnonymousId();
             _tc.bcWrapper.Client.AuthenticationService.Initialize("randomProfileId", anonId);
@@ -34,8 +35,8 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
-            Debug.Log($"Failed Count {_tc.failCount}");
-            Assert.True(_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            Debug.Log($"expected result: status code ACCEPTED ||| reason code SWITCHING_PROFILES");
         }
 
         [UnityTest]
@@ -50,7 +51,8 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
-            Assert.True(_tc.successCount == 1);
+            
+            LogResults("Failed to authenticate", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -63,7 +65,7 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
-            Assert.True(_tc.successCount == 1);
+            LogResults("Failed to reset email password", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -88,11 +90,11 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
-            Assert.True(_tc.successCount == 2);
+            LogResults(" Didn't receive enough successful calls while authenticating", _tc.successCount == 2);
         }
 
         [UnityTest]
-        public IEnumerator TestResetEmailPasswordAdvanced()
+        public IEnumerator TestFailResetEmailPasswordAdvanced()
         {
             string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
 
@@ -105,6 +107,8 @@ namespace Tests.PlayMode
             );
 
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS));
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            Debug.Log($"expected result: status code BAD_REQUEST ||| reason code INVALID_FROM_ADDRESS");
         }
         
         [UnityTest]
@@ -114,7 +118,8 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.CountryCode = "kn";
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA, false));
             Debug.Log($"Success Count: {_tc.successCount}");
-            Assert.True(_tc.successCount >= 4);
+            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount >= 4);
+            
         }
         
         [UnityTest]
@@ -124,7 +129,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.CountryCode = "ja";
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA, false));
             Debug.Log($"Success Count: {_tc.successCount}");
-            Assert.True(_tc.successCount >= 4);
+            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount >= 4);
         }
     }    
 }

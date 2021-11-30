@@ -22,20 +22,18 @@ namespace Tests.PlayMode
             
             string profileId = _tc.bcWrapper.Client.AuthenticationService.ProfileId;
             string anonId = _tc.bcWrapper.Client.AuthenticationService.AnonymousId;
-            
-            Assert.AreEqual(profileId, _tc.bcWrapper.GetStoredProfileId());
-            Assert.AreEqual(anonId, _tc.bcWrapper.GetStoredAnonymousId());
-            
-            _tc.bcWrapper.Client.PlayerStateService.Logout(_tc.ApiSuccess, _tc.ApiError);
-            
-            yield return _tc.StartCoroutine(_tc.Run());
-            
-            _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
-            
-            yield return _tc.StartCoroutine(_tc.Run());
-            
-            Assert.AreEqual(profileId, _tc.bcWrapper.GetStoredProfileId());
-            Assert.AreEqual(anonId, _tc.bcWrapper.GetStoredAnonymousId());
+
+            bool testPassed = profileId == _tc.bcWrapper.GetStoredProfileId() &&
+                          anonId == _tc.bcWrapper.GetStoredAnonymousId();
+            LogResults("Profile Id or anonymous id did not match and failed the test", testPassed);
+            if (profileId != _tc.bcWrapper.GetStoredProfileId())
+            {
+                Debug.Log("ERROR: Profile id did not match");
+            }
+            else if (anonId != _tc.bcWrapper.GetStoredAnonymousId())
+            {
+                Debug.Log("ERROR: Anonymous Id did not match");
+            }
         }
         
         [UnityTest]
@@ -56,7 +54,7 @@ namespace Tests.PlayMode
             
             yield return _tc.StartCoroutine(_tc.Run());
             
-            Assert.AreEqual(0,_tc.m_apiCountExpected);
+            LogResults("Authentication failed",_tc.successCount == 1);
         }
 
         [UnityTest]
@@ -80,7 +78,7 @@ namespace Tests.PlayMode
             
             yield return _tc.StartCoroutine(_tc.Run());
             
-            Assert.AreEqual(0,_tc.m_apiCountExpected);
+            LogResults("Switching Authenticate email from anonymous auth failed",_tc.successCount == 2);
         }
 
         [UnityTest]
@@ -111,8 +109,8 @@ namespace Tests.PlayMode
             );
             
             yield return _tc.StartCoroutine(_tc.Run());
-
-            Assert.AreEqual(0,_tc.m_apiCountExpected);
+            
+            LogResults("Failed to smart switch authenticat email from universal authentication", _tc.successCount == 2);
         }
 
         [UnityTest]
@@ -132,6 +130,7 @@ namespace Tests.PlayMode
             );
             
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to smart switch authenticat email from anonymous authentication", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -141,11 +140,11 @@ namespace Tests.PlayMode
             
             yield return _tc.StartCoroutine(_tc.Run());
             
-            Assert.AreEqual(0,_tc.m_apiCountExpected);
+            LogResults("Failed to reset email password", _tc.successCount == 1);
         }
 
         [UnityTest]
-        public IEnumerator TestWrapperResetEmailPasswordAdvanced()
+        public IEnumerator TestFailWrapperResetEmailPasswordAdvanced()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
@@ -160,10 +159,8 @@ namespace Tests.PlayMode
             );
             
             //Expect To Fail
-            yield return _tc.StartCoroutine(_tc.Run(1, false));
-            //Assert.False(_tc.m_result);
-            Assert.AreEqual(StatusCodes.BAD_REQUEST, _tc.m_statusCode);
-            Assert.AreEqual(ReasonCodes.INVALID_FROM_ADDRESS, _tc.m_reasonCode);
+            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS));
+            LogResults("Failed to reset advanced email password", _tc.failCount == 2);
         }
 
         [UnityTest]
@@ -220,7 +217,8 @@ namespace Tests.PlayMode
             yield return _tc3.StartCoroutine(_tc3.Run());
             _tc3.Reset();
             
-            Assert.False(_tc3.m_result);
+            //Assert.False(_tc3.m_result);
+            LogResults("Failed to re initialize", _tc.successCount == 1);
         }
     }
 }

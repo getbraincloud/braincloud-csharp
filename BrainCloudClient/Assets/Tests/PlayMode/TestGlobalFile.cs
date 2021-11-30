@@ -29,6 +29,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("failed to get global file list", _tc.successCount == 1);
             Assert.True(_tc.successCount == 1);
         }
         
@@ -44,7 +45,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-            Assert.True(_tc.successCount == 1);
+            LogResults("Failed to Get file info, check logs for response", _tc.successCount == 1);
         }
         
         [UnityTest]
@@ -61,7 +62,7 @@ namespace Tests.PlayMode
 
             _tc.m_done = false;
             yield return _tc.StartCoroutine(_tc.Spin());
-            Assert.True(_img.sprite != null);
+            LogResults("ERROR: Image failed to download", _img.sprite != null);
         }
         
         [UnityTest]
@@ -78,7 +79,7 @@ namespace Tests.PlayMode
 
             _tc.m_done = false;
             yield return _tc.StartCoroutine(_tc.Spin());
-            Assert.True(_img.sprite != null);
+            LogResults("ERROR: Image failed to download", _img.sprite != null);
         }
 
         private void PrepareToDownloadWithFileDetails(string json, object cb)
