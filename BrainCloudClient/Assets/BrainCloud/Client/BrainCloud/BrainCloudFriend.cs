@@ -214,6 +214,8 @@ using System;
 
         /// <summary>
         /// Returns user state of a particular friend.
+        /// If you are not friend with this user, you will get an error
+        /// with NOT_FRIENDS reason code.
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
