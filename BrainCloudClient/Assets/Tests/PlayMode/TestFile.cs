@@ -52,7 +52,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
             FileInfo info = new FileInfo(CreateFile(4024));
-            _cloudPath = "TestFolder/";
+            _cloudPath = "TestFolder";
             _tc.bcWrapper.FileService.UploadFile
                 (
                     _cloudPath,
