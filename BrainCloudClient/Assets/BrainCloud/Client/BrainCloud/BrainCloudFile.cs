@@ -61,7 +61,7 @@ using System;
             info.Read(fileData, 0, (int)info.Length);
             info.Close();
 
-            return UploadFileFromMemory(cloudFilename, cloudFilename, shareable, replaceIfExists, fileData, success,
+            return UploadFileFromMemory(cloudPath, cloudFilename, shareable, replaceIfExists, fileData, success,
                 failure, cbObject);
 #endif
         }
