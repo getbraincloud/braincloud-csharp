@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using BrainCloud;
+using BrainCloud.JsonFx.Json;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -14,7 +15,7 @@ namespace Tests.PlayMode
     public class TestFile : TestFixtureBase
     {
         
-        private const string _cloudPath = "";
+        private string _cloudPath = "";
         private bool _shouldDeleteFiles = true;
         private int _returnCount = 0;
         private int _successCount = 0;
@@ -60,7 +61,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
             FileInfo info = new FileInfo(CreateFile(4024));
-
+            _cloudPath = "TestFolder";
             _tc.bcWrapper.FileService.UploadFile
                 (
                     _cloudPath,
@@ -74,6 +75,13 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             yield return _tc.StartCoroutine(_tc.Spin());
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
+            
+            //Checking if cloud path is correct according to response
+            var data = _tc.m_response["data"] as Dictionary<string, object>;
+            var fileDetails = data["fileDetails"] as Dictionary<string, object>;
+            string responseCloudPath = (string)fileDetails["cloudPath"];
+            Assert.True(_cloudPath.Equals(responseCloudPath));
+            
             LogResults("failed to upload file", _tc.successCount == 1);
         }
 
