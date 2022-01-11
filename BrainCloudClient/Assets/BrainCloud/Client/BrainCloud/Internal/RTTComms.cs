@@ -259,6 +259,10 @@ namespace BrainCloud.Internal
                 {
                     m_clientRef.Log("RTT: Disconnect: " + JsonWriter.Serialize(m_disconnectJson));
                 }
+                if (m_connectionFailureCallback != null)
+                {
+                    m_connectionFailureCallback(400, (int)m_disconnectJson["reason_code"], (string)m_disconnectJson["reason"], m_connectedObj);
+                }
             }
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
         }
