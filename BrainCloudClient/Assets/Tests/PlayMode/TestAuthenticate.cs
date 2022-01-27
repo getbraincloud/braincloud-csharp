@@ -136,7 +136,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestAuthenticateAdvanced()
         {
-            AuthenticateAdvancedIds ids;
+            AuthenticationIds ids;
             ids.externalId = "authAdvancedUser";
             ids.authenticationToken = "authAdvancedPass";
             ids.authenticationSubType = "";

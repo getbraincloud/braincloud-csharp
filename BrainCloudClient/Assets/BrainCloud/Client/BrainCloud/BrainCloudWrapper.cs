@@ -1207,7 +1207,7 @@ public class BrainCloudWrapper
     /// </param>
     public void AuthenticateAdvanced(
         AuthenticationType authenticationType,
-        AuthenticateAdvancedIds ids,
+        AuthenticationIds ids,
         bool forceCreate,
         Dictionary<string, object> extraJson,
         SuccessCallback success = null,
@@ -1861,7 +1861,7 @@ public class BrainCloudWrapper
     /// </param>
     public virtual void SmartSwitchAuthenticateAdvanced(
         AuthenticationType authenticationType,
-        AuthenticateAdvancedIds ids,
+        AuthenticationIds ids,
         bool forceCreate,
         Dictionary<string, object> extraJson,
         SuccessCallback success = null,

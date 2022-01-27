@@ -13,7 +13,7 @@ using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
 
 
-public struct AuthenticateAdvancedIds
+public struct AuthenticationIds
 {
     public string externalId;
     public string authenticationToken;
@@ -746,7 +746,7 @@ public struct AuthenticateAdvancedIds
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// /// <param name="extraJson">
-        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -759,7 +759,7 @@ public struct AuthenticateAdvancedIds
         /// </param>
         public void AuthenticateAdvanced(
             AuthenticationType authenticationType,
-            AuthenticateAdvancedIds ids,
+            AuthenticationIds ids,
             bool forceCreate,
             Dictionary<string, object> extraJson,
             SuccessCallback success = null,
