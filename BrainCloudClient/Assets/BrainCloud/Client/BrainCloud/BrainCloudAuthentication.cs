@@ -13,12 +13,6 @@ using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
 
 
-public struct AuthenticationIds
-{
-    public string externalId;
-    public string authenticationToken;
-    public string authenticationSubType; // Empty string for most auth types
-}
 
     public class BrainCloudAuthentication
     {
@@ -94,7 +88,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -250,7 +244,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(externalId, authenticationToken, AuthenticationType.Facebook,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -288,7 +282,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(externalId, authenticationToken, AuthenticationType.FacebookLimited,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -325,7 +319,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(oculusId, oculusNonce, AuthenticationType.Oculus,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -362,7 +356,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(accountId, authToken, AuthenticationType.PlaystationNetwork,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -395,7 +389,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(gameCenterId, "", AuthenticationType.GameCenter,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -432,7 +426,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(userId, sessionticket, AuthenticationType.Steam,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -469,7 +463,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(appleUserId, identityToken, AuthenticationType.Apple,
-                null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -506,7 +500,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(googleUserId, serverAuthCode, AuthenticationType.Google,
-                null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -543,7 +537,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId,
-                null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -584,7 +578,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(userId, token + ":" + secret, AuthenticationType.Twitter,
-                null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -621,7 +615,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(userId, token, AuthenticationType.Parse,
-                null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -650,7 +644,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(handoffCode, "", AuthenticationType.SettopHandoff,
-                null, false, new Dictionary<string, object>(), success, failure, cbObject);
+                null, false, null, success, failure, cbObject);
         }
 
         
@@ -683,7 +677,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(handoffId, securityToken, AuthenticationType.Handoff,
-                null, false, new Dictionary<string, object>(), success, failure, cbObject);
+                null, false, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -725,7 +719,7 @@ public struct AuthenticationIds
             object cbObject = null)
         {
             Authenticate(userId, token, AuthenticationType.External,
-                externalAuthName, forceCreate,new Dictionary<string, object>(), success, failure, cbObject);
+                externalAuthName, forceCreate,null, success, failure, cbObject);
         }
         
         /// <summary>
@@ -1151,8 +1145,12 @@ public struct AuthenticationIds
             {
                 data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
             }
+
+            if (extraJson != null)
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;    
+            }
             
-            data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;
             data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = countryCode;
             data[OperationParam.AuthenticateServiceAuthenticateLanguageCode.Value] = languageCode;
             data[OperationParam.AuthenticateServiceAuthenticateTimeZoneOffset.Value] = utcOffset;
