@@ -167,7 +167,7 @@ using BrainCloud.JsonFx.Json;
             object cbObject = null)
         {
             Authenticate(email, password, AuthenticationType.Email,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ using BrainCloud.JsonFx.Json;
             object cbObject = null)
         {
             Authenticate(userId, password, AuthenticationType.Universal,
-                              null, forceCreate, new Dictionary<string, object>(), success, failure, cbObject);
+                              null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
@@ -719,7 +719,7 @@ using BrainCloud.JsonFx.Json;
             object cbObject = null)
         {
             Authenticate(userId, token, AuthenticationType.External,
-                externalAuthName, forceCreate,null, success, failure, cbObject);
+                externalAuthName, forceCreate, null, success, failure, cbObject);
         }
         
         /// <summary>
