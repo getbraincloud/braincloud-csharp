@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BrainCloud;
+using BrainCloud.Common;
 using NUnit.Framework;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -130,6 +131,23 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA, false));
             Debug.Log($"Success Count: {_tc.successCount}");
             LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount >= 4);
+        }
+
+        [UnityTest]
+        public IEnumerator TestAuthenticateAdvanced()
+        {
+            AuthenticationIds ids;
+            ids.externalId = "authAdvancedUser";
+            ids.authenticationToken = "authAdvancedPass";
+            ids.authenticationSubType = "";
+            Dictionary<string, object> extraJson = new Dictionary<string, object>();
+            extraJson["AnswerToEverything"] = 42;
+
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Universal, ids, true, 
+                extraJson, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to authenticate advanced", _tc.successCount == 1);
         }
     }    
 }

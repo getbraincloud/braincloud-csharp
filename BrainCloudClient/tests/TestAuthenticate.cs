@@ -462,6 +462,30 @@ namespace BrainCloudTests
             tr.Run();
             tr.Run();
         }
+        
+        [Test]
+        public void TestAuthenticateAdvanced()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            AuthenticationIds ids;
+            ids.externalId = "authAdvancedUser";
+            ids.authenticationToken = "authAdvancedPass";
+            ids.authenticationSubType = "";
+            Dictionary<string, object> extraJson = new Dictionary<string, object>();
+            extraJson["AnswerToEverything"] = 42;
+            
+            _bc.Client.AuthenticationService.AuthenticateAdvanced
+            (
+                AuthenticationType.Universal, 
+                ids,
+                true,
+                extraJson,
+                tr.ApiSuccess,
+                tr.ApiError
+            );
+            tr.Run();
+        }
 
         [Test]
         public void TestBadSignature()
