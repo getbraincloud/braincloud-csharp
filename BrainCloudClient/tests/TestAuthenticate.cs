@@ -490,6 +490,15 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateUltra()
         {
+            if (!ServerUrl.Contains("api-internal.braincloudservers.com") &&
+                !ServerUrl.Contains("internala.braincloudservers.com") &&
+                !ServerUrl.Contains("api.internalg.braincloudservers.com"))
+            {
+                Console.WriteLine("This env doesn't support Ultra authentication type");
+                Assert.True(true);
+                return;
+            }
+            
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
