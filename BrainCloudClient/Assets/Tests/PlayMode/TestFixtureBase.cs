@@ -203,7 +203,7 @@ namespace Tests.PlayMode
             else
             {
                 Debug.Log($"ERROR: {errorMessage}");
-                if (_tc.m_statusMessage.Contains("{"))
+                if (_tc.m_statusMessage != null && _tc.m_statusMessage.Contains("{"))
                 {
                     Debug.Log($"Json Error: {_tc.m_statusMessage}");    
                 }

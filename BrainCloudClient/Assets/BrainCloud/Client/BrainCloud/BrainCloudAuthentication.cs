@@ -763,6 +763,43 @@ using BrainCloud.JsonFx.Json;
             Authenticate(ids.externalId, ids.authenticationToken, authenticationType, 
                 ids.authenticationSubType, forceCreate, extraJson, success, failure, cbObject);
         }
+        
+        /// <summary>
+        /// Authenticate the user for Ultra.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="ultraUsername">
+        /// It's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="ultraIdToken">
+        /// The "id_token" taken from Ultra's JWT.
+        /// </param>
+        /// /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateUltra(
+            string ultraUsername,
+            string ultraIdToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(ultraUsername, ultraIdToken, AuthenticationType.Ultra, 
+                null, forceCreate, null, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Reset Email password - Sends a password reset email to the specified address
@@ -1157,7 +1194,7 @@ using BrainCloud.JsonFx.Json;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
-            _client.SendRequest(sc);
+           _client.SendRequest(sc);
         }
     }
 }

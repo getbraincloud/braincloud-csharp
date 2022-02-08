@@ -277,6 +277,111 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Attach the user's Ultra credentials to the current profile.
+        ///
+        /// Service Name - identity
+        /// Service Operation - Attach
+        ///
+        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Ultra identity you provided
+        /// already points to a different profile.  You will likely want to offer the user the
+        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
+        ///
+        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateUltra().
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// it's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="ultraIdToken">
+        /// The "id_token" taken from Ultra's JWT.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachUltraIdentity(
+            string ultraUsername,
+            string ultraIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, success, failure, cbObject);
+        }
+        
+        /// <summary>
+        /// Merge the profile associated with the provided Ultra credentials with the current profile
+        ///
+        /// Service Name - Identity
+        /// Service Operation - Merge
+        /// 
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// It's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="ultraIdToken">
+        /// The "id_token" taken from Ultra's JWT.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeUltraIdentity(
+            string ultraUsername,
+            string ultraIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Ultra identity from this profile.
+        ///
+        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
+        /// disconnecting this identity would result in the profile being anonymous (which means that
+        /// the profile wouldn't be retrievable if the user loses their device)
+        ///
+        /// Service Name - Identity
+        /// Service Operation - Detach
+        /// 
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// It's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachUltraIdentity(
+            string ultraUsername,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(ultraUsername, AuthenticationType.Ultra, continueAnon, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Attach the user's Oculus credentials to the current profile.

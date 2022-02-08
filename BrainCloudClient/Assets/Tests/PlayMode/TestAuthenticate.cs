@@ -149,6 +149,29 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Failed to authenticate advanced", _tc.successCount == 1);
         }
+        
+        [UnityTest]
+        public IEnumerator TestAuthenticateUltra()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            _tc.bcWrapper.ScriptService.RunScript("getUltraToken", "{}", _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            var data = _tc.m_response["data"] as Dictionary<string, object>;
+            var response = data["response"] as Dictionary<string, object>;
+            var data2 = response["data"] as Dictionary<string, object>;
+            var json = data2["json"] as Dictionary<string, object>;
+            string idToken = json["id_token"] as string;
+            
+            _tc.bcWrapper.PlayerStateService.Logout();
+            yield return _tc.StartCoroutine(_tc.Spin());
+            
+            _tc.bcWrapper.AuthenticateUltra("braincloud1", idToken, true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            LogResults("Failed to authenticate ultra", _tc.successCount == 2);
+        }
     }    
 }
 
