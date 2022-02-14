@@ -159,7 +159,7 @@ namespace BrainCloud.Internal
                     // are we actually connected? only pump this back, when the server says we've connected
                     else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
-                        m_lastNowMS = DateTime.Now;
+                        m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
                     }
@@ -198,7 +198,6 @@ namespace BrainCloud.Internal
                     {
                         // first time connecting? send the server connection call
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTING;
-                        m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest());
                     }
                     else
@@ -385,7 +384,6 @@ namespace BrainCloud.Internal
             {
                 m_clientRef.Log("RTT: Connection established.");
             }
-            m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
             m_webSocketStatus = WebsocketStatus.OPEN;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
