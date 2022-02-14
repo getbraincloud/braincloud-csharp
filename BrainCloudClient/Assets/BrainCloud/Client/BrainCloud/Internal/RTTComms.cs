@@ -385,6 +385,7 @@ namespace BrainCloud.Internal
             {
                 m_clientRef.Log("RTT: Connection established.");
             }
+            m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
             m_webSocketStatus = WebsocketStatus.OPEN;
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
         }
@@ -553,9 +554,7 @@ namespace BrainCloud.Internal
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private BrainCloudWebSocket m_webSocket = null;
 
-        private DateTime m_lastNowMS;
-
-        private TimeSpan m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
+        private TimeSpan m_sinceLastHeartbeat;
         private const int MAX_PACKETSIZE = 1024;
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
