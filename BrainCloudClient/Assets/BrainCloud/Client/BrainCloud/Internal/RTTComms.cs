@@ -216,9 +216,9 @@ namespace BrainCloud.Internal
 
             if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
-                if ((m_timeSinceLastRequest - DateTime.Now.TimeOfDay) >= m_heartBeatTime)
+                if ((m_sinceLastHeartbeat - DateTime.Now.TimeOfDay) >= m_heartBeatTime)
                 {
-                    m_timeSinceLastRequest = DateTime.Now.TimeOfDay;
+                    m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                     send(buildHeartbeatRequest(), true);
                 }
             }
@@ -555,7 +555,7 @@ namespace BrainCloud.Internal
 
         private DateTime m_lastNowMS;
 
-        private TimeSpan m_timeSinceLastRequest = DateTime.Now.TimeOfDay;
+        private TimeSpan m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
         private const int MAX_PACKETSIZE = 1024;
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
