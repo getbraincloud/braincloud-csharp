@@ -159,7 +159,7 @@ namespace BrainCloud.Internal
                     // are we actually connected? only pump this back, when the server says we've connected
                     else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
-                        m_lastNowMS = DateTime.Now;
+                        m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
                     }
@@ -198,7 +198,6 @@ namespace BrainCloud.Internal
                     {
                         // first time connecting? send the server connection call
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTING;
-                        m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest());
                     }
                     else
@@ -216,14 +215,9 @@ namespace BrainCloud.Internal
 
             if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
-                DateTime nowMS = DateTime.Now;
-                // the heart beat
-                m_timeSinceLastRequest = (nowMS - m_lastNowMS);
-                m_lastNowMS = nowMS;
-
-                if (m_timeSinceLastRequest >= m_heartBeatTime)
+                if ((m_sinceLastHeartbeat - DateTime.Now.TimeOfDay) >= m_heartBeatTime)
                 {
-                    m_timeSinceLastRequest = TimeSpan.Zero;
+                    m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                     send(buildHeartbeatRequest(), true);
                 }
             }
@@ -558,9 +552,7 @@ namespace BrainCloud.Internal
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private BrainCloudWebSocket m_webSocket = null;
 
-        private DateTime m_lastNowMS;
-
-        private TimeSpan m_timeSinceLastRequest;
+        private TimeSpan m_sinceLastHeartbeat;
         private const int MAX_PACKETSIZE = 1024;
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
