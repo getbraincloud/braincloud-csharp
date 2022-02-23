@@ -215,7 +215,7 @@ namespace BrainCloud.Internal
 
             if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
-                if ((m_sinceLastHeartbeat - DateTime.Now.TimeOfDay) >= m_heartBeatTime)
+                if ((DateTime.Now.TimeOfDay - m_sinceLastHeartbeat) >= m_heartBeatTime)
                 {
                     m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                     send(buildHeartbeatRequest(), true);
