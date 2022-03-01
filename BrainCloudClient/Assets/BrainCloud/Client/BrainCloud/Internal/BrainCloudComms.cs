@@ -2180,7 +2180,7 @@ using UnityEngine.Experimental.Networking;
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
                             errorResponse = GetWebRequestResponse(_activeRequest);
-                            if (!errorResponse.IsNullOrEmpty())
+                            if (!string.IsNullOrEmpty(errorResponse))
                             {
                                 _clientRef.Log("Timeout with network error: " + errorResponse);        
                             }
