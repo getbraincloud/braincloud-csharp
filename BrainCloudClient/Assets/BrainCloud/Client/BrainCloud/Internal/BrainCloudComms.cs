@@ -272,6 +272,9 @@ using UnityEngine.Experimental.Networking;
             get; private set;
         }
 
+        private const string m_defaultInternalURL = "https://api.internal.braincloudservers.com/dispatcherv2";
+        private const string m_defaultURL = "https://api.braincloudservers.com/dispatcherv2";
+
         public string UploadURL
         {
             get; private set;
@@ -1668,6 +1671,7 @@ using UnityEngine.Experimental.Networking;
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
     #if USE_WEB_REQUEST
                 UnityWebRequest request = UnityWebRequest.Post(ServerURL, formTable);
+                request.redirectLimit = 0;
                 request.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
                 request.SetRequestHeader("X-SIG", sig);
 
@@ -2170,6 +2174,23 @@ using UnityEngine.Experimental.Networking;
                     }
                     if (!ResendMessage(_activeRequest))
                     {
+                        //Redirect URL
+                        if (_activeRequest != null && _activeRequest.WebRequest.error.Contains("Redirect limit exceeded"))
+                        {
+                            Debug.LogWarning("Redirecting server URL....");
+                            if(_activeRequest.WebRequest.url.Contains("internal.braincloudservers"))
+                            {
+                                ServerURL = m_defaultInternalURL;
+                            }
+                            else if (_activeRequest.WebRequest.url.Contains("sharedprod.braincloudservers"))
+                            {
+                                ServerURL = m_defaultURL;
+                            }
+                            DisposeUploadHandler();
+                            _activeRequest = CreateAndSendNextRequestBundle();
+                            return;
+                        }
+                        
                         DisposeUploadHandler();
                         _activeRequest = null;
 
