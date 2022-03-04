@@ -100,6 +100,52 @@ namespace Tests.PlayMode
             //Assert.False(receivedChat);
             LogResults("Did receive chat message, expected to not receive message", !receivedChat);
         }
+        
+        [UnityTest]
+        public IEnumerator TestRTTMessagingCallback()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            int successfulCallback = 0;
+            //Enable RTT
+            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            _tc.bcWrapper.RTTService.RegisterRTTMessagingCallback((response =>
+            {
+                Debug.LogWarning($"Response: {response}");
+                successfulCallback++;
+            }));
+            //Grabbed a random profileId from portal
+            string[] profileId = {_tc.bcWrapper.Client.ProfileId, "3a1a1f9f-ce3d-4f65-95b7-8b832ab32d35"};
+            //"{\"Title\":\"}";//
+            string messageContent = "{\"subject\":\"Title of Message\",\"text\":\"Hello World !\"}";
+            _tc.bcWrapper.MessagingService.SendMessage
+                (
+                    profileId,
+                    messageContent,
+                    _tc.ApiSuccess,
+                    _tc.ApiError
+                );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Function Send Message Failed", successfulCallback > 0);
+            
+            /*
+            successfulCallback = 0;
+
+            string simpleMessage = "Answer to everything is 42";
+            _tc.bcWrapper.MessagingService.SendMessageSimple
+                (
+                    profileId,
+                    simpleMessage,
+                    _tc.ApiSuccess,
+                    _tc.ApiError
+                );
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Function Send Message Simple Failed", successfulCallback > 0);
+            */
+            
+        }
 
         [UnityTest]
         public IEnumerator TestRTTLobbyCallback()
