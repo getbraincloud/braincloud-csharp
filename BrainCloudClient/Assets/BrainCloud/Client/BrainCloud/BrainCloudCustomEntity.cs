@@ -355,8 +355,92 @@ using BrainCloud.Common;
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFields, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - UpdateEntityFieldsSharded
+        /// </remarks>
+        /// <param name="context">
+        /// </param>
+        /// <param name="pageOffset">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateEntityFieldsSharded(
+            string entityType,
+            string entityId,
+            int version,
+            string fieldsJson,
+            string shardKeyJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);;
+            data[OperationParam.CustomEntityServiceShardKeyJson.Value] = JsonReader.Deserialize <Dictionary<string, object>>(shardKeyJson);
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFieldsShards, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// Service Name - CustomEntity
+        /// Service Operation - SysUpdateEntityFieldsSharded
+        /// </remarks>
+        /// <param name="context">
+        /// </param>
+        /// <param name="pageOffset">
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void SysUpdateEntityFieldsSharded(
+            string entityType,
+            string entityId,
+            int version,
+            string fieldsJson,
+            string shardKeyJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);
+            data[OperationParam.CustomEntityServiceShardKeyJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(shardKeyJson);
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.SysUpdateCustomEntityFieldsShards, data, callback);
+            _client.SendRequest(sc);
+        }
 
-                /// <summary>
+        /// <summary>
         /// Deletes Entities based on the criteria passed in
         /// </summary>
         /// <remarks>

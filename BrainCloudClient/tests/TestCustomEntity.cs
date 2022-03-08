@@ -69,6 +69,76 @@ namespace BrainCloudTests
 
             Cleanup(playerEntity);
         }
+        
+        [Test]
+        public void TestCreateEntityThenUpdateEntityShard()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            Dictionary<string, object> entityData = new Dictionary<string, object>
+            {
+                {
+                    "GamesPlayed", 2
+                },
+                {
+                    "Name", "Zoro"
+                },
+                {
+                    "Goals", 7
+                }
+            };
+            Dictionary<string, object> aclData = new Dictionary<string, object>
+            {
+                {
+                    "other", 1
+                }
+            };
+            string jsonEntityData = JsonWriter.Serialize(entityData);
+            string jsonAclData = JsonWriter.Serialize(aclData);
+            _bc.CustomEntityService.CreateEntity
+                    (
+                        "athletes",
+                        jsonEntityData,
+                        jsonAclData,
+                        null,
+                        true,
+                        tr.ApiSuccess,
+                        tr.ApiError
+                    );
+            tr.Run();
+            var data = tr.m_response["data"] as Dictionary<string,object>;
+            string entityId = data["entityId"] as string;
+            string ownerId = data["ownerId"] as string;
+
+            Dictionary<string, object> shardKey = new Dictionary<string, object>
+            {
+                {
+                    "ownerId", ownerId
+                }
+            };
+            Dictionary<string, object> fields = new Dictionary<string, object>
+            {
+                {
+                    "GamesPlayedTotal", 2
+                },
+                {
+                    "Goals", 10
+                }
+            };
+            string jsonShardKey = JsonWriter.Serialize(shardKey);
+            string jsonFields = JsonWriter.Serialize(fields);
+            _bc.CustomEntityService.UpdateEntityFieldsSharded
+                    (
+                        "athletes",
+                        entityId,
+                        1,
+                        jsonShardKey,
+                        jsonFields,
+                        tr.ApiSuccess,
+                        tr.ApiError
+                    );
+            tr.Run();
+        }
 
         private Player Initialize()
         {            
