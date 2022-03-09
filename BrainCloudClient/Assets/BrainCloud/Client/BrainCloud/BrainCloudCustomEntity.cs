@@ -355,8 +355,51 @@ using BrainCloud.Common;
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFields, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// For sharded custom collection entities. Sets the specified fields within custom entity data on the server, enforcing ownership/ACL permissions.
+        /// </summary>
+        /// <param name="entityType">
+        /// The entity type as defined by the user
+        /// </param>
+        /// <param name="entityId"></param>
+        /// <param name="version"></param>
+        /// <param name="fieldsJson"></param>
+        /// <param name="shardKeyJson">
+        /// The shard key field(s) and value(s), as JSON, applicable to the entity being updated.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateEntityFieldsSharded(
+            string entityType,
+            string entityId,
+            int version,
+            string fieldsJson,
+            string shardKeyJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
+            data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
+            data[OperationParam.CustomEntityServiceVersion.Value] = version;
+            data[OperationParam.CustomEntityServiceFieldsJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(fieldsJson);;
+            data[OperationParam.CustomEntityServiceShardKeyJson.Value] = JsonReader.Deserialize <Dictionary<string, object>>(shardKeyJson);
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.UpdateCustomEntityFieldsShards, data, callback);
+            _client.SendRequest(sc);
+        }
 
-                /// <summary>
+        /// <summary>
         /// Deletes Entities based on the criteria passed in
         /// </summary>
         /// <remarks>
