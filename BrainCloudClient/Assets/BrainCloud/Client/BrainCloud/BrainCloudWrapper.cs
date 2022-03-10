@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using BrainCloud;
+using BrainCloud.Common;
 using BrainCloud.Entity;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
@@ -1174,6 +1175,99 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticateUniversal(
             username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
+    
+    /// <summary>
+    /// A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+    /// that will be passed along to pre-post hooks.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="authenticationType">
+    ///  Universal, Email, Facebook, etc
+    /// </param>
+    /// <param name="ids">
+    /// Auth IDs structure
+    /// </param>
+    /// /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// /// <param name="extraJson">
+    /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateAdvanced(
+        AuthenticationType authenticationType,
+        AuthenticationIds ids,
+        bool forceCreate,
+        Dictionary<string, object> extraJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+        
+        InitializeIdentity();
+
+        Client.AuthenticationService.AuthenticateAdvanced(
+            authenticationType, ids, forceCreate, extraJson, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+    
+    /// <summary>
+    /// Authenticate the user for Ultra.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="ultraUsername">
+    /// It's what the user uses to log into the Ultra endpoint initially
+    /// </param>
+    /// <param name="ultraIdToken">
+    /// The "id_token" taken from Ultra's JWT.
+    /// </param>
+    /// /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateUltra(
+        string ultraUsername,
+        string ultraIdToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = success;
+        aco._failureCallback = failure;
+        aco._cbObject = cbObject;
+        
+        InitializeIdentity();
+
+        Client.AuthenticationService.AuthenticateUltra(
+            ultraUsername, ultraIdToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
 
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
@@ -1774,6 +1868,102 @@ public class BrainCloudWrapper
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean design flow from anonymous to signed profiles
+    ///
+    /// A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+    /// that will be passed along to pre- or post- hooks.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="authenticationType">
+    /// Universal, Email, Facebook, etc
+    /// </param>
+    /// <param name="ids">
+    /// Auth IDs structure
+    /// </param>
+    /// /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// /// <param name="extraJson">
+    /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateAdvanced(
+        AuthenticationType authenticationType,
+        AuthenticationIds ids,
+        bool forceCreate,
+        Dictionary<string, object> extraJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateAdvanced(authenticationType,ids,forceCreate,extraJson,success,failure,cbObject);
+        };
+        
+        SmartSwitchAuthentication(authenticateCallback,failure);
+    }
+    
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// Authenticate the user for Ultra.
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="ultraUsername">
+    /// It's what the user uses to log into the Ultra endpoint initially
+    /// </param>
+    /// <param name="ultraIdToken">
+    /// The "id_token" taken from Ultra's JWT.
+    /// </param>
+    /// /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateUltra(
+        string ultraUsername,
+        string ultraIdToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateUltra(ultraUsername, ultraIdToken, forceCreate, success, failure, cbObject);
+        };
+        
+        SmartSwitchAuthentication(authenticateCallback,failure);
     }
 
     private void SmartSwitchAuthentication(SuccessCallback authenticateCallback, FailureCallback failureCallback)

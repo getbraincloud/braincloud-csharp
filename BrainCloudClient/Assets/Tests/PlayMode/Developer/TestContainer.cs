@@ -38,7 +38,7 @@ public class TestContainer : MonoBehaviour
     public int m_globalErrorCount;
     public int m_networkErrorCount;
     public int failCount;
-
+    public int successCount;
     public IEnumerator Run(int in_apiCount = 1, bool resetValues = true)
     {
         m_done = false;
@@ -106,7 +106,7 @@ public class TestContainer : MonoBehaviour
         }
     }
 
-    public IEnumerator SetUpNewUser(Users user, BrainCloudWrapper wrapper = null)
+    public IEnumerator SetUpNewUser(Users user,bool resetCount = true, BrainCloudWrapper wrapper = null)
     {
         if (!_init)
         {
@@ -120,13 +120,15 @@ public class TestContainer : MonoBehaviour
             IEnumerator setUpUserRoutine = TestUserA.SetUp
             (
                 userWrapper,
-                user + "_CS" + "-",
+                user + "_UNITY" + "-",
                 rand.Next(),
                 this
             );
             
             yield return StartCoroutine(setUpUserRoutine);
             _init = true;
+            
+            successCount = resetCount ? 0 : successCount;
         }
     }
 
@@ -169,7 +171,7 @@ public class TestContainer : MonoBehaviour
         m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
         m_result = true;
         --m_apiCountExpected;
-            
+        successCount++;
         if (m_apiCountExpected <= 0)
         {
             m_done = true;

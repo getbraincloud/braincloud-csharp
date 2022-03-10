@@ -336,7 +336,7 @@ using System.Globalization;
         public string LanguageCode
         {
             get { return string.IsNullOrEmpty(_languageCode) ? Util.GetIsoCodeForCurrentLanguage() : _languageCode; }
-            set { _countryCode = value; }
+            set { _languageCode = value; }
         }
 
         public string CountryCode

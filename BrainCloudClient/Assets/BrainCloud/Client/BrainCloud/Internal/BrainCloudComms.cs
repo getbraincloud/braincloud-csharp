@@ -5,6 +5,7 @@
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
 #define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 #endif
 
 namespace BrainCloud.Internal
@@ -507,6 +508,7 @@ using UnityEngine.Experimental.Networking;
                     {
                         ResetIdleTimer();
                         HandleResponseBundle(GetWebRequestResponse(_activeRequest));
+                        DisposeUploadHandler();
                         _activeRequest = null;        
                     }
                     //HttpStatusCode.ServiceUnavailable
@@ -734,7 +736,7 @@ using UnityEngine.Experimental.Networking;
             ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null, null);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
             AddToQueue(sc);
-
+            DisposeUploadHandler();
             _activeRequest = null;
 
             // calling update will try to send the logout
@@ -764,6 +766,7 @@ using UnityEngine.Experimental.Networking;
                         _clientRef.Log("ERROR - retrying cached messages but there is an active request!");
                     }
                     _activeRequest.CancelRequest();
+                    DisposeUploadHandler();
                     _activeRequest = null;
                 }
 
@@ -787,6 +790,7 @@ using UnityEngine.Experimental.Networking;
                 if (_activeRequest != null)
                 {
                     _activeRequest.CancelRequest();
+                    DisposeUploadHandler();
                     _activeRequest = null;
                 }
 
@@ -824,7 +828,7 @@ using UnityEngine.Experimental.Networking;
                             sc.GetCallback().OnErrorCallback(
                                 StatusCodes.CLIENT_NETWORK_ERROR,
                                 ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT,
-                                "Timeout trying to reach brainCloud server");
+                                "Timeout trying to reach brainCloud server, please check the URL and/or certificates for server");
                         }
                     }
                 }
@@ -1326,6 +1330,7 @@ using UnityEngine.Experimental.Networking;
 
             if (exceptions.Count > 0)
             {
+                DisposeUploadHandler();
                 _activeRequest = null; // to make sure we don't reprocess this message
 
                 throw new Exception("User callback handlers threw " + exceptions.Count + " exception(s)."
@@ -1604,6 +1609,7 @@ using UnityEngine.Experimental.Networking;
             ResetIdleTimer();
 
             TriggerCommsError(statusCode, reasonCode, statusMessage);
+            DisposeUploadHandler();
             _activeRequest = null;
         }
 
@@ -1826,6 +1832,18 @@ using UnityEngine.Experimental.Networking;
         {
             string response = "";
 #if USE_WEB_REQUEST
+            if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
+            }
+            else if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogWarning("The server returned an error response. The request succeeded in communicating with the server, but received an error as defined by the connection protocol.");
+            }
+            else if (_activeRequest.WebRequest.result == UnityWebRequest.Result.DataProcessingError)
+            {
+                Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
+            }
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
@@ -1841,6 +1859,12 @@ using UnityEngine.Experimental.Networking;
             {
                 var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
                 response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+            }
+            
+            if (response.Contains("Security violation 47") ||
+                response.StartsWith("<"))
+            {
+                Debug.LogWarning("Please re-select app in brainCloud settings, something went wrong"); 
             }
 #elif DOT_NET
             response = _activeRequest.DotNetResponseString;
@@ -1995,6 +2019,7 @@ using UnityEngine.Experimental.Networking;
                 _serviceCallsWaiting.Clear();
                 _serviceCallsInProgress.Clear();
                 _serviceCallsInTimeoutQueue.Clear();
+                DisposeUploadHandler();
                 _activeRequest = null;
                 _clientRef.AuthenticationService.ProfileId = "";
                 SessionID = "";
@@ -2155,7 +2180,14 @@ using UnityEngine.Experimental.Networking;
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
                             errorResponse = GetWebRequestResponse(_activeRequest);
-                            _clientRef.Log("Timeout with network error: " + errorResponse);
+                            if (!string.IsNullOrEmpty(errorResponse))
+                            {
+                                _clientRef.Log("Timeout with network error: " + errorResponse);        
+                            }
+                            else
+                            {
+                                _clientRef.Log("Timeout with network error: Please check the URL and/or certificates for server");
+                            }
                         }
                         else
                         {
@@ -2164,6 +2196,7 @@ using UnityEngine.Experimental.Networking;
                     }
                     if (!ResendMessage(_activeRequest))
                     {
+                        DisposeUploadHandler();
                         _activeRequest = null;
 
                         // if we're doing caching of messages on timeout, kick it in now!
@@ -2206,6 +2239,18 @@ using UnityEngine.Experimental.Networking;
             _cachedStatusCode = StatusCodes.FORBIDDEN;
             _cachedReasonCode = ReasonCodes.NO_SESSION;
             _cachedStatusMessage = "No session";
+        }
+
+        private void DisposeUploadHandler()
+        {
+#if USE_WEB_REQUEST
+            if (_activeRequest != null && 
+                _activeRequest.WebRequest != null && 
+                _activeRequest.WebRequest.uploadHandler != null)
+            {
+                _activeRequest.WebRequest.Dispose();
+            }
+#endif
         }
     }
 

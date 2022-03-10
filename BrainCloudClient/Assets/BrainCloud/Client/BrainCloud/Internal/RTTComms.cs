@@ -114,7 +114,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void SetRTTHeartBeatSeconds(int in_value)
         {
-            m_heartBeatTime = in_value * 1000;
+            m_heartBeatTime = TimeSpan.FromMilliseconds(in_value * 1000);
         }
 
         public string RTTConnectionID { get; private set; }
@@ -159,7 +159,7 @@ namespace BrainCloud.Internal
                     // are we actually connected? only pump this back, when the server says we've connected
                     else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
-                        m_lastNowMS = DateTime.Now;
+                        m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
                     }
@@ -198,7 +198,6 @@ namespace BrainCloud.Internal
                     {
                         // first time connecting? send the server connection call
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTING;
-                        m_lastNowMS = DateTime.Now;
                         send(buildConnectionRequest());
                     }
                     else
@@ -216,14 +215,9 @@ namespace BrainCloud.Internal
 
             if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
-                DateTime nowMS = DateTime.Now;
-                // the heart beat
-                m_timeSinceLastRequest += (nowMS - m_lastNowMS).Milliseconds;
-                m_lastNowMS = nowMS;
-
-                if (m_timeSinceLastRequest >= m_heartBeatTime)
+                if ((DateTime.Now.TimeOfDay - m_sinceLastHeartbeat) >= m_heartBeatTime)
                 {
-                    m_timeSinceLastRequest = 0;
+                    m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
                     send(buildHeartbeatRequest(), true);
                 }
             }
@@ -258,6 +252,10 @@ namespace BrainCloud.Internal
                 if (m_clientRef.LoggingEnabled)
                 {
                     m_clientRef.Log("RTT: Disconnect: " + JsonWriter.Serialize(m_disconnectJson));
+                }
+                if (m_connectionFailureCallback != null)
+                {
+                    m_connectionFailureCallback(400, (int)m_disconnectJson["reason_code"], (string)m_disconnectJson["reason"], m_connectedObj);
                 }
             }
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
@@ -428,7 +426,7 @@ namespace BrainCloud.Internal
                 data = (Dictionary<string, object>)response["data"];
             if (operation == "CONNECT")
             {
-                int heartBeat = m_heartBeatTime / 1000;
+                int heartBeat = m_heartBeatTime.Milliseconds / 1000;
                 try
                 {
                     heartBeat = (int)data["heartbeatSeconds"];
@@ -554,11 +552,9 @@ namespace BrainCloud.Internal
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private BrainCloudWebSocket m_webSocket = null;
 
-        private DateTime m_lastNowMS;
-
-        private int m_timeSinceLastRequest = 0;
+        private TimeSpan m_sinceLastHeartbeat;
         private const int MAX_PACKETSIZE = 1024;
-        private int m_heartBeatTime = 10 * 1000;
+        private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
         private BrainCloudClient m_clientRef;
 

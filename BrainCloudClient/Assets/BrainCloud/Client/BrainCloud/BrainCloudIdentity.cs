@@ -118,6 +118,270 @@ using System;
         {
             DetachIdentity(facebookId, AuthenticationType.Facebook, continueAnon, success, failure, cbObject);
         }
+        
+        /// <summary>
+        /// Attach the user's credentials to the current profile.
+        ///
+        /// Service Name - identity
+        /// Service Operation - Attach
+        ///
+        /// Errors to watch for:  SWITCHING_PROFILES - this means that the identity you provided
+        /// already points to a different profile.  You will likely want to offer the user the
+        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
+        ///
+        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateAdvanced().
+        /// </summary>
+        /// <param name="authenticationType">
+        /// Universal, Email, Facebook, etc
+        /// </param>
+        /// <param name="ids">
+        /// Authentication IDs structure
+        /// </param>
+        /// <param name="extraJson">
+        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachAdvancedIdentity(
+            AuthenticationType authenticationType,
+            AuthenticationIds ids,
+            Dictionary<string, object> extraJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = ids.externalId;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = ids.authenticationToken;
+
+            if (Util.IsOptionalParameterValid(ids.authenticationSubType))
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+            }
+
+            if (extraJson != null)
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Attach, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        /// <summary>
+        /// Merge the profile associated with the provided credentials with the current profile.
+        /// </summary>
+        /// <param name="authenticationType">
+        /// Universal, Email, Facebook, etc
+        /// </param>
+        /// <param name="ids">
+        /// Authentication IDs structure
+        /// </param>
+        /// <param name="extraJson">
+        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeAdvancedIdentity(
+            AuthenticationType authenticationType,
+            AuthenticationIds ids,
+            Dictionary<string, object> extraJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = ids.externalId;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = ids.authenticationToken;
+
+            if (Util.IsOptionalParameterValid(ids.authenticationSubType))
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+            }
+
+            if (extraJson != null)
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;    
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Merge, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Detach the identity from this profile.
+        ///
+        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
+        /// disconnecting this identity would result in the profile being anonymous (which means that
+        /// the profile wouldn't be retrievable if the user loses their device)
+        /// </summary>
+        /// <param name="authenticationType">
+        /// Universal, Email, Facebook, etc
+        /// </param>
+        /// <param name="externalId">
+        /// User ID
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="extraJson">
+        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachAdvancedIdentity(
+            AuthenticationType authenticationType,
+            string externalId,
+            bool continueAnon,
+            Dictionary<string, object> extraJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceExternalId.Value] = externalId;
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
+            
+            if(extraJson != null)
+            {
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;    
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        /// <summary>
+        /// Attach the user's Ultra credentials to the current profile.
+        ///
+        /// Service Name - identity
+        /// Service Operation - Attach
+        ///
+        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Ultra identity you provided
+        /// already points to a different profile.  You will likely want to offer the user the
+        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
+        ///
+        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateUltra().
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// it's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="ultraIdToken">
+        /// The "id_token" taken from Ultra's JWT.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachUltraIdentity(
+            string ultraUsername,
+            string ultraIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, success, failure, cbObject);
+        }
+        
+        /// <summary>
+        /// Merge the profile associated with the provided Ultra credentials with the current profile
+        ///
+        /// Service Name - Identity
+        /// Service Operation - Merge
+        /// 
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// It's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="ultraIdToken">
+        /// The "id_token" taken from Ultra's JWT.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeUltraIdentity(
+            string ultraUsername,
+            string ultraIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Ultra identity from this profile.
+        ///
+        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
+        /// disconnecting this identity would result in the profile being anonymous (which means that
+        /// the profile wouldn't be retrievable if the user loses their device)
+        ///
+        /// Service Name - Identity
+        /// Service Operation - Detach
+        /// 
+        /// </summary>
+        /// <param name="ultraUsername">
+        /// It's what the user uses to log into the Ultra endpoint initially
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachUltraIdentity(
+            string ultraUsername,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(ultraUsername, AuthenticationType.Ultra, continueAnon, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Attach the user's Oculus credentials to the current profile.

@@ -28,6 +28,7 @@ namespace BrainCloud.Common
         public static readonly AuthenticationType External = new AuthenticationType("External");
         public static readonly AuthenticationType Handoff = new AuthenticationType("Handoff");
         public static readonly AuthenticationType SettopHandoff = new AuthenticationType("SettopHandoff");
+        public static readonly AuthenticationType Ultra = new AuthenticationType("Ultra");
         public static readonly AuthenticationType Unknown = new AuthenticationType("UNKNOWN");
 
         private static readonly Dictionary<string, AuthenticationType> _typesForString = new Dictionary<string, AuthenticationType>

@@ -21,7 +21,7 @@ namespace BrainCloudTests
 
             _bc.GlobalEntityService.CreateEntity(
                 _defaultEntityType,
-                0,
+                3434343,
                 null,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
@@ -38,7 +38,7 @@ namespace BrainCloudTests
             _bc.GlobalEntityService.CreateEntityWithIndexedId(
                 _defaultEntityType,
                 "indexedIdTest",
-                0,
+                3434343,
                 null,
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,
@@ -268,7 +268,7 @@ namespace BrainCloudTests
 
             _bc.GlobalEntityService.CreateEntity(
                 _defaultEntityType,
-                0,
+                3434343,
                 null,
                 Helpers.CreateJsonPair("test", 1234),
                 tr.ApiSuccess,
@@ -292,7 +292,7 @@ namespace BrainCloudTests
 
             _bc.GlobalEntityService.CreateEntity(
                 _defaultEntityType,
-                0,
+                3434343,
                 null,
                 Helpers.CreateJsonPair("test", 1234),
                 tr.ApiSuccess,
@@ -391,7 +391,7 @@ namespace BrainCloudTests
             {
                 _bc.GlobalEntityService.CreateEntity(
                  _defaultEntityType,
-                 0,
+                 3434343,
                  access.ToJsonString(),
                  Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                  tr.ApiSuccess,
@@ -402,7 +402,7 @@ namespace BrainCloudTests
                 _bc.GlobalEntityService.CreateEntityWithIndexedId(
                 _defaultEntityType,
                indexedId,
-                0,
+                3434343,
                 access.ToJsonString(),
                 Helpers.CreateJsonPair(_defaultEntityValueName, _defaultEntityValue),
                 tr.ApiSuccess,

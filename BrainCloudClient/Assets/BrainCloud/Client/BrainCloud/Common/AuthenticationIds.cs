@@ -5,11 +5,10 @@
 
 namespace BrainCloud
 {
-    public class Version
+    public struct AuthenticationIds
     {
-        public static string GetVersion()
-        {
-            return "4.10.0";
-        }
-    }
+        public string externalId;
+        public string authenticationToken;
+        public string authenticationSubType; // Empty string for most auth types
+    }    
 }

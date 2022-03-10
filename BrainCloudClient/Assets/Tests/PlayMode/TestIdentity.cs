@@ -32,6 +32,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.PlayerStateService.DeleteUser(_tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to switch to child profile", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -48,6 +49,7 @@ namespace Tests.PlayMode
                 );
 
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to switch to singleton child profile", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -71,6 +73,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to switch to parent profile", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -82,6 +85,7 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.IdentityService.DetachParent(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to detach parent", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -105,6 +109,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to attach parent with identity", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -114,6 +119,7 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.IdentityService.GetChildProfiles(true, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to get child profile", _tc.successCount == 1);
         }
         
         [UnityTest]
@@ -128,6 +134,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to attach email identity", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -136,6 +143,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.bcWrapper.IdentityService.GetIdentities(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to get identities", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -144,6 +152,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.bcWrapper.IdentityService.GetExpiredIdentities(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to get expired identities", _tc.successCount == 1);
         }
 
         [UnityTest]
@@ -161,7 +170,9 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(400,40464));
-            Assert.IsTrue(_tc.failCount == 2);
+            Debug.Log($"expected result: status code BAD_REQUEST ||| reason code UNSUPPORTED_AUTH_TYPE");
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            
         }
 
         [UnityTest]
@@ -181,7 +192,9 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-
+            LogResults($"Failure to attach peer profile",_tc.successCount == 1);
+            
+            //clean up
             yield return _tc.StartCoroutine(_tc.DetachPeer(PeerName));
         }
 
@@ -199,6 +212,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to either attach or detach peer",_tc.successCount == 2);
         }
 
         [UnityTest]
@@ -209,6 +223,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.IdentityService.GetPeerProfiles(_tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to get peer profiles",_tc.successCount == 1);
         }
 
         [UnityTest]
@@ -218,8 +233,10 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.IdentityService.AttachNonLoginUniversalId(testerEmail, _tc.ApiSuccess, _tc.ApiError);
             
-            yield return _tc.StartCoroutine(_tc.RunExpectFail(202,ReasonCodes.DUPLICATE_IDENTITY_TYPE));
-            Assert.IsTrue(_tc.failCount == 2);
+            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED,ReasonCodes.DUPLICATE_IDENTITY_TYPE));
+            
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            Debug.Log($"expected result: status code ACCEPTED ||| reason code DUPLICATE_IDENTITY_TYPE");
         }
 
         [UnityTest]
@@ -229,8 +246,9 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.IdentityService.UpdateUniversalIdLogin(testerEmail, _tc.ApiSuccess, _tc.ApiError);
             
-            yield return _tc.StartCoroutine(_tc.RunExpectFail(400,ReasonCodes.NEW_CREDENTIAL_IN_USE));
-            Assert.IsTrue(_tc.failCount == 2);
+            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST,ReasonCodes.NEW_CREDENTIAL_IN_USE));
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            Debug.Log($"expected result: status code BAD_REQUEST ||| reason code NEW_CREDENTIAL_IN_USE");
         }
 
         [UnityTest]
@@ -247,7 +265,9 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to attach block chain",_tc.successCount == 1);
             
+            //clean up
             _tc.bcWrapper.IdentityService.DetachBlockChain
                 (
                     blockchainConfig,
@@ -256,6 +276,7 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.Run());
+            
         }
     }   
 }

@@ -32,7 +32,7 @@ namespace Tests.PlayMode
         protected GameObject _gameObject;
         protected TestContainer _tc;
         protected bool _isRunning;
-        private string pathToIds = "C:/ids.txt";
+        private string pathToIds;
         
         protected string username = "UnityTestUser";
         protected string password = "testPass";
@@ -96,6 +96,7 @@ namespace Tests.PlayMode
         /// </summary>
         private void LoadIds()
         {
+            pathToIds = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\ids.txt";
             using (var reader = new StreamReader(pathToIds))
             {
                 string line;
@@ -190,6 +191,25 @@ namespace Tests.PlayMode
                 message = string.Format("\r\n{0}\r\n{1}", prefix, message);
             }
             Debug.Log(message);
+        }
+
+        protected void LogResults(string errorMessage,bool testPassed)
+        {
+            if (testPassed)
+            {
+                Debug.Log($"Test passed");
+                Assert.True(true);
+            }
+            else
+            {
+                Debug.Log($"ERROR: {errorMessage}");
+                if (_tc.m_statusMessage != null && _tc.m_statusMessage.Contains("{"))
+                {
+                    Debug.Log($"Json Error: {_tc.m_statusMessage}");    
+                }
+                
+                Assert.True(false);
+            }
         }
     }
 }

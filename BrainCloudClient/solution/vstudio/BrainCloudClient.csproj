@@ -206,6 +206,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\AuthenticationType.cs">
       <Link>BrainCloud\Common\AuthenticationType.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\AuthenticationIds.cs">
+      <Link>BrainCloud\Common\AuthenticationIds.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
       <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>

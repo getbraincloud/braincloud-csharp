@@ -14,8 +14,6 @@ namespace Tests.PlayMode
         private RelayConnectOptions connectOptions;
         private RelayConnectionType connectionType = RelayConnectionType.UDP; // Change this to try different connection type
         
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
         [UnityTest]
         public IEnumerator TestRelayWebSocket()
         {
@@ -24,8 +22,6 @@ namespace Tests.PlayMode
             Assert.True(_successCount == 3);
         }
         
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
         [UnityTest]
         public IEnumerator TestRelayUDP()
         {
@@ -34,8 +30,6 @@ namespace Tests.PlayMode
             Assert.True(_successCount == 3);
         }
         
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
         [UnityTest]
         public IEnumerator TestRelayTCP()
         {

@@ -20,8 +20,9 @@ namespace Tests.PlayMode
             _tc.bcWrapper.RTTService.DisableRTT();  //This shouldn't callback error
             _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to enable or disable RTT with WS", _tc.successCount == 1);
         }
-
+        
         [UnityTest]
         public IEnumerator TestRTTHeartBeat()
         {
@@ -34,7 +35,8 @@ namespace Tests.PlayMode
             {
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(_tc.bcWrapper.RTTService.IsRTTEnabled());
+            
+            LogResults("Failed to get RTT Heartbeat", _tc.bcWrapper.RTTService.IsRTTEnabled());
         }
 
         [UnityTest]
@@ -78,8 +80,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedChat);
-
+            //Assert.True(receivedChat);
+            LogResults("Didn't receive chat message", receivedChat);
             //Now deregister and make sure we dont receive it
             _tc.bcWrapper.RTTService.DeregisterRTTChatCallback();
             
@@ -95,7 +97,54 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.False(receivedChat);
+            //Assert.False(receivedChat);
+            LogResults("Did receive chat message, expected to not receive message", !receivedChat);
+        }
+        
+        [UnityTest]
+        public IEnumerator TestRTTMessagingCallback()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            int successfulCallback = 0;
+            //Enable RTT
+            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            _tc.bcWrapper.RTTService.RegisterRTTMessagingCallback((response =>
+            {
+                Debug.LogWarning($"Response: {response}");
+                successfulCallback++;
+            }));
+            //Grabbed a random profileId from portal
+            string[] profileId = {_tc.bcWrapper.Client.ProfileId, "3a1a1f9f-ce3d-4f65-95b7-8b832ab32d35"};
+            //"{\"Title\":\"}";//
+            string messageContent = "{\"subject\":\"Title of Message\",\"text\":\"Hello World !\"}";
+            _tc.bcWrapper.MessagingService.SendMessage
+                (
+                    profileId,
+                    messageContent,
+                    _tc.ApiSuccess,
+                    _tc.ApiError
+                );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Function Send Message Failed", successfulCallback > 0);
+            
+            /*
+            successfulCallback = 0;
+
+            string simpleMessage = "Answer to everything is 42";
+            _tc.bcWrapper.MessagingService.SendMessageSimple
+                (
+                    profileId,
+                    simpleMessage,
+                    _tc.ApiSuccess,
+                    _tc.ApiError
+                );
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Function Send Message Simple Failed", successfulCallback > 0);
+            */
+            
         }
 
         [UnityTest]
@@ -140,7 +189,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedLobby);
+            //Assert.True(receivedLobby);
+            LogResults("Didn't receive lobby message", receivedLobby);
         }
 
         [UnityTest]
@@ -182,7 +232,8 @@ namespace Tests.PlayMode
                 //Client Update on its own within the wrapper
                 yield return new WaitForFixedUpdate();
             }
-            Assert.True(receivedEvent);
+            //Assert.True(receivedEvent);
+            LogResults("Didn't receive event message", receivedEvent);
         }
     }
 }
