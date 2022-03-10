@@ -13,10 +13,10 @@ using UnityEngine.TestTools;
 namespace Tests.PlayMode
 {
     public class TestFile : TestFixtureBase
-    {
-        
+    {        
         private string _cloudPath = "";
         private bool _shouldDeleteFiles = true;
+
         private int _returnCount = 0;
         private int _successCount = 0;
         private int _failCount = 0;
