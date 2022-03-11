@@ -4,6 +4,7 @@
 //----------------------------------------------------
 
 using System.Collections.Generic;
+using System.Net;
 using BrainCloud;
 using BrainCloud.Common;
 using BrainCloud.Entity;
@@ -2476,6 +2477,21 @@ public class BrainCloudWrapper
     {
         if (cbObject != null)
         {
+            if (statusCode == StatusCodes.ACCEPTED && reasonCode == ReasonCodes.MANUAL_REDIRECT)
+            {
+                //Manual redirection
+                Dictionary<string, object> jsonMessage = JsonReader.Deserialize(errorJson) as Dictionary<string, object>;
+                Dictionary<string, object> jsonData = jsonMessage["data"] as Dictionary<string, object>;
+                
+                _lastUrl = jsonData["redirect_url"] as string;
+                _lastAppId = jsonData["redirect_appid"] as string;
+                
+                InitializeIdentity(true);
+                Client.Initialize(_lastUrl, _lastSecretKey, _lastAppId, _lastAppVersion);
+                Client.AuthenticationService.RetryPreviousAuthentication(AuthSuccessCallback, AuthFailureCallback);
+                return;
+            }
+            
             WrapperAuthCallbackObject aco = (WrapperAuthCallbackObject)cbObject;
             if (aco._failureCallback != null)
             {

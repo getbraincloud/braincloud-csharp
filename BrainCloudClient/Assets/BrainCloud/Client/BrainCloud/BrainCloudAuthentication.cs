@@ -1142,6 +1142,22 @@ using BrainCloud.JsonFx.Json;
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.ResetUniversalIdPasswordAdvancedWithExpiry, data, callback);
             _client.SendRequest(sc);
         }
+        
+        public void RetryPreviousAuthentication(SuccessCallback success, FailureCallback failure, object cbObject = null)
+        {
+            Authenticate
+                (
+                    _previousAuthParams.externalId,
+                    _previousAuthParams.authenticationToken,
+                    _previousAuthParams.authenticationType,
+                    _previousAuthParams.externalAuthName,
+                    _previousAuthParams.forceCreate,
+                    _previousAuthParams.extraJson,
+                    success,
+                    failure,
+                    cbObject
+                );
+        }
 
         private void Authenticate(
             string externalId,
@@ -1154,6 +1170,13 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
+            _previousAuthParams.externalId = externalId;
+            _previousAuthParams.authenticationToken = authenticationToken;
+            _previousAuthParams.authenticationType = authenticationType;
+            _previousAuthParams.externalAuthName = externalAuthName;
+            _previousAuthParams.forceCreate = forceCreate;
+            _previousAuthParams.extraJson = extraJson;
+            
             string languageCode = _client.LanguageCode;
             double utcOffset = Util.GetUTCOffsetForCurrentTimeZone();
             string countryCode = _client.CountryCode;
@@ -1196,5 +1219,17 @@ using BrainCloud.JsonFx.Json;
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
            _client.SendRequest(sc);
         }
+        
+        private struct PreviousAuthParams
+        {
+            public string externalId;
+            public string authenticationToken;
+            public AuthenticationType authenticationType;
+            public string externalAuthName;
+            public bool forceCreate;
+            public Dictionary<string,object> extraJson;
+        }
+
+        private PreviousAuthParams _previousAuthParams;
     }
 }
