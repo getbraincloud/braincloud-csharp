@@ -81,7 +81,7 @@ public class BrainCloudWrapper
     private string _lastSecretKey = "";
     private string _lastAppId = "";
     private string _lastAppVersion = "";
-
+    private Dictionary<string, string> _secretMap = new Dictionary<string, string>();
     private bool _alwaysAllowProfileSwitch = true;
 
     private WrapperData _wrapperData = new WrapperData();
@@ -416,6 +416,7 @@ public class BrainCloudWrapper
         _lastSecretKey = secretKey;
         _lastAppId = appId;
         _lastAppVersion = version;
+        _secretMap.Clear();
         Client.Initialize(url, secretKey, appId, version);
 
         LoadData();
@@ -436,6 +437,7 @@ public class BrainCloudWrapper
         _lastSecretKey = appIdSecretMap[defaultAppId];
         _lastAppId = defaultAppId;
         _lastAppVersion = version;
+        _secretMap = appIdSecretMap;
         Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
 
         LoadData();
@@ -2484,10 +2486,22 @@ public class BrainCloudWrapper
                 Dictionary<string, object> jsonData = jsonMessage["data"] as Dictionary<string, object>;
                 
                 _lastUrl = jsonData["redirect_url"] as string;
-                _lastAppId = jsonData["redirect_appid"] as string;
+                var newGameId = jsonData["redirect_appid"] as string;
+
+                if (_secretMap.Count == 0)
+                {
+                    if (!newGameId.Equals(""))
+                    {
+                        _lastAppId = newGameId;
+                    }
+                    Client.Initialize(_lastUrl, _lastSecretKey, _lastAppId, _lastAppVersion);                    
+                }
+                else
+                {
+                    Client.InitializeWithApps(_lastUrl, _lastAppId, _secretMap, _lastAppVersion);
+                }
                 
                 InitializeIdentity(true);
-                Client.Initialize(_lastUrl, _lastSecretKey, _lastAppId, _lastAppVersion);
                 Client.AuthenticationService.RetryPreviousAuthentication(AuthSuccessCallback, AuthFailureCallback);
                 return;
             }
