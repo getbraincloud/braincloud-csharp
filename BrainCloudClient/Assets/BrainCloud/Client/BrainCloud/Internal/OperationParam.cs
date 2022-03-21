@@ -511,7 +511,7 @@ namespace BrainCloud
 
         public static readonly OperationParam CompoundAlgos = new OperationParam("algos");
         public static readonly OperationParam CompoundRanges = new OperationParam("compound-ranges");
-        public static readonly OperationParam LobbyCritera = new OperationParam("criteria");
+        public static readonly OperationParam LobbyCritera = new OperationParam("criteriaJson");
         public static readonly OperationParam CriteraPing = new OperationParam("ping");
         public static readonly OperationParam CriteraRating = new OperationParam("rating");
         public static readonly OperationParam StrategyRangedPercent = new OperationParam("ranged-percent");
