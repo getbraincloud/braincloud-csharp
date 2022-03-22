@@ -1832,6 +1832,16 @@ using UnityEngine.Experimental.Networking;
         {
             string response = "";
 #if USE_WEB_REQUEST
+            #if UNITY_2018 || UNITY_2019
+            if (_activeRequest.WebRequest.isNetworkError)
+            {
+                Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
+            }
+            else if (_activeRequest.WebRequest.isHttpError)
+            {
+                Debug.LogWarning("Something went wrong, received a isHttpError flag. Examples for this to happen are: failure to resolve a DNS entry, a socket error or a redirect limit being exceeded. When this property returns true, the error property will contain a human-readable string describing the error.");
+            }
+            #elif UNITY_2020_1_OR_NEWER
             if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
@@ -1844,6 +1854,7 @@ using UnityEngine.Experimental.Networking;
             {
                 Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
             }
+            #endif
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
