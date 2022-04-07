@@ -1531,7 +1531,9 @@ using UnityEngine.Experimental.Networking;
 
                         if (operation.Equals(ServiceOperation.Authenticate.Value) ||
                             operation.Equals(ServiceOperation.ResetEmailPassword.Value) ||
-                            operation.Equals(ServiceOperation.ResetEmailPasswordAdvanced.Value))
+                            operation.Equals(ServiceOperation.ResetEmailPasswordAdvanced.Value) ||
+                            operation.Equals(ServiceOperation.ResetUniversalIdPassword.Value) ||
+                            operation.Equals(ServiceOperation.ResetUniversalIdPasswordAdvanced.Value))
                         {
                             isAuth = true;
                         }

@@ -13,6 +13,7 @@ namespace Tests.PlayMode
     {
         private bool _init;
         private string _email = "UnityTester@bctestuser.com";
+        private string _universalID = "UserA_CS-1730261369";
         private string _password = "12345";
         
         [UnityTest]
@@ -67,6 +68,19 @@ namespace Tests.PlayMode
             );
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Failed to reset email password", _tc.successCount == 1);
+        }
+
+        [UnityTest]
+        public IEnumerator TestResetUniversalIDPassword()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ResetUniversalIdPassword
+            (
+                _universalID,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to reset Universal ID password", _tc.successCount == 1);
         }
 
         [UnityTest]
