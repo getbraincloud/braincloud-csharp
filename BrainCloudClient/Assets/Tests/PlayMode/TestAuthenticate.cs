@@ -71,6 +71,17 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TestResetEmailPassword_Practice()
+        {
+            //Anthony - practicing Unit Test Creation work flow
+
+            _tc.bcWrapper.Client.AuthenticationService.ResetEmailPassword(_email, _tc.ApiSuccess, _tc.ApiError); //Authenticates tester email (credentials provided in member list) through main testcontainer obj
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to reset email password", _tc.successCount == 1);
+        }
+
+        [UnityTest]
         public IEnumerator TestResetUniversalIDPassword()
         {
             _tc.bcWrapper.Client.AuthenticationService.ResetUniversalIdPassword
