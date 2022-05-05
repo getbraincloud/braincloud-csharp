@@ -56,7 +56,7 @@ namespace BrainCloudTests
 
             List<string> lbIds = new List<string>();
             lbIds.Add(_globalLeaderboardId);
-            lbIds.Add(_dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+            lbIds.Add(_dynamicLeaderboardId);
 
             _bc.LeaderboardService.GetMultiSocialLeaderboard(
                 lbIds,
@@ -216,7 +216,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE,
@@ -233,7 +233,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicGroupLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 _groupLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
@@ -253,7 +253,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardDaysUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
@@ -271,7 +271,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LOW_VALUE,
@@ -289,7 +289,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.CUMULATIVE,
@@ -307,7 +307,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
@@ -325,7 +325,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.PostScoreToDynamicLeaderboardUTC(
-                _dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE.ToString() + "_" + _random.Next(),
+                _dynamicLeaderboardId,
                 100,
                 Helpers.CreateJsonPair("testDataKey", 400),
                 BrainCloudSocialLeaderboard.SocialLeaderboardType.LAST_VALUE,
@@ -496,7 +496,7 @@ namespace BrainCloudTests
 
             List<string> lbIds = new List<string>();
             lbIds.Add(_globalLeaderboardId);
-            lbIds.Add(_dynamicLeaderboardId + "_" + BrainCloudSocialLeaderboard.SocialLeaderboardType.HIGH_VALUE.ToString());
+            lbIds.Add(_dynamicLeaderboardId);
 
             _bc.LeaderboardService.GetPlayerScoresFromLeaderboards(
                 lbIds,
@@ -607,6 +607,22 @@ namespace BrainCloudTests
             tr.Run();
 
             _bc.GroupService.DeleteGroup(id, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestDeleteDynamicLeaderboards()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.ScriptService.RunScript
+            (
+                "CleanupLeaderboards",
+                Helpers.CreateJsonPair("leaderboardId", _dynamicLeaderboardId),
+                tr.ApiSuccess,
+                tr.ApiError
+            );
+
             tr.Run();
         }
     }
