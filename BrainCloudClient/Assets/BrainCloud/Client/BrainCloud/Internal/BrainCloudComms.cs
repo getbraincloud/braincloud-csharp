@@ -312,7 +312,8 @@ using UnityEngine.Experimental.Networking;
             _packetTimeouts = new List<int> { 15, 20, 35, 50 };
         }
 
-        private int _authPacketTimeoutSecs = 15;
+        private List<int> _listAuthPacketTimeouts = new List<int> {0, 15, 30, 60 };
+        private int _authPacketTimeoutSecs = 0;
         public int AuthenticationPacketTimeoutSecs
         {
             get
@@ -998,6 +999,8 @@ using UnityEngine.Experimental.Networking;
 
                         if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
                         {
+                            //Reset authenticate timeout
+                            _authPacketTimeoutSecs = _listAuthPacketTimeouts[0];
                             SaveProfileAndSessionIds(responseData, data);
                         }
                     }
@@ -1216,6 +1219,8 @@ using UnityEngine.Experimental.Networking;
                                 _identicalFailedAuthenticationAttempts = 0;
                             }
                         }
+                        
+                        
                     }
 
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
@@ -1908,6 +1913,21 @@ using UnityEngine.Experimental.Networking;
         {
             if (requestState.PacketNoRetry)
             {
+                if (DateTime.Now.Subtract(_activeRequest.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
+                {
+                    for (int i = 0; i < _listAuthPacketTimeouts.Count; i++)
+                    {
+                        if (_listAuthPacketTimeouts[i] == _authPacketTimeoutSecs)
+                        {
+                            if (i + 1 < _listAuthPacketTimeouts.Count)
+                            {
+                                _authPacketTimeoutSecs = _listAuthPacketTimeouts[i + 1];
+                                Debug.Log($"Time to beat: {TimeSpan.FromSeconds(_authPacketTimeoutSecs)}");
+                                break;
+                            }
+                        }
+                    }
+                }
                 return TimeSpan.FromSeconds(_authPacketTimeoutSecs);
             }
 

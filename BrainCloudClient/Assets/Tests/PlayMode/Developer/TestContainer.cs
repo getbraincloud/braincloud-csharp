@@ -34,7 +34,7 @@ public class TestContainer : MonoBehaviour
     public int m_statusCode;
     public int m_reasonCode;
     public string m_statusMessage;
-    public int m_timeToWaitSecs = 300;
+    public long m_timeToWaitSecs = 300;
     public int m_globalErrorCount;
     public int m_networkErrorCount;
     public int failCount;
@@ -71,12 +71,12 @@ public class TestContainer : MonoBehaviour
         if (in_expectedStatusCode != -1 && in_expectedStatusCode == m_statusCode)
         {
             failCount++;
-            //Assert.AreEqual(in_expectedStatusCode, m_statusCode);
+            Assert.AreEqual(in_expectedStatusCode, m_statusCode);
         }
         if (in_expectedReasonCode != -1 && in_expectedReasonCode == m_reasonCode)
         {
             failCount++;
-            //Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+            Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
         }
     }
 
