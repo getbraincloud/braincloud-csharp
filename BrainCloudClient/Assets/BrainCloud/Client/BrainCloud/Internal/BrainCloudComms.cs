@@ -147,7 +147,7 @@ using UnityEngine.Experimental.Networking;
         ///The current number of identical failed attempts at authenticating. This 
         ///will reset when a successful authentication is made.
         ///<summary>
-        private int _identicalFailedAuthenticationAttempts = 0;
+        private int _failedAuthenticationAttempts = 0;
 
         ///<summary>
         ///A blank reference for response data so we don't need to continually allocate new dictionaries when trying to
@@ -214,6 +214,21 @@ using UnityEngine.Experimental.Networking;
         private string _killSwitchService;
         private string _killSwitchOperation;
 
+        private List<ServerCall> _additionalServerCalls = new List<ServerCall>();
+        
+        public List<ServerCall> AdditServerCalls
+        {
+            get => _additionalServerCalls;
+            set => _additionalServerCalls = value;
+        }
+
+        private bool _authInProgress = false;
+        public bool AuthenticateInProgress
+        {
+            get => _authInProgress;
+            set => _authInProgress = value;
+        }
+        
         private bool _isAuthenticated = false;
 
         public bool Authenticated
@@ -864,7 +879,7 @@ using UnityEngine.Experimental.Networking;
         ///<summary>
         private bool tooManyAuthenticationAttempts()
         {
-            return _identicalFailedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold;
+            return _failedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold;
         }
 
         //save profileid and sessionId of response
@@ -876,6 +891,7 @@ using UnityEngine.Experimental.Networking;
             {
                 SessionID = sessionId;
                 _isAuthenticated = true;
+                _authInProgress = false;
             }
 
             // save the profile Id
@@ -1089,6 +1105,23 @@ using UnityEngine.Experimental.Networking;
                                 exceptions.Add(e);
                             }
                         }
+                        
+                        //Execute additional callbacks queued while Authenticate was processing
+                        if (operation == ServiceOperation.Authenticate.Value && _additionalServerCalls.Count > 0)
+                        {
+                            ServerCallback addCallback = new ServerCallback(null,null,null);
+                            for (int i = 0; i < _additionalServerCalls.Count; i++)
+                            {
+                                if (_additionalServerCalls[i] != null)
+                                {
+                                    addCallback = _additionalServerCalls[i].GetCallback();
+                                    addCallback.OnSuccessCallback(data);
+                                }
+                            }
+                            _additionalServerCalls.Clear();
+                        }
+
+                        _failedAuthenticationAttempts = 0;
 
                         // now deal with rewards
                         if (_rewardCallback != null && responseData != null)
@@ -1169,58 +1202,13 @@ using UnityEngine.Experimental.Networking;
                     //if it was an authentication call 
                     if (operation == ServiceOperation.Authenticate.Value)
                     {
-                        //swap the recent responses, so you have the newest one, and the one last time you came through.
-                        _recentResponseJsonData[1] = _recentResponseJsonData[0];
-                        _recentResponseJsonData[0] = response;
-
-                        //need to compare the json data of the most recent response and the last response. If they are the same, it means the client
-                        //is attempting the exact same authentication call. 
-                        bool responsesAreTheSame = true;
-                        //if the data has different lengths, they're obviously not the same
-                        if (_recentResponseJsonData[0].Count == _recentResponseJsonData[1].Count)
-                        {
-                            foreach (var pair in _recentResponseJsonData[0])
-                            {
-                                object value = null;
-                                //if there is ever a time they're not the same value, then they are not the same
-                                if (_recentResponseJsonData[1].TryGetValue(pair.Key, out value))
-                                {
-                                    //if the values are not the same theyre different
-                                    if (value.ToString() != pair.Value.ToString())
-                                    {
-                                        responsesAreTheSame = false;
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    //If the key isnt found, they also can't be the same
-                                    responsesAreTheSame = false;
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //different lengths of data mean theyre not the same call.
-                            responsesAreTheSame = false;
-                        }
-
                         //if we haven't already gone above the threshold and are waiting for the timer or a 200 response to reset things
                         if (!tooManyAuthenticationAttempts())
                         {
-                            //we either increment the amount of identical failed authentication attempts, or reset it because its not identical. 
-                            if (responsesAreTheSame == true)
-                            {
-                                _identicalFailedAuthenticationAttempts++;
-                            }
-                            else
-                            {
-                                _identicalFailedAuthenticationAttempts = 0;
-                            }
+                            _failedAuthenticationAttempts++;
                         }
-                        
-                        
+
+                        _authInProgress = false;
                     }
 
                     if (response.TryGetValue("reason_code", out reasonCodeObj))
@@ -1376,10 +1364,10 @@ using UnityEngine.Experimental.Networking;
                 }
 
                 string num;
-                num = _identicalFailedAuthenticationAttempts.ToString();
+                num = _failedAuthenticationAttempts.ToString();
                 if (_clientRef.LoggingEnabled)
                 {
-                    _clientRef.Log("Current number of identical failed authentications: " + num);
+                    _clientRef.Log("Current number of failed authentications: " + num);
                 }
 
                 //have the attempts gone beyond the threshold?
@@ -1390,7 +1378,7 @@ using UnityEngine.Experimental.Networking;
                     //be able to send an authentication request for a time. 
                     if (_clientRef.LoggingEnabled)
                     {
-                        _clientRef.Log("Too many identical repeat authentication failures");
+                        _clientRef.Log("Too many repeat authentication failures");
                     }
                     _killSwitchEngaged = true;
                     ResetAuthenticationTimer();
@@ -1406,7 +1394,7 @@ using UnityEngine.Experimental.Networking;
             _killSwitchOperation = null;
 
             //reset the amount of failed attempts upon a successful attempt
-            _identicalFailedAuthenticationAttempts = 0;
+            _failedAuthenticationAttempts = 0;
             _recentResponseJsonData[0] = blankResponseData;
             _recentResponseJsonData[1] = blankResponseData;
         }
@@ -1922,7 +1910,6 @@ using UnityEngine.Experimental.Networking;
                             if (i + 1 < _listAuthPacketTimeouts.Count)
                             {
                                 _authPacketTimeoutSecs = _listAuthPacketTimeouts[i + 1];
-                                Debug.Log($"Time to beat: {TimeSpan.FromSeconds(_authPacketTimeoutSecs)}");
                                 break;
                             }
                         }

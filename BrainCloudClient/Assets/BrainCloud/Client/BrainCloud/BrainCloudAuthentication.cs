@@ -1194,6 +1194,12 @@ using BrainCloud.JsonFx.Json;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
+            if (_client.Comms.AuthenticateInProgress)
+            {
+                _client.Comms.AdditServerCalls.Add(sc);
+                return;
+            }
+            _client.Comms.AuthenticateInProgress = true;
            _client.SendRequest(sc);
         }
     }
