@@ -327,8 +327,8 @@ using UnityEngine.Experimental.Networking;
             _packetTimeouts = new List<int> { 15, 20, 35, 50 };
         }
 
-        private List<int> _listAuthPacketTimeouts = new List<int> {0, 15, 30, 60 };
-        private int _authPacketTimeoutSecs = 0;
+        private List<int> _listAuthPacketTimeouts = new List<int> {15, 30, 60 };
+        private int _authPacketTimeoutSecs = 15;
         public int AuthenticationPacketTimeoutSecs
         {
             get
@@ -1206,6 +1206,10 @@ using UnityEngine.Experimental.Networking;
                         if (!tooManyAuthenticationAttempts())
                         {
                             _failedAuthenticationAttempts++;
+                            if (tooManyAuthenticationAttempts())
+                            {
+                                ResetAuthenticationTimer();
+                            }
                         }
 
                         _authInProgress = false;
