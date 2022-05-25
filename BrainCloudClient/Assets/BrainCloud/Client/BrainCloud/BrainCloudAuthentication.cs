@@ -3,6 +3,8 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using UnityEngine;
+
 namespace BrainCloud
 {
 
@@ -1194,12 +1196,11 @@ using BrainCloud.JsonFx.Json;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, data, callback);
-            if (_client.Comms.AuthenticateInProgress)
+            if (_client.Comms.IsAuthenticateRequestInProgress())
             {
-                _client.Comms.AdditServerCalls.Add(sc);
+                _client.Comms.AddCallbackToAuthenticateRequest(callback);
                 return;
             }
-            _client.Comms.AuthenticateInProgress = true;
            _client.SendRequest(sc);
         }
     }

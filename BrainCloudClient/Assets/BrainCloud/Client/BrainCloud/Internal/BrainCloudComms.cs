@@ -214,14 +214,6 @@ using UnityEngine.Experimental.Networking;
         private string _killSwitchService;
         private string _killSwitchOperation;
 
-        private List<ServerCall> _additionalServerCalls = new List<ServerCall>();
-        
-        public List<ServerCall> AdditServerCalls
-        {
-            get => _additionalServerCalls;
-            set => _additionalServerCalls = value;
-        }
-
         private bool _authInProgress = false;
         public bool AuthenticateInProgress
         {
@@ -327,7 +319,7 @@ using UnityEngine.Experimental.Networking;
             _packetTimeouts = new List<int> { 15, 20, 35, 50 };
         }
 
-        private List<int> _listAuthPacketTimeouts = new List<int> {15, 30, 60 };
+        private readonly int[] _listAuthPacketTimeouts = { 15, 30, 60 };
         private int _authPacketTimeoutSecs = 15;
         public int AuthenticationPacketTimeoutSecs
         {
@@ -1106,20 +1098,6 @@ using UnityEngine.Experimental.Networking;
                             }
                         }
                         
-                        //Execute additional callbacks queued while Authenticate was processing
-                        if (operation == ServiceOperation.Authenticate.Value && _additionalServerCalls.Count > 0)
-                        {
-                            ServerCallback addCallback = new ServerCallback(null,null,null);
-                            for (int i = 0; i < _additionalServerCalls.Count; i++)
-                            {
-                                if (_additionalServerCalls[i] != null)
-                                {
-                                    addCallback = _additionalServerCalls[i].GetCallback();
-                                    addCallback.OnSuccessCallback(data);
-                                }
-                            }
-                            _additionalServerCalls.Clear();
-                        }
 
                         _failedAuthenticationAttempts = 0;
 
@@ -1907,11 +1885,11 @@ using UnityEngine.Experimental.Networking;
             {
                 if (DateTime.Now.Subtract(_activeRequest.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
                 {
-                    for (int i = 0; i < _listAuthPacketTimeouts.Count; i++)
+                    for (int i = 0; i < _listAuthPacketTimeouts.Length; i++)
                     {
                         if (_listAuthPacketTimeouts[i] == _authPacketTimeoutSecs)
                         {
-                            if (i + 1 < _listAuthPacketTimeouts.Count)
+                            if (i + 1 < _listAuthPacketTimeouts.Length)
                             {
                                 _authPacketTimeoutSecs = _listAuthPacketTimeouts[i + 1];
                                 break;
@@ -2275,6 +2253,27 @@ using UnityEngine.Experimental.Networking;
                 _activeRequest.WebRequest.Dispose();
             }
 #endif
+        }
+
+        public void AddCallbackToAuthenticateRequest(ServerCallback in_callback)
+        {
+            //Authenticate requests will always be put to the top of the request
+            _serviceCallsInProgress[0].GetCallback().AddCallbacks(in_callback);
+        }
+
+        public bool IsAuthenticateRequestInProgress()
+        {
+            if (_serviceCallsInProgress.Count > 0)
+            {
+                for (int i = 0; i < _serviceCallsInProgress.Count; i++)
+                {
+                    if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 

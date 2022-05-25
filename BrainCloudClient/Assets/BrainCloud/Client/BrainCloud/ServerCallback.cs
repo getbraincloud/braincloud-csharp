@@ -42,6 +42,25 @@ namespace BrainCloud
             }
         }
 
+        public void AddCallbacks(ServerCallback in_callback)
+        {
+            //Adding Successes
+            MulticastDelegate successToAdd = in_callback.m_fnSuccessCallback;
+            var successList = successToAdd.GetInvocationList();
+            for (int i = 0; i < successList.Length; i++)
+            {
+                m_fnSuccessCallback += successList[i] as SuccessCallback;
+            }
+            
+            //Adding Failures
+            MulticastDelegate failureToAdd = in_callback.m_fnFailureCallback;
+            var failureList = failureToAdd.GetInvocationList();
+            for (int i = 0; i < failureList.Length; i++)
+            {
+                m_fnFailureCallback += failureList[i] as FailureCallback;
+            }
+        }
+
         public bool AreCallbacksNull()
         {
             return m_fnSuccessCallback == null && m_fnFailureCallback == null;
