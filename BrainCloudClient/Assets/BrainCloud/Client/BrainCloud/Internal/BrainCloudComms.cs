@@ -2257,8 +2257,16 @@ using UnityEngine.Experimental.Networking;
 
         public void AddCallbackToAuthenticateRequest(ServerCallback in_callback)
         {
-            //Authenticate requests will always be put to the top of the request
-            _serviceCallsInProgress[0].GetCallback().AddCallbacks(in_callback);
+            if (_serviceCallsInProgress.Count > 0)
+            {
+                for (int i = 0; i < _serviceCallsInProgress.Count; i++)
+                {
+                    if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
+                    {
+                        _serviceCallsInProgress[i].GetCallback().AddCallbacks(in_callback);
+                    }
+                }
+            }
         }
 
         public bool IsAuthenticateRequestInProgress()
