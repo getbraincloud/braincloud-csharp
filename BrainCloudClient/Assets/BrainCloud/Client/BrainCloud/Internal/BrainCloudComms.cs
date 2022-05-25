@@ -2257,31 +2257,28 @@ using UnityEngine.Experimental.Networking;
 
         public void AddCallbackToAuthenticateRequest(ServerCallback in_callback)
         {
-            if (_serviceCallsInProgress.Count > 0)
+            bool inProgress = false;
+            for (int i = 0; i < _serviceCallsInProgress.Count && !inProgress; ++i)
             {
-                for (int i = 0; i < _serviceCallsInProgress.Count; i++)
+                if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
                 {
-                    if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
-                    {
-                        _serviceCallsInProgress[i].GetCallback().AddCallbacks(in_callback);
-                    }
+                    inProgress = true;
+                    _serviceCallsInProgress[i].GetCallback().AddCallbacks(in_callback);
                 }
             }
         }
 
         public bool IsAuthenticateRequestInProgress()
         {
-            if (_serviceCallsInProgress.Count > 0)
+            bool inProgress = false;
+            for (int i = 0; i < _serviceCallsInProgress.Count && !inProgress; ++i)
             {
-                for (int i = 0; i < _serviceCallsInProgress.Count; i++)
+                if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
                 {
-                    if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
-                    {
-                        return true;
-                    }
+                    inProgress = true;
                 }
             }
-            return false;
+            return inProgress;
         }
     }
 
