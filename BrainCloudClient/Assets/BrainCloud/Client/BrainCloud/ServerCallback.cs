@@ -3,6 +3,8 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using BrainCloud.Internal;
+
 namespace BrainCloud
 {
     using System;
@@ -41,24 +43,15 @@ namespace BrainCloud
                 m_fnFailureCallback(statusCode, reasonCode, statusMessage, m_cbObject);
             }
         }
-
-        public void AddCallbacks(ServerCallback in_callback)
+        
+        //This function can only add callbacks for Authenticate requests. 
+        public void AddAuthCallbacks(ServerCallback in_callback)
         {
-            //Adding Successes
-            MulticastDelegate successToAdd = in_callback.m_fnSuccessCallback;
-            var successList = successToAdd.GetInvocationList();
-            for (int i = 0; i < successList.Length; i++)
-            {
-                m_fnSuccessCallback += successList[i] as SuccessCallback;
-            }
+            WrapperAuthCallbackObject callbackObject = in_callback.m_cbObject as WrapperAuthCallbackObject;
+            if (callbackObject == null) return;
             
-            //Adding Failures
-            MulticastDelegate failureToAdd = in_callback.m_fnFailureCallback;
-            var failureList = failureToAdd.GetInvocationList();
-            for (int i = 0; i < failureList.Length; i++)
-            {
-                m_fnFailureCallback += failureList[i] as FailureCallback;
-            }
+            m_fnSuccessCallback += callbackObject._successCallback;
+            m_fnFailureCallback += callbackObject._failureCallback;
         }
 
         public bool AreCallbacksNull()

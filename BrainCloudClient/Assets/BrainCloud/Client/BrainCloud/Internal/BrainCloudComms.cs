@@ -2263,7 +2263,7 @@ using UnityEngine.Experimental.Networking;
                 if (_serviceCallsInProgress[i].Operation == ServiceOperation.Authenticate.Value)
                 {
                     inProgress = true;
-                    _serviceCallsInProgress[i].GetCallback().AddCallbacks(in_callback);
+                    _serviceCallsInProgress[i].GetCallback().AddAuthCallbacks(in_callback);
                 }
             }
         }
