@@ -173,7 +173,7 @@ namespace Tests.PlayMode
             ids.authenticationSubType = "";
             Dictionary<string, object> extraJson = new Dictionary<string, object>();
 
-            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, false,
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, true,
                 extraJson, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
