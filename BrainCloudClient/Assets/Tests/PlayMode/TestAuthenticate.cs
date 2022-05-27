@@ -165,6 +165,22 @@ namespace Tests.PlayMode
         }
         
         [UnityTest]
+        public IEnumerator TestAuthenticateAnonymousAdvanced()
+        {
+            AuthenticationIds ids;
+            ids.externalId = "advancedAnonymousUser";
+            ids.authenticationToken = "specialToken";
+            ids.authenticationSubType = "";
+            Dictionary<string, object> extraJson = new Dictionary<string, object>();
+
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, false,
+                extraJson, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to authenticate advanced with anonymous as the type", _tc.bcWrapper.Client.Authenticated);
+        }
+
+        [UnityTest]
         public IEnumerator TestAuthenticateUltra()
         {
             if (!ServerUrl.Contains("api-internal.braincloudservers.com") &&
