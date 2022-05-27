@@ -74,6 +74,8 @@ using BrainCloud.Internal;
             FailureCallback failure = null,
             object cbObject = null)
         {
+            _client.Wrapper.ResetStoredAnonymousId();
+            _client.Wrapper.ResetStoredProfileId();
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.FullReset, null, callback);
             _client.SendRequest(sc);
