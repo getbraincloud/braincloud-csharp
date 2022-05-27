@@ -74,7 +74,7 @@ using BrainCloud.Internal;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            SuccessCallback preCallback = (jsonData, cbObject) =>
+            SuccessCallback preCallback = (jsonData, obj) =>
             {
                 _client.Wrapper.ResetStoredAnonymousId();
                 _client.Wrapper.ResetStoredProfileId();
