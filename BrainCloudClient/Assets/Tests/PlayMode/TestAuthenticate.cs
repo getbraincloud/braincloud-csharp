@@ -151,6 +151,49 @@ namespace Tests.PlayMode
         }
         
         [UnityTest]
+        public IEnumerator TestAuthenticateAnonymousAdvanced()
+        {
+            AuthenticationIds ids;
+            ids.externalId = "advancedAnonymousUser";
+            ids.authenticationToken = "specialToken";
+            ids.authenticationSubType = "";
+            Dictionary<string, object> extraJson = new Dictionary<string, object>();
+
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, true,
+                extraJson, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Failed to authenticate advanced with anonymous as the type", _tc.bcWrapper.Client.Authenticated);
+        }
+        
+        //Testing to see if profile & anonymous id's get saved properly
+        [UnityTest]
+        public IEnumerator TestReauthenticateAnonymousAdvanced()
+        {
+            AuthenticationIds ids;
+            ids.externalId = "superNewUser";
+            ids.authenticationToken = "newToken";
+            ids.authenticationSubType = "";
+            Dictionary<string, object> extraJson = new Dictionary<string, object>();
+
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, true,
+                extraJson, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            _tc.bcWrapper.PlayerStateService.Logout(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            _tc.bcWrapper.AuthenticateAdvanced(AuthenticationType.Anonymous, ids, false,
+                extraJson, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            LogResults("Failed to reauthenticate", _tc.bcWrapper.Client.Authenticated);
+            
+            _tc.bcWrapper.PlayerStateService.DeleteUser(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
         public IEnumerator TestAuthenticateUltra()
         {
             if (!ServerUrl.Contains("api-internal.braincloudservers.com") &&
