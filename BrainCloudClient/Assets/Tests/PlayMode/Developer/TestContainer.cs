@@ -185,6 +185,7 @@ public class TestContainer : MonoBehaviour
         m_statusMessage = jsonError;
         m_result = false;
         --m_apiCountExpected;
+        failCount++;
         if (m_apiCountExpected <= 0)
         {
             m_done = true;

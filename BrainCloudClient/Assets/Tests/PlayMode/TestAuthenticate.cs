@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Common;
+using BrainCloud.JsonFx.Json;
 using NUnit.Framework;
-using UnityEditor.PackageManager;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -11,7 +12,6 @@ namespace Tests.PlayMode
 {
     public class TestAuthenticate : TestFixtureBase
     {
-        private bool _init;
         private string _email = "UnityTestee@bctestuser.com";
         private string _universalID = "UserA_CS-1730261329";
         private string _password = "12345";
@@ -31,7 +31,6 @@ namespace Tests.PlayMode
             );
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
 
-            Debug.Log($"***************** NEW AUTH *****************************");
             GameObject go2 = Instantiate(new GameObject("TestingContainer2"), Vector3.zero, Quaternion.identity);
             TestContainer tc2 = go2.AddComponent<TestContainer>();
             tc2.bcWrapper = _tc.bcWrapper;
@@ -46,7 +45,6 @@ namespace Tests.PlayMode
             );
             yield return tc2.StartCoroutine(tc2.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
             
-            Debug.Log($"***************** NEW AUTH *****************************");
             GameObject go3 = Instantiate(new GameObject("TestingContainer3"), Vector3.zero, Quaternion.identity);
             TestContainer tc3 = go3.AddComponent<TestContainer>();
             tc3.bcWrapper = _tc.bcWrapper;
@@ -58,7 +56,7 @@ namespace Tests.PlayMode
                 tc3.ApiError
             );
             yield return tc3.StartCoroutine(tc3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
-            Debug.Log($"***************** NEW AUTH *****************************");
+            
             GameObject go4 = Instantiate(new GameObject("TestingContainer4"), Vector3.zero, Quaternion.identity);
             TestContainer tc4 = go4.AddComponent<TestContainer>();
             tc4.bcWrapper = _tc.bcWrapper;
@@ -70,9 +68,7 @@ namespace Tests.PlayMode
                 tc4.ApiError
             );
             yield return tc4.StartCoroutine(tc4.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
-            Debug.Log($"***************** NEW AUTH *****************************");
-            //yield return new WaitForSeconds(35);
-            
+
             GameObject go5 = Instantiate(new GameObject("TestingContainer5"), Vector3.zero, Quaternion.identity);
             TestContainer tc5 = go5.AddComponent<TestContainer>();
             tc5.bcWrapper = _tc.bcWrapper;
@@ -84,7 +80,7 @@ namespace Tests.PlayMode
                 tc5.ApiError
             );
             yield return tc5.StartCoroutine(tc5.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.CLIENT_DISABLED_FAILED_AUTH));
-            Debug.Log($"***************** NEW AUTH *****************************");
+            
             GameObject go6 = Instantiate(new GameObject("TestingContainer6"), Vector3.zero, Quaternion.identity);
             TestContainer tc6 = go6.AddComponent<TestContainer>();
             tc6.bcWrapper = _tc.bcWrapper;
@@ -117,8 +113,35 @@ namespace Tests.PlayMode
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
-
-            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT));
+            _tc.bcWrapper.Client.AuthenticationService.AuthenticateUniversal
+            (
+                _universalID,
+                _password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return new WaitForFixedUpdate();
+            _tc.bcWrapper.Client.AuthenticationService.AuthenticateUniversal
+            (
+                _universalID,
+                _password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return new WaitForFixedUpdate();
+            _tc.bcWrapper.Client.AuthenticationService.AuthenticateUniversal
+            (
+                _universalID,
+                _password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return new WaitForFixedUpdate();
+            
+            yield return _tc.StartCoroutine(_tc.Run());
             
             if (_tc.bcWrapper.Client.Authenticated)
             {
@@ -133,11 +156,13 @@ namespace Tests.PlayMode
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
-            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT));
+            yield return _tc.StartCoroutine(_tc.Run());
             if (_tc.bcWrapper.Client.Authenticated)
             {
                 successfulAuths++;
             }
+
+            Debug.Log(_tc.bcWrapper.Client.Authenticated);
             LogResults("Test was able to authenticate when we shouldn't" , successfulAuths == 0);
         }
 
@@ -176,11 +201,11 @@ namespace Tests.PlayMode
                 _universalID,
                 _password,
                 true,
-                AdditionalApiSuccess,
+                _tc.ApiSuccess,
                 AdditionalApiError
             );
-            yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Failed to append additional calls", additionalCalls == 3);
+            yield return _tc.StartCoroutine(_tc.Run(2));
+            LogResults("Failed to append additional calls", additionalCalls == 2);
         }
         
         [UnityTest]
@@ -287,9 +312,102 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Stuff Happened", !_tc.bcWrapper.Client.Authenticated);
+            LogResults("Test was able to be authenticated to a bad url...", !_tc.bcWrapper.Client.Authenticated);
         }
 
+        private TestContainer _testContainer;
+        [UnityTest]
+        public IEnumerator TestReauthenticateWithSpecificCallbacks()
+        {
+            /*
+             * Note: Reauthenticate is a private method but it just calls AuthenticateAnoymous
+             * User A
+             * - Authenticate a session
+             * - Wait somehow for the session to expire
+             * - Call into Entity.UpdateSingleton, get session expiry error
+             *      - Response from this should be to call AnnoymousAuthenticate request
+             * User B
+             * - Authenticate a session
+             * - Wait the same way as User A for session to expire
+             * - Call into PlayerStatistics.IncrementUserStats, get a session expiry error
+             *      - Response from this should be to call Annoymouse Authenticate Request
+             *
+             * Goal:
+             * - Reauthenticate once, NOT TWICE
+             * - Call both Entity.UpdateSingleton & PlayerStatistics.IncrementUserStats when authenticated
+             */
+            _tc.bcWrapper.AuthenticateUniversal(_universalID, _password, true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            _testContainer = _gameObject.AddComponent<TestContainer>();
+            _testContainer.bcWrapper = _tc.bcWrapper;
+            
+            
+            Debug.Log("Make the session expire....");
+            //Making the session expire
+            _tc.bcWrapper.PlayerStateService.Logout(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            Dictionary<string, object> stats = new Dictionary<string, object> { { "highestScore", "RESET" } };
+            _tc.bcWrapper.PlayerStatisticsService.IncrementUserStats
+            (
+                JsonWriter.Serialize(stats),
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            string updatedAddress = "1609 Bank St";
+            string _entityType = "address";
+            string _entityValueName = "street";
+            var entityData = Helpers.CreateJsonPair(_entityValueName, updatedAddress);
+            var entityAcl = new ACL() {Other = ACL.Access.ReadWrite}.ToJsonString(); 
+            _testContainer.bcWrapper.EntityService.UpdateSingleton
+            (
+                _entityType,
+                entityData,
+                entityAcl,
+                -1,
+                _testContainer.ApiSuccess, 
+                _testContainer.ApiError
+            );
+            yield return _testContainer.StartCoroutine(_testContainer.Run());
+
+            //Both testing containers have ran a specific function and should have gotten a session expire(from the log out request specifically)
+            if (_tc.failCount == 1 && _testContainer.failCount == 1)
+            {
+                //Responses has returned as failures, so we re authenticate as though each testing container is a single component
+                _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
+                _testContainer.bcWrapper.AuthenticateAnonymous(_testContainer.ApiSuccess, _testContainer.ApiError);
+                _testContainer.StartCoroutine(_testContainer.Run());
+                _tc.StartCoroutine(_tc.Run());
+                yield return new WaitUntil(() => _tc.m_done);
+                yield return new WaitUntil(() => _testContainer.m_done);
+
+                //Callbacks from re-authenticating will flip these booleans true
+                //Now call the functions again with a valid session
+                _tc.bcWrapper.PlayerStatisticsService.IncrementUserStats
+                (
+                    JsonWriter.Serialize(stats),
+                    _tc.ApiSuccess,
+                    _tc.ApiError
+                );
+                _testContainer.bcWrapper.EntityService.UpdateSingleton
+                (
+                    _entityType,
+                    entityData,
+                    entityAcl,
+                    -1,
+                    _testContainer.ApiSuccess, 
+                    _testContainer.ApiError
+                );
+                _tc.StartCoroutine(_tc.Run());
+                _testContainer.StartCoroutine(_testContainer.Run());
+                yield return new WaitUntil(() => _tc.m_done);
+                yield return new WaitUntil(() => _testContainer.m_done);
+            }
+            LogResults("Not enough successful callbacks reached, something went wrong", _tc.successCount == 4);
+        }
 
         [UnityTest]
         public IEnumerator TestAuthenticateAnnyUpdateNameSpam()
@@ -342,8 +460,16 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestAuthenticateUniversal()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-            Assert.True(_tc.bcWrapper.Client.Authenticated);
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                _universalID,
+                _password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
             LogResults($"Failed to authenticate", _tc.bcWrapper.Client.Authenticated);
         }
 
