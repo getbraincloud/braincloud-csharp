@@ -155,7 +155,7 @@ namespace Tests.PlayMode
         /// Pretty prints outgoing and incoming log messages
         /// </summary>
         /// <param name="message">Log message</param>
-        private void HandleLog(string message)
+        protected void HandleLog(string message)
         {
             if (message.StartsWith("#BCC"))
             {

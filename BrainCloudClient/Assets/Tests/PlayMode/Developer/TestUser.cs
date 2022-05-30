@@ -39,7 +39,7 @@ namespace Tests.PlayMode
         {
             _bc.Client.AuthenticationService.AuthenticateUniversal
             (
-                Id,
+                Email,
                 Password,
                 true,
                 _tc.ApiSuccess,
@@ -50,7 +50,9 @@ namespace Tests.PlayMode
             
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
             
-            if (_tc.m_response.Count > 0 && ((string)((Dictionary<string, object>)_tc.m_response["data"])["newUser"]) == "true")
+            if (_tc.m_response != null &&
+                _tc.m_response.Count > 0 && 
+                ((string)((Dictionary<string, object>)_tc.m_response["data"])["newUser"]) == "true")
             {
                 _bc.MatchMakingService.EnableMatchMaking(_tc.ApiSuccess, _tc.ApiError);
                 yield return StartCoroutine(_tc.Run());
