@@ -353,7 +353,8 @@ namespace Tests.PlayMode
             (
                 JsonWriter.Serialize(stats),
                 _tc.ApiSuccess,
-                _tc.ApiError
+                ReauthSpecificErrorCallback,
+                _tc
             );
             yield return _tc.StartCoroutine(_tc.Run());
             
@@ -369,13 +370,16 @@ namespace Tests.PlayMode
                 entityAcl,
                 -1,
                 _testContainer.ApiSuccess, 
-                _testContainer.ApiError
+                ReauthSpecificErrorCallback,
+                _testContainer
             );
             yield return _testContainer.StartCoroutine(_testContainer.Run());
-
+            
             //Both testing containers have ran a specific function and should have gotten a session expire(from the log out request specifically)
             if (_tc.failCount == 1 && _testContainer.failCount == 1)
             {
+                _tc.successCount = 0;
+                _testContainer.successCount = 0;
                 //Responses has returned as failures, so we re authenticate as though each testing container is a single component
                 _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
                 _testContainer.bcWrapper.AuthenticateAnonymous(_testContainer.ApiSuccess, _testContainer.ApiError);
@@ -406,7 +410,14 @@ namespace Tests.PlayMode
                 yield return new WaitUntil(() => _tc.m_done);
                 yield return new WaitUntil(() => _testContainer.m_done);
             }
-            LogResults("Not enough successful callbacks reached, something went wrong", _tc.successCount == 4);
+            LogResults("Not enough successful callbacks reached, something went wrong", _tc.successCount == 2 && _testContainer.successCount == 2);
+        }
+
+        private void ReauthSpecificErrorCallback(int statusCode, int reasonCode, string jsonError, object cb)
+        {
+            TestContainer objectContainer = cb as TestContainer;
+            objectContainer.m_done = true;
+            objectContainer.failCount++;
         }
 
         [UnityTest]
@@ -486,7 +497,7 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
-            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             Debug.Log($"expected result: status code ACCEPTED ||| reason code SWITCHING_PROFILES");
         }
 
@@ -522,6 +533,12 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestResetUniversalIDPassword()
         {
+            _tc.bcWrapper.AuthenticateUniversal(_universalID, _password, true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            _tc.bcWrapper.IdentityService.AttachEmailIdentity("thisIsAnEmail@domain.com", _password, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.successCount = 0;
             _tc.bcWrapper.Client.AuthenticationService.ResetUniversalIdPassword
             (
                 _universalID,
@@ -571,7 +588,7 @@ namespace Tests.PlayMode
             );
 
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS));
-            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             Debug.Log($"expected result: status code BAD_REQUEST ||| reason code INVALID_FROM_ADDRESS");
         }
         
@@ -582,7 +599,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.CountryCode = "kn";
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA, false));
             Debug.Log($"Success Count: {_tc.successCount}");
-            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount >= 4);
+            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount == 1);
             
         }
         
@@ -593,7 +610,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.CountryCode = "ja";
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA, false));
             Debug.Log($"Success Count: {_tc.successCount}");
-            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount >= 4);
+            LogResults("Didn't receive enough successful calls while authenticating", _tc.successCount == 1);
         }
 
         [UnityTest]

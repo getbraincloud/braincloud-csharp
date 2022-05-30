@@ -160,7 +160,7 @@ namespace Tests.PlayMode
             
             //Expect To Fail
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS));
-            LogResults("Failed to reset advanced email password", _tc.failCount == 2);
+            LogResults("Failed to reset advanced email password", _tc.failCount == 3);
         }
 
         [UnityTest]

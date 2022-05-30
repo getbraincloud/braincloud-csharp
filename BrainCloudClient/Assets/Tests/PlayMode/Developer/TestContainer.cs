@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
-using NUnit.Framework;
 using Tests.PlayMode;
 using UnityEngine;
 using Random = System.Random;
@@ -34,7 +33,7 @@ public class TestContainer : MonoBehaviour
     public int m_statusCode;
     public int m_reasonCode;
     public string m_statusMessage;
-    public long m_timeToWaitSecs = 300;
+    public int m_timeToWaitSecs = 300;
     public int m_globalErrorCount;
     public int m_networkErrorCount;
     public int failCount;
@@ -71,12 +70,10 @@ public class TestContainer : MonoBehaviour
         if (in_expectedStatusCode != -1 && in_expectedStatusCode == m_statusCode)
         {
             failCount++;
-            Assert.AreEqual(in_expectedStatusCode, m_statusCode);
         }
         if (in_expectedReasonCode != -1 && in_expectedReasonCode == m_reasonCode)
         {
             failCount++;
-            Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
         }
     }
 
@@ -203,7 +200,6 @@ public class TestContainer : MonoBehaviour
         m_statusMessage = null;
         m_globalErrorCount = 0;
         m_networkErrorCount = 0;
-        failCount = 0;
     }
     
     public void CleanUp()
@@ -215,6 +211,10 @@ public class TestContainer : MonoBehaviour
         IsRunning = false;
         m_response =  new Dictionary<string, object>();
         TestUserA = null;
+        Debug.Log($"Success Count: {successCount}");
+        Debug.Log($"Fail Count: {failCount}");
+        failCount = 0;
+        successCount = 0;
     }
 }
 

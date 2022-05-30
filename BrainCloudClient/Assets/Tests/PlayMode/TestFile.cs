@@ -5,9 +5,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 using BrainCloud;
-using BrainCloud.JsonFx.Json;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.TestTools;
 
 namespace Tests.PlayMode
@@ -18,9 +18,6 @@ namespace Tests.PlayMode
         private bool _shouldDeleteFiles = true;
 
         private int _returnCount = 0;
-        private int _successCount = 0;
-        private int _failCount = 0;
-
         private bool _shareable = true;
         private bool _replaceIfExists = true;
         
@@ -34,23 +31,18 @@ namespace Tests.PlayMode
             }
             base.TearDown();
             _returnCount = 0;
-            _successCount = 0;
-            _failCount = 0;
             _shouldDeleteFiles = true;
         }
         
         [UnityTest]
         public IEnumerator TestListUserFiles()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.AuthenticateUniversal(username, password, true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
             
             _tc.bcWrapper.FileService.ListUserFiles(_tc.ApiSuccess, _tc.ApiError);
-            
             yield return _tc.StartCoroutine(_tc.Run());
             
-            _tc.bcWrapper.PlayerStateService.DeleteUser(_tc.ApiSuccess, _tc.ApiError);
-            
-            yield return _tc.StartCoroutine(_tc.Run());
             LogResults("failed to list user files",_tc.successCount == 2);
         }
 
@@ -73,16 +65,15 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-            yield return _tc.StartCoroutine(_tc.Spin());
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
-            
+            yield return new WaitForSeconds(5);
             //Checking if cloud path is correct according to response
             var data = _tc.m_response["data"] as Dictionary<string, object>;
             var fileDetails = data["fileDetails"] as Dictionary<string, object>;
             string responseCloudPath = (string)fileDetails["cloudPath"];
             Assert.True(_cloudPath.Equals(responseCloudPath));
             
-            LogResults("failed to upload file", _tc.successCount == 1);
+            LogResults("failed to upload file", _tc.successCount == 2);
         }
 
         [UnityTest]
@@ -108,7 +99,8 @@ namespace Tests.PlayMode
                 );
             yield return _tc.StartCoroutine(_tc.Run());
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
-            LogResults("failed to upload file",_tc.successCount == 1);
+            yield return new WaitForSeconds(2);
+            LogResults("failed to upload file",_tc.successCount == 2);
         }
 
         [UnityTest]
@@ -150,7 +142,8 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
-            LogResults("Couldn't upload all files",_tc.successCount == 2);
+            yield return new WaitForSeconds(2);
+            LogResults("Couldn't upload all files",_tc.successCount == 4);
         }
 
         [UnityTest]
@@ -173,27 +166,19 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-            
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
-
-
             yield return new WaitForSeconds(2);
-            
-            WebClient webClient = new WebClient();
-            string name = info.Name;
-            string fullPath = GetFullPath(_cloudPath, name);
 
-            try
+            UnityWebRequest request = new UnityWebRequest("https://api.internal.braincloudservers.com/downloader/bc/g/20001/u/fabfacf0-3dc6-4cdd-8a48-6f7021407169/f/testFile1.txt");
+            request.downloadHandler = new DownloadHandlerBuffer();
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                webClient.DownloadFile(fullPath, name);
-            }
-            catch(Exception e)
-            {
-                Debug.Log(e);
-                _failCount++;
+                _tc.successCount++;
             }
             
-            LogResults("failed, it could be upload or download that failed.",_tc.successCount == 1);
+            LogResults("failed, it could be upload or download that failed.",_tc.successCount >= 2);
         }
 
         [UnityTest]
@@ -227,9 +212,9 @@ namespace Tests.PlayMode
 
             var fileList = ((object[])((Dictionary<string, object>)_tc.m_response["data"])["fileList"]);
 
-            if (_failCount > 0)
+            if (_tc.failCount > 0)
             {
-                Debug.Log("Number of failed callbacks: " + _failCount);
+                Debug.Log("Number of failed callbacks: " + _tc.failCount);
                 LogResults("",true);
             }
             else if (fileList.Length > 0)
@@ -261,8 +246,10 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
+
+            yield return new WaitForSeconds(5);
             
-            Assert.IsFalse(_failCount > 0);
+            Assert.IsFalse(_tc.failCount > 0);
             
             _tc.bcWrapper.FileService.DeleteUserFile
                 (
@@ -273,7 +260,7 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("failed to delete user files, check json response",_tc.successCount == 2);
+            LogResults("failed to delete user files, check json response",_tc.successCount == 3);
         }
 
         [UnityTest]
@@ -300,6 +287,8 @@ namespace Tests.PlayMode
             
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
             
+            yield return new WaitForSeconds(3);
+            
             FileInfo info2 = new FileInfo(CreateFile(4024));
 
             _tc.bcWrapper.FileService.UploadFile
@@ -316,19 +305,21 @@ namespace Tests.PlayMode
             
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
             
-            Assert.IsFalse(_failCount > 0);
+            yield return new WaitForSeconds(3);
             
+            Assert.IsFalse(_tc.failCount > 0);
+
             _tc.bcWrapper.FileService.DeleteUserFiles
-                (
-                    GetCloudPath(_tc.m_response),
-                    true,
-                    _tc.ApiSuccess,
-                    _tc.ApiError
-                );
+            (
+                GetCloudPath(_tc.m_response),
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
             
             yield return _tc.StartCoroutine(_tc.Run());
 
-            LogResults("failed to delete all files OR uploading files failed.", _tc.successCount == 3);
+            LogResults("failed to delete all files OR uploading files failed.", _tc.successCount == 5);
         }
 
         [UnityTest]
@@ -355,7 +346,9 @@ namespace Tests.PlayMode
             
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
             
-            Assert.IsFalse(_failCount > 0);
+            Assert.IsFalse(_tc.failCount > 0);
+
+            yield return new WaitForSeconds(5);
             
             _tc.bcWrapper.Client.FileService.GetCDNUrl
                 (
@@ -366,8 +359,8 @@ namespace Tests.PlayMode
                 );
             
             yield return _tc.StartCoroutine(_tc.Run());
-            
-            LogResults("Files failed to upload, check logs for response",_tc.successCount==2);
+
+            LogResults("Files failed to upload, check logs for response", _tc.successCount == 3);
         }
 
         [UnityTest]
@@ -391,7 +384,8 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-
+            
+            //Getting Id from first upload
             string id1 = GetUploadId(_tc.m_response);
 
             _tc.bcWrapper.FileService.UploadFile
@@ -405,10 +399,10 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-            
-            yield return WaitForReturn(new[] { id1, GetUploadId(_tc.m_response) });
+            var ids = new[] {id1, GetUploadId(_tc.m_response)};
+            yield return WaitForReturn(ids);
 
-            LogResults("Files failed to upload, check logs for response", _tc.successCount==2);
+            LogResults("Files failed to upload, check logs for response", _tc.successCount >= 2);
         }
         
         private IEnumerator DeleteAllFiles()
@@ -443,12 +437,12 @@ namespace Tests.PlayMode
                     if (cancelTime > 0 && progress > 0.05)
                     {
                         client.FileService.CancelUpload(uploadIds[i]);
+                        Debug.LogWarning("Canceling Upload...");
                     }
                 }
                 client.Update();
-                sw = !sw;
-
                 yield return new WaitForFixedUpdate();
+                sw = !sw;
                 count += 150;
             }
         }
@@ -456,13 +450,13 @@ namespace Tests.PlayMode
         private void FileCallbackSuccess(string uploadId, string jsonData)
         {
             _returnCount++;
-            _successCount++;
+            _tc.successCount++;
         }
 
         private void FileCallbackFail(string uploadId, int statusCode, int reasonCode, string jsonData)
         {
             _returnCount++;
-            _failCount++;
+            _tc.failCount++;
             _tc.m_statusMessage = jsonData;
         }
         
@@ -492,6 +486,8 @@ namespace Tests.PlayMode
         private string GetUploadId(Dictionary<string, object> response)
         {
             var fileDetails = ((Dictionary<string, object>)((Dictionary<string, object>)response["data"])["fileDetails"]);
+            if (fileDetails == null) return "";
+            
             return (string)(fileDetails["uploadId"]);
         }
         

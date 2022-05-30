@@ -32,7 +32,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.PlayerStateService.DeleteUser(_tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Unable to switch to child profile", _tc.successCount == 1);
+            LogResults("Unable to switch to child profile", _tc.successCount == 2);
         }
 
         [UnityTest]
@@ -73,7 +73,7 @@ namespace Tests.PlayMode
                     _tc.ApiError
                 );
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Unable to switch to parent profile", _tc.successCount == 1);
+            LogResults("Unable to switch to parent profile", _tc.successCount == 2);
         }
 
         [UnityTest]
@@ -85,31 +85,40 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.IdentityService.DetachParent(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Unable to detach parent", _tc.successCount == 1);
+            LogResults("Unable to detach parent", _tc.successCount == 2);
         }
 
         [UnityTest]
         public IEnumerator TestAttachParentWithIdentity()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
             
             yield return _tc.StartCoroutine(_tc.GoToChildProfile(ChildAppId));
             
             _tc.bcWrapper.IdentityService.DetachParent(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
-            
+
             _tc.bcWrapper.IdentityService.AttachParentWithIdentity
-                (
-                    _tc.TestUserA.Id,
-                    _tc.TestUserA.Password,
-                    AuthenticationType.Universal, 
-                    null,
-                    forceCreate,
-                    _tc.ApiSuccess,
-                    _tc.ApiError
-                );
+            (
+                username,
+                password,
+                AuthenticationType.Universal,
+                null,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
             yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Unable to attach parent with identity", _tc.successCount == 1);
+            Debug.Log($"Success Count: {_tc.successCount}");
+            LogResults("Unable to attach parent with identity", _tc.successCount == 4);
         }
 
         [UnityTest]
@@ -159,19 +168,19 @@ namespace Tests.PlayMode
         public IEnumerator TestRefreshIdentity()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-            
+
             _tc.bcWrapper.IdentityService.RefreshIdentity
-                (
-                    _tc.TestUserA.Id,
-                    _tc.TestUserA.Password,
-                    AuthenticationType.Universal,
-                    _tc.ApiSuccess,
-                    _tc.ApiError
-                );
+            (
+                _tc.TestUserA.Id,
+                _tc.TestUserA.Password,
+                AuthenticationType.Universal,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(400,40464));
             Debug.Log($"expected result: status code BAD_REQUEST ||| reason code UNSUPPORTED_AUTH_TYPE");
-            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             
         }
 
@@ -235,7 +244,7 @@ namespace Tests.PlayMode
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED,ReasonCodes.DUPLICATE_IDENTITY_TYPE));
             
-            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             Debug.Log($"expected result: status code ACCEPTED ||| reason code DUPLICATE_IDENTITY_TYPE");
         }
 
@@ -247,7 +256,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.IdentityService.UpdateUniversalIdLogin(testerEmail, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.BAD_REQUEST,ReasonCodes.NEW_CREDENTIAL_IN_USE));
-            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 2);
+            LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             Debug.Log($"expected result: status code BAD_REQUEST ||| reason code NEW_CREDENTIAL_IN_USE");
         }
 

@@ -3,7 +3,6 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
-using UnityEngine;
 
 namespace BrainCloud
 {
