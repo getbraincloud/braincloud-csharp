@@ -42,7 +42,7 @@ var NativeWebSocket = {
     	console.log(WebSocketInstances[id]);
     	WebSocketInstances[id].socket.onopen = function(){
     		console.log("[NativeWebSocket] Socket on open: " + id);
-    		Runtime.dynCall('vi', action, [id]);
+    		Module['dynCall_vi'](action, id);
     	}
     },
 
@@ -55,13 +55,13 @@ var NativeWebSocket = {
 				reader.addEventListener("loadend", function() {
 					var array = new Uint8Array(reader.result);
 					WebSocketInstances[id].messages.push(array);
-					Runtime.dynCall('vi', action, [id]);
+					Module['dynCall_vi'](action, id);
 				});
 				reader.readAsArrayBuffer(e.data);
 			} else if (e.data instanceof ArrayBuffer) {
 				var array = new Uint8Array(e.data);
 				WebSocketInstances[id].messages.push(array);
-				Runtime.dynCall('vi', action, [id]);
+				Module['dynCall_vi'](action, id);
 			}
     	}
     },
@@ -71,15 +71,15 @@ var NativeWebSocket = {
     	WebSocketInstances[id].socket.onerror = function(e){
     		console.log("[NativeWebSocket] Socket on error: " + id);
 			WebSocketInstances[id].error = e.message;
-			Runtime.dynCall('vi', action, [id]);
+			Module['dynCall_vi'](action, id);
     	}
     },
 
     BrainCloudSocketOnClose: function(action, id){
     	console.log("[NativeWebSocket] Set socket on close: " + id);
     	WebSocketInstances[id].socket.onclose = function(e){
-    		console.log("[NativeWebSocket] Socket on close: " + id);			
-			Runtime.dynCall('vii', action, [e.code, id]);
+    		console.log("[NativeWebSocket] Socket on close: " + id);
+			Module['dynCall_vi'](action, e.code, id); 
     	}
     },
 
