@@ -62,14 +62,6 @@ namespace BrainCloudTests
              );
             tr3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
 
-            TestResult tr4 = new TestResult(_bc);
-            _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
-               true,
-               tr4.ApiSuccess, tr4.ApiError
-             );
-            tr4.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
-
             DateTime _testPauseStart = DateTime.Now;
             TimeSpan _testPauseDuration = TimeSpan.FromSeconds(35);
 

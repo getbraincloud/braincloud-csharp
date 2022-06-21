@@ -19,7 +19,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
             
-            Assert.True(_successCount == 3);
+            Assert.True(_tc.successCount == 3);
         }
         
         [UnityTest]
@@ -27,7 +27,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.UDP));
             
-            Assert.True(_successCount == 3);
+            Assert.True(_tc.successCount == 3);
         }
         
         [UnityTest]
@@ -35,7 +35,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.TCP));
             
-            Assert.True(_successCount == 3);
+            Assert.True(_tc.successCount == 3);
         }
 
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
@@ -56,16 +56,16 @@ namespace Tests.PlayMode
             if (jsonError == "{\"status\":403,\"reason_code\":90300,\"status_message\":\"Invalid NetId: 40\",\"severity\":\"ERROR\"}")
             {
                 // This one was on purpose
-                _successCount++;
+                _tc.successCount++;
                 _isRunning = false;
-                if (_successCount == 3)
+                if (_tc.successCount == 3)
                 {
                     _tc.m_done = true;    
                 }
                 return;
             }
             _isRunning = false;
-            _successCount = 0;
+            _tc.successCount = 0;
             Debug.Log($"ONFAILED: Status: {status} || Reason Code: {reasonCode} || Json Error: {jsonError} || Object: {cbObject}");
         }
         
@@ -157,8 +157,8 @@ namespace Tests.PlayMode
             Dictionary<string, object> parsedDict = (Dictionary<string, object>)JsonReader.Deserialize(json);
             if (parsedDict["op"] as string == "CONNECT")
             {
-                _successCount++;
-                if (_successCount >= 2)
+                _tc.successCount++;
+                if (_tc.successCount >= 2)
                 {
                     sendToWrongNetId();
                 }
@@ -170,8 +170,8 @@ namespace Tests.PlayMode
             string message = System.Text.Encoding.ASCII.GetString(data, 0, data.Length);
             if (message == "Hello World!")
             {
-                _successCount++;
-                if (_successCount >= 2)
+                _tc.successCount++;
+                if (_tc.successCount >= 2)
                 {
                     sendToWrongNetId();
                 }

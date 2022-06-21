@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BrainCloud.JsonFx.Json;
@@ -28,7 +29,6 @@ namespace Tests.PlayMode
         public string PeerName;
         public string SupportsCompression;
         
-        protected int _successCount = 0;
         protected GameObject _gameObject;
         protected TestContainer _tc;
         protected bool _isRunning;
@@ -60,7 +60,6 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.ShutDown();
             _tc.CleanUp();
             
-            _successCount = 0;
             Destroy(_tc.bcWrapper);
             var listOfContainers = FindObjectsOfType<Transform>();
             foreach (Transform container in listOfContainers)
@@ -83,8 +82,12 @@ namespace Tests.PlayMode
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
             _tc = _gameObject.AddComponent<TestContainer>();
             
+            Dictionary<string, string> secretMap = new Dictionary<string, string>();
+            secretMap.Add(AppId, Secret);
+            secretMap.Add(ChildAppId, ChildSecret);
+
             _tc.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
-            _tc.bcWrapper.Init(ServerUrl, Secret, AppId, Version);
+            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
             
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
@@ -155,7 +158,7 @@ namespace Tests.PlayMode
         /// Pretty prints outgoing and incoming log messages
         /// </summary>
         /// <param name="message">Log message</param>
-        private void HandleLog(string message)
+        protected void HandleLog(string message)
         {
             if (message.StartsWith("#BCC"))
             {

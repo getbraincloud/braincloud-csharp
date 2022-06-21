@@ -128,23 +128,8 @@ namespace Tests.PlayMode
                 );
 
             yield return _tc.StartCoroutine(_tc.Run());
+            yield return new WaitForSeconds(5);
             LogResults("Function Send Message Failed", successfulCallback > 0);
-            
-            /*
-            successfulCallback = 0;
-
-            string simpleMessage = "Answer to everything is 42";
-            _tc.bcWrapper.MessagingService.SendMessageSimple
-                (
-                    profileId,
-                    simpleMessage,
-                    _tc.ApiSuccess,
-                    _tc.ApiError
-                );
-            yield return _tc.StartCoroutine(_tc.Run());
-            LogResults("Function Send Message Simple Failed", successfulCallback > 0);
-            */
-            
         }
 
         [UnityTest]

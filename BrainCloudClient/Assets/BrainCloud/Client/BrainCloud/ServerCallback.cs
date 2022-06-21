@@ -3,6 +3,8 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using BrainCloud.Internal;
+
 namespace BrainCloud
 {
     using System;
@@ -40,6 +42,16 @@ namespace BrainCloud
             {
                 m_fnFailureCallback(statusCode, reasonCode, statusMessage, m_cbObject);
             }
+        }
+        
+        //This function can only add callbacks for Authenticate requests. 
+        public void AddAuthCallbacks(ServerCallback in_callback)
+        {
+            WrapperAuthCallbackObject callbackObject = in_callback.m_cbObject as WrapperAuthCallbackObject;
+            if (callbackObject == null) return;
+            
+            m_fnSuccessCallback += callbackObject._successCallback;
+            m_fnFailureCallback += callbackObject._failureCallback;
         }
 
         public bool AreCallbacksNull()

@@ -32,11 +32,6 @@ namespace Tests.PlayMode
             Email = Id + "@bctestuser.com";
             IsRunning = true;
             
-            yield return StartCoroutine(Authenticate());
-        }
-
-        private IEnumerator Authenticate()
-        {
             _bc.Client.AuthenticationService.AuthenticateUniversal
             (
                 Id,
@@ -50,18 +45,8 @@ namespace Tests.PlayMode
             
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
             
-            if (_tc.m_response.Count > 0 && ((string)((Dictionary<string, object>)_tc.m_response["data"])["newUser"]) == "true")
-            {
-                _bc.MatchMakingService.EnableMatchMaking(_tc.ApiSuccess, _tc.ApiError);
-                yield return StartCoroutine(_tc.Run());
-                
-                _bc.PlayerStateService.UpdateUserName(Id, _tc.ApiSuccess, _tc.ApiError);
-                yield return StartCoroutine(_tc.Run());
-                
-                _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", _tc.ApiSuccess, _tc.ApiError);
-                yield return StartCoroutine(_tc.Run());
-            }
-            else
+            if(_tc.m_response == null &&
+               _tc.m_response.Count == 0)
             {
                 Debug.Log("Got no response from Authentication");
             }
