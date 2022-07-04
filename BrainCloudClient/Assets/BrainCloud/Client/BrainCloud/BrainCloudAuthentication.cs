@@ -801,6 +801,43 @@ using BrainCloud.JsonFx.Json;
             Authenticate(ultraUsername, ultraIdToken, AuthenticationType.Ultra, 
                 null, forceCreate, null, success, failure, cbObject);
         }
+        
+        /// <summary>
+        /// Authenticate the user using their Nintendo account id and an auth token
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="accountId">
+        /// The user's Nintendo account id
+        /// </param>
+        /// <param name="authToken">
+        /// The user's Nintendo auth token
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateNintendo(
+            string accountId,
+            string authToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(accountId, authToken, AuthenticationType.Nintendo, 
+                null, forceCreate, null, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Reset Email password - Sends a password reset email to the specified address
