@@ -9,6 +9,7 @@ namespace BrainCloud
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
+    using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
     using System;
@@ -775,6 +776,11 @@ using System.Globalization;
         }
 
         #endregion
+
+        public void SetMaxDepth(int maxDepth)
+        {
+            JsonWriter.SetMaxDepth(maxDepth);
+        }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>

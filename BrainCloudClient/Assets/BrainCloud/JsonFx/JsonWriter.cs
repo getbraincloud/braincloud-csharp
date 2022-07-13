@@ -245,11 +245,12 @@ using System.Xml;
             /// <summary>
             /// Gets and sets the maximum depth to be serialized
             /// </summary>
-            [Obsolete("This has been deprecated in favor of JsonWriterSettings object")]
-            public int MaxDepth
+            //[Obsolete("This has been deprecated in favor of JsonWriterSettings object")]
+            private static int maxDepth = 25;
+
+            public static void SetMaxDepth(int depth)
             {
-                get { return this.settings.MaxDepth; }
-                set { this.settings.MaxDepth = value; }
+                maxDepth = depth;
             }
 
             /// <summary>
@@ -314,6 +315,7 @@ using System.Xml;
 
                 using (JsonWriter writer = new JsonWriter(output))
                 {
+                    writer.settings.MaxDepth = maxDepth;
                     writer.Write(value);
                 }
 
@@ -351,6 +353,11 @@ using System.Xml;
                             this.depth++;
                             if (this.depth > this.settings.MaxDepth)
                             {
+#if !DOT_NET
+                                UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                                 throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                             }
                             this.WriteLine();
@@ -508,6 +515,11 @@ using System.Xml;
                             this.depth++;
                             if (this.depth > this.settings.MaxDepth)
                             {
+#if !DOT_NET
+                                UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                                 throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                             }
                             this.WriteLine();
@@ -533,6 +545,11 @@ using System.Xml;
                             this.depth++;
                             if (this.depth > this.settings.MaxDepth)
                             {
+#if !DOT_NET
+                                UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                                 throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                             }
                             this.WriteLine();
@@ -567,6 +584,11 @@ using System.Xml;
                             this.depth++;
                             if (this.depth > this.settings.MaxDepth)
                             {
+#if !DOT_NET
+                                UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                                 throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                             }
                             this.WriteLine();
@@ -591,6 +613,11 @@ using System.Xml;
                         this.depth++;
                         if (this.depth > this.settings.MaxDepth)
                         {
+#if !DOT_NET
+                            UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                             throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                         }
                         this.WriteLine();
@@ -950,6 +977,11 @@ using System.Xml;
                 this.depth++;
                 if (this.depth > this.settings.MaxDepth)
                 {
+#if !DOT_NET
+                    UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                     throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                 }
                 try
@@ -1006,6 +1038,11 @@ using System.Xml;
                 this.depth++;
                 if (this.depth > this.settings.MaxDepth)
                 {
+#if !DOT_NET
+                    UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                     throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                 }
 
@@ -1064,6 +1101,11 @@ using System.Xml;
                 this.depth++;
                 if (this.depth > this.settings.MaxDepth)
                 {
+#if !DOT_NET
+                    UnityEngine.Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+#else
+                                Console.WriteLine("You have exceeded the max json depth, please increase the maxDepth in JsonWriterSettings.cs.");
+#endif
                     throw new JsonSerializationException(String.Format(JsonWriter.ErrorMaxDepth, this.settings.MaxDepth));
                 }
                 try
