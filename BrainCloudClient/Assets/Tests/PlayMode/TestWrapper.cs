@@ -4,6 +4,7 @@ using BrainCloud;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using BrainCloud.JsonFx.Json;
 
 namespace Tests.PlayMode
 {
@@ -219,6 +220,91 @@ namespace Tests.PlayMode
             
             //Assert.False(_tc3.m_result);
             LogResults("Failed to re initialize", _tc.successCount == 1);
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadError()
+        {
+            _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+
+            const int JSON_DEPTH = 25;
+
+            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
+            Dictionary<string, object> eldestParent = new Dictionary<string, object>();
+
+            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
+            for (int i = 0; i < JSON_DEPTH; i++)
+            {
+                if (i == 0)
+                {
+                    Dictionary<string, object> lastChild = new Dictionary<string, object>();
+                    lastChild.Add("child", "lastchild");
+
+                    dictionaryList.Add(lastChild);
+                }
+                else
+                {
+                    int targetChildIndex = i - 1;
+
+                    Dictionary<string, object> nextParent = new Dictionary<string, object>();
+                    nextParent.Add("child", dictionaryList[targetChildIndex]);
+
+                    dictionaryList.Add(nextParent);
+
+                    if (i == JSON_DEPTH - 1)
+                    {
+                        eldestParent = nextParent;
+                    }
+                }
+            }
+
+            string dictionaryJson = JsonWriter.Serialize(eldestParent);
+            LogAssert.Expect(LogType.Error, "You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
+
+            yield return 0; 
+        }
+
+        [UnityTest]
+        public IEnumerator TestJsonWriterMaxDepthAdjustment()
+        {
+            _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+
+            const int JSON_DEPTH = 25;
+
+            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
+            Dictionary<string, object> eldestParent = new Dictionary<string, object>();
+
+            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
+            for (int i = 0; i < JSON_DEPTH; i++)
+            {
+                if (i == 0)
+                {
+                    Dictionary<string, object> lastChild = new Dictionary<string, object>();
+                    lastChild.Add("child", "lastchild");
+
+                    dictionaryList.Add(lastChild);
+                }
+                else
+                {
+                    int targetChildIndex = i - 1;
+
+                    Dictionary<string, object> nextParent = new Dictionary<string, object>();
+                    nextParent.Add("child", dictionaryList[targetChildIndex]);
+
+                    dictionaryList.Add(nextParent);
+
+                    if (i == JSON_DEPTH - 1)
+                    {
+                        eldestParent = nextParent;
+                    }
+                }
+            }
+
+            _tc.bcWrapper.Client.SetMaxDepth(50);
+
+            string dictionaryJson = JsonWriter.Serialize(eldestParent);
+
+            yield return 0;
         }
     }
 }
