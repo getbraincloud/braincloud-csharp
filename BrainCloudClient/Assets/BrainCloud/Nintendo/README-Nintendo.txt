@@ -30,9 +30,9 @@ Example Function for getting the External ID and NSA ID Token
         Account.Initialize();
         
         //Grab user that is currently logged in
-        if (NintendoAccountManager.Primary == null)
+        if (AccountManager.Primary == null)
         {
-            UserAccount selectedUser = NintendoAccountManager.SelectAccount();
+            UserAccount selectedUser = AccountManager.SelectAccount();
 
             if (selectedUser == null)
             {
@@ -40,27 +40,24 @@ Example Function for getting the External ID and NSA ID Token
                 yield break;
             }
 
-            NintendoAccountManager.Primary = selectedUser;
+            AccountManager.Primary = selectedUser;
         }
-
-        //Show current users nickname
-        DisplayLogText("User Selected is nicknamed: " + NintendoAccountManager.Primary.Name);
         
         // GUIDELINE 0153: Updating the user account state to reflect whether the user is playing your application
         // You must have the user's account open for active gameplay so that the play time and history are correctly recorded.
-        if (!NintendoAccountManager.Primary.IsOpen)
+        if (!AccountManager.Primary.IsOpen)
         {
-            NintendoAccountManager.Primary.Open();
+            AccountManager.Primary.Open();
         }
         
         // Prompt the user if anything goes wrong when attempting to enable networking
-        NintendoNetworkManager.IsSilentNetworking = false;
+        NetworkManager.IsSilentNetworking = false;
         
         // Verify that the user has a network connection
         networkUseRequest = new NetworkUseRequest();
         yield return networkUseRequest.Submit();
         
-        if (!NintendoNetworkManager.IsAvailable)
+        if (!NetworkManager.IsAvailable)
         {
             Debug.Log("Network is unavailable");
             yield break;
@@ -72,7 +69,6 @@ Example Function for getting the External ID and NSA ID Token
 
         if (nsaIdTokenRequest.RequestResult != NsaResult.Success)
         {
-            // If not, show an error message and go back to an offline scene
             Debug.Log("There was a problem with your account");
         }
         
