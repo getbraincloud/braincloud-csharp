@@ -225,7 +225,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestDeepJsonPayloadError()
         {
-            _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
             const int JSON_DEPTH = 25;
 
@@ -258,16 +258,23 @@ namespace Tests.PlayMode
                 }
             }
 
-            string dictionaryJson = JsonWriter.Serialize(eldestParent);
+            bool expectFail = false;
+
+            try { string dictionaryJson = JsonWriter.Serialize(eldestParent); }
+            catch(JsonSerializationException e)
+            {
+                expectFail = true;
+            }
+
             LogAssert.Expect(LogType.Error, "You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
 
-            yield return 0; 
+            LogResults("Json Serialization exception was not caught", expectFail);
         }
 
         [UnityTest]
         public IEnumerator TestJsonWriterMaxDepthAdjustment()
         {
-            _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
             const int JSON_DEPTH = 25;
 
@@ -300,11 +307,10 @@ namespace Tests.PlayMode
                 }
             }
 
+            //Adjusting max depth via JsonWriter to accomodate larger payloads.
             _tc.bcWrapper.Client.SetMaxDepth(50);
 
             string dictionaryJson = JsonWriter.Serialize(eldestParent);
-
-            yield return 0;
         }
     }
 }
