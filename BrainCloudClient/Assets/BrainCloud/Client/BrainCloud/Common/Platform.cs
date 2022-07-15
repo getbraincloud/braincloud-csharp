@@ -36,6 +36,7 @@ namespace BrainCloud.Common
         public static readonly Platform Xbox360 = new Platform("XBOX_360");
         public static readonly Platform XboxOne = new Platform("XBOX_ONE");
         public static readonly Platform Amazon = new Platform("AMAZON");
+        public static readonly Platform Nintendo = new Platform("NINTENDO");
 
         private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>
         {
@@ -60,7 +61,8 @@ namespace BrainCloud.Common
             { WindowsPhone.value, WindowsPhone },
             { Windows.value, Windows },
             { Xbox360.value, Xbox360 },
-            { XboxOne.value, XboxOne }
+            { XboxOne.value, XboxOne },
+            { Nintendo.value, Nintendo }
         };
 
         private Platform(string value)
@@ -99,7 +101,7 @@ namespace BrainCloud.Common
 
             // otherwise we rely on the unity compile flag to denote platform
 
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN
             return Windows;
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             return Mac;
@@ -146,7 +148,9 @@ namespace BrainCloud.Common
             else
             {
                 return GooglePlayAndroid;
-            }      
+            }
+#elif UNITY_SWITCH
+            return Nintendo;
 #else
             return Unknown;
 #endif
