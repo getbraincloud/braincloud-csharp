@@ -18,7 +18,7 @@ Setting up:
 6 - Copy AccountManager & NetworkManager folders to your project's asset folder. 
 7a - Use the NetworkRequiredScript as a reference
 7b - Use the Example Enumerator function provided as a reference that is provided below.
-8 - Once the ExternalID and NSA ID Token is saved, you can called AuthenticateNintendo() from BrainCloudWrapper.cs using those variables.
+8 - Once the ExternalID and NSA ID Token is saved, you can call AuthenticateNintendo() from BrainCloudWrapper.cs using those variables.
 
 
 
@@ -72,7 +72,7 @@ Example Function for getting the External ID and NSA ID Token
             Debug.Log("There was a problem with your account");
         }
         
-        //Token and External ID NEEDED for BrainCloud Authenticate call. 
+        //Token and External ID needed for BrainCloud Authenticate call. 
         _nsaIdToken = Encoding.UTF8.GetString(nsaIdTokenRequest.Token);
         _externalId = nsaIdTokenRequest.NsaId.ToString();
         
