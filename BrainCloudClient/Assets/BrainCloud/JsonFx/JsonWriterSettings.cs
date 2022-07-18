@@ -51,7 +51,7 @@ namespace BrainCloud
             #region Fields
 
             private WriteDelegate<DateTime> dateTimeSerializer;
-            private int maxDepth = 25;
+            private static int maxDepth = 25;
             private string newLine = Environment.NewLine;
             private bool prettyPrint;
             private string tab = "\t";
@@ -103,15 +103,17 @@ namespace BrainCloud
             /// </summary>
             public virtual int MaxDepth
             {
-                get { return this.maxDepth; }
-                set
+                get { return maxDepth; }
+                set { ConfigureJsonMaxDepth(value); }
+            }
+
+            public static void ConfigureJsonMaxDepth(int newDepth)
+            {
+                if (newDepth < 1)
                 {
-                    if (value < 1)
-                    {
-                        throw new ArgumentOutOfRangeException("MaxDepth must be a positive integer as it controls the maximum nesting level of serialized objects.");
-                    }
-                    this.maxDepth = value;
+                    throw new ArgumentOutOfRangeException("MaxDepth must be a positive integer as it controls the maximum nesting level of serialized objects.");
                 }
+                maxDepth = newDepth;
             }
 
             /// <summary>

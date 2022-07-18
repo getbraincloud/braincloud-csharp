@@ -245,12 +245,11 @@ using System.Xml;
             /// <summary>
             /// Gets and sets the maximum depth to be serialized
             /// </summary>
-            //[Obsolete("This has been deprecated in favor of JsonWriterSettings object")]
-            private static int maxDepth = 25;
-
-            public static void SetMaxDepth(int depth)
+            [Obsolete("This has been deprecated in favor of JsonWriterSettings object")]
+            public int MaxDepth
             {
-                maxDepth = depth;
+                get { return this.settings.MaxDepth; }
+                set { this.settings.MaxDepth = value; }
             }
 
             /// <summary>
@@ -315,7 +314,6 @@ using System.Xml;
 
                 using (JsonWriter writer = new JsonWriter(output))
                 {
-                    writer.settings.MaxDepth = maxDepth;
                     writer.Write(value);
                 }
 

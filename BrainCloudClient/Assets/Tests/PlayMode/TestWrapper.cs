@@ -229,38 +229,11 @@ namespace Tests.PlayMode
 
             const int JSON_DEPTH = 25;
 
-            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
-            Dictionary<string, object> eldestParent = new Dictionary<string, object>();
-
-            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
-            for (int i = 0; i < JSON_DEPTH; i++)
-            {
-                if (i == 0)
-                {
-                    Dictionary<string, object> lastChild = new Dictionary<string, object>();
-                    lastChild.Add("child", "lastchild");
-
-                    dictionaryList.Add(lastChild);
-                }
-                else
-                {
-                    int targetChildIndex = i - 1;
-
-                    Dictionary<string, object> nextParent = new Dictionary<string, object>();
-                    nextParent.Add("child", dictionaryList[targetChildIndex]);
-
-                    dictionaryList.Add(nextParent);
-
-                    if (i == JSON_DEPTH - 1)
-                    {
-                        eldestParent = nextParent;
-                    }
-                }
-            }
+            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
 
             bool expectFail = false;
 
-            try { string dictionaryJson = JsonWriter.Serialize(eldestParent); }
+            try { string dictionaryJson = JsonWriter.Serialize(jsonPayload); }
             catch(JsonSerializationException e)
             {
                 expectFail = true;
@@ -278,39 +251,41 @@ namespace Tests.PlayMode
 
             const int JSON_DEPTH = 25;
 
-            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
-            Dictionary<string, object> eldestParent = new Dictionary<string, object>();
-
-            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
-            for (int i = 0; i < JSON_DEPTH; i++)
-            {
-                if (i == 0)
-                {
-                    Dictionary<string, object> lastChild = new Dictionary<string, object>();
-                    lastChild.Add("child", "lastchild");
-
-                    dictionaryList.Add(lastChild);
-                }
-                else
-                {
-                    int targetChildIndex = i - 1;
-
-                    Dictionary<string, object> nextParent = new Dictionary<string, object>();
-                    nextParent.Add("child", dictionaryList[targetChildIndex]);
-
-                    dictionaryList.Add(nextParent);
-
-                    if (i == JSON_DEPTH - 1)
-                    {
-                        eldestParent = nextParent;
-                    }
-                }
-            }
+            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH); 
 
             //Adjusting max depth via JsonWriter to accomodate larger payloads.
-            _tc.bcWrapper.Client.SetMaxDepth(50);
+            _tc.bcWrapper.Client.ConfigureJsonMaxDepth(50);
 
-            string dictionaryJson = JsonWriter.Serialize(eldestParent);
+            string dictionaryJson = JsonWriter.Serialize(jsonPayload);
         }
+
+
+        #region Helper Methods
+        private Dictionary<string, object> MakeJsonOfDepth(int depth)
+        {
+            int JSON_DEPTH = depth;
+
+            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
+            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
+
+            //Creaing the first child
+            Dictionary<string, object> lastChild = new Dictionary<string, object>();
+            lastChild.Add("child", "lastchild");
+            dictionaryList.Add(lastChild);
+
+            for (int i = 1; i < JSON_DEPTH; i++)
+            {
+                int targetChildIndex = i - 1;
+
+                Dictionary<string, object> nextParent = new Dictionary<string, object>();
+                nextParent.Add("child", dictionaryList[targetChildIndex]);
+                dictionaryList.Add(nextParent);
+            }
+
+            return dictionaryList[JSON_DEPTH - 1];
+        }
+
+        #endregion
     }
+
 }

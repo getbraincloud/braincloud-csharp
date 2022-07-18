@@ -777,9 +777,9 @@ using System.Globalization;
 
         #endregion
 
-        public void SetMaxDepth(int maxDepth)
+        public void ConfigureJsonMaxDepth(int maxDepth)
         {
-            JsonWriter.SetMaxDepth(maxDepth);
+            JsonWriterSettings.ConfigureJsonMaxDepth(maxDepth);
         }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
