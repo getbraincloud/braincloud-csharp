@@ -4,25 +4,34 @@ Before proceeding, ensure you have the following:
     - NintendoSDK installed.
         - Ensure you have UnityForNintendoSwitch added as well.
     - Unity Engine with Nintendo Switch hardware platform add on installed. (Installers can be found within UnityForNintendoSwitch folder)
+    - Add Unity Package from NintendoSDK to your project (Found in folder NintendoEnvironment/UnityForNintendoSwitch/Plugins/NintendoSDKPlugin/Libraries) 
 
 Setting up:
 
 1 - Download BrainCloud unity package latest plugin from here:
     - https://github.com/getbraincloud/braincloud-csharp/releases
 2 - Import BrainCloud unity package.
-
-3 - Download NetworkDemo from this link:
-    - https://developer.nintendo.com/documents/portlet_file_entry/23933/NetworkingDemo_v1.1.3.zip/08764e61-f3da-4c2b-813f-c1a365ce8707
+3 - Log into BrainCloud via brainCloud Unity Plugin with the brainCloud tab found at the top and go to Settings.
+    - Enable the Nintendo Platform (Core App Info -> Platforms)
+4 - Download NetworkDemo from this link (You will need to log into Nintendo Developer Portal):
+    Direct Download -> https://developer.nintendo.com/documents/portlet_file_entry/23933/NetworkingDemo_v1.2.0.zip/8bb99576-cb13-4fad-9956-629190696a71
+    If URL above doesn't work, look for the latest version here -> https://developer.nintendo.com/group/development/g1kr9vj6/forums/english/-/gts_message_boards/thread/288206262#1530128
 4 - Unzip NetworkDemo
-5 - Navigate to the Assets folder
+5 - Navigate to the Assets folder in Network Demo
 6 - Copy AccountManager & NetworkManager folders to your project's asset folder. 
-7a - Use the NetworkRequiredScript as a reference
-7b - Use the Example Enumerator function provided as a reference that is provided below.
+7 - Use the Example Enumerator function provided as a reference that is provided below.
 8 - Once the ExternalID and NSA ID Token is saved, you can call AuthenticateNintendo() from BrainCloudWrapper.cs using those variables.
 
 
 
 Example Function for getting the External ID and NSA ID Token
+
+    using System.Text;
+    using nn.account;
+    using sdsg.NintendoSwitch;
+    
+    private string _nsaIdToken;
+    private string _externalId;
 
     IEnumerator ProcessUser()
     {
@@ -54,7 +63,7 @@ Example Function for getting the External ID and NSA ID Token
         NetworkManager.IsSilentNetworking = false;
         
         // Verify that the user has a network connection
-        networkUseRequest = new NetworkUseRequest();
+        NetworkUseRequest networkUseRequest = new NetworkUseRequest();
         yield return networkUseRequest.Submit();
         
         if (!NetworkManager.IsAvailable)
