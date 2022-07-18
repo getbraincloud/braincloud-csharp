@@ -46,6 +46,10 @@ namespace BrainCloud
         {
             m_countryLocale = regionLocaleNative.CallStatic<string>("GetUsersCountryLocale", activityContext);
         }
+#elif UNITY_STANDALONE_WIN
+            m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString(); 
+#elif UNITY_SWITCH && !UNITY_EDITOR
+        m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString();
 #endif
         }
     }

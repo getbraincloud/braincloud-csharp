@@ -1545,6 +1545,105 @@ using System;
         {
             DetachIdentity(parseId, AuthenticationType.Parse, continueAnon, success, failure, cbObject);
         }
+        
+        /// <summary>
+        /// Attach the user's Nintendo credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="nintendoAccountId">
+        /// The Nintendo account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Nintendo SDK
+        ///   (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachNintendoIdentity(
+            string nintendoAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(nintendoAccountId, authenticationToken, AuthenticationType.Nintendo, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided Nintendo credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="nintendoAccountId">
+        /// The Nintendo account id of the user
+        /// </param>
+        /// <param name="authenticationToken">
+        /// The validated token from the Nintendo SDK
+        /// (that will be further validated when sent to the bC service)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeNintendoIdentity(
+            string nintendoAccountId,
+            string authenticationToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(nintendoAccountId, authenticationToken, AuthenticationType.Nintendo, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the Nintendo identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="nintendoAccountId">
+        /// The Nintendo Account id of the user
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachNintendoIdentity(
+            string nintendoAccountId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(nintendoAccountId, AuthenticationType.Nintendo, continueAnon, success, failure, cbObject);
+        }
 
         /// <summary>
         /// Switch to a Child Profile
