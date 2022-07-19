@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using BrainCloud.JsonFx.Json;
+using System.Text;
 
 namespace Tests.PlayMode
 {
@@ -231,17 +232,9 @@ namespace Tests.PlayMode
 
             Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
 
-            bool expectFail = false;
+            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
 
-            try { string dictionaryJson = JsonWriter.Serialize(jsonPayload); }
-            catch(JsonSerializationException e)
-            {
-                expectFail = true;
-            }
-
-            LogAssert.Expect(LogType.Error, "You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.");
-
-            LogResults("Json Serialization exception was not caught", expectFail);
+            LogAssert.Expect(LogType.Error, "You have exceeded the max json depth, you can adjust the MaxDepth within BrainCloudClient before serializing.");
         }
 
         [UnityTest]
@@ -251,12 +244,11 @@ namespace Tests.PlayMode
 
             const int JSON_DEPTH = 25;
 
-            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH); 
+            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
 
-            //Adjusting max depth via JsonWriter to accomodate larger payloads.
-            _tc.bcWrapper.Client.ConfigureJsonMaxDepth(50);
-
-            string dictionaryJson = JsonWriter.Serialize(jsonPayload);
+            _tc.bcWrapper.Client.MaxDepth = 50;
+           
+            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
         }
 
 

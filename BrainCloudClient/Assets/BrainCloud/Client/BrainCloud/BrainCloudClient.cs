@@ -18,6 +18,7 @@ namespace BrainCloud
 #if !(DOT_NET)
     using UnityEngine;
     using UnityEngine.Assertions;
+    using System.Text;
 #else
 using System.Globalization;
 #endif
@@ -175,6 +176,19 @@ using System.Globalization;
         private BrainCloudChat _chatService;
         private BrainCloudRTT _rttService;
         private BrainCloudRelay _rsService;
+
+        //Json Serialization
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings();
+        private int _maxDepth = 25;
+
+        public int MaxDepth
+        {
+            get { return _maxDepth; }
+            set 
+            {
+                _maxDepth = value;
+            }
+        }
 
         #endregion Private Data
 
@@ -780,6 +794,29 @@ using System.Globalization;
         public void ConfigureJsonMaxDepth(int maxDepth)
         {
             JsonWriterSettings.ConfigureJsonMaxDepth(maxDepth);
+        }
+
+        public string SerializeJson(object payLoad)
+        {
+            StringBuilder output = new StringBuilder();
+            _writerSettings.MaxDepth = _maxDepth;
+
+            using (JsonWriter writer = new JsonWriter(output, _writerSettings))
+            {
+                try { writer.Write(payLoad); }
+                catch (JsonSerializationException e)
+                {
+#if !DOT_NET
+                    Debug.LogError("You have exceeded the max json depth, you can adjust the MaxDepth within BrainCloudClient before serializing.");
+                    Debug.Log(e);
+#else
+                    Console.WriteLine("You have exceeded the max json depth, you can adjust the MaxDepth via JsonWriterSettings object.")
+                    Console.WriteLine(e);
+#endif
+                }
+            }
+
+            return output.ToString();
         }
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
