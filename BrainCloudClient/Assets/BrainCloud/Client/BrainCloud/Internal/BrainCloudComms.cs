@@ -520,7 +520,9 @@ using UnityEngine.Experimental.Networking;
                         _activeRequest = null;        
                     }
                     //HttpStatusCode.ServiceUnavailable
-                    else if (_activeRequest.WebRequest.responseCode == 503)
+                    else if (_activeRequest.WebRequest.responseCode == 503 ||
+                             _activeRequest.WebRequest.responseCode == 502 ||
+                             _activeRequest.WebRequest.responseCode == 504)
                     {
                         //Packet in progress
                         _clientRef.Log("Packet in progress");
