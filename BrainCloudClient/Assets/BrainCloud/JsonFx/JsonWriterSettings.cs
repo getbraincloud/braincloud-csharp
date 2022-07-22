@@ -114,11 +114,6 @@ namespace BrainCloud
                 }
             }
 
-            public static void ConfigureJsonMaxDepth(int newDepth)
-            {
-                
-            }
-
             /// <summary>
             /// Gets and sets if should use XmlSerialization Attributes.
             /// </summary>

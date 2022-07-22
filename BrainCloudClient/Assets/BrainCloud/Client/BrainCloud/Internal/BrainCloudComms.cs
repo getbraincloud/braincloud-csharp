@@ -725,7 +725,7 @@ using UnityEngine.Experimental.Networking;
             {
                 bundleObj.responses[i] = new JsonErrorMessage(status, reasonCode, statusMessage);
             }
-            string jsonError = JsonWriter.Serialize(bundleObj);
+            string jsonError = _clientRef.SerializeJson(bundleObj);
             HandleResponseBundle(jsonError);
         }
 
@@ -1003,7 +1003,7 @@ using UnityEngine.Experimental.Networking;
                     {
                         responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
                         // send the data back as not formatted
-                        data = JsonWriter.Serialize(response);
+                        data = _clientRef.SerializeJson(response, sc.GetCallback());
 
                         if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
                         {
@@ -1014,7 +1014,7 @@ using UnityEngine.Experimental.Networking;
                     }
                     else
                     {
-                        data = JsonWriter.Serialize(response);
+                        data = _clientRef.SerializeJson(response, sc.GetCallback());
                     }
 
                     // now try to execute the callback
@@ -1153,7 +1153,7 @@ using UnityEngine.Experimental.Networking;
                                     rewardList.Add(theReward);
                                     apiRewards["apiRewards"] = rewardList;
 
-                                    string rewardsAsJson = JsonWriter.Serialize(apiRewards);
+                                    string rewardsAsJson = _clientRef.SerializeJson(apiRewards);
 
                                     _rewardCallback(rewardsAsJson);
                                 }
@@ -1207,7 +1207,7 @@ using UnityEngine.Experimental.Networking;
                     }
                     else
                     {
-                        errorJson = JsonWriter.Serialize(response);
+                        errorJson = _clientRef.SerializeJson(response, sc.GetCallback());
                     }
 
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
@@ -1288,7 +1288,7 @@ using UnityEngine.Experimental.Networking;
             {
                 Dictionary<string, Dictionary<string, object>[]> eventsJsonObj = new Dictionary<string, Dictionary<string, object>[]>();
                 eventsJsonObj["events"] = bundleObj.events;
-                string eventsAsJson = JsonWriter.Serialize(eventsJsonObj);
+                string eventsAsJson = _clientRef.SerializeJson(eventsJsonObj);
                 try
                 {
                     _eventCallback(eventsAsJson);
@@ -1576,7 +1576,7 @@ using UnityEngine.Experimental.Networking;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
-            string jsonRequestString = JsonWriter.Serialize(packet);
+            string jsonRequestString = _clientRef.SerializeJson(packet, requestState);
 
             if (_clientRef.LoggingEnabled)
             {
@@ -1614,7 +1614,7 @@ using UnityEngine.Experimental.Networking;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
-            string jsonRequestString = JsonWriter.Serialize(packet);
+            string jsonRequestString = _clientRef.SerializeJson(packet, requestState);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);

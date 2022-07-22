@@ -238,6 +238,32 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TestDeepJsonPayloadRequest()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            AuthenticationIds ids = new AuthenticationIds();
+            ids.externalId = username;
+            ids.authenticationToken = password;
+
+            Dictionary<string, object> extraJson = MakeJsonOfDepth(25);
+
+            _tc.bcWrapper.AuthenticateAdvanced
+            (
+                BrainCloud.Common.AuthenticationType.Universal,
+                ids,
+                forceCreate,
+                extraJson,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
         public IEnumerator TestJsonWriterMaxDepthAdjustment()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
