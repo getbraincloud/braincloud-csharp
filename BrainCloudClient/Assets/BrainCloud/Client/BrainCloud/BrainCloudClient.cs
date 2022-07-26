@@ -184,7 +184,8 @@ using System.Globalization;
         //Json Serialization
         private JsonWriterSettings _writerSettings = new JsonWriterSettings();
         private StringBuilder _stringBuilderOutput;
-        private int _maxDepth = 25;
+        private static int _maxDepth = 25;
+        private const string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
 
         public int MaxDepth
         {
@@ -1334,8 +1335,8 @@ using System.Globalization;
                 try { writer.Write(payLoad); }
                 catch (JsonSerializationException exception)
                 {
-                    Log(exception.ToString());
-                    throw new JsonSerializationException();
+                    Log(exception.ToString() + JSON_ERROR_MESSAGE);
+                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
                 }
             }
 
@@ -1353,58 +1354,47 @@ using System.Globalization;
                 if (sc == null)
                     return output;
 
-                sc.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT,
-                    "You have exceeded the max json depth, you can adjust the MaxDepth within BrainCloudClient before serializing.");
+                sc.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+
+                throw new JsonSerializationException(JSON_ERROR_MESSAGE);
             }
 
             return output;
         }
 
-        public string SerializeJson(object payLoad, RequestState requestState = null)
+        public string SerializeJson(object payLoad, RequestState rs = null)
         {
             string output = String.Empty;
 
             try { output = SerializeJson(payLoad); }
             catch
             {
-                if (requestState == null)
+                if (rs == null)
                     return output;
 
-                List<object> messageList = null;
+                List<object> serverCallList = null;
 
-                messageList = requestState.MessageList;
+                serverCallList = rs.ServerCallList;
 
-                if (messageList == null)
+                if (serverCallList == null)
                     return output;
                 
-                foreach (object message in messageList)
+                foreach (object sc in serverCallList)
                 {
-                    ServerCall serverCall = message as ServerCall;
+                    ServerCall serverCall = sc as ServerCall;
 
                     ServerCallback serverCallback = serverCall.GetCallback();
 
                     if (serverCallback == null)
                         return output;
 
-                    serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT,
-                        "You have exceeded the max json depth, you can adjust the MaxDepth within BrainCloudClient before serializing.");
+                    serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+
+                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
                 }
             }
 
             return output;
-        }
-
-        int m_statusCode;
-        int m_reasonCode;
-        string m_statusMessage; 
-
-
-        //Second Attempt
-        public void JsonError(int statusCode, int reasonCode, string jsonError, object cb)
-        {
-            m_statusCode = statusCode;
-            m_reasonCode = reasonCode;
-            m_statusMessage = jsonError;
         }
 
         private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)

@@ -232,13 +232,19 @@ namespace Tests.PlayMode
 
             Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
 
-            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
+            bool failedTest = false;
 
-            LogAssert.Expect(LogType.Error, "You have exceeded the max json depth, you can adjust the MaxDepth within BrainCloudClient before serializing.");
+            try { string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload); }
+            catch (JsonSerializationException e)
+            {
+                failedTest = true;
+            }
+
+            LogResults("Failed to catch json serialization exception", failedTest);
         }
 
         [UnityTest]
-        public IEnumerator TestDeepJsonPayloadRequest()
+        public IEnumerator TestDeepJsonPayloadRequestAdjustment()
         {
             _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
             _tc.bcWrapper.ResetStoredAnonymousId();
@@ -250,6 +256,9 @@ namespace Tests.PlayMode
 
             Dictionary<string, object> extraJson = MakeJsonOfDepth(25);
 
+            //Increasing max depth to accomodate larger request payloads. 
+            _tc.bcWrapper.Client.MaxDepth = 75;
+
             _tc.bcWrapper.AuthenticateAdvanced
             (
                 BrainCloud.Common.AuthenticationType.Universal,
@@ -259,6 +268,33 @@ namespace Tests.PlayMode
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadResponse()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
+
+            _tc.bcWrapper.Client.MaxDepth = 75;
+
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
         }
@@ -276,7 +312,6 @@ namespace Tests.PlayMode
            
             string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
         }
-
 
         #region Helper Methods
         private Dictionary<string, object> MakeJsonOfDepth(int depth)
