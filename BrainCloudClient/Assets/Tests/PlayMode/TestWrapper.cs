@@ -224,7 +224,7 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator TestDeepJsonPayloadError()
+        public IEnumerator TestDeepJsonPayloadErrorBasic()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
@@ -241,6 +241,88 @@ namespace Tests.PlayMode
             }
 
             LogResults("Failed to catch json serialization exception", failedTest);
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadRequestError()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            AuthenticationIds ids = new AuthenticationIds();
+            ids.externalId = username;
+            ids.authenticationToken = password;
+
+            Dictionary<string, object> extraJson = MakeJsonOfDepth(25);
+
+            //Setting Max Depth to it's default value / a number not large enough to accomodate the payload.
+            _tc.bcWrapper.Client.MaxDepth = 25;
+
+            SuccessCallback successCallback = (response, cbObject) => {};
+
+            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
+            {
+                LogAssert.Expect(LogType.Exception, "JsonSerializationException: You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs");
+            };
+            
+            _tc.bcWrapper.AuthenticateAdvanced
+                (
+                    BrainCloud.Common.AuthenticationType.Universal,
+                    ids,
+                    forceCreate,
+                    extraJson,
+                    successCallback,
+                    failureCallback
+                );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadResponseError()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
+
+            _tc.bcWrapper.Client.MaxDepth = 25;
+
+            SuccessCallback successCallback = (response, cbObject) => { };
+
+            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
+            {
+                LogAssert.Expect(LogType.Exception, "JsonSerializationException: You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs");
+            };
+
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, successCallback, failureCallback);
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadBasicMaxDepthAdjustment()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+
+            const int JSON_DEPTH = 25;
+
+            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
+
+            _tc.bcWrapper.Client.MaxDepth = 50;
+
+            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
         }
 
         [UnityTest]
@@ -273,7 +355,7 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
-        public IEnumerator TestDeepJsonPayloadResponse()
+        public IEnumerator TestDeepJsonPayloadResponseAdjustment()
         {
             _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
             _tc.bcWrapper.ResetStoredAnonymousId();
@@ -297,20 +379,6 @@ namespace Tests.PlayMode
             _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
-        }
-
-        [UnityTest]
-        public IEnumerator TestJsonWriterMaxDepthAdjustment()
-        {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-
-            const int JSON_DEPTH = 25;
-
-            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
-
-            _tc.bcWrapper.Client.MaxDepth = 50;
-           
-            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
         }
 
         #region Helper Methods

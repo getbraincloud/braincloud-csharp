@@ -182,19 +182,11 @@ using System.Globalization;
         private BrainCloudRelay _rsService;
 
         //Json Serialization
-        private JsonWriterSettings _writerSettings = new JsonWriterSettings();
-        private StringBuilder _stringBuilderOutput;
-        private static int _maxDepth = 25;
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
+        private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
+        private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
         private const string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
 
-        public int MaxDepth
-        {
-            get { return _maxDepth; }
-            set 
-            {
-                _maxDepth = value;
-            }
-        }
 
         #endregion Private Data
 
@@ -795,9 +787,18 @@ using System.Globalization;
             return Initialized;
         }
 
+        public int MaxDepth
+        {
+            get { return _maxDepth; }
+            set
+            {
+                _maxDepth = value;
+                _writerSettings.MaxDepth = _maxDepth;
+            }
+        }
         #endregion
 
-        
+
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>
@@ -1327,8 +1328,6 @@ using System.Globalization;
         {
             //Unity doesn't like when we create a new StringBuilder outside of this method.
             _stringBuilderOutput = new StringBuilder();
-            
-            _writerSettings.MaxDepth = _maxDepth;
 
             using (JsonWriter writer = new JsonWriter(_stringBuilderOutput, _writerSettings))
             {
@@ -1348,7 +1347,7 @@ using System.Globalization;
             string output = String.Empty; 
 
             try{ output = SerializeJson(payLoad); }
-            catch
+            catch (JsonSerializationException exception)
             {
                 //Do server callback work
                 if (sc == null)
@@ -1356,7 +1355,7 @@ using System.Globalization;
 
                 sc.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
 
-                throw new JsonSerializationException(JSON_ERROR_MESSAGE);
+                throw exception;
             }
 
             return output;
@@ -1367,7 +1366,7 @@ using System.Globalization;
             string output = String.Empty;
 
             try { output = SerializeJson(payLoad); }
-            catch
+            catch (JsonSerializationException exception) 
             {
                 if (rs == null)
                     return output;
@@ -1390,8 +1389,9 @@ using System.Globalization;
 
                     serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
 
-                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
                 }
+
+                throw exception;
             }
 
             return output;
