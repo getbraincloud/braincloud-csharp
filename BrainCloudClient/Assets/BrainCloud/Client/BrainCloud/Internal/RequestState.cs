@@ -94,8 +94,6 @@ using UnityEngine.Experimental.Networking;
 
         public List<object> MessageList { get; set; }
 
-        public List<object> ServerCallList { get; set; }
-
         public bool LoseThisPacket { get; set; }
 
         public bool PacketRequiresLongTimeout { get; set; }

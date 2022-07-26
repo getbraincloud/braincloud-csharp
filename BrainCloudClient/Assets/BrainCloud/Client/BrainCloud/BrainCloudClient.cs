@@ -1371,16 +1371,25 @@ using System.Globalization;
                 if (rs == null)
                     return output;
 
-                List<object> serverCallList = null;
+                List<object> messageList = null;
 
-                serverCallList = rs.ServerCallList;
+                messageList = rs.MessageList;
 
-                if (serverCallList == null)
+                if (messageList == null)
                     return output;
                 
-                foreach (object sc in serverCallList)
+                foreach (object m in messageList)
                 {
-                    ServerCall serverCall = sc as ServerCall;
+                    Dictionary<string, object> message = m as Dictionary<string, object>;
+
+                    object serverCallObject;
+
+                    message.TryGetValue("ServerCall", out serverCallObject);
+
+                    if (serverCallObject == null)
+                        return output;
+
+                    ServerCall serverCall = serverCallObject as ServerCall;
 
                     ServerCallback serverCallback = serverCall.GetCallback();
 
@@ -1388,7 +1397,6 @@ using System.Globalization;
                         return output;
 
                     serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
-
                 }
 
                 throw exception;

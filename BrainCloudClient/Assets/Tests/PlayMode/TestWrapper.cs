@@ -301,7 +301,10 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.Client.MaxDepth = 25;
 
-            SuccessCallback successCallback = (response, cbObject) => { };
+            SuccessCallback successCallback = (response, cbObject) => 
+            {
+                int bp = 0;
+            };
 
             FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
             {
@@ -309,6 +312,8 @@ namespace Tests.PlayMode
             };
 
             _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, successCallback, failureCallback);
+
+            yield return _tc.StartCoroutine(_tc.Run());
         }
 
         [UnityTest]

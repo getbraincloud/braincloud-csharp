@@ -1498,6 +1498,7 @@ using UnityEngine.Experimental.Networking;
                         message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
                         message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
                         message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
+                        message["ServerCall"] = scIndex; 
 
                         messageList.Add(message);
 
@@ -1521,8 +1522,6 @@ using UnityEngine.Experimental.Networking;
                             requestState.PacketRequiresLongTimeout = true;
                         }
                     }
-
-                    requestState.ServerCallList = serverCallList;
 
                     requestState.PacketId = _packetId;
                     _expectedIncomingPacketId = _packetId;
