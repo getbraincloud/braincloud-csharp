@@ -503,12 +503,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity(true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
 
         Client.AuthenticationService.AuthenticateAnonymous(
             true, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -543,12 +538,8 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity(true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        
         Client.AuthenticationService.AuthenticateHandoff(
             handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
 
@@ -579,12 +570,8 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity(true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        
         Client.AuthenticationService.AuthenticateSettopHandoff(
             handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);
     }
@@ -628,12 +615,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateEmailPassword(
             email, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -677,12 +659,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateExternal(
             userid, token, externalAuthName, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -722,12 +699,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateFacebook(
             fbUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -767,12 +739,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateFacebookLimited(
             fbLimitedUserId, fbAuthToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -811,12 +778,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateOculus(
             oculusUserId, oculusNonce, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -855,12 +817,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticatePlaystationNetwork(
             accountId, authToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -895,13 +852,8 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
-
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
+        
         Client.AuthenticationService.AuthenticateGameCenter(
             gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
@@ -939,12 +891,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateApple(
             appleUserId, identityToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -983,12 +930,7 @@ public class BrainCloudWrapper
     FailureCallback failure = null,
     object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateGoogle(
             googleUserId, serverAuthCode, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1027,12 +969,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateGoogleOpenId(
             googleUserAccountEmail, IdToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1071,12 +1008,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateSteam(
             userid, sessionticket, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1119,12 +1051,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateTwitter(
             userid, token, secret, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1165,12 +1092,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateUniversal(
             username, password, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1214,13 +1136,9 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-        
         bool isAnonymous = authenticationType == AuthenticationType.Anonymous;
-        InitializeIdentity(isAnonymous);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, isAnonymous);
+        
         ids.externalId = isAnonymous ? GetStoredAnonymousId() : ids.externalId;
         ids.authenticationToken = isAnonymous ? "" : ids.authenticationToken;
 
@@ -1261,12 +1179,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-        
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateUltra(
             ultraUsername, ultraIdToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -1305,12 +1218,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        aco._successCallback = success;
-        aco._failureCallback = failure;
-        aco._cbObject = cbObject;
-
-        InitializeIdentity();
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
 
         Client.AuthenticationService.AuthenticateNintendo(
             accountId, authToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -2117,7 +2025,10 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        AuthenticateAnonymous(success, failure, cbObject);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        
+        Client.AuthenticationService.AuthenticateAnonymous(
+            false, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -2178,11 +2089,6 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        //WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        //aco._successCallback = success;
-        //aco._failureCallback = failure;
-        //aco.cbObject = cbObject;
-
         Client.AuthenticationService.ResetEmailPassword(externalId, success, failure);
     }
 
@@ -2316,11 +2222,6 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        //WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
-        //aco._successCallback = success;
-        //aco._failureCallback = failure;
-        //aco.cbObject = cbObject;
-
         Client.AuthenticationService.ResetUniversalIdPassword(externalId, success, failure);
     }
 
@@ -2631,6 +2532,18 @@ public class BrainCloudWrapper
         _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
         _wrapperData.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
 #endif
+    }
+
+    private WrapperAuthCallbackObject MakeWrapperAuthCallback(SuccessCallback successCallback,
+        FailureCallback failureCallback, object cbObject = null, bool isAnonymousAuth = false)
+    {
+        WrapperAuthCallbackObject aco = new WrapperAuthCallbackObject();
+        aco._successCallback = successCallback;
+        aco._failureCallback = failureCallback;
+        aco._cbObject = cbObject;
+
+        InitializeIdentity(isAnonymousAuth);
+        return aco;
     }
 
     private class WrapperData

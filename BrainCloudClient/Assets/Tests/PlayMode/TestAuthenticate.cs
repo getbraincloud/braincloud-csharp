@@ -706,6 +706,21 @@ namespace Tests.PlayMode
             }
         }
 
+        [UnityTest]
+        public IEnumerator TestNewUserReconnect()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.ResetStoredProfileId();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.Client.DeregisterEventCallback();
+            _tc.bcWrapper.PlayerStateService.Logout(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.bcWrapper.Reconnect(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            LogResults("Either I couldn't log out or I could reconnect with no id", _tc.successCount == 1 && _tc.failCount == 1);
+        }
+
         private void AdditionalApiSuccess(string jsonResponse, object cbObject)
         {
             Debug.Log("Additional Callback successful");
