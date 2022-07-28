@@ -35,6 +35,17 @@ namespace Tests.PlayMode
                 Debug.Log("ERROR: Anonymous Id did not match");
             }
         }
+
+        [UnityTest]
+        public IEnumerator TestSleepCloudCodeScript()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            _tc.bcWrapper.Client.ScriptService.RunScript("SleepScript","", _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Stuff happened", _tc.m_done);
+        }
         
         [UnityTest]
         public IEnumerator TestAuthenticateUniversal()
