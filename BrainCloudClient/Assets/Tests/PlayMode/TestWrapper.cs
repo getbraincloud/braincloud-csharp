@@ -249,20 +249,19 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
             _tc.bcWrapper.ResetStoredAnonymousId();
             _tc.bcWrapper.ResetStoredProfileId();
-
+            
             AuthenticationIds ids = new AuthenticationIds();
             ids.externalId = username;
             ids.authenticationToken = password;
-
-            Dictionary<string, object> extraJson = MakeJsonOfDepth(25);
-
+            
             //Setting Max Depth to it's default value / a number not large enough to accomodate the payload.
             _tc.bcWrapper.Client.MaxDepth = 25;
-
-            SuccessCallback successCallback = (response, cbObject) => {};
+            
+            Dictionary<string, object> extraJson = MakeJsonOfDepth(10);
 
             FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
             {
+                _tc.m_done = true;
                 LogAssert.Expect(LogType.Exception, "JsonSerializationException: You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs");
             };
             
@@ -272,7 +271,7 @@ namespace Tests.PlayMode
                     ids,
                     forceCreate,
                     extraJson,
-                    successCallback,
+                    _tc.ApiSuccess,
                     failureCallback
                 );
 
@@ -378,7 +377,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
 
             string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
-
+            
             _tc.bcWrapper.Client.MaxDepth = 75;
 
             _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);

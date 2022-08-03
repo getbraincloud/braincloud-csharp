@@ -181,13 +181,6 @@ using System.Globalization;
         private BrainCloudRTT _rttService;
         private BrainCloudRelay _rsService;
 
-        //Json Serialization
-        private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
-        private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
-        private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
-        private const string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
-
-
         #endregion Private Data
 
         #region Public Static
@@ -789,11 +782,10 @@ using System.Globalization;
 
         public int MaxDepth
         {
-            get { return _maxDepth; }
+            get { return _comms.MaxDepth; }
             set
             {
-                _maxDepth = value;
-                _writerSettings.MaxDepth = _maxDepth;
+                _comms.MaxDepth = value;
             }
         }
         #endregion
@@ -1326,34 +1318,23 @@ using System.Globalization;
 
         public string SerializeJson(object payLoad)
         {
-            //Unity doesn't like when we create a new StringBuilder outside of this method.
-            _stringBuilderOutput = new StringBuilder();
-
-            using (JsonWriter writer = new JsonWriter(_stringBuilderOutput, _writerSettings))
-            {
-                try { writer.Write(payLoad); }
-                catch (JsonSerializationException exception)
-                {
-                    Log(exception.ToString() + JSON_ERROR_MESSAGE);
-                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
-                }
-            }
-
-            return _stringBuilderOutput.ToString();
+            return _comms.SerializeJson(payLoad);
         }
 
         public string SerializeJson(object payLoad, ServerCallback sc = null)
         {
-            string output = String.Empty; 
-
-            try{ output = SerializeJson(payLoad); }
+            string output = String.Empty;
+            try
+            {
+                output = JsonWriter.Serialize(payLoad);
+            }
             catch (JsonSerializationException exception)
             {
                 //Do server callback work
                 if (sc == null)
                     return output;
 
-                sc.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+                sc.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, _comms.JSON_ERROR_MESSAGE);
 
                 throw exception;
             }
@@ -1364,14 +1345,16 @@ using System.Globalization;
         public string SerializeJson(object payLoad, RequestState rs = null)
         {
             string output = String.Empty;
-
-            try { output = SerializeJson(payLoad); }
+            try
+            {
+                output = JsonWriter.Serialize(payLoad);
+            }
             catch (JsonSerializationException exception) 
             {
                 if (rs == null)
                     return output;
 
-                List<object> messageList = null;
+                List<object> messageList = new List<object>();
 
                 messageList = rs.MessageList;
 
@@ -1396,7 +1379,7 @@ using System.Globalization;
                     if (serverCallback == null)
                         return output;
 
-                    serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+                    serverCallback.OnErrorCallback(0, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, _comms.JSON_ERROR_MESSAGE);
                 }
 
                 throw exception;

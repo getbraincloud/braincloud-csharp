@@ -351,6 +351,22 @@ using UnityEngine.Experimental.Networking;
         {
             _cacheMessagesOnNetworkError = enabled;
         }
+        
+        //Json Serialization
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
+        private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
+        private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
+        public string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
+
+        public int MaxDepth
+        {
+            get => _maxDepth;
+            set
+            {
+                _maxDepth = value;
+                _writerSettings.MaxDepth = _maxDepth;
+            }
+        }
 
         /// <summary>
         /// This flag is set when _cacheMessagesOnNetworkError is true
@@ -1014,7 +1030,7 @@ using UnityEngine.Experimental.Networking;
                     }
                     else
                     {
-                        data = _clientRef.SerializeJson(response, sc.GetCallback());
+                        data = SerializeJson(response);
                     }
 
                     // now try to execute the callback
@@ -1590,6 +1606,26 @@ using UnityEngine.Experimental.Networking;
             _activeRequest = null;
         }
 
+        internal string SerializeJson(object payload)
+        {
+            //Unity doesn't like when we create a new StringBuilder outside of this method.
+            _stringBuilderOutput = new StringBuilder();
+            Debug.Log(payload.ToString());
+            using (JsonWriter writer = new JsonWriter(_stringBuilderOutput, _writerSettings))
+            {
+                try
+                {
+                    writer.Write(payload);
+                }
+                catch (JsonSerializationException exception)
+                {
+                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
+                }
+            }
+
+            return _stringBuilderOutput.ToString();
+        }
+
         /// <summary>
         /// Method creates the web request and sends it immediately.
         /// Relies upon the requestState PacketId and MessageList being
@@ -1613,13 +1649,12 @@ using UnityEngine.Experimental.Networking;
                 packet[OperationParam.ServiceMessageGameId.Value] = AppId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
-
-            string jsonRequestString = _clientRef.SerializeJson(packet, requestState);
-
+            
+            string jsonRequestString = SerializeJson(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
-
+            
             requestState.Signature = sig;
             
             bool compressMessage = SupportsCompression &&                               // compression enabled
