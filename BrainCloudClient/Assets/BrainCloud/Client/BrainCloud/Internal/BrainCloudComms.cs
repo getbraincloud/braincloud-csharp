@@ -921,7 +921,7 @@ using UnityEngine.Experimental.Networking;
                 _clientRef.Log(String.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
             }
 
-            JsonResponseBundleV2 bundleObj = DeserializeJson(jsonData);
+            JsonResponseBundleV2 bundleObj = DeserializeJsonBundle(jsonData);
             if (bundleObj == null)
             {
                 _cachedReasonCode = ReasonCodes.JSON_PARSING_ERROR;
@@ -933,8 +933,11 @@ using UnityEngine.Experimental.Networking;
                     if (_serviceCallsInProgress.Count > 0)
                     {
                         var serverCall = _serviceCallsInProgress[0];
-                        serverCall.GetCallback().OnErrorCallback(_cachedStatusCode,_cachedReasonCode,_cachedStatusMessage);
-                        _serviceCallsInProgress.RemoveAt(0);
+                        if (serverCall?.GetCallback() != null)
+                        {
+                            serverCall.GetCallback().OnErrorCallback(_cachedStatusCode,_cachedReasonCode,_cachedStatusMessage);
+                            _serviceCallsInProgress.RemoveAt(0);    
+                        }
                     }
                 }
                 _clientRef.Log(_cachedStatusMessage);
@@ -1623,22 +1626,37 @@ using UnityEngine.Experimental.Networking;
                     if (exception.Message.Contains("The maxiumum depth") && 
                         exception.Message.Contains("exceeded"))
                     {
-                        Debug.LogWarning(JSON_ERROR_MESSAGE);
+                        _clientRef.Log(JSON_ERROR_MESSAGE);
                     }
                     lock (_serviceCallsInProgress)
                     {
                         if(_serviceCallsInProgress.Count > 0)
                         {
                             var serviceCall = _serviceCallsInProgress[0];
-                            serviceCall.GetCallback().OnErrorCallback(0, 0, JSON_ERROR_MESSAGE);
-                            _serviceCallsInProgress.RemoveAt(0);
+                            if (serviceCall?.GetCallback() != null)
+                            {
+                                serviceCall.GetCallback().OnErrorCallback(0, 0, JSON_ERROR_MESSAGE);
+                                _serviceCallsInProgress.RemoveAt(0);
+                            }
                         }
                     }
-                    Debug.LogError("JSON Exception: " + exception.Message);
+                    _clientRef.Log("JSON Exception: " + exception.Message);
                 }
             }
 
             return _stringBuilderOutput.ToString();
+        }
+
+        internal Dictionary<string, object> DeserializeJson(string jsonData)
+        {
+            var responseBundle = DeserializeJsonBundle(jsonData);
+            if (responseBundle == null ||
+                responseBundle.responses == null ||
+                responseBundle.responses.Length == 0)
+            {
+                return null;
+            }
+            return responseBundle.responses[0];
         }
 
         /// <summary>
@@ -2024,7 +2042,7 @@ using UnityEngine.Experimental.Networking;
         /// </summary>
         /// <param name="jsonData"></param>
         /// <returns></returns>
-        private JsonResponseBundleV2 DeserializeJson(string jsonData)
+        private JsonResponseBundleV2 DeserializeJsonBundle(string jsonData)
         {
             if (string.IsNullOrWhiteSpace(jsonData))
             {
@@ -2052,6 +2070,7 @@ using UnityEngine.Experimental.Networking;
                 catch (Exception ex) //some other exception
                 {
                     _clientRef.Log(ex.Message);
+                    ResendMessage(_activeRequest);
                     return null;
                 }
             }

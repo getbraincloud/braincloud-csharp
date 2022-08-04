@@ -1321,6 +1321,11 @@ using System.Globalization;
             return _comms.SerializeJson(payLoad);
         }
 
+        public Dictionary<string, object> DeserializeJson(string jsonData)
+        {
+            return _comms.DeserializeJson(jsonData);
+        }
+
         private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)
         {
             string error = null;

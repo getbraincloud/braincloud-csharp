@@ -300,9 +300,15 @@ namespace Tests.PlayMode
 
             string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
 
-            _tc.bcWrapper.Client.MaxDepth = 50;//63;
+            _tc.bcWrapper.Client.MaxDepth = 1; //63 will make this operation have a successCallback rather than failureCallback
             Debug.Log("Max Depth:" + _tc.bcWrapper.Client.MaxDepth);
-            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
+            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
+            {
+                _tc.m_done = true;
+                Debug.Log("failure callback reached");
+                _tc.failCount++;
+            };
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, failureCallback);
 
             yield return _tc.StartCoroutine(_tc.Run());
         }

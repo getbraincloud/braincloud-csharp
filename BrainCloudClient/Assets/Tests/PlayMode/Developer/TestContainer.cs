@@ -165,7 +165,7 @@ public class TestContainer : MonoBehaviour
     
     public void ApiSuccess(string json, object cb)
     {
-        m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
+        m_response = bcWrapper.Client.DeserializeJson(json);
         m_result = true;
         --m_apiCountExpected;
         successCount++;
