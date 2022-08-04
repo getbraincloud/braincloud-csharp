@@ -246,6 +246,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestDeepJsonPayloadRequestError()
         {
+            LogAssert.ignoreFailingMessages = true;
             _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
             _tc.bcWrapper.ResetStoredAnonymousId();
             _tc.bcWrapper.ResetStoredProfileId();
@@ -257,12 +258,13 @@ namespace Tests.PlayMode
             //Setting Max Depth to it's default value / a number not large enough to accomodate the payload.
             _tc.bcWrapper.Client.MaxDepth = 25;
             
+            Debug.Log("Max Depth:" + _tc.bcWrapper.Client.MaxDepth);
             Dictionary<string, object> extraJson = MakeJsonOfDepth(10);
 
             FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
             {
                 _tc.m_done = true;
-                LogAssert.Expect(LogType.Exception, "JsonSerializationException: You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs");
+                Debug.Log("failure callback reached");
             };
             
             _tc.bcWrapper.AuthenticateAdvanced
@@ -298,19 +300,9 @@ namespace Tests.PlayMode
 
             string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
 
-            _tc.bcWrapper.Client.MaxDepth = 25;
-
-            SuccessCallback successCallback = (response, cbObject) => 
-            {
-                int bp = 0;
-            };
-
-            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
-            {
-                LogAssert.Expect(LogType.Exception, "JsonSerializationException: You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs");
-            };
-
-            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, successCallback, failureCallback);
+            _tc.bcWrapper.Client.MaxDepth = 50;//63;
+            Debug.Log("Max Depth:" + _tc.bcWrapper.Client.MaxDepth);
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
         }

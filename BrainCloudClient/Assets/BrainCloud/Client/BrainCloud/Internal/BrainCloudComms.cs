@@ -356,8 +356,8 @@ using UnityEngine.Experimental.Networking;
         private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
         private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
         private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
-        public string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
-
+        private string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
+        
         public int MaxDepth
         {
             get => _maxDepth;
@@ -1019,7 +1019,7 @@ using UnityEngine.Experimental.Networking;
                     {
                         responseData = (Dictionary<string, object>)response[OperationParam.ServiceMessageData.Value];
                         // send the data back as not formatted
-                        data = _clientRef.SerializeJson(response, sc.GetCallback());
+                        data = SerializeJson(response);
 
                         if (service == ServiceName.Authenticate.Value || service == ServiceName.Identity.Value)
                         {
@@ -1223,7 +1223,7 @@ using UnityEngine.Experimental.Networking;
                     }
                     else
                     {
-                        errorJson = _clientRef.SerializeJson(response, sc.GetCallback());
+                        errorJson = SerializeJson(response);
                     }
 
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
@@ -1592,7 +1592,7 @@ using UnityEngine.Experimental.Networking;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
 
-            string jsonRequestString = _clientRef.SerializeJson(packet, requestState);
+            string jsonRequestString = SerializeJson(packet);
 
             if (_clientRef.LoggingEnabled)
             {
@@ -1610,7 +1610,6 @@ using UnityEngine.Experimental.Networking;
         {
             //Unity doesn't like when we create a new StringBuilder outside of this method.
             _stringBuilderOutput = new StringBuilder();
-            Debug.Log(payload.ToString());
             using (JsonWriter writer = new JsonWriter(_stringBuilderOutput, _writerSettings))
             {
                 try
@@ -1619,7 +1618,23 @@ using UnityEngine.Experimental.Networking;
                 }
                 catch (JsonSerializationException exception)
                 {
-                    throw new JsonSerializationException(JSON_ERROR_MESSAGE);
+                    //Contains will fail if one input is off, so I had to break it up like this for more consistency
+                    //IE: The maxiumum depth of 24 was exceeded. Check for cycles in object graph.
+                    if (exception.Message.Contains("The maxiumum depth") && 
+                        exception.Message.Contains("exceeded"))
+                    {
+                        Debug.LogWarning(JSON_ERROR_MESSAGE);
+                    }
+                    lock (_serviceCallsInProgress)
+                    {
+                        if(_serviceCallsInProgress.Count > 0)
+                        {
+                            var serviceCall = _serviceCallsInProgress[0];
+                            serviceCall.GetCallback().OnErrorCallback(0, 0, JSON_ERROR_MESSAGE);
+                            _serviceCallsInProgress.RemoveAt(0);
+                        }
+                    }
+                    Debug.LogError("JSON Exception: " + exception.Message);
                 }
             }
 
@@ -2036,7 +2051,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 catch (Exception ex) //some other exception
                 {
-                    Console.WriteLine(ex.ToString());
+                    _clientRef.Log(ex.Message);
                     return null;
                 }
             }
