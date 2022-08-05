@@ -45,7 +45,7 @@ namespace Tests.PlayMode
             
             ProfileId = _bc.Client.AuthenticationService.ProfileId;
             
-            if(_tc.m_response == null &&
+            if(_tc.m_response == null ||
                _tc.m_response.Count == 0)
             {
                 Debug.Log("Got no response from Authentication");

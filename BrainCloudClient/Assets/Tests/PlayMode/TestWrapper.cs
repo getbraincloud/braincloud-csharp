@@ -194,53 +194,29 @@ namespace Tests.PlayMode
             _tc.m_done = false;
             yield return _tc.StartCoroutine(_tc.Run());
             _tc.Reset();
-            
-            GameObject gameObject2 = Instantiate(new GameObject("TestingContainer2"), Vector3.zero, Quaternion.identity);
-            TestContainer _tc2 = gameObject2.AddComponent<TestContainer>();
-            
+
             //DO A CALL
-            _tc.bcWrapper.TimeService.ReadServerTime(_tc2.ApiSuccess,_tc2.ApiError);
+            _tc.bcWrapper.TimeService.ReadServerTime(_tc.ApiSuccess,_tc.ApiError);
             
             //Run
-            _tc2.m_done = false;
-            yield return _tc2.StartCoroutine(_tc2.Run());
-            _tc2.Reset();
+            _tc.m_done = false;
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.Reset();
             
             //Re Init
             _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            yield return null;
+            _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
             
-            GameObject gameObject3 = Instantiate(new GameObject("TestingContainer3"), Vector3.zero, Quaternion.identity);
-            TestContainer _tc3 = gameObject3.AddComponent<TestContainer>();
-            
-            _tc.bcWrapper.TimeService.ReadServerTime(_tc3.ApiSuccess,_tc3.ApiError);
-            
+            _tc.bcWrapper.TimeService.ReadServerTime(_tc.ApiSuccess,_tc.ApiError);
             //Run
-            _tc3.m_done = false;
-            yield return _tc3.StartCoroutine(_tc3.Run());
-            _tc3.Reset();
+            _tc.m_done = false;
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.Reset();
             
             //Assert.False(_tc3.m_result);
-            LogResults("Failed to re initialize", _tc.successCount == 1);
-        }
-
-        [UnityTest]
-        public IEnumerator TestDeepJsonPayloadErrorBasic()
-        {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-
-            const int JSON_DEPTH = 25;
-
-            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
-
-            bool failedTest = false;
-
-            try { string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload); }
-            catch (JsonSerializationException e)
-            {
-                failedTest = true;
-            }
-
-            LogResults("Failed to catch json serialization exception", failedTest);
+            LogResults("Failed to re initialize", _tc.successCount == 4);
         }
 
         [UnityTest]

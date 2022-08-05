@@ -285,9 +285,9 @@ namespace Tests.PlayMode
                 );
             yield return _tc.StartCoroutine(_tc.Run());
             
-            yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
+            yield return _tc.StartCoroutine(WaitForReturn(new[] { GetUploadId(_tc.m_response) }));
             
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(5);
             
             FileInfo info2 = new FileInfo(CreateFile(4024));
 
@@ -303,9 +303,9 @@ namespace Tests.PlayMode
             );
             yield return _tc.StartCoroutine(_tc.Run());
             
-            yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
+            yield return _tc.StartCoroutine(WaitForReturn(new[] { GetUploadId(_tc.m_response) }));
             
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(5);
             
             Assert.IsFalse(_tc.failCount > 0);
 
@@ -344,7 +344,7 @@ namespace Tests.PlayMode
             
             yield return _tc.StartCoroutine(_tc.Run());
             
-            yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
+            yield return _tc.StartCoroutine(WaitForReturn(new[] { GetUploadId(_tc.m_response) }));
             
             Assert.IsFalse(_tc.failCount > 0);
 
@@ -417,9 +417,9 @@ namespace Tests.PlayMode
             bool sw = true;
             Debug.Log("Waiting for file to upload...");
             BrainCloudClient client = _tc.bcWrapper.Client;
-
+            
             client.Update();
-            while (_returnCount < uploadIds.Length && count < 1000 * 30)
+            while (_returnCount < uploadIds.Length)
             {
                 for (int i = 0; i < uploadIds.Length; i++)
                 {
@@ -445,6 +445,8 @@ namespace Tests.PlayMode
                 sw = !sw;
                 count += 150;
             }
+
+            _returnCount = 0;
         }
         
         private void FileCallbackSuccess(string uploadId, string jsonData)

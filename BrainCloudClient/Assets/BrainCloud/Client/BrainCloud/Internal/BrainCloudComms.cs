@@ -1649,9 +1649,8 @@ using UnityEngine.Experimental.Networking;
 
         internal Dictionary<string, object> DeserializeJson(string jsonData)
         {
-            var responseBundle = DeserializeJsonBundle(jsonData);
-            if (responseBundle == null ||
-                responseBundle.responses == null ||
+            JsonResponseBundleV2 responseBundle = DeserializeJsonBundle(jsonData);
+            if (responseBundle?.responses == null || 
                 responseBundle.responses.Length == 0)
             {
                 return null;
