@@ -1626,17 +1626,20 @@ using UnityEngine.Experimental.Networking;
                     if (exception.Message.Contains("The maxiumum depth") && 
                         exception.Message.Contains("exceeded"))
                     {
-                        _clientRef.Log(JSON_ERROR_MESSAGE);
-                    }
-                    lock (_serviceCallsInProgress)
-                    {
-                        if(_serviceCallsInProgress.Count > 0)
+                        lock (_serviceCallsInProgress)
                         {
-                            var serviceCall = _serviceCallsInProgress[0];
-                            if (serviceCall?.GetCallback() != null)
+                            if(_serviceCallsInProgress.Count > 0)
                             {
-                                serviceCall.GetCallback().OnErrorCallback(0, 0, JSON_ERROR_MESSAGE);
-                                _serviceCallsInProgress.RemoveAt(0);
+                                for (int i = _serviceCallsInProgress.Count - 1; i < 0; --i)
+                                {
+                                    var serviceCall = _serviceCallsInProgress[i];
+                                    if (serviceCall?.GetCallback() != null)
+                                    {
+                                        serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+                                        _serviceCallsInProgress.RemoveAt(i);
+                                    }    
+                                }
+                            
                             }
                         }
                     }
@@ -2068,12 +2071,35 @@ using UnityEngine.Experimental.Networking;
                 }
                 catch (Exception ex) //some other exception
                 {
+                    //Contains will fail if one input is off, so I had to break it up like this for more consistency
+                    //IE: The maxiumum depth of 24 was exceeded. Check for cycles in object graph.
+                    if (ex.Message.Contains("The maxiumum depth") &&
+                        ex.Message.Contains("exceeded"))
+                    {
+                        lock (_serviceCallsInProgress)
+                        {
+                            if(_serviceCallsInProgress.Count > 0)
+                            {
+                                for (int i = _serviceCallsInProgress.Count - 1; i < 0; --i)
+                                {
+                                    var serviceCall = _serviceCallsInProgress[i];
+                                    if (serviceCall?.GetCallback() != null)
+                                    {
+                                        serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_RESPONSE_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
+                                        _serviceCallsInProgress.RemoveAt(i);
+                                    }    
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ResendMessage(_activeRequest);    
+                    }
                     _clientRef.Log(ex.Message);
-                    ResendMessage(_activeRequest);
                     return null;
                 }
             }
-            
             return null;
         }
 
