@@ -5,6 +5,7 @@ using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
 using Tests.PlayMode;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Random = System.Random;
 
 /*
@@ -165,7 +166,13 @@ public class TestContainer : MonoBehaviour
     
     public void ApiSuccess(string json, object cb)
     {
-        m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
+        Debug.Log("Response Received");
+        m_response = bcWrapper.Client.DeserializeJson(json);
+        if (m_response == null)
+        {
+            Debug.Log("Attempting different deserialization....");
+            m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
+        }
         m_result = true;
         --m_apiCountExpected;
         successCount++;
@@ -183,6 +190,7 @@ public class TestContainer : MonoBehaviour
         m_result = false;
         --m_apiCountExpected;
         failCount++;
+        Debug.Log($"Api Error: {jsonError}");
         if (m_apiCountExpected <= 0)
         {
             m_done = true;
@@ -206,7 +214,7 @@ public class TestContainer : MonoBehaviour
     {
         Reset();
         Server = null;
-        bcWrapper = null;
+        //bcWrapper = null;
         _init = false;
         IsRunning = false;
         m_response =  new Dictionary<string, object>();

@@ -432,7 +432,7 @@ namespace BrainCloud.Internal
             json["passcode"] = m_connectOptions.passcode;
             json["version"] = m_clientRef.BrainCloudClientVersion;
 
-            byte[] array = concatenateByteArrays(CONNECT_ARR, Encoding.ASCII.GetBytes(JsonWriter.Serialize(json)));
+            byte[] array = concatenateByteArrays(CONNECT_ARR, Encoding.ASCII.GetBytes(m_clientRef.SerializeJson(json)));
             return array;
         }
 
@@ -444,7 +444,7 @@ namespace BrainCloud.Internal
             json["status_message"] = in_statusMessage;
             json["severity"] = "ERROR";
 
-            return JsonWriter.Serialize(json);
+            return m_clientRef.SerializeJson(json);
         }
 
         private byte[] buildDisconnectRequest()

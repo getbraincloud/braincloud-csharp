@@ -103,14 +103,14 @@ namespace BrainCloud
             /// </summary>
             public virtual int MaxDepth
             {
-                get { return this.maxDepth; }
-                set
+                get { return maxDepth; }
+                set 
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException("MaxDepth must be a positive integer as it controls the maximum nesting level of serialized objects.");
                     }
-                    this.maxDepth = value;
+                    maxDepth = value;
                 }
             }
 
