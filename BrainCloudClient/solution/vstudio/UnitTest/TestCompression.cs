@@ -40,23 +40,29 @@ namespace BrainCloudTests
             );
             Console.WriteLine("UNCOMPRESSED REQUEST PACKET SIZE: " + MimicPacketSize(false, entityValueFromFile));
             tr.Run();
+            
+            _bc.EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
             if (tr.m_done)
             {
                 ReadResponsePacketSize(tr.m_response, false);
             }
+            DeleteAllDefaultEntities();
             
             //Setting up a compressed entity
             _bc.Client.EnableCompressedRequests(true);
             _bc.Client.EnableCompressedResponses(true);
             _bc.EntityService.CreateEntity
-                (
-                    _defaultEntityType,
-                    Helpers.CreateJsonPair(_defaultEntityValueName, entityValueFromFile),
-                    new ACL(ACL.Access.None).ToJsonString(),
-                    tr.ApiSuccess,
-                    tr.ApiError
-                );
+            (
+                _defaultEntityType,
+                Helpers.CreateJsonPair(_defaultEntityValueName, entityValueFromFile),
+                new ACL(ACL.Access.None).ToJsonString(),
+                tr.ApiSuccess,
+                tr.ApiError
+            );
             Console.WriteLine("COMPRESSED REQUEST PACKET SIZE: " + MimicPacketSize(true, entityValueFromFile));
+            tr.Run();
+            _bc.EntityService.GetEntitiesByType(_defaultEntityType, tr.ApiSuccess, tr.ApiError);
             tr.Run();
             if (tr.m_done)
             {

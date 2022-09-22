@@ -18,7 +18,7 @@ using BrainCloud.JsonFx.Json;
     public class BrainCloudAuthentication
     {
         private BrainCloudClient _client;
-        public bool CompressResponses { get; set; }
+        public bool CompressResponses { get; set; } = true;
         public string AnonymousId { get; set; }
         public string ProfileId { get; set; }
 

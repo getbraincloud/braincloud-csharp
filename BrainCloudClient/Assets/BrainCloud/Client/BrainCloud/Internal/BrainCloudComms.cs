@@ -50,7 +50,7 @@ using UnityEngine.Experimental.Networking;
         /// <summary>
         ///Compress bundles sent from the client to the server for faster sending of large bundles.
         /// </summary>
-        public bool SupportsCompression {get; private set;} = false;
+        public bool SupportsCompression {get; private set;} = true;
         
         public void EnableCompression(bool compress)
         {
@@ -1839,17 +1839,7 @@ using UnityEngine.Experimental.Networking;
                 response = _activeRequest.WebRequest.error;
             }
 
-            //Uncompressed response
-            if(_activeRequest.WebRequest.GetRequestHeader("Content-Encoding") != "gzip")
-            {
-                response = _activeRequest.WebRequest.downloadHandler.text;
-            }
-            //Compressed response
-            else
-            {
-                var decompressedByteArray = Decompress(_activeRequest.WebRequest.downloadHandler.data);
-                response = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
-            }
+            response = _activeRequest.WebRequest.downloadHandler.text;
             
             if (response.Contains("Security violation 47") ||
                 response.StartsWith("<"))
