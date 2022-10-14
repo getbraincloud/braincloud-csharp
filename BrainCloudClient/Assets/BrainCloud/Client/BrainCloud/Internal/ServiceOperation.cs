@@ -35,6 +35,9 @@ using System;
 
         public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
+        public static readonly ServiceOperation GetBlockchainItems = new ServiceOperation("GET_BLOCKCHAIN_ITEMS");
+        public static readonly ServiceOperation GetUniqs = new ServiceOperation("GET_UNIQS");
+
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");

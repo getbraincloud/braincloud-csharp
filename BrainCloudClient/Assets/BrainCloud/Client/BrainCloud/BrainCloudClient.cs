@@ -174,7 +174,8 @@ using System.Globalization;
         private BrainCloudGroup _groupService;
         private BrainCloudMail _mailService;
         private BrainCloudMessaging _messagingService;
-
+        private BrainCloudBlockchain _blockchain;
+        
         // RTT service
         private BrainCloudLobby _lobbyService;
         private BrainCloudChat _chatService;
@@ -267,6 +268,8 @@ using System.Globalization;
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms, this);
+
+            _blockchain = new BrainCloudBlockchain(this);
         }
         //---------------------------------------------------------------
 
@@ -576,6 +579,11 @@ using System.Globalization;
         public BrainCloudRelay RelayService
         {
             get { return _rsService; }
+        }
+
+        public BrainCloudBlockchain Blockchain
+        {
+            get { return _blockchain; }
         }
         #endregion
 
