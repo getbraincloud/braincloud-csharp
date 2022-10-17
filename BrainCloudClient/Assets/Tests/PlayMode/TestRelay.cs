@@ -40,6 +40,7 @@ namespace Tests.PlayMode
 
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
         {
+            _tc.m_timeToWaitSecs = 1000;
             connectionType = in_connectionType;
 
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
