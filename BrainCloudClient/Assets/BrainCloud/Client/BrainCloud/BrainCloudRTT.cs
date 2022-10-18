@@ -163,7 +163,22 @@ using BrainCloud.Internal;
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.UserItems);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RegisterRTTBlockchainItemEvent(RTTCallback in_callback)
+        {
+            m_commsLayer.RegisterRTTCallback(ServiceName.BlockChain, in_callback);
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeregisterRTTBlockchainItemEvent()
+        {
+            m_commsLayer.DeregisterRTTCallback(ServiceName.BlockChain);
+        }
         /// <summary>
         /// 
         /// </summary>
