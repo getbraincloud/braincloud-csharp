@@ -470,6 +470,7 @@ using System;
         public static readonly ServiceOperation GetEntityPage = new ServiceOperation("GET_ENTITY_PAGE");
         public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
         public static readonly ServiceOperation IncrementData = new ServiceOperation("INCREMENT_DATA");
+        public static readonly ServiceOperation IncrementSingletonData = new ServiceOperation("INCREMENT_SINGLETON_DATA");
         public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");
         public static readonly ServiceOperation UpdateCustomEntityFieldsShards = new ServiceOperation("UPDATE_ENTITY_FIELDS_SHARDED");
