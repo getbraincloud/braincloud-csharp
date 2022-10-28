@@ -709,7 +709,7 @@ using System;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            AttachIdentity(psnAccountId, authenticationToken, AuthenticationType.Playstation5, success, failure, cbObject);
+            AttachIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork5, success, failure, cbObject);
         }
 
         /// <summary>
@@ -743,7 +743,7 @@ using System;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            MergeIdentity(psnAccountId, authenticationToken, AuthenticationType.Playstation5, success, failure, cbObject);
+            MergeIdentity(psnAccountId, authenticationToken, AuthenticationType.PlaystationNetwork5, success, failure, cbObject);
         }
 
         /// <summary>
@@ -775,7 +775,7 @@ using System;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            DetachIdentity(psnAccountId, AuthenticationType.Playstation5, continueAnon, success, failure, cbObject);
+            DetachIdentity(psnAccountId, AuthenticationType.PlaystationNetwork5, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>

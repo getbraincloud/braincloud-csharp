@@ -393,7 +393,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(accountId, authToken, AuthenticationType.Playstation5,
+            Authenticate(accountId, authToken, AuthenticationType.PlaystationNetwork5,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
