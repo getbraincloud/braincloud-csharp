@@ -515,6 +515,38 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestAuthenticateSwitch()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticateNintendo
+            (
+                "CSharp_Tester",
+                "acceptThis",
+                true,
+                tr.ApiSuccess,
+                tr.ApiError
+            );
+
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestAuthenticatePlaystation()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.AuthenticationService.AuthenticatePlaystation5
+            (
+                "CSharp_Tester",
+                "acceptThis",
+                true,
+                tr.ApiSuccess,
+                tr.ApiError
+            );
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestBadSignature()
         {
             //our problem is that users who refresh their app secret via the portal, the client would fail to read the response, and would retry infinitely.
