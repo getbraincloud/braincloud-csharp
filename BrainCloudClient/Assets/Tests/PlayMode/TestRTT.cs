@@ -48,10 +48,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
-            //Get Channel Id
-            _tc.bcWrapper.ChatService.GetChannelId("gl", "valid", _tc.ApiSuccess, _tc.ApiError);
-            yield return _tc.StartCoroutine(_tc.Run());
-            string channelId = (_tc.m_response["data"] as Dictionary<string, object>)["channelId"] as string;
+            string channelId = "20001:gl:valid";
 
             //Connect to channel
             _tc.bcWrapper.ChatService.ChannelConnect(channelId, 50, _tc.ApiSuccess, _tc.ApiError);
@@ -72,14 +69,8 @@ namespace Tests.PlayMode
             //Send a chat message
             _tc.bcWrapper.ChatService.PostChatMessageSimple(channelId, "Unit test message", true, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
-            
-            //Now check if we get the chat message
-            var timeBefore = DateTime.Now;
-            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 30)
-            {
-                //Client Update on its own within the wrapper
-                yield return new WaitForFixedUpdate();
-            }
+
+            yield return new WaitForSeconds(20);
             //Assert.True(receivedChat);
             LogResults("Didn't receive chat message", receivedChat);
             //Now deregister and make sure we dont receive it
@@ -90,13 +81,8 @@ namespace Tests.PlayMode
             _tc.bcWrapper.ChatService.PostChatMessageSimple(channelId, "Unit test message 2", true, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
 
-            // Wait 10sec, and make sure we don't get the event this time
-            timeBefore = DateTime.Now;
-            while (!receivedChat && (DateTime.Now - timeBefore).TotalSeconds < 10)
-            {
-                //Client Update on its own within the wrapper
-                yield return new WaitForFixedUpdate();
-            }
+            yield return new WaitForSeconds(10);
+            
             //Assert.False(receivedChat);
             LogResults("Did receive chat message, expected to not receive message", !receivedChat);
         }

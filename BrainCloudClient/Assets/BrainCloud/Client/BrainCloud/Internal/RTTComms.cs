@@ -251,7 +251,7 @@ namespace BrainCloud.Internal
             {
                 if (m_clientRef.LoggingEnabled)
                 {
-                    m_clientRef.Log("RTT: Disconnect: " + JsonWriter.Serialize(m_disconnectJson));
+                    m_clientRef.Log("RTT: Disconnect: " + m_clientRef.SerializeJson(m_disconnectJson));
                 }
                 if (m_connectionFailureCallback != null)
                 {
@@ -280,7 +280,7 @@ namespace BrainCloud.Internal
             json["operation"] = "CONNECT";
             json["data"] = jsonData;
 
-            return JsonWriter.Serialize(json);
+            return m_clientRef.SerializeJson(json);
         }
 
         private string buildHeartbeatRequest()
@@ -290,7 +290,7 @@ namespace BrainCloud.Internal
             json["operation"] = "HEARTBEAT";
             json["data"] = null;
 
-            return JsonWriter.Serialize(json);
+            return m_clientRef.SerializeJson(json);
         }
 
         /// <summary>
@@ -542,7 +542,7 @@ namespace BrainCloud.Internal
             json["status_message"] = in_statusMessage;
             json["severity"] = "ERROR";
 
-            return JsonWriter.Serialize(json);
+            return m_clientRef.SerializeJson(json);
         }
 
         private bool m_disconnectedWithReason = false;

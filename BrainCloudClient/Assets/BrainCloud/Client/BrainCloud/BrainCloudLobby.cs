@@ -491,7 +491,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
                 {
-                    string pingStr = JsonWriter.Serialize(PingData);
+                    string pingStr = m_clientRef.SerializeJson(PingData);
                     
                     if (m_clientRef.LoggingEnabled)
                     {
@@ -537,7 +537,7 @@ using UnityEngine.Experimental.Networking;
                 failure.callback = in_failure;
                 failure.status = 400;
                 failure.reasonCode = reasonCode;
-                failure.jsonError = JsonWriter.Serialize(jsonError);
+                failure.jsonError = m_clientRef.SerializeJson(jsonError);
                 failure.cbObject = cbObject;
                 m_failureQueue.Add(failure);
             }

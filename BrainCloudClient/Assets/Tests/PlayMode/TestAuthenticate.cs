@@ -351,7 +351,7 @@ namespace Tests.PlayMode
             Dictionary<string, object> stats = new Dictionary<string, object> { { "highestScore", "RESET" } };
             _tc.bcWrapper.PlayerStatisticsService.IncrementUserStats
             (
-                JsonWriter.Serialize(stats),
+                _tc.bcWrapper.Client.SerializeJson(stats),
                 _tc.ApiSuccess,
                 ReauthSpecificErrorCallback,
                 _tc
@@ -392,7 +392,7 @@ namespace Tests.PlayMode
                 //Now call the functions again with a valid session
                 _tc.bcWrapper.PlayerStatisticsService.IncrementUserStats
                 (
-                    JsonWriter.Serialize(stats),
+                    _tc.bcWrapper.Client.SerializeJson(stats),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );

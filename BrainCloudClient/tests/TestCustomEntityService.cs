@@ -144,7 +144,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-                [Test]
+        [Test]
         public void TestIncrementData()
         {
             TestResult tr1 = new TestResult(_bc);
@@ -164,6 +164,24 @@ namespace BrainCloudTests
                 "athletes",
                 entityId,
                 //"{\"test\": \"8\"}",
+                "{\"goals\": 3, \"assists\": 5}",
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
+        public void TestIncrementSingletonData()
+        {
+            TestResult tr1 = new TestResult(_bc);
+            _bc.CustomEntityService.CreateEntity(
+                "athletes", "{\"test\": \"Testing\"}", "{\"test\": \"Testing\"}", null, true,
+                tr1.ApiSuccess, tr1.ApiError);
+            
+            tr1.Run();
+            
+            TestResult tr = new TestResult(_bc);
+            _bc.CustomEntityService.IncrementSingletonData(
+                "athletes",
                 "{\"goals\": 3, \"assists\": 5}",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

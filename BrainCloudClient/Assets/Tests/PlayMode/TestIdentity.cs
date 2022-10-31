@@ -268,7 +268,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.IdentityService.AttachBlockChain
                 (
                     blockchainConfig,
-                    "schwifty",
+                    "schwifty2",
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );

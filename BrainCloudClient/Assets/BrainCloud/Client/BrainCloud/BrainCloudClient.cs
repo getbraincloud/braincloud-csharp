@@ -9,6 +9,7 @@ namespace BrainCloud
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
+    using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
     using System;
@@ -17,6 +18,7 @@ namespace BrainCloud
 #if !(DOT_NET)
     using UnityEngine;
     using UnityEngine.Assertions;
+    using System.Text;
 #else
 using System.Globalization;
 #endif
@@ -106,6 +108,10 @@ using System.Globalization;
     /// <param name="jsonResponse">The JSON response describing the failure. This uses the
     /// usual brainCloud error format similar to this:</param>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
+
+    public delegate void JsonSerializationSuccessCallback(string jsonResponse);
+    public delegate void JsonSerializationFailureCallback(int statusCode, int reasonCode, string errorMessage);
+
     #endregion
 
     public class BrainCloudClient
@@ -168,7 +174,8 @@ using System.Globalization;
         private BrainCloudGroup _groupService;
         private BrainCloudMail _mailService;
         private BrainCloudMessaging _messagingService;
-
+        private BrainCloudBlockchain _blockchain;
+        
         // RTT service
         private BrainCloudLobby _lobbyService;
         private BrainCloudChat _chatService;
@@ -261,6 +268,8 @@ using System.Globalization;
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms, this);
+
+            _blockchain = new BrainCloudBlockchain(this);
         }
         //---------------------------------------------------------------
 
@@ -571,6 +580,11 @@ using System.Globalization;
         {
             get { return _rsService; }
         }
+
+        public BrainCloudBlockchain Blockchain
+        {
+            get { return _blockchain; }
+        }
         #endregion
 
         #region Service Getters
@@ -774,7 +788,17 @@ using System.Globalization;
             return Initialized;
         }
 
+        public int MaxDepth
+        {
+            get { return _comms.MaxDepth; }
+            set
+            {
+                _comms.MaxDepth = value;
+            }
+        }
         #endregion
+
+
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>
@@ -1298,6 +1322,16 @@ using System.Globalization;
             // pass this directly to the brainCloud Class
             // which will add it to its queue and send back responses accordingly
             _comms.AddToQueue(serviceMessage);
+        }
+
+        public string SerializeJson(object payLoad)
+        {
+            return _comms.SerializeJson(payLoad);
+        }
+
+        public Dictionary<string, object> DeserializeJson(string jsonData)
+        {
+            return _comms.DeserializeJson(jsonData);
         }
 
         private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)

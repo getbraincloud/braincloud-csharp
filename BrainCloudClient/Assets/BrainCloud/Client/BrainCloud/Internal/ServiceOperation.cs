@@ -35,6 +35,9 @@ using System;
 
         public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
+        public static readonly ServiceOperation GetBlockchainItems = new ServiceOperation("GET_BLOCKCHAIN_ITEMS");
+        public static readonly ServiceOperation GetUniqs = new ServiceOperation("GET_UNIQS");
+
         public static readonly ServiceOperation Create = new ServiceOperation("CREATE");
         public static readonly ServiceOperation CreateWithIndexedId = new ServiceOperation("CREATE_WITH_INDEXED_ID");
         public static readonly ServiceOperation Reset = new ServiceOperation("RESET");
@@ -467,6 +470,7 @@ using System;
         public static readonly ServiceOperation GetEntityPage = new ServiceOperation("GET_ENTITY_PAGE");
         public static readonly ServiceOperation ReadCustomEntity = new ServiceOperation("READ_ENTITY");
         public static readonly ServiceOperation IncrementData = new ServiceOperation("INCREMENT_DATA");
+        public static readonly ServiceOperation IncrementSingletonData = new ServiceOperation("INCREMENT_SINGLETON_DATA");
         public static readonly ServiceOperation UpdateCustomEntity = new ServiceOperation("UPDATE_ENTITY");
         public static readonly ServiceOperation UpdateCustomEntityFields = new ServiceOperation("UPDATE_ENTITY_FIELDS");
         public static readonly ServiceOperation UpdateCustomEntityFieldsShards = new ServiceOperation("UPDATE_ENTITY_FIELDS_SHARDED");

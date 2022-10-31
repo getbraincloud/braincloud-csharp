@@ -4,6 +4,8 @@ using BrainCloud;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using BrainCloud.JsonFx.Json;
+using System.Text;
 
 namespace Tests.PlayMode
 {
@@ -34,6 +36,17 @@ namespace Tests.PlayMode
             {
                 Debug.Log("ERROR: Anonymous Id did not match");
             }
+        }
+
+        [UnityTest]
+        public IEnumerator TestSleepCloudCodeScript()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            _tc.bcWrapper.Client.ScriptService.RunScript("SleepScript","", _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Stuff happened", _tc.m_done);
         }
         
         [UnityTest]
@@ -192,33 +205,197 @@ namespace Tests.PlayMode
             _tc.m_done = false;
             yield return _tc.StartCoroutine(_tc.Run());
             _tc.Reset();
-            
-            GameObject gameObject2 = Instantiate(new GameObject("TestingContainer2"), Vector3.zero, Quaternion.identity);
-            TestContainer _tc2 = gameObject2.AddComponent<TestContainer>();
-            
+
             //DO A CALL
-            _tc.bcWrapper.TimeService.ReadServerTime(_tc2.ApiSuccess,_tc2.ApiError);
+            _tc.bcWrapper.TimeService.ReadServerTime(_tc.ApiSuccess,_tc.ApiError);
             
             //Run
-            _tc2.m_done = false;
-            yield return _tc2.StartCoroutine(_tc2.Run());
-            _tc2.Reset();
+            _tc.m_done = false;
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.Reset();
             
             //Re Init
             _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            yield return null;
+            _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
             
-            GameObject gameObject3 = Instantiate(new GameObject("TestingContainer3"), Vector3.zero, Quaternion.identity);
-            TestContainer _tc3 = gameObject3.AddComponent<TestContainer>();
-            
-            _tc.bcWrapper.TimeService.ReadServerTime(_tc3.ApiSuccess,_tc3.ApiError);
-            
+            _tc.bcWrapper.TimeService.ReadServerTime(_tc.ApiSuccess,_tc.ApiError);
             //Run
-            _tc3.m_done = false;
-            yield return _tc3.StartCoroutine(_tc3.Run());
-            _tc3.Reset();
+            _tc.m_done = false;
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.Reset();
             
             //Assert.False(_tc3.m_result);
-            LogResults("Failed to re initialize", _tc.successCount == 1);
+            LogResults("Failed to re initialize", _tc.successCount == 4);
         }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadRequestError()
+        {
+            LogAssert.ignoreFailingMessages = true;
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+            
+            AuthenticationIds ids = new AuthenticationIds();
+            ids.externalId = username;
+            ids.authenticationToken = password;
+            
+            //Setting Max Depth to it's default value / a number not large enough to accomodate the payload.
+            _tc.bcWrapper.Client.MaxDepth = 25;
+            
+            Debug.Log("Max Depth:" + _tc.bcWrapper.Client.MaxDepth);
+            Dictionary<string, object> extraJson = MakeJsonOfDepth(10);
+
+            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
+            {
+                _tc.m_done = true;
+                Debug.Log("failure callback reached");
+            };
+            
+            _tc.bcWrapper.AuthenticateAdvanced
+                (
+                    BrainCloud.Common.AuthenticationType.Universal,
+                    ids,
+                    forceCreate,
+                    extraJson,
+                    _tc.ApiSuccess,
+                    failureCallback
+                );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadResponseError()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
+
+            _tc.bcWrapper.Client.MaxDepth = 1; //63 will make this operation have a successCallback rather than failureCallback
+            Debug.Log("Max Depth:" + _tc.bcWrapper.Client.MaxDepth);
+            FailureCallback failureCallback = (status, reasoncode, errormessage, cbObject) =>
+            {
+                _tc.m_done = true;
+                Debug.Log("failure callback reached");
+                _tc.failCount++;
+            };
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, failureCallback);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadBasicMaxDepthAdjustment()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+
+            const int JSON_DEPTH = 25;
+
+            Dictionary<string, object> jsonPayload = MakeJsonOfDepth(JSON_DEPTH);
+
+            _tc.bcWrapper.Client.MaxDepth = 50;
+
+            string dictionaryJson = _tc.bcWrapper.Client.SerializeJson(jsonPayload);
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadRequestAdjustment()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            AuthenticationIds ids = new AuthenticationIds();
+            ids.externalId = username;
+            ids.authenticationToken = password;
+
+            Dictionary<string, object> extraJson = MakeJsonOfDepth(25);
+
+            //Increasing max depth to accomodate larger request payloads. 
+            _tc.bcWrapper.Client.MaxDepth = 75;
+
+            _tc.bcWrapper.AuthenticateAdvanced
+            (
+                BrainCloud.Common.AuthenticationType.Universal,
+                ids,
+                forceCreate,
+                extraJson,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestDeepJsonPayloadResponseAdjustment()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string entityID = "9c7685a2-5f3e-4a95-9be9-946456b93f63";
+            
+            _tc.bcWrapper.Client.MaxDepth = 75;
+
+            _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        #region Helper Methods
+        private Dictionary<string, object> MakeJsonOfDepth(int depth)
+        {
+            int JSON_DEPTH = depth;
+
+            //Creating a Json payload to send that will exceed the default max depth of JsonWriter.
+            List<Dictionary<string, object>> dictionaryList = new List<Dictionary<string, object>>();
+
+            //Creaing the first child
+            Dictionary<string, object> lastChild = new Dictionary<string, object>();
+            lastChild.Add("child", "lastchild");
+            dictionaryList.Add(lastChild);
+
+            for (int i = 1; i < JSON_DEPTH; i++)
+            {
+                int targetChildIndex = i - 1;
+
+                Dictionary<string, object> nextParent = new Dictionary<string, object>();
+                nextParent.Add("child", dictionaryList[targetChildIndex]);
+                dictionaryList.Add(nextParent);
+            }
+
+            return dictionaryList[JSON_DEPTH - 1];
+        }
+
+        #endregion
     }
+
 }

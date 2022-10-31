@@ -52,6 +52,7 @@ namespace BrainCloud.Internal
         public static readonly ServiceName Lobby = new ServiceName("lobby");
         public static readonly ServiceName VirtualCurrency = new ServiceName("virtualCurrency");
         public static readonly ServiceName AppStore = new ServiceName("appStore");
+        public static readonly ServiceName BlockChain = new ServiceName("blockchain");
 
         private ServiceName(string value)
         {

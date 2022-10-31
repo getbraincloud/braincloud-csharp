@@ -41,6 +41,8 @@ namespace BrainCloud
         public static readonly OperationParam TwitterServiceTweetPic = new OperationParam("pic");
 
         public static readonly OperationParam BlockChainConfig = new OperationParam("blockchainConfig");
+        public static readonly OperationParam BlockChainIntegrationId = new OperationParam("integrationId");
+        public static readonly OperationParam BlockChainContext = new OperationParam("contextJson");
         public static readonly OperationParam PublicKey = new OperationParam("publicKey");
 
         // Authenticate Service - Authenticate Params

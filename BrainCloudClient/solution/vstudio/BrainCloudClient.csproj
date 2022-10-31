@@ -308,6 +308,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Version.cs">
       <Link>BrainCloud\Version.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudBlockchain.cs">
+      <Link>BrainCloud\Version.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\JsonFx\DataReaderProvider.cs">
       <Link>JsonFx\DataReaderProvider.cs</Link>
     </Compile>
