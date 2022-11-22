@@ -1106,7 +1106,11 @@ namespace BrainCloud.Internal
             try
             {
                 // Read precisely SIZE_OF_HEADER for the length of the following message
-                int read = m_tcpStream.EndRead(ar);
+                int read = -1;
+                if (ar != null && m_tcpStream != null)
+                {
+                    read = m_tcpStream.EndRead(ar);
+                }
                 if (read == 0)
                 {
                     queueErrorEvent("Server Closed Connection");
