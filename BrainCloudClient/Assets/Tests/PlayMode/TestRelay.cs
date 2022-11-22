@@ -19,7 +19,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
             
-            Assert.True(_tc.successCount == 3);
+            LogResults("Websocket Failed", _tc.successCount == 3);
         }
         
         [UnityTest]
@@ -27,7 +27,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.UDP));
             
-            Assert.True(_tc.successCount == 3);
+            LogResults("UDP Failed", _tc.successCount == 3);
         }
         
         [UnityTest]
@@ -35,7 +35,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.TCP));
             
-            Assert.True(_tc.successCount == 3);
+            LogResults("TCP Failed", _tc.successCount == 3);
         }
 
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
@@ -54,16 +54,23 @@ namespace Tests.PlayMode
         
         void OnFailed(int status, int reasonCode, string jsonError, object cbObject)
         {
-            if (jsonError == "{\"status\":403,\"reason_code\":90300,\"status_message\":\"Invalid NetId: 40\",\"severity\":\"ERROR\"}")
+            if (jsonError.Contains("Invalid NetId: 40"))
             {
                 // This one was on purpose
-                _tc.successCount++;
-                _isRunning = false;
-                if (_tc.successCount == 3)
+                if (_tc.successCount <= 2)
                 {
-                    _tc.m_done = true;    
+                    _tc.successCount++;
+                    _isRunning = false;
+                    if (_tc.successCount == 3)
+                    {
+                        _tc.m_done = true;    
+                    }
+                    else
+                    {
+                        Debug.Log($"Didnt meet Success Count, instead of 3 it was {_tc.successCount}");
+                    }
+                    return;   
                 }
-                return;
             }
             _isRunning = false;
             _tc.successCount = 0;
