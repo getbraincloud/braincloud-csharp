@@ -47,12 +47,21 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestStartPurchase()
+        public void TestStartPurchaseFail()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.AppStoreService.StartPurchase("_invalid_store_id_", "{}", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
+        }
+        
+        [Test]
+        public void TestStartPurchase()
+        {
+            //Had to run StartPurchase through a cloud code script to skip permissions for testing with mock store
+            TestResult tr = new TestResult(_bc);
+            _bc.ScriptService.RunScript("TestPurchase","{}", tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]
