@@ -21,6 +21,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayWebSocket()
         {
+            Debug.Log("Now running...TestRelayWebSocket ");
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
             
             LogResults($"Websocket Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
@@ -29,6 +30,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayUDP()
         {
+            Debug.Log("Now running...TestRelayUDP ");
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.UDP));
             
             LogResults($"UDP Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
@@ -37,6 +39,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayTCP()
         {
+            Debug.Log("Now running...TestRelayTCP ");
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.TCP));
             
             LogResults($"TCP Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
