@@ -12,14 +12,18 @@ namespace Tests.PlayMode
     {
 
         private RelayConnectOptions connectOptions;
-        private RelayConnectionType connectionType = RelayConnectionType.UDP; // Change this to try different connection type
+        private RelayConnectionType connectionType = RelayConnectionType.INVALID; // Change this to try different connection type
+        private bool bSendWrongNetId;
+        private bool bSystemCallbackConnect;
+        private bool bRelayMessageReceived;
+        
         
         [UnityTest]
         public IEnumerator TestRelayWebSocket()
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
             
-            LogResults("Websocket Failed", _tc.successCount == 3);
+            LogResults($"Websocket Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
         
         [UnityTest]
@@ -27,7 +31,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.UDP));
             
-            LogResults("UDP Failed", _tc.successCount == 3);
+            LogResults($"UDP Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
         
         [UnityTest]
@@ -35,7 +39,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.TCP));
             
-            LogResults("TCP Failed", _tc.successCount == 3);
+            LogResults($"TCP Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
 
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
@@ -60,6 +64,7 @@ namespace Tests.PlayMode
                 if (_tc.successCount <= 2)
                 {
                     _tc.successCount++;
+                    bSendWrongNetId = true;
                     _isRunning = false;
                     if (_tc.successCount == 3)
                     {
@@ -166,6 +171,7 @@ namespace Tests.PlayMode
             if (parsedDict["op"] as string == "CONNECT")
             {
                 _tc.successCount++;
+                bSystemCallbackConnect = true;
                 if (_tc.successCount >= 2)
                 {
                     sendToWrongNetId();
@@ -179,6 +185,7 @@ namespace Tests.PlayMode
             if (message == "Hello World!")
             {
                 _tc.successCount++;
+                bRelayMessageReceived = true;
                 if (_tc.successCount >= 2)
                 {
                     sendToWrongNetId();
