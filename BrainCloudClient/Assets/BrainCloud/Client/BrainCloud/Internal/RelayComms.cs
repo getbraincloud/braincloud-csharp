@@ -1065,7 +1065,7 @@ namespace BrainCloud.Internal
                 lock (fLock)
                 {
                     fToSend.Enqueue(message);
-                    if (1 == fToSend.Count)
+                    if (fToSend.Count >= 1)
                     {
                         m_tcpStream.BeginWrite(message, 0, message.Length, tcpFinishWrite, null);
                     }
