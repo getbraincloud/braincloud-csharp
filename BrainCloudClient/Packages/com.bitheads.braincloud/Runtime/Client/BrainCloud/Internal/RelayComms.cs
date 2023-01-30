@@ -1065,7 +1065,7 @@ namespace BrainCloud.Internal
                 lock (fLock)
                 {
                     fToSend.Enqueue(message);
-                    if (1 == fToSend.Count)
+                    if (fToSend.Count >= 1)
                     {
                         m_tcpStream.BeginWrite(message, 0, message.Length, tcpFinishWrite, null);
                     }
@@ -1106,7 +1106,11 @@ namespace BrainCloud.Internal
             try
             {
                 // Read precisely SIZE_OF_HEADER for the length of the following message
-                int read = m_tcpStream.EndRead(ar);
+                int read = -1;
+                if (ar != null && m_tcpStream != null)
+                {
+                    read = m_tcpStream.EndRead(ar);
+                }
                 if (read == 0)
                 {
                     queueErrorEvent("Server Closed Connection");
@@ -1253,7 +1257,11 @@ namespace BrainCloud.Internal
                 args.RemoteEndPoint = new DnsEndPoint(host, port);
 
                 initUDPConnection();
-                m_udpClient.Client.ConnectAsync(args);
+                bool value = m_udpClient.Client.ConnectAsync(args);
+                if (!value)
+                {
+                    OnUDPConnected(null, args);
+                }
 #endif
             }
             catch (Exception e)
