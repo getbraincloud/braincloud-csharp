@@ -59,7 +59,6 @@ ExportedObj/
 *.asset
 *.asset.meta
 *.idea
-*.meta
 *.log
 
 /BrainCloudClient/Logs/
