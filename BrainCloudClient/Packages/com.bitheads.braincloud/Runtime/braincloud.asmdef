@@ -1,0 +1,17 @@
+{
+    "name": "braincloud",
+    "rootNamespace": "Plugin",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "BrainCloudPlugin.dll",
+        "BrainCloudPluginEditor.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
