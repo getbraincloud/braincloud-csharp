@@ -1,0 +1,19 @@
+{
+  "name": "com.bitheads.braincloud",
+  "version": "4.13.0",
+  "displayName": "brainCloud",
+  "description": "brainCloud is a ready-made back-end platform for the development of feature-rich mobile+social games. For more information, go to getbraincloud.com.",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://getbraincloud.com/apidocs/apiref/index.html#introduction",
+  "changelogUrl": "https://example.com/changelog.html",
+  "dependencies": {
+ },
+ "keywords": ["braincloud"
+  ],
+  "author": {
+    "name": "bitheads Inc",
+    "email": "",
+    "url": "https://www.getbraincloud.com"
+  }
+}
