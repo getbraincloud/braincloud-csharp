@@ -32,12 +32,14 @@ namespace BrainCloud.Internal
         public const byte CL2RS_ACK = 3;
         public const byte CL2RS_PING = 4;
         public const byte CL2RS_RSMG_ACK = 5;
+        public const byte CL2RS_ENDMATCH = 6;
 
         public const byte RS2CL_RSMG = 0;
         public const byte RS2CL_DISCONNECT = 1;
         public const byte RS2CL_RELAY = 2;
         public const byte RS2CL_ACK = 3;
         public const byte RS2CL_PONG = 4;
+        public const byte RS2CL_ENDMATCH = 6;
         #endregion
 
         private const int MAX_RSMG_HISTORY = 50;
@@ -87,6 +89,7 @@ namespace BrainCloud.Internal
             Ping = 999;
             if (!IsConnected())
             {
+                m_endMatchRequested = false;
                 // the callback
                 m_connectOptions = in_options;
                 m_connectedSuccessCallback = in_success;
@@ -106,6 +109,15 @@ namespace BrainCloud.Internal
         {
             if (IsConnected()) send(buildDisconnectRequest());
             disconnect();
+        }
+
+        public void EndMatch(Dictionary<string, object> json)
+        {
+            if (IsConnected())
+            {
+                send(buildEndMatchRequest(json));
+                m_endMatchRequested = true;
+            }
         }
 
         /// <summary>
@@ -371,7 +383,9 @@ namespace BrainCloud.Internal
                             }
                             break;
                         case EventType.ConnectFailure:
-                            if (m_connectionFailureCallback != null)
+                            //When End Match is requested, then the server will close the connection
+                            if (m_connectionFailureCallback != null && 
+                                !m_endMatchRequested)
                             {
                                 eventsCopy.Clear();
                                 lock (m_events)
@@ -436,6 +450,12 @@ namespace BrainCloud.Internal
             return array;
         }
 
+        private byte[] buildEndMatchRequest(Dictionary<string, object> in_jsonPayload)
+        {
+            byte[] array = concatenateByteArrays(ENDMATCH_ARR, Encoding.ASCII.GetBytes(m_clientRef.SerializeJson(in_jsonPayload)));
+            return array;
+        }
+
         private string buildRSRequestError(string in_statusMessage)
         {
             Dictionary<string, object> json = new Dictionary<string, object>();
@@ -451,7 +471,6 @@ namespace BrainCloud.Internal
         {
             return DISCONNECT_ARR;
         }
-
 
         /// <summary>
         /// 
@@ -470,25 +489,28 @@ namespace BrainCloud.Internal
             m_ownerCxId = "";
             m_netId = INVALID_NET_ID;
 
-            if (m_webSocket != null) m_webSocket.Close();
-            m_webSocket = null;
-
-            if (m_tcpStream != null)
+            if (!m_endMatchRequested)
             {
-                m_tcpStream.Dispose();
-            }
-            m_tcpStream = null;
+                if (m_webSocket != null) m_webSocket.Close();
+                m_webSocket = null;
 
-            if (m_tcpClient != null)
-            {
-                m_tcpClient.Client.Close(0);
-                m_tcpClient.Close();
-                fToSend.Clear();
-            }
-            m_tcpClient = null;
+                if (m_tcpStream != null)
+                {
+                    m_tcpStream.Dispose();
+                }
+                m_tcpStream = null;
 
-            if (m_udpClient != null) m_udpClient.Close();
-            m_udpClient = null;
+                if (m_tcpClient != null)
+                {
+                    m_tcpClient.Client.Close(0);
+                    m_tcpClient.Close();
+                    fToSend.Clear();
+                }
+                m_tcpClient = null;
+
+                if (m_udpClient != null) m_udpClient.Close();
+                m_udpClient = null;   
+            }
 
             // cleanup UDP stuff
             m_sendPacketId.Clear();
@@ -627,7 +649,15 @@ namespace BrainCloud.Internal
         {
             if (m_clientRef.LoggingEnabled)
             {
-                m_clientRef.Log("Relay: Connection closed: " + reason);
+                if (m_endMatchRequested)
+                {
+                    m_clientRef.Log("Relay: Connection closed by end match");
+                }
+                else
+                {
+                    m_clientRef.Log("Relay: Connection closed: " + reason);    
+                }
+                
             }
             queueErrorEvent(reason);
         }
@@ -775,6 +805,12 @@ namespace BrainCloud.Internal
                         }
                         break;
                     }
+                case "END_MATCH":
+                {
+                    m_endMatchRequested = true;
+                    disconnect();
+                    break;
+                }
             }
 
             queueSystemEvent(jsonMessage);
@@ -1255,7 +1291,6 @@ namespace BrainCloud.Internal
                 SocketAsyncEventArgs args = new SocketAsyncEventArgs();
                 args.Completed += new EventHandler<SocketAsyncEventArgs>(OnUDPConnected);
                 args.RemoteEndPoint = new DnsEndPoint(host, port);
-
                 initUDPConnection();
                 bool value = m_udpClient.Client.ConnectAsync(args);
                 if (!value)
@@ -1435,6 +1470,7 @@ namespace BrainCloud.Internal
         // end 
 
         private bool m_resendConnectRequest = false;
+        private bool m_endMatchRequested;
         private DateTime m_lastConnectResendTime = DateTime.Now;
 
         private const int CONTROL_BYTE_HEADER_LENGTH = 1;
@@ -1447,6 +1483,7 @@ namespace BrainCloud.Internal
         private long m_sentPing = DateTime.Now.Ticks;
         private byte[] DISCONNECT_ARR = { CL2RS_DISCONNECT };
         private byte[] CONNECT_ARR = { CL2RS_CONNECT };
+        private byte[] ENDMATCH_ARR = { CL2RS_ENDMATCH };
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;
