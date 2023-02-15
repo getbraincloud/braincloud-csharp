@@ -39,7 +39,6 @@ namespace BrainCloud.Internal
         public const byte RS2CL_RELAY = 2;
         public const byte RS2CL_ACK = 3;
         public const byte RS2CL_PONG = 4;
-        public const byte RS2CL_ENDMATCH = 6;
         #endregion
 
         private const int MAX_RSMG_HISTORY = 50;
@@ -110,12 +109,13 @@ namespace BrainCloud.Internal
             if (IsConnected()) send(buildDisconnectRequest());
             disconnect();
         }
-
-        public void EndMatch(Dictionary<string, object> json)
+        
+        public void EndMatch(Dictionary<string, object> in_jsonPayload)
         {
             if (IsConnected())
             {
-                send(buildEndMatchRequest(json));
+                send(buildEndMatchRequest(in_jsonPayload));
+
                 m_endMatchRequested = true;
             }
         }
