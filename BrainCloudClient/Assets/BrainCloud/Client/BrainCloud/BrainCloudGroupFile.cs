@@ -20,7 +20,15 @@ namespace BrainCloud
         {
             _bcClient = client;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="folderPath"></param>
+        /// <param name="fileName"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void CheckFilenameExists(
             string groupId,
             string folderPath,
@@ -37,6 +45,14 @@ namespace BrainCloud
             SendRequest(ServiceOperation.CheckFilenameExists, success, failure, cbObject, data);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fullPathFilename"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void CheckFullpathFilenameExists(
             string groupId,
             string fullPathFilename,
@@ -51,6 +67,19 @@ namespace BrainCloud
             SendRequest(ServiceOperation.CheckFullpathFilenameExists, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="version"></param>
+        /// <param name="newTreeId"></param>
+        /// <param name="treeVersion"></param>
+        /// <param name="newFilename"></param>
+        /// <param name="overwriteIfPresent"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void CopyFile(
             string groupId,
             string fileId,
@@ -75,6 +104,16 @@ namespace BrainCloud
             SendRequest(ServiceOperation.CopyFile, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="version"></param>
+        /// <param name="filename"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void DeleteFile(
             string groupId,
             string fileId,
@@ -93,6 +132,14 @@ namespace BrainCloud
             SendRequest(ServiceOperation.DeleteFile, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void GetCDNUrl(
             string groupId,
             string fileId,
@@ -107,6 +154,14 @@ namespace BrainCloud
             SendRequest(ServiceOperation.GetCdnUrl, success, failure, cbObject, data);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void GetFileInfo(
             string groupId,
             string fileId,
@@ -121,6 +176,15 @@ namespace BrainCloud
             SendRequest(ServiceOperation.GetFileInfo, success, failure, cbObject, data);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="folderPath"></param>
+        /// <param name="filename"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void GetFileInfoSimple(
             string groupId,
             string folderPath,
@@ -137,6 +201,15 @@ namespace BrainCloud
             SendRequest(ServiceOperation.GetFileInfoSimple, success, failure, cbObject, data);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="folderPath"></param>
+        /// <param name="recurse"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void GetFileList(
             string groupId,
             string folderPath,
@@ -153,6 +226,19 @@ namespace BrainCloud
             SendRequest(ServiceOperation.GetFileList, success, failure, cbObject, data);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="version"></param>
+        /// <param name="newTreeId"></param>
+        /// <param name="treeVersion"></param>
+        /// <param name="newFilename"></param>
+        /// <param name="overwriteIfPresent"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void MoveFile(
             string groupId,
             string fileId,
@@ -177,13 +263,26 @@ namespace BrainCloud
             SendRequest(ServiceOperation.MoveFile, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userCloudPath"></param>
+        /// <param name="userCloudFilename"></param>
+        /// <param name="groupId"></param>
+        /// <param name="groupTreeId"> Folder ID within the folder structure of the group </param>
+        /// <param name="groupFilename"></param>
+        /// <param name="groupFileAcl"></param>
+        /// <param name="overwriteIfPresent"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void MoveUserToGroupFile(
             string userCloudPath,
             string userCloudFilename,
             string groupId,
             string groupTreeId,
             string groupFilename,
-            GroupACL groupFileAcl,
+            Dictionary<string, object> groupFileAcl,
             bool overwriteIfPresent,
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -201,12 +300,23 @@ namespace BrainCloud
             SendRequest(ServiceOperation.MoveUserToGroupFile, success, failure, cbObject, data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="version"></param>
+        /// <param name="newFilename"></param>
+        /// <param name="newACL"></param>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        /// <param name="cbObject"></param>
         public void UpdateFileInfo(
             string groupId,
             string fileId,
             int version,
             string newFilename,
-            GroupACL newACL,
+            Dictionary<string, object> newACL,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -218,7 +328,7 @@ namespace BrainCloud
             data[OperationParam.NewFilename.Value] = newFilename;
             data[OperationParam.NewACL.Value] = newACL;
             
-            SendRequest(ServiceOperation.MoveFile, success, failure, cbObject, data);
+            SendRequest(ServiceOperation.UpdateFileInfo, success, failure, cbObject, data);
         }
         
         private void SendRequest(ServiceOperation operation, SuccessCallback success, FailureCallback failure, object cbObject, IDictionary data)
