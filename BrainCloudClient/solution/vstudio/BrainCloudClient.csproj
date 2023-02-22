@@ -76,6 +76,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudChat.cs">
       <Link>BrainCloud\BrainCloudChat.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudGroupFile.cs">
+      <Link>BrainCloud\BrainCloudGroupFile.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudMessaging.cs">
       <Link>BrainCloud\BrainCloudMessaging.cs</Link>
     </Compile>

@@ -129,6 +129,30 @@ public class TestContainer : MonoBehaviour
             successCount = resetCount ? 0 : successCount;
         }
     }
+    
+    public IEnumerator SetUpNewUser(BrainCloudWrapper wrapper = null)
+    {
+        if (!_init)
+        {
+            Debug.Log(">> Initializing New Random Users");
+            BrainCloudWrapper userWrapper = wrapper != null ? wrapper : bcWrapper;
+            userWrapper.Client.EnableLogging(true);
+                
+            Random rand = new Random();
+
+            TestUserA = gameObject.AddComponent<TestUser>();
+            IEnumerator setUpUserRoutine = TestUserA.SetUp
+            (
+                userWrapper,
+                this
+            );
+            
+            yield return StartCoroutine(setUpUserRoutine);
+            _init = true;
+
+            successCount = 0;
+        }
+    }
 
     public IEnumerator GoToChildProfile(string in_childAppId)
     {

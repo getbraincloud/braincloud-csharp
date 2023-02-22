@@ -502,6 +502,7 @@ using System;
         public static readonly ServiceOperation DeleteFile = new ServiceOperation("DELETE_FILE");
         public static readonly ServiceOperation MoveFile = new ServiceOperation("MOVE_FILE");
         public static readonly ServiceOperation MoveUserToGroupFile = new ServiceOperation("MOVE_USER_TO_GROUP_FILE");
+        public static readonly ServiceOperation UpdateFileInfo = new ServiceOperation("UPDATE_FILE_INFO");
 
 
 
