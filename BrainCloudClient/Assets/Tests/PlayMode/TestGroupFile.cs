@@ -38,7 +38,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
             
-            _tc.bcWrapper.Client.GroupFileService.CheckFilenameExists(groupID, folderPath, filename, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.GroupFileService.CheckFilenameExists(groupID, folderPath, filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
             bool doesFileExist = ((bool)((Dictionary<string, object>)_tc.m_response["data"])["exists"]);
@@ -50,7 +50,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
             
-            _tc.bcWrapper.Client.GroupFileService.CheckFullpathFilenameExists(groupID, filename, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.GroupFileService.CheckFullpathFilenameExists(groupID, filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             bool doesFileExist = ((bool)((Dictionary<string, object>)_tc.m_response["data"])["exists"]);
             LogResults("File doesn't exist anymore..", doesFileExist);
@@ -60,7 +60,7 @@ namespace Tests.PlayMode
         public IEnumerator TestGetFileInfo()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
-            _tc.bcWrapper.Client.GroupFileService.GetFileInfo(groupID, groupFileId, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.GroupFileService.GetFileInfo(groupID, groupFileId, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Something went wrong..", _tc.successCount == 1);
@@ -70,7 +70,7 @@ namespace Tests.PlayMode
         public IEnumerator TestGetFileInfoSimple()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
-            _tc.bcWrapper.Client.GroupFileService.GetFileInfoSimple(groupID, "", filename, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.GroupFileService.GetFileInfoSimple(groupID, "", filename, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Something went wrong..", _tc.successCount == 1);
@@ -81,7 +81,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
             
-            _tc.bcWrapper.Client.GroupFileService.GetFileList(groupID, "", recurse, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.GroupFileService.GetFileList(groupID, "", recurse, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
             
@@ -111,7 +111,7 @@ namespace Tests.PlayMode
             yield return WaitForReturn(new[] { GetUploadId(_tc.m_response) });
             
             //Moving new file to group file
-            _tc.bcWrapper.Client.GroupFileService.MoveUserToGroupFile
+            _tc.bcWrapper.GroupFileService.MoveUserToGroupFile
             (
                 "TestFolder/",
                 tempFilename,
@@ -128,7 +128,7 @@ namespace Tests.PlayMode
             string newFileId = (string) fileDetails["fileId"];
             
             //Delete new file
-            _tc.bcWrapper.Client.GroupFileService.DeleteFile
+            _tc.bcWrapper.GroupFileService.DeleteFile
             (
                 groupID,
                 newFileId,
@@ -142,10 +142,46 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TestCopyFile()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            string newFileName = "testCopiedFile.dat";
+            _tc.bcWrapper.GroupFileService.CopyFile
+            (
+                groupID,
+                groupFileId,
+                version,
+                "",
+                0,
+                newFileName,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            var fileDetails = ((Dictionary<string, object>)((Dictionary<string, object>)_tc.m_response["data"])["fileDetails"]);
+            string newFileId = (string) fileDetails["fileId"];
+            
+            //Delete new file
+            _tc.bcWrapper.GroupFileService.DeleteFile
+            (
+                groupID,
+                newFileId,
+                version,
+                newFileName,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Couldn't copy file", _tc.successCount == 2);
+        }
+
+        [UnityTest]
         public IEnumerator TestUpdateFileInfo()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
-            _tc.bcWrapper.Client.GroupFileService.UpdateFileInfo
+            _tc.bcWrapper.GroupFileService.UpdateFileInfo
             (
                 groupID,
                 groupFileId,
@@ -158,7 +194,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             
             //Revert the update... This file is used in other tests so its better to keep it consistent.
-            _tc.bcWrapper.Client.GroupFileService.UpdateFileInfo
+            _tc.bcWrapper.GroupFileService.UpdateFileInfo
             (
                 groupID,
                 groupFileId,
