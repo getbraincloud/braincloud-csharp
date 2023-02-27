@@ -52,6 +52,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.GroupFileService.CheckFullpathFilenameExists(groupID, filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            
             bool doesFileExist = ((bool)((Dictionary<string, object>)_tc.m_response["data"])["exists"]);
             LogResults("File doesn't exist anymore..", doesFileExist);
         }
@@ -60,9 +61,10 @@ namespace Tests.PlayMode
         public IEnumerator TestGetFileInfo()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
-            _tc.bcWrapper.GroupFileService.GetFileInfo(groupID, groupFileId, _tc.ApiSuccess, _tc.ApiError);
             
+            _tc.bcWrapper.GroupFileService.GetFileInfo(groupID, groupFileId, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            
             LogResults("Something went wrong..", _tc.successCount == 1);
         }
         
@@ -70,9 +72,10 @@ namespace Tests.PlayMode
         public IEnumerator TestGetFileInfoSimple()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
-            _tc.bcWrapper.GroupFileService.GetFileInfoSimple(groupID, "", filename, _tc.ApiSuccess, _tc.ApiError);
             
+            _tc.bcWrapper.GroupFileService.GetFileInfoSimple(groupID, "", filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+            
             LogResults("Something went wrong..", _tc.successCount == 1);
         }
         
@@ -83,9 +86,56 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.GroupFileService.GetFileList(groupID, "", recurse, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
+
+            LogResults("Something went wrong..", _tc.successCount == 1);
+        }
+
+        [UnityTest]
+        public IEnumerator TestGetCDNUrl()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
             
+            _tc.bcWrapper.GroupFileService.GetCDNUrl(groupID, groupFileId, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
             
             LogResults("Something went wrong..", _tc.successCount == 1);
+        }
+
+        [UnityTest]
+        public IEnumerator TestMoveFile()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+
+            _tc.bcWrapper.GroupFileService.MoveFile
+            (
+                groupID,
+                groupFileId,
+                version,
+                "",
+                -1,
+                updatedName,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            //Reverting file name for other tests to use
+            _tc.bcWrapper.GroupFileService.MoveFile
+            (
+                groupID,
+                groupFileId,
+                version,
+                "",
+                -1,
+                filename,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            LogResults("Couldn't move file..", _tc.successCount == 2);
         }
 
         [UnityTest]
