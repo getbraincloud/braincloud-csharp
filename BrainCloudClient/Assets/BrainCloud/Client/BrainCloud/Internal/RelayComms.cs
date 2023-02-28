@@ -110,6 +110,11 @@ namespace BrainCloud.Internal
             disconnect();
         }
         
+        /// <summary>
+        /// This call only supports apps that are supported with long lived lobbies.
+        /// END_MATCH will end a game session while players remain attached to the lobby that spawned it.
+        /// </summary>
+        /// <param name="in_jsonPayload">Extra data that is sent to all users in the same server</param>
         public void EndMatch(Dictionary<string, object> in_jsonPayload)
         {
             if (IsConnected())
@@ -396,7 +401,7 @@ namespace BrainCloud.Internal
                                 var callbackObj = m_connectedObj;
                                 m_connectionFailureCallback = null;
                                 m_connectedObj = null;
-                                callback(400, -1, buildRSRequestError(evt.message), callbackObj);
+                                callback(200, ReasonCodes.RS_ENDMATCH_REQUESTED, buildRSRequestError(evt.message), callbackObj);
                             }
                             break;
                         case EventType.System:
