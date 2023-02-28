@@ -128,7 +128,11 @@ using BrainCloud.Internal;
         {
             m_commsLayer.Disconnect();
         }
-
+        
+        /// <summary>
+        /// Terminate the match instance by the owner.
+        /// </summary>
+        /// <param name="json">payload data sent in JSON format. It will be relayed to other connnected players.</param>
         public void EndMatch(Dictionary<string, object> json)
         {
             m_commsLayer.EndMatch(json);

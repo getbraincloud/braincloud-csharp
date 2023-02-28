@@ -111,10 +111,9 @@ namespace BrainCloud.Internal
         }
         
         /// <summary>
-        /// This call only supports apps that are supported with long lived lobbies.
-        /// END_MATCH will end a game session while players remain attached to the lobby that spawned it.
+        /// Terminate the match instance by the owner.
         /// </summary>
-        /// <param name="in_jsonPayload">Extra data that is sent to all users in the same server</param>
+        /// <param name="in_jsonPayload">payload data sent in JSON format. It will be relayed to other connnected players.</param>
         public void EndMatch(Dictionary<string, object> in_jsonPayload)
         {
             if (IsConnected())
