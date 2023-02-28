@@ -1475,7 +1475,7 @@ namespace BrainCloud.Internal
         // end 
 
         private bool m_resendConnectRequest = false;
-        private bool m_endMatchRequested;
+        private bool m_endMatchRequested = false;
         private DateTime m_lastConnectResendTime = DateTime.Now;
 
         private const int CONTROL_BYTE_HEADER_LENGTH = 1;
