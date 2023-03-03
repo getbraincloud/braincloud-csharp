@@ -18,7 +18,7 @@ namespace Tests.PlayMode
         //Information grabbed from internal servers -> Unit Test Master
         private string folderPath = "";
         //id for testingGroupFile.dat
-        private string groupFileId = "f92a7231-2257-4e2d-899c-79c47a8a5215";
+        private string groupFileId = "d2dd646a-f1af-4a96-90a7-a0310246f5a2";
         private string groupID = "a7ff751c-3251-407a-b2fd-2bd1e9bca64a";
         private bool recurse = true;
         //Making version a negative value to tell the server to use the latest version
