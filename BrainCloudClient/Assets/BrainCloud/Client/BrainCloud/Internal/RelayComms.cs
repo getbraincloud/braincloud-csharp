@@ -1072,18 +1072,21 @@ namespace BrainCloud.Internal
             // this is what had been passed into BeginReceive as the second parameter:
             try
             {
-                UdpClient udpClient = result.AsyncState as UdpClient;
-                string host = m_connectOptions.host;
-                int port = m_connectOptions.port;
-                IPEndPoint source = new IPEndPoint(IPAddress.Parse(host), port);
-
-                if (udpClient != null)
+                if (result != null)
                 {
-                    // get the actual message and fill out the source:
-                    byte[] data = udpClient.EndReceive(result, ref source);
-                    queueSocketDataEvent(data, data.Length);
-                    // schedule the next receive operation once reading is done:
-                    udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
+                    UdpClient udpClient = result.AsyncState as UdpClient;
+                    string host = m_connectOptions.host;
+                    int port = m_connectOptions.port;
+                    IPEndPoint source = new IPEndPoint(IPAddress.Parse(host), port);
+                    
+                    if (udpClient != null)
+                    {
+                        // get the actual message and fill out the source:
+                        byte[] data = udpClient.EndReceive(result, ref source);
+                        queueSocketDataEvent(data, data.Length);
+                        // schedule the next receive operation once reading is done:
+                        udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
+                    }
                 }
             }
             catch (Exception e)
@@ -1121,18 +1124,23 @@ namespace BrainCloud.Internal
         {
             try
             {
-                m_tcpStream.EndWrite(result);
+                if (m_tcpStream != null)
+                {
+                    m_tcpStream.EndWrite(result);    
+                }
                 lock (fLock)
                 {
-                    // Pop the message we just sent out of the queue
-                    fToSend.Dequeue();
-
                     // See if there's anything else to send. Note, do not pop the message yet because
                     // that would indicate its safe to start writing a new message when its not.
-                    if (fToSend.Count > 0)
+                    if (fToSend.Count > 0 && m_tcpStream != null)
                     {
-                        byte[] final = fToSend.Peek();
-                        m_tcpStream.BeginWrite(final, 0, final.Length, tcpFinishWrite, null);
+                        // Pop the message we just sent out of the queue
+                        fToSend.Dequeue();
+                        if (fToSend.Count > 0)
+                        {
+                            byte[] final = fToSend.Peek();
+                            m_tcpStream.BeginWrite(final, 0, final.Length, tcpFinishWrite, null);    
+                        }
                     }
                 }
             }
