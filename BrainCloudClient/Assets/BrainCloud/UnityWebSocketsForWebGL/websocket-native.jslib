@@ -79,7 +79,7 @@ var NativeWebSocket = {
     	console.log("[NativeWebSocket] Set socket on close: " + id);
     	WebSocketInstances[id].socket.onclose = function(e){
     		console.log("[NativeWebSocket] Socket on close: " + id);
-			Module['dynCall_vi'](action, e.code, id); 
+			Module['dynCall_vii'](action, e.code, id); 
     	}
     },
 
