@@ -4,7 +4,7 @@ var NativeWebSocket = {
 
     BrainCloudSocketCreate: function (url, id) {
     	console.log("[NativeWebSocket] Socket create: " + id);
-        var str = Pointer_stringify(url);
+        var str = UTF8ToString(url);
         var webSocket = {
         	socket: new WebSocket(str),
         	id: id,
