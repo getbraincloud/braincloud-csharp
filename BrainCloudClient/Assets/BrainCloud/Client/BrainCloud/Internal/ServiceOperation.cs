@@ -495,7 +495,14 @@ using System;
         public static readonly ServiceOperation RefreshBlockchainUserItems = new ServiceOperation("REFRESH_BLOCKCHAIN_USER_ITEMS");
         public static readonly ServiceOperation RemoveUserItemFromBlockchain = new ServiceOperation("REMOVE_USER_ITEM_FROM_BLOCKCHAIN");
 
-
+        //Group File Services
+        public static readonly ServiceOperation CheckFilenameExists = new ServiceOperation("CHECK_FILENAME_EXISTS");
+        public static readonly ServiceOperation CheckFullpathFilenameExists = new ServiceOperation("CHECK_FULLPATH_FILENAME_EXISTS");
+        public static readonly ServiceOperation CopyFile = new ServiceOperation("COPY_FILE");
+        public static readonly ServiceOperation DeleteFile = new ServiceOperation("DELETE_FILE");
+        public static readonly ServiceOperation MoveFile = new ServiceOperation("MOVE_FILE");
+        public static readonly ServiceOperation MoveUserToGroupFile = new ServiceOperation("MOVE_USER_TO_GROUP_FILE");
+        public static readonly ServiceOperation UpdateFileInfo = new ServiceOperation("UPDATE_FILE_INFO");
 
 
 

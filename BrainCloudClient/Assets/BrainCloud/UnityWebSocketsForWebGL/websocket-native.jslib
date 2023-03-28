@@ -4,7 +4,7 @@ var NativeWebSocket = {
 
     BrainCloudSocketCreate: function (url, id) {
     	console.log("[NativeWebSocket] Socket create: " + id);
-        var str = Pointer_stringify(url);
+        var str = UTF8ToString(url);
         var webSocket = {
         	socket: new WebSocket(str),
         	id: id,
@@ -79,7 +79,7 @@ var NativeWebSocket = {
     	console.log("[NativeWebSocket] Set socket on close: " + id);
     	WebSocketInstances[id].socket.onclose = function(e){
     		console.log("[NativeWebSocket] Socket on close: " + id);
-			Module['dynCall_vi'](action, e.code, id); 
+			Module['dynCall_vii'](action, e.code, id); 
     	}
     },
 

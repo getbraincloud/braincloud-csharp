@@ -319,6 +319,11 @@ public class BrainCloudWrapper
     {
         get { return Client.RelayService; }
     }
+
+    public BrainCloudGroupFile GroupFileService
+    {
+        get { return Client.GroupFileService; }
+    }
     #endregion
 
     /// <summary>

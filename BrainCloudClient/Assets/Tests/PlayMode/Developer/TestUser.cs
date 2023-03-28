@@ -52,6 +52,36 @@ namespace Tests.PlayMode
             }
             IsRunning = false;
         }
+        
+        public IEnumerator SetUp(BrainCloudWrapper bc, TestContainer testContainer)
+        {
+            _bc = bc;
+            _tc = testContainer;
+            Id = "unity_tester";
+            Password = Id;
+            Email = Id + "@bctestuser.com";
+            IsRunning = true;
+            
+            _bc.Client.AuthenticationService.AuthenticateUniversal
+            (
+                Id,
+                Password,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            yield return StartCoroutine(_tc.Run());
+            
+            ProfileId = _bc.Client.AuthenticationService.ProfileId;
+            
+            if(_tc.m_response == null ||
+               _tc.m_response.Count == 0)
+            {
+                Debug.Log("Got no response from Authentication");
+            }
+            IsRunning = false;
+        }
     }
 }
 
