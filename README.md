@@ -10,7 +10,11 @@ https://portal.braincloudservers.com/
 
 The brainCloud API Reference can be found here:
 
-http://getbraincloud.com/apidocs/apiref/#capi-auth
+https://getbraincloud.com/apidocs/apiref/#capi
+
+The git for the custom package to install via Unity's package manager is found here:
+
+https://github.com/getbraincloud/braincloud-unity-package/
 
 ## Releases
 
@@ -19,15 +23,40 @@ http://getbraincloud.com/apidocs/apiref/#capi-auth
 | [**brainCloudClient_csharp_X.X.X.zip**](https://github.com/getbraincloud/Unity-Csharp/releases)         | C# projects    |
 | [**brainCloudClient_unity_X.X.X.unitypackage**](https://github.com/getbraincloud/Unity-Csharp/releases) | Unity projects |
 
+You can now install the brainCloud client library via Unity's Package Manager! We recommend using the Package Manager as it allows you to receive updates from within Unity itself and it will keep your project clean of extra scripts and assets.
+
 ## Installation Guide
 
-To install the brainCloud library, open the brainCloudClient_unity_X.X.X.unitypackage file with your Unity Project open, and click the import prompt:
+There are two methods to install the brainCloud library for your Unity project:
 
-**It is essential to first delete the Assets/BrainCloud folder to ensure a clean import, when updating to a new version of the brainCloud SDK.**
+### Package Manager
+
+With your Unity project open:
+1. Open `Window > Package Manager`
+2. In the new window, click the big **+** icon in the top-left, then click **Add package from git URL...**
+3. In the **URL** field, paste, and then click **Add**, this link:
+    - https://github.com/getbraincloud/braincloud-unity-package.git
+
+After it installs you should see **Packages - bitHeads Inc** with **brainCloud** underneath it in the Package Manager.
+
+When a new update gets pushed, you can simply hit the **Update** button in the bottom-right of the window.
+
+### .unitypackage Installation
+
+With your Unity Project open, open the brainCloudClient_unity_X.X.X.unitypackage file and click the import prompt.
 
 *Note that the plugin has gone through major updates since BrainCloud 4.7 release, please refer to the appropriate plugin guide.* 
 
+### Updating
+
+Whether you update with the brainCloudClient_unity_X.X.X.unitypackage or via the Package Manager, make sure to delete your old brainCloud settings first: `BrainCloud > Resources > BrainCloudEditorSettings_X_X_X` and `BrainCloud > Resources > BrainCloudSettings_X_X_X`.
+
+If you plan on swapping to the brainCloud custom package, you must delete the old root BrainCloud library files folder `Assets > BrainCloud` in your Unity project, as well as the brainCloud plugin files `Plugins > Android > brainCloudUnity` and `Plugins > iOS > RegionLocaleNative`. If you do not have any additional Plugins, then it is safe to delete the root Plugins folder.
+
+---
+
 ### BrainCloud Unity Plugin 4.6 and under
+
 Once installed, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
 -   Open brainCloud | Select Settings.
@@ -47,7 +76,9 @@ Once installed, you will need to configure a few settings from the brainCloud me
     ![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
 
 ### BrainCloud Unity Plugin 4.7
+
 #### Implementing the New Plugin
+
 *If braincloud is not yet added:*
 - Simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
 - Then click on the newly added braincloud drop down, and click on settings to configure your app
@@ -65,6 +96,7 @@ Login or Signup to brainCloud then select your team and your app!
 ![screenshot](/screenshots/newbcSettings2.png?raw=true)
 
 #### Upgrade Notes
+
 1. If you used or called upon the BrainCloudSettingsDLL or the BrainCloudEditorSettingsDLL before, these have been replaced with BraincloudPlugin and BrainCloudPluginEditor respectively.
 You may have some new errors where you hadn't before. You will need to make adjustments for the new plugin.
 BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic.
@@ -80,6 +112,8 @@ BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for se
 3. You no longer need to call Enable Logging in code, you can toggle on and off logging with the check box in the plugin window. This needs to be done in between running your app. 
 4. To sign into other apps, you will need to re-sign in for security purposes. 
 5. The plugin now has a version we will update when future changes are made.
+
+---
 
 ## Example Projects
 
