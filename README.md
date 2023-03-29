@@ -10,7 +10,7 @@ https://portal.braincloudservers.com/
 
 The brainCloud API Reference can be found here:
 
-https://getbraincloud.com/apidocs/apiref/#capi-auth/
+https://getbraincloud.com/apidocs/apiref/#capi
 
 The git for the custom package to install via Unity's package manager is found here:
 
