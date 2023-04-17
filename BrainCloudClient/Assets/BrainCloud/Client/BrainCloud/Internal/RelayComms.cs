@@ -975,7 +975,7 @@ namespace BrainCloud.Internal
                     }
 
                     if (m_trackedPacketIds.Count > 0 &&
-                        m_trackedPacketIds[channel].ContainsValue(netId))
+                        m_trackedPacketIds[channel].ContainsKey(netId))
                     {
                         prevPacketId = m_trackedPacketIds[channel][netId];
                         m_trackedPacketIds[channel].Remove(netId);
