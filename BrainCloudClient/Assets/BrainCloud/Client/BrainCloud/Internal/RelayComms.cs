@@ -800,7 +800,7 @@ namespace BrainCloud.Internal
                                     m_trackedPacketIds[channelID].Add(netId, packetID);
                                     if (m_clientRef.LoggingEnabled)
                                     {
-                                        m_clientRef.Log($"Added trackets packetId {packetID} for netID {netId} at channel {channelID}");
+                                        m_clientRef.Log($"Added tracked packetId {packetID} for netID {netId} at channel {channelID}");
                                     }
                                 }
                             }    
