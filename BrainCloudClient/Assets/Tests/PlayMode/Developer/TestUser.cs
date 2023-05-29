@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Tests.PlayMode
 {
@@ -57,7 +58,8 @@ namespace Tests.PlayMode
         {
             _bc = bc;
             _tc = testContainer;
-            Id = "unity_tester";
+            Random rand = new Random();
+            Id = "unity_tester" + rand;
             Password = Id;
             Email = Id + "@bctestuser.com";
             IsRunning = true;
