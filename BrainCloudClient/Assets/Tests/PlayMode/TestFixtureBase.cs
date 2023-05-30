@@ -37,6 +37,7 @@ namespace Tests.PlayMode
         protected string username = "UnityTestUser";
         protected string password = "testPass";
         protected bool forceCreate = true;
+        private bool isInitialized;
         
         private JsonWriterSettings _writerSettings = new JsonWriterSettings
         {
@@ -57,7 +58,6 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
             _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
             _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();
-            _tc.bcWrapper.Client.ShutDown();
             _tc.CleanUp();
             
             Destroy(_tc.bcWrapper);
@@ -69,13 +69,16 @@ namespace Tests.PlayMode
                     Destroy(container.gameObject);
                 }
             }
-            
+
+            isInitialized = false;
             _tc = null;
         }
     
         [SetUp]
-        public void SetUp()
+        public virtual void SetUp()
         {
+            if (isInitialized) return;
+            isInitialized = true;
             Debug.Log("Setting Up......");
             
             LoadIds();

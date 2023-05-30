@@ -59,7 +59,7 @@ namespace Tests.PlayMode
             _bc = bc;
             _tc = testContainer;
             Random rand = new Random();
-            Id = "unity_tester" + rand;
+            Id = "unity_tester" + rand.Next();
             Password = Id;
             Email = Id + "@bctestuser.com";
             IsRunning = true;
