@@ -137,8 +137,6 @@ public class TestContainer : MonoBehaviour
             Debug.Log(">> Initializing New Random Users");
             BrainCloudWrapper userWrapper = wrapper != null ? wrapper : bcWrapper;
             userWrapper.Client.EnableLogging(true);
-                
-            Random rand = new Random();
 
             TestUserA = gameObject.AddComponent<TestUser>();
             IEnumerator setUpUserRoutine = TestUserA.SetUp

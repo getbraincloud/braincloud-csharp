@@ -263,6 +263,8 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestAttachBlockChain()
         {
+            TearDown();
+            SetUp();
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             _tc.bcWrapper.IdentityService.AttachBlockChain
