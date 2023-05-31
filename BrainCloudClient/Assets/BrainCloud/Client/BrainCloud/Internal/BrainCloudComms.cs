@@ -757,7 +757,11 @@ using UnityEngine.Experimental.Networking;
             {
                 _serviceCallsWaiting.Clear();
             }
-            
+
+            // force a log out
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null, null);
+            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
+            AddToQueue(sc);
             DisposeUploadHandler();
             _activeRequest = null;
 
