@@ -44,7 +44,7 @@ namespace BrainCloudTests
                true,
                tr.ApiSuccess, tr.ApiError
              );
-            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
 
             TestResult tr2 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -52,7 +52,7 @@ namespace BrainCloudTests
                true,
                tr2.ApiSuccess, tr2.ApiError
              );
-            tr2.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+            tr2.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
 
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
@@ -60,7 +60,7 @@ namespace BrainCloudTests
                true,
                tr3.ApiSuccess, tr3.ApiError
              );
-            tr3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+            tr3.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
 
             DateTime _testPauseStart = DateTime.Now;
             TimeSpan _testPauseDuration = TimeSpan.FromSeconds(35);
@@ -86,7 +86,7 @@ namespace BrainCloudTests
                true,
                tr6.ApiSuccess, tr6.ApiError
              );
-             tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+             tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
         }
 
         [Test]
@@ -180,7 +180,7 @@ namespace BrainCloudTests
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
         }
 
         [Test]
