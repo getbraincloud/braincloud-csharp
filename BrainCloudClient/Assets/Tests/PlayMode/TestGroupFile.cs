@@ -107,6 +107,8 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
+            _tc.bcWrapper.GroupService.LeaveGroup(_groupID, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
             base.TearDown();
         }
 
