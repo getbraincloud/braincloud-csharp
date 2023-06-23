@@ -12,7 +12,14 @@ namespace Tests.PlayMode
     public class TestWrapper : TestFixtureBase
     {
         private string emailToReset = "braincloudunittest@gmail.com";
-        
+
+        [OneTimeTearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            Application.Quit();
+        }
+
         [UnityTest]
         public IEnumerator TestAuthenticateAnonymous()
         {
