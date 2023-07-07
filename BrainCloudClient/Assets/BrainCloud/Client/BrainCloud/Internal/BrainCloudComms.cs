@@ -1632,13 +1632,20 @@ using UnityEngine.Experimental.Networking;
                                     {
                                         serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
                                         _serviceCallsInProgress.RemoveAt(i);
-                                    }    
+                                    }
+                                    else
+                                    {
+                                        _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
+                                    }
                                 }
-                            
+                            }
+                            else
+                            {
+                                _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
                             }
                         }
                     }
-                    _clientRef.Log("JSON Exception: " + exception.Message);
+                    _clientRef.Log("JSON Exception: " + exception.Message, true);
                 }
             }
 
