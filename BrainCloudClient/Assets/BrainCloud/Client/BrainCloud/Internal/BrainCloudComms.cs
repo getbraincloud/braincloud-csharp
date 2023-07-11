@@ -757,17 +757,10 @@ using UnityEngine.Experimental.Networking;
             {
                 _serviceCallsWaiting.Clear();
             }
-
-            // force a log out
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null, null);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
-            AddToQueue(sc);
+            
             DisposeUploadHandler();
             _activeRequest = null;
-
-            // calling update will try to send the logout
-            Update();
-
+            
             // and then dump the comms layer
             ResetCommunication();
         }
@@ -1639,13 +1632,20 @@ using UnityEngine.Experimental.Networking;
                                     {
                                         serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
                                         _serviceCallsInProgress.RemoveAt(i);
-                                    }    
+                                    }
+                                    else
+                                    {
+                                        _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
+                                    }
                                 }
-                            
+                            }
+                            else
+                            {
+                                _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
                             }
                         }
                     }
-                    _clientRef.Log("JSON Exception: " + exception.Message);
+                    _clientRef.Log("JSON Exception: " + exception.Message, true);
                 }
             }
 

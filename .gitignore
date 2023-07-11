@@ -1,6 +1,5 @@
 # compiled artifacts
 *.exe
-*.dll
 *.o
 *.so
 *.com

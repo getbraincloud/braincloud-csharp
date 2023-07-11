@@ -1299,9 +1299,9 @@ using System.Globalization;
 
         /// <summary>Method writes log if logging is enabled</summary>
         /// 
-        internal void Log(string log)
+        internal void Log(string log, bool bypassLogEnabled = false)
         {
-            if (_loggingEnabled)
+            if (_loggingEnabled || bypassLogEnabled)
             {
                 string formattedLog = DateTime.Now.ToString("HH:mm:ss.fff") + " #BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
                 lock (_loggingMutex)

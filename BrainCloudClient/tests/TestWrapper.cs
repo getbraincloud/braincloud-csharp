@@ -126,7 +126,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.ResetEmailPassword(
-                "ryanr@bitheads.com",
+                "braincloudunittest@gmail.com",
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -141,7 +141,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.ResetEmailPasswordAdvanced(
-                "ryanr@bitheads.com",
+                "braincloudunittest@gmail.com",
                 content,
                 tr.ApiSuccess, tr.ApiError);
 

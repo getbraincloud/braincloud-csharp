@@ -27,7 +27,11 @@ namespace Tests.PlayMode
             _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
             if (_shouldDeleteFiles)
             {
-                _tc.StartCoroutine(DeleteAllFiles());    
+                _tc.StartCoroutine(DeleteAllFiles());
+                while (!_tc.m_done)
+                {
+                    _tc.bcWrapper.RunCallbacks();
+                }
             }
             base.TearDown();
             _returnCount = 0;
