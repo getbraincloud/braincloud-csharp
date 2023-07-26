@@ -1,19 +1,24 @@
 {
   "name": "com.bitheads.braincloud",
-  "version": "4.13.0",
+  "version": "4.15.1",
   "displayName": "brainCloud",
-  "description": "brainCloud is a ready-made back-end platform for the development of feature-rich mobile+social games. For more information, go to getbraincloud.com.",
+  "description": "brainCloud is a ready-made back-end platform for the development of feature-rich mobile+social games.\n\nFor more information check out: getbraincloud.com",
+  "type": "library",
   "unity": "2019.1",
   "unityRelease": "0b5",
-  "documentationUrl": "https://getbraincloud.com/apidocs/apiref/index.html#introduction",
-  "changelogUrl": "https://example.com/changelog.html",
-  "dependencies": {
- },
- "keywords": ["braincloud"
+  "documentationUrl": "https://getbraincloud.com/apidocs/apiref/index.html?csharp#introduction",
+  "changelogUrl": "https://getbraincloud.com/apidocs/braincloud-4-15/",
+  "keywords": [
+    "braincloud",
+    "bitheads",
+    "mobile",
+    "social",
+    "backend",
+    "back-end"
   ],
   "author": {
-    "name": "bitheads Inc",
-    "email": "",
-    "url": "https://www.getbraincloud.com"
+    "name": "bitHeads Inc.",
+    "email": "support@getbraincloud.com",
+    "url": "https://www.getbraincloud.com/"
   }
 }
