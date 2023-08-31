@@ -496,7 +496,7 @@ namespace Tests.PlayMode
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
-            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES));
+            yield return _tc.StartCoroutine(_tc.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR));
             LogResults($"Failure expected, results need to be looked over in response",_tc.failCount == 3);
             Debug.Log($"expected result: status code ACCEPTED ||| reason code SWITCHING_PROFILES");
         }
