@@ -11,6 +11,8 @@ namespace Tests.PlayMode
 {
     public class TestWrapper : TestFixtureBase
     {
+        private string emailToReset = "braincloudunittest@gmail.com";
+        
         [UnityTest]
         public IEnumerator TestAuthenticateAnonymous()
         {
@@ -149,7 +151,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestWrapperResetEmailPassword()
         {
-            _tc.bcWrapper.ResetEmailPassword("ryanr@bitheads.com", _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.ResetEmailPassword(emailToReset, _tc.ApiSuccess, _tc.ApiError);
             
             yield return _tc.StartCoroutine(_tc.Run());
             
@@ -165,7 +167,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.ResetEmailPasswordAdvanced
             (
-                "ryanr@bitheads.com",
+                emailToReset,
                 content,
                 _tc.ApiSuccess,
                 _tc.ApiError
