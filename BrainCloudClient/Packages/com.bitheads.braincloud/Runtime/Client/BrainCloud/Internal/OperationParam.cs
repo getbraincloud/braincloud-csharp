@@ -431,6 +431,25 @@ namespace BrainCloud
         public static readonly OperationParam GroupWhere = new OperationParam("where");
         public static readonly OperationParam GroupMaxReturn = new OperationParam("maxReturn");
         
+        //group file
+        public static readonly OperationParam FolderPath = new OperationParam("folderPath");
+        public static readonly OperationParam FileName = new OperationParam("filename");
+        public static readonly OperationParam FullPathFilename = new OperationParam("fullPathFilename");
+        public static readonly OperationParam FileId = new OperationParam("fileId");
+        public static readonly OperationParam Version = new OperationParam("version");
+        public static readonly OperationParam NewTreeId = new OperationParam("newTreeId");
+        public static readonly OperationParam TreeVersion = new OperationParam("treeVersion");
+        public static readonly OperationParam NewFilename = new OperationParam("newFilename");
+        public static readonly OperationParam OverwriteIfPresent = new OperationParam("overwriteIfPresent");
+        public static readonly OperationParam Recurse = new OperationParam("recurse");
+        public static readonly OperationParam UserCloudPath = new OperationParam("userCloudPath");
+        public static readonly OperationParam UserCloudFilename = new OperationParam("userCloudFilename");
+        public static readonly OperationParam GroupTreeId = new OperationParam("groupTreeId");
+        public static readonly OperationParam GroupFilename = new OperationParam("groupFilename");
+        public static readonly OperationParam GroupFileACL = new OperationParam("groupFileAcl");
+        public static readonly OperationParam NewACL = new OperationParam("newAcl");
+
+
         //GlobalFile
         public static readonly OperationParam GlobalFileServiceFileId = new OperationParam("fileId");
         public static readonly OperationParam GlobalFileServiceFolderPath = new OperationParam("folderPath");

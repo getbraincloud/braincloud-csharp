@@ -757,17 +757,10 @@ using UnityEngine.Experimental.Networking;
             {
                 _serviceCallsWaiting.Clear();
             }
-
-            // force a log out
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null, null);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
-            AddToQueue(sc);
+            
             DisposeUploadHandler();
             _activeRequest = null;
-
-            // calling update will try to send the logout
-            Update();
-
+            
             // and then dump the comms layer
             ResetCommunication();
         }
@@ -1639,13 +1632,20 @@ using UnityEngine.Experimental.Networking;
                                     {
                                         serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
                                         _serviceCallsInProgress.RemoveAt(i);
-                                    }    
+                                    }
+                                    else
+                                    {
+                                        _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
+                                    }
                                 }
-                            
+                            }
+                            else
+                            {
+                                _clientRef.Log("JSON Exception: " + JSON_ERROR_MESSAGE, true);
                             }
                         }
                     }
-                    _clientRef.Log("JSON Exception: " + exception.Message);
+                    _clientRef.Log("JSON Exception: " + exception.Message, true);
                 }
             }
 
@@ -2369,40 +2369,40 @@ using UnityEngine.Experimental.Networking;
         }
     }
 
-    #region Json parsing objects
+    #region brainCloud JSON Objects
 
-    // Classes to handle JSON serialization - do not
-    // try to make variables conform to coding standards as
-    // they must match json variable name format exactly
+    // These classes help handle JSON serialization with brainCloud Responses.
+    // Do not edit these classes or change names to conform with coding standards.
+    // These must be structured the same as the Responses received from brainCloud.
 
+    [Serializable]
     internal class JsonResponseBundleV2
     {
-        public long packetId = 0;
-        public Dictionary<string, object>[] responses = null;
-        public Dictionary<string, object>[] events = null;
+        [JsonName("packetId")]  public long packetId;
+        [JsonName("responses")] public Dictionary<string, object>[] responses;
+        [JsonName("events")]    public Dictionary<string, object>[] events;
 
-        public JsonResponseBundleV2()
-        { }
+        public JsonResponseBundleV2() { }
     }
 
+    [Serializable]
     internal class JsonResponseErrorBundleV2
     {
-        public long packetId;
-        public JsonErrorMessage[] responses;
+        [JsonName("packetId")]  public long packetId;
+        [JsonName("responses")] public JsonErrorMessage[] responses;
 
-        public JsonResponseErrorBundleV2()
-        { }
+        public JsonResponseErrorBundleV2() { }
     }
 
+    [Serializable]
     internal class JsonErrorMessage
     {
-        public int reason_code;
-        public int status;
-        public string status_message;
-        public string severity = "ERROR";
+        [JsonName("reason_code")]    public int reason_code;
+        [JsonName("status")]         public int status;
+        [JsonName("status_message")] public string status_message;
+        [JsonName("severity")]       public string severity = "ERROR";
 
-        public JsonErrorMessage()
-        { }
+        public JsonErrorMessage() { }
 
         public JsonErrorMessage(int status, int reasonCode, string statusMessage)
         {
@@ -2416,5 +2416,6 @@ using UnityEngine.Experimental.Networking;
             return JsonWriter.Serialize(this);
         }
     }
+
     #endregion
 }

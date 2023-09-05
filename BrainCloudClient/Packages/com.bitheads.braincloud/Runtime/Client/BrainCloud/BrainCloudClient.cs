@@ -175,6 +175,7 @@ using System.Globalization;
         private BrainCloudMail _mailService;
         private BrainCloudMessaging _messagingService;
         private BrainCloudBlockchain _blockchain;
+        private BrainCloudGroupFile _groupFileService;
         
         // RTT service
         private BrainCloudLobby _lobbyService;
@@ -262,6 +263,7 @@ using System.Globalization;
             _groupService = new BrainCloudGroup(this);
             _mailService = new BrainCloudMail(this);
             _messagingService = new BrainCloudMessaging(this);
+            _groupFileService = new BrainCloudGroupFile(this);
 
             // RTT 
             _lobbyService = new BrainCloudLobby(this);
@@ -584,6 +586,11 @@ using System.Globalization;
         public BrainCloudBlockchain Blockchain
         {
             get { return _blockchain; }
+        }
+
+        public BrainCloudGroupFile GroupFileService
+        {
+            get { return _groupFileService; }
         }
         #endregion
 
@@ -1292,9 +1299,9 @@ using System.Globalization;
 
         /// <summary>Method writes log if logging is enabled</summary>
         /// 
-        internal void Log(string log)
+        internal void Log(string log, bool bypassLogEnabled = false)
         {
-            if (_loggingEnabled)
+            if (_loggingEnabled || bypassLogEnabled)
             {
                 string formattedLog = DateTime.Now.ToString("HH:mm:ss.fff") + " #BCC " + (log.Length < 14000 ? log : log.Substring(0, 14000) + " << (LOG TRUNCATED)");
                 lock (_loggingMutex)

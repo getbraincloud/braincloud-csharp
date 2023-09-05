@@ -9,10 +9,10 @@
   "changelogUrl": "https://getbraincloud.com/apidocs/releases/",
   "dependencies": {
  },
- "keywords": ["braincloud"
+ "keywords": ["brainCloud"
   ],
   "author": {
-    "name": "bitheads Inc",
+    "name": "bitHeads Inc",
     "email": "",
     "url": "https://www.getbraincloud.com"
   }
