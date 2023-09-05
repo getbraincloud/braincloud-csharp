@@ -1,9 +1,6 @@
 All rights reserved
 bitHeads, inc. 2015
 
-All rights reserved
-bitHeads, inc. 2015
-
 Apache License
 Version 2.0, January 2004
 http://www.apache.org/licenses/

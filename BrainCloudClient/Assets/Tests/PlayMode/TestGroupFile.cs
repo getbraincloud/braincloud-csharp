@@ -25,7 +25,7 @@ namespace Tests.PlayMode
         private string _filename = "testingGroupFile.dat";
         private string _tempFilename = "deleteThisFileAfter.dat";
         private string _updatedName = "UpdatedGroupFile.dat";
-        private Dictionary<string, object> _acl = new() {{"other", 0}, {"member", 2}};
+        private Dictionary<string, object> _acl = new Dictionary<string, object>() {{"other", 0}, {"member", 2}};
 
         [OneTimeSetUp]
         public override void SetUp()
