@@ -6,7 +6,7 @@
   "unity": "2019.1",
   "unityRelease": "0b5",
   "documentationUrl": "https://getbraincloud.com/apidocs/apiref/index.html#introduction",
-  "changelogUrl": "https://example.com/changelog.html",
+  "changelogUrl": "https://getbraincloud.com/apidocs/releases/",
   "dependencies": {
  },
  "keywords": ["brainCloud"
