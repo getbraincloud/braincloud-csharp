@@ -2,33 +2,21 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
-#if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
-#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
-#endif
 
 namespace BrainCloud
 {
-#if USE_WEB_REQUEST
-#if UNITY_5_3
-using UnityEngine.Experimental.Networking;
-#else
-    using UnityEngine.Networking;
-#endif
-#endif
-
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
-    using System.Collections.Generic;
-    using System.Collections;
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Net.NetworkInformation;
+    using System.Threading.Tasks;
 
     public class BrainCloudLobby
     {
         public Dictionary<string, long> PingData { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public BrainCloudLobby(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
@@ -568,23 +556,23 @@ using UnityEngine.Experimental.Networking;
         {
 #if DOT_NET
             PingUpdateSystem(in_region, in_target);
-#else       
-            in_target = "https://" + in_target;
-
+#else
             if (m_clientRef.Wrapper != null)
+            {
                 m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
+            }
 #endif
         }
 
 #if DOT_NET
         private void PingUpdateSystem(string in_region, string in_target)
         {
-            System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping();
+            Ping pinger = new Ping();
             try
             {
                 pinger.PingCompleted += (o, e) =>
                 {
-                    if (e.Error == null && e.Reply.Status == System.Net.NetworkInformation.IPStatus.Success)
+                    if (e.Error == null && e.Reply.Status == IPStatus.Success)
                     {
                         handlePingTimeResponse(e.Reply.RoundtripTime, in_region);
                     }
@@ -592,7 +580,7 @@ using UnityEngine.Experimental.Networking;
 
                 pinger.SendAsync(in_target, null);
             }
-            catch (System.Net.NetworkInformation.PingException)
+            catch (PingException)
             {
                 // Discard PingExceptions and return false;
             }
@@ -607,17 +595,13 @@ using UnityEngine.Experimental.Networking;
 #else
         private IEnumerator HandlePingReponse(string in_region, string in_target)
         {
-            long sentPing = DateTime.Now.Ticks;
-#if USE_WEB_REQUEST
-            UnityWebRequest _request = UnityWebRequest.Get(in_target);
-            yield return _request.SendWebRequest();
-#else
-            WWWForm postForm = new WWWForm();
-            WWW _request = new WWW(in_target, postForm);
-#endif
-            if (_request.error == null && !_request.isNetworkError)
+            Task<PingReply> ping = new Ping().SendPingAsync(in_target);
+
+            yield return new UnityEngine.WaitUntil(() => ping.IsCompleted);
+
+            if (ping.Result != null && ping.Result.Status == IPStatus.Success)
             {
-                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region);
+                handlePingTimeResponse(ping.Result.RoundtripTime, in_region);
             }
         }
 #endif
