@@ -569,7 +569,7 @@ using UnityEngine.Experimental.Networking;
 #if DOT_NET
             PingUpdateSystem(in_region, in_target);
 #else       
-            in_target = "http://" + in_target;
+            in_target = "https://" + in_target;
 
             if (m_clientRef.Wrapper != null)
                 m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
