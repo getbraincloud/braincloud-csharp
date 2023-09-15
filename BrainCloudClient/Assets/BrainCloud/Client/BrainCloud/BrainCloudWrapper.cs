@@ -543,7 +543,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateHandoff(
             handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -575,7 +575,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateSettopHandoff(
             handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);

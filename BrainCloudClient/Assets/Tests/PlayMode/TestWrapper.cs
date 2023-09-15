@@ -47,6 +47,34 @@ namespace Tests.PlayMode
             }
         }
 
+        string handoffID;
+        string handoffToken;
+        [UnityTest]
+        public IEnumerator TestAuthenticateHandoff()
+        {
+            
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.ScriptService.RunScript("createHandoffId","{}", ApiHandoffSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.bcWrapper.AuthenticateHandoff(handoffID, handoffToken, _tc.ApiSuccess, _tc.ApiError);
+            
+            //_tc.bcWrapper.Client.AuthenticationService.AuthenticateHandoff(handoffID, handoffToken, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Stuff happened", _tc.successCount == 1);
+        }
+
+        public void ApiHandoffSuccess(string json, object cb)
+        {
+            _tc.m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
+            var data = _tc.m_response["data"] as Dictionary<string, object>;
+            var response = data["response"] as Dictionary<string, object>;
+            handoffID = response["handoffId"] as string;
+            handoffToken = response["securityToken"] as string;
+            Debug.Log($"HandoffID: {handoffID}");
+            Debug.Log($"Token: {handoffToken}");
+            _tc.m_done = true;
+        }
+
         [UnityTest]
         public IEnumerator TestSleepCloudCodeScript()
         {
