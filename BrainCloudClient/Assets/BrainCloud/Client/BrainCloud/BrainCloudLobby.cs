@@ -2,33 +2,19 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
-#if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
-#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
-#endif
 
 namespace BrainCloud
 {
-#if USE_WEB_REQUEST
-#if UNITY_5_3
-using UnityEngine.Experimental.Networking;
-#else
-    using UnityEngine.Networking;
-#endif
-#endif
-
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
-    using System.Collections.Generic;
-    using System.Collections;
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
     public class BrainCloudLobby
     {
         public Dictionary<string, long> PingData { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public BrainCloudLobby(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
@@ -383,7 +369,7 @@ using UnityEngine.Experimental.Networking;
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetRegionsForLobbies, data, callback);
             m_clientRef.SendRequest(sc);
         }
-        
+
         /**
          * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
          * any ping data provided in the criteriaJson will be ignored.
@@ -404,7 +390,7 @@ using UnityEngine.Experimental.Networking;
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.GetLobbyInstances, data, callback);
             m_clientRef.SendRequest(sc);
         }
-        
+
         /**
          * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
          * Only lobby instances in the regions that satisfy the ping portion of the criteriaJson (based on the values provided in pingData) will be returned.
@@ -415,16 +401,16 @@ using UnityEngine.Experimental.Networking;
          * @param lobbyType The type of lobby to look for.
          * @param criteriaJson A JSON object used to describe filter criteria.
          */
-        public void GetLobbyInstancesWithPingData(string in_lobbyType, Dictionary<string,object> criteriaJson,
+        public void GetLobbyInstancesWithPingData(string in_lobbyType, Dictionary<string, object> criteriaJson,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_lobbyType;
             data[OperationParam.LobbyCritera.Value] = criteriaJson;
-            
+
             attachPingDataAndSend(data, ServiceOperation.GetLobbyInstancesWithPingData, success, failure, cbObject);
         }
-        
+
         /// <summary>
         /// Retrieves associated PingData averages to be used with all associated <>WithPingData APIs.
         /// Call anytime after GetRegionsForLobbies before proceeding. 
@@ -478,7 +464,7 @@ using UnityEngine.Experimental.Networking;
         #region private
         private void pingNextItemToProcess()
         {
-            lock(m_regionTargetsToProcess)
+            lock (m_regionTargetsToProcess)
             {
                 if (m_regionTargetsToProcess.Count > 0)
                 {
@@ -487,12 +473,12 @@ using UnityEngine.Experimental.Networking;
                         KeyValuePair<string, string> pair = m_regionTargetsToProcess[0];
                         m_regionTargetsToProcess.RemoveAt(0);
                         pingHost(pair.Key, pair.Value);
-                    }   
+                    }
                 }
                 else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
                 {
                     string pingStr = m_clientRef.SerializeJson(PingData);
-                    
+
                     if (m_clientRef.LoggingEnabled)
                     {
                         m_clientRef.Log("PINGS: " + pingStr);
@@ -568,11 +554,11 @@ using UnityEngine.Experimental.Networking;
         {
 #if DOT_NET
             PingUpdateSystem(in_region, in_target);
-#else       
-            in_target = "https://" + in_target;
-
+#else
             if (m_clientRef.Wrapper != null)
+            {
                 m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
+            }
 #endif
         }
 
@@ -607,17 +593,33 @@ using UnityEngine.Experimental.Networking;
 #else
         private IEnumerator HandlePingReponse(string in_region, string in_target)
         {
-            long sentPing = DateTime.Now.Ticks;
-#if USE_WEB_REQUEST
-            UnityWebRequest _request = UnityWebRequest.Get(in_target);
-            yield return _request.SendWebRequest();
-#else
-            WWWForm postForm = new WWWForm();
-            WWW _request = new WWW(in_target, postForm);
-#endif
-            if (_request.error == null && !_request.isNetworkError)
+            string ip = string.Empty;
+            System.Net.IPHostEntry host = System.Net.Dns.GetHostEntry(in_target);
+            foreach (System.Net.IPAddress addresses in host.AddressList)
             {
-                handlePingTimeResponse((DateTime.Now.Ticks - sentPing) / 10000, in_region);
+                if (addresses.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    ip = addresses.ToString();
+                    break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(ip))
+            {
+                DateTime ttl = DateTime.UtcNow;
+
+                UnityEngine.Ping ping = new UnityEngine.Ping(ip);
+                while (!ping.isDone && (DateTime.UtcNow - ttl).TotalMilliseconds < 5000)
+                {
+                    yield return null;
+                }
+
+                if (ping.isDone && ping.time > 0)
+                {
+                    handlePingTimeResponse(ping.time, in_region);
+                }
+
+                ping.DestroyPing();
             }
         }
 #endif
@@ -670,6 +672,6 @@ using UnityEngine.Experimental.Networking;
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-#endregion
+        #endregion
     }
 }
