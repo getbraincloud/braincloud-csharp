@@ -2,9 +2,28 @@
 // brainCloud client source code
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
+#if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
+#define USE_WEB_REQUEST
+#endif
 
 namespace BrainCloud
 {
+#if DOT_NET
+    using System.Net.Http;
+    using System.Net.NetworkInformation;
+    using System.Threading.Tasks;
+#else
+    using System.Net;
+    using System.Net.Sockets;
+    using UnityEngine;
+#if USE_WEB_REQUEST
+#if UNITY_5_3
+    using UnityEngine.Experimental.Networking;
+#else
+    using UnityEngine.Networking;
+#endif
+#endif
+#endif
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
     using System;
@@ -13,6 +32,7 @@ namespace BrainCloud
 
     public class BrainCloudLobby
     {
+        public static bool UseHttps { get; set; } = false;
         public Dictionary<string, long> PingData { get; private set; }
 
         public BrainCloudLobby(BrainCloudClient in_client)
@@ -427,9 +447,8 @@ namespace BrainCloud
 
             PingData = new Dictionary<string, long>();
 
-            // now we have the region ping data, we can start pinging each region and its defined target, if its a PING type.
+            // Now we have the region ping data, we can start pinging each region and its defined target
             Dictionary<string, object> regionInner = null;
-            string targetStr = "";
             if (m_regionPingData.Count > 0)
             {
                 m_pingRegionSuccessCallback = success;
@@ -437,18 +456,20 @@ namespace BrainCloud
 
                 foreach (var regionMap in m_regionPingData)
                 {
+                    m_cachedPingResponses[regionMap.Key] = new List<long>();
                     regionInner = (Dictionary<string, object>)regionMap.Value;
-
-                    if (regionInner.ContainsKey("type") && regionInner["type"] as string == "PING")
+                    RegionTarget regionTarget = new RegionTarget
                     {
-                        m_cachedPingResponses[regionMap.Key] = new List<long>();
-                        targetStr = (string)regionInner["target"];
+                        region = regionMap.Key,
+                        target = regionInner["target"].ToString(),
+                        type = regionInner.ContainsKey("type") ? regionInner["type"].ToString().ToUpper()
+                                                               : RegionTarget.PING_TYPE
+                    };
 
-                        lock (m_regionTargetsToProcess)
-                        {
-                            for (int i = 0; i < MAX_PING_CALLS; ++i)
-                                m_regionTargetsToProcess.Add(new KeyValuePair<string, string>(regionMap.Key, targetStr));
-                        }
+                    lock (m_regionTargetsToProcess)
+                    {
+                        for (int i = 0; i < MAX_PING_CALLS; ++i)
+                            m_regionTargetsToProcess.Add(regionTarget);
                     }
                 }
 
@@ -468,12 +489,11 @@ namespace BrainCloud
             {
                 if (m_regionTargetsToProcess.Count > 0)
                 {
-                    for (int i = 0; i < NUM_PING_CALLS_IN_PARRALLEL && m_regionTargetsToProcess.Count > 0; ++i)
-                    {
-                        KeyValuePair<string, string> pair = m_regionTargetsToProcess[0];
-                        m_regionTargetsToProcess.RemoveAt(0);
-                        pingHost(pair.Key, pair.Value);
-                    }
+                    RegionTarget regionTarget = m_regionTargetsToProcess[0];
+                    m_regionTargetsToProcess.RemoveAt(0);
+                    pingHost(regionTarget);
+
+                    return;
                 }
                 else if (m_regionPingData.Count == PingData.Count && m_pingRegionSuccessCallback != null)
                 {
@@ -485,8 +505,18 @@ namespace BrainCloud
                     }
 
                     m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
+
                     m_pingRegionSuccessCallback = null;
+#if !DOT_NET
+                    m_regionTargetIPs.Clear();
+#endif
+                    return;
                 }
+
+                m_pingRegionSuccessCallback = null;
+#if !DOT_NET
+                m_regionTargetIPs.Clear();
+#endif
             }
         }
 
@@ -550,66 +580,134 @@ namespace BrainCloud
             m_lobbyTypeRegions = (Dictionary<string, object>)data["lobbyTypeRegions"];
         }
 
-        private void pingHost(string in_region, string in_target)
+        private void pingHost(RegionTarget in_regionTarget)
         {
 #if DOT_NET
-            PingUpdateSystem(in_region, in_target);
+            if (in_regionTarget.IsHttpType)
+            {
+                HandleHTTPResponse(in_regionTarget.region, in_regionTarget.target);
+            }
+            else
+            {
+                HandlePingReponse(in_regionTarget.region, in_regionTarget.target);
+            }
 #else
             if (m_clientRef.Wrapper != null)
             {
-                m_clientRef.Wrapper.StartCoroutine(HandlePingReponse(in_region, in_target));
+                m_clientRef.Wrapper.StartCoroutine(in_regionTarget.IsHttpType ? HandleHTTPResponse(in_regionTarget.region, in_regionTarget.target)
+                                                                              : HandlePingReponse(in_regionTarget.region, in_regionTarget.target));
             }
 #endif
         }
 
 #if DOT_NET
-        private void PingUpdateSystem(string in_region, string in_target)
+        private void HandleHTTPResponse(string in_region, string in_target)
         {
-            System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping();
+            if (!in_target.StartsWith("http"))
+            {
+                in_target = (UseHttps ? "https://" : "http://") + in_target;
+            }
+
+            DateTime RoundtripTime = DateTime.UtcNow;
+
+            HttpClient client = new HttpClient();
+            client.Timeout = new TimeSpan(100000000); // 10 seconds
+
+            client.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
+                {
+                    handlePingTimeResponse((long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds, in_region);
+                }
+                else
+                {
+                    pingNextItemToProcess();
+                }
+
+                client.Dispose();
+            });
+        }
+
+        private void HandlePingReponse(string in_region, string in_target)
+        {
+            Ping pinger = new Ping();
             try
             {
-                pinger.PingCompleted += (o, e) =>
+                pinger.PingCompleted += (o, response) =>
                 {
-                    if (e.Error == null && e.Reply.Status == System.Net.NetworkInformation.IPStatus.Success)
+                    if (response.Error == null && response.Reply.Status == IPStatus.Success)
                     {
-                        handlePingTimeResponse(e.Reply.RoundtripTime, in_region);
+                        handlePingTimeResponse(response.Reply.RoundtripTime, in_region);
+                    }
+                    else
+                    {
+                        pingNextItemToProcess();
                     }
                 };
 
-                pinger.SendAsync(in_target, null);
+                pinger.SendPingAsync(in_target, 10000);
             }
-            catch (System.Net.NetworkInformation.PingException)
-            {
-                // Discard PingExceptions and return false;
-            }
+            catch (Exception) { }
             finally
             {
-                if (pinger != null)
-                {
-                    pinger.Dispose();
-                }
+                pinger?.Dispose();
             }
         }
 #else
+        private IEnumerator HandleHTTPResponse(string in_region, string in_target)
+        {
+            if (!in_target.StartsWith("http"))
+            {
+                in_target = (UseHttps ? "https://" : "http://") + in_target;
+            }
+
+            DateTime RoundtripTime = DateTime.UtcNow;
+#if USE_WEB_REQUEST
+            UnityWebRequest request = UnityWebRequest.Get(in_target);
+            request.timeout = 10;
+
+            yield return request.SendWebRequest();
+#else
+            WWWForm postForm = new WWWForm();
+            WWW request = new WWW(in_target, postForm);
+
+            while (!request.isDone && (DateTime.UtcNow - RoundtripTime).TotalMilliseconds < 10000)
+            {
+                yield return null;
+            }
+#endif
+            if (request.isDone && string.IsNullOrWhiteSpace(request.error))
+            {
+                handlePingTimeResponse((long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds, in_region);
+            }
+            else
+            {
+                pingNextItemToProcess();
+            }
+
+            request.Dispose();
+        }
+
         private IEnumerator HandlePingReponse(string in_region, string in_target)
         {
-            string ip = string.Empty;
-            System.Net.IPHostEntry host = System.Net.Dns.GetHostEntry(in_target);
-            foreach (System.Net.IPAddress addresses in host.AddressList)
+            if (!m_regionTargetIPs.ContainsKey(in_target))
             {
-                if (addresses.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                IPHostEntry host = Dns.GetHostEntry(in_target);
+                foreach (IPAddress addresses in host.AddressList)
                 {
-                    ip = addresses.ToString();
-                    break;
+                    if (addresses.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        m_regionTargetIPs.Add(in_target, addresses.ToString());
+                        break;
+                    }
                 }
             }
 
-            if (!string.IsNullOrEmpty(ip))
+            if (m_regionTargetIPs.ContainsKey(in_target))
             {
                 DateTime ttl = DateTime.UtcNow;
-
-                UnityEngine.Ping ping = new UnityEngine.Ping(ip);
-                while (!ping.isDone && (DateTime.UtcNow - ttl).TotalMilliseconds < 5000)
+                UnityEngine.Ping ping = new UnityEngine.Ping(m_regionTargetIPs[in_target]);
+                while (!ping.isDone && (DateTime.UtcNow - ttl).TotalMilliseconds < 10000)
                 {
                     yield return null;
                 }
@@ -618,8 +716,16 @@ namespace BrainCloud
                 {
                     handlePingTimeResponse(ping.time, in_region);
                 }
+                else
+                {
+                    pingNextItemToProcess();
+                }
 
                 ping.DestroyPing();
+            }
+            else
+            {
+                pingNextItemToProcess();
             }
         }
 #endif
@@ -651,12 +757,28 @@ namespace BrainCloud
         private Dictionary<string, object> m_regionPingData = new Dictionary<string, object>();
         private Dictionary<string, object> m_lobbyTypeRegions = new Dictionary<string, object>();
         private Dictionary<string, List<long>> m_cachedPingResponses = new Dictionary<string, List<long>>();
-        private List<KeyValuePair<string, string>> m_regionTargetsToProcess = new List<KeyValuePair<string, string>>();
+
+        struct RegionTarget
+        {
+            public const string PING_TYPE = "PING";
+            public const string HTTP_TYPE = "HTTP";
+
+            public string region;
+            public string target;
+            public string type;
+
+            public bool IsPingType => type == PING_TYPE;
+            public bool IsHttpType => type == HTTP_TYPE;
+        }
+        private List<RegionTarget> m_regionTargetsToProcess = new List<RegionTarget>();
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;
 
+#if !DOT_NET
+        private Dictionary<string, string> m_regionTargetIPs = new Dictionary<string, string>();
+#endif
+
         private const int MAX_PING_CALLS = 4;
-        private const int NUM_PING_CALLS_IN_PARRALLEL = 2;
 
         struct Failure
         {
@@ -672,6 +794,6 @@ namespace BrainCloud
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-        #endregion
+#endregion
     }
 }
