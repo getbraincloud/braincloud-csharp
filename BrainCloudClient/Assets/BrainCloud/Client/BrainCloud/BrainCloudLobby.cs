@@ -615,7 +615,7 @@ namespace BrainCloud
 
             client.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
             {
-                if (task.IsCompletedSuccessfully && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
+                if (task.IsCompleted && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
                 {
                     handlePingTimeResponse((long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds, in_region);
                 }

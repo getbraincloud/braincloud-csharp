@@ -180,7 +180,7 @@ namespace BrainCloudTests
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
-            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.SWITCHING_PROFILES);
         }
 
         [Test]
