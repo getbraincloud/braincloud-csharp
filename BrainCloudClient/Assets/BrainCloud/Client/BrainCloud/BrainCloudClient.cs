@@ -15,7 +15,7 @@ namespace BrainCloud
     using System;
 #endif
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
     using UnityEngine;
     using UnityEngine.Assertions;
     using System.Text;
@@ -1312,7 +1312,7 @@ using System.Globalization;
                     }
                     else
                     {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
                         Debug.Log(formattedLog);
 #elif !XAMARIN
                         Console.WriteLine(formattedLog);
@@ -1355,7 +1355,7 @@ using System.Globalization;
 
             if (error != null)
             {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
                 Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
 #elif !XAMARIN
                 Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
@@ -1365,7 +1365,7 @@ using System.Globalization;
 
             // TODO: what is our default c# platform?
             Platform platform = Platform.Windows;
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
 #endif
 
@@ -1375,7 +1375,7 @@ using System.Globalization;
             //setup region/country code
             if (Util.GetCurrentCountryCode() == string.Empty)
             {
-#if (DOT_NET)
+#if (DOT_NET || GODOT)
                 Util.SetCurrentCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
 #else
                 Util.SetCurrentCountryCode(RegionLocale.UsersCountryLocale);

@@ -8,7 +8,7 @@
 
 namespace BrainCloud
 {
-#if DOT_NET
+#if DOT_NET || GODOT
     using System.Net.Http;
     using System.Net.NetworkInformation;
     using System.Threading.Tasks;
@@ -507,14 +507,14 @@ namespace BrainCloud
                     m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
 
                     m_pingRegionSuccessCallback = null;
-#if !DOT_NET
+#if !DOT_NET || GODOT
                     m_regionTargetIPs.Clear();
 #endif
                     return;
                 }
 
                 m_pingRegionSuccessCallback = null;
-#if !DOT_NET
+#if !DOT_NET || GODOT
                 m_regionTargetIPs.Clear();
 #endif
             }
@@ -582,7 +582,7 @@ namespace BrainCloud
 
         private void pingHost(RegionTarget in_regionTarget)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             if (in_regionTarget.IsHttpType)
             {
                 HandleHTTPResponse(in_regionTarget.region, in_regionTarget.target);
@@ -600,7 +600,7 @@ namespace BrainCloud
 #endif
         }
 
-#if DOT_NET
+#if DOT_NET || GODOT
         private void HandleHTTPResponse(string in_region, string in_target)
         {
             if (!in_target.StartsWith("http"))
@@ -774,7 +774,7 @@ namespace BrainCloud
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;
 
-#if !DOT_NET
+#if !DOT_NET || GODOT
         private Dictionary<string, string> m_regionTargetIPs = new Dictionary<string, string>();
 #endif
 

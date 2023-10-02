@@ -14,7 +14,7 @@ namespace BrainCloud.Entity.Internal
 {
     internal class AutoCreateAOTCompileHelper
     {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
         // ****** AUTO GENERATED ********
         // This function is needed in order to define a bunch of ListWrapper constructors
         // At compile time, instead of on the fly.  Since on iOS, they ensure AOT compilation.
@@ -1096,6 +1096,6 @@ namespace BrainCloud.Entity.Internal
 
         }
 
-#endif  // !(DOT_NET) 
+#endif  // !(DOT_NET || GODOT) 
     }// internal class AutoCreateAOTCompileHelper
 }// namespace BrainCloud.Entity.Internal
