@@ -1,6 +1,6 @@
-# brainCloud Unity/Csharp
+# brainCloud Unity/Godot/Csharp
 
-Thanks for downloading the brainCloud Unity / C# client library! Here are a few notes to get you started. Further information about the brainCloud API and a few example Tutorials can be found here:
+Thanks for downloading the brainCloud Unity / Godot / C# client library! Here are a few notes to get you started. Further information about the brainCloud API and a few example Tutorials can be found here:
 
 https://getbraincloud.com/apidocs/tutorials/
 
@@ -256,11 +256,12 @@ Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your
 _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
 ```
 
-# Getting Started With Godot
+# Getting Started With Godot (C# Only)
 Initial support has been implemented to make this library compatible for those developing C# projects in Godot. Here's a guide on how to get brainCloud up and running in a Godot project:
 
 Copy the brainCloud release folder into the Godot project directory. 
 The client library should now be visible in 'FileSystem' window within the Godot Editor.
+![screenshot](/screenshots/GodotProjectFileSystem.png?raw=true)
 
 Next, create a new scene with a root node of type 'Node'. Add a script to this scene and initialize the brainCloud Wrapper:
 ```
@@ -343,6 +344,8 @@ public void RequestAuthentication()
         _bcw.AuthenticateAnonymous(successCallback, failureCallback);
     }
 ```
+
+![screenshot](/screenshots/AuthExampleSceneTree.png?raw=true)
 
 To summarize: the **BrainCloudManager** scene has an attached script that initializes the brainCloud Wrapper, and sends a request to authenticate anonymously. The **Main** scene has an attached script that creates an instance of the **BrainCloudManager** scene, and a function that is triggered by a button within the scene that will call the authentication request function in the **BrainCloudManager** scene.
 
