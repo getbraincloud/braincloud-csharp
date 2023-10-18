@@ -261,7 +261,8 @@ Initial support has been implemented to make this library compatible for those d
 
 Copy the brainCloud release folder into the Godot project directory. 
 The client library should now be visible in 'FileSystem' window within the Godot Editor.
-![screenshot](/screenshots/GodotProjectFileSystem.png?raw=true)
+
+![screenshot](/screenshots/GodotProjectFileSystem.png)
 
 Next, create a new scene with a root node of type 'Node'. Add a script to this scene and initialize the brainCloud Wrapper:
 ```
@@ -276,7 +277,7 @@ Additionally, be sure to call `wrapper.RunCallbacks();` in the Godot `_Process()
 
 This scene will act as a brainCloud Manager when instanced in the main scene.
 ## Authenticating
-A very brief overview of authenticating in Godot...
+A brief overview of authenticating in Godot...
 
 This is a basic project containing a **Main** scene with a Button to request authentication, and a **BrainCloudManager** scene that will be used for making brainCloud requests.
 The script attached to the **Main** scene adds an instance of the **BrainCloudManager** scene, and then uses a reference to this instance to initialize the brainCloud Wrapper. 
