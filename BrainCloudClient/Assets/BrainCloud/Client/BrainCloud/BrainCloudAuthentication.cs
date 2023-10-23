@@ -1247,7 +1247,7 @@ using BrainCloud.JsonFx.Json;
             data[OperationParam.AuthenticateServiceAuthenticateGameVersion.Value] = _client.AppVersion;
             data[OperationParam.AuthenticateServiceAuthenticateBrainCloudVersion.Value] = Version.GetVersion();
 
-#if DOT_NET
+#if DOT_NET || GODOT
             data["clientLib"] = "csharp";
 #else
             data["clientLib"] = "csharp-unity";

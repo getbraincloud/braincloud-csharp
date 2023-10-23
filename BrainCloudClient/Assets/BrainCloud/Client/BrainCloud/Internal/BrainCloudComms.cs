@@ -14,10 +14,10 @@ namespace BrainCloud.Internal
     using System.Collections.Generic;
     using System.Text;
 
-#if (DOT_NET || DISABLE_SSL_CHECK)
+#if (DOT_NET || GODOT || DISABLE_SSL_CHECK)
 using System.Net;
 #endif
-#if DOT_NET
+#if DOT_NET || GODOT
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
@@ -199,7 +199,7 @@ using UnityEngine.Experimental.Networking;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
-#if DOT_NET
+#if DOT_NET || GODOT
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
@@ -377,7 +377,7 @@ using UnityEngine.Experimental.Networking;
 
         public BrainCloudComms(BrainCloudClient client)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
 #if DISABLE_SSL_CHECK
@@ -558,7 +558,7 @@ using UnityEngine.Experimental.Networking;
                             }
                         }
                     }
-#elif DOT_NET
+#elif DOT_NET || GODOT
                     //HttpStatusCode.OK
                     if ((int)_activeRequest.WebRequest.Result.StatusCode == 200)
                     {
@@ -1087,7 +1087,7 @@ using UnityEngine.Experimental.Networking;
                                 {
                                     uploader.TotalBytesToTransfer = _clientRef.FileService.FileStorage[guid].Length;    
                                 }
-#if DOT_NET                     
+#if DOT_NET || GODOT                     
                                 uploader.HttpClient = _httpClient;
 #endif
                                 _fileUploads.Add(uploader);
@@ -1671,7 +1671,7 @@ using UnityEngine.Experimental.Networking;
         /// <param name="requestState">Request state.</param>
         private void InternalSendMessage(RequestState requestState)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             // During retry, the RequestState is reused so we have to make sure its state goes back to PENDING.
             // Unity uses the info stored in the WWW object and it's recreated here so it's not an issue.
             requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
@@ -1715,7 +1715,7 @@ using UnityEngine.Experimental.Networking;
 
             //if (!requestState.LoseThisPacket)
             {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
     #if USE_WEB_REQUEST
                 UnityWebRequest request = UnityWebRequest.Post(ServerURL, formTable);
@@ -1729,7 +1729,7 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
-    #if DOT_NET
+    #if DOT_NET || GODOT
                     request.SetRequestHeader("Accept-Encoding", "gzip");
     #endif
                     request.SetRequestHeader("Content-Encoding", "gzip");
@@ -1866,7 +1866,7 @@ using UnityEngine.Experimental.Networking;
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
-#elif DOT_NET
+#elif DOT_NET || GODOT
             status = _activeRequest.DotNetRequestStatus;
 #endif
             return status;
@@ -1917,7 +1917,7 @@ using UnityEngine.Experimental.Networking;
             {
                 Debug.LogWarning("Please re-select app in brainCloud settings, something went wrong"); 
             }
-#elif DOT_NET
+#elif DOT_NET || GODOT
             response = _activeRequest.DotNetResponseString;
 #endif
             return response;
@@ -2117,7 +2117,7 @@ using UnityEngine.Experimental.Networking;
         }
 
 
-#if (DOT_NET)
+#if (DOT_NET || GODOT)
         private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult, RequestState requestState)
         {
             if (asyncResult.IsCanceled) return;
@@ -2171,7 +2171,7 @@ using UnityEngine.Experimental.Networking;
 
         private string CalculateMD5Hash(string input)
         {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
             MD5Unity.MD5 md5 = MD5Unity.MD5.Create();
             byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input); // UTF8, not ASCII
             byte[] hash = md5.ComputeHash(inputBytes);

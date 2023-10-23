@@ -8,7 +8,7 @@
 // conversion classes required by JsonFx
 
 
-#if !DOT_NET
+#if !DOT_NET || GODOT
 namespace BrainCloud.Internal
 {
     using System.ComponentModel;
