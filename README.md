@@ -264,90 +264,34 @@ The client library should now be visible in 'FileSystem' window within the Godot
 
 ![screenshot](/screenshots/GodotProjectFileSystem.png)
 
-Next, create a new scene with a root node of type 'Node'. Add a script to this scene and initialize the brainCloud Wrapper:
-```
-BrainCloudWrapper wrapper = new BrainCloudWrapper();
+*Note:* Godot may complain about "duplicate attributes" in the AssemblyInfo.cs file. If this is the case, comment or delete the duplicated / erroneous lines and it should build successfully.
 
-wrapper.Init(serverUrl, secretKey, appId, version);
+![screenshot](/screenshots/GodotAssemblyInfoIssue.png)
 
-wrapper.Client.EnableLogging(true);
-```
+Next, create a new script to act as the brainCloud manager. In the `_Ready()` function of this script, create a new `BrainCloudWrapper`, and initialize the app with the appropriate app ID and secret, by calling `BrainCloudWrapper.Init(_url, _secretKey, appId, _version)`
 
-Additionally, be sure to call `wrapper.RunCallbacks();` in the Godot `_Process()` function.
+In order to receive responses, be sure to call `BrainCloudWrapper.RunCallbacks()` from the `Process(double delta)` function of this script.
 
-This scene will act as a brainCloud Manager when instanced in the main scene.
-## Authenticating
-A brief overview of authenticating in Godot...
-
-This is a basic project containing a **Main** scene with a Button to request authentication, and a **BrainCloudManager** scene that will be used for making brainCloud requests.
-The script attached to the **Main** scene adds an instance of the **BrainCloudManager** scene, and then uses a reference to this instance to initialize the brainCloud Wrapper. 
 ```
 public override void _Ready()
-    {
-        // Create an instance of the BrainCloudManager scene
-        var brainCloudManagerScene = GD.Load<PackedScene>("res://brain_cloud_manager.tscn");
+{
+    _brainCloudWrapper = new BrainCloudWrapper();
 
-        var brainCloudManagerInstance = brainCloudManagerScene.Instantiate();
+    _brainCloudWrapper.Init(_url, _secretKey, _appId, _version);
 
-        // Add the BrainCloudManager instance to the Main scene
-        AddChild(brainCloudManagerInstance);
+    _brainCloudWrapper.Client.EnableLogging(true);
 
-        GetNode<BrainCloudManager>("BrainCloudManager").InitializeBrainCloudClient();
-
-        // Connect an event handler to the button that will be used to authenticate with brainCloud
-        GetNode<Button>("AuthenticateButton").Connect(Button.SignalName.Pressed, new Callable(this, MethodName.Authenticate));
-    }
-```
-
-It also connects the `Button.Pressed()` signal to a function that will request authentication.
-```
-public void Authenticate()
-    {
-        // Request authentication
-        GetNode<BrainCloudManager>("BrainCloudManager").RequestAuthentication();
-    }
-```
-
-The script attached to the **BrainCloudManager** scene contains a helper function to initialize the brainCloud client, a function to request Anonymous Authentication, and it overrides Godot's `Node._Process()` function to run callbacks to ensure that requests receive responses.
-```
-public void InitializeBrainCloudClient()
-    {
-        // Create and initialize the Wrapper
-        wrapper = new BrainCloudWrapper();
-
-        wrapper.Init(serverUrl, secretKey, appId, appVersion);
-
-        // Enable printing of informational logs from the client
-        _bcw.Client.EnableLogging(true);
-
-        // Optionally print the brainCloud client version
-        GD.Print("brainCloud client initialized. Version: " + _clientVersion);
-    }
+    GD.Print("brainCloud client version: " + _brainCloudWrapper.Client.BrainCloudClientVersion);
+}
 
 public override void _Process(double delta)
-    {
-        _bcw.RunCallbacks();
-    }
-
-public void RequestAuthentication()
-    {
-        // Define Success and Failure callbacks to handle this request's response
-        SuccessCallback successCallback = (response, cbObject) =>
-        {
-            GD.Print(string.Format("[Authenticate Success] {0}", response));
-        };
-        FailureCallback failureCallback = (status, code, error, cbObject) =>
-        {
-            GD.Print(string.Format("[Authenticate Failed] {0}  {1}  {2}", status, code, error));
-        };
-
-        // Send the request
-        _bcw.AuthenticateAnonymous(successCallback, failureCallback);
-    }
+{
+    _brainCloudWrapper.RunCallbacks();
+}
 ```
 
-![screenshot](/screenshots/AuthExampleSceneTree.png?raw=true)
+This script is now ready to handle brainCloud requests throughout the rest of the app. Functions for authentication and other brainCloud services can be defined here, and called from other scripts/scenes in the Godot project. To make the script accessible from any scene, use Godot's Autoload feature. Go to **Project > Project Settings** from the Godot editor, then switch to the **Autoload** tab. From here, find the script by typing in its path, or clicking the directory icon to browse project files. Give the autoload node a name, then add it to the list.
 
-To summarize: the **BrainCloudManager** scene has an attached script that initializes the brainCloud Wrapper, and sends a request to authenticate anonymously. The **Main** scene has an attached script that creates an instance of the **BrainCloudManager** scene, and a function that is triggered by a button within the scene that will call the authentication request function in the **BrainCloudManager** scene.
+![screenshot](/screenshots/GodotAutoloadSingleton.png)
 
-
+The newly created script should now be ready to act like a singleton / global variable. Now, any node / script / scene in the project can access this singleton via `GetNode<BCManager>("/root/BCManager")` to make calls / references to the BCManager to script, ex: `GetNode<BCManager>("/root/BCManager").RequestAnonymousAuthentication()`
