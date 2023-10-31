@@ -12,25 +12,19 @@ Navigate to:
 Here are a few handy links to get you started:
 
 - You can learn all about brainCloud and find a few tutorials here:
-  - https://docs.braincloudservers.com/learn/introduction/
-
+    - https://docs.braincloudservers.com/learn/introduction/
 - The brainCloud API Reference can be found here:
-  - https://docs.braincloudservers.com/api/introduction
-
+    - https://docs.braincloudservers.com/api/introduction
 - Check out our Unity Bootcamp tutorial series, a free video course on how to use brainCloud in the Unity engine:
-  - https://bootcamp.braincloudservers.com/ 
-
+    - https://bootcamp.braincloudservers.com/ 
 - We have a repository full of examples done in Unity that can be found here:
-  - https://github.com/getbraincloud/examples-unity/
-
+    - https://github.com/getbraincloud/examples-unity/
 - And a repository for Godot examples here:
-  - https://github.com/getbraincloud/examples-godot/
-
+    - https://github.com/getbraincloud/examples-godot/
 - If you haven't signed up or you want to log into the brainCloud portal, you can do so here:
-  - https://portal.braincloudservers.com/
-
+    - https://portal.braincloudservers.com/
 - The git for the custom package to install via Unity's package manager can be found here:
-  - https://github.com/getbraincloud/braincloud-unity-package/
+    - https://github.com/getbraincloud/braincloud-unity-package/
 
 ## Latest Release
 
@@ -81,11 +75,11 @@ Once you install with the .unitypackage file, you will need to configure a few s
 
 ![screenshot](/screenshots/2_Login.png)
 
-- Select your team and your app
+3. Select your team and your app
 
 ![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
 
-3. With your app selected, debug information will now appear in the debug tab when the game is running
+4. With your app selected, debug information will now appear in the debug tab when the game is running
 
 ![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
 
@@ -94,11 +88,11 @@ Once you install with the .unitypackage file, you will need to configure a few s
 1. If you used or called upon the **BrainCloudSettingsDLL** or the **BrainCloudEditorSettingsDLL** before, these have been replaced with **BrainCloudPlugin** and **BrainCloudPluginEditor** respectively. You may have some new errors where you hadn't before. You will need to make adjustments for the new plugin.
 
 BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic. The readable values are:
-- DispatcherURL 
-- AppId 
-- AppSecret 
-- AppIdSecrets
-- AppVersion
+    - DispatcherURL 
+    - AppId 
+    - AppSecret 
+    - AppIdSecrets
+    - AppVersion
 
 2. The app version is now handled through the Build Settings, where you put in company name, version etc.
 
@@ -159,7 +153,7 @@ Here are a few common errors that you may see on your first attempt to connect t
 
 - **App ID not set** — Verify you've set up the app ID and app secret correctly when initializing the BrainCloudWrapper or Client
 - **Platform not enabled** — Verify you've enabled your platform on the brainCloud portal
-  - If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS** to run in the editor
+    - If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS** to run in the editor
 
 If you're still having issues, then log into the portal and give us a shout through the help system (bottom right icon with the question mark and chat bubble)!
 
@@ -170,10 +164,10 @@ If you're still having issues, then log into the portal and give us a shout thro
 brainCloud is a ready-made back-end platform for the development of feature-rich games, apps and things. brainCloud provides the features you need — along with comprehensive tools to support your team during development, testing and user support.
 
 brainCloud consists of:
--   Cloud Service – an advanced, Software-as-a-Service (SaaS) back-end
--   Client Libraries – local client libraries (SDKs)
--   Design Portal – a portal that allows you to design and debug your apps
--   The brainCloud Architecture:
+- Cloud Service – an advanced, Software-as-a-Service (SaaS) back-end
+- Client Libraries – local client libraries (SDKs)
+- Design Portal – a portal that allows you to design and debug your apps
+- The brainCloud Architecture:
 
 ![architecture](/screenshots/bc-architecture.png?raw=true)
 
