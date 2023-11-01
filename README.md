@@ -1,31 +1,41 @@
-# brainCloud Unity/Csharp
+# brainCloud C# Client Library
 
-Thanks for downloading the brainCloud Unity / C# client library! Here are a few notes to get you started. Further information about the brainCloud API and a few example Tutorials can be found here:
+Thanks for checking out [brainCloud](https://getbraincloud.com/)! This repository contains the client library for brainCloud projects that make use of C# including **Unity** and **Godot**.
 
-https://getbraincloud.com/apidocs/tutorials/
+Navigate to:
+- [Latest Release](#latest-release)
+- [Unity Installation Guide](#unity-installation-guide)
+- [Godot Installation Guide (C# Only)](#godot-installation-guide-c-only)
+- [Troubleshooting](#troubleshooting)
+- [brainCloud Client Q&A](#braincloud-client-qa)
 
-If you haven't signed up or you want to log into the brainCloud portal, you can do that here:
+Here are a few handy links to get you started:
 
-https://portal.braincloudservers.com/
+- You can learn all about brainCloud and find a few tutorials here:
+    - https://docs.braincloudservers.com/learn/introduction/
+- The brainCloud API Reference can be found here:
+    - https://docs.braincloudservers.com/api/introduction
+- Check out our Unity Bootcamp tutorial series, a free video course on how to use brainCloud in the Unity engine:
+    - https://bootcamp.braincloudservers.com/ 
+- We have a repository full of examples done in Unity that can be found here:
+    - https://github.com/getbraincloud/examples-unity/#braincloud-unity-examples
+- And a repository for Godot examples here:
+    - https://github.com/getbraincloud/examples-godot/#braincloud-godot-examples
+- If you haven't signed up or you want to log into the brainCloud portal, you can do so here:
+    - https://portal.braincloudservers.com/
+- The git for the custom package to install via Unity's package manager can be found here:
+    - https://github.com/getbraincloud/braincloud-unity-package/#braincloud-unity-custom-package
 
-The brainCloud API Reference can be found here:
+## Latest Release
 
-https://getbraincloud.com/apidocs/apiref/#capi
+[brainCloud 5.1.0](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.0/)
 
-The git for the custom package to install via Unity's package manager is found here:
+| Package | Description |
+| ------- | ------------|
+| [**brainCloudClient_csharp_5.1.0.zip**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.0/brainCloudClient_csharp_5.1.0.zip) | C#/Godot Projects |
+| [**brainCloudClient_unity_5.1.0.unitypackage**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.0/brainCloudClient_unity_5.1.0.unitypackage) | Unity Projects |
 
-https://github.com/getbraincloud/braincloud-unity-package/
-
-## Releases
-
-| Package                                                                                                 | Description    |
-| ------------------------------------------------------------------------------------------------------- | -------------- |
-| [**brainCloudClient_csharp_X.X.X.zip**](https://github.com/getbraincloud/Unity-Csharp/releases)         | C# projects    |
-| [**brainCloudClient_unity_X.X.X.unitypackage**](https://github.com/getbraincloud/Unity-Csharp/releases) | Unity projects |
-
-You can now install the brainCloud client library via Unity's Package Manager! We recommend using the Package Manager as it allows you to receive updates from within Unity itself and it will keep your project clean of extra scripts and assets.
-
-## Installation Guide
+## Unity Installation Guide
 
 There are two methods to install the brainCloud library for your Unity project:
 
@@ -43,215 +53,242 @@ When a new update gets pushed, you can simply hit the **Update** button in the b
 
 ### .unitypackage Installation
 
-With your Unity Project open, open the brainCloudClient_unity_X.X.X.unitypackage file and click the import prompt.
+With your Unity Project open, open the **brainCloudClient_unity_X.X.X.unitypackage** file and click the import prompt.
 
-*Note that the plugin has gone through major updates since BrainCloud 4.7 release, please refer to the appropriate plugin guide.* 
+**Note** that the plugin has gone through major updates since BrainCloud 4.7 release, please refer to the appropriate plugin guide. 
 
 ### Updating
 
-Whether you update with the brainCloudClient_unity_X.X.X.unitypackage or via the Package Manager, make sure to delete your old brainCloud settings first: `BrainCloud > Resources > BrainCloudEditorSettings_X_X_X` and `BrainCloud > Resources > BrainCloudSettings_X_X_X`.
+Whether you update with the .unitypackage or via the Package Manager, make sure to delete your old brainCloud settings first: `BrainCloud > Resources > BrainCloudEditorSettings_X_X_X` and `BrainCloud > Resources > BrainCloudSettings_X_X_X`.
 
 If you plan on swapping to the brainCloud custom package, you must delete the old root BrainCloud library files folder `Assets > BrainCloud` in your Unity project, as well as the brainCloud plugin files `Plugins > Android > brainCloudUnity` and `Plugins > iOS > RegionLocaleNative`. If you do not have any additional Plugins, then it is safe to delete the root Plugins folder.
 
----
+### brainCloud Unity Plugin 4.6 and Older
 
-### BrainCloud Unity Plugin 4.6 and under
+Once you install with the .unitypackage file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
-Once installed, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
+1. Open brainCloud and select Settings
 
--   Open brainCloud | Select Settings.
+![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
 
-    ![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
+2. Signup or Login to brainCloud
 
--   Login or Signup to brainCloud.
+![screenshot](/screenshots/2_Login.png)
 
-    ![screenshot](/screenshots/2_Login.png)
+3. Select your team and your app
 
-*   Select your team and your app.
+![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
 
-    ![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
+4. With your app selected, debug information will now appear in the debug tab when the game is running
 
-*   With your app selected, debug information will now appear in the debug tab when the game is running.
+![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
 
-    ![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
+#### Upgrading to 4.7 and Newer
 
-### BrainCloud Unity Plugin 4.7
+1. If you used or called upon the **BrainCloudSettingsDLL** or the **BrainCloudEditorSettingsDLL** before, these have been replaced with **BrainCloudPlugin** and **BrainCloudPluginEditor** respectively. You may have some new errors where you hadn't before. You will need to delete your current BrainCloud plugin scripts and make adjustments for the new plugin.
 
-#### Implementing the New Plugin
+2. BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic. The readable values are:
+    - DispatcherURL 
+    - AppId 
+    - AppSecret 
+    - AppIdSecrets
+    - AppVersion
 
-*If braincloud is not yet added:*
-- Simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
-- Then click on the newly added braincloud drop down, and click on settings to configure your app
+2. The app version is now handled through the Player Settings.
 
-*If you already have a version of the braincloud plugin:*
-- With your project closed, navigate to your project folders, and delete the braincloud folder and all of its contents entirely.
-- Then open your project and simply take the .unitypackage file and add it to your project. Typically clicking on the file while your project is open, or dragging the .unitypackage file into your assets folder in the editor will put you through the process of adding braincloud to your project.
-- Then click on the newly added braincloud drop down, and click on settings to configure your app
+3. You no longer need to Enable Logging in code, you can toggle it on and off logging with the check box in the plugin window. This needs to be done in before running your app. 
 
-**If errors pop up, you may not have completely deleted braincloud and all of its contents, try again to make sure.**
+4. To sign into other apps you will need to sign out and sign in to the new app for security purposes.
 
-Login or Signup to brainCloud then select your team and your app!
-
-![screenshot](/screenshots/newbcSettings.png?raw=true)
-![screenshot](/screenshots/newbcSettings2.png?raw=true)
-
-#### Upgrade Notes
-
-1. If you used or called upon the BrainCloudSettingsDLL or the BrainCloudEditorSettingsDLL before, these have been replaced with BraincloudPlugin and BrainCloudPluginEditor respectively.
-You may have some new errors where you hadn't before. You will need to make adjustments for the new plugin.
-BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic.
-
-*The readable values are:* 
-- DispatcherURL 
-- AppId 
-- AppSecret 
-- AppIdSecrets
-- AppVersion
-
-2. The app version is now handled through the Build Settings, where you put in company name, version etc.
-3. You no longer need to call Enable Logging in code, you can toggle on and off logging with the check box in the plugin window. This needs to be done in between running your app. 
-4. To sign into other apps, you will need to re-sign in for security purposes. 
-5. The plugin now has a version we will update when future changes are made.
+5. The plugin now has a Version number we will update when future changes are made.
 
 ---
 
-## Example Projects
+## Godot Installation Guide (C# Only)
 
-Examples of using brainCloud in your Unity Projects can be found [here](https://github.com/getbraincloud/UnityExamples).
+Initial support has been implemented to make this library compatible for those developing C# projects in Godot. Here's a guide on how to get brainCloud up and running in a Godot project:
 
-## First run
+1. Download the release package **brainCloudClient_csharp_X.X.X.zip** and extract the **BrainCloud** folder into the Godot project directory. The client library should be visible in **FileSystem** window within the Godot Editor.
 
-To check that everything is working, try running the default scene which is located here:
+![screenshot](/screenshots/GodotProjectFileSystem.png)
 
--   BrainCloud/Unity/Scenes/Default.unity
+**Note** that Godot may complain about "duplicate attributes" in the `AssemblyInfo.cs` file. If this is the case then comment out or delete the duplicated/erroneous lines and it should build successfully.
 
-You should see a dialog box asking for user/password. Enter anything you want here and you should get authenticated.
+![screenshot](/screenshots/GodotAssemblyInfoIssue.png)
+
+2. Create a new script to act as the brainCloud manager; in the `_Ready()` function of this script, create a new `BrainCloudWrapper` and initialize the app with the appropriate app ID and secret by calling `BrainCloudWrapper.Init(url, secretKey, appId, version)`.
+
+3. In order to receive responses, be sure to call `BrainCloudWrapper.Update()` from the `_Process(double delta)` function of this script.
+
+```csharp
+BrainCloudWrapper _bc = null;
+
+public override void _Ready()
+{
+    _bc = new BrainCloudWrapper();
+    _bc.Init(url, secretKey, appId, version);
+    _bc.Client.EnableLogging(true);
+
+    GD.Print("brainCloud client version: " + _bc.Client.BrainCloudClientVersion);
+}
+
+public override void _Process(double delta)
+{
+    _bc.Update();
+}
+```
+
+4. This script is now ready to handle brainCloud requests throughout the rest of the app. Functions for authentication and other brainCloud services can be defined here and called from other scripts/scenes in your Godot project.
+
+5. To make the script accessible from any scene, use Godot's **Autoload** feature. Go to `Project > Project Settings` from the Godot editor, then switch to the **Autoload** tab. From here, find the script by typing in its path, or clicking the directory icon to browse project files. Give the Autoload node a name (we used BCManager), then add it to the list.
+
+![screenshot](/screenshots/GodotAutoloadSingleton.png)
+
+The newly created script should be ready to act like a singleton/global variable! Any node/script/scene in the project can access this via `GetNode<BCManager>("/root/BCManager")` to make calls/references to this script, for example: `GetNode<BCManager>("/root/BCManager").RequestAnonymousAuthentication()`
+
+---
 
 ## Troubleshooting
 
-Here are a few common errors that you may see on your first attempt to connect to brainCloud.
+Here are a few common errors that you may see on your first attempt to connect to brainCloud:
 
--   **App id not set**: Verify you've set up the app id and app secret correctly.
--   **Platform not enabled**: Verify you've enabled your platform on the portal. If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS**.
+- **App ID not set** — Verify you've set up the app ID and app secret correctly when initializing the BrainCloudWrapper or Client
+- **Platform not enabled** — Verify you've enabled your platform on the brainCloud portal
+    - If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS** to run in the editor
 
-If you're still having issues, log into the portal and give us a shout through the help system (bottom right icon with the question mark and chat bubble).
+If you're still having issues then log into the portal and give us a shout through the help system (bottom right icon with the question mark and chat bubble)!
 
-## brainCloud Summary
+---
 
-brainCloud is a ready-made back-end platform for the development of feature-rich games, apps and things. brainCloud provides the features you need – along with comprehensive tools to support your team during development, testing and user support.
+## brainCloud Client Q&A
+
+brainCloud is a ready-made back-end platform for the development of feature-rich games, apps and things. brainCloud provides the features you need — along with comprehensive tools to support your team during development, testing and user support.
 
 brainCloud consists of:
-
--   Cloud Service – an advanced, Software-as-a-Service (SaaS) back-end
--   Client Libraries – local client libraries (SDKs)
--   Design Portal – a portal that allows you to design and debug your apps
--   brainCloud Architecture
+- Cloud Service – an advanced, Software-as-a-Service (SaaS) back-end
+- Client Libraries – local client libraries (SDKs)
+- Design Portal – a portal that allows you to design and debug your apps
+- The brainCloud Architecture:
 
 ![architecture](/screenshots/bc-architecture.png?raw=true)
 
-## What's the difference between the brainCloud Wrapper and the brainCloud Client?
+#### What's the difference between the BrainCloudWrapper and the BrainCloudClient?
 
-The wrapper contains quality of life improvement around the brainCloud Client. It may contain device specific code, such as serializing the user's login id on an Android or iOS device.
-It is recommended to use the wrapper by default.
+**BrainCloudWrapper** contains quality of life improvements and handles the initialization and update for **BrainCloudClient**. It will act as a bridge between your app's front-end and the brainCloud APIs. It also helps with some platform specific functionality such as serializing the user's login ID on an Android or iOS device.
 
 ![wrapper](/screenshots/bc-wrapper.png?raw=true)
 
-## How do I initialize brainCloud?
+It is recommended to use the Wrapper by default!
 
-If using the wrapper use the following code.
+#### How do I initialize brainCloud?
 
+The following example shows how you can initialize brainCloud through the `BrainCloudWrapper`:
 ```csharp
-GameObject go = new GameObject();
-_bc = go.AddComponent<BrainCloudWrapper>();
-_bc.WrapperName = _wrapperName; // optionally set a wrapper-name
-_bc.Init(); // extra data, such as: _appId, _secret and _appVersion, is taken from the brainCloud Unity Plugin. See Installation Guide above
-DontDestroyOnLoad(go); // keep the brainCloud game object through scene changes
+BrainCloudWrapper _bc = null; // You may want this to be a static instance
+
+public void InitializeBrainCloud()
+{
+    _bc = new BrainCloudWrapper("YourWrapperName"); // You can optionally set a wrapper name
+    _bc.Init(url, secretKey, appId, version);
+}
 ```
 
-Your \_appId, \_secret, is set on the brainCloud dashboard. Under Design | Core App Info > Application IDs
+Then make sure in an Update loop you call `BrainCloudWrapper.Update()` so that brainCloud requests and responses are managed properly:
+
+```csharp
+public void YourUpdateLoop(double dt)
+{
+    _bc.Update();
+}
+```
+
+This also works in Godot as seen in the [Godot Installation Guide](#godot-installation-guide-c-only) above.
+
+In Unity `BrainCloudWrapper` is a **MonoBehaviour** object so you can either attach it to a GameObject in the editor or create it when needed:
+```csharp
+BrainCloudWrapper _bc = null;
+
+private void Start()
+{
+    GameObject go = new GameObject();
+    _bc = go.AddComponent<BrainCloudWrapper>();
+    _bc.WrapperName = "YourWrapperName";
+    _bc.Init(); // The app data is taken from the brainCloud Unity Plugin through the Settings config
+
+    DontDestroyOnLoad(go); // Make sure the GameObject doesn't get destroyed!
+}
+```
+
+Since it is a MonoBehaviour the Update function will be called automatically by Unity.
+
+If you're initializing the Wrapper manually then your app's information can be found on the brainCloud portal in your app's dashboard under `App > Design > Core App Info > Application IDs`.
 
 ![wrapper](/screenshots/bc-ids.png?raw=true)
 
-\_wrapperName prefixes saved operations that the wrapper will make. Use a \_wrapperName if you plan on having multiple instances of brainCloud running.
-
----
+`BrainCloudWrapper.WrapperName` prefixes serialized operations that the Wrapper calls. You should set the wrapper name if you plan on having multiple instances of brainCloud running.
 
 #### Newly upgraded?
 
-If your app is already live, you should **NOT** specify the \_wrapperName - otherwise the library will look in the wrong location for your user's stored anonymousID and profileID information. Only add a name if you intend to alter the save data.
+If your app is already live, you should **NOT** specify the wrapper name otherwise the library will look in the wrong location for your user's stored anonymousID and profileID information. Only add a name if you intend to alter the save data.
 
----
+#### App Version
 
-\_appVersion is the current version of our app. Having an \_appVersion less than your minimum app version on brainCloud will prevent the user from accessing the service until they update their app to the lastest version you have provided them.
+Make sure you set the app version properly. Using a version less than your minimum app version on brainCloud will prevent the user from accessing the service until they update their app to the lastest version you have provided them.
 
 ![wrapper](/screenshots/bc-minVersions.png?raw=true)
 
-## How do I keep the brainCloud SDK updating?
-
-In your project's update loop, you're going to want to update brainCloud client so it can check for responses.
-
-If you're using Unity and added the brainCloud Wrapper as a GameObject, Unity will auto update the wrapper.
-
-Ensure you set the GameObject as DontDestroyOnLoad so it won't be deleted when switching scenes.
-
-```csharp
-DontDestroyOnLoad(go);
-```
-
-If you're not using Unity or GameObjects, you will need to call update yourself in the update loop.
-To do this, you need to call Update();
-
-```csharp
-_bc.Update();
-```
-
-## How do I authenticate a user with brainCloud?
+#### How do I authenticate a user with brainCloud?
 
 The simplest form of authenticating with brainCloud Wrapper is an Anonymous Authentication.
 
 ```csharp
-_bc.AuthenticateAnonymous(_successCallback, _failureCallback, NULL);
+_bc.AuthenticateAnonymous(successCallback, failureCallback);
 ```
 
-This method will create an account, and continue to use a locally saved anonymous id.
+This method will create an account, and continue to use a locally saved anonymous ID.
 
-Your \_callback will inherit from IServerCallback and contain the functions needed to react to the brainCloud Server response.
+Your success and failure callbacks inherit from `IServerCallback` and contain the functions needed to react to the brainCloud Server response.
 
-To login with a specfic anonymous id, use the brainCloud client.
-
+To login with a specfic anonymous ID, you can use the brainCloud Client:
 ```csharp
-_bc.Client.AuthenticationService.setAnonymousId(_anonymousId); // re-use an Anon id
-_bc.Client.AuthenticationService.setAnonymousId(_bc.Client.AuthenticationService.generateAnonymousId()); // or generate a new one
-_bc.Client.AuthenticationService.AuthenticateAnonymous(_forceCreate, _callback);
+_bc.Client.AuthenticationService.setAnonymousId(anonymousId); // You can re-use an Anon ID
+_bc.Client.AuthenticationService.setAnonymousId(_bc.Client.AuthenticationService.generateAnonymousId()); // Or generate a new one
+_bc.Client.AuthenticationService.AuthenticateAnonymous(forceCreate, callback);
 ```
 
-Setting \_forceCreate to false will ensure the user will only login to an existing account. Setting it to true, will allow the user to register a new account
+Setting `forceCreate` to false will ensure the user will only login to an existing account. Setting it to true, will allow the user to register a new account.
 
-## How do I attach an email to a user's brainCloud profile?
+#### How do I attach an email to a user's brainCloud profile?
 
-After having the user create an anonymous with brainCloud, they are probably going to want to attach an email or username, so their account can be accessed via another platform, or when their local data is discarded.
-Attaching email authenticate would look like this.
-
+After having the user create an anonymous with brainCloud, they are probably going to want to attach an email or username, so their account can be accessed via another platform, or when their local data is discarded. You can do so like this:
 ```csharp
-_bc.IdentityService.attachEmailIdentity(_email, _password, _callback);
+_bc.IdentityService.attachEmailIdentity(email, password, callback);
 ```
 
 There are many authentication types. You can also merge profiles and detach idenities. See the brainCloud documentation for more information:
 http://getbraincloud.com/apidocs/apiref/?java#capi-auth
 
-## TimeUtils
-Most of our APIs suggest using UTC time, so we have added utility functions for better handling local and UTC time. 
-```
-Int64 UTCDateTimeToUTCMillis(Date utcDate) //returns the UTC time in milliseconds as an Int64. 
-Date UTCMillisToUTCDateTime(Int64 utcMillis) //returns a Date in UTC based on the milliseconds passed in
-Date LocalTimeToUTCTime(Date localDate) //Converts a Local time to UTC time
-Date UTCTimeToLocalTime (Date utcDate) //Converts a UTC time to Local time
-```
-*Note* We have also made overloads of these utility functions to support DateTimeOffset.
+#### TimeUtil
 
-examples of use:
+Most of our APIs suggest using UTC time, so we have added utility functions for better handling of local and UTC time. These extend **DateTime**'s and **DateTimeOffset**'s functionality when importing from the `BrainCloud` namespace.
+```csharp
+DateTime.UTCDateTimeToUTCMillis();          // Converts the DateTime UTC time value into a long representing milliseconds
+long.UTCMillisToUTCDateTime();              // Converts long value (which should represent milliseconds) into a DateTime UTC time value
+DateTime.LocalTimeToUTCTime();              // Converts a DateTime local time value into a DateTime UTC time value
+DateTime.UTCTimeToLocalTime();              // Converts a DateTime UTC time value into a DateTime local time value
+DateTimeOffset.DateTimeOffsetToUTCMillis(); // Converts the DateTimeOffset UTC time value into a long representing milliseconds
+long.UTCMillisToDateTimeOffset();           // Converts long value (which should represent milliseconds) into a DateTimeOffset UTC time value
+DateTimeOffset.LocalTimeToUTCTime();        // Converts a DateTimeOffset local time value into a DateTimeOffset UTC time value
+DateTimeOffset.UTCTimeToLocalTime();        // Converts a DateTimeOffset UTC time value into a DateTimeOffset local time value
 ```
-DateTime _date = TimeUtil.LocalTimeToUTCTime(DateTime.Now); //convert your date to a UTC date time.
-Int64 _dateMilliseconds = TimeUtil.UTCDateTimeToUTCMillis(_date); //convert your UTC date time to milliseconds
-_bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), _dateMilliseconds, tr.ApiSuccess, tr.ApiError); //pass it into one of our calls that needs UTC time.
+
+Example of use:
+```csharp
+DateTime date = DateTime.Now.LocalTimeToUTCTime();
+long dateMilliseconds = date.UTCDateTimeToUTCMillis();
+_bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPair("testParm1", 1), dateMilliseconds, success, failure); // Pass it into one of our calls that needs UTC time.
 ```
+
+---
+
+For more information on brainCloud and its services, please check out [brainCloud Learn](https://docs.braincloudservers.com/learn/introduction/) and [API Reference](https://docs.braincloudservers.com/api/introduction).

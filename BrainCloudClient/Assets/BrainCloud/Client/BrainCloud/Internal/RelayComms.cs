@@ -1279,7 +1279,7 @@ namespace BrainCloud.Internal
 
         private void initUDPConnection()
         {
-#if !DOT_NET
+#if !DOT_NET || GODOT
             m_udpClient = new UdpClient();
 #endif
 
@@ -1295,7 +1295,7 @@ namespace BrainCloud.Internal
         {
             try
             {
-#if DOT_NET
+#if DOT_NET || GODOT
                 m_udpClient = new UdpClient(host, port);
                 initUDPConnection();
                 OnUDPConnected(null, null);

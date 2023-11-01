@@ -12,7 +12,7 @@ using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 using BrainCloud.Internal;
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
 using System;
 #endif
 
@@ -25,7 +25,7 @@ using System;
             _client = client;
         }
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
         /// <summary>
         /// Registers the given device token with the server to enable this device
         /// to receive push notifications.

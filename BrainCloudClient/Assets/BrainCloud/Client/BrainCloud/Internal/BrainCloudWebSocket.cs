@@ -2,7 +2,7 @@
 namespace BrainCloud.Internal
 {
     using System;
-#if DOT_NET
+#if DOT_NET || GODOT
     using System.Net.WebSockets;
     using System.Threading;
     using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace BrainCloud.Internal
 
     public class BrainCloudWebSocket
     {
-#if DOT_NET
+#if DOT_NET || GODOT
         private ClientWebSocket ClientWebSocket;
 #elif UNITY_WEBGL && !UNITY_EDITOR
         private NativeWebSocket NativeWebSocket;   
@@ -29,7 +29,7 @@ namespace BrainCloud.Internal
 
         public BrainCloudWebSocket(string url)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             ClientWebSocket = new ClientWebSocket();
             ConnectClientWebSocketAsync(url);
 #elif UNITY_WEBGL && !UNITY_EDITOR
@@ -49,7 +49,7 @@ namespace BrainCloud.Internal
 #endif
         }
 
-#if DOT_NET
+#if DOT_NET || GODOT
         private async void ConnectClientWebSocketAsync(string url)
         {
             bool success = await Task.Run(async () =>
@@ -116,7 +116,7 @@ namespace BrainCloud.Internal
 
         public void Close()
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             if (ClientWebSocket == null)
                 return;
             ClientWebSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
@@ -139,7 +139,7 @@ namespace BrainCloud.Internal
 #endif
         }
 
-#if DOT_NET
+#if DOT_NET || GODOT
         private void ClientWebSocket_OnError(string message)
         {
             if (OnError != null)
@@ -251,7 +251,7 @@ namespace BrainCloud.Internal
 
         public void SendAsync(byte[] packet)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             ClientWebSocket.SendAsync(new ArraySegment<byte>(packet), WebSocketMessageType.Binary, false, CancellationToken.None);
 #elif UNITY_WEBGL && !UNITY_EDITOR
             NativeWebSocket.SendAsync(packet);
@@ -262,7 +262,7 @@ namespace BrainCloud.Internal
 
         public void Send(byte[] packet)
         {
-#if DOT_NET
+#if DOT_NET || GODOT
             SendAsync(packet);
 #elif UNITY_WEBGL && !UNITY_EDITOR
             SendAsync(packet);

@@ -10,7 +10,7 @@ using BrainCloud.Entity;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
 using UnityEngine;
 #else
 using System.IO;
@@ -46,7 +46,7 @@ using System.IO.IsolatedStorage;
 ///
 /// See http://getbraincloud.com/apidocs/ for the full list of brainCloud APIs.
 /// </summary>
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
 public class BrainCloudWrapper : MonoBehaviour
 #else
 public class BrainCloudWrapper
@@ -100,7 +100,7 @@ public class BrainCloudWrapper
         RelayService.Disconnect();
         Client.Update();
     }
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     private void OnDestroy()
     {
         StopAllCoroutines();
@@ -371,7 +371,7 @@ public class BrainCloudWrapper
         RunCallbacks();
     }
 
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
@@ -543,7 +543,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateHandoff(
             handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -575,7 +575,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateSettopHandoff(
             handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -2524,7 +2524,7 @@ public class BrainCloudWrapper
 
     private void SaveData()
     {
-#if DOT_NET
+#if DOT_NET || GODOT
         string prefix = string.IsNullOrEmpty(WrapperName).Equals("") ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
 
@@ -2549,7 +2549,7 @@ public class BrainCloudWrapper
 
     private void LoadData()
     {
-#if DOT_NET
+#if DOT_NET || GODOT
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
 

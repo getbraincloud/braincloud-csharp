@@ -7,7 +7,7 @@ namespace BrainCloud
 {
 
     using System.Runtime.InteropServices;
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     using UnityEngine;
 
 #endif
