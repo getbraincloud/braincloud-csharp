@@ -1312,8 +1312,10 @@ using System.Globalization;
                     }
                     else
                     {
-#if !(DOT_NET || GODOT)
+#if UNITY
                         Debug.Log(formattedLog);
+#if GODOT
+                        GD.Print(formattedLog);
 #elif !XAMARIN
                         Console.WriteLine(formattedLog);
 #endif
