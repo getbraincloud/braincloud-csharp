@@ -2525,12 +2525,18 @@ public class BrainCloudWrapper
     private void SaveData()
     {
 #if DOT_NET || GODOT
-        string prefix = string.IsNullOrEmpty(WrapperName).Equals("") ? "" : WrapperName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
+        string path = fileName;
+
+    #if GODOT
+        string userDir = Godot.OS.GetUserDataDir();
+        path = userDir + "/" + fileName;
+    #endif
 
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, isoStore))
+        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isoStore))
         {
             using (StreamWriter writer = new StreamWriter(isoStream))
             {
@@ -2552,14 +2558,20 @@ public class BrainCloudWrapper
 #if DOT_NET || GODOT
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
+        string path = fileName;
+
+    #if GODOT
+        string userDir = Godot.OS.GetUserDataDir();
+        path = userDir + "/" + fileName;
+    #endif
 
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        if (isoStore.FileExists(fileName))
+        if (isoStore.FileExists(path))
         {
             string file;
 
-            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.Open, isoStore))
+            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(path, FileMode.Open, isoStore))
             {
                 using (StreamReader reader = new StreamReader(isoStream))
                 {

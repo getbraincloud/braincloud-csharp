@@ -1250,7 +1250,7 @@ using BrainCloud.JsonFx.Json;
 #if DOT_NET
             data["clientLib"] = "csharp";
 #elif GODOT
-            data["clientLib"] = "csharp-godot"
+            data["clientLib"] = "csharp-godot";
 #else
             data["clientLib"] = "csharp-unity";
 #endif

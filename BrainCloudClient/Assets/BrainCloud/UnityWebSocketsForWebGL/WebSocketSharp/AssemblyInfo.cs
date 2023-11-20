@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
+#if !GODOT
+
 [assembly: AssemblyTitle("websocket-sharp")]
 [assembly: AssemblyDescription("A C# implementation of the WebSocket protocol client and server")]
 [assembly: AssemblyConfiguration("")]
@@ -17,10 +19,8 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-#if !(DOT_NET || GODOT)
-[assembly: AssemblyVersion("1.0.2")] //.* does not support unity 2020 deterministic builds. The .* here is not even necessary for us to have either. 
-#else 
 [assembly: AssemblyVersion("1.0.2")]
+
 #endif
 
 // The following attributes are used to specify the signing key for the assembly, 
