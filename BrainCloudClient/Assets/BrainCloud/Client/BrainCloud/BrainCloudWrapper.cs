@@ -2524,19 +2524,13 @@ public class BrainCloudWrapper
 
     private void SaveData()
     {
-#if DOT_NET || GODOT
+#if DOT_NET
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
-        string path = fileName;
-
-    #if GODOT
-        string userDir = Godot.OS.GetUserDataDir();
-        path = userDir + "/" + fileName;
-    #endif
 
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(path, FileMode.OpenOrCreate, isoStore))
+        using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, isoStore))
         {
             using (StreamWriter writer = new StreamWriter(isoStream))
             {
@@ -2544,7 +2538,15 @@ public class BrainCloudWrapper
                 writer.WriteLine(file);
             }
         }
-#else
+#elif GODOT
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
+        string path = "user://" + prefix + WrapperData.FileName;
+
+        Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
+        string file = JsonWriter.Serialize(_wrapperData);
+        fileAccess.StoreString(file);
+        fileAccess.Close();
+ #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
         PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
@@ -2555,23 +2557,17 @@ public class BrainCloudWrapper
 
     private void LoadData()
     {
-#if DOT_NET || GODOT
+#if DOT_NET
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
-        string path = fileName;
-
-    #if GODOT
-        string userDir = Godot.OS.GetUserDataDir();
-        path = userDir + "/" + fileName;
-    #endif
 
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
-        if (isoStore.FileExists(path))
+        if (isoStore.FileExists(fileName))
         {
             string file;
 
-            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(path, FileMode.Open, isoStore))
+            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.Open, isoStore))
             {
                 using (StreamReader reader = new StreamReader(isoStream))
                 {
@@ -2580,9 +2576,24 @@ public class BrainCloudWrapper
             }
 
             //parse
-            _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+            if(!string.IsNullOrEmpty(file))
+                _wrapperData = JsonReader.Deserialize<WrapperData>(file);
         }
-#else
+#elif GODOT
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
+        string path = "user://" + prefix + WrapperData.FileName;
+        string file = "";
+
+        if(Godot.FileAccess.FileExists(path)) 
+        {
+            Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read);
+            file = fileAccess.GetAsText();
+            fileAccess.Close();
+        }
+
+        if(!string.IsNullOrEmpty(file))
+            _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+ #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         _wrapperData.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
         _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
