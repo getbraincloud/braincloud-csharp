@@ -28,12 +28,12 @@ Here are a few handy links to get you started:
 
 ## Latest Release
 
-[brainCloud 5.1.0](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.0/)
+[brainCloud 5.1.1](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.1/)
 
 | Package | Description |
 | ------- | ------------|
-| [**brainCloudClient_csharp_5.1.0.zip**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.0/brainCloudClient_csharp_5.1.0.zip) | C#/Godot Projects |
-| [**brainCloudClient_unity_5.1.0.unitypackage**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.0/brainCloudClient_unity_5.1.0.unitypackage) | Unity Projects |
+| [**brainCloudClient_csharp_5.1.1.zip**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.1/brainCloudClient_csharp_5.1.1.zip) | C#/Godot Projects |
+| [**brainCloudClient_unity_5.1.1.unitypackage**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.1/brainCloudClient_unity_5.1.1.unitypackage) | Unity Projects |
 
 ## Unity Installation Guide
 
