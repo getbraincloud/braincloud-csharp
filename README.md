@@ -112,10 +112,6 @@ Initial support has been implemented to make this library compatible for those d
 
 ![screenshot](/screenshots/GodotProjectFileSystem.png)
 
-**Note** that Godot may complain about "duplicate attributes" in the `AssemblyInfo.cs` file. If this is the case then comment out or delete the duplicated/erroneous lines and it should build successfully.
-
-![screenshot](/screenshots/GodotAssemblyInfoIssue.png)
-
 2. Create a new script to act as the brainCloud manager; in the `_Ready()` function of this script, create a new `BrainCloudWrapper` and initialize the app with the appropriate app ID and secret by calling `BrainCloudWrapper.Init(url, secretKey, appId, version)`.
 
 3. In order to receive responses, be sure to call `BrainCloudWrapper.Update()` from the `_Process(double delta)` function of this script.
