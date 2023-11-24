@@ -1312,7 +1312,9 @@ using System.Globalization;
                     }
                     else
                     {
-#if !(DOT_NET || GODOT)
+#if GODOT
+                        Godot.GD.Print(formattedLog);
+#elif !DOT_NET
                         Debug.Log(formattedLog);
 #elif !XAMARIN
                         Console.WriteLine(formattedLog);
@@ -1355,7 +1357,9 @@ using System.Globalization;
 
             if (error != null)
             {
-#if !(DOT_NET || GODOT)
+#if GODOT
+                Godot.GD.Print("ERROR | Failed to initialize brainCloud - " + error);
+#elif !DOT_NET
                 Debug.LogError("ERROR | Failed to initialize brainCloud - " + error);
 #elif !XAMARIN
                 Console.WriteLine("ERROR | Failed to initialize brainCloud - " + error);
