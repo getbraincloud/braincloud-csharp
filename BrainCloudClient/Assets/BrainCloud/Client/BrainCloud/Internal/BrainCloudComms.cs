@@ -2378,9 +2378,9 @@ using UnityEngine.Experimental.Networking;
     [Serializable]
     internal class JsonResponseBundleV2
     {
-        [JsonName("packetId")]  public long packetId;
-        [JsonName("responses")] public Dictionary<string, object>[] responses;
-        [JsonName("events")]    public Dictionary<string, object>[] events;
+        [JsonName("packetId")]  public long packetId = 0;
+        [JsonName("responses")] public Dictionary<string, object>[] responses = null;
+        [JsonName("events")]    public Dictionary<string, object>[] events = null;
 
         public JsonResponseBundleV2() { }
     }

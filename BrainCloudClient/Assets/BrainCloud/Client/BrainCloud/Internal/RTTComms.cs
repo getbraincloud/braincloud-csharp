@@ -341,7 +341,7 @@ namespace BrainCloud.Internal
         private void startReceivingWebSocket()
         {
             bool sslEnabled = (bool)m_endpoint["ssl"];
-            string url = (sslEnabled ? "wss://" : "ws://") + m_endpoint["host"] as string + ":" + (int)m_endpoint["port"] + getUrlQueryParameters();
+            string url = (sslEnabled ? "wss://" : "ws://") + (m_endpoint["host"] as string) + ":" + (int)m_endpoint["port"] + getUrlQueryParameters();
             setupWebSocket(url);
         }
 
