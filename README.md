@@ -28,7 +28,7 @@ Here are a few handy links to get you started:
 
 ## Latest Release
 
-[brainCloud 5.1.0](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.1/)
+[brainCloud 5.1.1](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.1/)
 
 | Package | Description |
 | ------- | ------------|
