@@ -2074,6 +2074,38 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticateAnonymous(
             false, AuthSuccessCallback, AuthFailureCallback, aco);
     }
+    
+    /// <summary>
+    /// Logs user out of server.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - PlayerState
+    /// Service Operation - Logout
+    /// </remarks>
+    /// <param name="forgetUser">
+    /// Set as true to clear profile ID that is saved, false to save it.
+    /// </param>
+    /// <param name="success">
+    /// The success callback.
+    /// </param>
+    /// <param name="failure">
+    /// The failure callback.
+    /// </param>
+    /// <param name="cbObject">
+    /// The user object sent to the callback.
+    /// </param>
+    public void Logout(
+        bool forgetUser,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        if(forgetUser)
+        {
+            ResetStoredProfileId();
+        }
+        Client.PlayerStateService.Logout(success, failure, cbObject);
+    }
 
     /// <summary>
     /// Method initializes the identity information from the Unity player prefs cache.
