@@ -405,6 +405,11 @@ using UnityEngine.Experimental.Networking;
             string suffix = @"/dispatcherv2";
             string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
             
+            if(ServerURL.Contains("braincloudservers") && !ServerURL.EndsWith(suffix))
+            {
+                ServerURL += suffix;
+            }
+
             //get rid of trailing / 
             while (formatURL.Length > 0 && formatURL.EndsWith("/"))
             {
