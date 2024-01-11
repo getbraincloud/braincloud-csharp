@@ -403,17 +403,15 @@ using UnityEngine.Experimental.Networking;
             ServerURL = serverURL;
 
             string suffix = @"/dispatcherv2";
-            string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
-            
-            if(ServerURL.Contains("braincloudservers") && !ServerURL.EndsWith(suffix))
-            {
-                ServerURL += suffix;
-            }
+	    Uri url = ValidateURL(serverURL);
+            ServerURL = url.AbsoluteUri;
 
-            //get rid of trailing / 
-            while (formatURL.Length > 0 && formatURL.EndsWith("/"))
+            string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
+
+            //get rid of trailing "/" for format URL
+			if(formatURL.Length > 0 && formatURL.EndsWith("/"))
             {
-                 formatURL = formatURL.Substring(0, formatURL.Length - 1);
+                formatURL = formatURL.TrimEnd('/');
             }
 
             UploadURL = formatURL;
@@ -438,6 +436,33 @@ using UnityEngine.Experimental.Networking;
             AppIdSecretMap = appIdSecretMap;
 
             Initialize(serverURL, defaultAppId, AppIdSecretMap[defaultAppId]);
+        }
+
+        private Uri ValidateURL(string value)
+        {
+            try
+            {
+                UriBuilder builder = new(value)
+                {
+                    Scheme = Uri.UriSchemeHttps,
+                    Port = -1
+                };
+            
+                if ((string.IsNullOrEmpty(builder.Path) || builder.Path == "/") &&
+                    !builder.Path.Contains("dispatcherv2"))
+                {
+                    builder.Path += builder.Path.EndsWith('/') ? "dispatcherv2" : "/dispatcherv2";
+                }
+
+                builder.Path = builder.Path.TrimEnd('/');
+            
+                return builder.Uri;
+            }
+            catch
+            {
+                _clientRef.Log("URL provided is not valid. Reverting to default URL: https://api.braincloudservers.com/dispatcherv2");
+                return new Uri("https://api.braincloudservers.com/dispatcherv2");
+            }
         }
 
         public void RegisterEventCallback(EventCallback cb)
