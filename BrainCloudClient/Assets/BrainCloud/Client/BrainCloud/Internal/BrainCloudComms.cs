@@ -442,16 +442,15 @@ using UnityEngine.Experimental.Networking;
         {
             try
             {
-                UriBuilder builder = new(value)
+                UriBuilder builder = new UriBuilder(value)
                 {
-                    Scheme = Uri.UriSchemeHttps,
-                    Port = -1
+                    Scheme = Uri.UriSchemeHttps
                 };
             
                 if ((string.IsNullOrEmpty(builder.Path) || builder.Path == "/") &&
                     !builder.Path.Contains("dispatcherv2"))
                 {
-                    builder.Path += builder.Path.EndsWith('/') ? "dispatcherv2" : "/dispatcherv2";
+                    builder.Path += builder.Path.EndsWith("/") ? "dispatcherv2" : "/dispatcherv2";
                 }
 
                 builder.Path = builder.Path.TrimEnd('/');
