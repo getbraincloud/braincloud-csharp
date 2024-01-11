@@ -403,11 +403,21 @@ using UnityEngine.Experimental.Networking;
             ServerURL = serverURL;
 
             string suffix = @"/dispatcherv2";
-            string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
-            
+
             //Separating https:// from the URL to search for "/"   
-            string httpString = ServerURL.Substring(0, 8);
-            string restOfURL = ServerURL.Substring(8, ServerURL.Length - 8);
+            string httpString = ""; 
+            string restOfURL = ""; 
+            
+            if(ServerURL.Contains("https"))
+            {
+                httpString = ServerURL.Substring(0, 8);
+                restOfURL = ServerURL.Substring(8, ServerURL.Length - 8);
+            }
+            else
+            {
+                httpString = "https://";
+                restOfURL = ServerURL.Substring(0, ServerURL.Length);
+            }
             
             //Goal here is to make sure there is a "/dispatcherv2" or similar included in the Server URL.
             int stringIndex = restOfURL.LastIndexOf("/") + 1;
@@ -424,14 +434,20 @@ using UnityEngine.Experimental.Networking;
                     restOfURL += suffix;
                 }
             }
+		    //if there's no "/" present in the URL, it will return with -1 but we + 1 in the stringIndex
+            else if(stringIndex == 0 && !restOfURL.Contains(suffix))
+            {
+                restOfURL += suffix;
+            }
             else if(stringIndex == restOfURL.Length)
             {
                 //Take out the slash at the end of the URL
                 restOfURL = restOfURL.Substring(0, restOfURL.Length - 1);
             }
-            ServerURL = httpString + restOfURL;
 
-            //get rid of trailing / 
+            string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
+
+            //get rid of trailing "/" for format URL
             while (formatURL.Length > 0 && formatURL.EndsWith("/"))
             {
                  formatURL = formatURL.Substring(0, formatURL.Length - 1);
