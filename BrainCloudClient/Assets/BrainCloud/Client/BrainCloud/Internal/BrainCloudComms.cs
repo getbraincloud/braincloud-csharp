@@ -405,10 +405,31 @@ using UnityEngine.Experimental.Networking;
             string suffix = @"/dispatcherv2";
             string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
             
-            if(ServerURL.Contains("braincloudservers") && !ServerURL.EndsWith(suffix))
+            //Separating https:// from the URL to search for "/"   
+            string httpString = ServerURL.Substring(0, 8);
+            string restOfURL = ServerURL.Substring(8, ServerURL.Length - 8);
+            
+            //Goal here is to make sure there is a "/dispatcherv2" or similar included in the Server URL.
+            int stringIndex = restOfURL.LastIndexOf("/") + 1;
+            string contentAfterSlash = restOfURL.Substring(stringIndex, restOfURL.Length - stringIndex);
+            if (contentAfterSlash.Length == 0 && !restOfURL.Contains(suffix))
             {
-                ServerURL += suffix;
+                //Take out the slash 
+                restOfURL = restOfURL.Substring(0, restOfURL.Length - 1);
+                
+                //Check the URL again incase the URL is set as something like this: https://api.braincloudservers.com/abcd/
+                stringIndex = restOfURL.LastIndexOf("/",StringComparison.Ordinal);   
+                if(stringIndex == -1)
+                {
+                    restOfURL += suffix;
+                }
             }
+            else if(stringIndex == restOfURL.Length)
+            {
+                //Take out the slash at the end of the URL
+                restOfURL = restOfURL.Substring(0, restOfURL.Length - 1);
+            }
+            ServerURL = httpString + restOfURL;
 
             //get rid of trailing / 
             while (formatURL.Length > 0 && formatURL.EndsWith("/"))
