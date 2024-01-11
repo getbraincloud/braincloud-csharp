@@ -409,9 +409,9 @@ using UnityEngine.Experimental.Networking;
             string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
 
             //get rid of trailing "/" for format URL
-            while (formatURL.Length > 0 && formatURL.EndsWith("/"))
+			if(formatURL.Length > 0 && formatURL.EndsWith("/"))
             {
-                 formatURL = formatURL.Substring(0, formatURL.Length - 1);
+                formatURL = formatURL.TrimEnd('/');
             }
 
             UploadURL = formatURL;
