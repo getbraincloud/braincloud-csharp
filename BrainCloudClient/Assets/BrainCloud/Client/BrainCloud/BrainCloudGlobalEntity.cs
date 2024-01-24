@@ -50,7 +50,7 @@ using BrainCloud.Common;
         /// </param>
         public void CreateEntity(
             string entityType,
-            ulong timeToLive,
+            long timeToLive,
             string jsonEntityAcl,
             string jsonEntityData,
             SuccessCallback success = null,
@@ -109,7 +109,7 @@ using BrainCloud.Common;
         public void CreateEntityWithIndexedId(
             string entityType,
             string indexedId,
-            ulong timeToLive,
+            long timeToLive,
             string jsonEntityAcl,
             string jsonEntityData,
             SuccessCallback success = null,
@@ -256,7 +256,7 @@ using BrainCloud.Common;
         public void UpdateEntityTimeToLive(
             string entityId,
             int version,
-            ulong timeToLive,
+            long timeToLive,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
