@@ -181,7 +181,7 @@ using BrainCloud.Internal;
         public void SubmitTurn(
             string ownerId,
             string matchId,
-            UInt64 version,
+            ulong version,
             string jsonMatchState,
             string pushNotificationMessage,
             string nextPlayer,
@@ -256,7 +256,7 @@ using BrainCloud.Internal;
         public void UpdateMatchSummaryData(
             string ownerId,
             string matchId,
-            UInt64 version,
+            ulong version,
             string jsonSummary,
             SuccessCallback success = null,
             FailureCallback failure = null,
