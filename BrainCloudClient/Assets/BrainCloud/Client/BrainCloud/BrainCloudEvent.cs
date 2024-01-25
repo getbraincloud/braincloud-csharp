@@ -202,7 +202,7 @@ using BrainCloud.Internal;
         /// The user object sent to the callback.
         /// </param>
         public void DeleteIncomingEventsOlderThan(
-            int in_dateMillis,
+            long in_dateMillis,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -239,7 +239,7 @@ using BrainCloud.Internal;
         /// </param>
         public void DeleteIncomingEventsByTypeOlderThan(
             string in_eventId,
-            int in_dateMillis,
+            long in_dateMillis,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)

@@ -342,7 +342,7 @@ using System;
             string leaderboardId,
             long score,
             string jsonData,
-            UInt64 roundStartTimeUTC,
+            ulong roundStartTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -407,7 +407,7 @@ using System;
              string leaderboardId,
              long score,
              string jsonData,
-             UInt64 roundStartTimeUTC,
+             ulong roundStartTimeUTC,
              BrainCloudSocialLeaderboard.SortOrder sort,
              int beforeCount,
              int afterCount,
