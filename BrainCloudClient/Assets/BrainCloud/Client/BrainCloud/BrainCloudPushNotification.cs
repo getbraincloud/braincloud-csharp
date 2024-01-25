@@ -426,7 +426,7 @@ using System;
             string fcmContent,
             string iosContent,
             string facebookContent,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -717,7 +717,7 @@ using System;
             string profileId,
             string alertContentJson,
             string customDataJson,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -817,7 +817,7 @@ using System;
             string profileId,
             int notificationTemplateId,
             string substitutionsJson,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)

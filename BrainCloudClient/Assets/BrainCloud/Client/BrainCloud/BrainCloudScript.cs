@@ -79,7 +79,7 @@ using BrainCloud.Internal;
         public void ScheduleRunScriptMillisUTC(
             string scriptName,
             string jsonScriptData,
-            UInt64 roundStartTimeUTC,
+            ulong roundStartTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
