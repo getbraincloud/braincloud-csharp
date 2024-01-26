@@ -120,7 +120,7 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
                 (
-                    username,
+                    email,
                     password,
                     forceCreate,
                     _tc.ApiSuccess,
@@ -152,7 +152,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
@@ -173,7 +173,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
