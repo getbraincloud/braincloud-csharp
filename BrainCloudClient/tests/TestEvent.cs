@@ -112,7 +112,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             SendDefaultMessage();
-            long dateInMillis = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
+            long dateInMillis = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1).Ticks) / 10000;
 
             _bc.EventService.DeleteIncomingEventsOlderThan(
                 dateInMillis,
@@ -126,7 +126,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             SendDefaultMessage();
-            long dateInMillis = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
+            long dateInMillis = (DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1).Ticks) / 10000;
 
             _bc.EventService.DeleteIncomingEventsByTypeOlderThan(
                 _eventType,
