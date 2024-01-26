@@ -1,6 +1,6 @@
 # brainCloud Unity Custom Package
 
-This git repo will allow you to install the brainCloud library for your Unity project via the Package Manager. For more information, please see the [brainCloud Unity/Csharp](https://github.com/getbraincloud/braincloud-csharp/) git.
+This git repo will allow you to install the brainCloud C# client library for your Unity project via the Package Manager. For more information, please see the [brainCloud C# Client Library](https://github.com/getbraincloud/braincloud-csharp#braincloud-c-client-library) repository.
 
 ---
 
