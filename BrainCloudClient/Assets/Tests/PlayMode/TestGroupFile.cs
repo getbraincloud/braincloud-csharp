@@ -47,7 +47,7 @@ namespace Tests.PlayMode
         {
             Debug.Log("Setting up GroupFile Tests....");
             //Create new User
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             //Add user to group
             _tc.bcWrapper.GroupService.JoinGroup(_groupID, _tc.ApiSuccess, _tc.ApiError);
@@ -115,7 +115,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestCheckFilenameExists()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             _tc.bcWrapper.GroupFileService.CheckFilenameExists(_groupID, _folderPath, _filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -127,7 +127,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestCheckFullpathFilenameExists()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             _tc.bcWrapper.GroupFileService.CheckFullpathFilenameExists(_groupID, _filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -139,7 +139,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestGetFileInfo()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.GetFileInfo(_groupID, _groupFileId, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -150,7 +150,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestGetFileInfoSimple()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.GetFileInfoSimple(_groupID, "", _filename, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -161,7 +161,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestGetFileList()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.GetFileList(_groupID, "", _recurse, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -172,7 +172,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestGetCDNUrl()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.GetCDNUrl(_groupID, _groupFileId, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
@@ -183,7 +183,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestMoveFile()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.MoveFile
             (
@@ -220,7 +220,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestCopyFile()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             string newFileName = "testCopiedFile.dat";
             _tc.bcWrapper.GroupFileService.CopyFile
@@ -257,7 +257,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestUpdateFileInfo()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             _tc.successCount = 0;
             _tc.bcWrapper.GroupFileService.UpdateFileInfo
             (
