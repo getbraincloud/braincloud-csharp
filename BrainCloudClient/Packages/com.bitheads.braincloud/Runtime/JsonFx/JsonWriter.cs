@@ -988,12 +988,18 @@ using System.Xml;
 
             protected virtual void WriteObject(IDictionary value)
             {
-                this.WriteDictionary((IEnumerable)value);
+                // :BF .Net 8 Fix, if you get the IDictionaryEnumerator here before casting the value to an IEnumerable the Enumerator is correctly returned 
+                IDictionaryEnumerator enumerator = value.GetEnumerator() as IDictionaryEnumerator;
+                this.WriteDictionary((IEnumerable)value, enumerator);
             }
 
-            protected virtual void WriteDictionary(IEnumerable value)
+            protected virtual void WriteDictionary(IEnumerable value, IDictionaryEnumerator enumerator = null)
             {
-                IDictionaryEnumerator enumerator = value.GetEnumerator() as IDictionaryEnumerator;
+                if (enumerator == null)
+                {
+                    enumerator = value.GetEnumerator() as IDictionaryEnumerator;
+                }
+
                 if (enumerator == null)
                 {
                     throw new JsonSerializationException(String.Format(JsonWriter.ErrorIDictionaryEnumerator, value.GetType()));

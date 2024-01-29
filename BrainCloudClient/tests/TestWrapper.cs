@@ -131,6 +131,21 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+        
+        [Test]
+        public void TestWrapperLogoutAndClearProfileID()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();            
+            _bc.Logout(true, tr.ApiSuccess, tr.ApiError);
+            string profileID = _bc.GetStoredProfileId();
+            if(profileID.Length == 0)
+            {
+                Assert.True(true);
+            }
+            tr.Run();
+        }
 
         
         [Test]

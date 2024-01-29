@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
 using UnityEngine;
 using SysLanguageObject = UnityEngine.SystemLanguage;
 #else
@@ -42,7 +42,7 @@ using SysLanguageObject = System.String; // todo
 
         static Util()
         {
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
             s_defaultLang = SysLanguageObject.English;
 
             s_langCodes[SysLanguageObject.Afrikaans] = "af";
@@ -117,7 +117,7 @@ using SysLanguageObject = System.String; // todo
         public static string GetIsoCodeForCurrentLanguage()
         {
             string isoCode;
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
             isoCode = GetIsoCodeForLanguage(UnityEngine.Application.systemLanguage);
 #else
             isoCode = s_defaultLang;
@@ -135,19 +135,8 @@ using SysLanguageObject = System.String; // todo
             double utcOffset = 0;
             try
             {
-#if NET_4_1
                 TimeZoneInfo localZone = TimeZoneInfo.Local;
                 utcOffset = localZone.BaseUtcOffset.TotalHours;
-#else
-                DateTime baseUTC = new DateTime();
-                // Re : warning CS0618: 'TimeZone' is obsolete: 'System.TimeZone has been deprecated.  Please investigate the use of System.TimeZoneInfo instead.'
-                // Set the API Compatibility Level to .NET 4.x within Project Settings
-                TimeZone localZone = TimeZone.CurrentTimeZone;
-                DateTime localTime = localZone.ToLocalTime(baseUTC);
-                // Calculate the local time and UTC offset
-                TimeSpan localOffset = localZone.GetUtcOffset(localTime);
-                utcOffset = localOffset.TotalHours;
-#endif
             }
             catch (Exception)
             {

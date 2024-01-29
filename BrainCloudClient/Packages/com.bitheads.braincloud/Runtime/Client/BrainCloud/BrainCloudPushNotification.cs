@@ -12,7 +12,7 @@ using BrainCloud.JsonFx.Json;
 using BrainCloud.Common;
 using BrainCloud.Internal;
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
 using System;
 #endif
 
@@ -25,7 +25,7 @@ using System;
             _client = client;
         }
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
         /// <summary>
         /// Registers the given device token with the server to enable this device
         /// to receive push notifications.
@@ -426,7 +426,7 @@ using System;
             string fcmContent,
             string iosContent,
             string facebookContent,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -717,7 +717,7 @@ using System;
             string profileId,
             string alertContentJson,
             string customDataJson,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -817,7 +817,7 @@ using System;
             string profileId,
             int notificationTemplateId,
             string substitutionsJson,
-            UInt64 startTimeUTC,
+            ulong startTimeUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)

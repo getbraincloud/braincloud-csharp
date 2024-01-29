@@ -10,7 +10,7 @@ using BrainCloud.Entity;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;
 
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
 using UnityEngine;
 #else
 using System.IO;
@@ -46,7 +46,7 @@ using System.IO.IsolatedStorage;
 ///
 /// See http://getbraincloud.com/apidocs/ for the full list of brainCloud APIs.
 /// </summary>
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
 public class BrainCloudWrapper : MonoBehaviour
 #else
 public class BrainCloudWrapper
@@ -100,7 +100,7 @@ public class BrainCloudWrapper
         RelayService.Disconnect();
         Client.Update();
     }
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     private void OnDestroy()
     {
         StopAllCoroutines();
@@ -371,7 +371,7 @@ public class BrainCloudWrapper
         RunCallbacks();
     }
 
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     /// <summary>
     /// Initializes the brainCloud client. This method uses the parameters as configured
     /// in the Unity brainCloud Settings window.
@@ -543,7 +543,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateHandoff(
             handoffId, securityToken, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -575,7 +575,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject, true);
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
         
         Client.AuthenticationService.AuthenticateSettopHandoff(
             handoffCode, AuthSuccessCallback, AuthFailureCallback, aco);
@@ -2074,6 +2074,38 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticateAnonymous(
             false, AuthSuccessCallback, AuthFailureCallback, aco);
     }
+    
+    /// <summary>
+    /// Logs user out of server.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - PlayerState
+    /// Service Operation - Logout
+    /// </remarks>
+    /// <param name="forgetUser">
+    /// Set as true to clear profile ID that is saved, false to save it.
+    /// </param>
+    /// <param name="success">
+    /// The success callback.
+    /// </param>
+    /// <param name="failure">
+    /// The failure callback.
+    /// </param>
+    /// <param name="cbObject">
+    /// The user object sent to the callback.
+    /// </param>
+    public void Logout(
+        bool forgetUser,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        if(forgetUser)
+        {
+            ResetStoredProfileId();
+        }
+        Client.PlayerStateService.Logout(success, failure, cbObject);
+    }
 
     /// <summary>
     /// Method initializes the identity information from the Unity player prefs cache.
@@ -2525,7 +2557,7 @@ public class BrainCloudWrapper
     private void SaveData()
     {
 #if DOT_NET
-        string prefix = string.IsNullOrEmpty(WrapperName).Equals("") ? "" : WrapperName + ".";
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
 
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
@@ -2538,7 +2570,15 @@ public class BrainCloudWrapper
                 writer.WriteLine(file);
             }
         }
-#else
+#elif GODOT
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
+        string path = "user://" + prefix + WrapperData.FileName;
+
+        Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
+        string file = JsonWriter.Serialize(_wrapperData);
+        fileAccess.StoreString(file);
+        fileAccess.Close();
+ #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
         PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
@@ -2568,9 +2608,24 @@ public class BrainCloudWrapper
             }
 
             //parse
-            _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+            if(!string.IsNullOrEmpty(file))
+                _wrapperData = JsonReader.Deserialize<WrapperData>(file);
         }
-#else
+#elif GODOT
+        string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
+        string path = "user://" + prefix + WrapperData.FileName;
+        string file = "";
+
+        if(Godot.FileAccess.FileExists(path)) 
+        {
+            Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read);
+            file = fileAccess.GetAsText();
+            fileAccess.Close();
+        }
+
+        if(!string.IsNullOrEmpty(file))
+            _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+ #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         _wrapperData.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
         _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);

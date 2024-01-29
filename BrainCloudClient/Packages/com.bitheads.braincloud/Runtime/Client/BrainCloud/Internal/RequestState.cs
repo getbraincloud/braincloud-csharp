@@ -13,7 +13,7 @@ namespace BrainCloud.Internal
     using System.Collections.Generic;
 
 
-#if (DOT_NET)
+#if (DOT_NET || GODOT)
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -62,7 +62,7 @@ using UnityEngine.Experimental.Networking;
         // we also process the byte array on the background thread
         public byte[] ByteArray { get; set; }
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
 #if USE_WEB_REQUEST
         public UnityWebRequest WebRequest { get; set; }
 #else
@@ -79,7 +79,7 @@ using UnityEngine.Experimental.Networking;
 
         public string RequestString { get; set; }
 
-#if DOT_NET
+#if DOT_NET || GODOT
         public CancellationTokenSource CancelToken { get; set; }
 
         public string DotNetResponseString { get; set; }
@@ -109,7 +109,7 @@ using UnityEngine.Experimental.Networking;
         {
             try
             {
-#if DOT_NET
+#if DOT_NET || GODOT
                 // kill the task - we've timed out
                 IsCancelled = true;
                 if (WebRequest != null)

@@ -12,7 +12,7 @@ namespace BrainCloud.Internal
     using System;
     using System.IO;
 
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
     using UnityEngine;
     using BrainCloud.JsonFx.Json;
 #if USE_WEB_REQUEST
@@ -59,7 +59,7 @@ using System.Threading.Tasks;
 
         public int ReasonCode { get; private set; }
 
-#if DOT_NET
+#if DOT_NET || GODOT
         public HttpClient HttpClient { get; set; }
 #endif
         #endregion
@@ -98,7 +98,7 @@ using System.Threading.Tasks;
 
 #if USE_WEB_REQUEST
         private UnityWebRequest _request;
-#elif !DOT_NET
+#elif (!(DOT_NET || GODOT))
         private WWW _request;
 #else
         private CancellationTokenSource _cancelToken;
@@ -130,7 +130,7 @@ using System.Threading.Tasks;
         public void Start()
         {
 #if !UNITY_WEBPLAYER
-#if !DOT_NET
+#if (!(DOT_NET || GODOT))
             byte[] file = _client.FileService.FileStorage[_guidLocalPath];
             WWWForm postForm = new WWWForm();
             postForm.AddField("sessionId", _sessionId);
@@ -187,7 +187,7 @@ using System.Threading.Tasks;
 #endif
         }
 
-#if (DOT_NET)
+#if (DOT_NET || GODOT)
         private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult)
         {
             if (asyncResult.IsCanceled) return;            
@@ -240,7 +240,7 @@ using System.Threading.Tasks;
         {
 #if USE_WEB_REQUEST
             _request.Abort();
-#elif !DOT_NET
+#elif (!(DOT_NET || GODOT))
             _request = null;
 #else
             _cancelToken.Cancel();
@@ -262,24 +262,24 @@ using System.Threading.Tasks;
             _elapsedTime += _deltaTime;
 
             UpdateTransferRate();
-#if !DOT_NET && (UNITY_IOS || UNITY_ANDROID)
+#if !(DOT_NET || GODOT) && (UNITY_IOS || UNITY_ANDROID)
             CheckTimeout();
 #endif
             if (Status == FileUploaderStatus.CompleteFailed || Status == FileUploaderStatus.CompleteSuccess)
             {
-#if !DOT_NET && USE_WEB_REQUEST
+#if !(DOT_NET || GODOT) && USE_WEB_REQUEST
                 CleanupRequest();
 #endif
                 return;
             }
 
-#if !DOT_NET
+#if !(DOT_NET || GODOT)
             Progress = _request.uploadProgress;
             if (_request.isDone) HandleResponse();
 #endif
         }
 
-#if !DOT_NET
+#if !(DOT_NET || GODOT)
         private void HandleResponse()
         {
             _transferRatePerSecond = 0;

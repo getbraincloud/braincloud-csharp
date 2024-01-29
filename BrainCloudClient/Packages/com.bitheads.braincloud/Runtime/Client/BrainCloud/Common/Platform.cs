@@ -81,7 +81,7 @@ namespace BrainCloud.Common
             return _platformsForString.TryGetValue(s, out platform) ? platform : Unknown;
         }
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
         public static Platform FromUnityRuntime()
         {
             // this kicks in if dll is compiled from visual studio solution

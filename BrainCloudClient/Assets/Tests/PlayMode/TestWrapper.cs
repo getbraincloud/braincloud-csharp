@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using BrainCloud.JsonFx.Json;
 using System.Text;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 
 namespace Tests.PlayMode
 {
@@ -38,6 +39,34 @@ namespace Tests.PlayMode
             {
                 Debug.Log("ERROR: Anonymous Id did not match");
             }
+        }
+
+        string handoffID;
+        string handoffToken;
+        [UnityTest]
+        public IEnumerator TestAuthenticateHandoff()
+        {
+            
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.ScriptService.RunScript("createHandoffId","{}", ApiHandoffSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.bcWrapper.AuthenticateHandoff(handoffID, handoffToken, _tc.ApiSuccess, _tc.ApiError);
+            
+            //_tc.bcWrapper.Client.AuthenticationService.AuthenticateHandoff(handoffID, handoffToken, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Stuff happened", _tc.successCount == 1);
+        }
+
+        public void ApiHandoffSuccess(string json, object cb)
+        {
+            _tc.m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
+            var data = _tc.m_response["data"] as Dictionary<string, object>;
+            var response = data["response"] as Dictionary<string, object>;
+            handoffID = response["handoffId"] as string;
+            handoffToken = response["securityToken"] as string;
+            Debug.Log($"HandoffID: {handoffID}");
+            Debug.Log($"Token: {handoffToken}");
+            _tc.m_done = true;
         }
 
         [UnityTest]
@@ -84,7 +113,7 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
                 (
-                    username,
+                    email,
                     password,
                     forceCreate,
                     _tc.ApiSuccess,
@@ -116,7 +145,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
@@ -137,7 +166,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
@@ -370,6 +399,41 @@ namespace Tests.PlayMode
             _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
+        }
+        
+        [UnityTest]
+        public IEnumerator TestLogoutAndClearProfileID()
+        {
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            string profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(!profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+            }
+            _tc.bcWrapper.Logout(true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+                Debug.Log("profile Id in wrapper is empty");
+            }
+            else
+            {
+                Debug.Log("profile Id in wrapper is still stored");
+            }
+
+            LogResults("Couldn't wipe profile ID when logging out.", _tc.successCount == 4);
+
         }
 
         #region Helper Methods

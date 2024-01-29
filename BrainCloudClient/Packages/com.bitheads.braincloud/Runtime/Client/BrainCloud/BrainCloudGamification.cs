@@ -12,7 +12,7 @@ using System.Text;
 using BrainCloud.JsonFx.Json;
 using BrainCloud.Internal;
 
-#if !(DOT_NET)
+#if !(DOT_NET || GODOT)
 using UnityEngine.SocialPlatforms;
 using UnityEngine;
 #endif
