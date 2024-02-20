@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using BrainCloud.JsonFx.Json;
 using System.Text;
+using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 
 namespace Tests.PlayMode
 {
@@ -119,7 +120,7 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
                 (
-                    username,
+                    email,
                     password,
                     forceCreate,
                     _tc.ApiSuccess,
@@ -151,7 +152,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
@@ -172,7 +173,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.SmartSwitchAuthenticateEmail
             (
-                username,
+                email,
                 password,
                 forceCreate,
                 _tc.ApiSuccess,
@@ -405,6 +406,41 @@ namespace Tests.PlayMode
             _tc.bcWrapper.GlobalEntityService.ReadEntity(entityID, _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
+        }
+        
+        [UnityTest]
+        public IEnumerator TestLogoutAndClearProfileID()
+        {
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            string profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(!profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+            }
+            _tc.bcWrapper.Logout(true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+                Debug.Log("profile Id in wrapper is empty");
+            }
+            else
+            {
+                Debug.Log("profile Id in wrapper is still stored");
+            }
+
+            LogResults("Couldn't wipe profile ID when logging out.", _tc.successCount == 4);
+
         }
 
         #region Helper Methods

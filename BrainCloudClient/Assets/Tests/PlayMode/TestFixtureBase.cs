@@ -35,6 +35,7 @@ namespace Tests.PlayMode
         private string pathToIds;
         
         protected string username = "UnityTestUser";
+        protected string email = "UnityTestUser@fakedomain.com";
         protected string password = "testPass";
         protected bool forceCreate = true;
         private bool isInitialized;
@@ -49,18 +50,20 @@ namespace Tests.PlayMode
         public virtual void TearDown()
         {
             Debug.Log("Tearing Down....");
-            _tc.bcWrapper.Client.FlushCachedMessages(false);
+            if(_tc != null && _tc.bcWrapper != null && _tc.bcWrapper.Client != null)
+            {
+                _tc.bcWrapper.Client.FlushCachedMessages(false);
+                _tc.bcWrapper.Client.ResetCommunication();
+                _tc.bcWrapper.Client.DeregisterEventCallback();
+                _tc.bcWrapper.Client.DeregisterRewardCallback();
+                _tc.bcWrapper.Client.DeregisterFileUploadCallback();
+                _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
+                _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
+                _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();                
+                _tc.CleanUp();
+                Destroy(_tc.bcWrapper);
+            }
             
-            _tc.bcWrapper.Client.ResetCommunication();
-            _tc.bcWrapper.Client.DeregisterEventCallback();
-            _tc.bcWrapper.Client.DeregisterRewardCallback();
-            _tc.bcWrapper.Client.DeregisterFileUploadCallback();
-            _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
-            _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
-            _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();
-            _tc.CleanUp();
-            
-            Destroy(_tc.bcWrapper);
             var listOfContainers = FindObjectsOfType<Transform>();
             foreach (Transform container in listOfContainers)
             {
