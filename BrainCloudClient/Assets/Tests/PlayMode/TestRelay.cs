@@ -54,7 +54,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, OnRTTEnabled, OnFailed);
+            _tc.bcWrapper.RTTService.EnableRTT(OnRTTEnabled, OnFailed);
             
             yield return _tc.StartCoroutine(_tc.Run());
         }

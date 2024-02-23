@@ -18,7 +18,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             _tc.bcWrapper.RTTService.DisableRTT();  //This shouldn't callback error
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Failed to enable or disable RTT with WS", _tc.successCount == 1);
         }
@@ -27,7 +27,7 @@ namespace Tests.PlayMode
         public IEnumerator TestRTTHeartBeat()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
 
             var timeBefore = DateTime.Now;
@@ -45,7 +45,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             //Enable RTT
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
             string channelId = "20001:gl:valid";
@@ -93,7 +93,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             int successfulCallback = 0;
             //Enable RTT
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
             _tc.bcWrapper.RTTService.RegisterRTTMessagingCallback((response =>
@@ -123,7 +123,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
             // Register for RTT lobby
@@ -170,7 +170,7 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
             // Enable RTT
-            _tc.bcWrapper.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, _tc.ApiSuccess, _tc.ApiError);
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
 
             // Register for RTT lobby
