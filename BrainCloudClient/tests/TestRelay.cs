@@ -26,7 +26,7 @@ namespace BrainCloudTests
 
             _bc.Client.EnableLogging(true);
             _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, onRTTEnabled, onFailed);
+            _bc.RTTService.EnableRTT(onRTTEnabled, onFailed);
 
             // Main event loop
             var timeStart = DateTime.Now;
