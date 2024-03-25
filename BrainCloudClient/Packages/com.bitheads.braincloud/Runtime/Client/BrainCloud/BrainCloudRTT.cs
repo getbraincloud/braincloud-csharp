@@ -31,9 +31,9 @@ using BrainCloud.Internal;
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void EnableRTT(SuccessCallback in_success, FailureCallback in_failure, RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, object cb_object = null)
         {
-            m_commsLayer.EnableRTT(in_connectionType, in_success, in_failure, cb_object);
+            m_commsLayer.EnableRTT(in_success, in_failure, in_connectionType, cb_object);
         }
 
         /// <summary>

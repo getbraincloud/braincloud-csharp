@@ -19,6 +19,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.RTTService.DisableRTT();  //This shouldn't callback error
             _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
+            
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults("Failed to enable or disable RTT with WS", _tc.successCount == 1);
         }

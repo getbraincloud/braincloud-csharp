@@ -34,7 +34,7 @@ namespace BrainCloud.Internal
         /// <param name="in_success"></param>
         /// <param name="in_failure"></param>
         /// <param name="cb_object"></param>
-        public void EnableRTT(RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        public void EnableRTT(SuccessCallback in_success, FailureCallback in_failure, RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, object cb_object = null)
         {
             m_disconnectedWithReason = false;
 
@@ -141,15 +141,6 @@ namespace BrainCloud.Internal
                         break;
                     }
 
-                    //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
-                    if (m_webSocketStatus == WebsocketStatus.CLOSED)
-                    {
-                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
-                        m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
-                        disconnect();
-                        break;
-                    }
-
                     // does this go to one of our registered service listeners? 
                     if (m_registeredCallbacks.ContainsKey(toProcessResponse.Service))
                     {
@@ -165,7 +156,7 @@ namespace BrainCloud.Internal
                     }
 
                     //if we're connected and we get a disconnect - we disconnect the comms... 
-                    else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED && m_connectionFailureCallback != null && toProcessResponse.Operation == "disconnect")
+                    else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED && toProcessResponse.Operation == "disconnect")
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
                         disconnect();

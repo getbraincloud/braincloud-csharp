@@ -17,7 +17,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.RTTService.DisableRTT(); // This shouldn't callback error
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+            _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 
@@ -26,7 +26,7 @@ namespace BrainCloudTests
         {
             
             TestResult tr = new TestResult(_bc);
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+            _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             // Run for 90sec and see if the heartbeat did its job
@@ -45,7 +45,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             // Enable RTT
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+            _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             // Get Channel Id
@@ -106,7 +106,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             // Enable RTT
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+            _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             // Register for RTT lobby
@@ -141,7 +141,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             // Enable RTT
-            _bc.RTTService.EnableRTT(RTTConnectionType.WEBSOCKET, tr.ApiSuccess, tr.ApiError);
+            _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             // Register for RTT lobby

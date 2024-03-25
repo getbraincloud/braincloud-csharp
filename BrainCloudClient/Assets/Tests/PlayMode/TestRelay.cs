@@ -16,7 +16,7 @@ namespace Tests.PlayMode
         private bool bSendWrongNetId;
         private bool bSystemCallbackConnect;
         private bool bRelayMessageReceived;
-        
+        private bool bIncludeEndMatch;
         
         [UnityTest]
         public IEnumerator TestRelayWebSocket()
@@ -45,6 +45,16 @@ namespace Tests.PlayMode
             LogResults($"TCP Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
 
+        [UnityTest]
+        public IEnumerator TestRelayWSEndMatch()
+        {
+            Debug.Log("Now running...TestRelayWSEndMatch ");
+            bIncludeEndMatch = true;
+            yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET));
+
+            LogResults("Something went wrong..", _tc.successCount == 4);
+        }
+
         private IEnumerator FullFlow(RelayConnectionType in_connectionType)
         {
             _tc.m_timeToWaitSecs = 1000;
@@ -54,7 +64,7 @@ namespace Tests.PlayMode
             
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.RTTService.RegisterRTTLobbyCallback(OnLobbyEvent);
-            _tc.bcWrapper.RTTService.EnableRTT(OnRTTEnabled, OnFailed);
+            _tc.bcWrapper.RTTService.EnableRTT(OnRTTEnabledReady, OnFailed);
             
             yield return _tc.StartCoroutine(_tc.Run());
         }
@@ -85,7 +95,7 @@ namespace Tests.PlayMode
             Debug.Log($"ONFAILED: Status: {status} || Reason Code: {reasonCode} || Json Error: {jsonError} || Object: {cbObject}");
         }
         
-        void OnRTTEnabled(string jsonResponse, object cbObject)
+        void OnRTTEnabledReady(string jsonResponse, object cbObject)
         {
             var algo = new Dictionary<string, object>();
             algo["strategy"] = "ranged-absolute";
@@ -180,6 +190,21 @@ namespace Tests.PlayMode
                     sendToWrongNetId();
                 }
             }
+            else if (parsedDict["op"] as string == "END_MATCH")
+            {
+                _tc.successCount++;
+
+                // Send an event
+                var profileId = _tc.bcWrapper.Client.AuthenticationService.ProfileId;
+                _tc.bcWrapper.EventService.SendEvent
+                (
+                    profileId, 
+                    "test", 
+                    "{\"testData\":42}", 
+                    _tc.ApiSuccess, 
+                    _tc.ApiError
+                );            
+            }
         }
 
         void relayCallback(short netId, byte[] data)
@@ -198,9 +223,20 @@ namespace Tests.PlayMode
         
         void sendToWrongNetId()
         {
-            short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 40 or ALL_PLAYERS (0x000000FFFFFFFFFF)
-            byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
-            _tc.bcWrapper.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);
+            if (bIncludeEndMatch)
+            {
+                Debug.Log("Sending End Match...");
+                Dictionary<string, object> json = new Dictionary<string, object>();
+                json["cxId"] = _tc.bcWrapper.Client.RTTConnectionID;
+                json["op"] = "END_MATCH";
+                _tc.bcWrapper.RelayService.EndMatch(json);
+            }
+            else
+            {
+                short myNetId = BrainCloudRelay.MAX_PLAYERS; // Wrong net id, should be < 40 or ALL_PLAYERS (0x000000FFFFFFFFFF)
+                byte[] bytes = System.Text.Encoding.ASCII.GetBytes("To Bad Id");
+                _tc.bcWrapper.RelayService.Send(bytes, (ulong)myNetId, true, true, BrainCloudRelay.CHANNEL_HIGH_PRIORITY_1);    
+            }
         }
         
         void onRelayConnected(string jsonResponse, object cbObject)

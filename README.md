@@ -26,15 +26,6 @@ Here are a few handy links to get you started:
 - The git for the custom package to install via Unity's package manager can be found here:
     - https://github.com/getbraincloud/braincloud-unity-package/#braincloud-unity-custom-package
 
-## Latest Release
-
-[brainCloud 5.1.2](https://github.com/getbraincloud/braincloud-csharp/releases/tag/5.1.2/)
-
-| Package | Description |
-| ------- | ------------|
-| [**brainCloudClient_csharp_5.1.2.zip**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.2/brainCloudClient_csharp_5.1.2.zip) | C#/Godot Projects |
-| [**brainCloudClient_unity_5.1.2.unitypackage**](https://github.com/getbraincloud/braincloud-csharp/releases/download/5.1.2/brainCloudClient_unity_5.1.2.unitypackage) | Unity Projects |
-
 ## Unity Installation Guide
 
 There are two methods to install the brainCloud library for your Unity project:
