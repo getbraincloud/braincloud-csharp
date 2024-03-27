@@ -507,14 +507,14 @@ namespace BrainCloud
                     m_pingRegionSuccessCallback(pingStr, m_pingRegionObject);
 
                     m_pingRegionSuccessCallback = null;
-#if !DOT_NET || GODOT
+#if !(DOT_NET || GODOT)
                     m_regionTargetIPs.Clear();
 #endif
                     return;
                 }
 
                 m_pingRegionSuccessCallback = null;
-#if !DOT_NET || GODOT
+#if !(DOT_NET || GODOT)
                 m_regionTargetIPs.Clear();
 #endif
             }
@@ -594,11 +594,15 @@ namespace BrainCloud
 #else
             if (m_clientRef.Wrapper != null)
             {
+#if UNITY_WEBGL
+                m_clientRef.Wrapper.StartCoroutine(HandleHTTPResponse(in_regionTarget.region, in_regionTarget.target));
+#else
                 m_clientRef.Wrapper.StartCoroutine(in_regionTarget.IsHttpType ? HandleHTTPResponse(in_regionTarget.region, in_regionTarget.target)
                                                                               : HandlePingReponse(in_regionTarget.region, in_regionTarget.target));
+#endif
             }
 #endif
-        }
+            }
 
 #if DOT_NET || GODOT
         private void HandleHTTPResponse(string in_region, string in_target)
@@ -688,6 +692,7 @@ namespace BrainCloud
             request.Dispose();
         }
 
+#if !UNITY_WEBGL
         private IEnumerator HandlePingReponse(string in_region, string in_target)
         {
             if (!m_regionTargetIPs.ContainsKey(in_target))
@@ -728,6 +733,7 @@ namespace BrainCloud
                 pingNextItemToProcess();
             }
         }
+#endif
 #endif
 
         private void handlePingTimeResponse(long in_responseTime, string in_region)
@@ -774,7 +780,7 @@ namespace BrainCloud
         private SuccessCallback m_pingRegionSuccessCallback = null;
         private object m_pingRegionObject = null;
 
-#if !DOT_NET || GODOT
+#if !(DOT_NET || GODOT)
         private Dictionary<string, string> m_regionTargetIPs = new Dictionary<string, string>();
 #endif
 
@@ -794,6 +800,6 @@ namespace BrainCloud
         /// Reference to the brainCloud client object
         /// </summary>
         private BrainCloudClient m_clientRef;
-#endregion
+        #endregion
     }
 }
