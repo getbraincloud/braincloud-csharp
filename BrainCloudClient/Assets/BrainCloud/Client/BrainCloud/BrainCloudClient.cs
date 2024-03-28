@@ -879,6 +879,16 @@ using System.Globalization;
         {
             _comms.LogoutOnApplicationQuit();
         }
+        
+        /// <summary>
+        /// Execute a script on the server and Logout in one frame, meant to be used when OnApplicationQuit() occurs in Unity
+        /// </summary>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
+        public void RunScriptAndLogoutOnApplicationQuit(string scriptName, string jsonScriptData)
+        {
+            _comms.RunScriptAndLogoutOnApplicationQuit(scriptName, jsonScriptData);
+        }
 
         /// <summary>Update method needs to be called regularly in order
         /// to process incoming and outgoing messages.

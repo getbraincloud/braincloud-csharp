@@ -812,6 +812,34 @@ using UnityEngine.Experimental.Networking;
             AddToQueue(sc);
             Update();
         }
+        
+        public void RunScriptAndLogoutOnApplicationQuit(string scriptName, string jsonScriptData)
+        {
+            lock (_serviceCallsWaiting)
+            {
+                _serviceCallsWaiting.Clear();
+            }
+            
+            DisposeUploadHandler();
+            _activeRequest = null;
+            
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.ScriptServiceRunScriptName.Value] = scriptName;
+
+            if (Util.IsOptionalParameterValid(jsonScriptData))
+            {
+                Dictionary<string, object> scriptData = JsonReader.Deserialize<Dictionary<string, object>>(jsonScriptData);
+                data[OperationParam.ScriptServiceRunScriptData.Value] = scriptData;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null);
+            ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.Run, data, callback);
+            AddToQueue(sc);
+            
+            ServerCall sc2 = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
+            AddToQueue(sc2);
+            Update();
+        }
 
         // see BrainCloudClient.RetryCachedMessages() docs
         public void RetryCachedMessages()
