@@ -2106,6 +2106,45 @@ public class BrainCloudWrapper
         }
         Client.PlayerStateService.Logout(success, failure, cbObject);
     }
+    
+    /// <summary>
+    /// Logs out user in one frame, meant to be used when OnApplicationQuit() occurs in Unity.
+    /// </summary>
+    /// <param name="forgetUser">
+    /// Set as true to clear profile ID that is saved, false to save it.
+    /// </param>
+    public void LogoutOnApplicationQuit(bool forgetUser)
+    {
+        if(forgetUser)
+        {
+            ResetStoredProfileId();
+        }
+        
+        Client.Comms.ClearAllRequests();
+        Client.PlayerStateService.Logout();
+        
+        Update();
+    }
+        
+    /// <summary>
+    /// Execute a script on the server and Logout in one frame, meant to be used when OnApplicationQuit() occurs in Unity
+    /// </summary>
+    /// <param name="forgetUser">Set as true to clear profile ID that is saved, false to save it.</param>
+    /// <param name="scriptName">The name of the script to be run</param>
+    /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
+    public void RunScriptAndLogoutOnApplicationQuit(bool forgetUser, string scriptName, string jsonScriptData)
+    {
+        if(forgetUser)
+        {
+            ResetStoredProfileId();
+        }
+        
+        Client.Comms.ClearAllRequests();
+        Client.ScriptService.RunScript(scriptName, jsonScriptData);
+        Client.PlayerStateService.Logout();    
+        
+        Update();
+    }
 
     /// <summary>
     /// Method initializes the identity information from the Unity player prefs cache.
