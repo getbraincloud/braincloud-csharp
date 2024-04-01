@@ -794,10 +794,7 @@ using UnityEngine.Experimental.Networking;
             ResetCommunication();
         }
         
-        /// <summary>
-        /// Logs out user in one frame, meant to be used when OnApplicationQuit() occurs in Unity.
-        /// </summary>
-        public void LogoutOnApplicationQuit()
+        internal void ClearAllRequests()
         {
             lock (_serviceCallsWaiting)
             {
@@ -806,11 +803,6 @@ using UnityEngine.Experimental.Networking;
             
             DisposeUploadHandler();
             _activeRequest = null;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
-            AddToQueue(sc);
-            Update();
         }
 
         // see BrainCloudClient.RetryCachedMessages() docs
