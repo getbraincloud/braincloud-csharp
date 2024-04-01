@@ -793,6 +793,17 @@ using UnityEngine.Experimental.Networking;
             // and then dump the comms layer
             ResetCommunication();
         }
+        
+        internal void ClearAllRequests()
+        {
+            lock (_serviceCallsWaiting)
+            {
+                _serviceCallsWaiting.Clear();
+            }
+            
+            DisposeUploadHandler();
+            _activeRequest = null;
+        }
 
         // see BrainCloudClient.RetryCachedMessages() docs
         public void RetryCachedMessages()
