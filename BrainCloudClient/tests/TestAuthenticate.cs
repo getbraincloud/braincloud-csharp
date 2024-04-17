@@ -40,7 +40,7 @@ namespace BrainCloudTests
             //then I call authenticate again and you will notice that a call will be made to the server and everything reset.
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                true,
                tr.ApiSuccess, tr.ApiError
              );
@@ -48,7 +48,7 @@ namespace BrainCloudTests
 
             TestResult tr2 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                true,
                tr2.ApiSuccess, tr2.ApiError
              );
@@ -56,7 +56,7 @@ namespace BrainCloudTests
 
             TestResult tr3 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                true,
                tr3.ApiSuccess, tr3.ApiError
              );
@@ -73,7 +73,7 @@ namespace BrainCloudTests
             //based on the order of logic in comms, this test will get a fake response before the timer is finished so we expect the fake response.
             TestResult tr5 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                true,
                tr5.ApiSuccess, tr5.ApiError
              );
@@ -82,7 +82,7 @@ namespace BrainCloudTests
             //Now that the timer has refreshed in comms after waiting out the time, we should now be able to call another authenticate call.
             TestResult tr6 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                true,
                tr6.ApiSuccess, tr6.ApiError
              );
@@ -176,7 +176,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
-                "",
+                anonId,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 

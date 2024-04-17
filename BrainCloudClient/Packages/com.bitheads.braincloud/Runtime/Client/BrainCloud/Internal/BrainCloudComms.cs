@@ -794,10 +794,7 @@ using UnityEngine.Experimental.Networking;
             ResetCommunication();
         }
         
-        /// <summary>
-        /// Logs out user in one frame, meant to be used when OnApplicationQuit() occurs in Unity.
-        /// </summary>
-        public void LogoutOnApplicationQuit()
+        internal void ClearAllRequests()
         {
             lock (_serviceCallsWaiting)
             {
@@ -806,11 +803,6 @@ using UnityEngine.Experimental.Networking;
             
             DisposeUploadHandler();
             _activeRequest = null;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(null, null);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.Logout, null, callback);
-            AddToQueue(sc);
-            Update();
         }
 
         // see BrainCloudClient.RetryCachedMessages() docs
@@ -1102,7 +1094,11 @@ using UnityEngine.Experimental.Networking;
                             // we are no longer authenticated
                             _isAuthenticated = false;
                             SessionID = "";
-                            _clientRef.AuthenticationService.ClearSavedProfileID();
+                            if(operation == ServiceOperation.FullReset.Value)
+                            {   
+                                _clientRef.AuthenticationService.ClearSavedProfileID();
+                            }
+                            
                             ResetErrorCache();
                         }
                         //either off of authenticate or identity call, be sure to save the profileId and sessionId

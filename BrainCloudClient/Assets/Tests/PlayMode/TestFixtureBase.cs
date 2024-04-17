@@ -94,7 +94,8 @@ namespace Tests.PlayMode
 
             _tc.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
             _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
-            
+            _tc.bcWrapper.ResetStoredProfileId();
+            _tc.bcWrapper.ResetStoredAnonymousId();
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
         }

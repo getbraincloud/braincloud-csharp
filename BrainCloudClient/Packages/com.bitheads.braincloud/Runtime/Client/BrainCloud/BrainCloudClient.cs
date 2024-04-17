@@ -871,14 +871,6 @@ using System.Globalization;
         {
             _comms.ShutDown();
         }
-        
-        /// <summary>
-        /// Logs out user in one frame, meant to be used when OnApplicationQuit() occurs in Unity.
-        /// </summary>
-        public void LogoutOnApplicationQuit()
-        {
-            _comms.LogoutOnApplicationQuit();
-        }
 
         /// <summary>Update method needs to be called regularly in order
         /// to process incoming and outgoing messages.
