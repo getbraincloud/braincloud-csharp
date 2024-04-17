@@ -59,6 +59,8 @@ namespace BrainCloudTests
         [TearDown]
         public void TearDown()
         {
+            _bc.ResetStoredProfileId();
+            _bc.ResetStoredAnonymousId();
             _bc.Client.ResetCommunication();
             _bc.Client.DeregisterEventCallback();
             _bc.Client.DeregisterRewardCallback();
@@ -310,7 +312,8 @@ namespace BrainCloudTests
                 _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
-
+            _bc.ResetStoredProfileId();
+            _bc.ResetStoredAnonymousId();
             _bc.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
