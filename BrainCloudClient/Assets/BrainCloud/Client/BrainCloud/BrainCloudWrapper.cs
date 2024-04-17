@@ -3,6 +3,7 @@
 // Copyright 2016 bitHeads, inc.
 //----------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using BrainCloud;
 using BrainCloud.Common;
@@ -83,7 +84,6 @@ public class BrainCloudWrapper
 
     private bool _alwaysAllowProfileSwitch = true;
 
-    private WrapperData _wrapperData = new WrapperData();
 
     //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
     //Switch to BrainCloudWrapper.GetBC();
@@ -453,7 +453,6 @@ public class BrainCloudWrapper
     /// </summary>
     public void resetWrapper(bool resetWrapperName = false)
     {
-        _wrapperData = new WrapperData();
         Client.ResetCommunication(); // just to confirm this is being done on the client when the wrapper is reset. 
         Client.Wrapper = null;
         Client = null; 
@@ -2076,6 +2075,15 @@ public class BrainCloudWrapper
     }
     
     /// <summary>
+    /// Returns if there is stored profile ID and anonymous ID on device
+    /// </summary>
+    /// <returns></returns>
+    public bool CanReconnect()
+    {
+        return GetStoredProfileId() != String.Empty && GetStoredAnonymousId() != String.Empty;
+    }
+        
+    /// <summary>
     /// Logs user out of server.
     /// </summary>
     /// <remarks>
@@ -2453,7 +2461,7 @@ public class BrainCloudWrapper
     /// <returns>The stored profile id.</returns>
     public virtual string GetStoredProfileId()
     {
-        return _wrapperData.ProfileId;
+        return Client.AuthenticationService.ProfileId;
     }
 
     /// <summary>
@@ -2462,7 +2470,7 @@ public class BrainCloudWrapper
     /// <param name="profileId">Profile id.</param>
     public virtual void SetStoredProfileId(string profileId)
     {
-        _wrapperData.ProfileId = profileId;
+        Client.AuthenticationService.ProfileId = profileId;
         SaveData();
     }
 
@@ -2471,7 +2479,7 @@ public class BrainCloudWrapper
     /// </summary>
     public virtual void ResetStoredProfileId()
     {
-        _wrapperData.ProfileId = "";
+        Client.AuthenticationService.ProfileId = "";
         SaveData();
     }
 
@@ -2481,7 +2489,7 @@ public class BrainCloudWrapper
     /// <returns>The stored anonymous id.</returns>
     public virtual string GetStoredAnonymousId()
     {
-        return _wrapperData.AnonymousId;
+        return Client.AuthenticationService.AnonymousId;
     }
 
     /// <summary>
@@ -2490,7 +2498,7 @@ public class BrainCloudWrapper
     /// <param name="anonymousId">Anonymous id</param>
     public virtual void SetStoredAnonymousId(string anonymousId)
     {
-        _wrapperData.AnonymousId = anonymousId;
+        Client.AuthenticationService.AnonymousId = anonymousId;
         SaveData();
     }
 
@@ -2499,7 +2507,7 @@ public class BrainCloudWrapper
     /// </summary>
     public virtual void ResetStoredAnonymousId()
     {
-        _wrapperData.AnonymousId = "";
+        Client.AuthenticationService.AnonymousId = "";
         SaveData();
     }
 
@@ -2509,7 +2517,7 @@ public class BrainCloudWrapper
     /// <returns>The stored authentication type.</returns>
     public virtual string GetStoredAuthenticationType()
     {
-        return _wrapperData.AuthenticationType;
+        return Client.AuthenticationService.AuthenticationType;
     }
 
     /// <summary>
@@ -2518,7 +2526,7 @@ public class BrainCloudWrapper
     /// <param name="authenticationType">Authentication type.</param>
     public virtual void SetStoredAuthenticationType(string authenticationType)
     {
-        _wrapperData.AuthenticationType = authenticationType;
+        Client.AuthenticationService.AuthenticationType = authenticationType;
         SaveData();
     }
 
@@ -2527,7 +2535,7 @@ public class BrainCloudWrapper
     /// </summary>
     public virtual void ResetStoredAuthenticationType()
     {
-        _wrapperData.AuthenticationType = "";
+        Client.AuthenticationService.AuthenticationType = "";
         SaveData();
     }
 
@@ -2598,7 +2606,10 @@ public class BrainCloudWrapper
 #if DOT_NET
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string fileName = prefix + WrapperData.FileName;
-
+        WrapperData _wrapperData = new WrapperData();
+        _wrapperData.AnonymousId = Client.AuthenticationService.AnonymousId;
+        _wrapperData.ProfileId = Client.AuthenticationService.ProfileId;
+        _wrapperData.AuthenticationType = Client.AuthenticationService.AuthenticationType;
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
 
         using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, isoStore))
@@ -2619,9 +2630,9 @@ public class BrainCloudWrapper
         fileAccess.Close();
  #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
-        PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, _wrapperData.ProfileId);
-        PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, _wrapperData.AnonymousId);
-        PlayerPrefs.SetString(prefix + PREFS_AUTHENTICATION_TYPE, _wrapperData.AuthenticationType);
+        PlayerPrefs.SetString(prefix + PREFS_PROFILE_ID, Client.AuthenticationService.ProfileId);
+        PlayerPrefs.SetString(prefix + PREFS_ANONYMOUS_ID, Client.AuthenticationService.AnonymousId);
+        PlayerPrefs.SetString(prefix + PREFS_AUTHENTICATION_TYPE, Client.AuthenticationService.AuthenticationType);
         PlayerPrefs.Save();
 #endif
     }
@@ -2648,7 +2659,14 @@ public class BrainCloudWrapper
 
             //parse
             if(!string.IsNullOrEmpty(file))
+            {
+                var _wrapperData = new WrapperData();
                 _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+                Client.AuthenticationService.ProfileId = _wrapperData.ProfileId;
+                Client.AuthenticationService.AnonymousId = _wrapperData.AnonymousId;
+                Client.AuthenticationService.AuthenticationType = _wrapperData.AuthenticationType;
+            }
+                
         }
 #elif GODOT
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
@@ -2666,9 +2684,9 @@ public class BrainCloudWrapper
             _wrapperData = JsonReader.Deserialize<WrapperData>(file);
  #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
-        _wrapperData.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
-        _wrapperData.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
-        _wrapperData.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
+        Client.AuthenticationService.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
+        Client.AuthenticationService.AnonymousId = PlayerPrefs.GetString(prefix + PREFS_ANONYMOUS_ID);
+        Client.AuthenticationService.AuthenticationType = PlayerPrefs.GetString(prefix + PREFS_AUTHENTICATION_TYPE);
 #endif
     }
 

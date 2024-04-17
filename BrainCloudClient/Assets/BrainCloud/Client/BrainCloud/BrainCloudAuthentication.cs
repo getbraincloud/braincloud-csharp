@@ -21,7 +21,7 @@ using BrainCloud.JsonFx.Json;
         public bool CompressResponses { get; set; } = true;
         public string AnonymousId { get; set; }
         public string ProfileId { get; set; }
-
+        public string AuthenticationType { get; set; }
         public BrainCloudAuthentication(BrainCloudClient client)
         {
             _client = client;
@@ -88,7 +88,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(AnonymousId, "", AuthenticationType.Anonymous,
+            Authenticate(AnonymousId, "", Common.AuthenticationType.Anonymous,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -167,7 +167,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(email, password, AuthenticationType.Email,
+            Authenticate(email, password, Common.AuthenticationType.Email,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -206,7 +206,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, password, AuthenticationType.Universal,
+            Authenticate(userId, password, Common.AuthenticationType.Universal,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -244,7 +244,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(externalId, authenticationToken, AuthenticationType.Facebook,
+            Authenticate(externalId, authenticationToken, Common.AuthenticationType.Facebook,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -282,7 +282,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(externalId, authenticationToken, AuthenticationType.FacebookLimited,
+            Authenticate(externalId, authenticationToken, Common.AuthenticationType.FacebookLimited,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -319,7 +319,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(oculusId, oculusNonce, AuthenticationType.Oculus,
+            Authenticate(oculusId, oculusNonce, Common.AuthenticationType.Oculus,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -356,7 +356,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(accountId, authToken, AuthenticationType.PlaystationNetwork,
+            Authenticate(accountId, authToken, Common.AuthenticationType.PlaystationNetwork,
                               null, forceCreate, null, success, failure, cbObject);
         }
         
@@ -393,7 +393,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(accountId, authToken, AuthenticationType.PlaystationNetwork5,
+            Authenticate(accountId, authToken, Common.AuthenticationType.PlaystationNetwork5,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -426,7 +426,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(gameCenterId, "", AuthenticationType.GameCenter,
+            Authenticate(gameCenterId, "", Common.AuthenticationType.GameCenter,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -463,7 +463,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, sessionticket, AuthenticationType.Steam,
+            Authenticate(userId, sessionticket, Common.AuthenticationType.Steam,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -500,7 +500,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(appleUserId, identityToken, AuthenticationType.Apple,
+            Authenticate(appleUserId, identityToken, Common.AuthenticationType.Apple,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -537,7 +537,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(googleUserId, serverAuthCode, AuthenticationType.Google,
+            Authenticate(googleUserId, serverAuthCode, Common.AuthenticationType.Google,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -574,7 +574,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(googleUserAccountEmail, IdToken, AuthenticationType.GoogleOpenId,
+            Authenticate(googleUserAccountEmail, IdToken, Common.AuthenticationType.GoogleOpenId,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -615,7 +615,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token + ":" + secret, AuthenticationType.Twitter,
+            Authenticate(userId, token + ":" + secret, Common.AuthenticationType.Twitter,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -652,7 +652,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, AuthenticationType.Parse,
+            Authenticate(userId, token, Common.AuthenticationType.Parse,
                 null, forceCreate, null, success, failure, cbObject);
         }
 
@@ -681,7 +681,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(handoffCode, "", AuthenticationType.SettopHandoff,
+            Authenticate(handoffCode, "", Common.AuthenticationType.SettopHandoff,
                 null, false, null, success, failure, cbObject);
         }
 
@@ -714,7 +714,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(handoffId, securityToken, AuthenticationType.Handoff,
+            Authenticate(handoffId, securityToken, Common.AuthenticationType.Handoff,
                 null, false, null, success, failure, cbObject);
         }
 
@@ -756,7 +756,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(userId, token, AuthenticationType.External,
+            Authenticate(userId, token, Common.AuthenticationType.External,
                 externalAuthName, forceCreate, null, success, failure, cbObject);
         }
         
@@ -835,7 +835,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(ultraUsername, ultraIdToken, AuthenticationType.Ultra, 
+            Authenticate(ultraUsername, ultraIdToken, Common.AuthenticationType.Ultra, 
                 null, forceCreate, null, success, failure, cbObject);
         }
         
@@ -872,7 +872,7 @@ using BrainCloud.JsonFx.Json;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(accountId, authToken, AuthenticationType.Nintendo, 
+            Authenticate(accountId, authToken, Common.AuthenticationType.Nintendo, 
                 null, forceCreate, null, success, failure, cbObject);
         }
 
