@@ -312,9 +312,7 @@ namespace BrainCloudTests
                 _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
-            _bc.ResetStoredProfileId();
-            _bc.ResetStoredAnonymousId();
-            _bc.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
+            _bc.Logout(true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }
