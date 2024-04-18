@@ -442,6 +442,56 @@ namespace Tests.PlayMode
             LogResults("Couldn't wipe profile ID when logging out.", _tc.successCount == 4);
 
         }
+        
+        [UnityTest]
+        public IEnumerator TestLogoutAndSavedProfileID()
+        {
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            
+            string profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(!profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+            }
+            _tc.bcWrapper.Logout(false, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            profileId = _tc.bcWrapper.GetStoredProfileId();
+            if(!profileId.IsNullOrEmpty())
+            {
+                _tc.successCount++;
+            }
+
+            LogResults("ProfileID got wiped when logging out.", _tc.successCount == 4);
+        }
+        
+        [UnityTest]
+        public IEnumerator TestCanReconnectAfterLogout()
+        {
+            _tc.bcWrapper.AuthenticateUniversal
+            (
+                username,
+                password,
+                forceCreate,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            yield return _tc.StartCoroutine(_tc.Run());
+            _tc.bcWrapper.Logout(false, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            if(_tc.bcWrapper.CanReconnect())
+            {
+                _tc.successCount++;
+            }
+            LogResults("ProfileID got wiped when logging out.", _tc.successCount == 3);
+        }
 
         #region Helper Methods
         private Dictionary<string, object> MakeJsonOfDepth(int depth)
