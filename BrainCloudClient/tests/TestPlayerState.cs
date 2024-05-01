@@ -105,6 +105,18 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+        
+        [Test]
+        public void TestUpdateCountryCode()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.PlayerStateService.UpdateCountryCode(
+                "CL",
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        } 
 
         [Test]
         public void TestUpdateTimeZoneOffset()
