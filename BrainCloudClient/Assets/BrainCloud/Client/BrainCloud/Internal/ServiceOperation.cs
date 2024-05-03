@@ -203,6 +203,7 @@ using System;
 
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
+        public static readonly ServiceOperation UpdateMatchStateCurrentTurn = new ServiceOperation("UPDATE_MATCH_STATE_CURRENT_TURN");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");
         public static readonly ServiceOperation AbandonMatchWithSummaryData = new ServiceOperation("ABANDON_MATCH_WITH_SUMMARY_DATA");
         public static readonly ServiceOperation CompleteMatchWithSummaryData = new ServiceOperation("COMPLETE_MATCH_WITH_SUMMARY_DATA");
