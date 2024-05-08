@@ -281,7 +281,6 @@ using System;
         public static readonly ServiceOperation UpdateContactEmail = new ServiceOperation("UPDATE_CONTACT_EMAIL");
         public static readonly ServiceOperation UpdateLanguageCode = new ServiceOperation("UPDATE_LANGUAGE_CODE");
         public static readonly ServiceOperation UpdateTimeZoneOffset = new ServiceOperation("UPDATE_TIMEZONE_OFFSET");
-        public static readonly ServiceOperation UpdateCountryCode = new ServiceOperation("UPDATE_COUNTRY_CODE");
         public static readonly ServiceOperation SetUserStatus = new ServiceOperation("SET_USER_STATUS");        
         public static readonly ServiceOperation GetUserStatus = new ServiceOperation("GET_USER_STATUS");
         public static readonly ServiceOperation ClearUserStatus = new ServiceOperation("CLEAR_USER_STATUS");

@@ -633,25 +633,5 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-        /// <summary>
-        /// Update the country code on the user's profile.
-        /// </summary>
-        /// <param name="countryCode">countryCode The country code to set on user's profile (ISO 3166-1 alpha-2 codes).</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
-        public void UpdateCountryCode(
-        string countryCode,
-        SuccessCallback success = null,
-        FailureCallback failure = null,
-        object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.AuthenticateServiceAuthenticateCountryCode.Value] = countryCode;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateCountryCode, data, callback);
-            _client.SendRequest(sc);
-        }
     }
 }
