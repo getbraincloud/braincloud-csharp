@@ -5,9 +5,8 @@
 
 namespace BrainCloud
 {
-
-#if UNITY_STANDALONE_WIN
-        using System.Runtime.InteropServices;
+    using System.Runtime.InteropServices;
+#if UNITY_STANDALONE_WIN 
     using System.Text;
 #endif
 #if (!(DOT_NET || GODOT))
