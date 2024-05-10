@@ -341,6 +341,7 @@ using System;
         public static readonly ServiceOperation AutoJoinGroup = new ServiceOperation("AUTO_JOIN_GROUP");
         public static readonly ServiceOperation AutoJoinGroupMulti = new ServiceOperation("AUTO_JOIN_GROUP_MULTI");
         public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
+        public static readonly ServiceOperation DeleteGroupJoinRequest = new ServiceOperation("DELETE_GROUP_JOIN_REQUEST");
         public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
         public static readonly ServiceOperation CreateGroupEntity = new ServiceOperation("CREATE_GROUP_ENTITY");
         public static readonly ServiceOperation DeleteGroup = new ServiceOperation("DELETE_GROUP");
