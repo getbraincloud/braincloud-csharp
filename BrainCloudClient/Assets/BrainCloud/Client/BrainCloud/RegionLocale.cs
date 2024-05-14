@@ -55,7 +55,7 @@ namespace BrainCloud
 
         protected static void GetCountryLocale()
         {
-#if (UNITY_IPHONE || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+#if UNITY_IPHONE && !UNITY_EDITOR
         m_countryLocale = _GetUsersCountryLocale();
 #elif UNITY_ANDROID && !UNITY_EDITOR
         AndroidJavaClass javaClass = new AndroidJavaClass("com.Plugins.AndroidNative.DeviceInfo");
@@ -73,6 +73,7 @@ namespace BrainCloud
         GetGeoInfo(geoId, 4, locationBuffer, 3, lcid);
         m_countryLocale = locationBuffer.ToString();
 #elif UNITY_SWITCH && !UNITY_EDITOR
+#elif UNITY_STANDALONE_OSX
         m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString();
 #endif
         }
