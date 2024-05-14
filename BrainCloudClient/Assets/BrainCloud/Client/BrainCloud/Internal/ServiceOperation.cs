@@ -203,6 +203,7 @@ using System;
 
         public static readonly ServiceOperation SubmitTurn = new ServiceOperation("SUBMIT_TURN");
         public static readonly ServiceOperation UpdateMatchSummary = new ServiceOperation("UPDATE_SUMMARY");
+        public static readonly ServiceOperation UpdateMatchStateCurrentTurn = new ServiceOperation("UPDATE_MATCH_STATE_CURRENT_TURN");
         public static readonly ServiceOperation Abandon = new ServiceOperation("ABANDON");
         public static readonly ServiceOperation AbandonMatchWithSummaryData = new ServiceOperation("ABANDON_MATCH_WITH_SUMMARY_DATA");
         public static readonly ServiceOperation CompleteMatchWithSummaryData = new ServiceOperation("COMPLETE_MATCH_WITH_SUMMARY_DATA");
@@ -340,6 +341,7 @@ using System;
         public static readonly ServiceOperation AutoJoinGroup = new ServiceOperation("AUTO_JOIN_GROUP");
         public static readonly ServiceOperation AutoJoinGroupMulti = new ServiceOperation("AUTO_JOIN_GROUP_MULTI");
         public static readonly ServiceOperation CancelGroupInvitation = new ServiceOperation("CANCEL_GROUP_INVITATION");
+        public static readonly ServiceOperation DeleteGroupJoinRequest = new ServiceOperation("DELETE_GROUP_JOIN_REQUEST");
         public static readonly ServiceOperation CreateGroup = new ServiceOperation("CREATE_GROUP");
         public static readonly ServiceOperation CreateGroupEntity = new ServiceOperation("CREATE_GROUP_ENTITY");
         public static readonly ServiceOperation DeleteGroup = new ServiceOperation("DELETE_GROUP");

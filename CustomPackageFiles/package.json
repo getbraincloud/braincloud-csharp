@@ -1,7 +1,7 @@
 {
   "name": "com.bitheads.braincloud",
   "category": "Backend-as-a-Service",
-  "version": "5.2.3",
+  "version": "5.3.0",
   "displayName": "brainCloud",
   "description": "brainCloud is a ready-made back-end platform for the development of feature-rich games, apps and things.\n\nFor more information check out: getbraincloud.com",
   "unity": "2019.1",
