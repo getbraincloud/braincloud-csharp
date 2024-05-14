@@ -56,26 +56,30 @@ namespace BrainCloud
         protected static void GetCountryLocale()
         {
 #if UNITY_IPHONE && !UNITY_EDITOR
-        m_countryLocale = _GetUsersCountryLocale();
+            m_countryLocale = _GetUsersCountryLocale();
 #elif UNITY_ANDROID && !UNITY_EDITOR
-        AndroidJavaClass javaClass = new AndroidJavaClass("com.Plugins.AndroidNative.DeviceInfo");
-        AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer"); 
-        AndroidJavaObject activityContext = jc.GetStatic<AndroidJavaObject>("currentActivity");
-        if(javaClass != null && activityContext != null)
-        {
-            m_countryLocale = javaClass.CallStatic<string>("GetCountryCode", activityContext);    
-        }
+            AndroidJavaClass javaClass = new AndroidJavaClass("com.Plugins.AndroidNative.DeviceInfo");
+            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer"); 
+            AndroidJavaObject activityContext = jc.GetStatic<AndroidJavaObject>("currentActivity");
+            if(javaClass != null && activityContext != null)
+            {
+                m_countryLocale = javaClass.CallStatic<string>("GetCountryCode", activityContext);    
+            }
 #elif UNITY_STANDALONE_WIN
-        GeoClass geoClass = GeoClass.Nation;
-        int geoId = GetUserGeoID(geoClass);
-        int lcid = GetUserDefaultLCID();
-        var locationBuffer = new StringBuilder(3);
-        GetGeoInfo(geoId, 4, locationBuffer, 3, lcid);
-        m_countryLocale = locationBuffer.ToString();
+            GeoClass geoClass = GeoClass.Nation;
+            int geoId = GetUserGeoID(geoClass);
+            int lcid = GetUserDefaultLCID();
+            var locationBuffer = new StringBuilder(3);
+            GetGeoInfo(geoId, 4, locationBuffer, 3, lcid);
+            m_countryLocale = locationBuffer.ToString();
 #elif UNITY_SWITCH && !UNITY_EDITOR
 #elif UNITY_STANDALONE_OSX
-        m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString();
+            m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString();
 #endif
+            if(m_countryLocale == "419")
+            {
+                m_countryLocale = "_LA_";
+            }
         }
     }
 
