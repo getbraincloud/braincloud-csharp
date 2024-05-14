@@ -711,6 +711,50 @@ namespace BrainCloudTests
             DeleteGroup();
             Logout();
         }
+        
+        [Test]
+        public void TestDeleteGroupJoinRequest()
+        {
+            CreateGroupAsUserA();
+            Authenticate(Users.UserB);
+
+            TestResult tr = new TestResult(_bc);
+            _bc.GroupService.JoinGroup(
+                _groupId,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            _bc.GroupService.GetMyGroups(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            var data = tr.m_response["data"] as Dictionary<string, object>;
+            var groups = data["requested"] as Dictionary<string, object>[];
+            if(groups != null && groups.Length > 0)
+            {
+                _bc.GroupService.DeleteGroupJoinRequest(_groupId, tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+                
+                _bc.GroupService.GetMyGroups(tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+                
+                data = tr.m_response["data"] as Dictionary<string, object>;
+                groups = data["requested"] as Dictionary<string, object>[];
+                if(groups == null)
+                {
+                    Logout();
+                    DeleteGroupAsUserA();
+                }
+                else
+                {
+                    Assert.Fail();
+                }
+            }
+            else
+            {
+                Logout();
+                DeleteGroupAsUserA();
+                Assert.Fail();
+            }
+        }
 
         #region Helpers
 
