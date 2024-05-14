@@ -16,7 +16,7 @@ namespace BrainCloud
 
     public class RegionLocale
     {
-#if (UNITY_IPHONE || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+#if UNITY_IPHONE && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern string _GetUsersCountryLocale();
 #endif
