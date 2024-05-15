@@ -2623,7 +2623,7 @@ public class BrainCloudWrapper
 #elif GODOT
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string path = "user://" + prefix + WrapperData.FileName;
-
+        WrapperData _wrapperData = new WrapperData();
         Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
         string file = JsonWriter.Serialize(_wrapperData);
         fileAccess.StoreString(file);
@@ -2672,6 +2672,7 @@ public class BrainCloudWrapper
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string path = "user://" + prefix + WrapperData.FileName;
         string file = "";
+        WrapperData _wrapperData = new WrapperData();
 
         if(Godot.FileAccess.FileExists(path)) 
         {
