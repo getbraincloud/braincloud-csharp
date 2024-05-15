@@ -2624,6 +2624,9 @@ public class BrainCloudWrapper
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         string path = "user://" + prefix + WrapperData.FileName;
         WrapperData _wrapperData = new WrapperData();
+        _wrapperData.ProfileId = Client.AuthenticationService.ProfileId;
+        _wrapperData.AnonymousId = Client.AuthenticationService.AnonymousId
+        _wrapperData.AuthenticationType = Client.AuthenticationService.AuthenticationType;
         Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
         string file = JsonWriter.Serialize(_wrapperData);
         fileAccess.StoreString(file);
@@ -2682,7 +2685,13 @@ public class BrainCloudWrapper
         }
 
         if(!string.IsNullOrEmpty(file))
+        {
             _wrapperData = JsonReader.Deserialize<WrapperData>(file);
+            Client.AuthenticationService.ProfileId = _wrapperData.ProfileId;
+            Client.AuthenticationService.AnonymousId = _wrapperData.AnonymousId;
+            Client.AuthenticationService.AuthenticationType = _wrapperData.AuthenticationType;
+        }
+        
  #else
         string prefix = string.IsNullOrEmpty(WrapperName) ? "" : WrapperName + ".";
         Client.AuthenticationService.ProfileId = PlayerPrefs.GetString(prefix + PREFS_PROFILE_ID);
