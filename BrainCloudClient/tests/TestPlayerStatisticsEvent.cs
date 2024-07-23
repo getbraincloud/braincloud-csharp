@@ -63,7 +63,7 @@ namespace BrainCloudTests
 
             _bc.Client.DeregisterRewardCallback();
 
-            Assert.AreEqual (m_rewardCallbackHitCount, 1);
+            Assert.That(m_rewardCallbackHitCount == 1);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace BrainCloudTests
 
             _bc.Client.DeregisterRewardCallback();
             
-            Assert.AreEqual (m_rewardCallbackHitCount, 2);
+            Assert.That(m_rewardCallbackHitCount == 2);
         }
 
         public void rewardCallback(string jsonData)

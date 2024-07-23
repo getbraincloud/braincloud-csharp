@@ -246,7 +246,7 @@ namespace BrainCloudTests
                 total /= pingData.Count;
 
                 // We test from east to west. So it would be physically impossible to have an average under 10ms.
-                Assert.Less(10, total);
+                Assert.That(10 < total);
             }
             
             // Call all the <>WithPingData functions and make sure they go through braincloud
