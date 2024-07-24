@@ -2625,7 +2625,7 @@ public class BrainCloudWrapper
         string path = "user://" + prefix + WrapperData.FileName;
         WrapperData _wrapperData = new WrapperData();
         _wrapperData.ProfileId = Client.AuthenticationService.ProfileId;
-        _wrapperData.AnonymousId = Client.AuthenticationService.AnonymousId
+        _wrapperData.AnonymousId = Client.AuthenticationService.AnonymousId;
         _wrapperData.AuthenticationType = Client.AuthenticationService.AuthenticationType;
         Godot.FileAccess fileAccess = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
         string file = JsonWriter.Serialize(_wrapperData);
