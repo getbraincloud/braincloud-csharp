@@ -57,7 +57,7 @@ namespace BrainCloudTests
 
             Spin();
 
-            Assert.True(m_result);
+            Assert.That(m_result);
 
             return m_result;
         }
@@ -68,15 +68,15 @@ namespace BrainCloudTests
             Reset();
             Spin();
 
-            Assert.False(m_result);
+            Assert.That(!m_result);
             
             if (in_expectedStatusCode != -1)
             {
-                Assert.AreEqual(in_expectedStatusCode, m_statusCode);
+                Assert.That(in_expectedStatusCode == m_statusCode);
             }
             if (in_expectedReasonCode != -1)
             {
-                Assert.AreEqual(in_expectedReasonCode, m_reasonCode);
+                Assert.That(in_expectedReasonCode == m_reasonCode);
             }
 
             return !m_result;
@@ -87,7 +87,7 @@ namespace BrainCloudTests
             Reset();
             Spin();
 
-            Assert.False(m_result);
+            Assert.That(!m_result);
             
             return !m_result;
         }

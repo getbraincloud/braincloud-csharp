@@ -197,7 +197,7 @@ namespace BrainCloudTests
             _bc.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
-            Assert.True(tr.m_statusMessage.StartsWith("{"));
+            Assert.That(tr.m_statusMessage.StartsWith("{"));
 
             _bc.Client.SetOldStyleStatusMessageErrorCallback(true);
             tr.Reset();
@@ -205,7 +205,7 @@ namespace BrainCloudTests
             _bc.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
-            Assert.False(tr.m_statusMessage.StartsWith("{"));
+            Assert.That(!tr.m_statusMessage.StartsWith("{"));
 
             // try now using 900 client timeout
             _bc.Init("http://localhost:5432", Secret, AppId, Version);
@@ -215,14 +215,14 @@ namespace BrainCloudTests
             _bc.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
-            Assert.True(tr.m_statusMessage.StartsWith("{"));
+            Assert.That(tr.m_statusMessage.StartsWith("{"));
 
             tr.Reset();
             _bc.Client.SetOldStyleStatusMessageErrorCallback(true);
             _bc.EntityService.CreateEntity("type", "", "", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(-1, -1);
             Console.Out.WriteLine(tr.m_statusMessage);
-            Assert.False(tr.m_statusMessage.StartsWith("{"));
+            Assert.That(!tr.m_statusMessage.StartsWith("{"));
 
             _bc.Client.SetOldStyleStatusMessageErrorCallback(false);
             _bc.Client.ResetCommunication();
@@ -237,7 +237,7 @@ namespace BrainCloudTests
             _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
 
-            Assert.AreEqual(_globalErrorCount, 1);
+            Assert.That(_globalErrorCount == 1);
 
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
@@ -257,7 +257,7 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(404, 40332);
 
-            Assert.AreEqual(_globalErrorCount, 2);
+            Assert.That(_globalErrorCount == 2);
         }
 
         [Test]
@@ -269,7 +269,7 @@ namespace BrainCloudTests
             _bc.AuthenticateUniversal("", "zzz", true, tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.TOKEN_DOES_NOT_MATCH_USER);
 
-            Assert.AreEqual(_globalErrorCount, 1);
+            Assert.That(_globalErrorCount == 1);
         }
 
         [Test]
