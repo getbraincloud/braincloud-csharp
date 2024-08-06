@@ -33,12 +33,54 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetSocialLeaderboardIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetSocialLeaderboardIfExists(
+                _globalLeaderboardId,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetSocialLeaderboardIfExists(
+                "nonExistentLeaderboard",
+                true,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetSocialLeaderboardByVersion()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.GetSocialLeaderboardByVersion(
                 _globalLeaderboardId,
+                true,
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetSocialLeaderboardByVersionIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetSocialLeaderboardByVersionIfExists(
+                _globalLeaderboardId,
+                true,
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetSocialLeaderboardByVersionIfExists(
+                "nonExistentLeaderboard",
                 true,
                 0,
                 tr.ApiSuccess, tr.ApiError);
@@ -147,12 +189,62 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetGlobalLeaderboardPageIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetGlobalLeaderboardPageIfExists(
+                _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
+                0,
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetGlobalLeaderboardPageIfExists(
+                "nonExistentLeaderboard",
+                BrainCloudSocialLeaderboard.SortOrder.LOW_TO_HIGH,
+                0,
+                10,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetGlobalLeaderboardPageByVersion()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.GetGlobalLeaderboardPageByVersion(
                 _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                0,
+                10,
+                1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardPageByVersionIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetGlobalLeaderboardPageByVersionIfExists(
+                _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                0,
+                10,
+                1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetGlobalLeaderboardPageByVersionIfExists(
+                "nonExistentLeaderboard",
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 0,
                 10,
@@ -190,12 +282,62 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetGlobalLeaderboardViewIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetGlobalLeaderboardViewIfExists(
+                _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetGlobalLeaderboardViewIfExists(
+                "nonExistentLeaderboard",
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetGlobalLeaderboardViewByVersion()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.GetGlobalLeaderboardViewByVersion(
                 _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetGlobalLeaderboardViewByVersionIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetGlobalLeaderboardViewByVersionIfExists(
+                _globalLeaderboardId,
+                BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
+                5,
+                5,
+                1,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetGlobalLeaderboardViewByVersionIfExists(
+                "nonExistentLeaderboard",
                 BrainCloudSocialLeaderboard.SortOrder.HIGH_TO_LOW,
                 5,
                 5,
@@ -433,12 +575,54 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetPlayersSocialLeaderboardIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetPlayersSocialLeaderboardIfExists(
+                _socialLeaderboardId,
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetPlayersSocialLeaderboardIfExists(
+                "nonExistentLeaderboard",
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetPlayersSocialLeaderboardByVersion()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.LeaderboardService.GetPlayersSocialLeaderboardByVersion(
                 _socialLeaderboardId,
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetPlayersSocialLeaderboardByVersionIfExists()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.LeaderboardService.GetPlayersSocialLeaderboardByVersionIfExists(
+                _socialLeaderboardId,
+                new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
+                0,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            _bc.LeaderboardService.GetPlayersSocialLeaderboardByVersionIfExists(
+                "nonExistentLeaderboard",
                 new[] { GetUser(Users.UserA).ProfileId, GetUser(Users.UserB).ProfileId },
                 0,
                 tr.ApiSuccess, tr.ApiError);
