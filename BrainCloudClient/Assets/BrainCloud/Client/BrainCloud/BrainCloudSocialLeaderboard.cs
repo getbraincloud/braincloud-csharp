@@ -990,6 +990,24 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
+        public void PostScoreToDynamicLeaderboardUsingConfig(string leaderboardId, long score, string scoreData, string configJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
+            if (Util.IsOptionalParameterValid(scoreData))
+            {
+                var optionalScoreData = JsonReader.Deserialize<Dictionary<string, object>>(scoreData);
+                data[OperationParam.SocialLeaderboardServiceScoreData.Value] = optionalScoreData;
+            }
+            var leaderboardConfigJson = JsonReader.Deserialize<Dictionary<string, object>>(configJson);
+            data[OperationParam.SocialLeaderboardServiceConfigJson.Value] = leaderboardConfigJson;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamicUsingConfig, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Post the group score to the given social group leaderboard.
         /// Pass leaderboard config data to dynamically create if necessary.

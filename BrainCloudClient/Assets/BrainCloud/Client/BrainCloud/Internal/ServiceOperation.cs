@@ -120,6 +120,7 @@ using System;
         public static readonly ServiceOperation GetGlobalLeaderboardVersions = new ServiceOperation("GET_GLOBAL_LEADERBOARD_VERSIONS");
         public static readonly ServiceOperation PostScore = new ServiceOperation("POST_SCORE");
         public static readonly ServiceOperation PostScoreDynamic = new ServiceOperation("POST_SCORE_DYNAMIC");
+        public static readonly ServiceOperation PostScoreDynamicUsingConfig = new ServiceOperation("POST_SCORE_DYNAMIC_USING_CONFIG");
         public static readonly ServiceOperation PostScoreToDynamicGroupLeaderboard = new ServiceOperation("POST_GROUP_SCORE_DYNAMIC");
         public static readonly ServiceOperation RemovePlayerScore = new ServiceOperation("REMOVE_PLAYER_SCORE");
         public static readonly ServiceOperation GetCompletedTournament = new ServiceOperation("GET_COMPLETED_TOURNAMENT");
