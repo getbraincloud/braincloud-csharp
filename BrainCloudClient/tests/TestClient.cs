@@ -65,7 +65,7 @@ namespace BrainCloudTests
 
                 failureIndex++;
 
-                Assert.Less(failureIndex, 13, "UpdateEntity called too many times without killswitch turning on/");
+                Assert.That(failureIndex < 13, "UpdateEntity called too many times without killswitch turning on/");
             }
 
             _bc.Client.AuthenticationService.AuthenticateUniversal(
