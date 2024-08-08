@@ -6,6 +6,7 @@
 namespace BrainCloud
 {
     using System.Runtime.InteropServices;
+    using System.Globalization;
 #if UNITY_STANDALONE_WIN 
     using System.Text;
 #endif
@@ -55,6 +56,11 @@ namespace BrainCloud
 
         protected static void GetCountryLocale()
         {
+            //By default get it from region info
+            RegionInfo regionInfo = RegionInfo.CurrentRegion;
+            m_countryLocale = regionInfo.TwoLetterISORegionName;
+
+            //For these specific cases, try to get region more accurately rather than from the system language selection
 #if UNITY_IPHONE && !UNITY_EDITOR
             m_countryLocale = _GetUsersCountryLocale();
 #elif UNITY_ANDROID && !UNITY_EDITOR
@@ -72,13 +78,17 @@ namespace BrainCloud
             var locationBuffer = new StringBuilder(3);
             GetGeoInfo(geoId, 4, locationBuffer, 3, lcid);
             m_countryLocale = locationBuffer.ToString();
-#elif UNITY_SWITCH && !UNITY_EDITOR
 #elif UNITY_STANDALONE_OSX
             m_countryLocale = System.Globalization.RegionInfo.CurrentRegion.ToString();
 #endif
+
             if(m_countryLocale == "419")
             {
                 m_countryLocale = "_LA_";
+            }
+            if(m_countryLocale == "Hans" || m_countryLocale == "Hant")
+            {
+                m_countryLocale = "CN";
             }
         }
     }
