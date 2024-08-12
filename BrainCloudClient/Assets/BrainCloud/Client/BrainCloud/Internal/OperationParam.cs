@@ -243,6 +243,8 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceLeaderboardIds = new OperationParam("leaderboardIds");
         public static readonly OperationParam SocialLeaderboardServiceReplaceName = new OperationParam("replaceName");
         public static readonly OperationParam SocialLeaderboardServiceScore = new OperationParam("score");
+        public static readonly OperationParam SocialLeaderboardServiceScoreData = new OperationParam("scoreData");
+        public static readonly OperationParam SocialLeaderboardServiceConfigJson = new OperationParam("configJson");
         public static readonly OperationParam SocialLeaderboardServiceData = new OperationParam("data");
         public static readonly OperationParam SocialLeaderboardServiceEventName = new OperationParam("eventName");
         public static readonly OperationParam SocialLeaderboardServiceEventMultiplier = new OperationParam("eventMultiplier");

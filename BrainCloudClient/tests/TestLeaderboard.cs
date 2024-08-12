@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
+using System.Diagnostics;
 
 namespace BrainCloudTests
 {
@@ -351,6 +352,25 @@ namespace BrainCloudTests
         public void TestPostScoreToDynamicLeaderboardHighValue()
         {
             PostScoreToDynamicLeaderboardHighValue();
+        }
+
+        [Test]
+        public void TestPostScoreToDynamicLeaderboardUsingConfig()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            int score = 10;
+            string scoreData = "{\"nickname\": \"Tarnished\"}";
+            var configJson = new Dictionary<string, object>();
+            configJson["leaderboardType"] = "HIGH_VALUE";
+            configJson["rotationType"] = "DAYS";
+            configJson["numDaysToRotate"] = "4";
+            configJson["resetAt"] = (ulong)TimeUtil.UTCDateTimeToUTCMillis(TimeUtil.LocalTimeToUTCTime(System.DateTime.Now.AddDays(5)));
+            configJson["retainedCount"] = 2;
+
+            _bc.LeaderboardService.PostScoreToDynamicLeaderboardUsingConfig(_dynamicLeaderboardId, score, scoreData, JsonWriter.Serialize(configJson), tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
         }
 
         public void PostScoreToDynamicLeaderboardHighValue()
