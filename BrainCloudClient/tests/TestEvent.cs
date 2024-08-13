@@ -153,6 +153,38 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestUpdateIncomingEventDataIfExistsTrue()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            string eventId = SendDefaultMessage();
+
+            _bc.EventService.UpdateIncomingEventDataIfExists(
+                eventId,
+                Helpers.CreateJsonPair(_eventDataKey, 343),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+
+            CleanupIncomingEvent(eventId);
+        }
+
+        [Test]
+        public void TestUpdateIncomingEventDataIfExistsFalse()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            string nonExistentEventId = "66ba5285d9002730d8f707a0";
+
+            _bc.EventService.UpdateIncomingEventDataIfExists(
+                nonExistentEventId,
+                Helpers.CreateJsonPair(_eventDataKey, 343),
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestGetEvents()
         {
             TestResult tr = new TestResult(_bc);

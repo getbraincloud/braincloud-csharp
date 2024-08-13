@@ -117,6 +117,50 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Updates an event in the user's incoming event mailbox.
+        /// Returns the same data as UpdateIncomingEventData, but does not return an error if the event does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Event
+        /// Service Operation - UpdateEventData
+        /// </remarks>
+        /// <param name="evId">
+        /// The event id
+        /// </param>
+        /// <param name="jsonEventData">
+        /// The user-defined data for this event encoded in JSON.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateIncomingEventDataIfExists(
+            string evId,
+            string jsonEventData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.EvId.Value] = evId;
+
+            if (Util.IsOptionalParameterValid(jsonEventData))
+            {
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
+                data[OperationParam.EventServiceUpdateEventDataData.Value] = eventData;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.UpdateEventDataIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Delete an event out of the user's incoming mailbox.
         /// </summary>
         /// <remarks>
