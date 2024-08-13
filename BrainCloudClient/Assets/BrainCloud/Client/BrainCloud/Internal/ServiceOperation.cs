@@ -170,6 +170,7 @@ using System;
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
+        public static readonly ServiceOperation UpdateEventDataIfExists = new ServiceOperation("UPDATE_EVENT_DATA_IF_EXISTS");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
         public static readonly ServiceOperation DeleteIncoming = new ServiceOperation("DELETE_INCOMING");
         public static readonly ServiceOperation DeleteIncomingEvents = new ServiceOperation("DELETE_INCOMING_EVENTS");
