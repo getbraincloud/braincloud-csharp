@@ -102,6 +102,60 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Method returns the social leaderboard. A player's social leaderboard is
+        /// comprised of players who are recognized as being your friend.
+        ///
+        /// The getSocialLeaderboard will retrieve all friends from all friend platforms, so
+        /// - all external friends (Facebook, Steam, PlaystationNetwork)
+        /// - all internal friends (brainCloud)
+        /// - plus "self".
+        ///
+        /// Leaderboards entries contain the player's score and optionally, some user-defined
+        /// data associated with the score. The currently logged in player will also
+        /// be returned in the social leaderboard.
+        ///
+        /// Note: If no friends have played the game, the bestScore, createdAt, updatedAt
+        /// will contain NULL.
+        /// 
+        /// This method returns the same data as GetSocialLeaderboard, but it will not return an error if the leaderboard is not found.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve
+        /// </param>
+        /// <param name="replaceName">
+        /// If true, the currently logged in player's name will be replaced
+        /// by the string "You".
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetSocialLeaderboardIfExists(
+            string leaderboardId,
+            bool replaceName,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboardIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Method returns the social leaderboard by its version. A player's social leaderboard is
         /// comprised of players who are recognized as being your friend.
         ///
@@ -119,7 +173,7 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
-        /// Service Operation - GET_SOCIAL_LEADERBOARD
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_BY_VERSION
         /// </remarks>
         /// <param name="leaderboardId">
         /// The id of the leaderboard to retrieve
@@ -155,6 +209,65 @@ using BrainCloud.Internal;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboardByVersion, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Method returns the social leaderboard by its version. A player's social leaderboard is
+        /// comprised of players who are recognized as being your friend.
+        ///
+        /// The getSocialLeaderboard will retrieve all friends from all friend platforms, so
+        /// - all external friends (Facebook, Steam, PlaystationNetwork)
+        /// - all internal friends (brainCloud)
+        /// - plus "self".
+        ///
+        /// Leaderboards entries contain the player's score and optionally, some user-defined
+        /// data associated with the score. The currently logged in player will also
+        /// be returned in the social leaderboard.
+        ///
+        /// Note: If no friends have played the game, the bestScore, createdAt, updatedAt
+        /// will contain NULL.
+        /// 
+        /// This method returns the same data as GetSocialLeaderboardByVersion, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_BY_VERSION_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve
+        /// </param>
+        /// <param name="replaceName">
+        /// If true, the currently logged in player's name will be replaced
+        /// by the string "You".
+        /// </param>
+        /// <param name="versionId">
+        /// The version
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetSocialLeaderboardByVersionIfExists(
+            string leaderboardId,
+            bool replaceName,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceReplaceName.Value] = replaceName;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetSocialLeaderboardByVersionIfExists, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -255,6 +368,61 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Method returns a page of global leaderboard results.
+        ///
+        /// Leaderboards entries contain the player's score and optionally, some user-defined
+        /// data associated with the score.
+        ///
+        /// Note: This method allows the client to retrieve pages from within the global leaderboard list
+        /// 
+        /// This method returns the same data as GetGlobalLeaderboardPage, but will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="startIndex">
+        /// The index at which to start the page.
+        /// </param>
+        /// <param name="endIndex">
+        /// The index at which to end the page.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGlobalLeaderboardPageIfExists(
+            string leaderboardId,
+            SortOrder sort,
+            int startIndex,
+            int endIndex,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = startIndex;
+            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = endIndex;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPageIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Method returns a page of global leaderboard results. By using a non-current version id, 
         /// the user can retrieve a historical leaderboard. See GetGlobalLeaderboardVersions method
         /// to retrieve the version id.
@@ -308,7 +476,64 @@ using BrainCloud.Internal;
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPage, data, callback);
             _client.SendRequest(sc);
         }
-        
+
+        /// <summary>
+        /// Method returns a page of global leaderboard results. By using a non-current version id, 
+        /// the user can retrieve a historical leaderboard. See GetGlobalLeaderboardVersions method
+        /// to retrieve the version id.
+        /// 
+        /// This method returns the same data as GetGlobalLeaderboardPage, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="startIndex">
+        /// The index at which to start the page.
+        /// </param>
+        /// <param name="endIndex">
+        /// The index at which to end the page.
+        /// </param>
+        /// <param name="versionId">
+        /// The historical version to retrieve.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGlobalLeaderboardPageByVersionIfExists(
+            string leaderboardId,
+            SortOrder sort,
+            int startIndex,
+            int endIndex,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceStartIndex.Value] = startIndex;
+            data[OperationParam.SocialLeaderboardServiceEndIndex.Value] = endIndex;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardPageIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Method returns a view of global leaderboard results that centers on the current player.
         ///
@@ -350,6 +575,51 @@ using BrainCloud.Internal;
             object cbObject = null)
         {
             GetGlobalLeaderboardViewByVersion(leaderboardId, sort, beforeCount, afterCount, -1, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Method returns a view of global leaderboard results that centers on the current player.
+        ///
+        /// Leaderboards entries contain the player's score and optionally, some user-defined
+        /// data associated with the score.
+        /// 
+        /// This method returns the same data as GetGlobalLeaderboardView, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGlobalLeaderboardViewIfExists(
+            string leaderboardId,
+            SortOrder sort,
+            int beforeCount,
+            int afterCount,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            GetGlobalLeaderboardViewByVersionIfExists(leaderboardId, sort, beforeCount, afterCount, -1, success, failure, cbObject);
         }
 
         /// <summary>
@@ -407,6 +677,66 @@ using BrainCloud.Internal;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardView, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Method returns a view of global leaderboard results that centers on the current player.
+        /// By using a non-current version id, the user can retrieve a historical leaderboard.
+        /// See GetGlobalLeaderboardVersions method to retrieve the version id.
+        /// 
+        /// This method returns the same data as GetGlobalLeaderboardViewByVersion, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The id of the leaderboard to retrieve.
+        /// </param>
+        /// <param name="sort">
+        /// Sort key Sort order of page.
+        /// </param>
+        /// <param name="beforeCount">
+        /// The count of number of players before the current player to include.
+        /// </param>
+        /// <param name="afterCount">
+        /// The count of number of players after the current player to include.
+        /// </param>
+        /// <param name="versionId">
+        /// The historial version to retrieve. Use -1 for current leaderboard.
+        /// </param> 
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetGlobalLeaderboardViewByVersionIfExists(
+            string leaderboardId,
+            SortOrder sort,
+            int beforeCount,
+            int afterCount,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+            if (versionId != -1)
+            {
+                data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+            }
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetGlobalLeaderboardViewIfExists, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -657,6 +987,63 @@ using BrainCloud.Internal;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamic, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Post the player's score to the given social leaderboard, 
+        /// dynamically creating the leaderboard if it does not exist yet. 
+        /// To create new leaderboard, configJson must specify 
+        /// leaderboardType, rotationType, resetAt, and retainedCount, at a minimum, 
+        /// with support to optionally specify an expiry in minutes.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - POST_SCORE_DYNAMIC_USING_CONFIG
+        /// </remarks>
+        /// <param name="leaderboardId">The leaderboard to post to.</param>
+        /// <param name="score">A score to post.</param>
+        /// <param name="scoreData">Optional user-defined data to post with the score.</param>
+        /// <param name="configJson">
+        /// Configuration for the leaderboard if it does not exist yet, specified as JSON object. 
+        /// Configuration fields supported are:
+        ///     leaderboardType': Required. Type of leaderboard. Valid values are:
+        ///         'LAST_VALUE',
+        ///         'HIGH_VALUE',
+        ///         'LOW_VALUE',
+        ///         'CUMULATIVE',
+        ///         'ARCADE_HIGH',
+        ///         'ARCADE_LOW';
+        ///     'rotationType': Required. Type of rotation. Valid values are:
+        ///         'NEVER',
+        ///         'DAILY',
+        ///         'DAYS',
+        ///         'WEEKLY',
+        ///         'MONTHLY',
+        ///         'YEARLY'; 
+        ///     'numDaysToRotate': Required if 'DAYS' rotation type, with valid values between 2 and 14; otherwise, null; 
+        ///     'resetAt': UTC timestamp, in milliseconds, at which to rotate the period. Always null if 'NEVER' rotation type; 
+        ///     'retainedCount': Required. Number of rotations (versions) of the leaderboard to retain; 
+        ///     'expireInMins': Optional. Duration, in minutes, before the leaderboard is to automatically expire.
+        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void PostScoreToDynamicLeaderboardUsingConfig(string leaderboardId, long score, string scoreData, string configJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
+            if (Util.IsOptionalParameterValid(scoreData))
+            {
+                var optionalScoreData = JsonReader.Deserialize<Dictionary<string, object>>(scoreData);
+                data[OperationParam.SocialLeaderboardServiceScoreData.Value] = optionalScoreData;
+            }
+            var leaderboardConfigJson = JsonReader.Deserialize<Dictionary<string, object>>(configJson);
+            data[OperationParam.SocialLeaderboardServiceConfigJson.Value] = leaderboardConfigJson;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreDynamicUsingConfig, data, callback);
             _client.SendRequest(sc);
         }
 
@@ -928,6 +1315,45 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Retrieve the social leaderboard for a list of players.
+        /// This function returns the same data as GetPlayersSocialLeaderboard, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="profileIds">
+        /// The IDs of the players
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayersSocialLeaderboardIfExists(
+            string leaderboardId,
+            IList<string> profileIds,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceProfileIds.Value] = profileIds;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboardIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Retrieve the social leaderboard for a list of players by their version.
         /// </summary>
         /// <remarks>
@@ -968,6 +1394,51 @@ using BrainCloud.Internal;
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboardByVersion, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Retrieve the social leaderboard for a list of players by their version.
+        /// This function returns the same data as GetPlayersSocialLeaderboardByVersion, but it will not return an error if the leaderboard does not exist.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD_BY_VERSION_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The ID of the leaderboard
+        /// </param>
+        /// <param name="profileIds">
+        /// The IDs of the players
+        /// </param>
+        /// <param name="versionId">
+        /// The version
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetPlayersSocialLeaderboardByVersionIfExists(
+            string leaderboardId,
+            IList<string> profileIds,
+            int versionId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceProfileIds.Value] = profileIds;
+            data[OperationParam.SocialLeaderboardServiceVersionId.Value] = versionId;
+
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.GetPlayersSocialLeaderboardByVersionIfExists, data, callback);
             _client.SendRequest(sc);
         }
 

@@ -425,7 +425,7 @@ namespace BrainCloudTests
 
             var data = tr.m_response["data"] as Dictionary<string, object>;
             string code = data["countryCode"] as string;
-            Assert.AreEqual(countryCode, code);
+            Assert.That(countryCode == code);
         }
 
         [Test]
@@ -447,7 +447,7 @@ namespace BrainCloudTests
 
             var data = tr.m_response["data"] as Dictionary<string, object>;
             string code = data["languageCode"] as string;
-            Assert.AreEqual(languageCode, code);
+            Assert.That(languageCode == code);
         }
 
         [Test]
@@ -499,7 +499,7 @@ namespace BrainCloudTests
                 !ServerUrl.Contains("api.internalg.braincloudservers.com"))
             {
                 Console.WriteLine("This env doesn't support Ultra authentication type");
-                Assert.True(true);
+                Assert.That(true);
                 return;
             }
             

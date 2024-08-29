@@ -36,7 +36,7 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(16);
             }
-            Assert.True(_bc.RTTService.IsRTTEnabled());
+            Assert.That(_bc.RTTService.IsRTTEnabled());
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(16); // Simulate 60 fps
             }
-            Assert.True(receivedChat);
+            Assert.That(receivedChat);
 
             // Now deregister and make sure we don't receive it
             _bc.RTTService.DeregisterRTTChatCallback();
@@ -97,7 +97,7 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(16);
             }
-            Assert.False(receivedChat);
+            Assert.That(!receivedChat);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(16);
             }
-            Assert.True(receivedLobby);
+            Assert.That(receivedLobby);
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace BrainCloudTests
                 _bc.Update();
                 Thread.Sleep(16);
             }
-            Assert.True(receivedEvent);
+            Assert.That(receivedEvent);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
         }
         
         [Test]
@@ -85,7 +85,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
         }
 
         private string GetFullPath(string cloudPath, string cloudFileName)
@@ -159,7 +159,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
 
             Thread.Sleep(2000);
 
@@ -176,7 +176,7 @@ namespace BrainCloudTests
                 return;
             }
 
-            Assert.IsFalse(true);
+            Assert.That(false);
         }
 
         [Test]
@@ -211,7 +211,7 @@ namespace BrainCloudTests
             Console.WriteLine("\nDid fail = " + (_failCount > 0));
             Console.WriteLine("File list length  = " + fileList.Length + "\n");
 
-            Assert.IsFalse(_failCount <= 0 || fileList.Length > 0);
+            Assert.That(!(_failCount <= 0 || fileList.Length > 0));
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
 
             _bc.FileService.DeleteUserFile(
                 GetCloudPath(tr.m_response),
@@ -265,7 +265,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
 
             _bc.FileService.GetCDNUrl(
                 GetCloudPath(tr.m_response),
@@ -295,7 +295,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
 
             _bc.FileService.DeleteUserFiles(
                 GetCloudPath(tr.m_response),
@@ -337,7 +337,7 @@ namespace BrainCloudTests
 
             WaitForReturn(new[] { id1, GetUploadId(tr.m_response) });
 
-            Assert.IsFalse(_failCount > 0);
+            Assert.That(!(_failCount > 0));
         }
 
         private void FileCallbackSuccess(string uploadId, string jsonData)
