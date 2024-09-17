@@ -45,7 +45,7 @@ namespace BrainCloud
         {
             get
             {
-                if (m_countryLocale == "")
+                if (string.IsNullOrEmpty(m_countryLocale))
                 {
                     GetCountryLocale();
                 }

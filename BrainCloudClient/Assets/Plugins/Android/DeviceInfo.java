@@ -151,10 +151,10 @@ public class DeviceInfo {
         Log.d("CountryGetter", "Country from Locale " + locales.get(0).getCountry());
 
         countryCode = telephonyManager.getSimCountryIso();
-        if(countryCode == ""){
+        if(countryCode == null || countryCode.isEmpty()){
             countryCode = telephonyManager.getNetworkCountryIso();
         }
-        if(countryCode == ""){
+        if(countryCode == null || countryCode.isEmpty()){
             countryCode = locales.get(0).getCountry();
         }
 

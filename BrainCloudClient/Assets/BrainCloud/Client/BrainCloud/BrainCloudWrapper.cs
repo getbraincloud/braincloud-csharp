@@ -2171,7 +2171,7 @@ public class BrainCloudWrapper
         string profileId = GetStoredProfileId();
         string anonymousId = GetStoredAnonymousId();
 
-        if ((anonymousId != "" && profileId == "") || anonymousId == "")
+        if ((!string.IsNullOrEmpty(anonymousId) && string.IsNullOrEmpty(profileId)) || string.IsNullOrEmpty(anonymousId))
         {
             anonymousId = Client.AuthenticationService.GenerateAnonymousId();
             profileId = "";
