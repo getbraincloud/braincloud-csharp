@@ -15,7 +15,7 @@ namespace BrainCloudTests
     public class TestLobby : TestFixtureBase
     {
         [Test]
-        public void TestFindLobby()
+        public void TestFindLobbyDeprecated()
         {
             TestResult tr = new TestResult(_bc);
 
@@ -32,11 +32,45 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestFindLobby()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            Dictionary<string, object> algo = new Dictionary<string, object>();
+            algo["strategy"] = "ranged-absolute";
+            algo["alignment"] = "center";
+            List<int> ranges = new List<int>();
+            ranges.Add(1000);
+            algo["ranges"] = ranges;
+
+            _bc.LobbyService.FindLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
         public void TestCreateLobby()
         {
             TestResult tr = new TestResult(_bc);
 
             _bc.LobbyService.CreateLobby("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestFindOrCreateLobbyDeprecated()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            Dictionary<string, object> algo = new Dictionary<string, object>();
+            algo["strategy"] = "ranged-absolute";
+            algo["alignment"] = "center";
+            List<int> ranges = new List<int>();
+            ranges.Add(1000);
+            algo["ranges"] = ranges;
+
+            _bc.LobbyService.FindOrCreateLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -53,7 +87,7 @@ namespace BrainCloudTests
             ranges.Add(1000);
             algo["ranges"] = ranges;
 
-            _bc.LobbyService.FindOrCreateLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+            _bc.LobbyService.FindOrCreateLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -261,6 +295,19 @@ namespace BrainCloudTests
                 _bc.LobbyService.FindLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
+
+            {
+                Dictionary<string, object> algo = new Dictionary<string, object>();
+                algo["strategy"] = "ranged-absolute";
+                algo["alignment"] = "center";
+                List<int> ranges = new List<int>();
+                ranges.Add(1000);
+                algo["ranges"] = ranges;
+
+                _bc.LobbyService.FindLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+            }
+
             {
                 _bc.LobbyService.CreateLobbyWithPingData("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
@@ -276,6 +323,20 @@ namespace BrainCloudTests
                 _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
+
+            // TODO:  FindOrCreateLobbyWithPingData w/o timeoutSecs
+            {
+                Dictionary<string, object> algo = new Dictionary<string, object>();
+                algo["strategy"] = "ranged-absolute";
+                algo["alignment"] = "center";
+                List<int> ranges = new List<int>();
+                ranges.Add(1000);
+                algo["ranges"] = ranges;
+
+                _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+            }
+
             {
                 _bc.LobbyService.JoinLobbyWithPingData("wrongLobbyId", true, new Dictionary<string, object>(), "red", null, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.LOBBY_NOT_FOUND);
