@@ -39,7 +39,7 @@ namespace BrainCloudTests
                 if ((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0) break;
             }
 
-            Assert.True(successCount == 3); // Test result
+            Assert.That(successCount == 3); // Test result
         }
 
         void onFailed(int status, int reasonCode, string jsonError, object cbObject)

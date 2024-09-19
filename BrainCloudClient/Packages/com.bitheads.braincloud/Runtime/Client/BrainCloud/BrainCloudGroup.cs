@@ -253,6 +253,37 @@ using System;
 
             SendRequest(ServiceOperation.CancelGroupInvitation, success, failure, cbObject, data);
         }
+        
+        /// <summary>
+        /// Delete a request to join the group.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Group
+        /// Service Operation - DELETE_GROUP_JOIN_REQUEST
+        /// </remarks>
+        /// <param name="groupId">
+        /// The id of the group.
+        /// </param>
+        /// <param name="success">
+        /// The success callback
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback
+        /// </param>
+        /// <param name="cbObject">
+        /// The callback object
+        /// </param>
+        public void DeleteGroupJoinRequest(
+            string groupId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            
+            SendRequest(ServiceOperation.DeleteGroupJoinRequest, success, failure, cbObject, data);
+        }
 
         /// <summary>
         /// Create a group.

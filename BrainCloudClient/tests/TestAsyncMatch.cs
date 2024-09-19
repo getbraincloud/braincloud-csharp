@@ -47,6 +47,35 @@ namespace BrainCloudTests
 
             tr.Run();
         }
+        
+        [Test]
+        public void TestUpdateMatchStateCurrentTurn()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            Dictionary<string, object>[] players = new Dictionary<string, object>[2];
+            players[0] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserB).ProfileId } };
+            players[1] = new Dictionary<string, object> { { "platform", _platform }, { "id", GetUser(Users.UserA).ProfileId } };
+
+            _bc.AsyncMatchService.CreateMatch(
+                JsonWriter.Serialize(players),
+                null,
+                tr.ApiSuccess, tr.ApiError);
+
+            string matchId = "";
+            string ownerId = "";
+
+            if (tr.Run())
+            {
+                matchId = (string)((Dictionary<string, object>)(tr.m_response["data"]))["matchId"];
+                ownerId = (string)((Dictionary<string, object>)(tr.m_response["data"]))["ownerId"];
+            }
+
+            Dictionary<string, object> matchState = new Dictionary<string, object>();
+            matchState.Add("blob", 2);
+            _bc.AsyncMatchService.UpdateMatchStateCurrentTurn(ownerId, matchId, 0, matchState, "", tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
 
         [Test]
         public void TestCompleteMatch()

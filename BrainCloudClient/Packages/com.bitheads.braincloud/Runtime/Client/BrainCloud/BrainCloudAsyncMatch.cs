@@ -277,6 +277,60 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.UpdateMatchSummary, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Allows the current player in the game to overwrite the matchState and
+        /// statistics without completing their turn or adding to matchHistory.
+        /// </summary>
+        /// <param name="ownerId">
+        /// Match owner identfier
+        /// </param>
+        /// <param name="matchId">
+        /// Match identifier
+        /// </param>
+        /// <param name="version">
+        /// Game state version to ensure turns are submitted once and in order
+        /// </param>
+        /// <param name="jsonMatchState">
+        /// Dictionary provided by the caller to represent the match state
+        /// </param>
+        /// <param name="jsonStatistics">
+        /// Optional JSON string blob provided by the caller
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void UpdateMatchStateCurrentTurn(
+            string ownerId,
+            string matchId,
+            ulong version,
+            Dictionary<string, object> jsonMatchState,
+            string jsonStatistics = "",
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data["ownerId"] = ownerId;
+            data["matchId"] = matchId;
+            data["version"] = version;
+            data["matchState"] = jsonMatchState;
+            if (Util.IsOptionalParameterValid(jsonStatistics))
+            {
+                data["statistics"] = jsonStatistics;
+            }
+            
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AsyncMatch, ServiceOperation.UpdateMatchStateCurrentTurn, data, callback);
+            _client.SendRequest(sc);
+        }
 
         /// <summary>
         /// Marks the given match as complete.

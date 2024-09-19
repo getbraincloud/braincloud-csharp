@@ -22,8 +22,8 @@ namespace BrainCloudTests
             string profileId = _bc.Client.AuthenticationService.ProfileId;
             string anonId = _bc.Client.AuthenticationService.AnonymousId;
 
-            Assert.AreEqual(profileId, _bc.GetStoredProfileId());
-            Assert.AreEqual(anonId, _bc.GetStoredAnonymousId());
+            Assert.That(profileId == _bc.GetStoredProfileId());
+            Assert.That(anonId == _bc.GetStoredAnonymousId());
 
             _bc.Client.PlayerStateService.Logout(tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -31,8 +31,8 @@ namespace BrainCloudTests
             _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            Assert.AreEqual(profileId, _bc.GetStoredProfileId());
-            Assert.AreEqual(anonId, _bc.GetStoredAnonymousId());
+            Assert.That(profileId == _bc.GetStoredProfileId());
+            Assert.That(anonId == _bc.GetStoredAnonymousId());
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace BrainCloudTests
             string profileID = _bc.GetStoredProfileId();
             if(profileID.Length == 0)
             {
-                Assert.True(true);
+                Assert.That(true);
             }
             tr.Run();
         }
@@ -157,7 +157,7 @@ namespace BrainCloudTests
             string profileID = _bc.GetStoredProfileId();
             if(profileID.Length != 0)
             {
-                Assert.True(true);
+                Assert.That(true);
             }
             tr.Run();
         }
@@ -171,7 +171,7 @@ namespace BrainCloudTests
             _bc.Logout(false, tr.ApiSuccess, tr.ApiError);
             if(_bc.CanReconnect())
             {
-                Assert.True(true);
+                Assert.That(true);
             }
             tr.Run();
         }

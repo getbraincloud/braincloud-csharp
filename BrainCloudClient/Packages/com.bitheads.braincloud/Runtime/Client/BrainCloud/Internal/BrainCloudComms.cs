@@ -1115,7 +1115,7 @@ using UnityEngine.Experimental.Networking;
                         else if (operation == ServiceOperation.PrepareUserUpload.Value || bIsPeerScriptUploadCall)
                         {
                             string peerCode = bIsPeerScriptUploadCall && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : "";
-                            var fileData = peerCode == "" ? (Dictionary<string, object>)responseData["fileDetails"] :
+                            var fileData = string.IsNullOrEmpty(peerCode) ? (Dictionary<string, object>)responseData["fileDetails"] :
                                 (Dictionary<string, object>)((Dictionary<string, object>)((Dictionary<string, object>)responseData["response"])[OperationParam.ServiceMessageData.Value])["fileDetails"];
 
                             if (fileData.ContainsKey("uploadId") && fileData.ContainsKey("localPath"))

@@ -66,7 +66,7 @@ namespace BrainCloudTests
                 if (channelId == curChannelId) break;
             }
 
-            Assert.IsFalse(i == channels.Length);
+            Assert.That(i != channels.Length);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace BrainCloudTests
             _bc.ChatService.GetChatMessage(channelId, msgId, tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            Assert.IsTrue((string)((Dictionary<string, object>)((Dictionary<string, object>)tr.m_response["data"])["content"])["text"] == "Hello World!");
+            Assert.That((string)((Dictionary<string, object>)((Dictionary<string, object>)tr.m_response["data"])["content"])["text"] == "Hello World!");
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace BrainCloudTests
                 if (msgId == curMsgId) break;
             }
 
-            Assert.IsFalse(i == messages.Length);
+            Assert.That(i != messages.Length);
         }
 
         [Test]

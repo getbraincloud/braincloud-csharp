@@ -18,7 +18,7 @@ namespace BrainCloudTests
             
             acl = ACL.CreateFromJson(jsonObj);
 
-            Assert.AreEqual(ACL.Access.ReadOnly, acl.Other);
+            Assert.That(ACL.Access.ReadOnly == acl.Other);
         }
     }
 }

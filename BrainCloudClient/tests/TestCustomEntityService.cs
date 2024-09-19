@@ -115,8 +115,8 @@ namespace BrainCloudTests
             tr.Run();
 
             var datadict = tr.m_response["data"] as Dictionary<string, object>;
-            Assert.True(datadict == null);
-            Assert.True((int)tr.m_response["status"]==200);
+            Assert.That(datadict == null);
+            Assert.That((int)tr.m_response["status"]==200);
         }
 
         [Test]

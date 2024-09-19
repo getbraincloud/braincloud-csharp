@@ -17,7 +17,9 @@ using System;
         {
             All,
             brainCloud,
-            Facebook
+            Facebook, 
+            PlaystationNetwork, 
+            Steam
         }
 
         private BrainCloudClient _client;
