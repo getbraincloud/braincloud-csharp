@@ -239,7 +239,6 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        //TODO: cancelFindRequest, needs RTT
         [Test]
         public void TestCancelFindRequestDeprecated()
         {
