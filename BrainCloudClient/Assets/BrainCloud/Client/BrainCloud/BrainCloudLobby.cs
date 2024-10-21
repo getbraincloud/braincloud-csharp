@@ -486,10 +486,26 @@ namespace BrainCloud
         /// Cancel this members Find, Join and Searching of Lobbies
         /// </summary>
         /// 
+        [Obsolete("This has been deprecated, new CancelFindRequest function requires entryId param")]
         public void CancelFindRequest(string in_roomType, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.LobbyRoomType.Value] = in_roomType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CancelFindRequest, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Cancel this members Find, Join and Searching of Lobbies
+        /// </summary>
+        /// 
+        public void CancelFindRequest(string in_roomType, string in_entryId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.EntryId.Value] = in_entryId;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CancelFindRequest, data, callback);
