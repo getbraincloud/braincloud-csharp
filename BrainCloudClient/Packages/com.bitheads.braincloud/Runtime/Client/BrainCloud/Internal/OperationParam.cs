@@ -509,6 +509,7 @@ namespace BrainCloud
         public static readonly OperationParam SentMessageType = new OperationParam("sent");
 
         // lobby
+        public static readonly OperationParam EntryId = new OperationParam("entryId");
         public static readonly OperationParam LobbyRoomType = new OperationParam("lobbyType");
         public static readonly OperationParam LobbyTypes = new OperationParam("lobbyTypes");
         public static readonly OperationParam LobbyRating = new OperationParam("rating");

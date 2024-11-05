@@ -88,6 +88,8 @@ namespace BrainCloud.Internal
             Ping = 999;
             if (!IsConnected())
             {
+                m_trackedPacketIds.Clear();
+                m_trackedPacketIds.Capacity = 4;
                 m_endMatchRequested = false;
                 // the callback
                 m_connectOptions = in_options;
@@ -787,6 +789,22 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
+                        var packetIdArray = parsedDict["orderedPacketIds"] as int[];
+                        if (packetIdArray != null)
+                        {
+                            for (int channelID = 0; channelID < packetIdArray.Length; channelID++)
+                            {
+                                int packetID = packetIdArray[channelID];
+                                if (packetID != 0)
+                                {
+                                    m_trackedPacketIds[channelID].Add(netId, packetID);
+                                    if (m_clientRef.LoggingEnabled)
+                                    {
+                                        m_clientRef.Log($"Added tracked packetId {packetID} for netID {netId} at channel {channelID}");
+                                    }
+                                }
+                            }
+                        }
 
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
@@ -954,6 +972,17 @@ namespace BrainCloud.Internal
                     if (m_recvPacketId.ContainsKey(ackIdWithoutPacketId))
                     {
                         prevPacketId = m_recvPacketId[ackIdWithoutPacketId];
+                    }
+
+                    if (m_trackedPacketIds.Count > 0 &&
+                        m_trackedPacketIds[channel].ContainsKey(netId))
+                    {
+                        prevPacketId = m_trackedPacketIds[channel][netId];
+                        m_trackedPacketIds[channel].Remove(netId);
+                        if (m_clientRef.LoggingEnabled)
+                        {
+                            m_clientRef.Log($"Found tracked packetId for channel: {channel} netId: {netId} which was {prevPacketId}");
+                        }
                     }
 
                     if (reliable)
@@ -1479,6 +1508,13 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
+        /*
+        Tracking packet IDs for each player
+        index of array represents channel ids 0 to 3
+        Dictionary value has the player netId as the key and the tracked packetId as the value
+        Data is structured this way because once it is used to update the client it will then be discarded
+        */
+        private List<Dictionary<int, int>> m_trackedPacketIds = new List<Dictionary<int, int>>();
         // end 
 
         private bool m_resendConnectRequest = false;

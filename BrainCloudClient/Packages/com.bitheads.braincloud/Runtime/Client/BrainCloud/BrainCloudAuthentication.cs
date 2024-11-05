@@ -50,7 +50,7 @@ using BrainCloud.JsonFx.Json;
         {
             ProfileId = profileId;
             AnonymousId = anonymousId;
-            CompressResponses = false;
+            CompressResponses = true;
         }
 
         /// <summary>

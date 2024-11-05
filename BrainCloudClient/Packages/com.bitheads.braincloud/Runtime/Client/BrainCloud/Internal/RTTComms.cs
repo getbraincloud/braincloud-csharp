@@ -135,8 +135,8 @@ namespace BrainCloud.Internal
                     //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
                     if (m_webSocketStatus == WebsocketStatus.CLOSED)
                     {
-                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
                         disconnect();
                         break;
                     }
@@ -151,8 +151,8 @@ namespace BrainCloud.Internal
                     else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
                         m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
-                        m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
+                        m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
 
                     //if we're connected and we get a disconnect - we disconnect the comms... 
