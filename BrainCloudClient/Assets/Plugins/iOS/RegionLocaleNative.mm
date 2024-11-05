@@ -9,8 +9,7 @@ extern "C"
 	{
 		const char * _GetUsersCountryLocale()
 		{
-			//NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-            NSString* countryCode = [currentLocale objectForKey : NSLocaleCountryCode];
+			NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
             if(countryCode == nil) {
                 return strdup("Unknown");
             }
