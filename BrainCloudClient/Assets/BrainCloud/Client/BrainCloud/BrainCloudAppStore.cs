@@ -188,8 +188,19 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.AppStoreServiceStoreId.Value] = storeId;
 
-            var receiptData = JsonReader.Deserialize<Dictionary<string, object>>(receiptJson);
-            data[OperationParam.AppStoreServiceReceiptData.Value] = receiptData;
+            Dictionary<string, object> receiptData;
+
+            try
+            {
+                receiptData = JsonReader.Deserialize<Dictionary<string, object>>(receiptJson);
+                data[OperationParam.AppStoreServiceReceiptData.Value] = receiptData;
+            }
+            catch (Exception ex)
+            {
+                //not a valid json string, pass it as string directly
+                data[OperationParam.AppStoreServiceReceiptData.Value] = receiptJson;
+            }
+            
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.VerifyPurchase, data, callback);
