@@ -1,6 +1,6 @@
 var NativeWebSocket = {
 
-    $WebSocketInstances: [],
+    $WebSocketInstances: {},
 
     BrainCloudSocketCreate: function (url, id) {
     	console.log("[NativeWebSocket] Socket create: " + id);
