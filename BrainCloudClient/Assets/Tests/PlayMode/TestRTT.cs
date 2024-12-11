@@ -87,6 +87,41 @@ namespace Tests.PlayMode
             //Assert.False(receivedChat);
             LogResults("Did receive chat message, expected to not receive message", !receivedChat);
         }
+
+        [UnityTest]
+        public IEnumerator TestFailingRTTCallback()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            int successfulCallback = 0;
+
+            //Enable RTT
+            _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string channelId = "20001:gl:valid";
+
+            //Connect to channel
+            _tc.bcWrapper.ChatService.ChannelConnect(channelId, 50, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            bool passedThrough;
+            //Register for RTT chat
+            _tc.bcWrapper.RTTService.RegisterRTTChatCallback((string json) =>
+            {
+                //throw exception to cause callback to fail
+                passedThrough = false;
+                throw new Exception("This callback failed (Not really)");
+            });
+
+            _tc.bcWrapper.ChatService.PostChatMessageSimple(channelId, "Unit test message", true, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            yield return new WaitForSeconds(20);
+
+            passedThrough = true;
+
+            LogResults("Got through entire callback", passedThrough);
+        }
         
         [UnityTest]
         public IEnumerator TestRTTMessagingCallback()

@@ -144,7 +144,14 @@ namespace BrainCloud.Internal
                     // does this go to one of our registered service listeners? 
                     if (m_registeredCallbacks.ContainsKey(toProcessResponse.Service))
                     {
-                        m_registeredCallbacks[toProcessResponse.Service](toProcessResponse.JsonMessage);
+                        try
+                        {
+                            m_registeredCallbacks[toProcessResponse.Service](toProcessResponse.JsonMessage);
+                        }catch(Exception e)
+                        {
+                            m_clientRef.Log("WARNING - this callback threw an exception: " + e.Message);
+                        }
+                        
                     }
 
                     // are we actually connected? only pump this back, when the server says we've connected
