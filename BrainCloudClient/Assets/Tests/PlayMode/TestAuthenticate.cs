@@ -16,7 +16,23 @@ namespace Tests.PlayMode
         private string _universalID = "UserA_CS-1730261329";
         private string _password = "12345";
         private int additionalCalls = 0;
-        
+
+        [UnityTest]
+        public IEnumerator TestGetServerVersion()
+        {
+            string anonId = _tc.bcWrapper.Client.AuthenticationService.GenerateAnonymousId();
+            _tc.bcWrapper.Client.AuthenticationService.AuthenticateAnonymous
+            (
+                anonId,
+                true,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+
+            _tc.bcWrapper.Client.AuthenticationService.getServerVersion(_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run(2));
+        }
+
         [UnityTest]
         public IEnumerator TestAuthenticateSpam()
         {

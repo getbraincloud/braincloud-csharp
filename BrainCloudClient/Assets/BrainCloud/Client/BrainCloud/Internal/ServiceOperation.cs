@@ -18,6 +18,7 @@ using System;
         public static readonly ServiceOperation Attach = new ServiceOperation("ATTACH");
         public static readonly ServiceOperation Merge = new ServiceOperation("MERGE");
         public static readonly ServiceOperation Detach = new ServiceOperation("DETACH");
+        public static readonly ServiceOperation GetServerVersion = new ServiceOperation("GET_SERVER_VERSION");
         public static readonly ServiceOperation ResetEmailPassword = new ServiceOperation("RESET_EMAIL_PASSWORD");
         public static readonly ServiceOperation ResetEmailPasswordWithExpiry = new ServiceOperation("RESET_EMAIL_PASSWORD_WITH_EXPIRY");
         public static readonly ServiceOperation ResetEmailPasswordAdvanced = new ServiceOperation("RESET_EMAIL_PASSWORD_ADVANCED");
