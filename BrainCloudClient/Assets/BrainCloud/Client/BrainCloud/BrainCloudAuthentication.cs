@@ -63,6 +63,19 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
+        /// Gets the brainCloud server version.
+        /// </summary>
+        public void getServerVersion(SuccessCallback success = null, FailureCallback failure = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AuthenticateServiceAuthenticateGameId.Value] = _client.AppId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure);
+            ServerCall sc = new ServerCall(ServiceName.Authenticate, ServiceOperation.GetServerVersion, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
         /// the user to login, or for users who are sensitive to their privacy
         /// </summary>
