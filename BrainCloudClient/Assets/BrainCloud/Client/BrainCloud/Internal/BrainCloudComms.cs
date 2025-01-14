@@ -1566,7 +1566,8 @@ using UnityEngine.Experimental.Networking;
                             operation.Equals(ServiceOperation.ResetEmailPassword.Value) ||
                             operation.Equals(ServiceOperation.ResetEmailPasswordAdvanced.Value) ||
                             operation.Equals(ServiceOperation.ResetUniversalIdPassword.Value) ||
-                            operation.Equals(ServiceOperation.ResetUniversalIdPasswordAdvanced.Value))
+                            operation.Equals(ServiceOperation.ResetUniversalIdPasswordAdvanced.Value) ||
+                            operation.Equals(ServiceOperation.GetServerVersion.Value))
                         {
                             isAuth = true;
                         }
@@ -1955,12 +1956,13 @@ using UnityEngine.Experimental.Networking;
             }
 
             response = _activeRequest.WebRequest.downloadHandler.text;
-            
+
             if (response.Contains("Security violation 47") ||
                 response.StartsWith("<"))
             {
                 Debug.LogWarning("Please re-select app in brainCloud settings, something went wrong"); 
             }
+
 #elif DOT_NET || GODOT
             response = _activeRequest.DotNetResponseString;
 #endif

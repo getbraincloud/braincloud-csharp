@@ -20,17 +20,8 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestGetServerVersion()
         {
-            string anonId = _tc.bcWrapper.Client.AuthenticationService.GenerateAnonymousId();
-            _tc.bcWrapper.Client.AuthenticationService.AuthenticateAnonymous
-            (
-                anonId,
-                true,
-                _tc.ApiSuccess,
-                _tc.ApiError
-            );
-
             _tc.bcWrapper.Client.AuthenticationService.getServerVersion(_tc.ApiSuccess, _tc.ApiError);
-            yield return _tc.StartCoroutine(_tc.Run(2));
+            yield return _tc.StartCoroutine(_tc.Run());
         }
 
         [UnityTest]
