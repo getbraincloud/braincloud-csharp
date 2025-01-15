@@ -356,6 +356,7 @@ namespace BrainCloud
         public static readonly OperationParam PlaybackStreamServicePlaybackStreamId = new OperationParam("playbackStreamId");
         public static readonly OperationParam PlaybackStreamServiceEventData = new OperationParam("eventData");
         public static readonly OperationParam PlaybackStreamServiceSummary = new OperationParam("summary");
+        public static readonly OperationParam PlaybackStreamServiceNumDays = new OperationParam("numDays");
 
         public static readonly OperationParam ProductServiceTransId = new OperationParam("transId");
         public static readonly OperationParam ProductServiceOrderId = new OperationParam("orderId");

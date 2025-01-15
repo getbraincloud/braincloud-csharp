@@ -260,6 +260,8 @@ using System;
         public static readonly ServiceOperation EndStream = new ServiceOperation("END_STREAM");
         public static readonly ServiceOperation DeleteStream = new ServiceOperation("DELETE_STREAM");
         public static readonly ServiceOperation AddEvent = new ServiceOperation("ADD_EVENT");
+        public static readonly ServiceOperation ProtectStreamUntil = new ServiceOperation("PROTECT_STREAM_UNTIL");
+
         public static readonly ServiceOperation GetStreamSummariesForInitiatingPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_INITIATING_PLAYER");
         public static readonly ServiceOperation GetStreamSummariesForTargetPlayer = new ServiceOperation("GET_STREAM_SUMMARIES_FOR_TARGET_PLAYER");
         public static readonly ServiceOperation GetRecentStreamsForInitiatingPlayer = new ServiceOperation("GET_RECENT_STREAMS_FOR_INITIATING_PLAYER");

@@ -286,5 +286,46 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.GetRecentStreamsForTargetPlayer, data, callback);
             _client.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Protects a playback stream from being purged (but not deleted) for the given number of days (from now). 
+        /// If the number of days given is less than the normal purge interval days (from createdAt), the longer protection date is applied. 
+        /// Can only be called by users involved in the playback stream.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - PlaybackStream
+        /// Service Operation - PROTECT_STREAM_UNTIL
+        /// </remarks>
+        /// <param name="playbackStreamId">
+        /// Identifies the stream to protect.
+        /// </param>
+        /// <param name="numDays">
+        /// The number of days the stream is to be protected (from now).
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void ProtectStreamUntil(
+            string playbackStreamId,
+            int numDays,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null
+            )
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.PlaybackStreamServicePlaybackStreamId.Value] = playbackStreamId;
+            data[OperationParam.PlaybackStreamServiceNumDays.Value] = numDays;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.PlaybackStream, ServiceOperation.ProtectStreamUntil, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }
