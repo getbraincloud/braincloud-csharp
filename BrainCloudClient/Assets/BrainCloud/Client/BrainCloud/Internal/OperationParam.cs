@@ -117,6 +117,7 @@ namespace BrainCloud
 
         // Event Service - Send Params
         public static readonly OperationParam EventServiceSendToId = new OperationParam("toId");
+        public static readonly OperationParam EventServiceSendToIds = new OperationParam("toIds");
         public static readonly OperationParam EventServiceSendEventType = new OperationParam("eventType");
         public static readonly OperationParam EventServiceSendEventId = new OperationParam("eventId");
         public static readonly OperationParam EventServiceSendEventData = new OperationParam("eventData");

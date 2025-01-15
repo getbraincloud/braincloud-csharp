@@ -170,6 +170,7 @@ using System;
         public static readonly ServiceOperation RefreshPromotions = new ServiceOperation("REFRESH_PROMOTIONS");
 
         public static readonly ServiceOperation Send = new ServiceOperation("SEND");
+        public static readonly ServiceOperation SendToProfiles = new ServiceOperation("SEND_EVENT_TO_PROFILES");
         public static readonly ServiceOperation UpdateEventData = new ServiceOperation("UPDATE_EVENT_DATA");
         public static readonly ServiceOperation UpdateEventDataIfExists = new ServiceOperation("UPDATE_EVENT_DATA_IF_EXISTS");
         public static readonly ServiceOperation DeleteSent = new ServiceOperation("DELETE_SENT");
