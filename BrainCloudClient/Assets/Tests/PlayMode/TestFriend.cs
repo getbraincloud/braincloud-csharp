@@ -14,7 +14,10 @@ using UnityEngine.TestTools;
 namespace Tests.PlayMode
 {
     public class TestFriend : TestFixtureBase
-    {        
+    {
+        string externalAuthId = "testUserA";
+        string externalAuthPass = "test123";
+
         [UnityTest]
         public IEnumerator TestGetProfileInfoForCredential()
         {
@@ -41,6 +44,30 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
             _tc.bcWrapper.FriendService.GetProfileInfoForCredentialIfExists("idThatDoesntExist", AuthenticationType.Universal, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestGetProfileInfoForExternalAuthId()
+        {
+            _tc.bcWrapper.AuthenticateExternal(externalAuthId, externalAuthPass, "testExternal", true, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            _tc.bcWrapper.FriendService.GetProfileInfoForExternalAuthId(externalAuthId, "testExternal", _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
+        public IEnumerator TestGetProfileInfoForExternalAuthIdIfExists()
+        {
+            _tc.bcWrapper.AuthenticateExternal(externalAuthId, externalAuthPass, "testExternal", true, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            _tc.bcWrapper.FriendService.GetProfileInfoForExternalAuthIdIfExists(externalAuthId, "testExternal", _tc.ApiSuccess, _tc.ApiError);
 
             yield return _tc.StartCoroutine(_tc.Run());
         }

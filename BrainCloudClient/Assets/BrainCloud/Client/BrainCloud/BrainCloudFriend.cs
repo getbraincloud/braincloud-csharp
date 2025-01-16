@@ -144,6 +144,45 @@ using System;
         }
 
         /// <summary>
+        /// Retrieves profile information for the specified external auth user if it exists. 
+        /// Silently fails, if profile does not exist, just returns null and success, instead of an error.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID_IF_EXISTS
+        /// </remarks>
+        /// <param name="externalId">
+        /// External id of the friend to find
+        /// </param>
+        /// <param name="externalAuthType">
+        /// The external authentication type used for this friend's external id
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetProfileInfoForExternalAuthIdIfExists(
+            string externalId,
+            string externalAuthType,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceExternalId.Value] = externalId;
+            data[OperationParam.ExternalAuthType.Value] = externalAuthType;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetProfileInfoForExternalAuthIdIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Retrieves the external ID for the specified user profile ID on the specified social platform.
         /// </summary>
         /// <remarks>

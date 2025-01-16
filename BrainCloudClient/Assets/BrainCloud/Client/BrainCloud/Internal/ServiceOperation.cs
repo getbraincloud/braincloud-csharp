@@ -90,6 +90,7 @@ using System;
         public static readonly ServiceOperation GetProfileInfoForCredential = new ServiceOperation("GET_PROFILE_INFO_FOR_CREDENTIAL");
         public static readonly ServiceOperation GetProfileInfoForCredentialIfExists = new ServiceOperation("GET_PROFILE_INFO_FOR_CREDENTIAL_IF_EXISTS");
         public static readonly ServiceOperation GetProfileInfoForExternalAuthId = new ServiceOperation("GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID");
+        public static readonly ServiceOperation GetProfileInfoForExternalAuthIdIfExists = new ServiceOperation("GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID_IF_EXISTS");
         public static readonly ServiceOperation GetExternalIdForProfileId = new ServiceOperation("GET_EXTERNAL_ID_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByUniversalId = new ServiceOperation("FIND_PLAYER_BY_UNIVERSAL_ID");
         public static readonly ServiceOperation FindUserByExactUniversalId = new ServiceOperation("FIND_USER_BY_EXACT_UNIVERSAL_ID");
