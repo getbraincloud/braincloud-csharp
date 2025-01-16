@@ -53,6 +53,22 @@ using System;
             AttachIdentity(facebookId, authenticationToken, AuthenticationType.Facebook, success, failure, cbObject);
         }
 
+        public void GetIdentityStatus(
+            AuthenticationType authenticationType,
+            string externalAuthName,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
+            data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetIdentityStatus, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Merge the profile associated with the provided Facebook credentials with the
         /// current profile.

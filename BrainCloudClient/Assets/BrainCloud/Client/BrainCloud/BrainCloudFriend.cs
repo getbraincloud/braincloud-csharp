@@ -67,6 +67,22 @@ using System;
             _client.SendRequest(sc);
         }
 
+        public void GetProfileInfoForCredentialIfExists(
+            string externalId,
+            AuthenticationType authenticationType,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.FriendServiceExternalId.Value] = externalId;
+            data[OperationParam.FriendServiceAuthenticationType.Value] = authenticationType.ToString();
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.GetProfileInfoForCredentialIfExists, data, callback);
+            _client.SendRequest(sc);
+        }
+
         /// <summary>
         /// Retrieves profile information for the specified external auth user.
         /// </summary>

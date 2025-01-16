@@ -33,6 +33,7 @@ using System;
         public static readonly ServiceOperation AttachParentWithIdentity = new ServiceOperation("ATTACH_PARENT_WITH_IDENTITY");
         public static readonly ServiceOperation AttachNonLoginUniversalId = new ServiceOperation("ATTACH_NONLOGIN_UNIVERSAL");
         public static readonly ServiceOperation UpdateUniversalIdLogin = new ServiceOperation("UPDATE_UNIVERSAL_LOGIN");
+        public static readonly ServiceOperation GetIdentityStatus = new ServiceOperation("GET_IDENTITY_STATUS");
 
         public static readonly ServiceOperation AttachBlockChain = new ServiceOperation("ATTACH_BLOCKCHAIN_IDENTITY");
         public static readonly ServiceOperation DetachBlockChain = new ServiceOperation("DETACH_BLOCKCHAIN_IDENTITY");
@@ -87,6 +88,7 @@ using System;
         public static readonly ServiceOperation UpdateIncrementToMaximum = new ServiceOperation("UPDATE_INCREMENT_TO_MAXIMUM");
         public static readonly ServiceOperation GetFriendProfileInfoForExternalId = new ServiceOperation("GET_FRIEND_PROFILE_INFO_FOR_EXTERNAL_ID");
         public static readonly ServiceOperation GetProfileInfoForCredential = new ServiceOperation("GET_PROFILE_INFO_FOR_CREDENTIAL");
+        public static readonly ServiceOperation GetProfileInfoForCredentialIfExists = new ServiceOperation("GET_PROFILE_INFO_FOR_CREDENTIAL_IF_EXISTS");
         public static readonly ServiceOperation GetProfileInfoForExternalAuthId = new ServiceOperation("GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID");
         public static readonly ServiceOperation GetExternalIdForProfileId = new ServiceOperation("GET_EXTERNAL_ID_FOR_PROFILE_ID");
         public static readonly ServiceOperation FindPlayerByUniversalId = new ServiceOperation("FIND_PLAYER_BY_UNIVERSAL_ID");
