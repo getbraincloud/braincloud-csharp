@@ -67,6 +67,28 @@ using System;
             _client.SendRequest(sc);
         }
 
+        /// <summary>
+        /// Retrieves profile information of the specified user if it exists
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Friend
+        /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL
+        /// </remarks>
+        /// <param name="externalId">
+        /// External id of the user to find
+        /// </param>
+        /// <param name="authenticationType">
+        /// The authentication type used for the user's ID
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void GetProfileInfoForCredentialIfExists(
             string externalId,
             AuthenticationType authenticationType,

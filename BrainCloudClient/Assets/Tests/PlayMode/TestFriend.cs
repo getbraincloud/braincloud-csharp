@@ -35,5 +35,15 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
         }
 
+        [UnityTest]
+        public IEnumerator TestGetProfileInfoForCredentialIfExists_Fail()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+
+            _tc.bcWrapper.FriendService.GetProfileInfoForCredentialIfExists("idThatDoesntExist", AuthenticationType.Universal, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
     }
 }
