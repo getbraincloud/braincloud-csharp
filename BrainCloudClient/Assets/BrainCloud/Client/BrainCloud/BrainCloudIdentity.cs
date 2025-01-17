@@ -53,6 +53,28 @@ using System;
             AttachIdentity(facebookId, authenticationToken, AuthenticationType.Facebook, success, failure, cbObject);
         }
 
+        /// <summary>
+        /// Retrieves identity status for given identity type for this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_IDENTITY_STATUS
+        /// </remarks>
+        /// <param name="authenticationType">
+        /// Type of authentication.
+        /// </param>
+        /// <param name="externalAuthName">
+        /// The name of the external authentication mechanism (optional, used for custom authentication types)
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of success
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void GetIdentityStatus(
             AuthenticationType authenticationType,
             string externalAuthName,
