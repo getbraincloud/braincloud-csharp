@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BrainCloud;
 using BrainCloud.Common;
+using BrainCloud.JsonFx.Json;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -110,6 +111,46 @@ namespace Tests.PlayMode
             _tc.bcWrapper.GroupService.LeaveGroup(_groupID, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             base.TearDown();
+        }
+
+        [UnityTest]
+        public IEnumerator TestUpdateGroupACL()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+
+            GroupACL acl = new GroupACL();
+            acl.Member = GroupACL.Access.ReadWrite;
+            acl.Other = GroupACL.Access.None;
+
+            string jsonData = "{}";
+            string ownerAttributes = "{}";
+            string defaultMemberAttributes = "{}";
+
+            string myGroupId = "";
+
+            SuccessCallback successCallback = (response, cbObject) =>
+            {
+                Debug.Log(string.Format("Success | {0}", response));
+
+                var jsonObj = JsonReader.Deserialize<Dictionary<string, object>>(response);
+                var dataObj = jsonObj["data"] as Dictionary<string, object>;
+                if (dataObj.ContainsKey("groupId"))
+                {
+                    myGroupId = dataObj["groupId"] as string;
+                }
+                _tc.ApiSuccess(response, cbObject);
+            };
+
+            _tc.bcWrapper.GroupService.CreateGroup("myGroup", "test", true, acl, jsonData, ownerAttributes, defaultMemberAttributes, successCallback, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            _tc.bcWrapper.GroupService.UpdateGroupAcl(myGroupId, acl, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            _tc.bcWrapper.GroupService.DeleteGroup(myGroupId, 1, _tc.ApiSuccess, _tc.ApiError);
+
+            yield return _tc.StartCoroutine(_tc.Run());
         }
 
         [UnityTest]

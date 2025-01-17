@@ -374,6 +374,20 @@ using System;
             SendRequest(ServiceOperation.CreateGroup, success, failure, cbObject, data);
         }
 
+        public void UpdateGroupAcl(
+            string groupId,
+            GroupACL acl,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+
+            SendRequest(ServiceOperation.UpdateGroupACL, success, failure, cbObject, data);
+        }
+
         /// <summary>
         /// Create a group. With additional summary data
         /// </summary>
