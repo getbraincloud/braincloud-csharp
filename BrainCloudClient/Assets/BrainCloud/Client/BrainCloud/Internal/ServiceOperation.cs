@@ -385,6 +385,7 @@ using System;
         public static readonly ServiceOperation UpdateGroupEntity = new ServiceOperation("UPDATE_GROUP_ENTITY_DATA");
         public static readonly ServiceOperation UpdateGroupMember = new ServiceOperation("UPDATE_GROUP_MEMBER");
         public static readonly ServiceOperation UpdateGroupACL = new ServiceOperation("UPDATE_GROUP_ACL");
+        public static readonly ServiceOperation UpdateGroupEntityACL = new ServiceOperation("UPDATE_GROUP_ENTITY_ACL");
         public static readonly ServiceOperation UpdateGroupName = new ServiceOperation("UPDATE_GROUP_NAME");
         public static readonly ServiceOperation SetGroupOpen = new ServiceOperation("SET_GROUP_OPEN");
         public static readonly ServiceOperation GetRandomGroupsMatching = new ServiceOperation("GET_RANDOM_GROUPS_MATCHING");
