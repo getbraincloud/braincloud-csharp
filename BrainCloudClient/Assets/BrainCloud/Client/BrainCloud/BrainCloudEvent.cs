@@ -82,7 +82,7 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - Event
-        /// Service Operation - Send
+        /// Service Operation - SEND_EVENT_TO_PROFILES
         /// </remarks>
         /// <param name="toProfileIds">
         /// The ids of the users who are being sent the event

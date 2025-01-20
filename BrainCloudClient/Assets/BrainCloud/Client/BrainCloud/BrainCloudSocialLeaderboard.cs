@@ -1132,7 +1132,7 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
-        /// Service Operation - PostScoreToDynamicLeaderboard
+        /// Service Operation - POST_GROUP_SCORE_DYNAMIC_USING_CONFIG
         /// </remarks>
         /// <param name="leaderboardId">
         /// The leaderboard to post to
