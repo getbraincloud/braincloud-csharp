@@ -375,6 +375,68 @@ using System;
         }
 
         /// <summary>
+        /// Set a group's access conditions.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - UPDATE_GROUP_ACL
+        /// </remarks>
+        /// <param name="groupId">
+        /// ID of the group
+        /// </param>
+        /// <param name="acl">
+        /// The group's access control list. A null ACL implies default
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void UpdateGroupAcl(
+            string groupId,
+            GroupACL acl,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+
+            SendRequest(ServiceOperation.UpdateGroupACL, success, failure, cbObject, data);
+        }
+
+        /// <summary>
+        /// Update the acl settings for a group entity, enforcing ownership.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - group
+        /// Service Operation - UPDATE_GROUP_ENTITY_ACL
+        /// </remarks>
+        /// <param name="groupId">
+        /// ID of the group
+        /// <param name="entityId">
+        /// ID of the entity
+        /// </param>
+        /// <param name="acl">
+        /// Access control list for the group entity.
+        /// <param name="success">The success callback</param>
+        /// <param name="failure">The failure callback</param>
+        /// <param name="cbObject">The callback object</param>
+        public void UpdateGroupEntityAcl(
+            string groupId,
+            string entityId,
+            GroupACL acl,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.GroupEntityId.Value] = entityId;
+            if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+
+            SendRequest(ServiceOperation.UpdateGroupEntityACL, success, failure, cbObject, data);
+        }
+
+        /// <summary>
         /// Create a group. With additional summary data
         /// </summary>
         /// <remarks>
