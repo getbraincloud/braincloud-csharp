@@ -74,6 +74,60 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Sends an event to the designated profile ids with the attached json data.
+        /// Any events that have been sent to a user will show up in their
+        /// incoming event mailbox. If the recordLocally flag is set to true,
+        /// a copy of this event (with the exact same event id) will be stored
+        /// in the sending user's "sent" event mailbox.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Event
+        /// Service Operation - SEND_EVENT_TO_PROFILES
+        /// </remarks>
+        /// <param name="toProfileIds">
+        /// The ids of the users who are being sent the event
+        /// </param>
+        /// <param name="eventType">
+        /// The user-defined type of the event.
+        /// </param>
+        /// <param name="jsonEventData">
+        /// The user-defined data for this event encoded in JSON.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void SendEventToProfiles(
+            string[] toProfileIds,
+            string eventType,
+            string jsonEventData,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null
+            )
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.EventServiceSendToIds.Value] = toProfileIds;
+            data[OperationParam.EventServiceSendEventType.Value] = eventType;
+
+            if (Util.IsOptionalParameterValid(jsonEventData))
+            {
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
+                data[OperationParam.EventServiceSendEventData.Value] = eventData;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.SendToProfiles, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Updates an event in the user's incoming event mailbox.
         /// </summary>
         /// <remarks>

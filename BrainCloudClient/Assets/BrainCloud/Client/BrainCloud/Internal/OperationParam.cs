@@ -117,6 +117,7 @@ namespace BrainCloud
 
         // Event Service - Send Params
         public static readonly OperationParam EventServiceSendToId = new OperationParam("toId");
+        public static readonly OperationParam EventServiceSendToIds = new OperationParam("toIds");
         public static readonly OperationParam EventServiceSendEventType = new OperationParam("eventType");
         public static readonly OperationParam EventServiceSendEventId = new OperationParam("eventId");
         public static readonly OperationParam EventServiceSendEventData = new OperationParam("eventData");
@@ -356,6 +357,7 @@ namespace BrainCloud
         public static readonly OperationParam PlaybackStreamServicePlaybackStreamId = new OperationParam("playbackStreamId");
         public static readonly OperationParam PlaybackStreamServiceEventData = new OperationParam("eventData");
         public static readonly OperationParam PlaybackStreamServiceSummary = new OperationParam("summary");
+        public static readonly OperationParam PlaybackStreamServiceNumDays = new OperationParam("numDays");
 
         public static readonly OperationParam ProductServiceTransId = new OperationParam("transId");
         public static readonly OperationParam ProductServiceOrderId = new OperationParam("orderId");
@@ -463,6 +465,7 @@ namespace BrainCloud
         public static readonly OperationParam Body = new OperationParam("body");
         public static readonly OperationParam ServiceParams = new OperationParam("serviceParams");
         public static readonly OperationParam EmailAddress = new OperationParam("emailAddress");
+        public static readonly OperationParam EmailAddresses = new OperationParam("emailAddresses");
 
         public static readonly OperationParam LeaderboardId = new OperationParam("leaderboardId");
         public static readonly OperationParam DivSetId = new OperationParam("divSetId");

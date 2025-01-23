@@ -1127,6 +1127,57 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
+        /// Post the group's score to the given social leaderboard, dynamically creating the group leaderboard if it does not exist yet. 
+        /// To create new leaderboard, configJson must specify leaderboardType, rotationType, resetAt, and retainedCount, at a minimum, with support to optionally specify an expiry in minutes.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - POST_GROUP_SCORE_DYNAMIC_USING_CONFIG
+        /// </remarks>
+        /// <param name="leaderboardId">
+        /// The leaderboard to post to
+        /// </param>
+        /// <param name="groupId">
+        /// group ID the leaderboard belongs to
+        /// </param>
+        /// <param name="score">
+        /// The score to post
+        /// </param>
+        /// <param name="scoreData">
+        /// Optional user-defined data to post with the score
+        /// </param>
+        /// <param name="configJson ">
+        /// Configuration for the group leaderboard if it does not exist yet, specified as JSON object. 
+        /// Configuration fields supported are: leaderboardType': Required. Type of leaderboard. Valid values are 'LAST_VALUE', 'HIGH_VALUE', 'LOW_VALUE', 'CUMULATIVE', 'ARCADE_HIGH', 'ARCADE_LOW'; 'rotationType': Required. Type of rotation. Valid values are 'NEVER', 'DAILY', 'DAYS', 'WEEKLY', 'MONTHLY', 'YEARLY'; 'numDaysToRotate': Required if 'DAYS' rotation type, with valid values between 2 and 14; otherwise, null; 'resetAt': UTC timestamp, in milliseconds, at which to rotate the period. Always null if 'NEVER' rotation type; 'retainedCount': Required. Number of rotations (versions) of the leaderboard to retain; 'expireInMins': Optional. Duration, in minutes, before the leaderboard is to automatically expire.
+        /// </param>
+        public void PostScoreToDynamicGroupLeaderboardUsingConfig(
+            string leaderboardId,
+            string groupId,
+            long score,
+            string scoreData, 
+            string configJson,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.SocialLeaderboardServiceGroupId.Value] = groupId;
+            data[OperationParam.SocialLeaderboardServiceScore.Value] = score;
+            if (Util.IsOptionalParameterValid(scoreData))
+            {
+                var optionalScoreData = JsonReader.Deserialize<Dictionary<string, object>>(scoreData);
+                data[OperationParam.SocialLeaderboardServiceScoreData.Value] = optionalScoreData;
+            }
+            var leaderboardConfigJson = JsonReader.Deserialize<Dictionary<string, object>>(configJson);
+            data[OperationParam.SocialLeaderboardServiceConfigJson.Value] = leaderboardConfigJson;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.PostScoreToDynamicGroupLeaderboardUsingConfig, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Post the players score to the given social leaderboard with a rotation type of DAYS.
         /// Pass leaderboard config data to dynamically create if necessary.
         /// You can optionally send a user-defined json string of data
