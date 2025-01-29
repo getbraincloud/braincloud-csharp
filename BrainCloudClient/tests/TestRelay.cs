@@ -168,6 +168,10 @@ namespace BrainCloudTests
                 Assert.That(true);
                 return;
             }
+            else
+            {
+                Console.WriteLine("This env does support hosted servers");
+            }
 
             FullFlow(RelayConnectionType.WEBSOCKET);
         }
