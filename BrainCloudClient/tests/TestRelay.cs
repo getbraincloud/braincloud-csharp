@@ -162,18 +162,42 @@ namespace BrainCloudTests
         [Test]
         public void TestFullFlowWS()
         {
+            if (ServerUrl.Contains("api.internal24.braincloudservers.com/dispatcherv2"))
+            {
+                Debug.Log("This env doesn't support hosted servers");
+                Assert.True(true);
+                
+                return;
+            }
+
             FullFlow(RelayConnectionType.WEBSOCKET);
         }
 
         [Test]
         public void TestFullFlowTCP()
         {
+            if (ServerUrl.Contains("api.internal24.braincloudservers.com/dispatcherv2"))
+            {
+                Debug.Log("This env doesn't support hosted servers");
+                Assert.True(true);
+                
+                return;
+            }
+            
             FullFlow(RelayConnectionType.TCP);
         }
 
         [Test]
         public void TestFullFlowUDP()
         {
+            if (ServerUrl.Contains("api.internal24.braincloudservers.com/dispatcherv2"))
+            {
+                Debug.Log("This env doesn't support hosted servers");
+                Assert.True(true);
+                
+                return;
+            }
+            
             FullFlow(RelayConnectionType.UDP);
         }
     }
