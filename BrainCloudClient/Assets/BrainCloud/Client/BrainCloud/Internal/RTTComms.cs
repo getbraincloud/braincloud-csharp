@@ -514,7 +514,8 @@ namespace BrainCloud.Internal
             {
                 m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
             }
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
+            m_connectionFailureCallback(status, reasonCode, jsonError, m_connectedObj);
+            m_queuedRTTCommands.Clear();
         }
 
         private void addRTTCommandResponse(RTTCommandResponse in_command)
