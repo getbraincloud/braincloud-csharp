@@ -105,7 +105,7 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - mail
-        /// Service Operation - SEND_ADVANCED_EMAIL_BY_EMAIL
+        /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESS
         /// </remarks>
         /// <param name="emailAddress">
         /// The address to send the email to
@@ -136,6 +136,44 @@ using BrainCloud.Internal;
             data[OperationParam.ServiceParams.Value] = JsonReader.Deserialize<Dictionary<string, object>>(jsonServiceParams);
 
             SendMessage(ServiceOperation.SendAdvancedEmailByAddress, data, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Sends an advanced email to the specified email addresses
+        /// </summary>
+        /// <remarks>
+        /// Service Name - mail
+        /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESSES
+        /// </remarks>
+        /// <param name="emailAddresses">
+        /// The list of addresses to send the email to
+        /// </param>
+        /// <param name="jsonServiceParams">
+        /// Parameters to send to the email service. See the documentation for
+        /// a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void SendAdvancedEmailByAddresses(
+            string[] emailAddresses,
+            string jsonServiceParams,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.EmailAddresses.Value] = emailAddresses;
+            data[OperationParam.ServiceParams.Value] = JsonReader.Deserialize<Dictionary<string, object>>(jsonServiceParams);
+
+            SendMessage(ServiceOperation.SendAdvancedEmailByAddresses, data, success, failure, cbObject);
         }
 
         // Private

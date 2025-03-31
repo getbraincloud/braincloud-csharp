@@ -156,6 +156,15 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TestGetIdentityStatus()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            _tc.bcWrapper.IdentityService.GetIdentityStatus(AuthenticationType.Universal, "",_tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults("Unable to get identity status", _tc.successCount == 1);
+        }
+
+        [UnityTest]
         public IEnumerator TestGetExpiredIdentites()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));

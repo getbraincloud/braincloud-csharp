@@ -13,7 +13,9 @@ namespace BrainCloud
 #endif
 #if (!(DOT_NET || GODOT))
     using UnityEngine;
-
+#endif
+#if ENABLE_WINMD_SUPPORT
+    using Windows.Globalization;
 #endif
 
     public class RegionLocale

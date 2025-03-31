@@ -88,8 +88,6 @@ namespace BrainCloud.Internal
             Ping = 999;
             if (!IsConnected())
             {
-                m_trackedPacketIds.Clear();
-                m_trackedPacketIds.Capacity = 4;
                 m_endMatchRequested = false;
                 // the callback
                 m_connectOptions = in_options;
@@ -108,7 +106,12 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Disconnect()
         {
-            if (IsConnected()) send(buildDisconnectRequest());
+            if (IsConnected())
+            {
+                send(buildDisconnectRequest());
+
+                m_trackedPacketIds.Clear();
+            }
             disconnect();
         }
         
@@ -789,7 +792,13 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
-                        var packetIdArray = parsedDict["orderedPacketIds"] as int[];
+                        int[] packetIdArray = null;
+
+                        if (parsedDict.ContainsKey("orderedPacketIds"))
+                        {
+                            packetIdArray = parsedDict["orderedPacketIds"] as int[];
+                        }
+
                         if (packetIdArray != null)
                         {
                             for (int channelID = 0; channelID < packetIdArray.Length; channelID++)
@@ -1514,7 +1523,13 @@ namespace BrainCloud.Internal
         Dictionary value has the player netId as the key and the tracked packetId as the value
         Data is structured this way because once it is used to update the client it will then be discarded
         */
-        private List<Dictionary<int, int>> m_trackedPacketIds = new List<Dictionary<int, int>>();
+        private List<Dictionary<int, int>> m_trackedPacketIds = new List<Dictionary<int, int>>()
+        {
+            new Dictionary<int, int>(),
+            new Dictionary<int, int>(),
+            new Dictionary<int, int>(),
+            new Dictionary<int, int>()
+        };
         // end 
 
         private bool m_resendConnectRequest = false;

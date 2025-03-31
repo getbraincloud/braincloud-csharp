@@ -118,7 +118,7 @@ using System.Globalization;
     {
         #region Private Data
 
-        private string s_defaultServerURL = "https://sharedprod.braincloudservers.com/dispatcherv2";
+        private string s_defaultServerURL = "https://api.braincloudservers.com/dispatcherv2";
 
 
         private string _appVersion = "";
