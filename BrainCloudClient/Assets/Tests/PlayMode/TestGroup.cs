@@ -15,7 +15,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestUpdateGroupACL()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
 
             GroupACL acl = new GroupACL();
             acl.Member = GroupACL.Access.ReadWrite;
@@ -68,7 +68,7 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestUpdateGroupEntityACL()
         {
-            yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             //create group
             GroupACL acl = new GroupACL();
             acl.Member = GroupACL.Access.ReadWrite;
