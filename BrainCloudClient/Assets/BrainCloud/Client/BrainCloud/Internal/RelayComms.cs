@@ -43,7 +43,7 @@ namespace BrainCloud.Internal
 
         private const int MAX_RSMG_HISTORY = 50;
 
-        private static const int CONNECT_RESEND_INTERVAL_S = 2;
+        private const int CONNECT_RESEND_INTERVAL_S = 2;
 
         /// <summary>
         /// Last Synced Ping
