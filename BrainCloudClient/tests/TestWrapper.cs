@@ -2,7 +2,9 @@ using NUnit.Framework;
 using BrainCloud;
 using System.Diagnostics;
 using System.Collections.Generic;
-
+using BrainCloud.JsonFx.Json;
+using System;
+using System.Threading;
 
 namespace BrainCloudTests
 {
@@ -62,11 +64,11 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
+
 
             tr = new TestResult(_bc);
 
-            
+
             _bc.SmartSwitchAuthenticateEmail(
                "testAuth",
                "testPass",
@@ -131,16 +133,16 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-        
+
         [Test]
         public void TestWrapperLogoutAndClearProfileID()
         {
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
-            tr.Run();            
+            tr.Run();
             _bc.Logout(true, tr.ApiSuccess, tr.ApiError);
             string profileID = _bc.GetStoredProfileId();
-            if(profileID.Length == 0)
+            if (profileID.Length == 0)
             {
                 Assert.That(true);
             }
@@ -152,35 +154,118 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
-            tr.Run();            
+            tr.Run();
             _bc.Logout(false, tr.ApiSuccess, tr.ApiError);
             string profileID = _bc.GetStoredProfileId();
-            if(profileID.Length != 0)
+            if (profileID.Length != 0)
             {
                 Assert.That(true);
             }
             tr.Run();
         }
-        
+
         [Test]
         public void TestCanReconnectAfterLogout()
         {
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
-            tr.Run();            
+            tr.Run();
             _bc.Logout(false, tr.ApiSuccess, tr.ApiError);
-            if(_bc.CanReconnect())
+            if (_bc.CanReconnect())
             {
                 Assert.That(true);
             }
             tr.Run();
         }
-        
+
+        [Test]
+        public void TestLongSessionDisabled()
+        {
+            BrainCloudWrapper userWrapper = new BrainCloudWrapper();
+            userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
+            userWrapper.Client.EnableLogging(true);
+            TestResult userTr = new TestResult(userWrapper);
+            userWrapper.AuthenticateUniversal("altUser", "altUser", true, userTr.ApiSuccess, userTr.ApiError);
+            userTr.Run();
+
+            _bc.Client.EnableLogging(true);
+            TestResult tr = new TestResult(_bc);
+            _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            // Save Profile and Session IDs so that the session can be ended with a Cloud Code Script
+            var responseData = tr.m_response["data"] as Dictionary<string, object>;
+            string profileId = responseData["profileId"] as string;
+            string sessionId = responseData["sessionId"] as string;
+            var data = new Dictionary<string, string>
+            {
+                { "sessionId", sessionId },
+                { "profileId", profileId }
+            };
+            string jsonData = JsonWriter.Serialize(data);
+
+            // Verify session is active
+            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            // Run LogoutSession script to end session 
+            userWrapper.ScriptService.RunScript("LogoutSession", jsonData, userTr.ApiSuccess, userTr.ApiError);
+            userTr.Run();
+
+            //Thread.Sleep(5000);
+
+            // Verify session is no longer active (this should not be successful)
+            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail();
+        }
+
+        [Test]
+        public void TestLongSessionEnabled()
+        {
+            BrainCloudWrapper userWrapper = new BrainCloudWrapper();
+            userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
+            userWrapper.Client.EnableLogging(true);
+            TestResult userTr = new TestResult(userWrapper);
+            userWrapper.AuthenticateUniversal("altUser", "altUser", true, userTr.ApiSuccess, userTr.ApiError);
+            userTr.Run();
+
+            _bc.Client.EnableLogging(true);
+            _bc.EnableLongSession(true);
+            TestResult tr = new TestResult(_bc);
+            _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            // Save Profile and Session IDs so that the session can be ended with a Cloud Code Script
+            var responseData = tr.m_response["data"] as Dictionary<string, object>;
+            string profileId = responseData["profileId"] as string;
+            string sessionId = responseData["sessionId"] as string;
+            var data = new Dictionary<string, string>
+            {
+                { "sessionId", sessionId },
+                { "profileId", profileId }
+            };
+            string jsonData = JsonWriter.Serialize(data);
+
+            // Verify session is active
+            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            // Run LogoutSession script to end session 
+            userWrapper.ScriptService.RunScript("LogoutSession", jsonData, userTr.ApiSuccess, userTr.ApiError);
+            userTr.Run();
+
+            //Thread.Sleep(5000);
+
+            // Verify session is no longer active (this should not be successful)
+            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
         [Test]
         public void TestWrapperResetEmailPasswordAdvanced()
         {
             string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
-            
+
             TestResult tr = new TestResult(_bc);
 
             _bc.ResetEmailPasswordAdvanced(
@@ -191,7 +276,7 @@ namespace BrainCloudTests
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
         }
 
-        
+
         [Test]
         public void TestReInit()
         {
@@ -222,16 +307,16 @@ namespace BrainCloudTests
             _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
             TestResult tr2 = new TestResult(_bc);
-            
+
             //DO A CALL
             _bc.TimeService.ReadServerTime(
                 tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
-            
+
             //RE-INIT
             _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
             TestResult tr3 = new TestResult(_bc);
-            
+
             //Call WITHOUT AUTH - should fail because we have re-initialized and will need to authenticate again
             _bc.TimeService.ReadServerTime(
                 tr3.ApiSuccess, tr3.ApiError);

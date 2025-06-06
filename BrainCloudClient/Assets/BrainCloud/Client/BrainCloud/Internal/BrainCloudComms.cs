@@ -1302,7 +1302,7 @@ using UnityEngine.Experimental.Networking;
                                 _serviceCallsWaiting.AddRange(otherServiceCallsInProgress);
                             }
 
-                            // Next Update loop will take care of things
+                            // Next Update loop will handle the re-authenticate request/response
                             return;
                         };
 
@@ -1318,8 +1318,7 @@ using UnityEngine.Experimental.Networking;
                         // Attempt to re-authenticate
                         _clientRef.AuthenticationService.AuthenticateAnonymous(false, successCallback, failureCallback);
 
-                        // TODO: need this?
-                        // return; // Do not process callbacks for this call, they be handled async inline above 
+                        return; 
                     }
 
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
