@@ -55,7 +55,7 @@ using System;
                     int statusCode = 400;
                     string errorJson = "{\"status\":" + statusCode +
                                        ",\"reason_code\":" + INVALID_DEVICE_TOKEN +
-                                       ",\"message\":\"Device token is null or empty.\"}";
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
 
                     failure(statusCode, INVALID_DEVICE_TOKEN, errorJson, cbObject);
                 }
@@ -102,7 +102,7 @@ using System;
                     int statusCode = 400;
                     string errorJson = "{\"status\":" + statusCode +
                                        ",\"reason_code\":" + INVALID_DEVICE_TOKEN +
-                                       ",\"message\":\"Device token is null or empty.\"}";
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
 
                     failure(statusCode, INVALID_DEVICE_TOKEN, errorJson, cbObject);
                 }
@@ -213,7 +213,7 @@ using System;
                     int reasonCode = INVALID_DEVICE_TOKEN; // Custom code for "Invalid Token"
                     string errorJson = "{\"status\":"+statusCode+
                                         ",\"reason_code\":" +INVALID_DEVICE_TOKEN+
-                                        ",\"message\":\"Device token is null or empty.\"}";
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
                     
                     failure(statusCode, reasonCode, errorJson, cbObject);
                 }
