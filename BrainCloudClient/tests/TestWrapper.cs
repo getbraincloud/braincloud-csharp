@@ -212,8 +212,6 @@ namespace BrainCloudTests
             userWrapper.ScriptService.RunScript("LogoutSession", jsonData, userTr.ApiSuccess, userTr.ApiError);
             userTr.Run();
 
-            //Thread.Sleep(5000);
-
             // Verify session is no longer active (this should not be successful)
             _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail();
@@ -253,8 +251,6 @@ namespace BrainCloudTests
             // Run LogoutSession script to end session 
             userWrapper.ScriptService.RunScript("LogoutSession", jsonData, userTr.ApiSuccess, userTr.ApiError);
             userTr.Run();
-
-            //Thread.Sleep(5000);
 
             // Verify session is no longer active (this should not be successful)
             _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
