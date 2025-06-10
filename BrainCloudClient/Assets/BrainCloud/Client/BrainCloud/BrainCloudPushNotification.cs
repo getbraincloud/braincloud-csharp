@@ -219,7 +219,7 @@ using System;
                 }
                 if(_client.LoggingEnabled)
                 {
-                    _client.Log("Register Push Notification Token failed, empty string was supplied.");
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
                 }
 
                 return;
