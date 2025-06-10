@@ -54,10 +54,14 @@ using System;
                 {
                     int statusCode = 400;
                     string errorJson = "{\"status\":" + statusCode +
-                                       ",\"reason_code\":" + INVALID_DEVICE_TOKEN +
+                                       ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN +
                                        ",\"message\":\"Invalid device token: " + token + " \"}";
 
-                    failure(statusCode, INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                    failure(statusCode, ReasonCodes.INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
                 }
                 return;
             }
@@ -101,10 +105,15 @@ using System;
                 {
                     int statusCode = 400;
                     string errorJson = "{\"status\":" + statusCode +
-                                       ",\"reason_code\":" + INVALID_DEVICE_TOKEN +
+                                       ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN +
                                        ",\"message\":\"Invalid device token: " + token + " \"}";
+                                       
 
-                    failure(statusCode, INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                    failure(statusCode, ReasonCodes.INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
                 }
                 return;
             }
