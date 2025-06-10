@@ -1289,9 +1289,9 @@ using UnityEngine.Experimental.Networking;
                         _packetId = 0;
 
                         // Retry failed/missed call(s) on successful re-authentication
-                        SuccessCallback successCallback = (response, cbObject) =>
+                        SuccessCallback successCallback = (response2, cbObject) =>
                         {
-                            _clientRef.Log(string.Format("Success | {0}", response));
+                            _clientRef.Log(string.Format("Success | {0}", response2));
 
                             if (expiredServerCall != null)
                             {

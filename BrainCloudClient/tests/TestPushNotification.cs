@@ -4,6 +4,7 @@ using BrainCloud;
 using BrainCloud.Common;
 using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
+using System;
 
 namespace BrainCloudTests
 {
@@ -53,6 +54,21 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
+        }
+        
+        [Test]
+        public void RegisterEmptyPushNotificationDeviceToken()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.PushNotificationService.RegisterPushNotificationDeviceToken(
+                Platform.GooglePlayAndroid,
+                "",
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFailWithNoReset();
         }
 
         [Test]

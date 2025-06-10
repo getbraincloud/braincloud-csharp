@@ -210,12 +210,16 @@ using System;
                 if (failure != null)
                 {
                     int statusCode = 400; // Bad Request
-                    int reasonCode = INVALID_DEVICE_TOKEN; // Custom code for "Invalid Token"
+                    int reasonCode = ReasonCodes.INVALID_DEVICE_TOKEN; // Custom code for "Invalid Token"
                     string errorJson = "{\"status\":"+statusCode+
-                                        ",\"reason_code\":" +INVALID_DEVICE_TOKEN+
+                                        ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN+
                                        ",\"message\":\"Invalid device token: " + token + " \"}";
                     
                     failure(statusCode, reasonCode, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Register Push Notification Token failed, empty string was supplied.");
                 }
 
                 return;

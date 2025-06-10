@@ -82,6 +82,15 @@ namespace BrainCloudTests
             return !m_result;
         }
 
+        public bool RunExpectFailWithNoReset()
+        {
+            Spin();
+
+            Assert.That(!m_result);
+
+            return !m_result;
+        }
+
         public bool RunExpectFail()
         {
             Reset();
