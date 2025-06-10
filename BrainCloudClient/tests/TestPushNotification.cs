@@ -61,9 +61,6 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-
             _bc.PushNotificationService.RegisterPushNotificationDeviceToken(
                 Platform.GooglePlayAndroid,
                 "",
