@@ -43,6 +43,8 @@ namespace BrainCloud.Internal
 
         private const int MAX_RSMG_HISTORY = 50;
 
+        private const int CONNECT_RESEND_INTERVAL_S = 2;
+
         /// <summary>
         /// Last Synced Ping
         /// </summary>
@@ -300,7 +302,7 @@ namespace BrainCloud.Internal
             // Re-transmission doesn't need to be high frequency. A suitable interval could be 500ms.
             if (m_connectionType == RelayConnectionType.UDP && m_resendConnectRequest)
             {
-                if ((DateTime.Now - m_lastConnectResendTime).TotalSeconds > 0.5)
+                if ((DateTime.Now - m_lastConnectResendTime).TotalSeconds > CONNECT_RESEND_INTERVAL_S)
                 {
                     send(buildConnectionRequest());
                     m_lastConnectResendTime = DateTime.Now;
