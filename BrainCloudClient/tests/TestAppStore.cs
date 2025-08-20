@@ -15,6 +15,15 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
+            _bc.AppStoreService.CachePurchaseContext("_invalid_store_id_", "_invalid_iap_id_", "_invalid_payload_", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
+        }
+
+        [Test]
+        public void TestVerifyPurchase()
+        {
+            TestResult tr = new TestResult(_bc);
+
             _bc.AppStoreService.VerifyPurchase("_invalid_store_id_", "{}", tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
         }
