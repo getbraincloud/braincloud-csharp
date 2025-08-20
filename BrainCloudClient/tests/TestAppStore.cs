@@ -11,7 +11,7 @@ namespace BrainCloudTests
     public class TestAppStore : TestFixtureBase
     {
         [Test]
-        public void TestVerifyPurchase()
+        public void TestCachePurchaseContext()
         {
             TestResult tr = new TestResult(_bc);
 
