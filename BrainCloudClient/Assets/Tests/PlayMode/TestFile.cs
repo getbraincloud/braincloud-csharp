@@ -24,7 +24,7 @@ namespace Tests.PlayMode
         [TearDown]
         public override void TearDown()
         {
-            _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
+            _tc.bcWrapper.Client.DeregisterFileUploadCallback();
             if (_shouldDeleteFiles)
             {
                 _tc.StartCoroutine(DeleteAllFiles());
@@ -55,16 +55,16 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             FileInfo info = new FileInfo(CreateFile(4024));
             _cloudPath = "TestFolder";
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info.Name,
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -85,7 +85,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             string fileName = "testFile.txt";
             string fileContent = "Hello, I'm a file";
@@ -112,7 +112,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             string fileName1 = "testFile1.txt";
             string fileContent1 = "Hello, I'm a file !";
@@ -155,17 +155,17 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info = new FileInfo(CreateFile(4024));
             _shareable = false;
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info.Name,
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -190,17 +190,17 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     "testFileCANCEL.dat",
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -233,17 +233,17 @@ namespace Tests.PlayMode
             _shouldDeleteFiles = false;
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info = new FileInfo(CreateFile(1024));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info.Name,
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -273,17 +273,17 @@ namespace Tests.PlayMode
             _shouldDeleteFiles = false;
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info.Name,
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -295,13 +295,13 @@ namespace Tests.PlayMode
             
             FileInfo info2 = new FileInfo(CreateFile(4024));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
             (
                 _cloudPath,
                 info2.Name,
                 _shareable,
                 _replaceIfExists,
-                info2.FullName,
+                ConvertFileToBytes(info2),
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
@@ -331,17 +331,17 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info = new FileInfo(CreateFile(1024));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info.Name,
                     _shareable,
                     _replaceIfExists,
-                    info.FullName,
+                    ConvertFileToBytes(info),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -372,18 +372,18 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             FileInfo info1 = new FileInfo(CreateFile(4096, "multiUpload1.dat"));
             FileInfo info2 = new FileInfo(CreateFile(4096, "multiUpload2.dat"));
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info1.Name,
                     _shareable,
                     _replaceIfExists,
-                    info1.FullName,
+                    ConvertFileToBytes(info1),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );
@@ -392,13 +392,13 @@ namespace Tests.PlayMode
             //Getting Id from first upload
             string id1 = GetUploadId(_tc.m_response);
 
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
                 (
                     _cloudPath,
                     info2.Name,
                     _shareable,
                     _replaceIfExists,
-                    info2.FullName,
+                    ConvertFileToBytes(info2),
                     _tc.ApiSuccess,
                     _tc.ApiError
                 );

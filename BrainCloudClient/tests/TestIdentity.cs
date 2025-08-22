@@ -189,14 +189,14 @@ namespace BrainCloudTests
         public void TestAttachBlockChain()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.IdentityService.AttachBlockChain(
+            _bc.IdentityService.AttachBlockChainIdentity(
                 "config",
                 "ehhhwwwhhhhh2",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
             TestResult tr1 = new TestResult(_bc);
-            _bc.IdentityService.DetachBlockChain(
+            _bc.IdentityService.DetachBlockChainIdentity(
                 "config",
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
@@ -207,14 +207,14 @@ namespace BrainCloudTests
         {
 
               TestResult tr1 = new TestResult(_bc);
-            _bc.IdentityService.AttachBlockChain(
+            _bc.IdentityService.AttachBlockChainIdentity(
                 "config",
                 "ew2",                
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 
             TestResult tr = new TestResult(_bc);
-            _bc.IdentityService.DetachBlockChain(
+            _bc.IdentityService.DetachBlockChainIdentity(
                 "config",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();

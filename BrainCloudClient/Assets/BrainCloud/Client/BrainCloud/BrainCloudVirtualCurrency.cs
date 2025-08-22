@@ -160,41 +160,5 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.ResetPlayerVC, data, callback);
             _client.SendRequest(sc);
         }
-
-        #region Obsolete
-        [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
-        public void AwardCurrency(
-            string currencyType,
-            ulong amount,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.VirtualCurrencyServiceCurrencyId.Value] = currencyType;
-            data[OperationParam.VirtualCurrencyServiceCurrencyAmount.Value] = amount;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.AwardVC, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
-        public void ConsumeCurrency(
-            string currencyType,
-            ulong amount,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.VirtualCurrencyServiceCurrencyId.Value] = currencyType;
-            data[OperationParam.VirtualCurrencyServiceCurrencyAmount.Value] = amount;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.ConsumePlayerVC, data, callback);
-            _client.SendRequest(sc);
-        }
-        #endregion
     }
 }

@@ -26,7 +26,7 @@ namespace BrainCloudTests
             ranges.Add(1000);
             algo["ranges"] = ranges;
 
-            _bc.LobbyService.FindLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
+            _bc.LobbyService.FindLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -70,7 +70,7 @@ namespace BrainCloudTests
             ranges.Add(1000);
             algo["ranges"] = ranges;
 
-            _bc.LobbyService.FindOrCreateLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+            _bc.LobbyService.FindOrCreateLobby("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -277,7 +277,7 @@ namespace BrainCloudTests
                 List<int> ranges = new List<int>();
                 ranges.Add(1000);
                 algo["ranges"] = ranges;
-                _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+                _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.MISSING_REQUIRED_PARAMETER);
             }
 
@@ -314,7 +314,7 @@ namespace BrainCloudTests
                 ranges.Add(1000);
                 algo["ranges"] = ranges;
 
-                _bc.LobbyService.FindLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
+                _bc.LobbyService.FindLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
 
@@ -342,7 +342,7 @@ namespace BrainCloudTests
                 ranges.Add(1000);
                 algo["ranges"] = ranges;
 
-                _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+                _bc.LobbyService.FindOrCreateLobbyWithPingData("MATCH_UNRANKED", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
 

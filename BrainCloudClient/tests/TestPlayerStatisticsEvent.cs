@@ -18,7 +18,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PlayerStatisticsEventService.TriggerStatsEvent(
+            _bc.PlayerStatisticsEventService.TriggerUserStatsEvent(
                 _eventId01,
                 1,
                 tr.ApiSuccess, tr.ApiError);
@@ -36,7 +36,7 @@ namespace BrainCloudTests
 
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1, event2 };
 
-            _bc.PlayerStatisticsEventService.TriggerStatsEvents(
+            _bc.PlayerStatisticsEventService.TriggerUserStatsEvents(
                 JsonWriter.Serialize(jsonData),
                 tr.ApiSuccess, tr.ApiError);
 
@@ -56,7 +56,7 @@ namespace BrainCloudTests
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1 };
 
             _bc.Client.RegisterRewardCallback(rewardCallback);
-            _bc.PlayerStatisticsEventService.TriggerStatsEvents(
+            _bc.PlayerStatisticsEventService.TriggerUserStatsEvents(
                 JsonWriter.Serialize(jsonData),
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -81,10 +81,10 @@ namespace BrainCloudTests
             Dictionary<string, object>[] jsonData2 = new Dictionary<string, object>[] { event2 };
 
             _bc.Client.RegisterRewardCallback(rewardCallback);
-            _bc.PlayerStatisticsEventService.TriggerStatsEvents(
+            _bc.PlayerStatisticsEventService.TriggerUserStatsEvents(
                 JsonWriter.Serialize(jsonData1),
                 tr.ApiSuccess, tr.ApiError);
-            _bc.PlayerStatisticsEventService.TriggerStatsEvents(
+            _bc.PlayerStatisticsEventService.TriggerUserStatsEvents(
                 JsonWriter.Serialize(jsonData2),
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectCount(2);
