@@ -378,33 +378,6 @@
     <Compile Include="..\..\Assets\BrainCloud\JsonFx\XmlDataWriter.cs">
       <Link>JsonFx\XmlDataWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\IJsonWrapper.cs">
-      <Link>LitJson\IJsonWrapper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonData.cs">
-      <Link>LitJson\JsonData.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonException.cs">
-      <Link>LitJson\JsonException.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonMapper.cs">
-      <Link>LitJson\JsonMapper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonMockWrapper.cs">
-      <Link>LitJson\JsonMockWrapper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonReader.cs">
-      <Link>LitJson\JsonReader.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\JsonWriter.cs">
-      <Link>LitJson\JsonWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\Lexer.cs">
-      <Link>LitJson\Lexer.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\LitJson\ParserToken.cs">
-      <Link>LitJson\ParserToken.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\CaptiveNetworkException.cs">
       <Link>ModernHttpClient\CaptiveNetworkException.cs</Link>
     </Compile>
