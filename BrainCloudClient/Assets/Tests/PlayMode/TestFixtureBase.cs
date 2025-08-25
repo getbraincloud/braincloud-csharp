@@ -57,7 +57,7 @@ namespace Tests.PlayMode
                 _tc.bcWrapper.Client.DeregisterEventCallback();
                 _tc.bcWrapper.Client.DeregisterRewardCallback();
                 _tc.bcWrapper.Client.DeregisterFileUploadCallback();
-                _tc.bcWrapper.Client.DeregisterFileUploadCallbacks();
+                _tc.bcWrapper.Client.DeregisterFileUploadCallback();
                 _tc.bcWrapper.Client.DeregisterGlobalErrorCallback();
                 _tc.bcWrapper.Client.DeregisterNetworkErrorCallback();                
                 _tc.CleanUp();
@@ -201,6 +201,11 @@ namespace Tests.PlayMode
                 message = string.Format("\r\n{0}\r\n{1}", prefix, message);
             }
             Debug.Log(message);
+        }
+        
+        protected byte[] ConvertFileToBytes(FileInfo fileInfo)
+        {
+            return System.IO.File.ReadAllBytes(fileInfo.FullName);
         }
 
         protected void LogResults(string errorMessage,bool testPassed)

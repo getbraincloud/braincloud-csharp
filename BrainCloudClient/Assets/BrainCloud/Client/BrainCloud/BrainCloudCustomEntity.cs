@@ -70,62 +70,7 @@ using BrainCloud.Common;
             ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.CreateCustomEntity, data, callback);
             _client.SendRequest(sc);
         }
-
-        /// <summary>
-        /// Retrieves page of custom entity from the server, 
-        ///with language fields limited to the text for the 
-        ///current or default language.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - GetCustomEntityPage
-        /// </remarks>
-        /// <param name="entityType">
-        /// </param>
-        /// <param name="rowsPerPage">
-        /// quantity of rows per page
-        /// </param>
-        /// <param name="searchJson">
-        /// 
-        /// </param>
-        /// <param name="sortJson">
-        /// 
-        /// </param>
-        /// <param name="doCount">
-        /// 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>//this good
-        [Obsolete("This has been deprecated use overload with 2 arguments entityType and context - removal after September 1 2021")]
-        public void GetEntityPage(
-        string entityType,
-        int rowsPerPage,
-        string searchJson,
-        string sortJson,
-        bool doCount,
-        SuccessCallback success = null,
-        FailureCallback failure = null,
-        object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
-            data[OperationParam.CustomEntityServiceRowsPerPage.Value] = rowsPerPage;
-            data[OperationParam.CustomEntityServiceSearchJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(searchJson);
-            data[OperationParam.CustomEntityServiceSortJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(sortJson);
-            data[OperationParam.CustomEntityServiceDoCount.Value] = doCount;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.CustomEntity, ServiceOperation.GetCustomEntityPage, data, callback);
-            _client.SendRequest(sc);
-        }
-
+        
         public void GetEntityPage(
         string entityType,
         string jsonContext,

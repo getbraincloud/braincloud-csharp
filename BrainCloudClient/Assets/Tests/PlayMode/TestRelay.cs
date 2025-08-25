@@ -110,7 +110,6 @@ namespace Tests.PlayMode
                     1, //max steps
                     algo, 
                     new Dictionary<string, object>(), //filter json
-                    0,  //timeout seconds
                     true,   //isReady
                     new Dictionary<string, object>(), //Extra Json
                     "all",  //team code

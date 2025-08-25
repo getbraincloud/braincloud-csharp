@@ -53,16 +53,16 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             
             //Upload new file
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             FileInfo info = new FileInfo(CreateFile(4024));
             _cloudPath = "TestFolder";
-            _tc.bcWrapper.FileService.UploadFile
+            _tc.bcWrapper.FileService.UploadFileFromMemory
             (
                 _cloudPath,
                 _filename,
                 _shareable,
                 _replaceIfExists,
-                info.FullName,
+                ConvertFileToBytes(info),
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
