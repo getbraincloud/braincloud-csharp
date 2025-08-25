@@ -114,7 +114,6 @@ namespace BrainCloud.Internal
 
                 m_trackedPacketIds.Clear();
             }
-            disconnect();
         }
         
         /// <summary>
@@ -794,6 +793,9 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
+                        m_cxIdToNetId[cxId] = netId;
+                        m_netIdToCxId[netId] = cxId;
+
                         int[] packetIdArray = null;
 
                         if (parsedDict.ContainsKey("orderedPacketIds"))
@@ -816,9 +818,6 @@ namespace BrainCloud.Internal
                                 }
                             }
                         }
-
-                        m_cxIdToNetId[cxId] = netId;
-                        m_netIdToCxId[netId] = cxId;
                         break;
                     }
                 case "MIGRATE_OWNER":
