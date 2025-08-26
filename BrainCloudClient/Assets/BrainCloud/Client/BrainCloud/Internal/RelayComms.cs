@@ -113,6 +113,9 @@ namespace BrainCloud.Internal
                 send(buildDisconnectRequest());
 
                 m_trackedPacketIds.Clear();
+
+                // disconnect from the client after the client gets to send it out
+                m_queuedForDisconnect = true;
             }
         }
         
@@ -268,6 +271,7 @@ namespace BrainCloud.Internal
                 if (splits.Length != 3) continue;
                 if (profileId == splits[1]) return (short)entry.Value;
             }
+            m_clientRef.Log($"[RelayComms] GetNetIdForProfileId: ProfileId '{profileId}' not found.");
             return (short)INVALID_NET_ID;
         }
 
@@ -285,8 +289,10 @@ namespace BrainCloud.Internal
         {
             if (m_cxIdToNetId.ContainsKey(cxId))
             {
+                m_clientRef.Log($"[RelayComms] GetNetIdForCxId: CxId '{cxId}' and return NetId '{m_cxIdToNetId[cxId]}'");
                 return (short)m_cxIdToNetId[cxId];
             }
+            m_clientRef.Log($"[RelayComms] GetNetIdForCxId: CxId '{cxId}' not found.");
             return (short)INVALID_NET_ID;
         }
 
@@ -312,6 +318,11 @@ namespace BrainCloud.Internal
             DateTime nowMS = DateTime.Now;
             if (IsConnected())
             {
+                if (m_queuedForDisconnect)
+                {
+                    m_queuedForDisconnect = false;
+                    disconnect();
+                }
                 m_timeSinceLastPingRequest += (nowMS - m_lastNowMS).Milliseconds;
                 m_lastNowMS = nowMS;
 
@@ -499,6 +510,8 @@ namespace BrainCloud.Internal
             m_ownerCxId = "";
             m_netId = INVALID_NET_ID;
 
+            m_queuedForDisconnect = false;
+
             if (!m_endMatchRequested)
             {
                 if (m_webSocket != null) m_webSocket.Close();
@@ -519,7 +532,7 @@ namespace BrainCloud.Internal
                 m_tcpClient = null;
 
                 if (m_udpClient != null) m_udpClient.Close();
-                m_udpClient = null;   
+                m_udpClient = null;
             }
 
             // cleanup UDP stuff
@@ -1054,6 +1067,7 @@ namespace BrainCloud.Internal
 
                         // It's in order, queue event
                         m_recvPacketId[ackIdWithoutPacketId] = packetId;
+                        m_clientRef.Log($"Received ordered reliable packet from {netId}.");
                         queueRelayEvent(netId, in_data);
 
                         // Empty previously queued packets if they follow this one
@@ -1062,6 +1076,8 @@ namespace BrainCloud.Internal
                             var packet = orderedReliablePackets[0];
                             if (packet.Id == ((packetId + 1) & MAX_PACKET_ID))
                             {
+
+                        m_clientRef.Log($"Received ordered reliable packet from {packet.NetId}.");
                                 queueRelayEvent(packet.NetId, packet.RawData);
                                 orderedReliablePackets.RemoveAt(0);
                                 packetId = packet.Id;
@@ -1533,6 +1549,7 @@ namespace BrainCloud.Internal
         };
         // end 
 
+        private bool m_queuedForDisconnect = false;
         private bool m_resendConnectRequest = false;
         private bool m_endMatchRequested = false;
         private DateTime m_lastConnectResendTime = DateTime.Now;
