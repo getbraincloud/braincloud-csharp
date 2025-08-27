@@ -271,7 +271,6 @@ namespace BrainCloud.Internal
                 if (splits.Length != 3) continue;
                 if (profileId == splits[1]) return (short)entry.Value;
             }
-            m_clientRef.Log($"[RelayComms] GetNetIdForProfileId: ProfileId '{profileId}' not found.");
             return (short)INVALID_NET_ID;
         }
 
@@ -289,10 +288,8 @@ namespace BrainCloud.Internal
         {
             if (m_cxIdToNetId.ContainsKey(cxId))
             {
-                m_clientRef.Log($"[RelayComms] GetNetIdForCxId: CxId '{cxId}' and return NetId '{m_cxIdToNetId[cxId]}'");
                 return (short)m_cxIdToNetId[cxId];
             }
-            m_clientRef.Log($"[RelayComms] GetNetIdForCxId: CxId '{cxId}' not found.");
             return (short)INVALID_NET_ID;
         }
 
@@ -1067,7 +1064,6 @@ namespace BrainCloud.Internal
 
                         // It's in order, queue event
                         m_recvPacketId[ackIdWithoutPacketId] = packetId;
-                        m_clientRef.Log($"Received ordered reliable packet from {netId}.");
                         queueRelayEvent(netId, in_data);
 
                         // Empty previously queued packets if they follow this one
@@ -1076,8 +1072,6 @@ namespace BrainCloud.Internal
                             var packet = orderedReliablePackets[0];
                             if (packet.Id == ((packetId + 1) & MAX_PACKET_ID))
                             {
-
-                        m_clientRef.Log($"Received ordered reliable packet from {packet.NetId}.");
                                 queueRelayEvent(packet.NetId, packet.RawData);
                                 orderedReliablePackets.RemoveAt(0);
                                 packetId = packet.Id;
@@ -1636,4 +1630,5 @@ namespace BrainCloud
         MAX
     }
 #endregion
+
 }
