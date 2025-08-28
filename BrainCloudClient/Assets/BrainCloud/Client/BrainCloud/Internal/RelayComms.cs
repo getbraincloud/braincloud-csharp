@@ -113,8 +113,10 @@ namespace BrainCloud.Internal
                 send(buildDisconnectRequest());
 
                 m_trackedPacketIds.Clear();
+
+                // disconnect from the client after the client gets to send it out
+                m_queuedForDisconnect = true;
             }
-            disconnect();
         }
         
         /// <summary>
@@ -313,6 +315,11 @@ namespace BrainCloud.Internal
             DateTime nowMS = DateTime.Now;
             if (IsConnected())
             {
+                if (m_queuedForDisconnect)
+                {
+                    m_queuedForDisconnect = false;
+                    disconnect();
+                }
                 m_timeSinceLastPingRequest += (nowMS - m_lastNowMS).Milliseconds;
                 m_lastNowMS = nowMS;
 
@@ -500,6 +507,8 @@ namespace BrainCloud.Internal
             m_ownerCxId = "";
             m_netId = INVALID_NET_ID;
 
+            m_queuedForDisconnect = false;
+
             if (!m_endMatchRequested)
             {
                 if (m_webSocket != null) m_webSocket.Close();
@@ -520,7 +529,7 @@ namespace BrainCloud.Internal
                 m_tcpClient = null;
 
                 if (m_udpClient != null) m_udpClient.Close();
-                m_udpClient = null;   
+                m_udpClient = null;
             }
 
             // cleanup UDP stuff
@@ -794,6 +803,9 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
+                        m_cxIdToNetId[cxId] = netId;
+                        m_netIdToCxId[netId] = cxId;
+
                         int[] packetIdArray = null;
 
                         if (parsedDict.ContainsKey("orderedPacketIds"))
@@ -816,9 +828,6 @@ namespace BrainCloud.Internal
                                 }
                             }
                         }
-
-                        m_cxIdToNetId[cxId] = netId;
-                        m_netIdToCxId[netId] = cxId;
                         break;
                     }
                 case "MIGRATE_OWNER":
@@ -1534,6 +1543,7 @@ namespace BrainCloud.Internal
         };
         // end 
 
+        private bool m_queuedForDisconnect = false;
         private bool m_resendConnectRequest = false;
         private bool m_endMatchRequested = false;
         private DateTime m_lastConnectResendTime = DateTime.Now;
@@ -1620,4 +1630,5 @@ namespace BrainCloud
         MAX
     }
 #endregion
+
 }
