@@ -157,7 +157,7 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
-        /// Service Operation - CachePurchasePayloadContext
+        /// Service Operation - CACHE_PURCHASE_PAYLOAD_CONTEXT
         /// </remarks>
         /// <param name="storeId">
         /// The store storeId. Valid stores are:

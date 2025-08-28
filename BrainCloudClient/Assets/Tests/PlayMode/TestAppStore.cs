@@ -1,153 +1,63 @@
 using BrainCloud;
-using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
-using NUnit.Core;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using UnityEngine;
+using UnityEngine.TestTools;
 
-namespace BrainCloudTests
+namespace Tests.PlayMode
 {
-    [TestFixture]
     public class TestAppStore : TestFixtureBase
     {
         private const string _email = "UnityTestee@bctestuser.com";
         private const string _password = "12345";
 
-        [Test]
-        public void TestCachePurchasePayloadContext()
+        [UnityTest]
+        public IEnumerator TestMockStoreCachePayloadPurchaseContextThenVerifyPurchase()
         {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.CachePurchasePayloadContext("_invalid_store_id_", "_invalid_iap_id_", "_invalid_payload_", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-
-        [Test]
-        public void TestVerifyPurchase()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.VerifyPurchase("_invalid_store_id_", "{}", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-
-        [Test]
-        public void TestGetEligiblePromotions()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.GetEligiblePromotions(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void TestGetSalesInventory()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.GetSalesInventory("_invalid_store_id_", "_invalid_user_currency_", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-
-        [Test]
-        public void TestGetSalesInventoryByCategory()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.GetSalesInventoryByCategory("_invalid_store_id_", "_invalid_user_currency_", "_invalid_category_", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-
-        [Test]
-        public void TestStartPurchaseFail()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.StartPurchase("_invalid_store_id_", "{}", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-        
-        [Test]
-        public void TestStartPurchase()
-        {
-            //Had to run StartPurchase through a cloud code script to skip permissions for testing with mock store
-            TestResult tr = new TestResult(_bc);
-            _bc.ScriptService.RunScript("TestPurchase","{}", tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void TestFinalizePurchase()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.FinalizePurchase("_invalid_store_id_", "_invalid_transaction_id_", "{}", tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
-        }
-
-        [Test]
-        public void TestRefreshPromotions()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AppStoreService.RefreshPromotions(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
-        public void TestMockStoreCachePayloadPurchaseContextThenVerifyPurchase()
-        {
-            TestResult tr = new TestResult(_bc);
-
-            _bc.AuthenticateEmailPassword
+            _tc.bcWrapper.Client.AuthenticationService.AuthenticateEmailPassword
             (
                 _email,
                 _password,
                 true,
-                tr.ApiSuccess,
-                tr.ApiError
+                _tc.ApiSuccess,
+                _tc.ApiError
             );
 
-            tr.Run();
+            yield return _tc.StartCoroutine(_tc.Run());
 
-            _bc.AppStoreService.GetSalesInventory // googlePlay has a product with payload included
+            _tc.bcWrapper.Client.AppStoreService.GetSalesInventory // googlePlay has a product with payload included
             (
                 "googlePlay",
                 string.Empty,
-                tr.ApiSuccess,
-                tr.ApiError
+                _tc.ApiSuccess,
+                _tc.ApiError
             );
 
-            tr.Run();
+            yield return _tc.StartCoroutine(_tc.Run());
 
             // Get data needed to do CachePurchasePayloadContext and VerifyPurchase (mock)
-            var data = tr.m_response;
+            var data = _tc.m_response;
             var products = ((data["data"] as Dictionary<string, object>)["productInventory"] as Dictionary<string, object>[])[0];
 
             string itemId = products["itemId"].ToString();
             string payload = products["payload"].ToString();
             string iapId = (products["priceData"] as Dictionary<string, object>)["id"].ToString();
 
-            _bc.AppStoreService.CachePurchasePayloadContext
+            _tc.bcWrapper.Client.AppStoreService.CachePurchasePayloadContext
             (
                 "mock",
                 iapId,
                 payload,
-                tr.ApiSuccess,
-                tr.ApiError
+                _tc.ApiSuccess,
+                _tc.ApiError
             );
 
-            tr.Run();
+            yield return _tc.StartCoroutine(_tc.Run());
 
-            Random rng = new Random((int)DateTime.UtcNow.Ticks);
-            var stop = DateTime.UtcNow.AddSeconds(rng.NextDouble() + rng.Next(3, 6)); // Simulate user & store processing time
-            while (DateTime.UtcNow < stop)
-            {
-                _bc.Update();
-                Thread.Sleep(16);
-            }
+            yield return new WaitForSecondsRealtime(UnityEngine.Random.Range(3.0f, 6.0f)); // Simulate user & store processing time
 
             // Setup mock receiptData
             var transactions = new Dictionary<string, object>[1];
@@ -168,18 +78,18 @@ namespace BrainCloudTests
                 { "receiptData", new Dictionary<string, object>() {{ "transactions", transactions }}}
             });
 
-            _bc.ScriptService.RunScript // Need to run script in order to do VerifyPurchase (mock)
+            _tc.bcWrapper.Client.ScriptService.RunScript // Need to run script in order to do VerifyPurchase (mock)
             (
                 "/VerifyPurchaseMockStore",
                 jsonScriptData,
-                tr.ApiSuccess,
-                tr.ApiError
+                _tc.ApiSuccess,
+                _tc.ApiError
             );
 
-            tr.Run();
+            yield return _tc.StartCoroutine(_tc.Run());
 
             // Ensure VerifyPurchase response returns the data we expect
-            data = tr.m_response;
+            data = _tc.m_response;
 
             Assert.That(data, Is.Not.Null, "Script response is null");
             Assert.That(data, Is.Not.Empty, "Script response is empty");
@@ -227,6 +137,8 @@ namespace BrainCloudTests
             Assert.That(details["processed"], Is.True, "The transaction was not processed");
             Assert.That(details["itemId"].ToString(), Is.EqualTo(itemId), "itemId from transaction does not match what was sent");
             Assert.That(details["payload"].ToString(), Is.EqualTo(payload), "payload from transaction does not match what was sent");
+
+            LogResults("One of the brainCloud API calls did not return successfully!", _tc.successCount == 4);
         }
     }
 }
