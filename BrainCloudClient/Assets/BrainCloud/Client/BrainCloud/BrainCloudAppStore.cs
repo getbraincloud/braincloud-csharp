@@ -184,7 +184,7 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        public void CachePurchaseContext(
+        public void CachePurchasePayloadContext(
             string storeId,
             string iapId,
             string payload,
@@ -198,7 +198,7 @@ using System;
             data[OperationParam.AppStoreServicePayload.Value] = payload;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.CachePurchaseContext, data, callback);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.CachePurchasePayloadContext, data, callback);
             _client.SendRequest(sc);
         }
 
