@@ -194,7 +194,11 @@ namespace BrainCloudTests
 
             if (response.ContainsKey("errorMessage"))
             {
+#if DOT_NET
+                Console.WriteLine(response["errorMessage"]);
+#else
                 Debug.LogError(response["errorMessage"]);
+#endif
             }
 
             Assert.That(response, Contains.Key("success"), "VerifyPurchase response did not contain a success key");
