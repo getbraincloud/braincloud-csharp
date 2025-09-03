@@ -274,7 +274,7 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            _tc.bcWrapper.IdentityService.AttachBlockChain
+            _tc.bcWrapper.IdentityService.AttachBlockChainIdentity
                 (
                     blockchainConfig,
                     "schwifty2",
@@ -286,7 +286,7 @@ namespace Tests.PlayMode
             LogResults($"Failure to attach block chain",_tc.successCount == 1);
             
             //clean up
-            _tc.bcWrapper.IdentityService.DetachBlockChain
+            _tc.bcWrapper.IdentityService.DetachBlockChainIdentity
                 (
                     blockchainConfig,
                     _tc.ApiSuccess,

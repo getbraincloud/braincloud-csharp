@@ -117,7 +117,7 @@ namespace Tests.PlayMode
             _tc.bcWrapper.AuthenticateUniversal(username,password,true,_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
-            _tc.bcWrapper.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             string cloudPath = "TestFolder";
             string fileName = "testFile1.txt";
             string fileContent = "Hello, I'm a file !";

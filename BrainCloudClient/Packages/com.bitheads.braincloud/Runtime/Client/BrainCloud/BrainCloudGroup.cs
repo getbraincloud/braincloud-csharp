@@ -343,37 +343,6 @@ using System;
             SendRequest(ServiceOperation.CreateGroup, success, failure, cbObject, data);
         }
 
-        [Obsolete("This has been deprecated, use CreateGroupWithSummaryData instead. Removal on Match 1, 2022")]
-        public void CreateGroup(
-            string name,
-            string groupType,
-            bool? isOpenGroup,
-            GroupACL acl,
-            string jsonData,
-            string jsonOwnerAttributes,
-            string jsonDefaultMemberAttributes,
-            string jsonSummaryData,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            if (!string.IsNullOrEmpty(name)) data[OperationParam.GroupName.Value] = name;
-            data[OperationParam.GroupType.Value] = groupType;
-            if (isOpenGroup.HasValue) data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup.Value;
-            if (acl != null) data[OperationParam.GroupAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
-            if (!string.IsNullOrEmpty(jsonData)) data[OperationParam.GroupData.Value] = JsonReader.Deserialize(jsonData);
-            if (!string.IsNullOrEmpty(jsonOwnerAttributes))
-                data[OperationParam.GroupOwnerAttributes.Value] = JsonReader.Deserialize(jsonOwnerAttributes);
-            if (!string.IsNullOrEmpty(jsonDefaultMemberAttributes))
-                data[OperationParam.GroupDefaultMemberAttributes.Value] = JsonReader.Deserialize(jsonDefaultMemberAttributes);
-            if (!string.IsNullOrEmpty(jsonSummaryData))
-                data[OperationParam.GroupSummaryData.Value] = JsonReader.Deserialize(jsonSummaryData);
-
-            SendRequest(ServiceOperation.CreateGroup, success, failure, cbObject, data);
-        }
-
         /// <summary>
         /// Set a group's access conditions.
         /// </summary>

@@ -66,7 +66,7 @@ namespace BrainCloudTests
             List<int> ranges = new List<int>();
             ranges.Add(1000);
             algo["ranges"] = ranges;
-            _bc.LobbyService.FindOrCreateLobby("READY_START_V2", 0, 1, algo, new Dictionary<string, object>(), 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, null, onFailed);
+            _bc.LobbyService.FindOrCreateLobby("READY_START_V2", 0, 1, algo, new Dictionary<string, object>(), true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, null, onFailed);
         }
 
         void onLobbyEvent(string json)

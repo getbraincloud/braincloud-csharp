@@ -2303,39 +2303,7 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetPeerProfiles, null, callback);
             _client.SendRequest(sc);
         }
-
-        [Obsolete("This has been deprecated, use AttachBlockChainIdentity instead. Removal on Match 1, 2022")]
-        public void AttachBlockChain(
-            string blockchainConfig,
-            string publicKey,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
-            data[OperationParam.PublicKey.Value] = publicKey;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.AttachBlockChain, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        [Obsolete("This has been deprecated, use DetachBlockChainIdentity instead. Removal on Match 1, 2022")]
-        public void DetachBlockChain(
-            string blockchainConfig,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.BlockChainConfig.Value] = blockchainConfig;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachBlockChain, data, callback);
-            _client.SendRequest(sc);
-        }
-
+        
         /// <summary>
         /// Attach blockchain
         /// </summary>

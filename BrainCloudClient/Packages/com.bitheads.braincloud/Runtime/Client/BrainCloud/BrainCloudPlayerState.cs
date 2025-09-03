@@ -159,40 +159,6 @@ using BrainCloud.Internal;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
-        [Obsolete("This has been deprecated use UpdateName instead - removal after September 1 2021")]
-        public void UpdateUserName(
-            string userName,
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.PlayerStateServiceUpdateNameData.Value] = userName;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.UpdateName, data, callback);
-            _client.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Sets the user name.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - playerState
-        /// Service Operation - UPDATE_NAME
-        /// </remarks>
-        /// <param name="userName">
-        /// The name of the user
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
         public void UpdateName(
             string userName,
             SuccessCallback success = null,

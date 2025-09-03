@@ -2082,7 +2082,13 @@ public class BrainCloudWrapper
     {
         return GetStoredProfileId() != String.Empty && GetStoredAnonymousId() != String.Empty;
     }
-        
+
+    public void EnableLongSession(bool enabled)
+    {
+        InitializeIdentity(true);
+        Client.Comms.EnableLongSession(enabled);
+    }
+
     /// <summary>
     /// Logs user out of server.
     /// </summary>
@@ -2108,7 +2114,7 @@ public class BrainCloudWrapper
         FailureCallback failure = null,
         object cbObject = null)
     {
-        if(forgetUser)
+        if (forgetUser)
         {
             ResetStoredProfileId();
         }

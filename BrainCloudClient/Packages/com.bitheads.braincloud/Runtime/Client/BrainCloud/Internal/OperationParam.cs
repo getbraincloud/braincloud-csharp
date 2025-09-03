@@ -278,6 +278,7 @@ namespace BrainCloud
 
         // AppStore 
         public static readonly OperationParam AppStoreServiceStoreId = new OperationParam("storeId");
+        public static readonly OperationParam AppStoreServiceIAPId = new OperationParam("iapId");
         public static readonly OperationParam AppStoreServiceReceiptData = new OperationParam("receiptData");
         public static readonly OperationParam AppStoreServicePurchaseData = new OperationParam("purchaseData");
         public static readonly OperationParam AppStoreServiceTransactionId = new OperationParam("transactionId");
@@ -285,6 +286,7 @@ namespace BrainCloud
         public static readonly OperationParam AppStoreServicePriceInfoCriteria = new OperationParam("priceInfoCriteria");
         public static readonly OperationParam AppStoreServiceUserCurrency = new OperationParam("userCurrency");
         public static readonly OperationParam AppStoreServiceCategory = new OperationParam("category");
+        public static readonly OperationParam AppStoreServicePayload = new OperationParam("payload");
 
         // Virtual Currency Service
         public static readonly OperationParam VirtualCurrencyServiceCurrencyId = new OperationParam("vcId");

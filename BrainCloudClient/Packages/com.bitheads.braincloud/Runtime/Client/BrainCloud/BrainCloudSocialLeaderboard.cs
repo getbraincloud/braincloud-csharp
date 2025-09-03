@@ -1493,17 +1493,6 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-        [Obsolete("This has been deprecated, use ListAllLeaderboards instead - removal after Match 1 2022")]
-        public void ListLeaderboards(
-            SuccessCallback success = null,
-            FailureCallback failure = null,
-            object cbObject = null)
-        {
-            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            var sc = new ServerCall(ServiceName.Leaderboard, ServiceOperation.ListAllLeaderboards, null, callback);
-            _client.SendRequest(sc);
-        }
-
         /// <summary>
         /// Retrieve a list of all leaderboards
         /// </summary>

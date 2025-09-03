@@ -42,31 +42,39 @@ using System;
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public bool RegisterPushNotificationDeviceToken(
+        public void RegisterPushNotificationDeviceToken(
             byte[] token,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-
-            if (token != null || token.Length < 1)
+            if (token == null || token.Length < 1)
             {
-                byte[] tokenData = token;
+                if (failure != null)
+                {
+                    int statusCode = 400;
+                    string errorJson = "{\"status\":" + statusCode +
+                                       ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN +
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
 
-                Platform platform = Platform.FromUnityRuntime();
-                string hexToken = BitConverter.ToString(tokenData).Replace("-","").ToLower();
-                RegisterPushNotificationDeviceToken(platform,
-                        hexToken,
-                        success,
-                        failure,
-                        cbObject);
-                return true;
+                    failure(statusCode, ReasonCodes.INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
+                }
+                return;
             }
-            // there was an error
-            else
-            {
-                return false;
-            }
+            
+            byte[] tokenData = token;
+
+            Platform platform = Platform.FromUnityRuntime();
+            string hexToken = BitConverter.ToString(tokenData).Replace("-", "").ToLower();
+            RegisterPushNotificationDeviceToken(platform,
+                    hexToken,
+                    success,
+                    failure,
+                    cbObject);
         }
 
         /// <summary>
@@ -85,27 +93,37 @@ using System;
         /// <param name="cbObject">
         /// The callback object
         /// </param>
-        public bool RegisterPushNotificationDeviceToken(
+        public void RegisterPushNotificationDeviceToken(
             string token,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            if (token != null || token.Length < 1)
+            if (string.IsNullOrEmpty(token))
             {
-                Platform platform = Platform.FromUnityRuntime();
-                RegisterPushNotificationDeviceToken(platform,
-                        token,
-                        success,
-                        failure,
-                        cbObject);
-                return true;
+                if (failure != null)
+                {
+                    int statusCode = 400;
+                    string errorJson = "{\"status\":" + statusCode +
+                                       ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN +
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
+                                       
+
+                    failure(statusCode, ReasonCodes.INVALID_DEVICE_TOKEN, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
+                }
+                return;
             }
-            // there was an error
-            else
-            {
-                return false;
-            }
+
+            Platform platform = Platform.FromUnityRuntime();
+            RegisterPushNotificationDeviceToken(platform,
+                    token,
+                    success,
+                    failure,
+                    cbObject);
         }
 #endif
 
@@ -196,6 +214,26 @@ using System;
             FailureCallback failure = null,
             object cbObject = null)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                if (failure != null)
+                {
+                    int statusCode = 400; // Bad Request
+                    int reasonCode = ReasonCodes.INVALID_DEVICE_TOKEN; // Custom code for "Invalid Token"
+                    string errorJson = "{\"status\":"+statusCode+
+                                        ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN+
+                                       ",\"message\":\"Invalid device token: " + token + " \"}";
+                    
+                    failure(statusCode, reasonCode, errorJson, cbObject);
+                }
+                if(_client.LoggingEnabled)
+                {
+                    _client.Log("Push notification token not registered - empty/null tokens are invalid");
+                }
+
+                return;
+            }
+            
             string devicePlatform = platform.ToString();
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PushNotificationRegisterParamDeviceType.Value] = devicePlatform;

@@ -1,7 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:BrainCloudClient/Packages/com.bitheads.braincloud/Runtime/Client/BrainCloud/BrainCloudAsyncMatch.cs.meta
 guid: deeed336b0d6ff14aa51148ea903a538
 timeCreated: 1513869666
 licenseType: Pro
+========
+guid: 42bd59b710e7d144ab770db6829959c7
+>>>>>>>> develop:BrainCloudClient/Assets/Tests/PlayMode/TestAppStore.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

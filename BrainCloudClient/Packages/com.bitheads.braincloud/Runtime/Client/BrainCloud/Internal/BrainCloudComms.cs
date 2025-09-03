@@ -48,9 +48,19 @@ using UnityEngine.Experimental.Networking;
     internal sealed class BrainCloudComms
     {
         /// <summary>
+        /// Enables automatic re-authentication when the user's session expires
+        /// </summary>
+        public bool LongSessionEnabled { get; private set; } = false;
+
+        public void EnableLongSession(bool enabled)
+        {
+            LongSessionEnabled = enabled;
+        }
+
+        /// <summary>
         ///Compress bundles sent from the client to the server for faster sending of large bundles.
         /// </summary>
-        public bool SupportsCompression {get; private set;} = true;
+        public bool SupportsCompression { get; private set; } = true;
         
         public void EnableCompression(bool compress)
         {
@@ -1268,13 +1278,56 @@ using UnityEngine.Experimental.Networking;
                         errorJson = SerializeJson(response);
                     }
 
+                    // If the authenticated session has expired, and long session is enabled, attempt to re-authenticate and retry lost call(s)
+                    if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED && LongSessionEnabled && operation != ServiceOperation.Authenticate.Value && _isAuthenticated)
+                    {
+                        // Save the call that failed
+                        ServerCall expiredServerCall = sc;
+                        var otherServiceCallsInProgress = new List<ServerCall>(_serviceCallsInProgress);
+                        _serviceCallsInProgress.Clear();
+                        _clientRef.Log("Session expired. Attempting reconnect . . .");
+                        _packetId = 0;
+
+                        // Retry failed/missed call(s) on successful re-authentication
+                        SuccessCallback successCallback = (response2, cbObject) =>
+                        {
+                            _clientRef.Log(string.Format("Success | {0}", response2));
+
+                            if (expiredServerCall != null)
+                            {
+                                // Re-queue the call that failed...
+                                _serviceCallsWaiting.Add(expiredServerCall);
+
+                                // ...and any other calls in the bundle as they will fail too
+                                _serviceCallsWaiting.AddRange(otherServiceCallsInProgress);
+                            }
+
+                            // Next Update loop will handle the re-authenticate request/response
+                            return;
+                        };
+
+                        FailureCallback failureCallback = (status, code, error, cbObject) =>
+                        {
+                            _clientRef.Log(string.Format("Long session re-authentication failed. | {0}  {1}  {2}", status, code, error));
+
+                            LongSessionEnabled = false;
+
+                            expiredServerCall?.GetCallback()?.OnErrorCallback(status, code, error);
+                        };
+
+                        // Attempt to re-authenticate
+                        _clientRef.AuthenticationService.AuthenticateAnonymous(false, successCallback, failureCallback);
+
+                        return; 
+                    }
+
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
                         || reasonCode == ReasonCodes.NO_SESSION
                         || reasonCode == ReasonCodes.PLAYER_SESSION_LOGGED_OUT)
                     {
                         _isAuthenticated = false;
                         SessionID = "";
-                        
+
                         if (_clientRef.LoggingEnabled)
                         {
                             _clientRef.Log("Received session expired or not found, need to re-authenticate");

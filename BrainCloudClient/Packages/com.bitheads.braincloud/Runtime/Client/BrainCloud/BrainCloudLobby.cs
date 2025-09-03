@@ -44,36 +44,6 @@ namespace BrainCloud
         /// Finds a lobby matching the specified parameters
         /// </summary>
         /// 
-        [Obsolete("This has been deprecated, new FindLobby function does not require timeoutSecs param")]
-        public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
-            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
-            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.LobbyRoomType.Value] = in_roomType;
-            data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
-            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
-            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
-            data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbyIsReady.Value] = in_isReady;
-            if (in_otherUserCxIds != null)
-            {
-                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
-            }
-            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
-            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindLobby, data, callback);
-            m_clientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Finds a lobby matching the specified parameters
-        /// </summary>
-        /// 
         public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -96,35 +66,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindLobby, data, callback);
             m_clientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Finds a lobby matching the specified parameters WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
-        /// </summary>
-        /// 
-        [Obsolete("This has been deprecated, new FindLobbyWithPingData function does not require timeoutSecs param")]
-        public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
-            Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
-            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.LobbyRoomType.Value] = in_roomType;
-            data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
-            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
-            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
-            data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbyIsReady.Value] = in_isReady;
-            if (in_otherUserCxIds != null)
-            {
-                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
-            }
-            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
-            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-
-            attachPingDataAndSend(data, ServiceOperation.FindLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -208,40 +149,6 @@ namespace BrainCloud
         /// Finds a lobby matching the specified parameters, or creates one
         /// </summary>
         /// 
-        [Obsolete("This has been deprecated, new FindOrCreateLobby function does not require timeoutSecs param")]
-        public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
-            Dictionary<string, object> in_algo,
-            Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady,
-            Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
-            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.LobbyRoomType.Value] = in_roomType;
-            data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
-            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
-            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
-            data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbySettings.Value] = in_settings;
-            data[OperationParam.LobbyIsReady.Value] = in_isReady;
-            if (in_otherUserCxIds != null)
-            {
-                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
-            }
-            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
-            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-
-            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
-            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindOrCreateLobby, data, callback);
-            m_clientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Finds a lobby matching the specified parameters, or creates one
-        /// </summary>
-        /// 
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson,
@@ -268,39 +175,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.FindOrCreateLobby, data, callback);
             m_clientRef.SendRequest(sc);
-        }
-
-        /// <summary>
-        /// Finds a lobby matching the specified parameters, or creates one WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
-        /// </summary>
-        /// 
-        [Obsolete("This has been deprecated, new FindOrCreateLobbyWithPingData function does not require timeoutSecs param")]
-        public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
-            Dictionary<string, object> in_algo,
-            Dictionary<string, object> in_filterJson, int in_timeoutSecs,
-            bool in_isReady,
-            Dictionary<string, object> in_extraJson, string in_teamCode,
-            Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
-            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.LobbyRoomType.Value] = in_roomType;
-            data[OperationParam.LobbyRating.Value] = in_rating;
-            data[OperationParam.LobbyMaxSteps.Value] = in_maxSteps;
-            data[OperationParam.LobbyAlgorithm.Value] = in_algo;
-            data[OperationParam.LobbyFilterJson.Value] = in_filterJson;
-            data[OperationParam.LobbyTimeoutSeconds.Value] = in_timeoutSecs;
-            data[OperationParam.LobbySettings.Value] = in_settings;
-            data[OperationParam.LobbyIsReady.Value] = in_isReady;
-            if (in_otherUserCxIds != null)
-            {
-                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
-            }
-            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
-            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
-
-            attachPingDataAndSend(data, ServiceOperation.FindOrCreateLobbyWithPingData, success, failure, cbObject);
         }
 
         /// <summary>

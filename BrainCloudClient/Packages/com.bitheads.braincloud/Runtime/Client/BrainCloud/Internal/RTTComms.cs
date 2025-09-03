@@ -136,7 +136,7 @@ namespace BrainCloud.Internal
                     if (m_webSocketStatus == WebsocketStatus.CLOSED)
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
-                        m_connectionFailureCallback(400, -1, "RTT Connection has been closed. Re-Enable RTT to re-establish connection : " + toProcessResponse.JsonMessage, m_connectedObj);
+                        m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                         disconnect();
                         break;
                     }
