@@ -150,6 +150,59 @@ using System;
         }
 
         /// <summary>
+        /// Before making a purchase with the IAP store, you will need to store the purchase
+        /// payload context on brainCloud so that the purchase can be verified for the proper IAP product.
+        /// This payload will be used during the VerifyPurchase method to ensure the
+        /// user properly paid for the correct product before awarding them the IAP product.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - AppStore
+        /// Service Operation - CACHE_PURCHASE_PAYLOAD_CONTEXT
+        /// </remarks>
+        /// <param name="storeId">
+        /// The store storeId. Valid stores are:
+        /// - itunes
+        /// - facebook
+        /// - appworld
+        /// - steam
+        /// - windows
+        /// - windowsPhone
+        /// - googlePlay
+        /// </param>
+        /// <param name="iapId">
+        /// The IAP product Id as configured for the product on brainCloud.
+        /// </param>
+        /// <param name="payload">
+        /// The payload retrieved for the IAP product after the GetSalesInventory method.
+        /// </param> 
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void CachePurchasePayloadContext(
+            string storeId,
+            string iapId,
+            string payload,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AppStoreServiceStoreId.Value] = storeId;
+            data[OperationParam.AppStoreServiceIAPId.Value] = iapId;
+            data[OperationParam.AppStoreServicePayload.Value] = payload;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.CachePurchasePayloadContext, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
         /// Verify Purchase with the associated StoreId
         /// </summary>
         /// <remarks>

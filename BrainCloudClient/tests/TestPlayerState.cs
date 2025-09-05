@@ -137,7 +137,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PlayerStateService.UpdateUserName(
+            _bc.PlayerStateService.UpdateName(
                 "ABC",
                 tr.ApiSuccess, tr.ApiError);
 

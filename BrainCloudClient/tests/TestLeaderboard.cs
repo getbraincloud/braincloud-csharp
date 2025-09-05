@@ -654,7 +654,7 @@ namespace BrainCloudTests
         public void TestListAllLeaderboards()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.LeaderboardService.ListLeaderboards( tr.ApiSuccess, tr.ApiError);
+            _bc.LeaderboardService.ListAllLeaderboards( tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
 

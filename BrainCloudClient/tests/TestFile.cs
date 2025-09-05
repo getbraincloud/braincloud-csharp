@@ -23,7 +23,7 @@ namespace BrainCloudTests
         [TearDown]
         public void Cleanup()
         {
-            _bc.Client.DeregisterFileUploadCallbacks();
+            _bc.Client.DeregisterFileUploadCallback();
             DeleteAllFiles();
             _returnCount = 0;
             _successCount = 0;
@@ -44,16 +44,16 @@ namespace BrainCloudTests
         public void TestSimpleUpload()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
             
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
-                info.Name,
-                true,
-                true,
                 info.FullName,
+                true,
+                true,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -67,11 +67,11 @@ namespace BrainCloudTests
         public void TestUploadFromMemory()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             string fileName = "testFile.txt";
             string fileContent = "Hello, I'm a file";
-            byte[] fileData = ConvertByteFromFile(fileContent);
+            byte[] fileData = ConvertFileToByteArray(fileContent);
 
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
@@ -92,11 +92,11 @@ namespace BrainCloudTests
         public void TestUploadFromMemoryMultiFiles()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
             
             string fileName1 = "testFile1.txt";
             string fileContent1 = "Hello, I'm a file !";
-            byte[] fileData1 = ConvertByteFromFile(fileContent1);
+            byte[] fileData1 = ConvertFileToByteArray(fileContent1);
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 fileName1,
@@ -107,7 +107,7 @@ namespace BrainCloudTests
 
             string fileName2 = "testFile2.txt";
             string fileContent2 = "Hey look ! Another file !";
-            byte[] fileData2 = ConvertByteFromFile(fileContent2);
+            byte[] fileData2 = ConvertFileToByteArray(fileContent2);
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 fileName2,
@@ -143,16 +143,16 @@ namespace BrainCloudTests
             String cloudPath = "test";
         
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
         
             FileInfo info = new FileInfo(CreateFile(4024));
         
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 cloudPath,
                 info.Name,
                 false,
                 true,
-                info.FullName,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
         
             tr.Run();
@@ -185,16 +185,16 @@ namespace BrainCloudTests
             DeleteAllFiles();
 
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(12 * 1024));
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 "testFileCANCEL.dat",
                 true,
                 true,
-                info.FullName,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -218,16 +218,16 @@ namespace BrainCloudTests
         public void TestDeleteUserFile()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info.Name,
                 true,
                 true,
-                info.FullName,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -249,16 +249,16 @@ namespace BrainCloudTests
         public void TestGetCdnUrl()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(1024));
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info.Name,
                 true,
                 true,
-                info.FullName,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -279,16 +279,16 @@ namespace BrainCloudTests
         public void TestDeleteUserFiles()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info.Name,
                 true,
                 true,
-                info.FullName,
+                ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -309,28 +309,28 @@ namespace BrainCloudTests
         public void TestUploadMultiple()
         {
             TestResult tr = new TestResult(_bc);
-            _bc.Client.RegisterFileUploadCallbacks(FileCallbackSuccess, FileCallbackFail);
+            _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info1 = new FileInfo(CreateFile(4096, "multiUpload1.dat"));
             FileInfo info2 = new FileInfo(CreateFile(4096, "multiUpload2.dat"));
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info1.Name,
                 true,
                 true,
-                info1.FullName,
+                ConvertFileToByteArray(info1),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
             string id1 = GetUploadId(tr.m_response);
 
-            _bc.FileService.UploadFile(
+            _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info2.Name,
                 true,
                 true,
-                info2.FullName,
+                ConvertFileToByteArray(info2),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -426,7 +426,7 @@ namespace BrainCloudTests
             return path;
         }
 
-        private byte[] ConvertByteFromFile(string fileContent)
+        private byte[] ConvertFileToByteArray(string fileContent)
         {
             if (Uri.IsWellFormedUriString(fileContent, UriKind.Absolute))
             {
@@ -439,6 +439,11 @@ namespace BrainCloudTests
             }
 
             return Encoding.ASCII.GetBytes(fileContent);
+        }
+        
+        private byte[] ConvertFileToByteArray(FileInfo fileContent)
+        {
+            return System.IO.File.ReadAllBytes(fileContent.FullName);
         }
     }
 }
