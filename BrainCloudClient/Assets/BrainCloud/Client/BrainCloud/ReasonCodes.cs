@@ -1,3 +1,8 @@
+//----------------------------------------------------
+// brainCloud client source code
+// Copyright 2026 bitHeads, inc.
+//----------------------------------------------------
+
 namespace BrainCloud
 {
     public static class ReasonCodes

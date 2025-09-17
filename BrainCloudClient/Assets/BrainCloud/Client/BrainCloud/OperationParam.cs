@@ -1,11 +1,11 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+// Copyright 2026 bitHeads, inc.
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-    internal sealed class OperationParam
+    public sealed class OperationParam
     {
         //Push Notification Service - Register Params
         public static readonly OperationParam PushNotificationRegisterParamDeviceType = new OperationParam("deviceType");

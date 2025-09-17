@@ -1,6 +1,6 @@
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+// Copyright 2026 bitHeads, inc.
 //----------------------------------------------------
 
 using System.Collections.Generic;

@@ -1,3 +1,8 @@
+//----------------------------------------------------
+// brainCloud client source code
+// Copyright 2026 bitHeads, inc.
+//----------------------------------------------------
+
 using System.Collections.Generic;
 using BrainCloud.Internal;
 using BrainCloud.JsonFx.Json;

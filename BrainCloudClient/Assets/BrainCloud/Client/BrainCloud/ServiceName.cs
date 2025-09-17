@@ -1,11 +1,11 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+// Copyright 2026 bitHeads, inc.
 //----------------------------------------------------
 
-namespace BrainCloud.Internal
+namespace BrainCloud
 {
-    internal class ServiceName
+    public class ServiceName
     {
         // Services
         public static readonly ServiceName AsyncMatch = new ServiceName("asyncMatch");
