@@ -1,18 +1,14 @@
 ﻿//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+// Copyright 2026 bitHeads, inc.
 //----------------------------------------------------
 
-namespace BrainCloud.Internal
+namespace BrainCloud
 {
-
-using System;
-
-
     /**
      * List of all available service operations. The values are mapped to server keys which represent that operation.
      */
-    internal class ServiceOperation
+    public class ServiceOperation
     {
         public static readonly ServiceOperation Authenticate = new ServiceOperation("AUTHENTICATE");
         public static readonly ServiceOperation Attach = new ServiceOperation("ATTACH");
