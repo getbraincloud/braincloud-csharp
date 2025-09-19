@@ -261,9 +261,6 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\JsonFxAOT.cs">
       <Link>BrainCloud\Internal\JsonFxAOT.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\OperationParam.cs">
-      <Link>BrainCloud\Internal\OperationParam.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ProgressStream.cs">
       <Link>BrainCloud\Internal\ProgressStream.cs</Link>
     </Compile>
@@ -273,23 +270,20 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServerCall.cs">
       <Link>BrainCloud\Internal\ServerCall.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceName.cs">
-      <Link>BrainCloud\Internal\ServiceName.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\BrainCloudWebSocket.cs">
       <Link>BrainCloud\Internal\BrainCloudWebSocket.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RTTComms.cs">
       <Link>BrainCloud\Internal\RTTComms.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ServiceOperation.cs">
-      <Link>BrainCloud\Internal\ServiceOperation.cs</Link>
-    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
       <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\MD5Unity.cs">
       <Link>BrainCloud\MD5Unity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\OperationParam.cs">
+      <Link>BrainCloud\OperationParam.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ReasonCodes.cs">
       <Link>BrainCloud\ReasonCodes.cs</Link>
@@ -299,6 +293,12 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ServerCallback.cs">
       <Link>BrainCloud\ServerCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ServiceName.cs">
+      <Link>BrainCloud\ServiceName.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\ServiceOperation.cs">
+      <Link>BrainCloud\ServiceOperation.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\StatusCodes.cs">
       <Link>BrainCloud\StatusCodes.cs</Link>
