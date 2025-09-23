@@ -527,6 +527,8 @@ namespace BrainCloud
         public const int USER_BLOCKED = 40790;
         public const int NEWRELIC_ERROR = 40791;
         public const int ITEM_IMAGE_EXISTS = 40792;
+        public const int INVALID_SEGMENT_ID_LIST = 40793;
+        public const int I3D_ERROR = 40794;
         public const int REQUEST_FAILED = 40801;
         public const int RESET_QUESTS_FAILED = 40802;
         public const int RESET_ALL_QUESTS_AND_MILESTONES_FAILED = 40803;
