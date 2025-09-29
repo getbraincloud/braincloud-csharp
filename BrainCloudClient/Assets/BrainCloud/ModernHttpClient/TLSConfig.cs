@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
+using System.Collections.Generic;
 
 namespace BrainCloud
 {

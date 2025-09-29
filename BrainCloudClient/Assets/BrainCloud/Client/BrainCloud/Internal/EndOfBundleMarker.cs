@@ -1,6 +1,7 @@
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2026 bitHeads, inc.
+
 //
 // Class serves as an internal end of message bundle marker
 //----------------------------------------------------
