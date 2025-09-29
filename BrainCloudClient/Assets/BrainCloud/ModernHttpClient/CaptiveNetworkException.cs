@@ -1,4 +1,5 @@
-﻿using System;
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
+using System;
 using System.Net;
 
 namespace BrainCloud

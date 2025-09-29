@@ -1,3 +1,4 @@
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * WebSocketServiceHost`1.cs
