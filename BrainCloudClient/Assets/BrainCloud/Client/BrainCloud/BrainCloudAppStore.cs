@@ -249,7 +249,7 @@ using System;
                 receiptData = JsonReader.Deserialize<Dictionary<string, object>>(receiptJson);
                 data[OperationParam.AppStoreServiceReceiptData.Value] = receiptData;
             }
-            catch (Exception ex)
+            catch
             {
                 //not a valid json string, pass it as string directly
                 data[OperationParam.AppStoreServiceReceiptData.Value] = receiptJson;
