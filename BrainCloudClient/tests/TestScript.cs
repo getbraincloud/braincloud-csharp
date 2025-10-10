@@ -2,9 +2,9 @@
 using BrainCloud;
 using BrainCloud.Common;
 using NUnit.Core;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using static NUnit.Core.NUnitFramework;
 
 namespace BrainCloudTests
 {
