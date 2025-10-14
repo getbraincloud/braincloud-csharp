@@ -1,7 +1,6 @@
 // Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 using System.Collections.Generic;
@@ -11,75 +10,73 @@ using System.Collections.Generic;
 
 namespace BrainCloud.Common
 {
-    public sealed class Platform
+    public readonly struct Platform : System.IEquatable<Platform>, System.IComparable<Platform>
     {
-        private readonly string value;
+        #region brainCloud Platforms
 
-        public static readonly Platform AppleTVOS = new Platform("APPLE_TV_OS");
-        public static readonly Platform BlackBerry = new Platform("BB");
-        public static readonly Platform Facebook = new Platform("FB");
-        public static readonly Platform Oculus = new Platform("Oculus");
-        public static readonly Platform GooglePlayAndroid = new Platform("ANG");
-        public static readonly Platform iOS = new Platform("IOS");
-        public static readonly Platform Linux = new Platform("LINUX");
-        public static readonly Platform Mac = new Platform("MAC");
-        public static readonly Platform PS3 = new Platform("PS3");
-        public static readonly Platform PS4 = new Platform("PS4");
-        public static readonly Platform PSVita = new Platform("PS_VITA");
-        public static readonly Platform Roku = new Platform("ROKU");
-        public static readonly Platform Tizen = new Platform("TIZEN");
-        public static readonly Platform Unknown = new Platform("UNKNOWN");
-        public static readonly Platform WatchOS = new Platform("WATCH_OS");
-        public static readonly Platform Web = new Platform("WEB");
-        public static readonly Platform Wii = new Platform("WII");
-        public static readonly Platform WindowsPhone = new Platform("WINP");
-        public static readonly Platform Windows = new Platform("WINDOWS");
-        public static readonly Platform Xbox360 = new Platform("XBOX_360");
-        public static readonly Platform XboxOne = new Platform("XBOX_ONE");
-        public static readonly Platform Amazon = new Platform("AMAZON");
-        public static readonly Platform Nintendo = new Platform("NINTENDO");
+        public static readonly Platform AppleTVOS         = new("APPLE_TV_OS");
+        public static readonly Platform BlackBerry        = new("BB");
+        public static readonly Platform Facebook          = new("FB");
+        public static readonly Platform Oculus            = new("Oculus");
+        public static readonly Platform GooglePlayAndroid = new("ANG");
+        public static readonly Platform iOS               = new("IOS");
+        public static readonly Platform Linux             = new("LINUX");
+        public static readonly Platform Mac               = new("MAC");
+        public static readonly Platform PS3               = new("PS3");
+        public static readonly Platform PS4               = new("PS4");
+        public static readonly Platform PSVita            = new("PS_VITA");
+        public static readonly Platform Roku              = new("ROKU");
+        public static readonly Platform Tizen             = new("TIZEN");
+        public static readonly Platform Unknown           = new("UNKNOWN");
+        public static readonly Platform WatchOS           = new("WATCH_OS");
+        public static readonly Platform Web               = new("WEB");
+        public static readonly Platform Wii               = new("WII");
+        public static readonly Platform WindowsPhone      = new("WINP");
+        public static readonly Platform Windows           = new("WINDOWS");
+        public static readonly Platform Xbox360           = new("XBOX_360");
+        public static readonly Platform XboxOne           = new("XBOX_ONE");
+        public static readonly Platform Amazon            = new("AMAZON");
+        public static readonly Platform Nintendo          = new("NINTENDO");
 
-        private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>
+        private static readonly Dictionary<string, Platform> _platformsForString = new()
         {
-            { AppleTVOS.value, AppleTVOS },
-            { Amazon.value, Amazon },
-            { BlackBerry.value, BlackBerry },
-            { Facebook.value, Facebook },
-            { Oculus.value, Oculus },
+            { AppleTVOS.value,         AppleTVOS         },
+            { Amazon.value,            Amazon            },
+            { BlackBerry.value,        BlackBerry        },
+            { Facebook.value,          Facebook          },
+            { Oculus.value,            Oculus            },
             { GooglePlayAndroid.value, GooglePlayAndroid },
-            { iOS.value, iOS },
-            { Linux.value, Linux },
-            { Mac.value, Mac },
-            { PS3.value, PS3 },
-            { PS4.value, PS4 },
-            { PSVita.value, PSVita },
-            { Roku.value, Roku },
-            { Tizen.value, Tizen },
-            { Unknown.value, Unknown },
-            { WatchOS.value, WatchOS },
-            { Web.value, Web },
-            { Wii.value, Wii },
-            { WindowsPhone.value, WindowsPhone },
-            { Windows.value, Windows },
-            { Xbox360.value, Xbox360 },
-            { XboxOne.value, XboxOne },
-            { Nintendo.value, Nintendo }
+            { iOS.value,               iOS               },
+            { Linux.value,             Linux             },
+            { Mac.value,               Mac               },
+            { PS3.value,               PS3               },
+            { PS4.value,               PS4               },
+            { PSVita.value,            PSVita            },
+            { Roku.value,              Roku              },
+            { Tizen.value,             Tizen             },
+            { Unknown.value,           Unknown           },
+            { WatchOS.value,           WatchOS           },
+            { Web.value,               Web               },
+            { Wii.value,               Wii               },
+            { WindowsPhone.value,      WindowsPhone      },
+            { Windows.value,           Windows           },
+            { Xbox360.value,           Xbox360           },
+            { XboxOne.value,           XboxOne           },
+            { Nintendo.value,          Nintendo          }
         };
+
+        #endregion
 
         private Platform(string value)
         {
             this.value = value;
         }
 
-        public override string ToString()
-        {
-            return value;
-        }
+        private readonly string value;
 
         public static Platform FromString(string s)
         {
-            Platform platform;
-            return _platformsForString.TryGetValue(s, out platform) ? platform : Unknown;
+            return _platformsForString.TryGetValue(s, out Platform platform) ? platform : Unknown;
         }
 
 #if !(DOT_NET || GODOT)
@@ -89,7 +86,6 @@ namespace BrainCloud.Common
 #if NO_UNITY_DEFINES
             return Unknown;
 #else
-            
             // first deal with platforms that have no define
 
             // 5.0 and later
@@ -99,7 +95,6 @@ namespace BrainCloud.Common
                 return PSVita;
             }
 #endif
-
             // otherwise we rely on the unity compile flag to denote platform
 
 #if UNITY_STANDALONE_WIN
@@ -159,6 +154,57 @@ namespace BrainCloud.Common
 #endif // NO_UNITY_DEFINES
         }
 #endif
+
+        #region Overrides and Operators
+
+        public readonly override bool Equals(object obj)
+        {
+            if (obj is not Platform s)
+                return false;
+
+            return Equals(s);
+        }
+
+        public readonly bool Equals(Platform other)
+        {
+            if (GetType() != other.GetType())
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            return value == other.value;
+        }
+
+        public readonly int CompareTo(Platform other)
+        {
+            if (GetType() != other.GetType())
+                return 1;
+
+            if (ReferenceEquals(this, other))
+                return 0;
+
+            return value.CompareTo(other.value);
+        }
+
+        public readonly override int GetHashCode() => value.GetHashCode();
+
+        public readonly override string ToString() => value;
+
+        public static implicit operator string(Platform v) => v.value;
+
+        public static bool operator ==(Platform v1, Platform v2) => v1.Equals(v2);
+
+        public static bool operator !=(Platform v1, Platform v2) => !(v1 == v2);
+
+        public static bool operator >(Platform v1, Platform v2) => v1.CompareTo(v2) == 1;
+
+        public static bool operator <(Platform v1, Platform v2) => v1.CompareTo(v2) == -1;
+
+        public static bool operator >=(Platform v1, Platform v2) => v1.CompareTo(v2) >= 0;
+
+        public static bool operator <=(Platform v1, Platform v2) => v1.CompareTo(v2) <= 0;
+
+        #endregion
     }
 }
-

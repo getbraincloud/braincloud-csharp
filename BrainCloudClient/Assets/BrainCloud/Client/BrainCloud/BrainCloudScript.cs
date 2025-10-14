@@ -1,7 +1,6 @@
 // Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -207,12 +206,12 @@ using BrainCloud.Internal;
         /// Service Name - Script
         /// Service Operation - GET_SCHEDULED_CLOUD_SCRIPTS
         /// </remarks>
-        /// <param name="startDateUTC"> ID of script job to cancel </param>
+        /// <param name="startDateUTC"> Return scripts that are scheduled to run before this specified time.</param>
         /// <param name="success"> The success callback. </param>
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
         public void GetScheduledCloudScripts(
-            DateTime startDateUTC,
+            ulong startDateUTC,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
@@ -225,14 +224,13 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-                /// <summary>
+        /// <summary>
         /// get a scheduled cloud code script
         /// </summary>
         /// <remarks>
         /// Service Name - Script
         /// Service Operation - GET_RUNNING_OR_QUEUED_CLOUD_SCRIPTS
         /// </remarks>
-        /// <param name="startDateUTC"> ID of script job to cancel </param>
         /// <param name="success"> The success callback. </param>
         /// <param name="failure"> The failure callback. </param>
         /// <param name="cbObject"> The user object sent to the callback. </param>
