@@ -14,10 +14,11 @@ namespace BrainCloud.Common
     {
         #region brainCloud Platforms
 
+        public static readonly Platform Unknown           = new("UNKNOWN");
         public static readonly Platform AppleTVOS         = new("APPLE_TV_OS");
         public static readonly Platform BlackBerry        = new("BB");
         public static readonly Platform Facebook          = new("FB");
-        public static readonly Platform Oculus            = new("Oculus");
+        public static readonly Platform Oculus            = new("OCULUS");
         public static readonly Platform GooglePlayAndroid = new("ANG");
         public static readonly Platform iOS               = new("IOS");
         public static readonly Platform Linux             = new("LINUX");
@@ -27,7 +28,6 @@ namespace BrainCloud.Common
         public static readonly Platform PSVita            = new("PS_VITA");
         public static readonly Platform Roku              = new("ROKU");
         public static readonly Platform Tizen             = new("TIZEN");
-        public static readonly Platform Unknown           = new("UNKNOWN");
         public static readonly Platform WatchOS           = new("WATCH_OS");
         public static readonly Platform Web               = new("WEB");
         public static readonly Platform Wii               = new("WII");
@@ -40,6 +40,7 @@ namespace BrainCloud.Common
 
         private static readonly Dictionary<string, Platform> _platformsForString = new()
         {
+            { Unknown.value,           Unknown           },
             { AppleTVOS.value,         AppleTVOS         },
             { Amazon.value,            Amazon            },
             { BlackBerry.value,        BlackBerry        },
@@ -54,7 +55,6 @@ namespace BrainCloud.Common
             { PSVita.value,            PSVita            },
             { Roku.value,              Roku              },
             { Tizen.value,             Tizen             },
-            { Unknown.value,           Unknown           },
             { WatchOS.value,           WatchOS           },
             { Web.value,               Web               },
             { Wii.value,               Wii               },
@@ -82,11 +82,11 @@ namespace BrainCloud.Common
 #if !(DOT_NET || GODOT)
         public static Platform FromUnityRuntime()
         {
-            // this kicks in if dll is compiled from visual studio solution
+            // This kicks in if the DLL is compiled from the Visual Studio solution
 #if NO_UNITY_DEFINES
             return Unknown;
 #else
-            // first deal with platforms that have no define
+            // First deal with Platforms that have no defines
 
             // 5.0 and later
 #if !UNITY_4_6 && !UNITY_2018_3_OR_NEWER
@@ -95,8 +95,7 @@ namespace BrainCloud.Common
                 return PSVita;
             }
 #endif
-            // otherwise we rely on the unity compile flag to denote platform
-
+            // Otherwise we rely on the Unity compile flag to denote Platform
 #if UNITY_STANDALONE_WIN
             return Windows;
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
@@ -110,15 +109,19 @@ namespace BrainCloud.Common
 #elif UNITY_TVOS
             return AppleTVOS;
 #elif UNITY_ANDROID
-       string amazonCheck = UnityEngine.SystemInfo.deviceModel;
-        if(amazonCheck.Contains("Amazon"))
-        {
-            return Amazon;
-        }
-        else
-        {
-            return GooglePlayAndroid;
-        }
+            string check = UnityEngine.SystemInfo.deviceModel.ToLower();
+            if (check.Contains("amazon"))
+            {
+                return Amazon;
+            }
+            else if (check.Contains("oculus"))
+            {
+                return Oculus;
+            }
+            else
+            {
+                return GooglePlayAndroid;
+            }
 #elif UNITY_WP8 || UNITY_WP8_1
             return WindowsPhone;
 #elif UNITY_WSA
@@ -136,15 +139,19 @@ namespace BrainCloud.Common
 #elif UNITY_TIZEN
             return Tizen;
 #elif XAMARIN
-            string checkAmazon = DeviceInfo.Manufacturer;
-            if(checkAmazon.Contains("Amazon"))
+            string check = DeviceInfo.Manufacturer.ToLower();
+            if (check.Contains("amazon"))
+            {
+                return Amazon;
+            }
+            else if (check.Contains("oculus"))
             {
-                return Amazon;
+                return Oculus;
             }
-            else
-            {
-                return GooglePlayAndroid;
-            }
+            else
+            {
+                return GooglePlayAndroid;
+            }
 #elif UNITY_SWITCH
             return Nintendo;
 #else
