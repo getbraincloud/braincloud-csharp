@@ -114,7 +114,8 @@ namespace BrainCloud.Common
             {
                 return Amazon;
             }
-            else if (check.Contains("oculus"))
+            else if (check.Contains("oculus") ||
+                     check.Contains("quest"))
             {
                 return Oculus;
             }
@@ -144,7 +145,8 @@ namespace BrainCloud.Common
             {
                 return Amazon;
             }
-            else if (check.Contains("oculus"))
+            else if (check.Contains("oculus") ||
+                     check.Contains("quest"))
             {
                 return Oculus;
             }
