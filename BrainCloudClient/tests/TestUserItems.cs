@@ -195,5 +195,15 @@ namespace BrainCloudTests
             //     tr3.ApiSuccess, tr3.ApiError);
             // tr3.Run();
         }
+
+        [Test]
+        public void AwardUserItemWithOptions()
+        {
+            TestResult tr = new TestResult(_bc);
+            string optionsJson = "{\"blockIfExceedItemMaxStackable\": False}";
+            _bc.UserItemsService.AwardUserItemWithOptions("sword001", 6, true, optionsJson,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
     }
 }
