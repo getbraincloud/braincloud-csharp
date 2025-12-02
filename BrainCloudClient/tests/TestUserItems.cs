@@ -200,7 +200,8 @@ namespace BrainCloudTests
         public void AwardUserItemWithOptions()
         {
             TestResult tr = new TestResult(_bc);
-            string optionsJson = "{\"blockIfExceedItemMaxStackable\": False}";
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
             _bc.UserItemsService.AwardUserItemWithOptions("sword001", 6, true, optionsJson,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -216,6 +217,17 @@ namespace BrainCloudTests
             bool includePromotionDetails = true;
             _bc.UserItemsService.GetItemPromotionDetails(defId, shopId, includeDef, 
                 includePromotionDetails, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
+        public void PurchaseUserItemWithOptions()
+        {
+            TestResult tr = new TestResult(_bc);
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
+            _bc.UserItemsService.PurchaseUserItemWithOptions("sword001", 1, null, true, optionsJson,
+                tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
     }

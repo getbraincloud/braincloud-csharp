@@ -659,7 +659,7 @@ using System;
         string defId,
         int quantity,
         bool includeDef,
-        string optionsJson,
+        Dictionary<string, object> optionsJson,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -719,10 +719,60 @@ using System;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
             data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
-
-
+  
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetItemPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
+      
+        /// <summary>
+        /// Purchases a quantity of an item from the specified store, 
+        ///if the user has enough funds. If includeDef is true, 
+        ///response includes associated itemDef with language fields
+        /// limited to the current or default language.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserInventoryManagement
+        /// Service Operation - GetUserItem
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to purchase.
+        /// </param>
+        /// <param name="quantity">
+        /// The quantity of the item to purchase.
+        /// </param>
+        /// <param name="shopId">
+        /// The id identifying the store the item is being purchased from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition will be included in the response.
+        /// </param>
+        /// <param name="optionsJson">
+        ///  Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
+        ///  how to process the award if the defId is for a stackable item with a max 
+        ///  stackable quantity and the specified quantity to award is too high. If 
+        ///  true and the quantity is too high, the call is blocked and an error is returned.
+        ///  If false (default) and quantity is too high, the quantity is adjusted 
+        ///  to the allowed maximum and the quantity not awarded is reported in 
+        ///  response key 'itemsNotAwarded' - unless the adjusted quantity would be 
+        ///  0, in which case the call is blocked and an error is returned.
+        public void PurchaseUserItemWithOptions(
+        String defId,
+        int quantity,
+        string shopId,
+        bool includeDef,
+        Dictionary<string, object> optionsJson,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceOptionsJson.Value ] = optionsJson;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PurchaseUserItem, data, callback);
             _client.SendRequest(sc);
         }
     }
