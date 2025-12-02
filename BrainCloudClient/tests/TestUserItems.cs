@@ -208,6 +208,19 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void GetPromotionDetails()
+        {
+            TestResult tr = new TestResult(_bc);
+            string defId = "sword001";
+            string shopId = "";
+            bool includeDef = true;
+            bool includePromotionDetails = true;
+            _bc.UserItemsService.GetItemPromotionDetails(defId, shopId, includeDef, 
+                includePromotionDetails, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
         public void PurchaseUserItemWithOptions()
         {
             TestResult tr = new TestResult(_bc);

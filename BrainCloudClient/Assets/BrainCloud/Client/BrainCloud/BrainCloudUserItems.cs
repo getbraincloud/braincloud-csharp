@@ -676,7 +676,55 @@ using System;
             _client.SendRequest(sc);
         }
 
-
+        /// <summary>
+        /// Returns list of promotional details for the specified item definition, 
+        /// for promotions available to the current user.
+        /// </summary>
+        /// <remarks>
+        /// ServiceName = userItems
+        /// ServiceOperation = GET_ITEM_PROMOTIONAL_DETAILS
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to check.
+        /// </param>
+        /// <param name="shopId">
+        /// The id identifying the store the item is from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        ///  If true, the associated item definition will be included in the response.
+        /// </param>
+        /// <param name="includePromotionDetails">
+        /// If true, the promotion details of the eligible promotions will be included in the response.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetItemPromotionDetails(
+        string defId,
+        string shopId,
+        bool includeDef,
+        bool includePromotionDetails,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
+  
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetItemPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
+      
         /// <summary>
         /// Purchases a quantity of an item from the specified store, 
         ///if the user has enough funds. If includeDef is true, 
@@ -708,16 +756,6 @@ using System;
         ///  to the allowed maximum and the quantity not awarded is reported in 
         ///  response key 'itemsNotAwarded' - unless the adjusted quantity would be 
         ///  0, in which case the call is blocked and an error is returned.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
         public void PurchaseUserItemWithOptions(
         String defId,
         int quantity,
@@ -728,8 +766,6 @@ using System;
         FailureCallback failure = null,
         object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
