@@ -675,5 +675,49 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.AwardUserItem, data, callback);
             _client.SendRequest(sc);
         }
+
+        /// <summary>
+        /// Returns list of promotional details for the specified item definition, for promotions available to the current user.
+        /// </summary>
+        /// <remarks>
+        /// ServiceName = userItems
+        /// ServiceOperation = GET_ITEMS_ON_PROMOTION
+        /// </remarks>
+        /// <param name="shopId">
+        /// The id identifying the store the item is from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition info of the promotional items will be included in the response.
+        /// </param>
+        /// <param name="includePromotionDetails">
+        /// If true, the promotion details of the eligible promotions will be included in the response.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetItemsOnPromotion(
+        string shopId,
+        bool includeDef,
+        bool includePromotionDetails,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
+
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
     }
 }
