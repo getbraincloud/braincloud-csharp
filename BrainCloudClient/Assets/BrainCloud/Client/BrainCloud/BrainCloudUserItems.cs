@@ -677,7 +677,7 @@ using System;
         }
 
         /// <summary>
-        /// Returns list of promotional details for the specified item definition, for promotions available to the current user.
+        /// Returns list of items on promotion available to the current user.
         /// </summary>
         /// <remarks>
         /// ServiceName = userItems
