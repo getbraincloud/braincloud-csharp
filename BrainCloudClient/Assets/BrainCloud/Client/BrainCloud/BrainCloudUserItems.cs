@@ -767,6 +767,7 @@ using System;
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>(); 
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
