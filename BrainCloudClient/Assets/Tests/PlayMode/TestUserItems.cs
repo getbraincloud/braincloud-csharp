@@ -55,5 +55,28 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults($"Failure to award user items",_tc.successCount == 1);
         }
+        
+        [UnityTest]
+        public IEnumerator TestGetPromotionDetails()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            string defId = "sword001";
+            string shopId = "";
+            bool includeDef = true;
+            bool includePromotionDetails = true;
+            _tc.bcWrapper.UserItemsService.GetItemPromotionDetails
+            (
+                defId,
+                shopId,
+                includeDef,
+                includePromotionDetails,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to award user items",_tc.successCount == 1);
+        }
     }
 }

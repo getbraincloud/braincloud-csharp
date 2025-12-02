@@ -514,6 +514,7 @@ namespace BrainCloud
         public static readonly ServiceOperation PublishUserItemToBlockchain = new("PUBLISH_USER_ITEM_TO_BLOCKCHAIN");
         public static readonly ServiceOperation RefreshBlockchainUserItems = new("REFRESH_BLOCKCHAIN_USER_ITEMS");
         public static readonly ServiceOperation RemoveUserItemFromBlockchain = new("REMOVE_USER_ITEM_FROM_BLOCKCHAIN");
+        public static readonly ServiceOperation GetItemPromotionDetails = new("GET_ITEM_PROMOTION_DETAILS");
 
         //Group File Services
         public static readonly ServiceOperation CheckFilenameExists = new("CHECK_FILENAME_EXISTS");
