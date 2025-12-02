@@ -15,7 +15,8 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            string optionsJson = "{\"blockIfExceedItemMaxStackable\": False}";
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
             string defId = "sword001";
             int quanitity = 6;
             bool includeDef = true;
@@ -38,7 +39,8 @@ namespace Tests.PlayMode
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
-            string optionsJson = "{\"blockIfExceedItemMaxStackable\": True}";
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", true);
             string defId = "sword001";
             int quanitity = 6;
             bool includeDef = true;
@@ -46,6 +48,56 @@ namespace Tests.PlayMode
             (
                 defId,
                 quanitity,
+                includeDef,
+                optionsJson,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to award user items",_tc.successCount == 1);
+        }
+        
+        [UnityTest]
+        public IEnumerator TestPurchaseUserItemWithOptionsFalse()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
+            string defId = "sword001";
+            int quanitity = 6;
+            bool includeDef = true;
+            _tc.bcWrapper.UserItemsService.PurchaseUserItemWithOptions
+            (
+                defId,
+                quanitity,
+                null,
+                includeDef,
+                optionsJson,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            
+            yield return _tc.StartCoroutine(_tc.Run());
+            LogResults($"Failure to award user items",_tc.successCount == 1);
+        }
+        
+        [UnityTest]
+        public IEnumerator TestPurchaseUserItemWithOptionsTrue()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", true);
+            string defId = "sword001";
+            int quanitity = 6;
+            bool includeDef = true;
+            _tc.bcWrapper.UserItemsService.PurchaseUserItemWithOptions
+            (
+                defId,
+                quanitity,
+                null,
                 includeDef,
                 optionsJson,
                 _tc.ApiSuccess,
