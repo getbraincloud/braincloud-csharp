@@ -59,6 +59,26 @@ namespace Tests.PlayMode
         }
         
         [UnityTest]
+        public IEnumerator TestGetItemsOnPromotion()
+        {
+            yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
+            
+            string shopId = "";
+            bool includeDef = true;
+            bool includePromotionDetails = true;
+            _tc.bcWrapper.UserItemsService.GetItemsOnPromotion
+            (
+                shopId,
+                includeDef,
+                includePromotionDetails,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
+            
+            yield return _tc.StartCoroutine(_tc.Run());
+        }
+
+        [UnityTest]
         public IEnumerator TestGetPromotionDetails()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
@@ -73,7 +93,6 @@ namespace Tests.PlayMode
                 shopId,
                 includeDef,
                 includePromotionDetails,
-                
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
@@ -81,6 +100,8 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
             LogResults($"Failure to get promotion details",_tc.successCount == 1);
         }
+
+        [UnityTest]
         public IEnumerator TestPurchaseUserItemWithOptionsFalse()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));

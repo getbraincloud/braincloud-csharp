@@ -677,16 +677,12 @@ using System;
         }
 
         /// <summary>
-        /// Returns list of promotional details for the specified item definition, 
-        /// for promotions available to the current user.
+        /// Returns list of items on promotion available to the current user.
         /// </summary>
         /// <remarks>
         /// ServiceName = userItems
-        /// ServiceOperation = GET_ITEM_PROMOTIONAL_DETAILS
+        /// ServiceOperation = GET_ITEMS_ON_PROMOTION
         /// </remarks>
-        /// <param name="defId">
-        /// The unique id of the item definition to check.
-        /// </param>
         /// <param name="shopId">
         /// The id identifying the store the item is from, if applicable.
         /// </param>
@@ -705,6 +701,43 @@ using System;
         /// <param name="cbObject">
         /// The user object sent to the callback.
         /// </param>
+        public void GetItemsOnPromotion(
+        string shopId,
+        bool includeDef,
+        bool includePromotionDetails,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
+
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns list of promotional details for the specified item definition, 
+        /// for promotions available to the current user.
+        /// </summary>
+        /// <remarks>
+        /// ServiceName = userItems
+        /// ServiceOperation = GET_ITEM_PROMOTIONAL_DETAILS
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to check.
+        /// </param>
+        /// <param name="shopId">
+        /// The id identifying the store the item is from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition info of the promotional items will be included in the response.
+        /// </param>
         public void GetItemPromotionDetails(
         string defId,
         string shopId,
@@ -714,7 +747,7 @@ using System;
         FailureCallback failure = null,
         object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
+            Dictionary<string, object> data = new Dictionary<string, object>();            
             data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
