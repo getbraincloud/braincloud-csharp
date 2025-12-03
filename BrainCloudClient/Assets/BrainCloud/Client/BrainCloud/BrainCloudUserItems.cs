@@ -738,6 +738,9 @@ using System;
         /// <param name="includeDef">
         /// If true, the associated item definition info of the promotional items will be included in the response.
         /// </param>
+        /// <param name="includePromotionDetails">
+        /// If true, the promotion details of the eligible promotions will be included in the response.
+        /// </param>
         public void GetItemPromotionDetails(
         string defId,
         string shopId,
