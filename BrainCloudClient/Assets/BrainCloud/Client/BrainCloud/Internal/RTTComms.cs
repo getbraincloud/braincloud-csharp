@@ -51,7 +51,7 @@ namespace BrainCloud.Internal
                 }
                 if(in_failure != null)
                 {
-                    in_failure(0, ReasonCodes.RTT_NO_API_SESSION_ERROR, "RTT: EnableRTT called before calling authentication request. Disabling RTT.", cb_object);
+                    in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RTT_NO_API_SESSION_ERROR, "RTT: EnableRTT called before calling authentication request. Disabling RTT.", cb_object);
                 }
             }
             else

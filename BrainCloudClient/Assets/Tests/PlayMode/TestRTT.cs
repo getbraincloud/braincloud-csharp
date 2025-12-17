@@ -215,7 +215,7 @@ namespace Tests.PlayMode
             // The point of this test is to prove a request was NOT sent out if we're not authenticated
             _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return new WaitForFixedUpdate();
-            LogResults("Was able to enable RTT with no auth", _tc.m_reasonCode == ReasonCodes.RTT_NO_API_SESSION_ERROR);
+            LogResults("Was able to enable RTT with no auth", _tc.failCount == 1);
         }
     }
 }
