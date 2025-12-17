@@ -633,6 +633,8 @@ namespace BrainCloud
         public const int JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT = 90400;
         public const int JSON_RESPONSE_MAXDEPTH_EXCEEDS_LIMIT = 90401;
         public const int RS_ENDMATCH_REQUESTED = 90500;
+        public const int RTT_NO_API_SESSION_ERROR = 90600;
+        public const int RS_NO_API_SESSION_ERROR = 90601;
         public const int CHILD_USER_MISSING = CHILD_PLAYER_MISSING;
         public const int DISABLED_APP = DISABLED_GAME;
         public const int APPS_NOT_IN_SAME_COMPANY = GAMES_NOT_IN_SAME_COMPANY;

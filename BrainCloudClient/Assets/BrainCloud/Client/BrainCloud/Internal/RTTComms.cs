@@ -42,6 +42,17 @@ namespace BrainCloud.Internal
             {
                 return;
             }
+            if(!m_clientRef.Authenticated || m_clientRef.Comms.KillSwitchEngaged)
+            {
+                if(m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("RTT: EnableRTT called before calling authentication request. Disabling RTT.");
+                }
+                if(in_failure != null)
+                {
+                    in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RTT_NO_API_SESSION_ERROR, "RTT: EnableRTT called before calling authentication request. Disabling RTT.", cb_object);
+                }
+            }
             else
             {
                 m_connectedSuccessCallback = in_success;
