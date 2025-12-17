@@ -19,6 +19,14 @@ namespace Tests.PlayMode
         private bool bIncludeEndMatch;
         
         [UnityTest]
+        public IEnumerator TestRelayNoAuthConnectRequest()
+        {
+            _tc.bcWrapper.RelayService.Connect(RelayConnectionType.WEBSOCKET, new RelayConnectOptions(), _tc.ApiSuccess, _tc.ApiError);
+            yield return new WaitForFixedUpdate();
+            LogResults("Was able to connect without authentication", _tc.failCount == 1);
+        }
+        
+        [UnityTest]
         public IEnumerator TestRelayWebSocket()
         {
             Debug.Log("Now running...TestRelayWebSocket ");

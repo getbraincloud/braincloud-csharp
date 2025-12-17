@@ -1,6 +1,7 @@
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
@@ -220,6 +221,11 @@ using UnityEngine.Experimental.Networking;
 
         //For kill switch
         private bool _killSwitchEngaged;
+        public bool KillSwitchEngaged
+        {
+            get => _killSwitchEngaged;
+            set => _killSwitchEngaged = value;
+        }
         private int _killSwitchErrorCount;
         private string _killSwitchService;
         private string _killSwitchOperation;

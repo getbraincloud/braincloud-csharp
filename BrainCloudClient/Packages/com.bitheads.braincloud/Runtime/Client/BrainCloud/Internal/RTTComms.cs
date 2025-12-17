@@ -1,6 +1,7 @@
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 namespace BrainCloud.Internal
@@ -41,6 +42,17 @@ namespace BrainCloud.Internal
             if(IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
             {
                 return;
+            }
+            if(!m_clientRef.Authenticated || m_clientRef.Comms.KillSwitchEngaged)
+            {
+                if(m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("RTT: EnableRTT called before calling authentication request. Disabling RTT.");
+                }
+                if(in_failure != null)
+                {
+                    in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RTT_NO_API_SESSION_ERROR, "RTT: EnableRTT called before calling authentication request. Disabling RTT.", cb_object);
+                }
             }
             else
             {

@@ -1,6 +1,7 @@
+// Copyright 2025 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 // Uncomment this to have packet log
@@ -88,7 +89,7 @@ namespace BrainCloud.Internal
             }
 #endif
             Ping = 999;
-            if (!IsConnected())
+            if (!IsConnected() && m_clientRef.IsAuthenticated())
             {
                 m_endMatchRequested = false;
                 // the callback
@@ -100,6 +101,18 @@ namespace BrainCloud.Internal
                 m_connectionType = in_connectionType;
                 // now connect
                 startReceivingRSConnectionAsync();
+            }
+            else if(!m_clientRef.IsAuthenticated())
+            {
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("Relay: Connect called before calling authentication request. Disabling Relay.");
+                }
+
+                if (in_failure != null)
+                {
+                    in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RS_NO_API_SESSION_ERROR, buildRSRequestError("Relay: Connect called before calling authentication request. Disabling Relay."), cb_object);
+                }
             }
         }
 
