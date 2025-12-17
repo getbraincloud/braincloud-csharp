@@ -221,6 +221,11 @@ using UnityEngine.Experimental.Networking;
 
         //For kill switch
         private bool _killSwitchEngaged;
+        public bool KillSwitchEngaged
+        {
+            get => _killSwitchEngaged;
+            set => _killSwitchEngaged = value;
+        }
         private int _killSwitchErrorCount;
         private string _killSwitchService;
         private string _killSwitchOperation;
