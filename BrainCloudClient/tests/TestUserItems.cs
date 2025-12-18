@@ -211,10 +211,12 @@ namespace BrainCloudTests
         public void GetItemsOnPromotion()
         {
             TestResult tr = new TestResult(_bc);
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("category", "Equipment");
             string shopId = "";
             bool includeDef = true;
             bool includePromotionDetails = true;
-            _bc.UserItemsService.GetItemsOnPromotion(shopId, includeDef, includePromotionDetails,
+            _bc.UserItemsService.GetItemsOnPromotion(shopId, includeDef, includePromotionDetails, optionsJson,
                      tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
