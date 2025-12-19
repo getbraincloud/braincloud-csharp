@@ -637,14 +637,14 @@ using System;
         /// If true, the associated item definition will be included in the response.
         /// </param>
         /// <param name="optionsJson">
-        ///  Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
-        ///  how to process the award if the defId is for a stackable item with a max 
-        ///  stackable quantity and the specified quantity to award is too high. If 
-        ///  true and the quantity is too high, the call is blocked and an error is returned.
-        ///  If false (default) and quantity is too high, the quantity is adjusted 
-        ///  to the allowed maximum and the quantity not awarded is reported in 
-        ///  response key 'itemsNotAwarded' - unless the adjusted quantity would be 
-        ///  0, in which case the call is blocked and an error is returned.
+        /// Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
+        /// how to process the award if the defId is for a stackable item with a max 
+        /// stackable quantity and the specified quantity to award is too high. If 
+        /// true and the quantity is too high, the call is blocked and an error is returned.
+        /// If false (default) and quantity is too high, the quantity is adjusted 
+        /// to the allowed maximum and the quantity not awarded is reported in 
+        /// response key 'itemsNotAwarded' - unless the adjusted quantity would be 
+        /// 0, in which case the call is blocked and an error is returned.
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -659,7 +659,7 @@ using System;
         string defId,
         int quantity,
         bool includeDef,
-        Dictionary<string, object> optionsJson,
+        Dictionary<string, object> optionsJson = null,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -668,8 +668,10 @@ using System;
             data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
-            data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
-
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.AwardUserItem, data, callback);
@@ -692,6 +694,10 @@ using System;
         /// <param name="includePromotionDetails">
         /// If true, the promotion details of the eligible promotions will be included in the response.
         /// </param>
+        /// <param name="optionsJson">
+        /// Optional support for specifying additional options. Currently supporting option 'category'
+        /// to include only catalog items configured with the specified category, if desired.
+        /// </param>
         /// <param name="success">
         /// The success callback.
         /// </param>
@@ -705,6 +711,7 @@ using System;
         string shopId,
         bool includeDef,
         bool includePromotionDetails,
+        Dictionary<string, object> optionsJson = null,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -714,7 +721,10 @@ using System;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
             data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
-
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetPromotionDetails, data, callback);
@@ -760,7 +770,7 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetItemPromotionDetails, data, callback);
             _client.SendRequest(sc);
         }
-      
+
         /// <summary>
         /// Purchases a quantity of an item from the specified store, 
         ///if the user has enough funds. If includeDef is true, 
@@ -784,20 +794,30 @@ using System;
         /// If true, the associated item definition will be included in the response.
         /// </param>
         /// <param name="optionsJson">
-        ///  Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
-        ///  how to process the award if the defId is for a stackable item with a max 
-        ///  stackable quantity and the specified quantity to award is too high. If 
-        ///  true and the quantity is too high, the call is blocked and an error is returned.
-        ///  If false (default) and quantity is too high, the quantity is adjusted 
-        ///  to the allowed maximum and the quantity not awarded is reported in 
-        ///  response key 'itemsNotAwarded' - unless the adjusted quantity would be 
-        ///  0, in which case the call is blocked and an error is returned.
+        /// Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
+        /// how to process the award if the defId is for a stackable item with a max 
+        /// stackable quantity and the specified quantity to award is too high. If 
+        /// true and the quantity is too high, the call is blocked and an error is returned.
+        /// If false (default) and quantity is too high, the quantity is adjusted 
+        /// to the allowed maximum and the quantity not awarded is reported in 
+        /// response key 'itemsNotAwarded' - unless the adjusted quantity would be 
+        /// 0, in which case the call is blocked and an error is returned.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
         public void PurchaseUserItemWithOptions(
         String defId,
         int quantity,
         string shopId,
         bool includeDef,
-        Dictionary<string, object> optionsJson,
+        Dictionary<string, object> optionsJson = null,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -807,7 +827,10 @@ using System;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
-            data[OperationParam.UserItemsServiceOptionsJson.Value ] = optionsJson;
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PurchaseUserItem, data, callback);

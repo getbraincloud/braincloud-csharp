@@ -38,7 +38,7 @@ namespace Tests.PlayMode
         public IEnumerator TestAwardUserItemWithOptionsTrue()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-            
+
             Dictionary<string, object> optionsJson = new Dictionary<string, object>();
             optionsJson.Add("blockIfExceedItemMaxStackable", true);
             string defId = "sword001";
@@ -62,7 +62,9 @@ namespace Tests.PlayMode
         public IEnumerator TestGetItemsOnPromotion()
         {
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
-            
+
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("category", "Equipment");
             string shopId = "";
             bool includeDef = true;
             bool includePromotionDetails = true;
@@ -71,6 +73,7 @@ namespace Tests.PlayMode
                 shopId,
                 includeDef,
                 includePromotionDetails,
+                optionsJson,
                 _tc.ApiSuccess,
                 _tc.ApiError
             );
