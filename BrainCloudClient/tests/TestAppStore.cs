@@ -1,4 +1,4 @@
-// Copyright 2025 bitHeads, Inc. All Rights Reserved.
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using BrainCloud;
 using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;

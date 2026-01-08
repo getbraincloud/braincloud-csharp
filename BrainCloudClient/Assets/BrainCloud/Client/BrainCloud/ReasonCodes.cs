@@ -1,4 +1,4 @@
-// Copyright 2025 bitHeads, Inc. All Rights Reserved.
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
 
@@ -530,6 +530,12 @@ namespace BrainCloud
         public const int ITEM_IMAGE_EXISTS = 40792;
         public const int INVALID_SEGMENT_ID_LIST = 40793;
         public const int I3D_ERROR = 40794;
+        public const int INVALID_START_TIME = 40795;
+        public const int ITEM_TYPE_NOT_APPLICABLE = 40796;
+        public const int ITEM_PURCHASE_LIST_PRICE_DISABLED = 40797;
+        public const int BUNDLE_DEF_INVALID = 40798;
+        public const int ITEM_MAX_STACKABLE_ERROR = 40799;
+        public const int ITEM_PROMOTION_MAX_PURCHASES_ERROR = 40800;
         public const int REQUEST_FAILED = 40801;
         public const int RESET_QUESTS_FAILED = 40802;
         public const int RESET_ALL_QUESTS_AND_MILESTONES_FAILED = 40803;
@@ -552,6 +558,7 @@ namespace BrainCloud
         public const int VERSION_MISMATCH = 40821;
         public const int UNSUPPORTED_CRITERIA_FOR_SHARDED_COLLECTIONS = 40822;
         public const int USER_RATE_LIMIT_EXCEEDED = 40823;
+        public const int PROMOTION_CONFIG_INCOMPLETE = 40824;
         public const int STEAM_ERROR = 40830;
         public const int AZURE_AD_NOT_CONFIGURED = 40831;
         public const int INVALID_LEADERBOARD_TOURNAMENT_SETTING = 40840;
