@@ -516,6 +516,7 @@ namespace BrainCloud
         public static readonly ServiceOperation RemoveUserItemFromBlockchain = new("REMOVE_USER_ITEM_FROM_BLOCKCHAIN");
         public static readonly ServiceOperation GetPromotionDetails = new("GET_ITEMS_ON_PROMOTION");
         public static readonly ServiceOperation GetItemPromotionDetails = new("GET_ITEM_PROMOTION_DETAILS");
+        public static readonly ServiceOperation OpenBundle = new("OPEN_BUNDLE");
 
         //Group File Services
         public static readonly ServiceOperation CheckFilenameExists = new("CHECK_FILENAME_EXISTS");
