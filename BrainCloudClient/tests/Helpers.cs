@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+using System.Collections.Generic;
 using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests

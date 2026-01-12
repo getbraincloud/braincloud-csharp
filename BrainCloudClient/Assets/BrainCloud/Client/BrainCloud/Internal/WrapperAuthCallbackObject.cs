@@ -1,7 +1,13 @@
-﻿namespace BrainCloud.Internal
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
+// brainCloud client source code
+
+//----------------------------------------------------
+
+namespace BrainCloud.Internal
 {
 
-using System;
+    using System;
 
     public class WrapperAuthCallbackObject
     {
@@ -9,7 +15,7 @@ using System;
         public SuccessCallback _successCallback;
         public FailureCallback _failureCallback;
 
-        public WrapperAuthCallbackObject ()
+        public WrapperAuthCallbackObject()
         {
         }
     }

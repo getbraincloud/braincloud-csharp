@@ -1,6 +1,7 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -9,7 +10,7 @@ namespace BrainCloud
     {
         public static string GetVersion()
         {
-            return "5.8.1";
+            return "5.9.0";
         }
     }
 }

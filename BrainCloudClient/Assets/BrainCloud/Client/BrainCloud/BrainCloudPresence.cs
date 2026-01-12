@@ -1,6 +1,7 @@
-﻿//----------------------------------------------------
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2018 bitHeads, inc.
+
 //----------------------------------------------------
 
 namespace BrainCloud

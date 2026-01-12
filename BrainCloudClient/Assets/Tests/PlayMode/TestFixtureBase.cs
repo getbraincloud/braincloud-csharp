@@ -1,3 +1,4 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using System.Collections.Generic;
 using System.IO;
 using System.Text;

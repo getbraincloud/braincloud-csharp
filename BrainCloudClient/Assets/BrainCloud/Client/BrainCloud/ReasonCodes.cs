@@ -1,3 +1,9 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
+// brainCloud client source code
+
+//----------------------------------------------------
+
 namespace BrainCloud
 {
     public static class ReasonCodes
@@ -93,6 +99,7 @@ namespace BrainCloud
         public const int SCRIPT_SECURITY_ERROR = 40364;
         public const int SERVER_SESSION_EXPIRED = 40365;
         public const int STREAM_DOES_NOT_EXIT = 40366;
+        public const int STREAM_DOES_NOT_EXIST = 40366;
         public const int STREAM_ACCESS_ERROR = 40367;
         public const int STREAM_COMPLETE = 40368;
         public const int INVALID_STATISTIC_NAME = 40369;
@@ -465,6 +472,9 @@ namespace BrainCloud
         public const int PENDING_MEMBER_REQUEST_NOT_FOUND = 40734;
         public const int EVENT_TO_PROFILE_IDS_SIZE_EXCEEDS_MAXIMUM = 40735;
         public const int INVALID_CC_AND_BCC_EMAIL_ADDRESS = 40736;
+        public const int ROOM_SERVER_RATE_LIMIT = 40737;
+        public const int EDGEGAP_ERROR = 40738;
+        public const int PORTAL_SESSION_EXPIRED = 40739;
         public const int NO_FRIENDS_FOUND = 40740;
         public const int PRODUCT_TRANSACTION_NOT_FOUND = 40741;
         public const int ITEM_DEF_NOT_FOUND = 40742;
@@ -494,12 +504,38 @@ namespace BrainCloud
         public const int REDEMPTION_CODE_BLOCKCHAIN_PROXY_ERROR = 40766;
         public const int REDEMPTION_CODE_TYPE_NOT_ASYNC = 40767;
         public const int REDEMPTION_CODE_ASYNC_PROCESSING_TIMEOUT = 40768;
+        public const int CODE_TYPE_SCAN_CODE_MISMATCH_FOR_MULTI_USE_CODE = 40769;
         public const int DUPLICATE_DIVISION_SET_CONFIG = 40770;
         public const int DIVISION_SET_INSTANCE_LEADERBOARDS_STILL_EXIST = 40771;
         public const int SINGLETON_ALREADY_EXISTS_FOR_USER = 40772;
         public const int CUSTOM_ENTITY_INCREMENT_SINGLETON_DATA_ERROR = 40773;
         public const int CUSTOM_ENTITY_COLLECTIONS_MAX_EXCEEDED = 40774;
+        public const int REDEMPTION_CODE_TYPE_CODE_USE_ERROR = 40775;
+        public const int MULTI_USE_CODE_REDEMPTION_ATTEMPTED_BEFORE_START = 40776;
+        public const int MULTI_USE_CODE_REDEMPTION_ATTEMPTED_AFTER_END = 40777;
+        public const int MULTI_USE_CODE_MAX_REDEMPTIONS_REACHED = 40778;
+        public const int REDEMPTION_CODE_TYPE_MUST_BE_SINGLE_USE = 40779;
         public const int IMPORT_PRECONDITION_ERROR = 40780;
+        public const int INVALID_SCAN_CODE_LENGTH = 40781;
+        public const int REDEMPTION_FAILED_MAX_RETRIES_FOR_USER = 40782;
+        public const int SINGLE_USE_CODE_REDEMPTION_ATTEMPTED_OUTSIDE_TIMEFRAME = 40783;
+        public const int PRODUCT_DELETE_ERROR = 40784;
+        public const int INVALID_QUANTITY = 40785;
+        public const int PRODUCT_NOT_FOUND = 40786;
+        public const int PRODUCT_ALREADY_PURCHASED = 40787;
+        public const int BAD_LOGIN_ATTEMPTS_MAX_EXCEEDED = 40788;
+        public const int INVALID_SCRIPT_CONTEXT = 40789;
+        public const int USER_BLOCKED = 40790;
+        public const int NEWRELIC_ERROR = 40791;
+        public const int ITEM_IMAGE_EXISTS = 40792;
+        public const int INVALID_SEGMENT_ID_LIST = 40793;
+        public const int I3D_ERROR = 40794;
+        public const int INVALID_START_TIME = 40795;
+        public const int ITEM_TYPE_NOT_APPLICABLE = 40796;
+        public const int ITEM_PURCHASE_LIST_PRICE_DISABLED = 40797;
+        public const int BUNDLE_DEF_INVALID = 40798;
+        public const int ITEM_MAX_STACKABLE_ERROR = 40799;
+        public const int ITEM_PROMOTION_MAX_PURCHASES_ERROR = 40800;
         public const int REQUEST_FAILED = 40801;
         public const int RESET_QUESTS_FAILED = 40802;
         public const int RESET_ALL_QUESTS_AND_MILESTONES_FAILED = 40803;
@@ -516,10 +552,15 @@ namespace BrainCloud
         public const int QUEST_ADD_MILESTONE_ERROR = 40814;
         public const int QUEST_DELETE_MILESTONE_ERROR = 40815;
         public const int QUEST_REORDER_MILESTONES_ERROR = 40816;
+        public const int MILESTONE_HAS_DEPENDENCIES = 40817;
+        public const int ACHIEVEMENT_HAS_DEPENDENCIES = 40818;
         public const int PROMOTION_NOT_FOUND = 40820;
         public const int VERSION_MISMATCH = 40821;
         public const int UNSUPPORTED_CRITERIA_FOR_SHARDED_COLLECTIONS = 40822;
+        public const int USER_RATE_LIMIT_EXCEEDED = 40823;
+        public const int PROMOTION_CONFIG_INCOMPLETE = 40824;
         public const int STEAM_ERROR = 40830;
+        public const int AZURE_AD_NOT_CONFIGURED = 40831;
         public const int INVALID_LEADERBOARD_TOURNAMENT_SETTING = 40840;
         public const int LEADERBOARD_EDIT_TOURNAMENT_SETTINGS_ERROR = 40841;
         public const int LEADERBOARD_SCORES_EXIST = 40842;
@@ -527,6 +568,11 @@ namespace BrainCloud
         public const int LEADERBOARD_DBVERSION_MISMATCH = 40844;
         public const int LEADERBOARD_API_DOES_NOT_APPLY = 40845;
         public const int LEADERBOARD_EXPIRED = 40846;
+        public const int LEADERBOARD_DELETE_ERROR = 40847;
+        public const int LEADERBOARD_CHANGES_IN_PROGRESS = 40848;
+        public const int LEADERBOARD_ROTATION_EXIT_PROCESSING_ERROR = 40849;
+        public const int LEADERBOARD_ENTRY_COUNTS_PROCESSING_ERROR = 40850;
+        public const int LEADERBOARD_ENTRIES_COUNT_ALL_ERROR = 40851;
         public const int MISSING_CONFIG = 40900;
         public const int INVALID_SAML_RESP = 40901;
         public const int MISSING_PAGE_NAME = 40902;
@@ -540,10 +586,16 @@ namespace BrainCloud
         public const int SCRIPT_TIMEOUT_ERROR = 40910;
         public const int SCRIPT_RHINO_ERROR = 40911;
         public const int SCRIPT_JAVA_ERROR = 40912;
+        public const int CONFIG_BACKUP_PREVIEW_ERROR = 40913;
         public const int GROUP_FILE_EXISTS = 40950;
         public const int OTHER_USER_ACL_REQUIRED = 40951;
         public const int GROUP_MEMBER_ACCESS_INVALID = 40952;
         public const int REUSED_PACKET_ID = 40953;
+        public const int SEGMENT_REFRESH_RUNNING = 410000;
+        public const int REFRESH_JOB_ALREADY_TRIGGERED = 410001;
+        public const int ROOM_SERVER_LAUNCH_FAILURE = 41001;
+        public const int ROOM_SERVER_UPDATE_LOCK_TIMEOUT = 41002;
+        public const int ROOM_SERVER_CREATE_LOCK_TIMEOUT = 41003;
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
@@ -557,6 +609,22 @@ namespace BrainCloud
         public const int FACEBOOK_APPLICATION_TOKEN_REQUEST_ERROR = 500013;
         public const int FACEBOOK_BAD_APPLICATION_TOKEN_SIGNATURE = 500014;
         public const int UNSUPPORTED_SOCIAL_PLATFORM_CODE = 500020;
+        public const int PLAYER_LAST_PURCHASED_AT_ERROR = 500021;
+        public const int PRODUCT_TRANSACTIONS_SUMMARY_BY_DATE_AND_TYPE_ERROR = 500022;
+        public const int PRODUCT_TRANSACTIONS_SUMMARY_BY_DATE_AND_ITEM_ERROR = 500023;
+        public const int ITEM_PURCHASES_ANALYTICS_SUMMARY_ERROR = 500024;
+        public const int PRODUCT_TRANSACTIONS_PROMOTION_SUMMARY_FOR_ITEM_ERROR = 500025;
+        public const int PRODUCT_TRANSACTIONS_PROMOTION_SUMMARY_FOR_ITEM_DAYS_ERROR = 500026;
+        public const int PRODUCT_TRANSACTIONS_SUMMARY_BY_ITEM_ERROR = 500027;
+        public const int SCAN_PURCHASES_AND_TOTAL_REVENUE_ALL_TIME = 500028;
+        public const int PRODUCT_TRANSACTIONS_STATS_BY_COUNTRY_ERROR = 500029;
+        public const int USERS_BY_COUNTRY_STATS_ERROR = 500030;
+        public const int USERS_BY_LANGUAGE_STATS_ERROR = 500031;
+        public const int PRODUCT_TRANSACTIONS_SUMMARY_BY_APP_STORE_ERROR = 500032;
+        public const int USERS_WITH_SINGLE_FIELD_PROJECTION_ERROR = 500033;
+        public const int SCRIPT_USAGE_FOR_RANGE_ERROR = 500034;
+        public const int PRODUCT_TRANSACTION_SPENDERS_BY_STORE = 500035;
+        public const int REAL_AND_MOCK_PURCHASE_COUNTS_FOR_PRODUCT = 500036;
         public const int MEMCACHED_TIMEOUT = 503000;
         public const int NOT_TEAM_ADMIN = 550000;
         public const int NO_TEAM_ACCESS = 550001;
@@ -583,6 +651,7 @@ namespace BrainCloud
         public const int INVALID_PASSWORD_CONTENT = 550022;
         public const int INVALID_APP_ACCESS = 550023;
         public const int INVALID_TEAM_ID = 550024;
+        public const int TEAM_APPS_CHART_STATS = 550025;
         public const int MONGO_DB_EXCEPTION = 600001;
         public const int CONCURRENT_LOCK_ERROR = 600002;
         public const int USER_EXPORT_ERROR = 600003;
@@ -611,6 +680,9 @@ namespace BrainCloud
         public const int PLAYSTATION_NETWORK_ERROR = 60200;
         public const int EMAIL_CC_MAX_SIZE_EXCEEDED = 60201;
         public const int EMAIL_BCC_MAX_SIZE_EXCEEDED = 60202;
+        public const int INVALID_DATE_FORMAT = 60203;
+        public const int TEAM_USAGE_REPORT_ERROR = 60204;
+        public const int GLOBAL_PROPERTY_MAX_SIZE_EXCEEDED = 60205;
         public const int RTT_LEFT_BY_CHOICE = 80000;
         public const int RTT_EVICTED = 80001;
         public const int RTT_LOST_CONNECTION = 80002;

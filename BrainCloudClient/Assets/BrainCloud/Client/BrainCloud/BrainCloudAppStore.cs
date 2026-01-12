@@ -1,6 +1,7 @@
-﻿//----------------------------------------------------
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -248,7 +249,7 @@ using System;
                 receiptData = JsonReader.Deserialize<Dictionary<string, object>>(receiptJson);
                 data[OperationParam.AppStoreServiceReceiptData.Value] = receiptData;
             }
-            catch (Exception ex)
+            catch
             {
                 //not a valid json string, pass it as string directly
                 data[OperationParam.AppStoreServiceReceiptData.Value] = receiptJson;

@@ -1,6 +1,7 @@
-﻿//----------------------------------------------------
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
 // brainCloud client source code
-// Copyright 2016 bitHeads, inc.
+
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -372,6 +373,74 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.ReceiveUserItemFrom, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Opens a quantity of a bundle user item.Applicable user items will be created and any currencies awarded. 
+        /// * NOTE: Supported only for user items based on BUNDLE type catalog items.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserItems
+        /// Service Operation - OpenBundle
+        /// </remarks>
+        /// <param name="itemId">
+        /// ID uniquely identifying the user item to be sold.
+        /// </param>
+        /// <param name="version">
+        /// Version of the user' BUNDLE type item being opened. Pass -1 for any version.
+        /// </param>
+        /// <param name="quantity">
+        /// Quantity of the item being sold. Quantity greater than 1 only applicable if stackable item.
+        /// </param>
+        /// <param name="includeDef">
+        /// Flag set to true to include the associated item definition for any user items created, plus if any user item quantity
+        /// remains for bundle user item being opened; false if not required.
+        /// </param>
+        /// <param name="optionsJson">
+        /// Optional support for specifying 'blockIfExceedItemMaxStackable' 
+        /// indicating how to process the award if the defId is for a stackable item
+        /// with a max stackable quantity and the specified quantity to award is too
+        /// high. If true and the quantity is too high, the call is blocked and an 
+        /// error is returned. If false (default) and quantity is too high, the 
+        /// quantity is adjusted to the allowed maximum and the quantity not awarded
+        /// is reported in response key 'itemsNotAwarded' - unless the adjusted 
+        /// quantity would be 0, in which case the call is blocked and an error is
+        /// returned.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void OpenBundle(
+        string itemId, 
+        int version, 
+        int quantity, 
+        bool includeDef, 
+        Dictionary<string, object> optionsJson = null, 
+        SuccessCallback success = null, 
+        FailureCallback failure = null, 
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserItemsServiceItemId.Value] = itemId;
+            data[OperationParam.UserItemsServiceVersion.Value] = version;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            if(optionsJson!= null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.OpenBundle, data, callback);
+            _client.SendRequest(sc);
+        }
+        
+        
 
         /// <summary>
         /// Allows a quantity of a specified user item to be sold. 
@@ -612,6 +681,227 @@ using System;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RemoveUserItemFromBlockchain, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Allows item(s) to be awarded to a user without 
+        /// collecting the purchase amount. If includeDef 
+        /// is true, response includes associated itemDef 
+        /// with language fields limited to the current 
+        /// or default language.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - userItems
+        /// Service Operation - AwardUserItem
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to award.
+        /// </param>
+        /// <param name="quantity">
+        /// The quantity of the item to award.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition will be included in the response.
+        /// </param>
+        /// <param name="optionsJson">
+        /// Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
+        /// how to process the award if the defId is for a stackable item with a max 
+        /// stackable quantity and the specified quantity to award is too high. If 
+        /// true and the quantity is too high, the call is blocked and an error is returned.
+        /// If false (default) and quantity is too high, the quantity is adjusted 
+        /// to the allowed maximum and the quantity not awarded is reported in 
+        /// response key 'itemsNotAwarded' - unless the adjusted quantity would be 
+        /// 0, in which case the call is blocked and an error is returned.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AwardUserItemWithOptions(
+        string defId,
+        int quantity,
+        bool includeDef,
+        Dictionary<string, object> optionsJson = null,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.AwardUserItem, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns list of items on promotion available to the current user.
+        /// </summary>
+        /// <remarks>
+        /// ServiceName = userItems
+        /// ServiceOperation = GET_ITEMS_ON_PROMOTION
+        /// </remarks>
+        /// <param name="shopId">
+        /// The id identifying the store the item is from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        ///  If true, the associated item definition will be included in the response.
+        /// </param>
+        /// <param name="includePromotionDetails">
+        /// If true, the promotion details of the eligible promotions will be included in the response.
+        /// </param>
+        /// <param name="optionsJson">
+        /// Optional support for specifying additional options. Currently supporting option 'category'
+        /// to include only catalog items configured with the specified category, if desired.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetItemsOnPromotion(
+        string shopId,
+        bool includeDef,
+        bool includePromotionDetails,
+        Dictionary<string, object> optionsJson = null,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns list of promotional details for the specified item definition, 
+        /// for promotions available to the current user.
+        /// </summary>
+        /// <remarks>
+        /// ServiceName = userItems
+        /// ServiceOperation = GET_ITEM_PROMOTIONAL_DETAILS
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to check.
+        /// </param>
+        /// <param name="shopId">
+        /// The id identifying the store the item is from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition info of the promotional items will be included in the response.
+        /// </param>
+        /// <param name="includePromotionDetails">
+        /// If true, the promotion details of the eligible promotions will be included in the response.
+        /// </param>
+        public void GetItemPromotionDetails(
+        string defId,
+        string shopId,
+        bool includeDef,
+        bool includePromotionDetails,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();            
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
+  
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetItemPromotionDetails, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Purchases a quantity of an item from the specified store, 
+        ///if the user has enough funds. If includeDef is true, 
+        ///response includes associated itemDef with language fields
+        /// limited to the current or default language.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - UserInventoryManagement
+        /// Service Operation - GetUserItem
+        /// </remarks>
+        /// <param name="defId">
+        /// The unique id of the item definition to purchase.
+        /// </param>
+        /// <param name="quantity">
+        /// The quantity of the item to purchase.
+        /// </param>
+        /// <param name="shopId">
+        /// The id identifying the store the item is being purchased from, if applicable.
+        /// </param>
+        /// <param name="includeDef">
+        /// If true, the associated item definition will be included in the response.
+        /// </param>
+        /// <param name="optionsJson">
+        /// Optional support for specifying 'blockIfExceedItemMaxStackable' indicating 
+        /// how to process the award if the defId is for a stackable item with a max 
+        /// stackable quantity and the specified quantity to award is too high. If 
+        /// true and the quantity is too high, the call is blocked and an error is returned.
+        /// If false (default) and quantity is too high, the quantity is adjusted 
+        /// to the allowed maximum and the quantity not awarded is reported in 
+        /// response key 'itemsNotAwarded' - unless the adjusted quantity would be 
+        /// 0, in which case the call is blocked and an error is returned.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void PurchaseUserItemWithOptions(
+        String defId,
+        int quantity,
+        string shopId,
+        bool includeDef,
+        Dictionary<string, object> optionsJson = null,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>(); 
+            data[OperationParam.UserItemsServiceDefId.Value] = defId;
+            data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
+            data[OperationParam.UserItemsServiceShopId.Value] = shopId;
+            data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
+            if (optionsJson != null && optionsJson.Count > 0)
+            {
+                data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
+            }
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.PurchaseUserItem, data, callback);
             _client.SendRequest(sc);
         }
     }

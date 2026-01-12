@@ -1,4 +1,5 @@
-﻿/****************************************************************************
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+/****************************************************************************
      Copyright 2002-2005 GL Conseil/Flow Group SAS.  All rights reserved.
 
     Permission is granted to anyone to use this software for any purpose on

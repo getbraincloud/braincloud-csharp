@@ -1,4 +1,5 @@
-﻿#region License
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+#region License
 /*
  * ClientSslConfiguration.cs
  *
