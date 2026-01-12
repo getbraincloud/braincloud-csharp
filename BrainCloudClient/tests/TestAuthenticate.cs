@@ -1,3 +1,4 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -482,16 +483,16 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateUltra()
         {
-            if (!ServerUrl.Contains("api-internal.braincloudservers.com") &&
-                !ServerUrl.Contains("internala.braincloudservers.com") &&
-                !ServerUrl.Contains("api.internalg.braincloudservers.com"))
+            if (ServerUrl.Contains("api.internal.braincloudservers.com") ||
+                ServerUrl.Contains("api.internala.braincloudservers.com") ||
+                ServerUrl.Contains("api.internalg.braincloudservers.com"))
             {
                 Console.WriteLine("This env doesn't support Ultra authentication type");
                 Assert.That(true);
                 return;
             }
-            
-            TestResult tr = new TestResult(_bc);
+
+                TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
@@ -517,6 +518,14 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateSwitch()
         {
+            if (ServerUrl.Contains("api.internala.braincloudservers.com") ||
+                ServerUrl.Contains("api.internalg.braincloudservers.com"))
+            {
+                Console.WriteLine("This env doesn't support Switch authentication type");
+                Assert.That(true);
+                return;
+            }
+
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateNintendo
             (
@@ -533,6 +542,14 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticatePlaystation()
         {
+            if (ServerUrl.Contains("api.internala.braincloudservers.com") ||
+                ServerUrl.Contains("api.internalg.braincloudservers.com"))
+            {
+                Console.WriteLine("This env doesn't support Playstation authentication type");
+                Assert.That(true);
+                return;
+            }
+
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticatePlaystation5
             (

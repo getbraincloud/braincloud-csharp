@@ -1,3 +1,4 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using NUnit.Core;
 using NUnit.Framework;
 using BrainCloud;
@@ -193,6 +194,55 @@ namespace BrainCloudTests
             //     "default",
             //     tr3.ApiSuccess, tr3.ApiError);
             // tr3.Run();
+        }
+
+        [Test]
+        public void AwardUserItemWithOptions()
+        {
+            TestResult tr = new TestResult(_bc);
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
+            _bc.UserItemsService.AwardUserItemWithOptions("sword001", 6, true, optionsJson,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void GetItemsOnPromotion()
+        {
+            TestResult tr = new TestResult(_bc);
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("category", "Equipment");
+            string shopId = "";
+            bool includeDef = true;
+            bool includePromotionDetails = true;
+            _bc.UserItemsService.GetItemsOnPromotion(shopId, includeDef, includePromotionDetails, optionsJson,
+                     tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void GetPromotionDetails()
+        {
+            TestResult tr = new TestResult(_bc);
+            string defId = "sword001";
+            string shopId = "";
+            bool includeDef = true;
+            bool includePromotionDetails = true;
+            _bc.UserItemsService.GetItemPromotionDetails(defId, shopId, includeDef, 
+                includePromotionDetails, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+        
+        [Test]
+        public void PurchaseUserItemWithOptions()
+        {
+            TestResult tr = new TestResult(_bc);
+            Dictionary<string, object> optionsJson = new Dictionary<string, object>();
+            optionsJson.Add("blockIfExceedItemMaxStackable", false);
+            _bc.UserItemsService.PurchaseUserItemWithOptions("sword001", 1, null, true, optionsJson,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
     }
 }

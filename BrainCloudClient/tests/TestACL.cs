@@ -1,3 +1,4 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using NUnit.Core;
 using NUnit.Framework;
 using System.Collections.Generic;

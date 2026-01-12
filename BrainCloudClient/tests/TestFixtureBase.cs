@@ -1,3 +1,4 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 using System;
 using System.IO;
 using BrainCloud.JsonFx.Json;
