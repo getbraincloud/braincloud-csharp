@@ -1870,6 +1870,10 @@ using UnityEngine.Experimental.Networking;
                     req.Content.Headers.Add("Content-Encoding", "gzip");
                 }
 
+                req.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json") {
+                    CharSet = Encoding.UTF8.WebName
+                };
+
                 req.Headers.Add("X-SIG", sig);
                 if (AppId != null && AppId.Length > 0) 
                 {
