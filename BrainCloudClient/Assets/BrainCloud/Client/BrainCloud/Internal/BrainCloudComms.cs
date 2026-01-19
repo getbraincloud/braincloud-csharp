@@ -1927,6 +1927,12 @@ using UnityEngine.Experimental.Networking;
             }
         }
 
+        private bool IsGzip(byte[] data)
+        {
+            if (data == null || data.Length < 2) return false;
+            return data[0] == 0x1F && data[1] == 0x8B;
+        }
+
         /// <summary>
         /// Resends a message bundle. Returns true if sent or
         /// false if max retries has been reached.
@@ -2246,7 +2252,7 @@ using UnityEngine.Experimental.Networking;
                 else
                 {
                     var byteArray = await content.ReadAsByteArrayAsync();
-                    var decompressedByteArray = Decompress(byteArray);
+                    var decompressedByteArray = IsGzip(byteArray) ? Decompress(byteArray) : byteArray;
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
                 
