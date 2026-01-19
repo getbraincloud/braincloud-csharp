@@ -1870,6 +1870,10 @@ using UnityEngine.Experimental.Networking;
                     req.Content.Headers.Add("Content-Encoding", "gzip");
                 }
 
+                req.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json") {
+                    CharSet = Encoding.UTF8.WebName
+                };
+
                 req.Headers.Add("X-SIG", sig);
                 if (AppId != null && AppId.Length > 0) 
                 {
@@ -1921,6 +1925,12 @@ using UnityEngine.Experimental.Networking;
                 outputStream.Read(compressedBytes, 0, compressedBytes.Length);
                 return outputStream.ToArray();
             }
+        }
+
+        private bool IsGzip(byte[] data)
+        {
+            if (data == null || data.Length < 2) return false;
+            return data[0] == 0x1F && data[1] == 0x8B;
         }
 
         /// <summary>
@@ -2242,7 +2252,7 @@ using UnityEngine.Experimental.Networking;
                 else
                 {
                     var byteArray = await content.ReadAsByteArrayAsync();
-                    var decompressedByteArray = Decompress(byteArray);
+                    var decompressedByteArray = IsGzip(byteArray) ? Decompress(byteArray) : byteArray;
                     requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
                 
