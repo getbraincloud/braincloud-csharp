@@ -72,7 +72,7 @@ using UnityEngine.Experimental.Networking;
         /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
         ///auth response
         /// </summary>
-        public int ClientSideCompressionThreshold{get; private set;} = 50000;
+        public int ClientSideCompressionThreshold{get; private set;} = 51200;
 
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
