@@ -35,6 +35,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void SendEvent(
             string toProfileId,
             string eventType,
@@ -72,6 +73,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void SendEventToProfiles(
             string[] toProfileIds,
@@ -111,6 +113,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateIncomingEventData(
             string evId,
             string jsonEventData,
@@ -145,6 +148,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateIncomingEventDataIfExists(
             string evId,
             string jsonEventData,
@@ -177,6 +181,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void DeleteIncomingEvent(
             string evId,
@@ -237,6 +242,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteIncomingEventsOlderThan(
             long in_dateMillis,
             SuccessCallback success = null,
@@ -264,6 +270,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteIncomingEventsByTypeOlderThan(
             string in_eventId,
             long in_dateMillis,
@@ -290,6 +297,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetEvents(
             SuccessCallback success = null,

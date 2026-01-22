@@ -28,11 +28,12 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="platform">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_userCurrency">The currency type to retrieve the sales inventory for.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSalesInventory(
             string platform,
@@ -51,12 +52,13 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
-        /// <param name="category">The product category</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="in_category">The product category</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSalesInventoryByCategory(
             string storeId,
@@ -119,12 +121,13 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - CachePurchasePayloadContext
         /// </remarks>
-        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="transactionId">the transactionId returned from start Purchase</param>
-        /// <param name="transactionData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_iapId">The IAP product id as configured on brainCloud</param>
+        /// <param name="in_payload">The payload retrieved for the IAP product</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CachePurchasePayloadContext(
             string storeId,
@@ -151,11 +154,12 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - VerifyPurchase
         /// </remarks>
-        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="receiptData">the specific store data required</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_jsonReceiptData">The specific store data required</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void VerifyPurchase(
             string storeId,
@@ -193,11 +197,12 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - StartPurchase
         /// </remarks>
-        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="purchaseData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_jsonPurchaseData">Specific data for starting a two-stage purchase</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void StartPurchase(
             string storeId,
@@ -224,12 +229,13 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - FinalizePurchase
         /// </remarks>
-        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="transactionId">the transactionId returned from start Purchase</param>
-        /// <param name="transactionData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="in_transactionId">The transaction id returned from startPurchase</param>
+        /// <param name="in_jsonTransactionData">Specific transaction data for finalizing purchase</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FinalizePurchase(
             string storeId,
@@ -258,6 +264,10 @@ namespace BrainCloud
         /// Service Name - AppStore
         /// Service Operation - RefreshPromotions
         /// </remarks>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RefreshPromotions(
             SuccessCallback success = null,

@@ -32,6 +32,7 @@ namespace BrainCloud
         /// Used to create the anonymous installation id for the brainCloud profile.
         /// </summary>
 
+
         public string GenerateAnonymousId()
         {
             return Guid.NewGuid().ToString();
@@ -43,6 +44,7 @@ namespace BrainCloud
         /// <param name="in_anonymousId">The anonymous installation id that was generated for this device</param>
         /// <param name="in_profileId">The id of the profile id that was most recently used by the app (on this device)</param>
 
+
         public void Initialize(string profileId, string anonymousId)
         {
             ProfileId = profileId;
@@ -53,6 +55,7 @@ namespace BrainCloud
         /// <summary>
         /// Used to clear the saved profile id - to use in cases when the user is
         /// </summary>
+
 
         public void ClearSavedProfileID()
         {
@@ -84,6 +87,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateAnonymous(
             bool forceCreate,
@@ -145,6 +149,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateEmailPassword(
             string email,
             string password,
@@ -171,6 +176,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateUniversal(
             string userId,
             string password,
@@ -196,6 +202,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateFacebook(
             string externalId,
@@ -260,6 +267,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateOculus(
             string oculusId,
@@ -360,6 +368,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateGameCenter(
             string gameCenterId,
             bool forceCreate,
@@ -384,6 +393,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateSteam(
             string userId,
@@ -411,6 +421,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateApple(
             string appleUserId,
             string identityToken,
@@ -437,6 +448,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateGoogle(
             string googleUserId,
             string serverAuthCode,
@@ -462,6 +474,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateGoogleOpenId(
             string googleUserAccountEmail,
@@ -490,6 +503,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateTwitter(
             string userId,
             string token,
@@ -517,6 +531,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateParse(
             string userId,
             string token,
@@ -540,6 +555,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateSettopHandoff(
             string handoffCode,
@@ -565,6 +581,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateHandoff(
             string handoffId,
             string securityToken,
@@ -589,6 +606,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateExternal(
             string userId,
@@ -618,6 +636,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AuthenticateAdvanced(
             AuthenticationType authenticationType,
             AuthenticationIds ids,
@@ -643,6 +662,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AuthenticateUltra(
             string ultraUsername,
@@ -704,6 +724,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ResetEmailPassword(
             string externalId,
             SuccessCallback success = null,
@@ -729,6 +750,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetEmailPasswordWithExpiry(
             string externalId,
@@ -760,6 +782,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetEmailPasswordAdvanced(
             string emailAddress,
@@ -793,6 +816,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetEmailPasswordAdvancedWithExpiry(
             string emailAddress,
@@ -829,6 +853,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ResetUniversalIdPassword(
             string universalId,
             SuccessCallback success = null,
@@ -855,6 +880,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetUniversalIdPasswordWithExpiry(
             string universalId,
@@ -885,6 +911,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetUniversalIdPasswordAdvanced(
             string universalId,
@@ -917,6 +944,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetUniversalIdPasswordAdvancedWithExpiry(
             string universalId,

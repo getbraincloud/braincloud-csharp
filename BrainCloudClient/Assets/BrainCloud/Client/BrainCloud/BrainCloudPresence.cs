@@ -33,6 +33,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ForcePush(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -46,8 +47,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets the presence data for the given <platform>. Can be one of "all",
+        /// Retrieves the presence data for friends on the specified platform.
         /// </summary>
+        /// <param name="in_platform">One of "all", "brainCloud", or "facebook".</param>
+        /// <param name="in_includeOffline">If true, includes offline profiles.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPresenceOfFriends(
             string platform,
@@ -66,8 +73,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets the presence data for the given <groupId>. Will not include
+        /// Retrieves the presence data for members of a given group.
         /// </summary>
+        /// <param name="in_groupId">Group ID to query.</param>
+        /// <param name="in_includeOffline">If true, includes offline profiles.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPresenceOfGroup(
             string groupId,
@@ -86,8 +99,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets the presence data for the given <profileIds>. Will not include
+        /// Retrieves the presence data for the specified users.
         /// </summary>
+        /// <param name="in_profileIds">Vector of profile IDs to query.</param>
+        /// <param name="in_includeOffline">If true, includes offline profiles.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPresenceOfUsers(
             List<string> profileIds,
@@ -106,8 +125,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Registers the caller for RTT presence updates from friends for the
+        /// Registers the caller for RTT presence updates from friends on a given platform.
         /// </summary>
+        /// <param name="in_platform">One of "all", "brainCloud", or "facebook".</param>
+        /// <param name="in_bidirectional">If true, also registers targeted users for updates from the caller.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RegisterListenersForFriends(
             string platform,
@@ -126,8 +151,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Registers the caller for RTT presence updates from the members of
+        /// Registers the caller for RTT presence updates from members of a given group.
         /// </summary>
+        /// <param name="in_groupId">Group ID to listen to. Caller must be a member.</param>
+        /// <param name="in_bidirectional">If true, also registers targeted users for updates from the caller.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RegisterListenersForGroup(
             string groupId,
@@ -146,8 +177,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Registers the caller for RTT presence updates for the given
+        /// Registers the caller for RTT presence updates from specific profiles.
         /// </summary>
+        /// <param name="in_profileIds">Vector of profile IDs to listen to.</param>
+        /// <param name="in_bidirectional">If true, also registers targeted users for updates from the caller.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RegisterListenersForProfiles(
             List<string> profileIds,
@@ -166,8 +203,13 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Update the presence data visible field for the caller.
+        /// Updates the visibility field of the caller's presence data.
         /// </summary>
+        /// <param name="in_visible">True to make the caller visible, false to hide.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void SetVisibility(
             bool visible,
@@ -184,8 +226,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Stops the caller from receiving RTT presence updates. Does not
+        /// Stops the caller from receiving RTT presence updates.
         /// </summary>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void StopListening(
             SuccessCallback success = null,
@@ -200,8 +246,13 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Update the presence data activity field for the caller.
+        /// Updates the activity field of the caller's presence data.
         /// </summary>
+        /// <param name="in_jsonActivity">JSON string representing activity information.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateActivity(
             string jsonActivity,

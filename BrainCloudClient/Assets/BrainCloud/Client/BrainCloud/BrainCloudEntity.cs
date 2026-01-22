@@ -34,6 +34,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CreateEntity(
             string entityType,
             string jsonEntityData,
@@ -72,6 +73,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetEntitiesByType(
             string entityType,
             SuccessCallback success = null,
@@ -102,6 +104,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateEntity(
             string entityId,
@@ -146,6 +149,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateSharedEntity(
             string entityId,
@@ -194,6 +198,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteEntity(
             string entityId,
             int version,
@@ -224,6 +229,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateSingleton(
             string entityType,
@@ -267,6 +273,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteSingleton(
             string entityType,
             int version,
@@ -295,6 +302,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetEntity(
             string entityId,
             SuccessCallback success = null,
@@ -320,6 +328,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSingleton(
             string entityType,
@@ -347,6 +356,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSharedEntityForProfileId(
             string profileId,
@@ -376,6 +386,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetSharedEntitiesForProfileId(
             string profileId,
             SuccessCallback success = null,
@@ -403,6 +414,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetList(
             string whereJson,
@@ -446,6 +458,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetSharedEntitiesListForProfileId(
             string profileId,
             string whereJson,
@@ -487,6 +500,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetListCount(
             string whereJson,
             SuccessCallback success = null,
@@ -518,6 +532,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -546,6 +561,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPageOffset(
             string context,
@@ -576,6 +592,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void IncrementUserEntityData(
             string entityId,
@@ -611,6 +628,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void IncrementSharedUserEntityData(
             string entityId,

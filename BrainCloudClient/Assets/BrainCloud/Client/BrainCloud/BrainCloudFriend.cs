@@ -43,6 +43,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetProfileInfoForCredential(
             string externalId,
             AuthenticationType authenticationType,
@@ -71,6 +72,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetProfileInfoForCredentialIfExists(
             string externalId,
@@ -101,6 +103,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetProfileInfoForExternalAuthId(
             string externalId,
             string externalAuthType,
@@ -130,6 +133,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetProfileInfoForExternalAuthIdIfExists(
             string externalId,
             string externalAuthType,
@@ -151,6 +155,10 @@ namespace BrainCloud
         /// </summary>
         /// <param name="in_profileId">Profile (user) ID.</param>
         /// <param name="in_authenticationType">Associated authentication type.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetExternalIdForProfileId(
             string profileId,
@@ -181,6 +189,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadFriendEntity(
             string entityId,
             string friendId,
@@ -209,6 +218,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadFriendsEntities(
             string entityType,
             SuccessCallback success = null,
@@ -235,6 +245,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadFriendUserState(
             string friendId,
             SuccessCallback success = null,
@@ -260,6 +271,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSummaryDataForProfileId(
             string profileId,
@@ -288,6 +300,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void FindUsersByExactName(
             string searchText,
             int maxResults,
@@ -309,6 +322,10 @@ namespace BrainCloud
         /// Retrieves profile information of the specified universal Id.
         /// </summary>
         /// <param name="in_searchText">Universal ID text on which to search.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindUserByExactUniversalId(
             string searchText,
@@ -337,6 +354,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindUsersBySubstrName(
             string searchText,
@@ -367,6 +385,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ListFriends(
             FriendPlatform friendPlatform,
@@ -426,6 +445,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AddFriends(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -454,6 +474,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AddFriendsFromPlatform(
             FriendPlatform friendPlatform,
@@ -486,6 +507,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void RemoveFriends(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -513,6 +535,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetUsersOnlineStatus(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -533,6 +556,10 @@ namespace BrainCloud
         /// </summary>
         /// <param name="in_searchText">Name text on which to search.</param>
         /// <param name="in_maxResults">Maximum number of results to return.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindUsersByNameStartingWith(
             string searchText,
@@ -555,6 +582,10 @@ namespace BrainCloud
         /// </summary>
         /// <param name="in_searchText">Universal ID text on which to search.</param>
         /// <param name="in_maxResults">Maximum number of results to return.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindUsersByUniversalIdStartingWith(
             string searchText,

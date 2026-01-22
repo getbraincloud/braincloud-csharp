@@ -59,6 +59,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetSocialLeaderboard(
             string leaderboardId,
             bool replaceName,
@@ -83,6 +84,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSocialLeaderboardIfExists(
             string leaderboardId,
@@ -109,6 +111,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSocialLeaderboardByVersion(
             string leaderboardId,
@@ -138,6 +141,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetSocialLeaderboardByVersionIfExists(
             string leaderboardId,
             bool replaceName,
@@ -165,6 +169,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetMultiSocialLeaderboard(IList<string> leaderboardIds,
                                               int leaderboardResultCount,
@@ -197,6 +202,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalLeaderboardPage(
             string leaderboardId,
@@ -233,6 +239,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardPageIfExists(
             string leaderboardId,
             SortOrder sort,
@@ -268,6 +275,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalLeaderboardPageByVersion(
             string leaderboardId,
@@ -307,6 +315,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardPageByVersionIfExists(
             string leaderboardId,
             SortOrder sort,
@@ -344,6 +353,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardView(
             string leaderboardId,
             SortOrder sort,
@@ -370,6 +380,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalLeaderboardViewIfExists(
             string leaderboardId,
@@ -398,6 +409,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalLeaderboardViewByVersion(
             string leaderboardId,
@@ -440,6 +452,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardViewByVersionIfExists(
             string leaderboardId,
             SortOrder sort,
@@ -477,6 +490,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardVersions(
             string leaderboardId,
             SuccessCallback success = null,
@@ -503,6 +517,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGroupSocialLeaderboard(
             string leaderboardId,
@@ -534,6 +549,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGroupSocialLeaderboardByVersion(
             string leaderboardId,
             string groupId,
@@ -561,6 +577,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostScoreToLeaderboard(
             string leaderboardId,
@@ -597,6 +614,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void RemovePlayerScore(
             string leaderboardId,
             int versionId,
@@ -630,6 +648,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostScoreToDynamicLeaderboardUTC(
             string leaderboardId,
@@ -679,6 +698,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void PostScoreToDynamicLeaderboardUsingConfig(string leaderboardId, long score, string scoreData, string configJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             var data = new Dictionary<string, object>();
@@ -715,6 +735,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostScoreToDynamicGroupLeaderboardUTC(
             string leaderboardId,
@@ -766,6 +787,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void PostScoreToDynamicGroupLeaderboardUsingConfig(
             string leaderboardId,
             string groupId,
@@ -810,6 +832,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostScoreToDynamicLeaderboardDaysUTC(
             string leaderboardId,
@@ -864,6 +887,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void PostScoreToDynamicGroupLeaderboardDaysUTC(
             string leaderboardId,
             string groupId,
@@ -914,6 +938,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPlayersSocialLeaderboard(
             string leaderboardId,
             IList<string> profileIds,
@@ -943,6 +968,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPlayersSocialLeaderboardIfExists(
             string leaderboardId,
             IList<string> profileIds,
@@ -971,6 +997,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPlayersSocialLeaderboardByVersion(
             string leaderboardId,
@@ -1004,6 +1031,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPlayersSocialLeaderboardByVersionIfExists(
             string leaderboardId,
             IList<string> profileIds,
@@ -1034,6 +1062,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ListAllLeaderboards(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1056,6 +1085,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetGlobalLeaderboardEntryCount(
             string leaderboardId,
             SuccessCallback success = null,
@@ -1077,6 +1107,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalLeaderboardEntryCountByVersion(
             string leaderboardId,
@@ -1109,6 +1140,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPlayerScore(
             string leaderboardId,
             int versionId,
@@ -1139,6 +1171,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPlayerScores(
             string leaderboardId,
             int versionId,
@@ -1164,10 +1197,11 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYER_SCORES_FROM_LEADERBOARDS
         /// </remarks>
-        /// <param name="in_leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
+        /// <param name="type">A collection of leaderboardIds to retrieve scores from</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPlayerScoresFromLeaderboards(
             IList<string> leaderboardIds,
@@ -1198,6 +1232,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostScoreToGroupLeaderboard(
             string leaderboardId,
@@ -1237,6 +1272,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void RemoveGroupScore(
             string leaderboardId,
             string groupId,
@@ -1270,6 +1306,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGroupLeaderboardView(
             string leaderboardId,
@@ -1309,6 +1346,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGroupLeaderboardViewByVersion(
             string leaderboardId,

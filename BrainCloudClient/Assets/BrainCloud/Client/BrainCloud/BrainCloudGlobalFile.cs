@@ -29,9 +29,11 @@ namespace BrainCloud
         /// Service Name - GlobalFileV3
         /// Service Operation - GetFileInfo
         /// </remarks>
+        /// <param name="in_fileId">The fileId of the global file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetFileInfo(
             string fileId,
@@ -54,9 +56,12 @@ namespace BrainCloud
         /// Service Name - GlobalFileV3
         /// Service Operation - GetFileInfoSimple
         /// </remarks>
+        /// <param name="in_folderPath">The folder path of the file</param>
+        /// <param name="in_filename">The name of the file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetFileInfoSimple(
             string folderPath,
@@ -82,9 +87,11 @@ namespace BrainCloud
         /// Service Name - GlobalFileV3
         /// Service Operation - GetGlobalCDNUrl
         /// </remarks>
+        /// <param name="in_fileId">The fileId of the global file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalCDNUrl(
             string fileId,
@@ -107,9 +114,12 @@ namespace BrainCloud
         /// Service Name - GlobalFileV3
         /// Service Operation - GetGlobalFileList
         /// </remarks>
+        /// <param name="in_folderPath">The folder path to list files from</param>
+        /// <param name="in_recurse">Whether to recurse into subfolders</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetGlobalFileList(
             string folderPath,

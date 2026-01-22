@@ -778,6 +778,7 @@ using System.Globalization;
         /// </summary>
         /// <returns>True if authenticated, false otherwise.</returns>
 
+
         public bool IsAuthenticated()
         {
             return Authenticated;
@@ -792,6 +793,7 @@ using System.Globalization;
         /// Returns whether the client is initialized.
         /// </summary>
         /// <returns>True if initialized, false otherwise.</returns>
+
 
         public bool IsInitialized()
         {
@@ -822,6 +824,8 @@ using System.Globalization;
 
 
 
+
+
         public void Initialize(string secretKey, string appId, string appVersion)
         {
             Initialize(s_defaultServerURL, secretKey, appId, appVersion);
@@ -833,6 +837,8 @@ using System.Globalization;
         /// <param name="in_defaultAppId">The default app id that we start with</param>
         /// <param name="in_secretMap">A map of <appId, secretKey></param>
         /// <param name="in_appVersion">The version</param>
+
+
 
 
 
@@ -879,6 +885,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_profileId">The id of the profile id that was most recently used by the app (on this device)</param>
         /// <param name="in_anonymousId">The anonymous installation id that was generated for this device</param>
+
 
         public void InitializeIdentity(string profileId, string anonymousId)
         {
@@ -952,6 +959,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_eventCallback">A function which takes a json string as it's only parameter. The json format looks like the following: { "events": [{ "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventId": 3967, "createdAt": 1441742105908, "gameId": "123", "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventType": "test", "eventData": {"testData": 117} }], ] }</param>
 
+
         public void RegisterEventCallback(EventCallback cb)
         {
             _comms.RegisterEventCallback(cb);
@@ -970,6 +978,7 @@ using System.Globalization;
         /// Sets a reward handler for any api call results that return rewards.
         /// </summary>
         /// <param name="in_rewardCallback">The reward callback handler. @see The brainCloud apidocs site for more information on the return JSON</param>
+
 
         public void RegisterRewardCallback(RewardCallback cb)
         {
@@ -1040,6 +1049,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_networkErrorCallback">The network error callback handler.</param>
 
+
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
             _comms.RegisterNetworkErrorCallback(callback);
@@ -1104,6 +1114,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_timeouts">A vector of packet timeouts.</param>
 
+
         public void SetPacketTimeouts(List<int> timeouts)
         {
             _comms.PacketTimeouts = timeouts;
@@ -1131,6 +1142,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_timeoutSecs">The timeout in seconds</param>
 
+
         public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
             _comms.AuthenticationPacketTimeoutSecs = timeoutSecs;
@@ -1140,6 +1152,7 @@ using System.Globalization;
         /// Gets the authentication packet timeout which is tracked separately
         /// </summary>
         /// <returns>The timeout in seconds</returns>
+
 
         public int GetAuthenticationPacketTimeout()
         {
@@ -1151,6 +1164,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_enabled">If set to true, enable</param>
 
+
         public void SetOldStyleStatusMessageErrorCallback(bool enabled)
         {
             _comms.OldStyleStatusResponseInErrorCallback = enabled;
@@ -1159,6 +1173,7 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate timeout in secs
         /// </summary>
+
 
         public int GetUploadLowTransferRateTimeout()
         {
@@ -1170,6 +1185,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_timeoutSecs">The timeout in secs</param>
 
+
         public void SetUploadLowTransferRateTimeout(int timeoutSecs)
         {
             _comms.UploadLowTransferRateTimeout = timeoutSecs;
@@ -1178,6 +1194,7 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
+
 
         public int GetUploadLowTransferRateThreshold()
         {
@@ -1189,6 +1206,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_bytesPerSec">The low transfer rate threshold in bytes/sec</param>
 
+
         public void SetUploadLowTransferRateThreshold(int bytesPerSec)
         {
             _comms.UploadLowTransferRateThreshold = bytesPerSec;
@@ -1199,6 +1217,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_enabled">True if message should be cached on timeout</param>
 
+
         public void EnableNetworkErrorMessageCaching(bool enabled)
         {
             _comms.EnableNetworkErrorMessageCaching(enabled);
@@ -1207,6 +1226,7 @@ using System.Globalization;
         /// <summary>
         /// Attempts to resend any cached messages. If no messages are in the cache,
         /// </summary>
+
 
         public void RetryCachedMessages()
         {
@@ -1217,6 +1237,7 @@ using System.Globalization;
         /// Flushes the cached messages to resume api call processing. This will dump
         /// </summary>
         /// <param name="in_sendApiErrorCallbacks">If set to true API error callbacks will be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.</param>
+
 
         public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
@@ -1247,6 +1268,7 @@ using System.Globalization;
         /// </summary>
         /// <param name="in_countryCode">ISO 3166-1 two-letter country code</param>
 
+
         public void OverrideCountryCode(string countryCode)
         {
             _countryCode = countryCode;
@@ -1256,6 +1278,7 @@ using System.Globalization;
         /// Sets the language code sent to brainCloud when a user authenticates.
         /// </summary>
         /// <param name="in_languageCode">ISO 639-1 two-letter language code</param>
+
 
         public void OverrideLanguageCode(string languageCode)
         {

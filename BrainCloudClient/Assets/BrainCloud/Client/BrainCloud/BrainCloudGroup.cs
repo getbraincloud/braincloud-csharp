@@ -49,6 +49,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AcceptGroupInvitation(
             string groupId,
             SuccessCallback success = null,
@@ -75,6 +76,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AddGroupMember(
             string groupId,
@@ -114,6 +116,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ApproveGroupJoinRequest(
             string groupId,
             string profileId,
@@ -151,6 +154,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AutoJoinGroup(
             string groupType,
             AutoJoinStrategy autoJoinStrategy,
@@ -183,6 +187,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void AutoJoinGroupMulti(
             string[] groupTypes,
             AutoJoinStrategy autoJoinStrategy,
@@ -214,6 +219,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CancelGroupInvitation(
             string groupId,
             string profileId,
@@ -239,6 +245,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void DeleteGroupJoinRequest(
             string groupId,
@@ -269,6 +276,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CreateGroup(
             string name,
@@ -310,6 +318,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateGroupAcl(
             string groupId,
             GroupACL acl,
@@ -337,6 +346,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateGroupEntityAcl(
             string groupId,
@@ -372,6 +382,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CreateGroupWithSummaryData(
             string name,
@@ -419,6 +430,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CreateGroupEntity(
             string groupId,
             string entityType,
@@ -452,6 +464,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteGroup(
             string groupId,
             long version,
@@ -480,6 +493,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteGroupEntity(
             string groupId,
             string entityId,
@@ -507,6 +521,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetMyGroups(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -527,6 +542,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void IncrementGroupData(
             string groupId,
@@ -555,6 +571,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void IncrementGroupEntityData(
             string groupId,
@@ -587,6 +604,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void InviteGroupMember(
             string groupId,
             string profileId,
@@ -617,6 +635,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void JoinGroup(
             string groupId,
             SuccessCallback success = null,
@@ -641,6 +660,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void LeaveGroup(
             string groupId,
             SuccessCallback success = null,
@@ -664,6 +684,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ListGroupsPage(
             string jsonContext,
@@ -690,6 +711,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ListGroupsPageByOffset(
             string context,
             int pageOffset,
@@ -715,6 +737,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ListGroupsWithMember(
             string profileId,
             SuccessCallback success = null,
@@ -738,6 +761,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadGroup(
             string groupId,
@@ -763,6 +787,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadGroupData(
             string groupId,
             SuccessCallback success = null,
@@ -786,6 +811,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadGroupEntitiesPage(
             string jsonContext,
@@ -811,6 +837,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadGroupEntitiesPageByOffset(
             string encodedContext,
@@ -839,6 +866,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadGroupEntity(
             string groupId,
             string entityId,
@@ -865,6 +893,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadGroupMembers(
             string groupId,
             SuccessCallback success = null,
@@ -888,6 +917,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RejectGroupInvitation(
             string groupId,
@@ -913,6 +943,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RejectGroupJoinRequest(
             string groupId,
@@ -941,6 +972,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void RemoveGroupMember(
             string groupId,
             string profileId,
@@ -968,6 +1000,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateGroupData(
             string groupId,
@@ -999,6 +1032,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateGroupEntityData(
             string groupId,
@@ -1033,6 +1067,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateGroupMember(
             string groupId,
             string profileId,
@@ -1064,6 +1099,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateGroupName(
             string groupId,
             string name,
@@ -1090,6 +1126,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void SetGroupOpen(
             string groupId,
@@ -1118,6 +1155,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateGroupSummaryData(
             string groupId,
@@ -1148,6 +1186,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetRandomGroupsMatching(
             string jsonWhere,

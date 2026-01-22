@@ -22,15 +22,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve the user's currency account. Optional parameters: vcId (if retrieving all currencies).
+        /// Retrieve the user's currency account. Optional parameter: `in_vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
         /// Service Name - VirtualCurrency
         /// Service Operation - GetCurrency
         /// </remarks>
+        /// <param name="in_vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetCurrency(
             string currencyType,
@@ -47,15 +49,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve the parent user's currency account. Optional parameters: vcId (if retrieving all currencies).
+        /// Retrieve the parent user's currency account. Optional parameter: `in_vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
         /// Service Name - VirtualCurrency
         /// Service Operation - GetParentCurrency
         /// </remarks>
+        /// <param name="in_vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
+        /// <param name="in_levelName">The parent level name</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetParentCurrency(
             string currencyType, string levelName,
@@ -73,15 +78,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve the peer user's currency account. Optional parameters: vcId (if retrieving all currencies).
+        /// Retrieve the peer user's currency account. Optional parameter: `in_vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
         /// Service Name - VirtualCurrency
         /// Service Operation - GetPeerCurrency
         /// </remarks>
+        /// <param name="in_vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
+        /// <param name="in_peerCode">The peer code identifying the other user</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetPeerCurrency(
             string currencyType, string peerCode,
@@ -108,6 +116,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetCurrency(
             SuccessCallback success = null,

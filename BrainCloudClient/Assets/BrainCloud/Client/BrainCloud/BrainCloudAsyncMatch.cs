@@ -34,6 +34,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CreateMatch(
             string jsonOpponentIds,
             string pushNotificationMessage,
@@ -59,6 +60,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CreateMatchWithInitialTurn(
             string jsonOpponentIds,
@@ -98,6 +100,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void SubmitTurn(
             string ownerId,
@@ -161,6 +164,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateMatchSummaryData(
             string ownerId,
             string matchId,
@@ -197,7 +201,11 @@ namespace BrainCloud
         /// <param name="in_matchId">Match identifier</param>
         /// <param name="in_version">Game state version being updated, to ensure data integrity</param>
         /// <param name="in_jsonMatchState">JSON string provided by the caller Required.</param>
-        /// <param name="in_jsonStatistics">Optional JSON string provided by the caller. @param in_callback</param>
+        /// <param name="in_jsonStatistics">Optional JSON string provided by the caller.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateMatchStateCurrentTurn(
             string ownerId,
@@ -238,6 +246,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CompleteMatch(
             string ownerId,
             string matchId,
@@ -267,6 +276,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadMatch(
             string ownerId,
@@ -298,6 +308,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadMatchHistory(
             string ownerId,
             string matchId,
@@ -326,6 +337,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void FindMatches(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -346,6 +358,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindCompleteMatches(
             SuccessCallback success = null,
@@ -369,6 +382,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AbandonMatch(
             string ownerId,
@@ -400,6 +414,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void DeleteMatch(
             string ownerId,
             string matchId,
@@ -425,10 +440,13 @@ namespace BrainCloud
         /// Service Operation - CompleteMatchWithSumamryData
         /// </remarks>
         /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier @param in_pushContent @param in_summary</param>
+        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="in_pushContent">Optional push notification message to send to the other party when completing the match.</param>
+        /// <param name="in_summary">Optional JSON string summary that other players will see when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CompleteMatchWithSummaryData(
             string ownerId,
@@ -462,10 +480,13 @@ namespace BrainCloud
         /// Service Operation - AbandonMatchWithSumamryData
         /// </remarks>
         /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier @param in_pushContent @param in_summary</param>
+        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="in_pushContent">Optional push notification message to send to the other party when abandoning the match.</param>
+        /// <param name="in_summary">Optional JSON string summary that other players will see when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AbandonMatchWithSummaryData(
             string ownerId,
