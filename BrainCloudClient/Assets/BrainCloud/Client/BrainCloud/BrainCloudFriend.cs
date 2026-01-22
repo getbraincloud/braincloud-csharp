@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.Common;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
+    using System;
 
     public class BrainCloudFriend
     {
@@ -18,8 +18,8 @@ using System;
         {
             All,
             brainCloud,
-            Facebook, 
-            PlaystationNetwork, 
+            Facebook,
+            PlaystationNetwork,
             Steam
         }
 
@@ -31,27 +31,18 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves profile information of the specified user.
+        /// Retrieves profile information for the specified user.
         /// </summary>
         /// <remarks>
-        /// Service Name - Friend
+        /// Service Name - friend
         /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL
         /// </remarks>
-        /// <param name="externalId">
-        /// External id of the user to find
-        /// </param>
-        /// <param name="authenticationType">
-        /// The authentication type used for the user's ID
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_externalId">The users's external ID</param>
+        /// <param name="in_authenticationType">The authentication type of the user ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetProfileInfoForCredential(
             string externalId,
             AuthenticationType authenticationType,
@@ -69,27 +60,18 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves profile information of the specified user if it exists
+        /// Retrieves profile information for the specified user.
         /// </summary>
         /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL
+        /// Service Name - friend
+        /// Service Operation - GET_PROFILE_INFO_FOR_CREDENTIAL_IF_EXISTS
         /// </remarks>
-        /// <param name="externalId">
-        /// External id of the user to find
-        /// </param>
-        /// <param name="authenticationType">
-        /// The authentication type used for the user's ID
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_externalId">The users's external ID</param>
+        /// <param name="in_authenticationType">The authentication type of the user ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetProfileInfoForCredentialIfExists(
             string externalId,
             AuthenticationType authenticationType,
@@ -110,24 +92,15 @@ using System;
         /// Retrieves profile information for the specified external auth user.
         /// </summary>
         /// <remarks>
-        /// Service Name - Friend
+        /// Service Name - friend
         /// Service Operation - GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID
         /// </remarks>
-        /// <param name="externalId">
-        /// External id of the friend to find
-        /// </param>
-        /// <param name="externalAuthType">
-        /// The external authentication type used for this friend's external id
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_externalId">External ID of the friend to find</param>
+        /// <param name="in_externalAuthType">The external authentication type used for this friend's external ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetProfileInfoForExternalAuthId(
             string externalId,
             string externalAuthType,
@@ -145,28 +118,18 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves profile information for the specified external auth user if it exists. 
-        /// Silently fails, if profile does not exist, just returns null and success, instead of an error.
+        /// Retrieves profile information for the specified user. Silently fails, if profile does not exist, just returns null and success, instead of an error.
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
         /// Service Operation - GET_PROFILE_INFO_FOR_EXTERNAL_AUTH_ID_IF_EXISTS
         /// </remarks>
-        /// <param name="externalId">
-        /// External id of the friend to find
-        /// </param>
-        /// <param name="externalAuthType">
-        /// The external authentication type used for this friend's external id
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_externalId">External ID of the friend to find</param>
+        /// <param name="in_externalAuthType">The external authentication type used for this friend's external ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetProfileInfoForExternalAuthIdIfExists(
             string externalId,
             string externalAuthType,
@@ -186,25 +149,9 @@ using System;
         /// <summary>
         /// Retrieves the external ID for the specified user profile ID on the specified social platform.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - GET_EXTERNAL_ID_FOR_PROFILE_ID
-        /// </remarks>
-        /// <param name="profileId">
-        /// Profile (user) ID.
-        /// </param>
-        /// <param name="authenticationType">
-        /// Associated authentication type.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_profileId">Profile (user) ID.</param>
+        /// <param name="in_authenticationType">Associated authentication type.</param>
+
         public void GetExternalIdForProfileId(
             string profileId,
             string authenticationType,
@@ -228,21 +175,12 @@ using System;
         /// Service Name - Friend
         /// Service Operation - ReadFriendEntity
         /// </remarks>
-        /// <param name="entityId">
-        /// Id of entity to retrieve.
-        /// </param>
-        /// <param name="friendId">
-        /// Profile Id of friend who owns entity.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">Id of entity to retrieve.</param>
+        /// <param name="in_friendId">Profile Id of friend who owns entity.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadFriendEntity(
             string entityId,
             string friendId,
@@ -260,24 +198,17 @@ using System;
         }
 
         /// <summary>
-        /// Returns entities of all friends based on type and/or subtype.
+        /// Returns entities of all friends optionally based on type.
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
         /// Service Operation - ReadFriendsEntities
         /// </remarks>
-        /// <param name="entityType">
-        /// Types of entities to retrieve.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityType">Types of entities to retrieve.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadFriendsEntities(
             string entityType,
             SuccessCallback success = null,
@@ -293,26 +224,17 @@ using System;
         }
 
         /// <summary>
-        /// Returns user state of a particular friend.
-        /// If you are not friend with this user, you will get an error
-        /// with NOT_FRIENDS reason code.
+        /// Read a friend's user state.
         /// </summary>
         /// <remarks>
         /// Service Name - Friend
-        /// Service Operation - ReadFriendPlayerState
+        /// Service Operation - ReadFriendsPlayerState
         /// </remarks>
-        /// <param name="friendId">
-        /// Profile Id of friend to retrieve user state for.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_friendId">Target friend</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadFriendUserState(
             string friendId,
             SuccessCallback success = null,
@@ -334,18 +256,11 @@ using System;
         /// Service Name - Friend
         /// Service Operation - GET_SUMMARY_DATA_FOR_PROFILE_ID
         /// </remarks>
-        /// <param name="profileId">
-        /// Profile Id of user to retrieve player state for.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_profileId">Profile Id of user to retrieve user state for.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetSummaryDataForProfileId(
             string profileId,
             SuccessCallback success = null,
@@ -361,22 +276,18 @@ using System;
         }
 
         /// <summary>
-        /// Finds a list of users matching the search text by performing an exact
-        /// search of all user names.
+        /// Finds a list of users matching the search text by performing an exact match search
         /// </summary>
         /// <remarks>
-        /// Service Name - Friend
+        /// Service Name - friend
         /// Service Operation - FIND_USERS_BY_EXACT_NAME
         /// </remarks>
-        /// <param name="searchText"> 
-        /// The string to search for.
-        /// </param>
-        /// <param name="maxResults"> 
-        /// Maximum number of results to return.
-        /// </param>
+        /// <param name="searchText">The string to search for.</param>
+        /// <param name="maxResults">Maximum number of results to return.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void FindUsersByExactName(
             string searchText,
             int maxResults,
@@ -395,18 +306,10 @@ using System;
         }
 
         /// <summary>
-        /// Find a specific user by their Universal Id
+        /// Retrieves profile information of the specified universal Id.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - FIND_USER_BY_EXACT_UNIVERSAL_ID
-        /// </remarks>
-        /// <param name="searchText"> 
-        /// The string to search for.
-        /// </param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+        /// <param name="in_searchText">Universal ID text on which to search.</param>
+
         public void FindUserByExactUniversalId(
             string searchText,
             SuccessCallback success = null,
@@ -424,21 +327,17 @@ using System;
 
         /// <summary>
         /// Finds a list of users matching the search text by performing a substring
-        /// search of all user names.
         /// </summary>
         /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - FIND_USERS_BY_EXACT_NAME
+        /// Service Name - friend
+        /// Service Operation - FIND_USERS_BY_SUBSTR_NAME
         /// </remarks>
-        /// <param name="searchText"> 
-        /// The substring to search for. Minimum length of 3 characters.
-        /// </param>
-        /// <param name="maxResults"> 
-        /// Maximum number of results to return.
-        /// </param>
+        /// <param name="searchText">The substring to search for. Minimum length of 3 characters.</param>
+        /// <param name="maxResults">Maximum number of results to return. If there are more the message</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void FindUsersBySubstrName(
             string searchText,
             int maxResults,
@@ -463,11 +362,12 @@ using System;
         /// Service Name - Friend
         /// Service Operation - LIST_FRIENDS
         /// </remarks>
-        /// <param name="friendPlatform">Friend platform to query.</param>
-        /// <param name="includeSummaryData">True if including summary data; false otherwise.</param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
+        /// <param name="in_friendPlatform">Friend platform to query.</param>
+        /// <param name="in_includeSummaryData">True if including summary data; false otherwise.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ListFriends(
             FriendPlatform friendPlatform,
             bool includeSummaryData,
@@ -521,10 +421,11 @@ using System;
         /// Service Name - Friend
         /// Service Operation - ADD_FRIENDS
         /// </remarks>
-        /// <param name="profileIds">Collection of profile IDs.</param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
+        /// <param name="in_profileIds">Collection of profile IDs.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AddFriends(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -539,7 +440,7 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Friend, ServiceOperation.AddFriends, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Links the profiles for the specified externalIds for the given friend platform as internal friends.
         /// </summary>
@@ -547,19 +448,20 @@ using System;
         /// Service Name - Friend
         /// Service Operation - ADD_FRIENDS_FROM_PLATFORM
         /// </remarks>
-        /// <param name="friendPlatform">Platform to add from (i.e: FriendPlatform:Facebook)</param>
-        /// <param name="mode">ADD or SYNC</param>
-        /// <param name="externalIds">Collection of external ID's from the friend platform</param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
+        /// <param name="in_friendPlatform">Platform to add from (i.e: FriendPlatform::Facebook)</param>
+        /// <param name="in_mode">ADD or SYNC</param>
+        /// <param name="in_externalIds">Collection of external IDs from the friend platform.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AddFriendsFromPlatform(
-            FriendPlatform friendPlatform, 
+            FriendPlatform friendPlatform,
             string mode,
             IList<string> externalIds,
             SuccessCallback success = null,
             FailureCallback failure = null,
-            object cbObject=null)
+            object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
 
@@ -579,10 +481,11 @@ using System;
         /// Service Name - Friend
         /// Service Operation - REMOVE_FRIENDS
         /// </remarks>
-        /// <param name="profileIds">Collection of profile IDs.</param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
+        /// <param name="in_profileIds">Collection of profile IDs.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void RemoveFriends(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -605,10 +508,11 @@ using System;
         /// Service Name - Friend
         /// Service Operation - GET_USERS_ONLINE_STATUS
         /// </remarks>
-        /// <param name="profileIds">Collection of profile IDs.</param>
-        /// <param name="success"> The success callback. </param>
-        /// <param name="failure"> The failure callback. </param>
-        /// <param name="cbObject"> The user object sent to the callback. </param>
+        /// <param name="in_profileIds">Collection of profile IDs.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUsersOnlineStatus(
             IList<string> profileIds,
             SuccessCallback success = null,
@@ -625,27 +529,11 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves Name information for the partial matches of the specified text. 
+        /// Retrieves profile information for the users whos names start with search text.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - FIND_USERS_BY_NAME_STARTING_WITH
-        /// </remarks>
-        /// <param name="searchText">
-        /// text on which to search.
-        /// </param>
-        /// <param name="maxResults">
-        /// Maximum number of results to return.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_searchText">Name text on which to search.</param>
+        /// <param name="in_maxResults">Maximum number of results to return.</param>
+
         public void FindUsersByNameStartingWith(
             string searchText,
             int maxResults,
@@ -663,27 +551,11 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves Universal Id information for the partial matches of the specified text.
+        /// Retrieves profile information for the users whos UniversalId start with search text.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Friend
-        /// Service Operation - FIND_USERS_BY_UNIVERSAL_ID_STARTING_WITH
-        /// </remarks>
-        /// <param name="searchText">
-        /// text on which to search.
-        /// </param>
-        /// <param name="maxResults">
-        /// Maximum number of results to return.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_searchText">Universal ID text on which to search.</param>
+        /// <param name="in_maxResults">Maximum number of results to return.</param>
+
         public void FindUsersByUniversalIdStartingWith(
             string searchText,
             int maxResults,

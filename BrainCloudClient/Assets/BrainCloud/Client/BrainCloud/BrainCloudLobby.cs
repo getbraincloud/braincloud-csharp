@@ -42,9 +42,22 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters
+        /// Finds a lobby matching the specified parameters. Asynchronous - returns 200 to indicate that matchmaking has started.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - FindLobby
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="maxSteps">The maximum number of steps to wait when looking for an applicable lobby. Each step is ~5 seconds.</param>
+        /// <param name="algo">The algorithm to use for increasing the search scope.</param>
+        /// <param name="filterJson">Used to help filter the list of rooms to consider. Passed to the matchmaking filter, if configured.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment</param>
+
         public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -70,10 +83,22 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Finds a lobby matching the specified parameters. Asynchronous - returns 200 to indicate that matchmaking has started. Uses attached ping data to resolve best location. GetRegionsForLobbies and PingRegions must be successfully responded to.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - FindLobbyWithPingData
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="maxSteps">The maximum number of steps to wait when looking for an applicable lobby. Each step is ~5 seconds.</param>
+        /// <param name="algo">The algorithm to use for increasing the search scope.</param>
+        /// <param name="filterJson">Used to help filter the list of rooms to consider. Passed to the matchmaking filter, if configured.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment</param>
+
         public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -97,9 +122,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Like findLobby, but explicitely geared toward creating new lobbies
+        /// Creates a new lobby.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - CreateLobby
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment.</param>
+        /// <param name="settings">Configuration data for the room.</param>
+
         public void CreateLobby(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
@@ -123,10 +159,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Like findLobby, but explicitely geared toward creating new lobbies WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Creates a new lobby. Uses attached ping data to resolve best location. GetRegionsForLobbies and PingRegions must be successfully responded to.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - CreateLobbyWithPingData
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment.</param>
+        /// <param name="settings">Configuration data for the room.</param>
+
         public void CreateLobbyWithPingData(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
@@ -147,9 +193,23 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters, or creates one
+        /// Adds the caller to the lobby entry queue and will create a lobby if none are found.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - FindOrCreateLobby
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="maxSteps">The maximum number of steps to wait when looking for an applicable lobby. Each step is ~5 seconds.</param>
+        /// <param name="algo">The algorithm to use for increasing the search scope.</param>
+        /// <param name="filterJson">Used to help filter the list of rooms to consider. Passed to the matchmaking filter, if configured.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="settings">Configuration data for the room.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment.</param>
+
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson,
@@ -179,10 +239,23 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters, or creates one WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Adds the caller to the lobby entry queue and will create a lobby if none are found. Uses attached ping data to resolve best location. GetRegionsForLobbies and PingRegions must be successfully responded to.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - FindOrCreateLobbyWithPingData
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="rating">The skill rating to use for finding the lobby. Provided as a separate parameter because it may not exactly match the user's rating (especially in cases where parties are involved).</param>
+        /// <param name="maxSteps">The maximum number of steps to wait when looking for an applicable lobby. Each step is ~5 seconds.</param>
+        /// <param name="algo">The algorithm to use for increasing the search scope.</param>
+        /// <param name="filterJson">Used to help filter the list of rooms to consider. Passed to the matchmaking filter, if configured.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+        /// <param name="settings">Configuration data for the room.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="teamCode">Preferred team for this user, if applicable. Send "" or null for automatic assignment.</param>
+
         public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson,
@@ -210,8 +283,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets data for the given lobby instance <lobbyId>.
+        /// Returns the data for the specified lobby, including member data.
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - GetLobbyData
+        /// </remarks>
+        /// <param name="lobbyId">Id of chosen lobby.</param>
+
         public void GetLobbyData(string in_lobbyID,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -224,8 +303,16 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// updates the ready state of the player
+        /// Updates the ready status and extra json for the given lobby member.
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - UpdateReady
+        /// </remarks>
+        /// <param name="lobbyId">The type of lobby to look for. Lobby types are defined in the portal.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+
         public void UpdateReady(string in_lobbyID, bool in_isReady, Dictionary<string, object> in_extraJson,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -240,8 +327,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// valid only for the owner of the group -- edits the overally lobby config data
+        /// Updates the ready status and extra json for the given lobby member.
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - UpdateSettings
+        /// </remarks>
+        /// <param name="lobbyId">Id of the specfified lobby.</param>
+        /// <param name="settings">Configuration data for the room.</param>
+
         public void UpdateSettings(string in_lobbyID, Dictionary<string, object> in_settings,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -255,8 +349,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// switches to the specified team (if allowed). Note - may be blocked by cloud code script
+        /// Switches to the specified team (if allowed.)
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - SwitchTeam
+        /// </remarks>
+        /// <param name="lobbyId">Id of chosen lobby.</param>
+        /// <param name="toTeamCode">Specified team code.</param>
+
         public void SwitchTeam(string in_lobbyID, string in_toTeamName,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -270,8 +371,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// sends LOBBY_SIGNAL_DATA message to all lobby members
+        /// Sends LOBBY_SIGNAL_DATA message to all lobby members.
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - SendSignal
+        /// </remarks>
+        /// <param name="lobbyId">Id of chosen lobby.</param>
+        /// <param name="signalData">Signal data to be sent.</param>
+
         public void SendSignal(string in_lobbyID, Dictionary<string, object> in_signalData, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -285,8 +393,18 @@ namespace BrainCloud
 
 
         /// <summary>
-        /// User joins the specified lobby. 
+        /// Join specified lobby
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - JoinLobby
+        /// </remarks>
+        /// <param name="lobbyId">Id of the specfified lobby.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="toTeamCode">Specified team code.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+
         public void JoinLobby(string in_lobbyID,
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -308,9 +426,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// User joins the specified lobby WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Join specified lobby. Uses attached ping data to resolve best location. GetRegionsForLobbies and PingRegions must be successfully responded to.
         /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - JoinLobbyWithPingData
+        /// </remarks>
+        /// <param name="lobbyId">Id of the specfified lobby.</param>
+        /// <param name="isReady">Initial ready-status of this user.</param>
+        /// <param name="extraJson">Initial extra-data about this user.</param>
+        /// <param name="toTeamCode">Specified team code.</param>
+        /// <param name="otherUserCxIds">Array of other users (i.e. party members) to add to the lobby as well. Will constrain things so that only lobbies with room for all players will be considered.</param>
+
         public void JoinLobbyWithPingData(string in_lobbyID,
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -329,9 +456,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// User leaves the specified lobby. if the user was the owner, a new owner will be chosen
+        /// Causes the caller to leave the specified lobby. If the user was the owner, a new owner will be chosen. If user was the last member, the lobby will be deleted.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - LeaveLobby
+        /// </remarks>
+        /// <param name="lobbyId">Id of chosen lobby.</param>
+
         public void LeaveLobby(string in_lobbyID, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -343,9 +475,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Only valid from the owner of the lobby -- removes the specified member from the lobby
+        /// Evicts the specified user from the specified lobby. The caller must be the owner of the lobby.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - RemoveMember
+        /// </remarks>
+        /// <param name="lobbyId">Id of chosen lobby.</param>
+        /// <param name="cxId">Specified member to be removed from the lobby.</param>
+
         public void RemoveMember(string in_lobbyID, string in_connectionId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -373,10 +511,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves the region settings for each of the given lobby types. Upon SuccessCallback or afterwards, call PingRegions to start retrieving appropriate data.  
-        /// Once that completes, the associated region Ping Data is retrievable via PingData and all associated <>WithPingData APIs are useable
+        /// Retrieves the region settings for each of the given lobby types. Upon success or afterwards, call pingRegions to start retrieving appropriate data.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - GetRegionsForLobbies
+        /// </remarks>
+        /// <param name="roomTypes">Ids of the lobby types.</param>
+
         public void GetRegionsForLobbies(string[] in_roomTypes, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -387,16 +529,16 @@ namespace BrainCloud
             m_clientRef.SendRequest(sc);
         }
 
-        /**
-         * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
-         * any ping data provided in the criteriaJson will be ignored.
-         *
-         * Service Name - Lobby
-         * Service Operation - GetLobbyInstances
-         *
-         * @param lobbyType The type of lobby to look for.
-         * @param criteriaJson A JSON object used to describe filter criteria.
-         */
+        /// <summary>
+        /// Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - GET_LOBBY_INSTANCES
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for.</param>
+        /// <param name="criteriaJson">A JSON string used to describe filter criteria.</param>
+
         public void GetLobbyInstances(string in_lobbyType, Dictionary<string, object> criteriaJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -408,16 +550,16 @@ namespace BrainCloud
             m_clientRef.SendRequest(sc);
         }
 
-        /**
-         * Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
-         * Only lobby instances in the regions that satisfy the ping portion of the criteriaJson (based on the values provided in pingData) will be returned.
-         *
-         * Service Name - Lobby
-         * Service Operation - GetLobbyInstancesWithPingData
-         *
-         * @param lobbyType The type of lobby to look for.
-         * @param criteriaJson A JSON object used to describe filter criteria.
-         */
+        /// <summary>
+        /// Gets a map keyed by rating of the visible lobby instances matching the given type and rating range.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Lobby
+        /// Service Operation - GET_LOBBY_INSTANCES_WITH_PING_DATA
+        /// </remarks>
+        /// <param name="lobbyType">The type of lobby to look for.</param>
+        /// <param name="criteriaJson">A JSON string used to describe filter criteria.</param>
+
         public void GetLobbyInstancesWithPingData(string in_lobbyType, Dictionary<string, object> criteriaJson,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -429,10 +571,9 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves associated PingData averages to be used with all associated <>WithPingData APIs.
-        /// Call anytime after GetRegionsForLobbies before proceeding. 
+        /// Retrieves associated Ping Data averages to be used with all associated <>WithPingData APIs.
         /// </summary>
-        /// 
+
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             if (m_pingRegionSuccessCallback != null)
@@ -599,7 +740,7 @@ namespace BrainCloud
 #endif
             }
 #endif
-            }
+        }
 
 #if DOT_NET || GODOT
         private void HandleHTTPResponse(string in_region, string in_target)

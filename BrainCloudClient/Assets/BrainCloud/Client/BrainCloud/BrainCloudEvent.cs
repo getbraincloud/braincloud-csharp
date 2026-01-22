@@ -7,49 +7,34 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudEvent
     {
         private BrainCloudClient _client;
 
-        public BrainCloudEvent (BrainCloudClient client)
+        public BrainCloudEvent(BrainCloudClient client)
         {
             _client = client;
         }
 
         /// <summary>
-        /// Sends an event to the designated profile id with the attached json data.
-        /// Any events that have been sent to a user will show up in their
-        /// incoming event mailbox. If the recordLocally flag is set to true,
-        /// a copy of this event (with the exact same event id) will be stored
-        /// in the sending user's "sent" event mailbox.
+        /// Sends an event to the designated user id with the attached json data.
         /// </summary>
         /// <remarks>
-        /// Service Name - Event
-        /// Service Operation - Send
+        /// Service Name - event
+        /// Service Operation - SEND
         /// </remarks>
-        /// <param name="toProfileId">
-        /// The id of the user who is being sent the event
-        /// </param>
-        /// <param name="eventType">
-        /// The user-defined type of the event.
-        /// </param>
-        /// <param name="jsonEventData">
-        /// The user-defined data for this event encoded in JSON.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_toProfileId">The id of the user who is being sent the event</param>
+        /// <param name="in_eventType">The user-defined type of the event.</param>
+        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendEvent(
             string toProfileId,
             string eventType,
@@ -65,7 +50,7 @@ using BrainCloud.Internal;
 
             if (Util.IsOptionalParameterValid(jsonEventData))
             {
-                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>> (jsonEventData);
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
                 data[OperationParam.EventServiceSendEventData.Value] = eventData;
             }
 
@@ -75,34 +60,19 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sends an event to the designated profile ids with the attached json data.
-        /// Any events that have been sent to a user will show up in their
-        /// incoming event mailbox. If the recordLocally flag is set to true,
-        /// a copy of this event (with the exact same event id) will be stored
-        /// in the sending user's "sent" event mailbox.
+        /// Sends an event to multiple users with the attached json data.
         /// </summary>
         /// <remarks>
         /// Service Name - Event
         /// Service Operation - SEND_EVENT_TO_PROFILES
         /// </remarks>
-        /// <param name="toProfileIds">
-        /// The ids of the users who are being sent the event
-        /// </param>
-        /// <param name="eventType">
-        /// The user-defined type of the event.
-        /// </param>
-        /// <param name="jsonEventData">
-        /// The user-defined data for this event encoded in JSON.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_toIds">The profile ids of the users to send the event</param>
+        /// <param name="in_eventType">The user-defined type of the event</param>
+        /// <param name="in_eventData">The user-defined data for this event encoded in JSON</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendEventToProfiles(
             string[] toProfileIds,
             string eventType,
@@ -132,24 +102,15 @@ using BrainCloud.Internal;
         /// Updates an event in the user's incoming event mailbox.
         /// </summary>
         /// <remarks>
-        /// Service Name - Event
-        /// Service Operation - UpdateEventData
+        /// Service Name - event
+        /// Service Operation - UPDATE_EVENT_DATA
         /// </remarks>
-        /// <param name="evId">
-        /// The event id
-        /// </param>
-        /// <param name="jsonEventData">
-        /// The user-defined data for this event encoded in JSON.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_evId">The event id</param>
+        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateIncomingEventData(
             string evId,
             string jsonEventData,
@@ -162,7 +123,7 @@ using BrainCloud.Internal;
 
             if (Util.IsOptionalParameterValid(jsonEventData))
             {
-                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>> (jsonEventData);
+                Dictionary<string, object> eventData = JsonReader.Deserialize<Dictionary<string, object>>(jsonEventData);
                 data[OperationParam.EventServiceUpdateEventDataData.Value] = eventData;
             }
 
@@ -173,27 +134,17 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Updates an event in the user's incoming event mailbox.
-        /// Returns the same data as UpdateIncomingEventData, but does not return an error if the event does not exist.
         /// </summary>
         /// <remarks>
-        /// Service Name - Event
-        /// Service Operation - UpdateEventData
+        /// Service Name - event
+        /// Service Operation - UPDATE_EVENT_DATA
         /// </remarks>
-        /// <param name="evId">
-        /// The event id
-        /// </param>
-        /// <param name="jsonEventData">
-        /// The user-defined data for this event encoded in JSON.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_evId">The event id</param>
+        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateIncomingEventDataIfExists(
             string evId,
             string jsonEventData,
@@ -219,21 +170,14 @@ using BrainCloud.Internal;
         /// Delete an event out of the user's incoming mailbox.
         /// </summary>
         /// <remarks>
-        /// Service Name - Event
-        /// Service Operation - DeleteIncoming
+        /// Service Name - event
+        /// Service Operation - DELETE_INCOMING
         /// </remarks>
-        /// <param name="evId">
-        /// The event id
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_evId">The event id</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteIncomingEvent(
             string evId,
             SuccessCallback success = null,
@@ -247,7 +191,7 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncoming, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Delete a list of events out of the user's incoming mailbox.
         /// </summary>
@@ -275,31 +219,24 @@ using BrainCloud.Internal;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceEvIds.Value] = in_eventIds;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEvents, data, callback);
             _client.SendRequest(sc);
         }
-        
-        /// /// <summary>
+
+        /// <summary>
         /// Delete any events older than the given date out of the user's incoming mailbox.
         /// </summary>
         /// <remarks>
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING_EVENTS_OLDER_THAN
         /// </remarks>
-        /// <param name="in_dateMillis">
-        /// CreatedAt cut-off time whereby older events will be deleted (In UTC since Epoch)
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteIncomingEventsOlderThan(
             long in_dateMillis,
             SuccessCallback success = null,
@@ -308,12 +245,12 @@ using BrainCloud.Internal;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceDateMillis.Value] = in_dateMillis;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEventsOlderThan, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Delete any events of the given type older than the given date out of the user's incoming mailbox.
         /// </summary>
@@ -321,21 +258,12 @@ using BrainCloud.Internal;
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN
         /// </remarks>
-        /// <param name="in_eventId">
-        /// The event id
-        /// </param>
-        /// <param name="in_dateMillis">
-        /// CreatedAt cut-off time whereby older events will be deleted (In UTC since Epoch)
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_eventType">The user-defined type of the event</param>
+        /// <param name="in_dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteIncomingEventsByTypeOlderThan(
             string in_eventId,
             long in_dateMillis,
@@ -346,7 +274,7 @@ using BrainCloud.Internal;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.EventServiceDateMillis.Value] = in_dateMillis;
             data[OperationParam.EventServiceEventType.Value] = in_eventId;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Event, ServiceOperation.DeleteIncomingEventsByTypeOlderThan, data, callback);
             _client.SendRequest(sc);
@@ -355,9 +283,14 @@ using BrainCloud.Internal;
         /// <summary>
         /// Get the events currently queued for the user.
         /// </summary>
+        /// <remarks>
+        /// Service Name - event
+        /// Service Operation - GET_EVENTS
+        /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetEvents(
             SuccessCallback success = null,
             FailureCallback failure = null,

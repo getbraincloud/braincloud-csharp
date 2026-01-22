@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
-using BrainCloud.Common;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
 
     public class BrainCloudGlobalEntity
     {
@@ -28,27 +28,14 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - Create
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="timeToLive">
-        /// Sets expiry time for entity in milliseconds if > 0
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityType">The entity type as defined by the user</param>
+        /// <param name="in_timeToLive">Sets expiry time for entity in milliseconds if > 0</param>
+        /// <param name="in_jsonEntityAcl">The entity's access control list as json. A null acl implies default</param>
+        /// <param name="in_jsonEntityData">The entity's data as a json string</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void CreateEntity(
             string entityType,
             long timeToLive,
@@ -83,30 +70,15 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - CreateWithIndexedId
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="indexedId">
-        /// A secondary ID that will be indexed
-        /// </param>
-        /// <param name="timeToLive">
-        /// Sets expiry time for entity in milliseconds if > 0
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityType">The entity type as defined by the user</param>
+        /// <param name="in_indexedId">A secondary ID that will be indexed</param>
+        /// <param name="in_timeToLive">Sets expiry time for entity in milliseconds if > 0</param>
+        /// <param name="in_jsonEntityAcl">The entity's access control list as json. A null acl implies default</param>
+        /// <param name="in_jsonEntityData">The entity's data as a json string</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void CreateEntityWithIndexedId(
             string entityType,
             string indexedId,
@@ -143,24 +115,13 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - Update
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_jsonEntityData">The entity's data as a json string</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateEntity(
             string entityId,
             int version,
@@ -188,24 +149,13 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - UpdateAcl
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_jsonEntityAcl">The entity's access control list as json.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateEntityAcl(
             string entityId,
             int version,
@@ -236,24 +186,13 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - UpdateTimeToLive
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to update
-        /// </param>
-        /// <param name="timeToLive">
-        /// Sets expiry time for entity in milliseconds if > 0
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_timeToLive">Sets expiry time for entity in milliseconds if > 0</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateEntityTimeToLive(
             string entityId,
             int version,
@@ -279,21 +218,12 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - Delete
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity to delete
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to delete</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteEntity(
             string entityId,
             int version,
@@ -317,18 +247,11 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - Read
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadEntity(
             string entityId,
             SuccessCallback success = null,
@@ -350,24 +273,13 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - GetList
         /// </remarks>
-        /// <param name="whereJson">
-        /// Mongo style query string
-        /// </param>
-        /// <param name="orderByJson">
-        /// Sort order
-        /// </param>
-        /// <param name="maxReturn">
-        /// The maximum number of entities to return
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_where">Mongo style query string</param>
+        /// <param name="in_orderBy">Sort order</param>
+        /// <param name="in_maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetList(
             string whereJson,
             string orderByJson,
@@ -402,21 +314,12 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - GetListByIndexedId
         /// </remarks>
-        /// <param name="entityIndexedId">
-        /// The entity indexed Id
-        /// </param>
-        /// <param name="maxReturn">
-        /// The maximum number of entities to return
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityIndexedId">The entity indexed Id</param>
+        /// <param name="in_maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetListByIndexedId(
             string entityIndexedId,
             int maxReturn,
@@ -440,18 +343,11 @@ using BrainCloud.Common;
         /// Service Name - GlobalEntity
         /// Service Operation - GetListCount
         /// </remarks>
-        /// <param name="whereJson">
-        /// Mongo style query string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_where">Mongo style query string</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetListCount(
             string whereJson,
             SuccessCallback success = null,
@@ -472,20 +368,17 @@ using BrainCloud.Common;
         }
 
         /// <summary>
-        /// Method uses a paging system to iterate through Global Entities.
-        /// After retrieving a page of Global Entities with this method,
-        /// use GetPageOffset() to retrieve previous or next pages.
+        /// Method uses a paging system to iterate through Global Entities
         /// </summary>
         /// <remarks>
         /// Service Name - GlobalEntity
         /// Service Operation - GetPage
         /// </remarks>
-        /// <param name="jsonContext">The json context for the page request.
-        /// See the portal appendix documentation for format</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
-        /// 
+        /// <param name="in_context">The json context for the page request. See the portal appendix documentation for format.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -503,25 +396,18 @@ using BrainCloud.Common;
         }
 
         /// <summary>
-        /// Method to retrieve previous or next pages after having called
-        /// the GetPage method.
+        /// Method to retrieve previous or next pages after having called the GetPage method.
         /// </summary>
         /// <remarks>
         /// Service Name - GlobalEntity
         /// Service Operation - GetPageOffset
         /// </remarks>
-        /// <param name="context">
-        /// The context string returned from the server from a previous call
-        /// to GetPage() or GetPageOffset()
-        /// </param>
-        /// <param name="pageOffset">
-        /// The positive or negative page offset to fetch. Uses the last page
-        /// retrieved using the context string to determine a starting point.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
-        /// 
+        /// <param name="in_context">The context string returned from the server from a previous call to GetPage or GetPageOffset</param>
+        /// <param name="in_pageOffset">The positive or negative page offset to fetch. Uses the last page retrieved using the context string to determine a starting point.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetPageOffset(
             string context,
             int pageOffset,
@@ -547,11 +433,12 @@ using BrainCloud.Common;
         /// Service Name - globalEntity
         /// Service Operation - INCREMENT_GLOBAL_ENTITY_DATA
         /// </remarks>
-        /// <param name="entityId">The entity to increment</param>
-        /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="in_entityId">The id of the entity to update</param>
+        /// <param name="in_jsonData">The entity's data object</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void IncrementGlobalEntityData(
             string entityId,
             string jsonData,
@@ -572,7 +459,7 @@ using BrainCloud.Common;
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.IncrementGlobalEntityData, data, callback);
             _client.SendRequest(serverCall);
         }
-        
+
         /// <summary>
         /// Gets a list of up to randomCount randomly selected entities from the server based on the where condition and specified maximum return count.
         /// </summary>
@@ -580,11 +467,12 @@ using BrainCloud.Common;
         /// Service Name - globalEntity
         /// Service Operation - GET_RANDOM_ENTITIES_MATCHING
         /// </remarks>
-        /// <param name="where">Mongo style query string</param>
-        /// <param name="maxReturn">The maximum number of entities to return</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="in_where">Mongo style query string</param>
+        /// <param name="in_maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetRandomEntitiesMatching(
             string whereJson,
             int maxReturn,
@@ -599,39 +487,28 @@ using BrainCloud.Common;
                 var where = JsonReader.Deserialize<Dictionary<string, object>>(whereJson);
                 data[OperationParam.GlobalEntityServiceWhere.Value] = where;
             }
-            
+
             data[OperationParam.GlobalEntityServiceMaxReturn.Value] = maxReturn;
-            
+
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.GetRandomEntitiesMatching, data, callback);
             _client.SendRequest(serverCall);
         }
-        
+
         /// <summary>
-        /// Method updates an existing entity's Indexed Id.
+        /// Method updates an existing entity's Indexed Id
         /// </summary>
         /// <remarks>
         /// Service Name - globalEntity
-        /// Service Operation - UPDATE_ENTITY_INDEXED_ID
+        /// Service Operation - UPDATE_ENTITY_OWNER_AND_ACL
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity
-        /// </param>
-        /// <param name="entityIndexedId">
-        /// The id index of the entity
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_entityIndexedId">the id index of the entity</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateEntityIndexedId(
             string entityId,
             long version,
@@ -651,33 +528,20 @@ using BrainCloud.Common;
         }
 
         /// <summary>
-        /// Method updates an existing entity's Owner and Acl on the server.
+        /// Method updates an existing entity's Owner and ACL on the server.
         /// </summary>
         /// <remarks>
         /// Service Name - globalEntity
         /// Service Operation - UPDATE_ENTITY_OWNER_AND_ACL
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity
-        /// </param>
-        /// <param name="ownerId">
-        /// The owner ID
-        /// </param>
-        /// <param name="acl">
-        /// The entity's access control list
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_ownerId">The owner ID</param>
+        /// <param name="in_jsonEntityAcl">The entity's access control list as JSON.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateEntityOwnerAndAcl(
             string entityId,
             long version,
@@ -699,30 +563,19 @@ using BrainCloud.Common;
         }
 
         /// <summary>
-        /// Method clears the owner id of an existing entity and sets the Acl on the server.
+        /// Method clears the owner id of an existing entity and sets the ACL on the server.
         /// </summary>
         /// <remarks>
         /// Service Name - globalEntity
-        /// Service Operation - UPDATE_ENTITY_OWNER_AND_ACL
+        /// Service Operation - MAKE_SYSTEM_ENTITY
         /// </remarks>
-        /// <param name="entityId">
-        /// The entity ID
-        /// </param>
-        /// <param name="version">
-        /// The version of the entity
-        /// </param>
-        /// <param name="acl">
-        /// The entity's access control list
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_entityId">The entity ID</param>
+        /// <param name="in_version">The version of the entity to update</param>
+        /// <param name="in_jsonEntityAcl">The entity's access control list as JSON.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MakeSystemEntity(
             string entityId,
             long version,

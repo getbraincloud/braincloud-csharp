@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudMail
     {
@@ -22,30 +22,19 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sends a simple text email to the specified user
+        /// Sends a simple text email to the specified player
         /// </summary>
         /// <remarks>
         /// Service Name - mail
         /// Service Operation - SEND_BASIC_EMAIL
         /// </remarks>
-        /// <param name="toProfileId">
-        /// The user to send the email to
-        /// </param>
-        /// <param name="subject">
-        /// The email subject
-        /// </param>
-        /// <param name="body">
-        /// The email body
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_profileId">The user to send the email to</param>
+        /// <param name="in_subject">The email subject</param>
+        /// <param name="in_body">The email body</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendBasicEmail(
             string profileId,
             string subject,
@@ -64,28 +53,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sends an advanced email to the specified user
+        /// Sends an advanced email to the specified player
         /// </summary>
         /// <remarks>
         /// Service Name - mail
         /// Service Operation - SEND_ADVANCED_EMAIL
         /// </remarks>
-        /// <param name="toProfileId">
-        /// The user to send the email to
-        /// </param>
-        /// <param name="jsonServiceParams">
-        /// Parameters to send to the email service. See the documentation for
-        /// a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_profileId">The user to send the email to</param>
+        /// <param name="in_jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendAdvancedEmail(
             string profileId,
             string jsonServiceParams,
@@ -108,22 +87,12 @@ using BrainCloud.Internal;
         /// Service Name - mail
         /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESS
         /// </remarks>
-        /// <param name="emailAddress">
-        /// The address to send the email to
-        /// </param>
-        /// <param name="jsonServiceParams">
-        /// Parameters to send to the email service. See the documentation for
-        /// a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_emailAddress">The address to send the email to</param>
+        /// <param name="in_jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendAdvancedEmailByAddress(
             string emailAddress,
             string jsonServiceParams,
@@ -140,28 +109,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sends an advanced email to the specified email addresses
+        /// Sends an advanced email to the specified email addresses.
         /// </summary>
         /// <remarks>
-        /// Service Name - mail
+        /// Service Name - Mail
         /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESSES
         /// </remarks>
-        /// <param name="emailAddresses">
-        /// The list of addresses to send the email to
-        /// </param>
-        /// <param name="jsonServiceParams">
-        /// Parameters to send to the email service. See the documentation for
-        /// a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_emailAddress">The list of addresses to send the email to</param>
+        /// <param name="in_serviceParams">Set of parameters dependant on the mail service configured</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SendAdvancedEmailByAddresses(
             string[] emailAddresses,
             string jsonServiceParams,

@@ -20,13 +20,14 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves the blockchain items owned by the caller.
+        /// @brief Retrieves the blockchain items owned by the caller.
         /// </summary>
+
         public void GetBlockchainItems(
-            string in_integrationID = "default", 
+            string in_integrationID = "default",
             string in_contextJson = "{}",
-            SuccessCallback in_success = null, 
-            FailureCallback in_failure = null, 
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             var context = JsonReader.Deserialize<Dictionary<string, object>>(in_contextJson);
@@ -41,8 +42,9 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves the uniqs owned by the caller.
+        /// @brief Retrieves the uniqs owned by the caller.
         /// </summary>
+
         public void GetUniqs(
             string in_integrationID = "default",
             string in_contextJson = "",

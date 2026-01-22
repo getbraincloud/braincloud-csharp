@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudPlayerState
     {
@@ -23,24 +23,15 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Read the state of the currently logged in user.
-        /// This method returns a JSON object describing most of the
-        /// player's data: entities, statistics, level, currency.
-        /// Apps will typically call this method after authenticating to get an
-        /// up-to-date view of the user's data.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
         /// Service Operation - Read
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadUserState(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -176,36 +167,16 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Updates the "friend summary data" associated with the logged in user.
-        /// Some operations will return this summary data. For instance the social
-        /// leaderboards will return the player's score in the leaderboard along
-        /// with the friend summary data. Generally this data is used to provide
-        /// a quick overview of the player without requiring a separate API call
-        /// to read their public stats or entity data.
-        ///
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
         /// Service Operation - UpdateSummary
         /// </remarks>
-        /// <param name="jsonSummaryData">
-        /// A JSON string defining the summary data.
-        /// For example:
-        /// {
-        ///   "xp":123,
-        ///   "level":12,
-        ///   "highScore":45123
-        /// }
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        ///
-        /// </param>
+        /// <param name="in_jsonSummaryData">A JSON string defining the summary data. For example: { "xp":123, "level":12, "highScore":45123 }</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateSummaryFriendData(
             string jsonSummaryData,
             SuccessCallback success = null,
@@ -257,21 +228,12 @@ using BrainCloud.Internal;
         /// Service Name - PlayerState
         /// Service Operation - UpdateAttributes
         /// </remarks>
-        /// <param name="jsonAttributes">
-        /// Single layer json string that is a set of key-value pairs
-        /// </param>
-        /// <param name="wipeExisting">
-        /// Whether to wipe existing attributes prior to update.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_jsonAttributes">Single layer json string that is a set of key-value pairs</param>
+        /// <param name="in_wipeExisting">Whether to wipe existing attributes prior to update.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateAttributes(
             string jsonAttributes,
             bool wipeExisting,
@@ -295,20 +257,18 @@ using BrainCloud.Internal;
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - RemoveAttributes
+        /// Service Operation - RemoveAttribute
         /// </remarks>
-        /// <param name="attributeNames">
-        /// List of attribute names.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_attributeNames">Collection of attribute names.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
+
+
+
+
         public void RemoveAttributes(
             IList<string> attributeNames,
             SuccessCallback success = null,
@@ -324,24 +284,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Updates player's picture URL.
+        /// Update User picture URL.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
         /// Service Operation - UPDATE_PICTURE_URL
         /// </remarks>
-        /// <param name="pictureUrl">
-        /// URL to apply.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_pictureUrl">URL to apply</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateUserPictureUrl(
             string pictureUrl,
             SuccessCallback success = null,
@@ -357,25 +310,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Update the user's contact email. 
-        /// Note this is unrelated to email authentication.
+        /// Update the user's contact email.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
         /// Service Operation - UPDATE_CONTACT_EMAIL
         /// </remarks>
-        /// <param name="contactEmail">
-        /// Updated email
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_contactEmail">Updated email</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateContactEmail(
             string contactEmail,
             SuccessCallback success = null,
@@ -391,23 +336,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Clear the user's status.
+        /// Delete's the specified status
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - ClearUserStatus
+        /// Service Operation - CLEAR_USER_STATUS
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_statusName">Updated email</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ClearUserStatus(
             string statusName,
             SuccessCallback success = null,
@@ -423,27 +362,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Extends the Status.
+        /// Stack user's statuses
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - ExtendUserStatus
+        /// Service Operation - EXTEND_USER_STATUS
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="additionalSecs">
-        /// The number of seconds to add.
-        /// <param name="details">
-        /// The details of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_statusName">Updated email @param additionalSecs @param details</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ExtendUserStatus(
             string statusName,
             int additionalSecs,
@@ -452,11 +381,11 @@ using BrainCloud.Internal;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string,object>>(details);
+            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string, object>>(details);
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
-            data[OperationParam.PlayerStateServiceAdditionalSecs.Value] =additionalSecs;
-            data[OperationParam.PlayerStateServiceDetails.Value] =detailsInfo;
+            data[OperationParam.PlayerStateServiceAdditionalSecs.Value] = additionalSecs;
+            data[OperationParam.PlayerStateServiceDetails.Value] = detailsInfo;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.ExtendUserStatus, data, callback);
@@ -464,23 +393,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Gets the Status.
+        /// Get user status
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - GetUserStatus
+        /// Service Operation - GET_USER_STATUS
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_statusName">Updated email</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUserStatus(
             string statusName,
             SuccessCallback success = null,
@@ -496,27 +419,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sets the Status.
+        /// Set timed status for a user
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - SetUserStatus
+        /// Service Operation - SET_USER_STATUS
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="durationSecs">
-        /// The number of seconds to add.
-        /// <param name="details">
-        /// The details of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_statusName">Updated email @param in_durationSecs @param in_details</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SetUserStatus(
             string statusName,
             int durationSecs,
@@ -525,35 +438,29 @@ using BrainCloud.Internal;
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string,object>>(details);
+            Dictionary<string, object> detailsInfo = JsonReader.Deserialize<Dictionary<string, object>>(details);
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.PlayerStateServiceStatusName.Value] = statusName;
-            data[OperationParam.PlayerStateServiceDurationSecs.Value] =durationSecs;
-            data[OperationParam.PlayerStateServiceDetails.Value] =detailsInfo;
+            data[OperationParam.PlayerStateServiceDurationSecs.Value] = durationSecs;
+            data[OperationParam.PlayerStateServiceDetails.Value] = detailsInfo;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PlayerState, ServiceOperation.SetUserStatus, data, callback);
             _client.SendRequest(sc);
         }
 
-                /// <summary>
-        /// Gets the Status.
+        /// <summary>
+        /// Remove user's attributes.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - UpdateLanguageCode
+        /// Service Operation - RemoveAttributes
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_attributeNames">Collection of attribute names.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateLanguageCode(
             string languageCode,
             SuccessCallback success = null,
@@ -568,24 +475,18 @@ using BrainCloud.Internal;
             _client.SendRequest(sc);
         }
 
-                        /// <summary>
-        /// Gets the Status.
+        /// <summary>
+        /// Remove user's attributes.
         /// </summary>
         /// <remarks>
         /// Service Name - PlayerState
-        /// Service Operation - UpdateLanguageCode
+        /// Service Operation - RemoveAttributes
         /// </remarks>
-        /// <param name="statusName">
-        /// The name of the status.
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_attributeNames">Collection of attribute names.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateTimeZoneOffset(
             string timeZoneOffset,
             SuccessCallback success = null,

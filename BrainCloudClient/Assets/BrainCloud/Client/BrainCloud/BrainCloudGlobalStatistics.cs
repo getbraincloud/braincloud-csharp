@@ -7,9 +7,9 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudGlobalStatistics
     {
@@ -23,18 +23,13 @@ using BrainCloud.Internal;
         /// Method returns all of the global statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - globalGameStatistics
+        /// Service Name - GlobalStatistics
         /// Service Operation - Read
         /// </remarks>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadAllGlobalStats(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -46,24 +41,17 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Reads a subset of global statistics as defined by the input JSON.
+        /// Reads a subset of global statistics as defined by the input collection.
         /// </summary>
         /// <remarks>
-        /// Service Name - globalGameStatistics
+        /// Service Name - GlobalStatistics
         /// Service Operation - ReadSubset
         /// </remarks>
-        /// <param name="globalStats">
-        /// A list containing the statistics to read
-        /// </param>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="in_statistics">A collection containing the statistics to read: [ "Level01_TimesBeaten", "Level02_TimesBeaten" ]</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadGlobalStatsSubset(
             IList<string> globalStats,
             SuccessCallback success = null,
@@ -82,21 +70,14 @@ using BrainCloud.Internal;
         /// Method retrieves the global statistics for the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - globalGameStatistics
+        /// Service Name - GlobalStatistics
         /// Service Operation - READ_FOR_CATEGORY
         /// </remarks>
-        /// <param name="category">
-        /// The global statistics category
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_category">The global statistics category</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadGlobalStatsForCategory(
             string category,
             SuccessCallback success = null,
@@ -161,28 +142,14 @@ using BrainCloud.Internal;
         /// Apply statistics grammar to a partial set of statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - globalGameStatistics
+        /// Service Name - GlobalStatistics
         /// Service Operation - PROCESS_STATISTICS
         /// </remarks>
-        /// <param name="statisticsData">
-        /// Example data to be passed to method:
-        /// {
-        ///     "DEAD_CATS": "RESET",
-        ///     "LIVES_LEFT": "SET#9",
-        ///     "MICE_KILLED": "INC#2",
-        ///     "DOG_SCARE_BONUS_POINTS": "INC#10",
-        ///     "TREES_CLIMBED": 1
-        /// }
-        /// </param>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="in_jsonData">The JSON format is as follows: { "DEAD_CATS": "RESET", "LIVES_LEFT": "SET#9", "MICE_KILLED": "INC#2", "DOG_SCARE_BONUS_POINTS": "INC#10", "TREES_CLIMBED": 1 }</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ProcessStatistics(
             string statisticsData,
             SuccessCallback success = null,
@@ -197,7 +164,7 @@ using BrainCloud.Internal;
             ServerCall sc = new ServerCall(ServiceName.GlobalStatistics, ServiceOperation.ProcessStatistics, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Apply statistics grammar to a partial set of statistics.
         /// </summary>

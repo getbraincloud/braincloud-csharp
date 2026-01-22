@@ -7,9 +7,9 @@
 namespace BrainCloud
 {
 
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
-using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
+    using System.Collections.Generic;
 
     public class BrainCloudRedemptionCode
     {
@@ -24,27 +24,16 @@ using System.Collections.Generic;
         /// Redeem a code.
         /// </summary>
         /// <remarks>
-        /// Service Name - redemptionCode
+        /// Service Name - RedemptionCode
         /// Service Operation - REDEEM_CODE
         /// </remarks>
-        /// <param name="scanCode">
-        /// The code to redeem
-        /// </param>
-        /// <param name="codeType">
-        /// The type of code
-        /// </param>
-        /// <param name="jsonCustomRedemptionInfo">
-        /// Optional - A JSON string containing custom redemption data
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_scanCode">The code to redeem</param>
+        /// <param name="in_codeType">The type of code</param>
+        /// <param name="in_jsonCustomRedemptionInfo">Optional - A JSON string containing custom redemption data</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void RedeemCode(
             string scanCode,
             string codeType,
@@ -72,21 +61,14 @@ using System.Collections.Generic;
         /// Retrieve the codes already redeemed by player.
         /// </summary>
         /// <remarks>
-        /// Service Name - redemptionCode
+        /// Service Name - RedemptionCode
         /// Service Operation - GET_REDEEMED_CODES
         /// </remarks>
-        /// <param name="codeType">
-        /// Optional - The type of codes to retrieve. Returns all codes if left unspecified.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_codeType">Optional - The type of codes to retrieve. Returns all codes if left unspecified.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetRedeemedCodes(
             string codeType,
             SuccessCallback success = null,

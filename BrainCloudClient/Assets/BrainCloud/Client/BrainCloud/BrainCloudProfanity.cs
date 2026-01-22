@@ -7,9 +7,9 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
 
     public class BrainCloudProfanity
     {
@@ -27,14 +27,15 @@ using BrainCloud.Internal;
         /// Service Name - Profanity
         /// Service Operation - ProfanityCheck
         /// </remarks>
-        /// <param name="text">The text to check</param>
-        /// <param name="languages">Optional comma delimited list of two character language codes</param>
-        /// <param name="flagEmail">Optional processing of email addresses</param>
-        /// <param name="flagPhone">Optional processing of phone numbers</param>
-        /// <param name="flagUrls">Optional processing of urls</param>
+        /// <param name="in_text">The text to check</param>
+        /// <param name="in_languages">Optional comma delimited list of two character language codes</param>
+        /// <param name="in_flagEmail">Optional processing of email addresses</param>
+        /// <param name="in_flagPhone">Optional processing of phone numbers</param>
+        /// <param name="in_flagUrls">Optional processing of urls</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ProfanityCheck(
             string text,
             string languages,
@@ -68,15 +69,16 @@ using BrainCloud.Internal;
         /// Service Name - Profanity
         /// Service Operation - ProfanityReplaceText
         /// </remarks>
-        /// <param name="text">The text to check</param>
-        /// <param name="replaceSymbol">The text to replace individual characters of profanity text with</param>
-        /// <param name="languages">Optional comma delimited list of two character language codes</param>
-        /// <param name="flagEmail">Optional processing of email addresses</param>
-        /// <param name="flagPhone">Optional processing of phone numbers</param>
-        /// <param name="flagUrls">Optional processing of urls</param>
+        /// <param name="in_text">The text to check</param>
+        /// <param name="in_replaceSymbol">The text to replace individual characters of profanity text with</param>
+        /// <param name="in_languages">Optional comma delimited list of two character language codes</param>
+        /// <param name="in_flagEmail">Optional processing of email addresses</param>
+        /// <param name="in_flagPhone">Optional processing of phone numbers</param>
+        /// <param name="in_flagUrls">Optional processing of urls</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ProfanityReplaceText(
             string text,
             string replaceSymbol,
@@ -112,14 +114,15 @@ using BrainCloud.Internal;
         /// Service Name - Profanity
         /// Service Operation - ProfanityIdentifyBadWords
         /// </remarks>
-        /// <param name="text">The text to check</param> 
-        /// <param name="languages">Optional comma delimited list of two character language codes</param>
-        /// <param name="flagEmail">Optional processing of email addresses</param>
-        /// <param name="flagPhone">Optional processing of phone numbers</param>
-        /// <param name="flagUrls">Optional processing of urls</param>
+        /// <param name="in_text">The text to check</param>
+        /// <param name="in_languages">Optional comma delimited list of two character language codes</param>
+        /// <param name="in_flagEmail">Optional processing of email addresses</param>
+        /// <param name="in_flagPhone">Optional processing of phone numbers</param>
+        /// <param name="in_flagUrls">Optional processing of urls</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ProfanityIdentifyBadWords(
             string text,
             string languages,

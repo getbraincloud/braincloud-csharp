@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.Common;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
+    using System;
 
     public class BrainCloudIdentity
     {
@@ -28,22 +28,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="facebookId">
-        /// The facebook id of the user
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The validated token from the Facebook SDK
-        ///   (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_facebookId">The facebook id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachFacebookIdentity(
             string facebookId,
             string authenticationToken,
@@ -57,25 +47,7 @@ using System;
         /// <summary>
         /// Retrieves identity status for given identity type for this profile.
         /// </summary>
-        /// <remarks>
-        /// Service Name - identity
-        /// Service Operation - GET_IDENTITY_STATUS
-        /// </remarks>
-        /// <param name="authenticationType">
-        /// Type of authentication.
-        /// </param>
-        /// <param name="externalAuthName">
-        /// The name of the external authentication mechanism (optional, used for custom authentication types)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of success
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetIdentityStatus(
             AuthenticationType authenticationType,
             string externalAuthName,
@@ -94,28 +66,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Facebook credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="facebookId">
-        /// The facebook id of the user
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The validated token from the Facebook SDK
-        /// (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_facebookId">The facebook id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeFacebookIdentity(
             string facebookId,
             string authenticationToken,
@@ -133,21 +94,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="facebookId">
-        /// The facebook id of the user
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_facebookId">The facebook id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachFacebookIdentity(
             string facebookId,
             bool continueAnon,
@@ -157,37 +109,21 @@ using System;
         {
             DetachIdentity(facebookId, AuthenticationType.Facebook, continueAnon, success, failure, cbObject);
         }
-        
+
         /// <summary>
         /// Attach the user's credentials to the current profile.
-        ///
+        /// </summary>
+        /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
-        ///
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the identity you provided
-        /// already points to a different profile.  You will likely want to offer the user the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateAdvanced().
-        /// </summary>
-        /// <param name="authenticationType">
-        /// Universal, Email, Facebook, etc
-        /// </param>
-        /// <param name="ids">
-        /// Authentication IDs structure
-        /// </param>
-        /// <param name="extraJson">
-        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// </remarks>
+        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="in_ids">Auth IDs structure</param>
+        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachAdvancedIdentity(
             AuthenticationType authenticationType,
             AuthenticationIds ids,
@@ -215,28 +151,21 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Attach, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
-        /// Merge the profile associated with the provided credentials with the current profile.
+        /// Merge the profile associated with the provided credentials with the
         /// </summary>
-        /// <param name="authenticationType">
-        /// Universal, Email, Facebook, etc
-        /// </param>
-        /// <param name="ids">
-        /// Authentication IDs structure
-        /// </param>
-        /// <param name="extraJson">
-        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="in_ids">Auth IDs structure</param>
+        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeAdvancedIdentity(
             AuthenticationType authenticationType,
             AuthenticationIds ids,
@@ -257,7 +186,7 @@ using System;
 
             if (extraJson != null)
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;    
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -267,32 +196,19 @@ using System;
 
         /// <summary>
         /// Detach the identity from this profile.
-        ///
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
         /// </summary>
-        /// <param name="authenticationType">
-        /// Universal, Email, Facebook, etc
-        /// </param>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="extraJson">
-        /// Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave an empty Dictionary for no extraJson.
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="in_externalId">User ID</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachAdvancedIdentity(
             AuthenticationType authenticationType,
             string externalId,
@@ -306,44 +222,30 @@ using System;
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
             data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
-            
-            if(extraJson != null)
+
+            if (extraJson != null)
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;    
+                data[OperationParam.AuthenticateServiceAuthenticateExtraJson.Value] = extraJson;
             }
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Attach the user's Ultra credentials to the current profile.
-        ///
+        /// </summary>
+        /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
-        ///
-        /// Errors to watch for:  SWITCHING_PROFILES - this means that the Ultra identity you provided
-        /// already points to a different profile.  You will likely want to offer the user the
-        /// choice to *SWITCH* to that profile, or *MERGE* the profiles.
-        ///
-        /// To switch profiles, call ClearSavedProfileID() and call AuthenticateUltra().
-        /// </summary>
-        /// <param name="ultraUsername">
-        /// it's what the user uses to log into the Ultra endpoint initially
-        /// </param>
-        /// <param name="ultraIdToken">
-        /// The "id_token" taken from Ultra's JWT.
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// </remarks>
+        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="in_ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachUltraIdentity(
             string ultraUsername,
             string ultraIdToken,
@@ -353,29 +255,20 @@ using System;
         {
             AttachIdentity(ultraUsername, ultraIdToken, AuthenticationType.Ultra, success, failure, cbObject);
         }
-        
+
         /// <summary>
-        /// Merge the profile associated with the provided Ultra credentials with the current profile
-        ///
-        /// Service Name - Identity
-        /// Service Operation - Merge
-        /// 
+        /// Merge the profile associated with the provided Ultra credentials with the
         /// </summary>
-        /// <param name="ultraUsername">
-        /// It's what the user uses to log into the Ultra endpoint initially
-        /// </param>
-        /// <param name="ultraIdToken">
-        /// The "id_token" taken from Ultra's JWT.
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="in_ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeUltraIdentity(
             string ultraUsername,
             string ultraIdToken,
@@ -388,30 +281,17 @@ using System;
 
         /// <summary>
         /// Detach the Ultra identity from this profile.
-        ///
-        /// Watch for DOWNGRADING_TO_ANONYMOUS_ERROR - occurs if you set in_continueAnon to false, and
-        /// disconnecting this identity would result in the profile being anonymous (which means that
-        /// the profile wouldn't be retrievable if the user loses their device)
-        ///
-        /// Service Name - Identity
-        /// Service Operation - Detach
-        /// 
         /// </summary>
-        /// <param name="ultraUsername">
-        /// It's what the user uses to log into the Ultra endpoint initially
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachUltraIdentity(
             string ultraUsername,
             bool continueAnon,
@@ -429,21 +309,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="oculusId">
-        /// The oculus id of the user
-        /// </param>
-        /// <param name="oculusNonce">
-        /// token from the Oculus SDK
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_oculusId">The oculus id of the user</param>
+        /// <param name="in_oculusNonce">The validated token from the Oculus SDK</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachOculusIdentity(
             string oculusId,
             string oculusNonce,
@@ -456,27 +327,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Oculus credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="oculusId">
-        /// The oculus id of the user
-        /// </param>
-        /// <param name="oculusNonce">
-        /// token from the Oculus SDK
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_oculusId">The oculus id of the user</param>
+        /// <param name="in_oculusNonce">The validated token from the Oculus SDK</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeOculusIdentity(
             string oculusId,
             string oculusNonce,
@@ -488,27 +349,18 @@ using System;
         }
 
         /// <summary>
-        /// Detach the Facebook identity from this profile.
+        /// Detach the Oculus identity from this profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="oculusId">
-        /// The facebook id of the user
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_oculusId">The oculus id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachOculusIdentity(
             string oculusId,
             bool continueAnon,
@@ -520,7 +372,7 @@ using System;
         }
 
 
-                /// <summary>
+        /// <summary>
         /// Attach the user's FacebookLimited credentials to the current profile.
         /// </summary>
         /// <remarks>
@@ -717,7 +569,7 @@ using System;
         {
             DetachIdentity(psnAccountId, AuthenticationType.PlaystationNetwork, continueAnon, success, failure, cbObject);
         }
-        
+
         /// <summary>
         /// Attach the user's PSN credentials to the current profile.
         /// </summary>
@@ -824,18 +676,11 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="gameCenterId">
-        /// The user's game center id  (use the playerID property from the local GKPlayer object)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success = null,
@@ -845,24 +690,18 @@ using System;
             AttachIdentity(gameCenterId, "", AuthenticationType.GameCenter, success, failure, cbObject);
         }
 
-        /// <summary>Merge the profile associated with the specified Game Center identity with the current profile.
+        /// <summary>
+        /// Merge the profile associated with the specified Game Center identity with the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="gameCenterId">
-        /// The user's game center id  (use the playerID property from the local GKPlayer object)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success = null,
@@ -872,26 +711,19 @@ using System;
             MergeIdentity(gameCenterId, "", AuthenticationType.GameCenter, success, failure, cbObject);
         }
 
-        /// <summary>Detach the Game Center identity from the current profile.</summary>
+        /// <summary>
+        /// Detach the Game Center identity from the current profile.
+        /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="gameCenterId">
-        /// The user's game center id  (use the playerID property from the local GKPlayer object)
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachGameCenterIdentity(
             string gameCenterId,
             bool continueAnon,
@@ -909,21 +741,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="email">
-        /// The user's e-mail address
-        /// </param>
-        /// <param name="password">
-        /// The user's password
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_email">The user's e-mail address</param>
+        /// <param name="in_password">The user's password</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachEmailIdentity(
             string email,
             string password,
@@ -935,27 +758,18 @@ using System;
         }
 
         /// <summary>
-        // Merge the profile associated with the provided e=mail with the current profile.
+        /// Merge the profile associated with the provided e=mail with the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="email">
-        /// The user's e-mail address
-        /// </param>
-        /// <param name="password">
-        /// The user's password
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_email">The user's e-mail address</param>
+        /// <param name="in_password">The user's password</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeEmailIdentity(
             string email,
             string password,
@@ -966,27 +780,19 @@ using System;
             MergeIdentity(email, password, AuthenticationType.Email, success, failure, cbObject);
         }
 
-        /// <summary>Detach the e-mail identity from the current profile
+        /// <summary>
+        /// Detach the e-mail identity from the current profile
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="email">
-        /// The user's e-mail address
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_email">The user's e-mail address</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachEmailIdentity(
             string email,
             bool continueAnon,
@@ -998,27 +804,18 @@ using System;
         }
 
         /// <summary>
-        /// Attach a Universal (userId + password) identity to the current profile.
+        /// Attach a Universal (userid + password) identity to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="userId">
-        /// The user's userId
-        /// </param>
-        /// <param name="password">
-        /// The user's password
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_userId">The user's userid</param>
+        /// <param name="in_password">The user's password</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachUniversalIdentity(
             string userId,
             string password,
@@ -1030,27 +827,18 @@ using System;
         }
 
         /// <summary>
-        /// Merge the profile associated with the provided e=mail with the current profile.
+        /// Merge the profile associated with the provided userId with the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="userId">
-        /// The user's userId
-        /// </param>
-        /// <param name="password">
-        /// The user's password
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_userId">The user's userid</param>
+        /// <param name="in_password">The user's password</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeUniversalIdentity(
             string userId,
             string password,
@@ -1061,27 +849,19 @@ using System;
             MergeIdentity(userId, password, AuthenticationType.Universal, success, failure, cbObject);
         }
 
-        /// <summary>Detach the universal identity from the current profile
+        /// <summary>
+        /// Detach the universal identity from the current profile
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="userId">
-        /// The user's userId
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_userId">The user's userid</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachUniversalIdentity(
             string userId,
             bool continueAnon,
@@ -1093,27 +873,18 @@ using System;
         }
 
         /// <summary>
-        /// Attach a Steam (userId + steamsessionticket) identity to the current profile.
+        /// Attach a Steam (userid + steamsessionticket) identity to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="steamId">
-        /// String representation of 64 bit steam id
-        /// </param>
-        /// <param name="sessionTicket">
-        /// The user's session ticket (hex encoded)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_steamId">String representation of 64 bit steam id</param>
+        /// <param name="in_sessionTicket">The user's session ticket (hex encoded)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachSteamIdentity(
             string steamId,
             string sessionTicket,
@@ -1125,27 +896,18 @@ using System;
         }
 
         /// <summary>
-        /// Merge the profile associated with the provided steam userId with the current profile.
+        /// Merge the profile associated with the provided steam userid with the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="steamId">
-        /// String representation of 64 bit steam id
-        /// </param>
-        /// <param name="sessionTicket">
-        /// The user's session ticket (hex encoded)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_steamId">String representation of 64 bit steam id</param>
+        /// <param name="in_sessionTicket">The user's session ticket (hex encoded)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeSteamIdentity(
             string steamId,
             string sessionTicket,
@@ -1156,27 +918,19 @@ using System;
             MergeIdentity(steamId, sessionTicket, AuthenticationType.Steam, success, failure, cbObject);
         }
 
-        /// <summary>Detach the steam identity from the current profile
+        /// <summary>
+        /// Detach the steam identity from the current profile
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="steamId">
-        /// String representation of 64 bit steam id
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_steamId">String representation of 64 bit steam id</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachSteamIdentity(
             string steamId,
             bool continueAnon,
@@ -1194,22 +948,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="googleUserId">
-        /// String representation of google+ userId. Gotten with calls like RequestUserId
-        /// </param>
-        /// <param name="serverAuthCode">
-        /// The validated token from the Google SDK
-        ///   (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachGoogleIdentity(
             string googleUserId,
             string serverAuthCode,
@@ -1222,28 +966,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Google credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="googleUserId">
-        /// String representation of google+ userId. Gotten with calls like RequestUserId
-        /// </param>
-        /// <param name="serverAuthCode">
-        /// The validated token from the Google SDK
-        /// (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeGoogleIdentity(
             string googleUserId,
             string serverAuthCode,
@@ -1261,21 +994,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="googleUserId">
-        /// String representation of google+ userId. Gotten with calls like RequestUserId
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachGoogleIdentity(
             string googleUserId,
             bool continueAnon,
@@ -1286,28 +1010,19 @@ using System;
             DetachIdentity(googleUserId, AuthenticationType.Google, continueAnon, success, failure, cbObject);
         }
 
-            /// <summary>
+        /// <summary>
         /// Attach the user's Google credentials to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="googleUserAccountEmail">
-        /// The email associated with the google user
-        /// </param>
-        /// <param name="IdToken">
-        /// The id token of the google account. Can get with calls like requestIdToken
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachGoogleOpenIdIdentity(
             string googleUserAccountEmail,
             string IdToken,
@@ -1320,27 +1035,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Google credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="googleUserAccountEmail">
-        /// The email associated with the google user
-        /// </param>
-        /// <param name="IdToken">
-        /// The id token of the google account. Can get with calls like requestIdToken
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeGoogleOpenIdIdentity(
             string googleUserAccountEmail,
             string IdToken,
@@ -1358,21 +1063,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="googleUserAccountEmail">
-        /// The email associated with the google user
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_googleId">The Google id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachGoogleOpenIdIdentity(
             string googleUserAccountEmail,
             bool continueAnon,
@@ -1383,28 +1079,19 @@ using System;
             DetachIdentity(googleUserAccountEmail, AuthenticationType.GoogleOpenId, continueAnon, success, failure, cbObject);
         }
 
-               /// <summary>
+        /// <summary>
         /// Attach the user's Apple credentials to the current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="appleUserId">
-        /// This can be the user id OR the email of the user for the account
-        /// </param>
-        /// <param name="identityToken">
-        /// The token confirming the user's identity
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_appleId">The appleid of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachAppleIdentity(
             string appleUserId,
             string identityToken,
@@ -1417,27 +1104,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Apple credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="appleUserId">
-        /// This can be the user id OR the email of the user for the account
-        /// </param>
-        /// <param name="identityToken">
-        /// The token confirming the user's identity
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_appleId">The apple id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeAppleIdentity(
             string appleUserId,
             string identityToken,
@@ -1455,21 +1132,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="appleUserId">
-        /// This can be the user id OR the email of the user for the account
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_appleId">The apple id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachAppleIdentity(
             string appleUserId,
             bool continueAnon,
@@ -1487,24 +1155,13 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="twitterId">
-        /// String representation of a Twitter user ID
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The authentication token derived via the Twitter apis
-        /// </param>
-        /// <param name="secret">
-        /// The secret given when attempting to link with Twitter
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_twitterId">The Twitter id of the user</param>
+        /// <param name="in_authenticationToken">The authentication token derived from the twitter APIs</param>
+        /// <param name="in_secret">The secret given when attempting to link with Twitter</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachTwitterIdentity(
             string twitterId,
             string authenticationToken,
@@ -1518,30 +1175,18 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Twitter credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="twitterId">
-        /// String representation of a Twitter user ID
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The authentication token derived via the Twitter apis
-        /// </param>
-        /// <param name="secret">
-        /// The secret given when attempting to link with Twitter
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_twitterId">The Twitter id of the user</param>
+        /// <param name="in_authenticationToken">The authentication token derived from the twitter APIs</param>
+        /// <param name="in_secret">The secret given when attempting to link with Twitter</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeTwitterIdentity(
             string twitterId,
             string authenticationToken,
@@ -1560,21 +1205,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="twitterId">
-        /// The Twitter id of the user
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_twitterId">The Twitter id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachTwitterIdentity(
             string twitterId,
             bool continueAnon,
@@ -1592,22 +1228,12 @@ using System;
         /// Service Name - identity
         /// Service Operation - Attach
         /// </remarks>
-        /// <param name="parseId">
-        /// The Parse id of the user
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The validated token from Parse
-        ///   (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_parseId">The Parse id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachParseIdentity(
             string parseId,
             string authenticationToken,
@@ -1620,28 +1246,17 @@ using System;
 
         /// <summary>
         /// Merge the profile associated with the provided Parse credentials with the
-        /// current profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Merge
         /// </remarks>
-        /// <param name="parseId">
-        /// The Parse id of the user
-        /// </param>
-        /// <param name="authenticationToken">
-        /// The validated token from Parse
-        /// (that will be further validated when sent to the bC service)
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_parseId">The Parse id of the user</param>
+        /// <param name="in_authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void MergeParseIdentity(
             string parseId,
             string authenticationToken,
@@ -1653,27 +1268,18 @@ using System;
         }
 
         /// <summary>
-        /// Detach the Parse identity from this profile.
+        /// Detach the Google identity from this profile.
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - Detach
         /// </remarks>
-        /// <param name="parseId">
-        /// The Parse id of the user
-        /// </param>
-        /// <param name="continueAnon">
-        /// Proceed even if the profile will revert to anonymous?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_parseId">The Parse id of the user</param>
+        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DetachParseIdentity(
             string parseId,
             bool continueAnon,
@@ -1683,7 +1289,7 @@ using System;
         {
             DetachIdentity(parseId, AuthenticationType.Parse, continueAnon, success, failure, cbObject);
         }
-        
+
         /// <summary>
         /// Attach the user's Nintendo credentials to the current profile.
         /// </summary>
@@ -1790,25 +1396,13 @@ using System;
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
-        /// <param name="childProfileId">
-        /// The profileId of the child profile to switch to
-        /// If null and forceCreate is true a new profile will be created
-        /// </param>
-        /// <param name="childAppId">
-        /// The appId of the child game to switch to
-        /// </param>
-        /// <param name="forceCreate">
-        /// Should a new profile be created if it does not exist?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_childProfileId">The profileId of the child profile to switch to If null and forceCreate is true a new profile will be created</param>
+        /// <param name="in_childAppId">The appId of the child app to switch to</param>
+        /// <param name="in_forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SwitchToChildProfile(
             string childProfileId,
             string childAppId,
@@ -1821,28 +1415,18 @@ using System;
         }
 
         /// <summary>
-        /// Switches to the child profile of an app when only one profile exists
-        /// If multiple profiles exist this returns an error
+        /// Switches to a child profile of an app when only one profile exists
         /// </summary>
         /// <remarks>
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
-        /// <param name="childAppId">
-        /// The App ID of the child game to switch to
-        /// </param>
-        /// <param name="forceCreate">
-        /// Should a new profile be created if one does not exist?
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful login
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error during authentication
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_childAppId">The App ID of the child app to switch to</param>
+        /// <param name="in_forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SwitchToSingletonChildProfile(
             string childAppId,
             bool forceCreate,
@@ -1856,18 +1440,15 @@ using System;
         /// <summary>
         /// Attaches a univeral id to the current profile with no login capability.
         /// </summary>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - AttachNonLoginUniversalId
+        /// </remarks>
+        /// <param name="in_externalId">the id that's been connected with</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AttachNonLoginUniversalId(
             string externalId,
             SuccessCallback success = null,
@@ -1885,18 +1466,15 @@ using System;
         /// <summary>
         /// Updates univeral id of the current profile.
         /// </summary>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - UpdateUniversalIdLogin
+        /// </remarks>
+        /// <param name="in_externalId">the id that's been connected with</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void UpdateUniversalIdLogin(
             string externalId,
             SuccessCallback success = null,
@@ -1914,30 +1492,19 @@ using System;
         /// <summary>
         /// Attach a new identity to a parent app
         /// </summary>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="authenticationToken">
-        /// Password or client side token
-        /// </param>
-        /// <param name="authenticationType">
-        /// Type of authentication
-        /// </param>
-        /// <param name="externalAuthName">
-        /// Optional - if using AuthenticationType of external
-        /// </param>
-        /// <param name="forceCreate">
-        /// If the profile does not exist, should it be created?
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - ATTACH_PARENT_WITH_IDENTITY
+        /// </remarks>
+        /// <param name="externalId">The users id for the new credentials</param>
+        /// <param name="authenticationToken">The password/token</param>
+        /// <param name="authenticationType">Type of identity</param>
+        /// <param name="externalAuthName">Optional - if attaching an external identity</param>
+        /// <param name="forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void AttachParentWithIdentity(
             string externalId,
             string authenticationToken,
@@ -1956,7 +1523,7 @@ using System;
 
             if (Util.IsOptionalParameterValid(externalAuthName))
                 data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
-            
+
             data[OperationParam.AuthenticateServiceAuthenticateForceCreate.Value] = forceCreate;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -1971,18 +1538,11 @@ using System;
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_PARENT_PROFILE
         /// </remarks>
-        /// <param name="parentLevelName">
-        /// The level of the parent to switch to
-        /// </param>
-        /// <param name="success">
-        /// The method to call in event of successful switch
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error while switching
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_parentLevelName">The level of the parent to switch to If null and forceCreate is true a new profile will be created</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void SwitchToParentProfile(
             string parentLevelName,
             SuccessCallback success = null,
@@ -2004,15 +1564,10 @@ using System;
         /// Service Name - identity
         /// Service Operation - DETACH_PARENT
         /// </remarks>
-        /// <param name="success">
-        /// The method to call in event of successful switch
-        /// </param>
-        /// <param name="failure">
-        /// The method to call in the event of an error while switching
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void DetachParent(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -2030,18 +1585,11 @@ using System;
         /// Service Name - identity
         /// Service Operation - GET_CHILD_PROFILES
         /// </remarks>
-        /// <param name="includeSummaryData">
-        /// Whether to return the summary friend data along with this call
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_includeSummaryData">Whether to return the summary friend data along with this call</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetChildProfiles(
             bool includeSummaryData,
             SuccessCallback success = null,
@@ -2109,24 +1657,13 @@ using System;
         /// Service Name - identity
         /// Service Operation - REFRESH_IDENTITY
         /// </remarks>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="authenticationToken">
-        /// Password or client side token
-        /// </param>
-        /// <param name="authenticationType">
-        /// Type of authentication
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_externalId">User ID</param>
+        /// <param name="in_authenticationToken">Password or client side token</param>
+        /// <param name="in_authenticationType">Type of authentication</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void RefreshIdentity(
             string externalId,
             string authenticationToken,
@@ -2150,29 +1687,16 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - REFRESH_IDENTITY
+        /// Service Operation - CHANGE_EMAIL_IDENTITY
         /// </remarks>
-        /// <param name="oldEmailAddress">
-        /// Old email address
-        /// </param>
-        /// <param name="password">
-        /// Password for identity
-        /// </param>
-        /// <param name="newEmailAddress">
-        /// New email address
-        /// </param>
-        /// <param name="updateContactEmail">
-        /// Whether to update contact email in profile
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_oldEmailAddress">Old email address</param>
+        /// <param name="in_password">Password for identity</param>
+        /// <param name="in_newEmailAddress">New email address</param>
+        /// <param name="in_updateContactEmail">Whether to update contact email in profile</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ChangeEmailIdentity(
             string oldEmailAddress,
             string password,
@@ -2193,38 +1717,25 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.ChangeEmailIdentity, data, callback);
             _client.SendRequest(sc);
         }
-        
+
 
         /// <summary>
         /// Attaches a peer identity to this user's profile
         /// </summary>
-        /// <param name="peer">
-        /// Name of the peer to connect to
-        /// </param>
-        /// <param name="externalId">
-        /// User ID
-        /// </param>
-        /// <param name="authenticationToken">
-        /// Password or client side token
-        /// </param>
-        /// <param name="authenticationType">
-        /// Type of authentication
-        /// </param>
-        /// <param name="externalAuthName">
-        /// Optional - if using AuthenticationType of external
-        /// </param>
-        /// <param name="forceCreate">
-        /// If the profile does not exist, should it be created?
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - ATTACH_PEER_PROFILE
+        /// </remarks>
+        /// <param name="peer">Name of the peer to connect to</param>
+        /// <param name="externalId">The users id for the new credentials</param>
+        /// <param name="authenticationToken">The password/token</param>
+        /// <param name="authenticationType">Type of identity</param>
+        /// <param name="externalAuthName">Optional - if attaching an external identity</param>
+        /// <param name="forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void AttachPeerProfile(
             string peer,
             string externalId,
@@ -2242,7 +1753,7 @@ using System;
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = authenticationToken;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
 
-            if(Util.IsOptionalParameterValid(externalAuthName))
+            if (Util.IsOptionalParameterValid(externalAuthName))
                 data[OperationParam.AuthenticateServiceAuthenticateExternalAuthName.Value] = externalAuthName;
 
             data[OperationParam.Peer.Value] = peer;
@@ -2256,18 +1767,15 @@ using System;
         /// <summary>
         /// Detaches a peer identity from this user's profile
         /// </summary>
-        /// <param name="peer">
-        /// Name of the peer to connect to
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - DETACH_PEER
+        /// </remarks>
+        /// <param name="peer">Name of the peer to connect to</param>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void DetachPeer(
             string peer,
             SuccessCallback success = null,
@@ -2284,17 +1792,16 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves a list of attached peer profiles
+        /// Returns a list of peer profiles attached to this user
         /// </summary>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - GET_PEER_PROFILES
+        /// </remarks>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void GetPeerProfiles(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -2304,25 +1811,18 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.GetPeerProfiles, null, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
-        /// Attach blockchain
+        /// Attaches the given block chain public key identity to the current profile.
         /// </summary>
-        /// <param name="blockchainConfig">
-        /// 
-        /// </param>
-        /// <param name="publicKey">
-        /// 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - ATTACH_BLOCKCHAIN_IDENTITY
+        /// </remarks>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void AttachBlockChainIdentity(
             string blockchainConfig,
             string publicKey,
@@ -2340,19 +1840,16 @@ using System;
         }
 
         /// <summary>
-        /// detach blockchain
+        /// Detaches the blockchain identity to the current profile.
         /// </summary>
-        /// <param name="blockchainConfig">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - ATTACH_BLOCKCHAIN_IDENTITY
+        /// </remarks>
+        /// <param name="successCallback">The success callback</param>
+        /// <param name="errorCallback">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback</param>
+
         public void DetachBlockChainIdentity(
             string blockchainConfig,
             SuccessCallback success = null,

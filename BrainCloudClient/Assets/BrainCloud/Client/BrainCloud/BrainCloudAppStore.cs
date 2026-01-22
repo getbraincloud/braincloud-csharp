@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
+    using System;
 
     public class BrainCloudAppStore
     {
@@ -23,35 +23,17 @@ using System;
 
         /// <summary>
         /// Method gets the active sales inventory for the passed-in
-        /// currency type.
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="platform">
-        /// The store platform. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// <param name="userCurrency">
-        /// The currency to retrieve the sales
-        /// inventory for. This is only used for Steam and Facebook stores.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="platform">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetSalesInventory(
             string platform,
             string userCurrency,
@@ -64,38 +46,18 @@ using System;
 
         /// <summary>
         /// Method gets the active sales inventory for the passed-in
-        /// currency type and category.
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
         /// Service Operation - GetInventory
         /// </remarks>
-        /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// <param name="userCurrency">
-        /// The currency to retrieve the sales
-        /// inventory for. This is only used for Steam and Facebook stores.
-        /// </param>
-        /// <param name="category">
-        /// The AppStore category
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="category">The product category</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetSalesInventoryByCategory(
             string storeId,
             string userCurrency,
@@ -152,39 +114,18 @@ using System;
 
         /// <summary>
         /// Before making a purchase with the IAP store, you will need to store the purchase
-        /// payload context on brainCloud so that the purchase can be verified for the proper IAP product.
-        /// This payload will be used during the VerifyPurchase method to ensure the
-        /// user properly paid for the correct product before awarding them the IAP product.
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
-        /// Service Operation - CACHE_PURCHASE_PAYLOAD_CONTEXT
+        /// Service Operation - CachePurchasePayloadContext
         /// </remarks>
-        /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// <param name="iapId">
-        /// The IAP product Id as configured for the product on brainCloud.
-        /// </param>
-        /// <param name="payload">
-        /// The payload retrieved for the IAP product after the GetSalesInventory method.
-        /// </param> 
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="transactionId">the transactionId returned from start Purchase</param>
+        /// <param name="transactionData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void CachePurchasePayloadContext(
             string storeId,
             string iapId,
@@ -204,34 +145,18 @@ using System;
         }
 
         /// <summary>
-        /// Verify Purchase with the associated StoreId
+        /// Verifies that purchase was properly made at the store.
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
-        /// Service Operation - VERIFY_PURCHASE
+        /// Service Operation - VerifyPurchase
         /// </remarks>
-        /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// <param name="receiptJson">
-        /// The specific store data required
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="receiptData">the specific store data required</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void VerifyPurchase(
             string storeId,
             string receiptJson,
@@ -254,7 +179,7 @@ using System;
                 //not a valid json string, pass it as string directly
                 data[OperationParam.AppStoreServiceReceiptData.Value] = receiptJson;
             }
-            
+
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.VerifyPurchase, data, callback);
@@ -266,30 +191,14 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
-        /// Service Operation - START_PURCHASE
+        /// Service Operation - StartPurchase
         /// </remarks>
-        /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// <param name="purchaseJson">
-        /// The specific store data required
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="purchaseData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void StartPurchase(
             string storeId,
             string purchaseJson,
@@ -313,33 +222,15 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - AppStore
-        /// Service Operation - FINALIZE_PURCHASE
+        /// Service Operation - FinalizePurchase
         /// </remarks>
-        /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// </param>
-        /// /// <param name="transactionId">
-        /// The Transaction Id returned in Start Transaction
-        /// </param>
-        /// <param name="transactionJson">
-        /// The specific store data required
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
+        /// <param name="transactionId">the transactionId returned from start Purchase</param>
+        /// <param name="transactionData">specific data for purchasing 2 staged purchases</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void FinalizePurchase(
             string storeId,
             string transactionId,
@@ -359,28 +250,22 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.FinalizePurchase, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
-        /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing
-        /// Service Name - appStore
-        /// Service Operation - RefreshPromotions
-        /// /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing.
         /// </summary>
+        /// <remarks>
+        /// Service Name - AppStore
+        /// Service Operation - RefreshPromotions
+        /// </remarks>
+
         public void RefreshPromotions(
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
-            
+
             ServerCallback callback = new ServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.RefreshPromotions, data, callback);
             _client.SendRequest(sc);

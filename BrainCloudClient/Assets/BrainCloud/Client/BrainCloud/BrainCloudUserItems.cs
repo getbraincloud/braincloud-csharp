@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
+    using System;
 
 
     public class BrainCloudUserItems
@@ -24,29 +24,12 @@ using System;
 
         /// <summary>
         /// Allows item(s) to be awarded to a user without collecting
-        ///the purchase amount. If includeDef is true, response 
-        ///includes associated itemDef with language fields limited
-        ///to the current or default language.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - AwardUserItem
+        /// Service Name - userItems
+        /// Service Operation - AWARD_USER_ITEM
         /// </remarks>
-        /// <param name="defId">
-        /// </param>
-        /// <param name="quantity">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void AwardUserItem(
         string defId,
         int quantity,
@@ -66,31 +49,13 @@ using System;
         }
 
         /// <summary>
-        /// Allows a quantity of a specified user item to be dropped, 
-        ///without any recovery of the money paid for the item. If any 
-        ///quantity of the user item remains, it will be returned, potentially 
-        ///with the associated itemDef (with language fields limited to the 
-        ///current or default language).
+        /// Allows a quantity of a specified user item to be dropped,
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - DropUserItem
+        /// Service Name - userItems
+        /// Service Operation - DROP_USER_ITEM
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="quantity">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void DropUserItem(
         string itemId,
         int quantity,
@@ -110,28 +75,13 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves the page of user's inventory from the server 
-        ///based on the context. If includeDef is true, response includes
-        /// associated itemDef with each user item, with language fields 
-        ///limited to the current or default language.
+        /// Retrieves the page of user's inventory from the server
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserInventoryPage
+        /// Service Name - userItems
+        /// Service Operation - GET_USER_INVENTORY_PAGE
         /// </remarks>
-        /// <param name="context">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetUserItemsPage(
         string context,
         bool includeDef,
@@ -149,33 +99,15 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
+
         /// <summary>
-        /// Retrieves the page of user's inventory 
-        ///from the server based on the encoded context. 
-        ///If includeDef is true, response includes associated 
-        ///itemDef with each user item, with language fields limited 
-        ///to the current or default language.
+        /// Retrieves the page of user's inventory from the server
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserInventoryPageOffset
+        /// Service Name - userItems
+        /// Service Operation - GET_USER_INVENTORY_PAGE_OFFSET
         /// </remarks>
-        /// <param name="context">
-        /// </param>
-        /// <param name="pageOffset">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetUserItemsPageOffset(
         string context,
         int pageOffset,
@@ -194,31 +126,19 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
-        
+
+
         /// <summary>
         /// Retrieves the identified user item from the server.
-        /// If includeDef is true, response includes associated
-        /// itemDef with language fields limited to the current 
-        ///or default language.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserItem
+        /// Service Name - userItems
+        /// Service Operation - GET_USER_ITEM
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUserItem(
         String itemId,
         bool includeDef,
@@ -235,35 +155,17 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
-        
-        
+
+
+
         /// <summary>
         /// Gifts item to the specified player.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserItem
+        /// Service Name - userItems
+        /// Service Operation - GIVE_USER_ITEM_TO
         /// </remarks>
-        /// <param name="profileId">
-        /// </param>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="version">
-        /// </param>
-        /// <param name="quantity">
-        /// </param>
-        /// <param name="immediate">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GiveUserItemTo(
         String profileId,
         String itemId,
@@ -287,32 +189,13 @@ using System;
         }
 
         /// <summary>
-        /// Purchases a quantity of an item from the specified store, 
-        ///if the user has enough funds. If includeDef is true, 
-        ///response includes associated itemDef with language fields
-        /// limited to the current or default language.
+        /// Retrieves the identified user item from the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserItem
+        /// Service Name - userItems
+        /// Service Operation - PURCHASE_USER_ITEM
         /// </remarks>
-        /// <param name="defId">
-        /// </param>
-        /// <param name="quatity">
-        /// </param>
-        /// <param name="shopId">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void PurchaseUserItem(
         String defId,
         int quantity,
@@ -334,30 +217,13 @@ using System;
         }
 
         /// <summary>
-        /// Retrieves and transfers the gift item from the specified player, 
-        //who must have previously called giveUserItemTo.
+        /// Retrieves and transfers the gift item from
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - GetUserItem
+        /// Service Name - userItems
+        /// Service Operation - RECEIVE_USER_ITEM_FROM
         /// </remarks>
-        /// <param name="defId">
-        /// </param>
-        /// <param name="quatity">
-        /// </param>
-        /// <param name="shopId">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void ReceiveUserItemFrom(
         string profileId,
         string itemId,
@@ -373,7 +239,7 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.ReceiveUserItemFrom, data, callback);
             _client.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// Opens a quantity of a bundle user item.Applicable user items will be created and any currencies awarded. 
         /// * NOTE: Supported only for user items based on BUNDLE type catalog items.
@@ -416,20 +282,20 @@ using System;
         /// The user object sent to the callback.
         /// </param>
         public void OpenBundle(
-        string itemId, 
-        int version, 
-        int quantity, 
-        bool includeDef, 
-        Dictionary<string, object> optionsJson = null, 
-        SuccessCallback success = null, 
-        FailureCallback failure = null, 
+        string itemId,
+        int version,
+        int quantity,
+        bool includeDef,
+        Dictionary<string, object> optionsJson = null,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
         object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.UserItemsServiceItemId.Value] = itemId;
             data[OperationParam.UserItemsServiceVersion.Value] = version;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
-            if(optionsJson!= null && optionsJson.Count > 0)
+            if (optionsJson != null && optionsJson.Count > 0)
             {
                 data[OperationParam.UserItemsServiceOptionsJson.Value] = optionsJson;
             }
@@ -439,45 +305,22 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.OpenBundle, data, callback);
             _client.SendRequest(sc);
         }
-        
-        
+
+
 
         /// <summary>
-        /// Allows a quantity of a specified user item to be sold. 
-        ///If any quantity of the user item remains, 
-        ///it will be returned, potentially with the associated 
-        ///itemDef (with language fields limited to the current 
-        ///or default language), along with the currency refunded 
-        ///and currency balances.
+        /// Allows a quantity of a specified user item to be sold.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - SellUserItem
+        /// Service Name - userItems
+        /// Service Operation - SELL_USER_ITEM
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="version">
-        /// </param>
-        /// <param name="quantity">
-        /// </param>
-        /// <param name="shopId">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void SellUserItem(
         string itemId,
-        int version, 
+        int version,
         int quantity,
-        string shopId, 
+        string shopId,
         bool includeDef,
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -499,27 +342,13 @@ using System;
         /// Updates the item data on the specified user item.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - UpdateUserItemData
+        /// Service Name - userItems
+        /// Service Operation - UPDATE_USER_ITEM_DATA
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="version">
-        /// </param>
-        /// <param name="newItemData">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void UpdateUserItemData(
         string itemId,
-        int version, 
+        int version,
         string newItemData,
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -540,29 +369,13 @@ using System;
         /// Uses the specified item, potentially consuming it.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - UseUserItem
+        /// Service Name - userItems
+        /// Service Operation - USE_USER_ITEM
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="version">
-        /// </param>
-        /// <param name="newItemData">
-        /// </param>
-        /// <param name="includeDef">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void UseUserItem(
         string itemId,
-        int version, 
+        int version,
         string newItemData,
         bool includeDef,
         SuccessCallback success = null,
@@ -586,25 +399,13 @@ using System;
         /// Publishes the specified item to the item management attached blockchain. Results are reported asynchronously via an RTT event.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - PublishUserItemToBlockchain
+        /// Service Name - userItems
+        /// Service Operation - PUBLISH_USER_ITEM_TO_BLOCKCHAIN
         /// </remarks>
-        /// <param name="itemId">
-        /// </param>
-        /// <param name="version">
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void PublishUserItemToBlockchain(
         string itemId,
-        int version, 
+        int version,
         SuccessCallback success = null,
         FailureCallback failure = null,
         object cbObject = null)
@@ -622,16 +423,10 @@ using System;
         /// Syncs the caller's user items with the item management attached blockchain. Results are reported asynchronously via an RTT event.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - RefreshBlockchainUserItems
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// Service Name - userItems
+        /// Service Operation - REFRESH_BLOCKCHAIN_USER_ITEMS
+        /// </remarks>
+
         public void RefreshBlockchainUserItems(
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -644,30 +439,15 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
+
         /// <summary>
-        /// removes item from a blockchain.
+        /// Removes the specified item from the item management attached blockchain. Results are reported asynchronously via an RTT event.
         /// </summary>
         /// <remarks>
-        /// Service Name - UserInventoryManagement
-        /// Service Operation - RemoveUserItemFromBlockchain
-        /// 
-        /// </param>
-        /// <param name="itemId">
-        /// 
-        /// </param>
-        /// <param name="version">
-        /// 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// Service Name - userItems
+        /// Service Operation - REMOVE_USER_ITEM_FROM_BLOCKCHAIN
+        /// </remarks>
+
         public void RemoveUserItemFromBlockchain(
         string itemId,
         int version,
@@ -828,12 +608,12 @@ using System;
         FailureCallback failure = null,
         object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();            
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;
             data[OperationParam.UserItemsServiceIncludeDef.Value] = includeDef;
             data[OperationParam.UserItemsServiceIncludePromotionDetails.Value] = includePromotionDetails;
-  
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetItemPromotionDetails, data, callback);
             _client.SendRequest(sc);
@@ -890,7 +670,7 @@ using System;
         FailureCallback failure = null,
         object cbObject = null)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>(); 
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.UserItemsServiceDefId.Value] = defId;
             data[OperationParam.UserItemsServiceQuantity.Value] = quantity;
             data[OperationParam.UserItemsServiceShopId.Value] = shopId;

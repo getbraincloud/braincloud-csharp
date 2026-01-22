@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
+    using System;
 
 
     public class BrainCloudPresence
@@ -29,15 +29,10 @@ using System;
         /// Service Name - Presence
         /// Service Operation - ForcePush
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ForcePush(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -51,30 +46,9 @@ using System;
         }
 
         /// <summary>
-        /// Force an RTT presence update to all listeners of the caller.
+        /// Gets the presence data for the given <platform>. Can be one of "all",
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - GetPresenceOfFriends
-        /// </remarks>
-        /// <param name="platform">
-        /// The store platform. Valid stores are:
-        /// - all
-        /// - brainCloud
-        /// - facebook
-        /// </param>
-        /// <param name="includeOffline">
-        /// Will not include offline profiles unless includeOffline is set to true.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetPresenceOfFriends(
             string platform,
             bool includeOffline,
@@ -92,28 +66,9 @@ using System;
         }
 
         /// <summary>
-        ///    Gets the presence data for the given <groupId>. Will not include
-        /// offline profiles unless<includeOffline> is set to true.
+        /// Gets the presence data for the given <groupId>. Will not include
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - GetPresenceOfGroup
-        /// </remarks>
-        /// <param name="groupId">
-        /// The id for the group
-        /// </param>
-        /// <param name="includeOffline">
-        /// Will not include offline profiles unless includeOffline is set to true.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetPresenceOfGroup(
             string groupId,
             bool includeOffline,
@@ -131,28 +86,9 @@ using System;
         }
 
         /// <summary>
-        ///Gets the presence data for the given<profileIds>.Will not include
-        /// offline profiles unless<includeOffline> is set to true.
+        /// Gets the presence data for the given <profileIds>. Will not include
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - GetPresenceOfUsers
-        /// </remarks>
-        /// <param name="profileIds">
-        /// List of profile Ids
-        /// </param>
-        /// <param name="includeOffline">
-        /// Will not include offline profiles unless includeOffline is set to true.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void GetPresenceOfUsers(
             List<string> profileIds,
             bool includeOffline,
@@ -171,32 +107,8 @@ using System;
 
         /// <summary>
         /// Registers the caller for RTT presence updates from friends for the
-        /// given platform. Can be one of "all", "brainCloud", or "facebook".
-        /// If bidirectional is set to true, then also registers the targeted
-        /// users for presence updates from the caller.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - RegisterListenersForFriends
-        /// </remarks>
-        /// <param name="platform">
-        /// The store platform. Valid stores are:
-        /// - all
-        /// - brainCloud
-        /// - facebook
-        /// </param>
-        /// <param name="bidirectional">
-        /// Allows registration of target user for presence update
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void RegisterListenersForFriends(
             string platform,
             bool bidirectional,
@@ -214,27 +126,9 @@ using System;
         }
 
         /// <summary>
-        /// Registers the caller for RTT presence updates from the members of the given groupId.
+        /// Registers the caller for RTT presence updates from the members of
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - RegisterListenersForGroup
-        /// </remarks>
-        /// <param name="groupId">
-        /// The Id of the group
-        /// </param>
-        /// <param name="bidirectional">
-        /// Allows registration of target user for presence update
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void RegisterListenersForGroup(
             string groupId,
             bool bidirectional,
@@ -253,28 +147,8 @@ using System;
 
         /// <summary>
         /// Registers the caller for RTT presence updates for the given
-        /// profileIds. If bidirectional is set to true, then also registers
-        /// the targeted users for presence updates from the caller.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - RegisterListenersForGroup
-        /// </remarks>
-        /// <param name="profileIds">
-        /// List of profile Ids
-        /// </param>
-        /// <param name="bidirectional">
-        /// Allows registration of target user for presence update
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void RegisterListenersForProfiles(
             List<string> profileIds,
             bool bidirectional,
@@ -294,22 +168,7 @@ using System;
         /// <summary>
         /// Update the presence data visible field for the caller.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - SetVisibility
-        /// </remarks>
-        /// <param name="visible">
-        /// Determines if the user is visible
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void SetVisibility(
             bool visible,
             SuccessCallback success = null,
@@ -326,22 +185,8 @@ using System;
 
         /// <summary>
         /// Stops the caller from receiving RTT presence updates. Does not
-        /// affect the broadcasting of *their* presence updates to other
-        /// listeners.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - StopListening
-        /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void StopListening(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -357,22 +202,7 @@ using System;
         /// <summary>
         /// Update the presence data activity field for the caller.
         /// </summary>
-        /// <remarks>
-        /// Service Name - Presence
-        /// Service Operation - UpdateActivity
-        /// </remarks>
-        /// <param name="jsonActivity">
-        /// the Json data
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+
         public void UpdateActivity(
             string jsonActivity,
             SuccessCallback success = null,

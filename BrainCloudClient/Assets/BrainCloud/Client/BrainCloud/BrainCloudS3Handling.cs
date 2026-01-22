@@ -7,13 +7,13 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Net;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading;
+    using System.Net;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudS3Handling
     {
@@ -25,28 +25,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Sends an array of file details and returns 
-        /// the details of any of those files that have changed
+        /// Sends an array of file details and returns
         /// </summary>
         /// <remarks>
         /// Service Name - S3Handling
         /// Service Operation - GetUpdatedFiles
         /// </remarks>
-        /// <param name="category">  
-        /// Category of files on server to compare against
-        /// </param>
-        /// <param name="fileDetailsJson">  
-        /// An array of file details
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_category">Category of files on server to compare against</param>
+        /// <param name="in_fileDetailsJson">An array of file details</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUpdatedFiles(
             string category,
             string fileDetailsJson,
@@ -75,18 +65,11 @@ using BrainCloud.Internal;
         /// Service Name - S3Handling
         /// Service Operation - GetFileList
         /// </remarks>
-        /// <param name="category">  
-        /// Category of files to retrieve
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="in_category">Category of files to retrieve</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetFileList(
             string category,
             SuccessCallback success = null,
@@ -106,12 +89,13 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Returns the CDN URL for a file
+        /// Returns the CDN url for a file
         /// </summary>
-        /// <param name="fileId">ID of file</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="in_fileId">ID of file</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetCDNUrl(
             string fileId,
             SuccessCallback success = null,
