@@ -35,6 +35,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void StartMatch(
             string otherPlayerId,
             long rangeDelta,
@@ -63,6 +64,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CancelMatch(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -88,6 +90,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CompleteMatch(
             string playbackStreamId,

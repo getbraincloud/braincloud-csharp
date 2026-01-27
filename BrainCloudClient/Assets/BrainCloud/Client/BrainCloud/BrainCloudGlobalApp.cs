@@ -33,6 +33,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadProperties(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -54,6 +55,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadSelectedProperties(
             string[] propertyNames,
@@ -80,6 +82,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadPropertiesInCategories(
             string[] categories,

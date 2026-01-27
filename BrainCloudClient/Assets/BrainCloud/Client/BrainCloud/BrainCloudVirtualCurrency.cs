@@ -31,6 +31,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetCurrency(
             string currencyType,
             SuccessCallback success = null,
@@ -57,6 +58,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetParentCurrency(
             string currencyType, string levelName,
@@ -86,6 +88,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetPeerCurrency(
             string currencyType, string peerCode,
             SuccessCallback success = null,
@@ -111,6 +114,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ResetCurrency(
             SuccessCallback success = null,

@@ -33,6 +33,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetSalesInventory(
             string platform,
             string userCurrency,
@@ -56,6 +57,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetSalesInventoryByCategory(
             string storeId,
             string userCurrency,
@@ -95,6 +97,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetEligiblePromotions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -118,6 +121,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void CachePurchasePayloadContext(
             string storeId,
             string iapId,
@@ -148,6 +152,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void VerifyPurchase(
             string storeId,
             string receiptJson,
@@ -187,6 +192,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void StartPurchase(
             string storeId,
             string purchaseJson,
@@ -218,6 +224,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void FinalizePurchase(
             string storeId,
             string transactionId,
@@ -248,6 +255,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RefreshPromotions(
             SuccessCallback success = null,

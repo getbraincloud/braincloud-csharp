@@ -34,6 +34,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CreateMatch(
             string jsonOpponentIds,
             string pushNotificationMessage,
@@ -59,6 +60,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CreateMatchWithInitialTurn(
             string jsonOpponentIds,
@@ -98,6 +100,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void SubmitTurn(
             string ownerId,
@@ -161,6 +164,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateMatchSummaryData(
             string ownerId,
             string matchId,
@@ -202,6 +206,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void UpdateMatchStateCurrentTurn(
             string ownerId,
             string matchId,
@@ -241,6 +246,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void CompleteMatch(
             string ownerId,
             string matchId,
@@ -270,6 +276,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ReadMatch(
             string ownerId,
@@ -301,6 +308,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ReadMatchHistory(
             string ownerId,
             string matchId,
@@ -329,6 +337,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void FindMatches(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -349,6 +358,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void FindCompleteMatches(
             SuccessCallback success = null,
@@ -372,6 +382,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AbandonMatch(
             string ownerId,
@@ -402,6 +413,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void DeleteMatch(
             string ownerId,
@@ -434,6 +446,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CompleteMatchWithSummaryData(
             string ownerId,
@@ -473,6 +486,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AbandonMatchWithSummaryData(
             string ownerId,

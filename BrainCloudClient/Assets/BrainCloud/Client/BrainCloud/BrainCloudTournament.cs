@@ -33,6 +33,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ClaimTournamentReward(
             string leaderboardId,
             int versionId,
@@ -61,6 +62,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetDivisionInfo(
             string divSetId,
             SuccessCallback success = null,
@@ -86,6 +88,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void GetMyDivisions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -108,6 +111,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetTournamentStatus(
             string leaderboardId,
@@ -138,6 +142,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void JoinDivision(
             string divSetId,
@@ -171,6 +176,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void JoinTournament(
             string leaderboardId,
             string tournamentCode,
@@ -201,6 +207,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void LeaveDivisionInstance(
             string leaderboardId,
             SuccessCallback success = null,
@@ -226,6 +233,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void LeaveTournament(
             string leaderboardId,
@@ -255,6 +263,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostTournamentScoreUTC(
             string leaderboardId,
@@ -298,6 +307,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostTournamentScoreWithResultsUTC(
              string leaderboardId,
@@ -344,6 +354,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
+
         public void ViewCurrentReward(
             string leaderboardId,
             SuccessCallback success = null,
@@ -370,6 +381,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ViewReward(
             string leaderboardId,

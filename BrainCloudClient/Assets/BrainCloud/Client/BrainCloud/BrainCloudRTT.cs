@@ -15,6 +15,7 @@ namespace BrainCloud
         /// Listen to real time events.
         /// </summary>
 
+
         internal BrainCloudRTT(RTTComms in_comms, BrainCloudClient in_client)
         {
             m_commsLayer = in_comms;
@@ -28,6 +29,7 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
         /// <param name="useWebSocket">Use web sockets instead of TCP for the internal connections. Default is true</param>
+
 
         public void EnableRTT(SuccessCallback in_success, FailureCallback in_failure, RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, object cb_object = null)
         {
@@ -71,6 +73,7 @@ namespace BrainCloud
         /// Listen to real time messaging.
         /// </summary>
 
+
         public void DeregisterRTTEventCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Event);
@@ -79,6 +82,7 @@ namespace BrainCloud
         /// <summary>
         /// Listen to real time chat messages.
         /// </summary>
+
         public void RegisterRTTChatCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.Chat, in_callback);
@@ -87,6 +91,7 @@ namespace BrainCloud
         /// <summary>
         /// Listen to real time presence events.
         /// </summary>
+
 
         public void DeregisterRTTChatCallback()
         {
@@ -105,6 +110,7 @@ namespace BrainCloud
         /// <summary>
         /// Listen to real time blockchain events.
         /// </summary>
+
         public void DeregisterRTTPresenceCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Presence);
@@ -121,6 +127,7 @@ namespace BrainCloud
         /// <summary>
         /// Listen to real time lobby events.
         /// </summary>
+
 
         public void DeregisterRTTMessagingCallback()
         {
@@ -188,8 +195,9 @@ namespace BrainCloud
             m_commsLayer.DeregisterRTTCallback(ServiceName.BlockChain);
         }
         /// <summary>
-        /// 
+        /// Clear all set RTT callbacks
         /// </summary>
+
         public void DeregisterRTTAsyncMatchCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.AsyncMatch);
@@ -217,6 +225,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RequestClientConnection(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {

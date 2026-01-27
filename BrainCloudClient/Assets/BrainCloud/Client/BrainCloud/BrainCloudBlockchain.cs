@@ -31,6 +31,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetBlockchainItems(
             string in_integrationID = "default",
             string in_contextJson = "{}",
@@ -61,6 +62,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUniqs(
             string in_integrationID = "default",
             string in_contextJson = "",
