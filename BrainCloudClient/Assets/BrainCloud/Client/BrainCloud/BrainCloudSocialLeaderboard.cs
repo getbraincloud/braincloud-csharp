@@ -53,11 +53,16 @@ namespace BrainCloud
         /// <summary>
         /// Method returns the social leaderboard. A player's social leaderboard is
         /// </summary>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve</param>
-        /// <param name="in_replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve</param>
+        /// <param name="replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetSocialLeaderboard(
@@ -79,11 +84,16 @@ namespace BrainCloud
         /// <summary>
         /// Method returns the social leaderboard. A player's social leaderboard is
         /// </summary>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve</param>
-        /// <param name="in_replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve</param>
+        /// <param name="replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetSocialLeaderboardIfExists(
@@ -105,12 +115,17 @@ namespace BrainCloud
         /// <summary>
         /// Method returns the social leaderboard by its version. A player's social leaderboard is
         /// </summary>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve</param>
-        /// <param name="in_replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
-        /// <param name="in_versionId">the version of the leaderboard</param>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_BY_VERSION
+        /// </remarks>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve</param>
+        /// <param name="replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
+        /// <param name="versionId">the version of the leaderboard</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetSocialLeaderboardByVersion(
@@ -134,12 +149,17 @@ namespace BrainCloud
         /// <summary>
         /// Method returns the social leaderboard by its version. A player's social leaderboard is
         /// </summary>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve</param>
-        /// <param name="in_replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
-        /// <param name="in_versionId">the version of the leaderboard</param>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_SOCIAL_LEADERBOARD_BY_VERSION_IF_EXISTS
+        /// </remarks>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve</param>
+        /// <param name="replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
+        /// <param name="versionId">the version of the leaderboard</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetSocialLeaderboardByVersionIfExists(
@@ -163,12 +183,17 @@ namespace BrainCloud
         /// <summary>
         /// Reads multiple social leaderboards.
         /// </summary>
-        /// <param name="in_leaderboardIds">Collection of leaderboard IDs.</param>
-        /// <param name="in_leaderboardResultCount">Maximum count of entries to return for each leaderboard.</param>
-        /// <param name="in_replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
+        /// <remarks>
+        /// Service Name - leaderboard
+        /// Service Operation - GET_MULTI_SOCIAL_LEADERBOARD
+        /// </remarks>
+        /// <param name="leaderboardIds">Collection of leaderboard IDs.</param>
+        /// <param name="leaderboardResultCount">Maximum count of entries to return for each leaderboard.</param>
+        /// <param name="replaceName">If true, the currently logged in player's name will be replaced by the string "You".</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMultiSocialLeaderboard(IList<string> leaderboardIds,
@@ -192,16 +217,17 @@ namespace BrainCloud
         /// Method returns a page of global leaderboard results.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboardPage
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_startIndex">The index at which to start the page.</param>
-        /// <param name="in_endIndex">The index at which to end the page.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="startIndex">The index at which to start the page.</param>
+        /// <param name="endIndex">The index at which to end the page.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardPage(
@@ -228,16 +254,17 @@ namespace BrainCloud
         /// Method returns a page of global leaderboard results.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE_IF_EXISTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_startIndex">The index at which to start the page.</param>
-        /// <param name="in_endIndex">The index at which to end the page.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="startIndex">The index at which to start the page.</param>
+        /// <param name="endIndex">The index at which to end the page.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardPageIfExists(
@@ -264,17 +291,18 @@ namespace BrainCloud
         /// Method returns a page of global leaderboard results.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE_BY_VERSION
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_startIndex">The index at which to start the page.</param>
-        /// <param name="in_endIndex">The index at which to end the page.</param>
-        /// <param name="in_versionId">The historical version to retrieve.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="startIndex">The index at which to start the page.</param>
+        /// <param name="endIndex">The index at which to end the page.</param>
+        /// <param name="versionId">The historical version to retrieve.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardPageByVersion(
@@ -303,17 +331,18 @@ namespace BrainCloud
         /// Method returns a page of global leaderboard results.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_PAGE_BY_VERSION_IF_EXISTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_startIndex">The index at which to start the page.</param>
-        /// <param name="in_endIndex">The index at which to end the page.</param>
-        /// <param name="in_versionId">The historical version to retrieve.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="startIndex">The index at which to start the page.</param>
+        /// <param name="endIndex">The index at which to end the page.</param>
+        /// <param name="versionId">The historical version to retrieve.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardPageByVersionIfExists(
@@ -342,16 +371,17 @@ namespace BrainCloud
         /// Method returns a view of global leaderboard results that centers on the current player.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboardView
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_beforeCount">The count of number of players before the current player to include.</param>
-        /// <param name="in_afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardView(
@@ -370,16 +400,17 @@ namespace BrainCloud
         /// Method returns a view of global leaderboard results that centers on the current player.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW_IF_EXISTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_beforeCount">The count of number of players before the current player to include.</param>
-        /// <param name="in_afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardViewIfExists(
@@ -398,17 +429,18 @@ namespace BrainCloud
         /// Method returns a view of global leaderboard results that centers on the current player.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboardView
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW_BY_VERSION
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_beforeCount">The count of number of players before the current player to include.</param>
-        /// <param name="in_afterCount">The count of number of players after the current player to include.</param>
-        /// <param name="in_versionId">The historical version to retrieve.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="versionId">The historical version to retrieve.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardViewByVersion(
@@ -440,17 +472,18 @@ namespace BrainCloud
         /// Method returns a view of global leaderboard results that centers on the current player.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_VIEW_IF_EXISTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The id of the leaderboard to retrieve.</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_beforeCount">The count of number of players before the current player to include.</param>
-        /// <param name="in_afterCount">The count of number of players after the current player to include.</param>
-        /// <param name="in_versionId">The historical version to retrieve.</param>
+        /// <param name="leaderboardId">The id of the leaderboard to retrieve.</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="versionId">The historical version to retrieve.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardViewByVersionIfExists(
@@ -482,13 +515,14 @@ namespace BrainCloud
         /// Gets the global leaderboard versions.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - GetGlobalLeaderboardVersions
+        /// Service Name - leaderboard
+        /// Service Operation - GET_GLOBAL_LEADERBOARD_VERSIONS
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard</param>
+        /// <param name="leaderboardId">The leaderboard</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardVersions(
@@ -512,11 +546,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_GROUP_SOCIAL_LEADERBOARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_groupId">The ID of the group</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="groupId">The ID of the group</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGroupSocialLeaderboard(
@@ -540,14 +575,15 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
-        /// Service Operation - GET_GROUP_SOCIAL_LEADERBOARD
+        /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD_BY_VERSION
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_groupId">The ID of the group</param>
-        /// <param name="in_versionId">the version of the leaderboard</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="groupId">The ID of the group</param>
+        /// <param name="versionId">the version of the leaderboard</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGroupSocialLeaderboardByVersion(
@@ -571,12 +607,13 @@ namespace BrainCloud
         /// <summary>
         /// Post the players score to the given social leaderboard.
         /// </summary>
-        /// <param name="in_leaderboardId">The leaderboard to post to</param>
-        /// <param name="in_score">The score to post</param>
-        /// <param name="in_data">Optional user-defined data to post with the score</param>
+        /// <param name="leaderboardId">The leaderboard to post to</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="data">Optional user-defined data to post with the score</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToLeaderboard(
@@ -608,11 +645,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - REMOVE_PLAYER_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard ID</param>
-        /// <param name="in_versionId">The version of the leaderboard. Use -1 to specifiy the currently active leaderboard version</param>
+        /// <param name="leaderboardId">The leaderboard ID</param>
+        /// <param name="versionId">The version of the leaderboard. Use -1 to specifiy the currently active leaderboard version</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RemovePlayerScore(
@@ -635,19 +673,20 @@ namespace BrainCloud
         /// Post the players score to the given social leaderboard.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - PostScoreDynamic
+        /// Service Name - leaderboard
+        /// Service Operation - POST_SCORE_DYNAMIC
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to post to</param>
-        /// <param name="in_score">The score to post</param>
-        /// <param name="in_data">Optional user-defined data to post with the score</param>
-        /// <param name="in_leaderboardType">leaderboard type</param>
-        /// <param name="in_rotationType">Type of rotation</param>
-        /// <param name="in_rotationResetUTC">Date to start rotation calculations. uses UTC time in milliseconds since epoch</param>
-        /// <param name="in_retainedCount">How many rotations to keep</param>
+        /// <param name="leaderboardId">The leaderboard to post to</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="data">Optional user-defined data to post with the score</param>
+        /// <param name="leaderboardType">leaderboard type</param>
+        /// <param name="rotationType">Type of rotation</param>
+        /// <param name="rotationResetUTC">Date to start rotation calculations. uses UTC time in milliseconds since epoch</param>
+        /// <param name="retainedCount">How many rotations to keep</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicLeaderboardUTC(
@@ -687,16 +726,17 @@ namespace BrainCloud
         /// Post the player's score to the given social leaderboard,
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
+        /// Service Name - leaderboard
         /// Service Operation - POST_SCORE_DYNAMIC_USING_CONFIG
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to post to.</param>
-        /// <param name="in_score">A score to post.</param>
-        /// <param name="in_scoreData">Optional user-defined data to post with the score.</param>
-        /// <param name="in_configJson">Configuration for the leaderboard if it does not exist yet, specified as JSON object. Configuration fields supported are: 'leaderboardType': Required. Type of leaderboard. Valid values are: 'LAST_VALUE', 'HIGH_VALUE', 'LOW_VALUE', 'CUMULATIVE', 'ARCADE_HIGH', 'ARCADE_LOW'; 'rotationType': Required. Type of rotation. Valid values are: 'NEVER', 'DAILY', 'DAYS', 'WEEKLY', 'MONTHLY', 'YEARLY'; 'numDaysToRotate': Required if 'DAYS' rotation type, with valid values between 2 and 14; otherwise, null; 'resetAt': UTC timestamp, in milliseconds, at which to rotate the period. Always null if 'NEVER' rotation type; 'retainedCount': Required. Number of rotations (versions) of the leaderboard to retain; 'expireInMins': Optional. Duration, in minutes, before the leaderboard is to automatically expire.</param>
+        /// <param name="leaderboardId">The leaderboard to post to.</param>
+        /// <param name="score">A score to post.</param>
+        /// <param name="scoreData">Optional user-defined data to post with the score.</param>
+        /// <param name="configJson">Configuration for the leaderboard if it does not exist yet, specified as JSON object. Configuration fields supported are: 'leaderboardType': Required. Type of leaderboard. Valid values are: 'LAST_VALUE', 'HIGH_VALUE', 'LOW_VALUE', 'CUMULATIVE', 'ARCADE_HIGH', 'ARCADE_LOW'; 'rotationType': Required. Type of rotation. Valid values are: 'NEVER', 'DAILY', 'DAYS', 'WEEKLY', 'MONTHLY', 'YEARLY'; 'numDaysToRotate': Required if 'DAYS' rotation type, with valid values between 2 and 14; otherwise, null; 'resetAt': UTC timestamp, in milliseconds, at which to rotate the period. Always null if 'NEVER' rotation type; 'retainedCount': Required. Number of rotations (versions) of the leaderboard to retain; 'expireInMins': Optional. Duration, in minutes, before the leaderboard is to automatically expire.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicLeaderboardUsingConfig(string leaderboardId, long score, string scoreData, string configJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -724,17 +764,18 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - POST_GROUP_SCORE_DYNAMIC
         /// </remarks>
-        /// <param name="in_leaderboardId">the leaderboard to post to</param>
-        /// <param name="in_groupId">the group's id</param>
-        /// <param name="in_score">the score to post</param>
-        /// <param name="in_data">optional user defined datat to post with scor</param>
-        /// <param name="in_leaderboardType">type of leaderboard</param>
-        /// <param name="in_rotationType">type of rotation</param>
-        /// <param name="in_rotationResetUTC">uses UTC time in milliseconds since epoch</param>
-        /// <param name="in_retainedCount">how long to keep rotation</param>
+        /// <param name="leaderboardId">the leaderboard to post to</param>
+        /// <param name="groupId">the group's id</param>
+        /// <param name="score">the score to post</param>
+        /// <param name="data">optional user defined datat to post with scor</param>
+        /// <param name="leaderboardType">type of leaderboard</param>
+        /// <param name="rotationType">type of rotation</param>
+        /// <param name="rotationResetUTC">uses UTC time in milliseconds since epoch</param>
+        /// <param name="retainedCount">how long to keep rotation</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicGroupLeaderboardUTC(
@@ -776,16 +817,17 @@ namespace BrainCloud
         /// Post the group's score to the given social leaderboard, dynamically creating the group leaderboard if it does not exist yet.
         /// </summary>
         /// <remarks>
-        /// Service Name - Leaderboard
+        /// Service Name - leaderboard
         /// Service Operation - POST_GROUP_SCORE_DYNAMIC_USING_CONFIG
         /// </remarks>
-        /// <param name="in_leaderboard">The leaderboard to post to</param>
-        /// <param name="in_groupId">The ID of the group</param>
-        /// <param name="in_score">A score to post</param>
-        /// <param name="in_configJson">Configuration for the leaderboard if it does not exist yet, specified as JSON object. The supporting configuration fields are listed in the following table of configJson fields.</param>
+        /// <param name="leaderboard">The leaderboard to post to</param>
+        /// <param name="groupId">The ID of the group</param>
+        /// <param name="score">A score to post</param>
+        /// <param name="configJson">Configuration for the group leaderboard if it does not exist yet, specified as JSON object. Configuration fields supported are: leaderboardType': Required. Type of leaderboard. Valid values are: 'LAST_VALUE', 'HIGH_VALUE', 'LOW_VALUE', 'CUMULATIVE', 'ARCADE_HIGH', 'ARCADE_LOW'; 'rotationType': Required. Type ofrotation. Valid values are: 'NEVER', 'DAILY', 'DAYS', 'WEEKLY', 'MONTHLY', 'YEARLY'; 'numDaysToRotate': Required if 'DAYS' rotation type, with valid values between 2 and 14; otherwise, null; 'resetAt': UTC timestamp, in milliseconds, at which to rotate the period. Always null if 'NEVER' rotation type; 'retainedCount': Required. Number of rotations (versions) of the leaderboard to retain; 'expireInMins': Optional. Duration, in minutes, before the leaderboard is to automatically expire.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicGroupLeaderboardUsingConfig(
@@ -819,19 +861,20 @@ namespace BrainCloud
         /// Post the players score to the given social leaderboard.
         /// </summary>
         /// <remarks>
-        /// Service Name - SocialLeaderboard
-        /// Service Operation - PostScoreDynamic
+        /// Service Name - leaderboard
+        /// Service Operation - POST_SCORE_DYNAMIC
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to post to</param>
-        /// <param name="in_score">The score to post</param>
-        /// <param name="in_data">Optional user-defined data to post with the score</param>
-        /// <param name="in_leaderboardType">leaderboard type</param>
-        /// <param name="in_rotationResetUTC">Date to start rotation calculations, uses UTC time in milliseconds since epoch</param>
-        /// <param name="in_retainedCount">How many rotations to keep</param>
-        /// <param name="in_numDaysToRotate">How many days between each rotation</param>
+        /// <param name="leaderboardId">The leaderboard to post to</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="data">Optional user-defined data to post with the score</param>
+        /// <param name="leaderboardType">leaderboard type</param>
+        /// <param name="rotationResetUTC">Date to start rotation calculations, uses UTC time in milliseconds since epoch</param>
+        /// <param name="retainedCount">How many rotations to keep</param>
+        /// <param name="numDaysToRotate">How many days between each rotation</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicLeaderboardDaysUTC(
@@ -875,17 +918,18 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - POST_GROUP_SCORE_DYNAMIC
         /// </remarks>
-        /// <param name="in_leaderboardId">the leaderboard to post to</param>
-        /// <param name="in_groupId">the group's id</param>
-        /// <param name="in_score">the score to post</param>
-        /// <param name="in_data">optional user defined datat to post with scor</param>
-        /// <param name="in_leaderboardType">type of leaderboard</param>
-        /// <param name="in_rotationResetUTC">uses UTC time in milliseconds since epoch</param>
-        /// <param name="in_retainedCount">how long to keep rotation</param>
-        /// <param name="in_numDaysToRotate">How many days between each rotation</param>
+        /// <param name="leaderboardId">the leaderboard to post to</param>
+        /// <param name="groupId">the group's id</param>
+        /// <param name="score">the score to post</param>
+        /// <param name="data">optional user defined datat to post with scor</param>
+        /// <param name="leaderboardType">type of leaderboard</param>
+        /// <param name="rotationResetUTC">uses UTC time in milliseconds since epoch</param>
+        /// <param name="retainedCount">how long to keep rotation</param>
+        /// <param name="numDaysToRotate">How many days between each rotation</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToDynamicGroupLeaderboardDaysUTC(
@@ -932,11 +976,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_profileIds">The IDs of the players</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="profileIds">The IDs of the players</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayersSocialLeaderboard(
@@ -962,11 +1007,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD_IF_EXISTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_profileIds">The IDs of the players</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="profileIds">The IDs of the players</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayersSocialLeaderboardIfExists(
@@ -992,11 +1038,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_profileIds">The IDs of the players</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="profileIds">The IDs of the players</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayersSocialLeaderboardByVersion(
@@ -1025,11 +1072,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYERS_SOCIAL_LEADERBOARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard to retrieve</param>
-        /// <param name="in_profileIds">The IDs of the players</param>
+        /// <param name="leaderboardId">The leaderboard to retrieve</param>
+        /// <param name="profileIds">The IDs of the players</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayersSocialLeaderboardByVersionIfExists(
@@ -1063,6 +1111,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void ListAllLeaderboards(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1080,10 +1129,11 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_ENTRY_COUNT
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard ID</param>
+        /// <param name="leaderboardId">The leaderboard ID</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardEntryCount(
@@ -1102,11 +1152,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_GLOBAL_LEADERBOARD_ENTRY_COUNT
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard ID</param>
-        /// <param name="in_versionId">The version of the leaderboard. Use -1 for current.</param>
+        /// <param name="leaderboardId">The leaderboard ID</param>
+        /// <param name="versionId">The version of the leaderboard. Use -1 for current.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalLeaderboardEntryCountByVersion(
@@ -1134,11 +1185,12 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYER_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard ID</param>
-        /// <param name="in_versionId">The version of the leaderboard. Use -1 for current.</param>
+        /// <param name="leaderboardId">The leaderboard ID</param>
+        /// <param name="versionId">The version of the leaderboard. Use -1 for current.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayerScore(
@@ -1164,12 +1216,13 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_PLAYER_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard ID</param>
-        /// <param name="in_versionId">The version of the leaderboard. Use -1 for current.</param>
-        /// <param name="in_maxResults">The max number of returned results</param>
+        /// <param name="leaderboardId">The leaderboard ID</param>
+        /// <param name="versionId">The version of the leaderboard. Use -1 for current.</param>
+        /// <param name="maxResults">The max number of returned results</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetPlayerScores(
@@ -1203,6 +1256,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void GetPlayerScoresFromLeaderboards(
             IList<string> leaderboardIds,
             SuccessCallback success = null,
@@ -1225,13 +1279,14 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - POST_GROUP_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
-        /// <param name="in_groupId">the groups Id</param>
-        /// <param name="in_score">the score you wish to post</param>
-        /// <param name="in_jsonData">extra json Data</param>
+        /// <param name="leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
+        /// <param name="groupId">the groups Id</param>
+        /// <param name="score">the score you wish to post</param>
+        /// <param name="jsonData">extra json Data</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostScoreToGroupLeaderboard(
@@ -1265,12 +1320,13 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - REMOVE_GROUP_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
-        /// <param name="in_groupId">the groups Id</param>
-        /// <param name="in_versionId">the score you wish to post</param>
+        /// <param name="leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
+        /// <param name="groupId">the groups Id</param>
+        /// <param name="versionId">the score you wish to post</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RemoveGroupScore(
@@ -1292,20 +1348,21 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve a view of the group leaderboardsurrounding the current group.
+        /// Retrieve a view of the group leaderboard surrounding the current group.
         /// </summary>
         /// <remarks>
         /// Service Name - leaderboard
         /// Service Operation - GET_GROUP_LEADERBOARD_VIEW
         /// </remarks>
-        /// <param name="in_leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
-        /// <param name="in_groupId">the groups Id</param>
-        /// <param name="in_sortOrder">the sort order</param>
-        /// <param name="in_beforeCount">count of players before current player to include</param>
-        /// <param name="in_afterCount">count of players after current player to include</param>
+        /// <param name="leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
+        /// <param name="groupId">the groups Id</param>
+        /// <param name="sortOrder">the sort order</param>
+        /// <param name="beforeCount">count of players before current player to include</param>
+        /// <param name="afterCount">count of players after current player to include</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGroupLeaderboardView(
@@ -1337,15 +1394,16 @@ namespace BrainCloud
         /// Service Name - leaderboard
         /// Service Operation - GET_GROUP_LEADERBOARD_VIEW
         /// </remarks>
-        /// <param name="in_leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
-        /// <param name="in_groupId">the groups Id</param>
-        /// <param name="in_versionId">the version</param>
-        /// <param name="in_sortOrder">the sort order</param>
-        /// <param name="in_beforeCount">count of players before current player to include</param>
-        /// <param name="in_afterCount">count of players after current player to include</param>
+        /// <param name="leaderboardId">A collection of leaderboardIds to retrieve scores from</param>
+        /// <param name="groupId">the groups Id</param>
+        /// <param name="versionId">the version</param>
+        /// <param name="sortOrder">the sort order</param>
+        /// <param name="beforeCount">count of players before current player to include</param>
+        /// <param name="afterCount">count of players after current player to include</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGroupLeaderboardViewByVersion(

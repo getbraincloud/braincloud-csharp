@@ -24,15 +24,16 @@ namespace BrainCloud
         /// Redeem a code.
         /// </summary>
         /// <remarks>
-        /// Service Name - RedemptionCode
+        /// Service Name - redemptionCode
         /// Service Operation - REDEEM_CODE
         /// </remarks>
-        /// <param name="in_scanCode">The code to redeem</param>
-        /// <param name="in_codeType">The type of code</param>
-        /// <param name="in_jsonCustomRedemptionInfo">Optional - A JSON string containing custom redemption data</param>
+        /// <param name="scanCode">The code to redeem</param>
+        /// <param name="codeType">The type of code</param>
+        /// <param name="jsonCustomRedemptionInfo">Optional - A JSON string containing custom redemption data</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RedeemCode(
@@ -62,13 +63,14 @@ namespace BrainCloud
         /// Retrieve the codes already redeemed by player.
         /// </summary>
         /// <remarks>
-        /// Service Name - RedemptionCode
+        /// Service Name - redemptionCode
         /// Service Operation - GET_REDEEMED_CODES
         /// </remarks>
-        /// <param name="in_codeType">Optional - The type of codes to retrieve. Returns all codes if left unspecified.</param>
+        /// <param name="codeType">Optional - The type of codes to retrieve. Returns all codes if left unspecified.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetRedeemedCodes(

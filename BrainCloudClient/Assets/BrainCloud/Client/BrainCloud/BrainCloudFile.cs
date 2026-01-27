@@ -73,7 +73,8 @@ namespace BrainCloud
         /// <summary>
         /// Method cancels an upload. If an IFileUploadCallback has been registered with the BrainCloudClient class,
         /// </summary>
-        /// <param name="in_uploadId">The id of the upload</param>
+        /// <param name="uploadId">The id of the upload</param>
+
 
 
         public void CancelUpload(string uploadId)
@@ -84,8 +85,9 @@ namespace BrainCloud
         /// <summary>
         /// Returns the progress of the given upload from 0.0 to 1.0
         /// </summary>
-        /// <param name="in_uploadId">The id of the upload</param>
+        /// <param name="uploadId">The id of the upload</param>
         /// <returns>A progress from 0.0 to 1.0 or -1 if upload not found.</returns>
+
 
 
         public double GetUploadProgress(string uploadId)
@@ -115,11 +117,15 @@ namespace BrainCloud
         /// <summary>
         /// List user files from the given cloud path
         /// </summary>
-        /// <param name="in_cloudPath">File path</param>
-        /// <param name="in_recurse">Whether to recurse into sub-directories</param>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="recurse">Whether to recurse into sub-directories</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
+
+
 
 
 
@@ -166,11 +172,12 @@ namespace BrainCloud
         /// <summary>
         /// Deletes a single user file.
         /// </summary>
-        /// <param name="in_cloudPath">File path</param>
-        /// <param name="in_cloudFilename">name of file</param>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="cloudFilename">name of file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteUserFile(
@@ -193,11 +200,12 @@ namespace BrainCloud
         /// <summary>
         /// Delete multiple user files
         /// </summary>
-        /// <param name="in_cloudPath">File path</param>
-        /// <param name="in_recurse">Whether to recurse into sub-directories</param>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="recurse">Whether to recurse into sub-directories</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteUserFiles(
@@ -220,11 +228,12 @@ namespace BrainCloud
         /// <summary>
         /// Returns the CDN url for a file object
         /// </summary>
-        /// <param name="in_cloudPath">File path</param>
-        /// <param name="in_cloudFileName">File name</param>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="cloudFileName">File name</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCDNUrl(

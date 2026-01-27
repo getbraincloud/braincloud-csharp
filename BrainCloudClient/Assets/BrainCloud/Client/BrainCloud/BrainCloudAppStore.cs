@@ -25,14 +25,16 @@ namespace BrainCloud
         /// Method gets the active sales inventory for the passed-in
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - GetInventory
+        /// Service Name - appStore
+        /// Service Operation - GET_INVENTORY
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void GetSalesInventory(
@@ -49,15 +51,17 @@ namespace BrainCloud
         /// Method gets the active sales inventory for the passed-in
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - GetInventory
+        /// Service Name - appStore
+        /// Service Operation - GET_INVENTORY
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_userCurrency">The currency type to retrieve the sales inventory for.</param>
-        /// <param name="in_category">The product category</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="userCurrency">The currency type to retrieve the sales inventory for.</param>
+        /// <param name="category">The product category</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void GetSalesInventoryByCategory(
@@ -92,18 +96,13 @@ namespace BrainCloud
         /// Returns the eligible promotions for the player.
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - EligiblePromotions
+        /// Service Name - appStore
+        /// Service Operation - ELIGIBLE_PROMOTIONS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetEligiblePromotions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -118,15 +117,17 @@ namespace BrainCloud
         /// Before making a purchase with the IAP store, you will need to store the purchase
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - CachePurchasePayloadContext
+        /// Service Name - appStore
+        /// Service Operation - CACHE_PURCHASE_PAYLOAD_CONTEXT
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_iapId">The IAP product id as configured on brainCloud</param>
-        /// <param name="in_payload">The payload retrieved for the IAP product</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="iapId">The IAP product id as configured on brainCloud</param>
+        /// <param name="payload">The payload retrieved for the IAP product</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void CachePurchasePayloadContext(
@@ -151,14 +152,16 @@ namespace BrainCloud
         /// Verifies that purchase was properly made at the store.
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - VerifyPurchase
+        /// Service Name - appStore
+        /// Service Operation - VERIFY_PURCHASE
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_jsonReceiptData">The specific store data required</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="jsonReceiptData">The specific store data required</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void VerifyPurchase(
@@ -194,14 +197,16 @@ namespace BrainCloud
         /// Start A Two Staged Purchase Transaction
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - StartPurchase
+        /// Service Name - appStore
+        /// Service Operation - START_PURCHASE
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_jsonPurchaseData">Specific data for starting a two-stage purchase</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="jsonPurchaseData">Specific data for starting a two-stage purchase</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void StartPurchase(
@@ -226,15 +231,17 @@ namespace BrainCloud
         /// Finalize A Two Staged Purchase Transaction
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - FinalizePurchase
+        /// Service Name - appStore
+        /// Service Operation - FINALIZE_PURCHASE
         /// </remarks>
-        /// <param name="in_storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay</param>
-        /// <param name="in_transactionId">The transaction id returned from startPurchase</param>
-        /// <param name="in_jsonTransactionData">Specific transaction data for finalizing purchase</param>
+        /// <param name="storeId">The store platform. Valid stores are: itunes facebook appworld steam windows windowsPhone googlePlay metaHorizon</param>
+        /// <param name="transactionId">The transaction id returned from startPurchase</param>
+        /// <param name="jsonTransactionData">Specific transaction data for finalizing purchase</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
+
 
 
         public void FinalizePurchase(
@@ -261,12 +268,13 @@ namespace BrainCloud
         /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing.
         /// </summary>
         /// <remarks>
-        /// Service Name - AppStore
-        /// Service Operation - RefreshPromotions
+        /// Service Name - appStore
+        /// Service Operation - REFRESH_PROMOTIONS
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RefreshPromotions(

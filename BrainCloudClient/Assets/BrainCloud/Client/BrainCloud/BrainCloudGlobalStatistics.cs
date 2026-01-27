@@ -23,12 +23,13 @@ namespace BrainCloud
         /// Method returns all of the global statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalStatistics
-        /// Service Operation - Read
+        /// Service Name - globalGameStatistics
+        /// Service Operation - READ
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadAllGlobalStats(
@@ -45,13 +46,14 @@ namespace BrainCloud
         /// Reads a subset of global statistics as defined by the input collection.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalStatistics
-        /// Service Operation - ReadSubset
+        /// Service Name - globalGameStatistics
+        /// Service Operation - READ_SUBSET
         /// </remarks>
-        /// <param name="in_statistics">A collection containing the statistics to read: [ "Level01_TimesBeaten", "Level02_TimesBeaten" ]</param>
+        /// <param name="statistics">A collection containing the statistics to read: [ "Level01_TimesBeaten", "Level02_TimesBeaten" ]</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadGlobalStatsSubset(
@@ -72,13 +74,14 @@ namespace BrainCloud
         /// Method retrieves the global statistics for the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalStatistics
+        /// Service Name - globalGameStatistics
         /// Service Operation - READ_FOR_CATEGORY
         /// </remarks>
-        /// <param name="in_category">The global statistics category</param>
+        /// <param name="category">The global statistics category</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadGlobalStatsForCategory(
@@ -145,13 +148,14 @@ namespace BrainCloud
         /// Apply statistics grammar to a partial set of statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalStatistics
+        /// Service Name - globalGameStatistics
         /// Service Operation - PROCESS_STATISTICS
         /// </remarks>
-        /// <param name="in_jsonData">The JSON format is as follows: { "DEAD_CATS": "RESET", "LIVES_LEFT": "SET#9", "MICE_KILLED": "INC#2", "DOG_SCARE_BONUS_POINTS": "INC#10", "TREES_CLIMBED": 1 }</param>
+        /// <param name="jsonData">The JSON format is as follows: { "DEAD_CATS": "RESET", "LIVES_LEFT": "SET#9", "MICE_KILLED": "INC#2", "DOG_SCARE_BONUS_POINTS": "INC#10", "TREES_CLIMBED": 1 }</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ProcessStatistics(

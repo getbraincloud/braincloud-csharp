@@ -25,13 +25,14 @@ namespace BrainCloud
         /// Reads an existing item definition from the server, with language fields
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
+        /// Service Name - itemCatalog
         /// Service Operation - GET_CATALOG_ITEM_DEFINITION
         /// </remarks>
-        /// <param name="in_defId">The identifier of the catalog item definition to retrieve</param>
+        /// <param name="defId">The identifier of the catalog item definition to retrieve</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCatalogItemDefinition(
@@ -52,13 +53,14 @@ namespace BrainCloud
         /// Retrieve a page of catalog items from the server, with language fields
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
+        /// Service Name - itemCatalog
         /// Service Operation - GET_CATALOG_ITEMS_PAGE
         /// </remarks>
-        /// <param name="in_context">The pagination context returned from a previous catalog page request</param>
+        /// <param name="context">The pagination context returned from a previous catalog page request</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCatalogItemsPage(
@@ -81,14 +83,15 @@ namespace BrainCloud
         /// Gets a page of catalog items from the server based on the encoded
         /// </summary>
         /// <remarks>
-        /// Service Name - ItemCatalog
+        /// Service Name - itemCatalog
         /// Service Operation - GET_CATALOG_ITEMS_PAGE_OFFSET
         /// </remarks>
-        /// <param name="in_context">The pagination context returned from a previous catalog page request</param>
-        /// <param name="in_pageOffset">The page offset relative to the current context</param>
+        /// <param name="context">The pagination context returned from a previous catalog page request</param>
+        /// <param name="pageOffset">The page offset relative to the current context</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCatalogItemsPageOffset(

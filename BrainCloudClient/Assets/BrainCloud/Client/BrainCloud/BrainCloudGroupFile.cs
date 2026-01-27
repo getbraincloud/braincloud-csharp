@@ -32,6 +32,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void CheckFilenameExists(
             string groupId,
             string folderPath,
@@ -58,6 +59,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void CheckFullpathFilenameExists(
             string groupId,
             string fullPathFilename,
@@ -75,15 +77,17 @@ namespace BrainCloud
         /// <summary>
         /// Copy a file.
         /// </summary>
-        /// <param name="groupId">the groupId</param>
-        /// <param name="fileId">the fileId</param>
-        /// <param name="version">the version</param>
-        /// <param name="newTreeId">thenewTreeId</param>
-        /// <param name="treeVersion">the treeVersion</param>
-        /// <param name="newFilename">the newFilename</param>
+        /// <param name="groupId">ID of the group</param>
+        /// <param name="fileId">ID of the file</param>
+        /// <param name="version">Target version of the file</param>
+        /// <param name="newTreeId">ID of the destination folder</param>
+        /// <param name="treeVersion">Target version of the folder tree</param>
+        /// <param name="newFilename">Optional new file name</param>
+        /// <param name="overwriteIfPresent">Whether to allow overwrite of an existing file if present</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CopyFile(
@@ -122,6 +126,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void DeleteFile(
             string groupId,
             string fileId,
@@ -150,6 +155,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void GetCDNUrl(
             string groupId,
             string fileId,
@@ -172,6 +178,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetFileInfo(
@@ -199,6 +206,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void GetFileInfoSimple(
             string groupId,
             string folderPath,
@@ -224,6 +232,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetFileList(
@@ -255,6 +264,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void MoveFile(
             string groupId,
             string fileId,
@@ -282,16 +292,17 @@ namespace BrainCloud
         /// <summary>
         /// Move a file from user space to group space.
         /// </summary>
-        /// <param name="userCloudPath">the userCloudPath</param>
-        /// <param name="userCloudFilename">the userCloudFilename</param>
-        /// <param name="groupId">the groupId</param>
-        /// <param name="groupTreeId">the groupTreeId</param>
-        /// <param name="groupFilename">the groupFilename</param>
-        /// <param name="groupFileAcl">the groupFileAcl</param>
-        /// <param name="overwriteIfPresent">the overwriteIfPresent</param>
+        /// <param name="userCloudPath">User file folder</param>
+        /// <param name="userCloudFilename">User file name</param>
+        /// <param name="groupId">ID of the group</param>
+        /// <param name="groupTreeId">ID of the destination folder</param>
+        /// <param name="groupFileName">Group file name</param>
+        /// <param name="groupFileAcl">Acl of the new group file</param>
+        /// <param name="overwriteIfPresent">Whether to allow overwrite of an existing file if present</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MoveUserToGroupFile(
@@ -319,16 +330,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// updates information on a file given fileId.
+        /// Rename or edit permissions of an uploaded file. Does not change the contents of the file.
         /// </summary>
-        /// <param name="groupId">the groupId</param>
-        /// <param name="fileId">the fileId</param>
-        /// <param name="version">the version</param>
-        /// <param name="newFilename">the newFilename</param>
-        /// <param name="newAcl">the newAcl</param>
+        /// <param name="groupId">ID of the group</param>
+        /// <param name="fileId">ID of the file</param>
+        /// <param name="version">Target version of the file</param>
+        /// <param name="newFilename">Optional new file name</param>
+        /// <param name="newACL">Optional new acl</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateFileInfo(

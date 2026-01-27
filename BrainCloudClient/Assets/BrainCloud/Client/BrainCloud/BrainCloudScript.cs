@@ -24,14 +24,15 @@ namespace BrainCloud
         /// Executes a script on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
-        /// Service Operation - Run
+        /// Service Name - script
+        /// Service Operation - RUN
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_jsonScriptData">Data to be sent to the script in json format</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RunScript(
             string scriptName,
@@ -58,15 +59,16 @@ namespace BrainCloud
         /// Allows cloud script executions to be scheduled - UTC time
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
-        /// Service Operation - ScheduleCloudScript
+        /// Service Name - script
+        /// Service Operation - SCHEDULE_CLOUD_SCRIPT
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_jsonScriptData">Data to be sent to the script in json format</param>
-        /// <param name="in_startDateInUTC">The start date in UTC</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
+        /// <param name="startDateInUTC">The start date in UTC</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ScheduleRunScriptMillisUTC(
             string scriptName,
@@ -96,15 +98,16 @@ namespace BrainCloud
         /// Allows cloud script executions to be scheduled
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
-        /// Service Operation - ScheduleCloudScript
+        /// Service Name - script
+        /// Service Operation - SCHEDULE_CLOUD_SCRIPT
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_jsonScriptData">Data to be sent to the script in json format</param>
-        /// <param name="in_minutesFromNow">Number of minutes from now to run script</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
+        /// <param name="minutesFromNow">Number of minutes from now to run script</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ScheduleRunScriptMinutes(
             string scriptName,
@@ -134,15 +137,16 @@ namespace BrainCloud
         /// Run a cloud script in a parent app
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - RUN_PARENT_SCRIPT
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_scriptData">Data to be sent to the script in json format</param>
-        /// <param name="in_parentLevel">The level name of the parent to run the script from</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="scriptData">Data to be sent to the script in json format</param>
+        /// <param name="parentLevel">The level name of the parent to run the script from</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RunParentScript(
             string scriptName,
@@ -172,13 +176,14 @@ namespace BrainCloud
         /// Cancels a scheduled cloud code script
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - CANCEL_SCHEDULED_SCRIPT
         /// </remarks>
-        /// <param name="in_jobId">ID of script job to cancel</param>
+        /// <param name="jobId">ID of script job to cancel</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void CancelScheduledScript(
             string jobId,
@@ -198,13 +203,14 @@ namespace BrainCloud
         /// Cancels a scheduled cloud code script
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - CANCEL_SCHEDULED_SCRIPT
         /// </remarks>
-        /// <param name="in_jobId">ID of script job to cancel</param>
+        /// <param name="jobId">ID of script job to cancel</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetScheduledCloudScripts(
             ulong startDateUTC,
@@ -224,12 +230,13 @@ namespace BrainCloud
         /// Cancels a scheduled cloud code script
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - CANCEL_SCHEDULED_SCRIPT
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetRunningOrQueuedCloudScripts(
             SuccessCallback success = null,
@@ -246,14 +253,15 @@ namespace BrainCloud
         /// Runs a script from the context of a peer
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - RUN_PEER_SCRIPT
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_jsonScriptData">Data to be sent to the script in json format</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RunPeerScript(
             string scriptName,
@@ -283,14 +291,15 @@ namespace BrainCloud
         /// Runs a script asynchronously from the context of a peer
         /// </summary>
         /// <remarks>
-        /// Service Name - Script
+        /// Service Name - script
         /// Service Operation - RUN_PEER_SCRIPT_ASYNC
         /// </remarks>
-        /// <param name="in_scriptName">The name of the script to be run</param>
-        /// <param name="in_jsonScriptData">Data to be sent to the script in json format</param>
+        /// <param name="scriptName">The name of the script to be run</param>
+        /// <param name="jsonScriptData">Data to be sent to the script in json format</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void RunPeerScriptAsync(
             string scriptName,

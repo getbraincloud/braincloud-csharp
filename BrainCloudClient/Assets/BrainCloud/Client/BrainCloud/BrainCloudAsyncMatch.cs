@@ -25,14 +25,15 @@ namespace BrainCloud
         /// Creates an instance of an asynchronous match.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - Create
+        /// Service Name - asyncMatch
+        /// Service Operation - CREATE
         /// </remarks>
-        /// <param name="in_jsonOpponentIds">JSON string identifying the opponent platform and id for this match. Platforms are identified as: BC - a brainCloud profile id FB - a Facebook id An exmaple of this string would be: [ { "platform": "BC", "id": "some-braincloud-profile" }, { "platform": "FB", "id": "some-facebook-id" } ]</param>
-        /// <param name="in_pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
+        /// <param name="jsonOpponentIds">JSON string identifying the opponent platform and id for this match. Platforms are identified as: BC - a brainCloud profile id FB - a Facebook id An exmaple of this string would be: [ { "platform": "BC", "id": "some-braincloud-profile" }, { "platform": "FB", "id": "some-facebook-id" } ]</param>
+        /// <param name="pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CreateMatch(
@@ -49,17 +50,18 @@ namespace BrainCloud
         /// Creates an instance of an asynchronous match with an initial turn.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - Create
+        /// Service Name - asyncMatch
+        /// Service Operation - CREATE
         /// </remarks>
-        /// <param name="in_jsonOpponentIds">JSON string identifying the opponent platform and id for this match. Platforms are identified as: BC - a brainCloud profile id FB - a Facebook id An exmaple of this string would be: [ { "platform": "BC", "id": "some-braincloud-profile" }, { "platform": "FB", "id": "some-facebook-id" } ]</param>
-        /// <param name="in_jsonMatchState">JSON string blob provided by the caller</param>
-        /// <param name="in_pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
-        /// <param name="in_nextPlayer">Optionally, force the next player player to be a specific player</param>
-        /// <param name="in_jsonSummary">Optional JSON string defining what the other player will see as a summary of the game when listing their games</param>
+        /// <param name="jsonOpponentIds">JSON string identifying the opponent platform and id for this match. Platforms are identified as: BC - a brainCloud profile id FB - a Facebook id An exmaple of this string would be: [ { "platform": "BC", "id": "some-braincloud-profile" }, { "platform": "FB", "id": "some-facebook-id" } ]</param>
+        /// <param name="jsonMatchState">JSON string blob provided by the caller</param>
+        /// <param name="pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
+        /// <param name="nextPlayer">Optionally, force the next player player to be a specific player</param>
+        /// <param name="jsonSummary">Optional JSON string defining what the other player will see as a summary of the game when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CreateMatchWithInitialTurn(
@@ -86,20 +88,21 @@ namespace BrainCloud
         /// Submits a turn for the given match.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - SubmitTurn
+        /// Service Name - asyncMatch
+        /// Service Operation - SUBMIT_TURN
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identfier</param>
-        /// <param name="in_matchId">Match identifier</param>
-        /// <param name="in_version">Game state version to ensure turns are submitted once and in order</param>
-        /// <param name="in_jsonMatchState">JSON string provided by the caller</param>
-        /// <param name="in_pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
-        /// <param name="in_nextPlayer">Optionally, force the next player player to be a specific player</param>
-        /// <param name="in_jsonSummary">Optional JSON string that other players will see as a summary of the game when listing their games</param>
-        /// <param name="in_jsonStatistics">Optional JSON string blob provided by the caller</param>
+        /// <param name="ownerId">Match owner identfier</param>
+        /// <param name="matchId">Match identifier</param>
+        /// <param name="version">Game state version to ensure turns are submitted once and in order</param>
+        /// <param name="jsonMatchState">JSON string provided by the caller</param>
+        /// <param name="pushNotificationMessage">Optional push notification message to send to the other party. Refer to the Push Notification functions for the syntax required.</param>
+        /// <param name="nextPlayer">Optionally, force the next player player to be a specific player</param>
+        /// <param name="jsonSummary">Optional JSON string that other players will see as a summary of the game when listing their games</param>
+        /// <param name="jsonStatistics">Optional JSON string blob provided by the caller</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SubmitTurn(
@@ -153,16 +156,17 @@ namespace BrainCloud
         /// Allows the current player (only) to update Summary data without having to submit a whole turn.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - UpdateMatchSummary
+        /// Service Name - asyncMatch
+        /// Service Operation - UPDATE_SUMMARY
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identfier</param>
-        /// <param name="in_matchId">Match identifier</param>
-        /// <param name="in_version">Game state version to ensure turns are submitted once and in order</param>
-        /// <param name="in_jsonSummary">JSON string that other players will see as a summary of the game when listing their games</param>
+        /// <param name="ownerId">Match owner identfier</param>
+        /// <param name="matchId">Match identifier</param>
+        /// <param name="version">Game state version to ensure turns are submitted once and in order</param>
+        /// <param name="jsonSummary">JSON string that other players will see as a summary of the game when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateMatchSummaryData(
@@ -194,17 +198,18 @@ namespace BrainCloud
         /// Allows the current player in the game to overwrite the matchState and
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - UpdateMatchStateCurrentTurn
+        /// Service Name - asyncMatch
+        /// Service Operation - UPDATE_MATCH_STATE_CURRENT_TURN
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
-        /// <param name="in_version">Game state version being updated, to ensure data integrity</param>
-        /// <param name="in_jsonMatchState">JSON string provided by the caller Required.</param>
-        /// <param name="in_jsonStatistics">Optional JSON string provided by the caller.</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
+        /// <param name="version">Game state version being updated, to ensure data integrity</param>
+        /// <param name="jsonMatchState">JSON string provided by the caller Required.</param>
+        /// <param name="jsonStatistics">Optional JSON string provided by the caller.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateMatchStateCurrentTurn(
@@ -237,14 +242,15 @@ namespace BrainCloud
         /// Marks the given match as complete.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - Complete
+        /// Service Name - asyncMatch
+        /// Service Operation - COMPLETE
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CompleteMatch(
@@ -268,14 +274,15 @@ namespace BrainCloud
         /// Returns the current state of the given match.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - ReadMatch
+        /// Service Name - asyncMatch
+        /// Service Operation - READ_MATCH
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadMatch(
@@ -299,14 +306,15 @@ namespace BrainCloud
         /// Returns the match history of the given match.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - ReadMatchHistory
+        /// Service Name - asyncMatch
+        /// Service Operation - READ_MATCH_HISTORY
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadMatchHistory(
@@ -330,12 +338,13 @@ namespace BrainCloud
         /// Returns all matches that are NOT in a COMPLETE state for which the player is involved.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - FindMatches
+        /// Service Name - asyncMatch
+        /// Service Operation - FIND_MATCHES
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindMatches(
@@ -352,12 +361,13 @@ namespace BrainCloud
         /// Returns all matches that are in a COMPLETE state for which the player is involved.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - FindMatchesCompleted
+        /// Service Name - asyncMatch
+        /// Service Operation - FIND_MATCHES_COMPLETED
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindCompleteMatches(
@@ -374,14 +384,15 @@ namespace BrainCloud
         /// Marks the given match as abandoned.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - Abandon
+        /// Service Name - asyncMatch
+        /// Service Operation - ABANDON
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AbandonMatch(
@@ -405,14 +416,15 @@ namespace BrainCloud
         /// Removes the match and match history from the server. DEBUG ONLY, in production it is recommended
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - Delete
+        /// Service Name - asyncMatch
+        /// Service Operation - DELETE_MATCH
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteMatch(
@@ -436,16 +448,17 @@ namespace BrainCloud
         /// Marks the given match as complete. This call can send a notification message.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - CompleteMatchWithSumamryData
+        /// Service Name - asyncMatch
+        /// Service Operation - COMPLETE_MATCH_WITH_SUMMARY_DATA
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
-        /// <param name="in_pushContent">Optional push notification message to send to the other party when completing the match.</param>
-        /// <param name="in_summary">Optional JSON string summary that other players will see when listing their games</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
+        /// <param name="pushContent">Optional push notification message to send to the other party when completing the match.</param>
+        /// <param name="summary">Optional JSON string summary that other players will see when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CompleteMatchWithSummaryData(
@@ -476,16 +489,17 @@ namespace BrainCloud
         /// Marks the given match as abandoned. This call can send a notification message.
         /// </summary>
         /// <remarks>
-        /// Service Name - AsyncMatch
-        /// Service Operation - AbandonMatchWithSumamryData
+        /// Service Name - asyncMatch
+        /// Service Operation - ABANDON_MATCH_WITH_SUMMARY_DATA
         /// </remarks>
-        /// <param name="in_ownerId">Match owner identifier</param>
-        /// <param name="in_matchId">Match identifier</param>
-        /// <param name="in_pushContent">Optional push notification message to send to the other party when abandoning the match.</param>
-        /// <param name="in_summary">Optional JSON string summary that other players will see when listing their games</param>
+        /// <param name="ownerId">Match owner identifier</param>
+        /// <param name="matchId">Match identifier</param>
+        /// <param name="pushContent">Optional push notification message to send to the other party when abandoning the match.</param>
+        /// <param name="summary">Optional JSON string summary that other players will see when listing their games</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AbandonMatchWithSummaryData(

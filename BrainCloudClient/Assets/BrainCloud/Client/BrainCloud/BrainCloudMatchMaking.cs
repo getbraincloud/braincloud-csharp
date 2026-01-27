@@ -23,18 +23,13 @@ namespace BrainCloud
         /// Read match making record
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - Read
+        /// Service Name - matchMaking
+        /// Service Operation - READ
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void Read(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -49,13 +44,14 @@ namespace BrainCloud
         /// Sets player rating
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - SetPlayerRating
+        /// Service Name - matchMaking
+        /// Service Operation - SET_PLAYER_RATING
         /// </remarks>
-        /// <param name="in_playerRating">The new player rating.</param>
+        /// <param name="playerRating">The new player rating.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SetPlayerRating(
@@ -76,18 +72,13 @@ namespace BrainCloud
         /// Resets player rating
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - ResetPlayerRating
+        /// Service Name - matchMaking
+        /// Service Operation - RESET_PLAYER_RATING
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ResetPlayerRating(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -102,13 +93,14 @@ namespace BrainCloud
         /// Increments player rating
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - IncrementPlayerRating
+        /// Service Name - matchMaking
+        /// Service Operation - INCREMENT_PLAYER_RATING
         /// </remarks>
-        /// <param name="in_increment">The increment amount</param>
+        /// <param name="increment">The increment amount</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementPlayerRating(
@@ -129,13 +121,14 @@ namespace BrainCloud
         /// Decrements player rating
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - DecrementPlayerRating
+        /// Service Name - matchMaking
+        /// Service Operation - DECREMENT_PLAYER_RATING
         /// </remarks>
-        /// <param name="in_decrement">The decrement amount</param>
+        /// <param name="decrement">The decrement amount</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DecrementPlayerRating(
@@ -156,18 +149,13 @@ namespace BrainCloud
         /// Turns shield on
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - ShieldOn
+        /// Service Name - matchMaking
+        /// Service Operation - SHIELD_ON
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void TurnShieldOn(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -182,13 +170,14 @@ namespace BrainCloud
         /// Turns shield on for the specified number of minutes
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - ShieldOnFor
+        /// Service Name - matchMaking
+        /// Service Operation - SHIELD_ON_FOR
         /// </remarks>
-        /// <param name="in_minutes">Number of minutes to turn the shield on for</param>
+        /// <param name="minutes">Number of minutes to turn the shield on for</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void TurnShieldOnFor(
@@ -209,18 +198,13 @@ namespace BrainCloud
         /// Turns shield off
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - ShieldOff
+        /// Service Name - matchMaking
+        /// Service Operation - SHIELD_OFF
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void TurnShieldOff(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -235,13 +219,14 @@ namespace BrainCloud
         /// Increases the shield on time by specified number of minutes
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - IncrementShieldOnFor
+        /// Service Name - matchMaking
+        /// Service Operation - INCREMENT_SHIELD_ON_FOR
         /// </remarks>
-        /// <param name="in_minutes">Number of minutes to increase the shield time for</param>
+        /// <param name="minutes">Number of minutes to increase the shield time for</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementShieldOnFor(
@@ -262,13 +247,14 @@ namespace BrainCloud
         /// Gets the shield expiry for the given player id. Passing in a null player id
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - GetShieldExpiry
+        /// Service Name - matchMaking
+        /// Service Operation - GET_SHIELD_EXPIRY
         /// </remarks>
-        /// <param name="in_playerId">The player id or use null to retrieve for the current player</param>
+        /// <param name="playerId">The player id or use null to retrieve for the current player</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetShieldExpiry(
@@ -292,14 +278,15 @@ namespace BrainCloud
         /// Finds matchmaking enabled players
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
+        /// Service Name - matchMaking
         /// Service Operation - FIND_PLAYERS
         /// </remarks>
-        /// <param name="in_rangeDelta">The range delta</param>
-        /// <param name="in_numMatches">The maximum number of matches to return</param>
+        /// <param name="rangeDelta">The range delta</param>
+        /// <param name="numMatches">The maximum number of matches to return</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindPlayers(
@@ -316,15 +303,16 @@ namespace BrainCloud
         /// Finds matchmaking enabled players with additional attributes
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
+        /// Service Name - matchMaking
         /// Service Operation - FIND_PLAYERS
         /// </remarks>
-        /// <param name="in_rangeDelta">The range delta</param>
-        /// <param name="in_numMatches">The maximum number of matches to return</param>
-        /// <param name="in_jsonAttributes">Attributes match criteria</param>
+        /// <param name="rangeDelta">The range delta</param>
+        /// <param name="numMatches">The maximum number of matches to return</param>
+        /// <param name="jsonAttributes">Attributes match criteria</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindPlayersWithAttributes(
@@ -354,15 +342,16 @@ namespace BrainCloud
         /// Finds matchmaking enabled players
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
+        /// Service Name - matchMaking
         /// Service Operation - FIND_PLAYERS_USING_FILTER
         /// </remarks>
-        /// <param name="in_rangeDelta">The range delta</param>
-        /// <param name="in_numMatches">The maximum number of matches to return</param>
-        /// <param name="in_jsonExtraParms">Parameters to pass to the CloudCode filter script</param>
+        /// <param name="rangeDelta">The range delta</param>
+        /// <param name="numMatches">The maximum number of matches to return</param>
+        /// <param name="jsonExtraParms">Parameters to pass to the CloudCode filter script</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindPlayersUsingFilter(
@@ -380,16 +369,17 @@ namespace BrainCloud
         /// Finds matchmaking enabled players using a cloud code filter
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
+        /// Service Name - matchMaking
         /// Service Operation - FIND_PLAYERS_USING_FILTER
         /// </remarks>
-        /// <param name="in_rangeDelta">The range delta</param>
-        /// <param name="in_numMatches">The maximum number of matches to return</param>
-        /// <param name="in_jsonAttributes">Attributes match criteria</param>
-        /// <param name="in_jsonExtraParms">Parameters to pass to the CloudCode filter script</param>
+        /// <param name="rangeDelta">The range delta</param>
+        /// <param name="numMatches">The maximum number of matches to return</param>
+        /// <param name="jsonAttributes">Attributes match criteria</param>
+        /// <param name="jsonExtraParms">Parameters to pass to the CloudCode filter script</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void FindPlayersWithAttributesUsingFilter(
@@ -426,18 +416,13 @@ namespace BrainCloud
         /// Enables Match Making for the Player
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - EnableMatchMaking
+        /// Service Name - matchMaking
+        /// Service Operation - ENABLE_MATCH_MAKING
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void EnableMatchMaking(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -452,18 +437,13 @@ namespace BrainCloud
         /// Disables Match Making for the Player
         /// </summary>
         /// <remarks>
-        /// Service Name - MatchMaking
-        /// Service Operation - EnableMatchMaking
+        /// Service Name - matchMaking
+        /// Service Operation - ENABLE_MATCH_MAKING
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DisableMatchMaking(
             SuccessCallback success = null,
             FailureCallback failure = null,

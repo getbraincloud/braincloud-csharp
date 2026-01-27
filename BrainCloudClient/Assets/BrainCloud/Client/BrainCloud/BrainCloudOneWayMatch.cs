@@ -26,14 +26,15 @@ namespace BrainCloud
         /// Starts a match
         /// </summary>
         /// <remarks>
-        /// Service Name - OneWayMatch
-        /// Service Operation - StartMatch
+        /// Service Name - onewayMatch
+        /// Service Operation - START_MATCH
         /// </remarks>
-        /// <param name="in_otherPlayerId">The player to start a match with</param>
-        /// <param name="in_rangeDelta">The range delta used for the initial match search</param>
+        /// <param name="otherPlayerId">The player to start a match with</param>
+        /// <param name="rangeDelta">The range delta used for the initial match search</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void StartMatch(
@@ -56,13 +57,14 @@ namespace BrainCloud
         /// Cancels a match
         /// </summary>
         /// <remarks>
-        /// Service Name - OneWayMatch
-        /// Service Operation - CancelMatch
+        /// Service Name - onewayMatch
+        /// Service Operation - CANCEL_MATCH
         /// </remarks>
-        /// <param name="in_playbackStreamId">The playback stream id returned in the start match</param>
+        /// <param name="playbackStreamId">The playback stream id returned in the start match</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CancelMatch(
@@ -83,13 +85,14 @@ namespace BrainCloud
         /// Completes a match
         /// </summary>
         /// <remarks>
-        /// Service Name - OneWayMatch
-        /// Service Operation - CompleteMatch
+        /// Service Name - onewayMatch
+        /// Service Operation - COMPLETE_MATCH
         /// </remarks>
-        /// <param name="in_playbackStreamId">The playback stream id returned in the initial start match</param>
+        /// <param name="playbackStreamId">The playback stream id returned in the initial start match</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CompleteMatch(

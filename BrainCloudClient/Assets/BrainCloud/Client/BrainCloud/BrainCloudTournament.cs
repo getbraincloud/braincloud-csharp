@@ -27,11 +27,12 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - CLAIM_TOURNAMENT_REWARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ClaimTournamentReward(
@@ -57,10 +58,11 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - GET_DIVISION_INFO
         /// </remarks>
-        /// <param name="in_divSetId">The id for the division</param>
+        /// <param name="divSetId">The id for the division</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetDivisionInfo(
@@ -89,6 +91,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void GetMyDivisions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -106,11 +109,12 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - GET_TOURNAMENT_STATUS
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetTournamentStatus(
@@ -136,12 +140,13 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - JOIN_DIVISION
         /// </remarks>
-        /// <param name="in_divSetId">The id for the division</param>
-        /// <param name="in_tournamentCode">Tournament to join</param>
-        /// <param name="in_initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="divSetId">The id for the division</param>
+        /// <param name="tournamentCode">Tournament to join</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void JoinDivision(
@@ -169,12 +174,13 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - JOIN_TOURNAMENT
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_tournamentCode">Tournament to join</param>
-        /// <param name="in_initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="tournamentCode">Tournament to join</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void JoinTournament(
@@ -202,10 +208,11 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - LEAVE_DIVISION_INSTANCE
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void LeaveDivisionInstance(
@@ -229,10 +236,11 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - LEAVE_TOURNAMENT
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void LeaveTournament(
@@ -256,13 +264,14 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - POST_TOURNAMENT_SCORE
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_score">The score to post</param>
-        /// <param name="in_jsonData">Optional data attached to the leaderboard entry</param>
-        /// <param name="in_roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+        /// <param name="roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostTournamentScoreUTC(
@@ -296,17 +305,18 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - POST_TOURNAMENT_SCORE_WITH_RESULTS
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_score">The score to post</param>
-        /// <param name="in_jsonData">Optional data attached to the leaderboard entry</param>
-        /// <param name="in_roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
-        /// <param name="in_sort">Sort key Sort order of page.</param>
-        /// <param name="in_beforeCount">The count of number of players before the current player to include.</param>
-        /// <param name="in_afterCount">The count of number of players after the current player to include.</param>
-        /// <param name="in_initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+        /// <param name="roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PostTournamentScoreWithResultsUTC(
@@ -349,10 +359,11 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - VIEW_CURRENT_REWARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ViewCurrentReward(
@@ -376,11 +387,12 @@ namespace BrainCloud
         /// Service Name - tournament
         /// Service Operation - VIEW_REWARD
         /// </remarks>
-        /// <param name="in_leaderboardId">The leaderboard for the tournament</param>
-        /// <param name="in_versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ViewReward(

@@ -30,11 +30,12 @@ namespace BrainCloud
         /// <summary>
         /// Registers the given device token with the server to enable this device
         /// </summary>
-        /// <param name="in_platform">The device platform</param>
-        /// <param name="in_deviceToken">The platform-dependent device token needed for push notifications. On IOS, this is obtained using the application:didRegisterForRemoteNotificationsWithDeviceToken callback</param>
+        /// <param name="platform">The device platform</param>
+        /// <param name="deviceToken">The platform-dependent device token needed for push notifications. On IOS, this is obtained using the application:didRegisterForRemoteNotificationsWithDeviceToken callback</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RegisterPushNotificationDeviceToken(
@@ -149,11 +150,12 @@ namespace BrainCloud
         /// <summary>
         /// Deregisters the given device token from the server to disable this device
         /// </summary>
-        /// <param name="in_device">The device platform being deregistered.</param>
-        /// <param name="in_token">The platform-dependent device token needed for push notifications.</param>
+        /// <param name="device">The device platform being deregistered.</param>
+        /// <param name="token">The platform-dependent device token needed for push notifications.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeregisterPushNotificationDeviceToken(
@@ -233,11 +235,12 @@ namespace BrainCloud
         /// <summary>
         /// Sends a simple push notification based on the passed in message.
         /// </summary>
-        /// <param name="in_toProfileId">The braincloud profileId of the user to receive the notification</param>
-        /// <param name="in_message">Text of the push notification</param>
+        /// <param name="toProfileId">The braincloud profileId of the user to receive the notification</param>
+        /// <param name="message">Text of the push notification</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendSimplePushNotification(
@@ -259,11 +262,12 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a user based on a brainCloud portal configured notification template.
         /// </summary>
-        /// <param name="in_toProfileId">The braincloud profileId of the user to receive the notification</param>
-        /// <param name="in_notificationTemplateId">Id of the notification template</param>
+        /// <param name="toProfileId">The braincloud profileId of the user to receive the notification</param>
+        /// <param name="notificationTemplateId">Id of the notification template</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendRichPushNotification(
@@ -279,12 +283,13 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a user based on a brainCloud portal configured notification template.
         /// </summary>
-        /// <param name="in_toProfileId">The braincloud profileId of the user to receive the notification</param>
-        /// <param name="in_notificationTemplateId">Id of the notification template</param>
-        /// <param name="in_substitutionJson">JSON defining the substitution params to use with the template</param>
+        /// <param name="toProfileId">The braincloud profileId of the user to receive the notification</param>
+        /// <param name="notificationTemplateId">Id of the notification template</param>
+        /// <param name="substitutionJson">JSON defining the substitution params to use with the template</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendRichPushNotificationWithParams(
@@ -301,12 +306,13 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a "group" of user based on a brainCloud portal configured notification template.
         /// </summary>
-        /// <param name="in_groupId">Target group</param>
-        /// <param name="in_notificationTemplateId">Template to use</param>
-        /// <param name="in_substitutionsJson">Map of substitution positions to strings</param>
+        /// <param name="groupId">Target group</param>
+        /// <param name="notificationTemplateId">Template to use</param>
+        /// <param name="substitutionsJson">Map of substitution positions to strings</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendTemplatedPushNotificationToGroup(
@@ -334,12 +340,13 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a "group" of user consisting of alert content and custom data.
         /// </summary>
-        /// <param name="in_groupId">Target group</param>
-        /// <param name="in_alertContentJson">Body and title of alert</param>
-        /// <param name="in_customDataJson">Optional custom data</param>
+        /// <param name="groupId">Target group</param>
+        /// <param name="alertContentJson">Body and title of alert</param>
+        /// <param name="customDataJson">Optional custom data</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendNormalizedPushNotificationToGroup(
@@ -366,14 +373,15 @@ namespace BrainCloud
         /// <summary>
         /// Schedules a normalized push notification to a user
         /// </summary>
-        /// <param name="in_profileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_fcmContent">Valid Fcm data content</param>
-        /// <param name="in_iosContent">Valid ios data content</param>
-        /// <param name="in_facebookContent">Facebook template string</param>
-        /// <param name="in_startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
+        /// <param name="profileId">The profileId of the user to receive the notification</param>
+        /// <param name="fcmContent">Valid Fcm data content</param>
+        /// <param name="iosContent">Valid ios data content</param>
+        /// <param name="facebookContent">Facebook template string</param>
+        /// <param name="startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleRawPushNotificationUTC(
@@ -412,16 +420,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Schedules a normalized push notification to a user
+        /// Schedules raw notifications based on user local time.
         /// </summary>
-        /// <param name="in_profileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_fcmContent">Valid Fcm data content</param>
-        /// <param name="in_iosContent">Valid ios data content</param>
-        /// <param name="in_facebookContent">Facebook template string</param>
+        /// <param name="profileId">The profileId of the user to receive the notification</param>
+        /// <param name="fcmContent">Valid Fcm data content</param>
+        /// <param name="iosContent">Valid ios data content</param>
+        /// <param name="facebookContent">Facebook template string</param>
         /// <param name="minutesFromNow">Minutes from now to send the push notification</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleRawPushNotificationMinutes(
@@ -471,6 +480,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void SendRawPushNotification(
             string toProfileId,
             string fcmContent,
@@ -506,13 +516,14 @@ namespace BrainCloud
         /// <summary>
         /// Sends a raw push notification to a target list of users.
         /// </summary>
-        /// <param name="in_profileIds">Collection of profile IDs to send the notification to</param>
-        /// <param name="in_fcmContent">Valid Fcm data content</param>
-        /// <param name="in_iosContent">Valid ios data content</param>
-        /// <param name="in_facebookContent">Facebook template string</param>
+        /// <param name="profileIds">Collection of profile IDs to send the notification to</param>
+        /// <param name="fcmContent">Valid Fcm data content</param>
+        /// <param name="iosContent">Valid ios data content</param>
+        /// <param name="facebookContent">Facebook template string</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendRawPushNotificationBatch(
@@ -551,13 +562,14 @@ namespace BrainCloud
         /// <summary>
         /// Sends a raw push notification to a target group.
         /// </summary>
-        /// <param name="in_groupId">Target group</param>
-        /// <param name="in_fcmContent">Valid Fcm data content</param>
-        /// <param name="in_iosContent">Valid ios data content</param>
-        /// <param name="in_facebookContent">Facebook template stringn</param>
+        /// <param name="groupId">Target group</param>
+        /// <param name="fcmContent">Valid Fcm data content</param>
+        /// <param name="iosContent">Valid ios data content</param>
+        /// <param name="facebookContent">Facebook template stringn</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendRawPushNotificationToGroup(
@@ -596,13 +608,14 @@ namespace BrainCloud
         /// <summary>
         /// Schedules a normalized push notification to a user
         /// </summary>
-        /// <param name="in_toProfileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_alertContentJson">Body and title of alert</param>
-        /// <param name="in_customDataJson">Optional custom data</param>
-        /// <param name="in_startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
+        /// <param name="toProfileId">The profileId of the user to receive the notification</param>
+        /// <param name="alertContentJson">Body and title of alert</param>
+        /// <param name="customDataJson">Optional custom data</param>
+        /// <param name="startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleNormalizedPushNotificationUTC(
@@ -633,13 +646,14 @@ namespace BrainCloud
         /// <summary>
         /// Schedules a normalized push notification to a user
         /// </summary>
-        /// <param name="in_toProfileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_alertContentJson">Body and title of alert</param>
-        /// <param name="in_customDataJson">Optional custom data</param>
-        /// <param name="in_minutesFromNow">Minutes from now to send the push notification</param>
+        /// <param name="toProfileId">The profileId of the user to receive the notification</param>
+        /// <param name="alertContentJson">Body and title of alert</param>
+        /// <param name="customDataJson">Optional custom data</param>
+        /// <param name="minutesFromNow">Minutes from now to send the push notification</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleNormalizedPushNotificationMinutes(
@@ -670,13 +684,14 @@ namespace BrainCloud
         /// <summary>
         /// Schedules a rich push notification to a user
         /// </summary>
-        /// <param name="in_toProfileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_notificationTemplateId">Body and title of alert</param>
-        /// <param name="in_substitutionsJson">Map of substitution positions to strings</param>
-        /// <param name="in_startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
+        /// <param name="toProfileId">The profileId of the user to receive the notification</param>
+        /// <param name="notificationTemplateId">Body and title of alert</param>
+        /// <param name="substitutionsJson">Map of substitution positions to strings</param>
+        /// <param name="startTimeUTC">Start time of sending the push notification in milliseconds, use UTC time in milliseconds since epoch</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleRichPushNotificationUTC(
@@ -707,13 +722,14 @@ namespace BrainCloud
         /// <summary>
         /// Schedules a rich push notification to a user
         /// </summary>
-        /// <param name="in_toProfileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_notificationTemplateId">Body and title of alert</param>
-        /// <param name="in_substitutionsJson">Map of substitution positions to strings</param>
-        /// <param name="in_minutesFromNow">Minutes from now to send the push notification</param>
+        /// <param name="toProfileId">The profileId of the user to receive the notification</param>
+        /// <param name="notificationTemplateId">Body and title of alert</param>
+        /// <param name="substitutionsJson">Map of substitution positions to strings</param>
+        /// <param name="minutesFromNow">Minutes from now to send the push notification</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ScheduleRichPushNotificationMinutes(
@@ -744,12 +760,13 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to a user consisting of alert content and custom data.
         /// </summary>
-        /// <param name="in_toProfileId">The profileId of the user to receive the notification</param>
-        /// <param name="in_alertContent">Body and title of alert</param>
-        /// <param name="in_customData">Optional custom data</param>
+        /// <param name="toProfileId">The profileId of the user to receive the notification</param>
+        /// <param name="alertContent">Body and title of alert</param>
+        /// <param name="customData">Optional custom data</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendNormalizedPushNotification(
@@ -776,12 +793,13 @@ namespace BrainCloud
         /// <summary>
         /// Sends a notification to multiple users consisting of alert content and custom data.
         /// </summary>
-        /// <param name="in_profileIds">Collection of profile IDs to send the notification to</param>
-        /// <param name="in_alertContent">Body and title of alert</param>
-        /// <param name="in_customData">Optional custom data</param>
+        /// <param name="profileIds">Collection of profile IDs to send the notification to</param>
+        /// <param name="alertContent">Body and title of alert</param>
+        /// <param name="customData">Optional custom data</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendNormalizedPushNotificationBatch(

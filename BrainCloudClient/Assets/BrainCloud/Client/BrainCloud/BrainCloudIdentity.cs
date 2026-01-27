@@ -26,13 +26,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_facebookId">The facebook id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="facebookId">The facebook id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachFacebookIdentity(
@@ -70,13 +71,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_facebookId">The facebook id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="facebookId">The facebook id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeFacebookIdentity(
@@ -94,13 +96,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_facebookId">The facebook id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="facebookId">The facebook id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachFacebookIdentity(
@@ -118,14 +121,15 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
-        /// <param name="in_ids">Auth IDs structure</param>
-        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="ids">Auth IDs structure</param>
+        /// <param name="extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachAdvancedIdentity(
@@ -161,14 +165,15 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
-        /// <param name="in_ids">Auth IDs structure</param>
-        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="ids">Auth IDs structure</param>
+        /// <param name="extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeAdvancedIdentity(
@@ -204,15 +209,16 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
-        /// <param name="in_externalId">User ID</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
-        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+        /// <param name="authenticationType">Universal, Email, Facebook, etc</param>
+        /// <param name="externalId">User ID</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachAdvancedIdentity(
@@ -244,13 +250,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
-        /// <param name="in_ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
+        /// <param name="ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachUltraIdentity(
@@ -268,13 +275,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
-        /// <param name="in_ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
+        /// <param name="ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeUltraIdentity(
@@ -292,13 +300,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachUltraIdentity(
@@ -316,13 +325,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_oculusId">The oculus id of the user</param>
-        /// <param name="in_oculusNonce">The validated token from the Oculus SDK</param>
+        /// <param name="oculusId">The oculus id of the user</param>
+        /// <param name="oculusNonce">The validated token from the Oculus SDK</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachOculusIdentity(
@@ -340,13 +350,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_oculusId">The oculus id of the user</param>
-        /// <param name="in_oculusNonce">The validated token from the Oculus SDK</param>
+        /// <param name="oculusId">The oculus id of the user</param>
+        /// <param name="oculusNonce">The validated token from the Oculus SDK</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeOculusIdentity(
@@ -364,13 +375,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_oculusId">The oculus id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="oculusId">The oculus id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachOculusIdentity(
@@ -686,12 +698,13 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachGameCenterIdentity(
@@ -708,12 +721,13 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeGameCenterIdentity(
@@ -730,13 +744,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachGameCenterIdentity(
@@ -754,13 +769,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_email">The user's e-mail address</param>
-        /// <param name="in_password">The user's password</param>
+        /// <param name="email">The user's e-mail address</param>
+        /// <param name="password">The user's password</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachEmailIdentity(
@@ -778,13 +794,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_email">The user's e-mail address</param>
-        /// <param name="in_password">The user's password</param>
+        /// <param name="email">The user's e-mail address</param>
+        /// <param name="password">The user's password</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeEmailIdentity(
@@ -802,13 +819,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_email">The user's e-mail address</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="email">The user's e-mail address</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachEmailIdentity(
@@ -826,13 +844,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_userId">The user's userid</param>
-        /// <param name="in_password">The user's password</param>
+        /// <param name="userId">The user's userid</param>
+        /// <param name="password">The user's password</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachUniversalIdentity(
@@ -850,13 +869,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_userId">The user's userid</param>
-        /// <param name="in_password">The user's password</param>
+        /// <param name="userId">The user's userid</param>
+        /// <param name="password">The user's password</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeUniversalIdentity(
@@ -874,13 +894,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_userId">The user's userid</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="userId">The user's userid</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachUniversalIdentity(
@@ -898,13 +919,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_steamId">String representation of 64 bit steam id</param>
-        /// <param name="in_sessionTicket">The user's session ticket (hex encoded)</param>
+        /// <param name="steamId">String representation of 64 bit steam id</param>
+        /// <param name="sessionTicket">The user's session ticket (hex encoded)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachSteamIdentity(
@@ -922,13 +944,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_steamId">String representation of 64 bit steam id</param>
-        /// <param name="in_sessionTicket">The user's session ticket (hex encoded)</param>
+        /// <param name="steamId">String representation of 64 bit steam id</param>
+        /// <param name="sessionTicket">The user's session ticket (hex encoded)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeSteamIdentity(
@@ -946,13 +969,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_steamId">String representation of 64 bit steam id</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="steamId">String representation of 64 bit steam id</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachSteamIdentity(
@@ -970,13 +994,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachGoogleIdentity(
@@ -994,13 +1019,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeGoogleIdentity(
@@ -1018,13 +1044,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachGoogleIdentity(
@@ -1042,13 +1069,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachGoogleOpenIdIdentity(
@@ -1066,13 +1094,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Google SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeGoogleOpenIdIdentity(
@@ -1090,13 +1119,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_googleId">The Google id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="googleId">The Google id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachGoogleOpenIdIdentity(
@@ -1114,13 +1144,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_appleId">The appleid of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="appleId">The appleid of the user</param>
+        /// <param name="authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachAppleIdentity(
@@ -1138,13 +1169,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_appleId">The apple id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
+        /// <param name="appleId">The apple id of the user</param>
+        /// <param name="authenticationToken">The validated token from the Apple SDK (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeAppleIdentity(
@@ -1162,13 +1194,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_appleId">The apple id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="appleId">The apple id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachAppleIdentity(
@@ -1186,14 +1219,15 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_twitterId">The Twitter id of the user</param>
-        /// <param name="in_authenticationToken">The authentication token derived from the twitter APIs</param>
-        /// <param name="in_secret">The secret given when attempting to link with Twitter</param>
+        /// <param name="twitterId">The Twitter id of the user</param>
+        /// <param name="authenticationToken">The authentication token derived from the twitter APIs</param>
+        /// <param name="secret">The secret given when attempting to link with Twitter</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachTwitterIdentity(
@@ -1212,14 +1246,15 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_twitterId">The Twitter id of the user</param>
-        /// <param name="in_authenticationToken">The authentication token derived from the twitter APIs</param>
-        /// <param name="in_secret">The secret given when attempting to link with Twitter</param>
+        /// <param name="twitterId">The Twitter id of the user</param>
+        /// <param name="authenticationToken">The authentication token derived from the twitter APIs</param>
+        /// <param name="secret">The secret given when attempting to link with Twitter</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeTwitterIdentity(
@@ -1238,13 +1273,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_twitterId">The Twitter id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="twitterId">The Twitter id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachTwitterIdentity(
@@ -1262,13 +1298,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Attach
+        /// Service Operation - ATTACH
         /// </remarks>
-        /// <param name="in_parseId">The Parse id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
+        /// <param name="parseId">The Parse id of the user</param>
+        /// <param name="authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachParseIdentity(
@@ -1286,13 +1323,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Merge
+        /// Service Operation - MERGE
         /// </remarks>
-        /// <param name="in_parseId">The Parse id of the user</param>
-        /// <param name="in_authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
+        /// <param name="parseId">The Parse id of the user</param>
+        /// <param name="authenticationToken">The validated token from Parse (that will be further validated when sent to the bC service)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MergeParseIdentity(
@@ -1310,13 +1348,14 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - Detach
+        /// Service Operation - DETACH
         /// </remarks>
-        /// <param name="in_parseId">The Parse id of the user</param>
-        /// <param name="in_continueAnon">Proceed even if the profile will revert to anonymous?</param>
+        /// <param name="parseId">The Parse id of the user</param>
+        /// <param name="continueAnon">Proceed even if the profile will revert to anonymous?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DetachParseIdentity(
@@ -1435,12 +1474,13 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
-        /// <param name="in_childProfileId">The profileId of the child profile to switch to If null and forceCreate is true a new profile will be created</param>
-        /// <param name="in_childAppId">The appId of the child app to switch to</param>
-        /// <param name="in_forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="childProfileId">The profileId of the child profile to switch to If null and forceCreate is true a new profile will be created</param>
+        /// <param name="childAppId">The appId of the child app to switch to</param>
+        /// <param name="forceCreate">Should a new profile be created if it does not exist?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SwitchToChildProfile(
@@ -1461,11 +1501,12 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_CHILD_PROFILE
         /// </remarks>
-        /// <param name="in_childAppId">The App ID of the child app to switch to</param>
-        /// <param name="in_forceCreate">Should a new profile be created if it does not exist?</param>
+        /// <param name="childAppId">The App ID of the child app to switch to</param>
+        /// <param name="forceCreate">Should a new profile be created if it does not exist?</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SwitchToSingletonChildProfile(
@@ -1483,12 +1524,13 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - AttachNonLoginUniversalId
+        /// Service Operation - ATTACH_NONLOGIN_UNIVERSAL
         /// </remarks>
-        /// <param name="in_externalId">the id that's been connected with</param>
+        /// <param name="externalId">the id that's been connected with</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AttachNonLoginUniversalId(
@@ -1510,12 +1552,13 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - UpdateUniversalIdLogin
+        /// Service Operation - UPDATE_UNIVERSAL_LOGIN
         /// </remarks>
-        /// <param name="in_externalId">the id that's been connected with</param>
+        /// <param name="externalId">the id that's been connected with</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateUniversalIdLogin(
@@ -1547,6 +1590,7 @@ namespace BrainCloud
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
+
 
 
         public void AttachParentWithIdentity(
@@ -1582,10 +1626,11 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - SWITCH_TO_PARENT_PROFILE
         /// </remarks>
-        /// <param name="in_parentLevelName">The level of the parent to switch to If null and forceCreate is true a new profile will be created</param>
+        /// <param name="parentLevelName">The level of the parent to switch to If null and forceCreate is true a new profile will be created</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SwitchToParentProfile(
@@ -1614,6 +1659,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback</param>
 
 
+
         public void DetachParent(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1631,10 +1677,11 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - GET_CHILD_PROFILES
         /// </remarks>
-        /// <param name="in_includeSummaryData">Whether to return the summary friend data along with this call</param>
+        /// <param name="includeSummaryData">Whether to return the summary friend data along with this call</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetChildProfiles(
@@ -1704,12 +1751,13 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - REFRESH_IDENTITY
         /// </remarks>
-        /// <param name="in_externalId">User ID</param>
-        /// <param name="in_authenticationToken">Password or client side token</param>
-        /// <param name="in_authenticationType">Type of authentication</param>
+        /// <param name="externalId">User ID</param>
+        /// <param name="authenticationToken">Password or client side token</param>
+        /// <param name="authenticationType">Type of authentication</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RefreshIdentity(
@@ -1737,13 +1785,14 @@ namespace BrainCloud
         /// Service Name - identity
         /// Service Operation - CHANGE_EMAIL_IDENTITY
         /// </remarks>
-        /// <param name="in_oldEmailAddress">Old email address</param>
-        /// <param name="in_password">Password for identity</param>
-        /// <param name="in_newEmailAddress">New email address</param>
-        /// <param name="in_updateContactEmail">Whether to update contact email in profile</param>
+        /// <param name="oldEmailAddress">Old email address</param>
+        /// <param name="password">Password for identity</param>
+        /// <param name="newEmailAddress">New email address</param>
+        /// <param name="updateContactEmail">Whether to update contact email in profile</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ChangeEmailIdentity(
@@ -1784,6 +1833,7 @@ namespace BrainCloud
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
+
 
 
         public void AttachPeerProfile(
@@ -1827,6 +1877,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback</param>
 
 
+
         public void DetachPeer(
             string peer,
             SuccessCallback success = null,
@@ -1854,6 +1905,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback</param>
 
 
+
         public void GetPeerProfiles(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1869,11 +1921,12 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - ATTACH_BLOCKCHAIN_IDENTITY
+        /// Service Operation - ATTACH_BLOCKCHAIDENTITY
         /// </remarks>
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
+
 
 
         public void AttachBlockChainIdentity(
@@ -1897,11 +1950,12 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - identity
-        /// Service Operation - ATTACH_BLOCKCHAIN_IDENTITY
+        /// Service Operation - ATTACH_BLOCKCHAIDENTITY
         /// </remarks>
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
+
 
 
         public void DetachBlockChainIdentity(

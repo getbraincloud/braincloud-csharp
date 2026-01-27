@@ -26,13 +26,14 @@ namespace BrainCloud
         /// Returns the complete info for the specified file given it’s fileId
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalFileV3
-        /// Service Operation - GetFileInfo
+        /// Service Name - globalFileV3
+        /// Service Operation - GET_FILE_INFO
         /// </remarks>
-        /// <param name="in_fileId">The fileId of the global file</param>
+        /// <param name="fileId">The fileId of the global file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetFileInfo(
@@ -53,14 +54,15 @@ namespace BrainCloud
         /// Returns the complete info for the specified file, without having to look up the fileId first.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalFileV3
-        /// Service Operation - GetFileInfoSimple
+        /// Service Name - globalFileV3
+        /// Service Operation - GET_FILE_INFO_SIMPLE
         /// </remarks>
-        /// <param name="in_folderPath">The folder path of the file</param>
-        /// <param name="in_filename">The name of the file</param>
+        /// <param name="folderPath">The folder path of the file</param>
+        /// <param name="filename">The name of the file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetFileInfoSimple(
@@ -84,13 +86,14 @@ namespace BrainCloud
         /// Returns the CDN of the specified file.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalFileV3
-        /// Service Operation - GetGlobalCDNUrl
+        /// Service Name - globalFileV3
+        /// Service Operation - GET_GLOBAL_CDN_URL
         /// </remarks>
-        /// <param name="in_fileId">The fileId of the global file</param>
+        /// <param name="fileId">The fileId of the global file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalCDNUrl(
@@ -111,14 +114,15 @@ namespace BrainCloud
         /// Returns files at the current path.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalFileV3
-        /// Service Operation - GetGlobalFileList
+        /// Service Name - globalFileV3
+        /// Service Operation - GET_GLOBAL_FILE_LIST
         /// </remarks>
-        /// <param name="in_folderPath">The folder path to list files from</param>
-        /// <param name="in_recurse">Whether to recurse into subfolders</param>
+        /// <param name="folderPath">The folder path to list files from</param>
+        /// <param name="recurse">Whether to recurse into subfolders</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetGlobalFileList(

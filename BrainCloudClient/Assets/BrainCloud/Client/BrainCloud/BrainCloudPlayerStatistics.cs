@@ -25,18 +25,13 @@ namespace BrainCloud
         /// Read all available user statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - Read
+        /// Service Name - playerStatistics
+        /// Service Operation - READ
         /// </remarks>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadAllUserStats(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -51,13 +46,14 @@ namespace BrainCloud
         /// Reads a subset of user statistics as defined by the input collection.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - ReadSubset
+        /// Service Name - playerStatistics
+        /// Service Operation - READ_SUBSET
         /// </remarks>
-        /// <param name="in_statistics">A collection containing the subset of statistics to read: ex. [ "pantaloons", "minions" ]</param>
+        /// <param name="statistics">A collection containing the subset of statistics to read: ex. [ "pantaloons", "minions" ]</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadUserStatsSubset(
@@ -78,13 +74,14 @@ namespace BrainCloud
         /// Method retrieves the user statistics for the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
+        /// Service Name - playerStatistics
         /// Service Operation - READ_FOR_CATEGORY
         /// </remarks>
-        /// <param name="in_category">The user statistics category</param>
+        /// <param name="category">The user statistics category</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadUserStatsForCategory(
@@ -105,20 +102,13 @@ namespace BrainCloud
         /// Reset all of the statistics for this user back to their initial value.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - Reset
-        ///
+        /// Service Name - playerStatistics
+        /// Service Operation - RESET
         /// </remarks>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        ///
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ResetAllUserStats(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -133,13 +123,14 @@ namespace BrainCloud
         /// Atomically increment (or decrement) user statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - Update
+        /// Service Name - playerStatistics
+        /// Service Operation - UPDATE
         /// </remarks>
-        /// <param name="in_jsonData">The JSON encoded data to be sent to the server as follows: { stat1: 10, stat2: -5.5, } would increment stat1 by 10 and decrement stat2 by 5.5. For the full statistics grammer see the api.braincloudservers.com site. There are many more complex operations supported such as: { stat1:INC_TO_LIMIT#9#30 } which increments stat1 by 9 up to a limit of 30.</param>
+        /// <param name="jsonData">The JSON encoded data to be sent to the server as follows: { stat1: 10, stat2: -5.5, } would increment stat1 by 10 and decrement stat2 by 5.5. For the full statistics grammer see the api.braincloudservers.com site. There are many more complex operations supported such as: { stat1:INC_TO_LIMIT#9#30 } which increments stat1 by 9 up to a limit of 30.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementUserStats(
@@ -210,13 +201,14 @@ namespace BrainCloud
         /// Apply statistics grammar to a partial set of statistics.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
+        /// Service Name - playerStatistics
         /// Service Operation - PROCESS_STATISTICS
         /// </remarks>
-        /// <param name="in_jsonData">The JSON format is as follows: { "DEAD_CATS": "RESET", "LIVES_LEFT": "SET#9", "MICE_KILLED": "INC#2", "DOG_SCARE_BONUS_POINTS": "INC#10", "TREES_CLIMBED": 1 }</param>
+        /// <param name="jsonData">The JSON format is as follows: { "DEAD_CATS": "RESET", "LIVES_LEFT": "SET#9", "MICE_KILLED": "INC#2", "DOG_SCARE_BONUS_POINTS": "INC#10", "TREES_CLIMBED": 1 }</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ProcessStatistics(
@@ -278,18 +270,13 @@ namespace BrainCloud
         /// Returns JSON representing the next experience level for the user.
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - ReadNextXpLevel
+        /// Service Name - playerStatistics
+        /// Service Operation - READ_NEXT_XPLEVEL
         /// </remarks>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetNextExperienceLevel(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -304,13 +291,14 @@ namespace BrainCloud
         /// Increments the user's experience. If the user goes up a level,
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - UpdateIncrement
+        /// Service Name - playerStatistics
+        /// Service Operation - UPDATE_INCREMENT
         /// </remarks>
-        /// <param name="in_xpValue">The amount to increase the user's experience by</param>
+        /// <param name="xpValue">The amount to increase the user's experience by</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementExperiencePoints(
@@ -331,13 +319,14 @@ namespace BrainCloud
         /// Sets the user's experience to an absolute value. Note that this
         /// </summary>
         /// <remarks>
-        /// Service Name - PlayerStatistics
-        /// Service Operation - SetXpPoints
+        /// Service Name - playerStatistics
+        /// Service Operation - SET_XPPOINTS
         /// </remarks>
-        /// <param name="in_xpValue">The amount to set the the user's experience to</param>
+        /// <param name="xpValue">The amount to set the the user's experience to</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SetExperiencePoints(

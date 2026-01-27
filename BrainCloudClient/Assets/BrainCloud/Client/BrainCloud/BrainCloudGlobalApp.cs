@@ -26,12 +26,13 @@ namespace BrainCloud
         /// Read game's global properties
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - ReadProperties
+        /// Service Name - globalApp
+        /// Service Operation - READ_PROPERTIES
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadProperties(
@@ -48,13 +49,14 @@ namespace BrainCloud
         /// Returns a list of properties, identified by the property names provided.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
+        /// Service Name - globalApp
         /// Service Operation - READ_SELECTED_PROPERTIES
         /// </remarks>
         /// <param name="propertyNames">Specifies which properties to return</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadSelectedProperties(
@@ -75,13 +77,14 @@ namespace BrainCloud
         /// Returns a list of properties, identified by the categories provided.
         /// </summary>
         /// <remarks>
-        /// Service Name - GlobalApp
-        /// Service Operation - READ_PROPERTIES_IN_CATEGORIES
+        /// Service Name - globalApp
+        /// Service Operation - READ_PROPERTIES_CATEGORIES
         /// </remarks>
         /// <param name="categories">Specifies which category to return</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadPropertiesInCategories(

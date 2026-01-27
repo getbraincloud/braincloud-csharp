@@ -28,12 +28,13 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - SEND
         /// </remarks>
-        /// <param name="in_toProfileId">The id of the user who is being sent the event</param>
-        /// <param name="in_eventType">The user-defined type of the event.</param>
-        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="toProfileId">The id of the user who is being sent the event</param>
+        /// <param name="eventType">The user-defined type of the event.</param>
+        /// <param name="jsonEventData">The user-defined data for this event encoded in JSON.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendEvent(
@@ -64,15 +65,16 @@ namespace BrainCloud
         /// Sends an event to multiple users with the attached json data.
         /// </summary>
         /// <remarks>
-        /// Service Name - Event
+        /// Service Name - event
         /// Service Operation - SEND_EVENT_TO_PROFILES
         /// </remarks>
-        /// <param name="in_toIds">The profile ids of the users to send the event</param>
-        /// <param name="in_eventType">The user-defined type of the event</param>
-        /// <param name="in_eventData">The user-defined data for this event encoded in JSON</param>
+        /// <param name="toIds">The profile ids of the users to send the event</param>
+        /// <param name="eventType">The user-defined type of the event</param>
+        /// <param name="eventData">The user-defined data for this event encoded in JSON</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendEventToProfiles(
@@ -107,11 +109,12 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - UPDATE_EVENT_DATA
         /// </remarks>
-        /// <param name="in_evId">The event id</param>
-        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="evId">The event id</param>
+        /// <param name="jsonEventData">The user-defined data for this event encoded in JSON.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateIncomingEventData(
@@ -142,11 +145,12 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - UPDATE_EVENT_DATA
         /// </remarks>
-        /// <param name="in_evId">The event id</param>
-        /// <param name="in_jsonEventData">The user-defined data for this event encoded in JSON.</param>
+        /// <param name="evId">The event id</param>
+        /// <param name="jsonEventData">The user-defined data for this event encoded in JSON.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateIncomingEventDataIfExists(
@@ -177,10 +181,11 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING
         /// </remarks>
-        /// <param name="in_evId">The event id</param>
+        /// <param name="evId">The event id</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteIncomingEvent(
@@ -204,18 +209,11 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING_EVENTS
         /// </remarks>
-        /// <param name="in_eventIds">
-        /// Collection of event ids
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="eventIds">Collection of event ids</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteIncomingEvents(
             string[] in_eventIds,
             SuccessCallback success = null,
@@ -237,10 +235,11 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING_EVENTS_OLDER_THAN
         /// </remarks>
-        /// <param name="in_dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
+        /// <param name="dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteIncomingEventsOlderThan(
@@ -264,11 +263,12 @@ namespace BrainCloud
         /// Service Name - event
         /// Service Operation - DELETE_INCOMING_EVENTS_BY_TYPE_OLDER_THAN
         /// </remarks>
-        /// <param name="in_eventType">The user-defined type of the event</param>
-        /// <param name="in_dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
+        /// <param name="eventType">The user-defined type of the event</param>
+        /// <param name="dateMillis">createdAt cut-off time whereby older events will be deleted (In UTC since Epoch)</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteIncomingEventsByTypeOlderThan(
@@ -297,6 +297,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetEvents(

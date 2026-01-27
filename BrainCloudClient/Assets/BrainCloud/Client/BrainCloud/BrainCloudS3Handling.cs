@@ -28,14 +28,15 @@ namespace BrainCloud
         /// Sends an array of file details and returns
         /// </summary>
         /// <remarks>
-        /// Service Name - S3Handling
-        /// Service Operation - GetUpdatedFiles
+        /// Service Name - s3Handling
+        /// Service Operation - GET_UPDATED_FILES
         /// </remarks>
-        /// <param name="in_category">Category of files on server to compare against</param>
-        /// <param name="in_fileDetailsJson">An array of file details</param>
+        /// <param name="category">Category of files on server to compare against</param>
+        /// <param name="fileDetailsJson">An array of file details</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetUpdatedFiles(
@@ -63,13 +64,14 @@ namespace BrainCloud
         /// Retrieves the details of custom files stored on the server
         /// </summary>
         /// <remarks>
-        /// Service Name - S3Handling
-        /// Service Operation - GetFileList
+        /// Service Name - s3Handling
+        /// Service Operation - GET_FILE_LIST
         /// </remarks>
-        /// <param name="in_category">Category of files to retrieve</param>
+        /// <param name="category">Category of files to retrieve</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetFileList(
@@ -93,10 +95,15 @@ namespace BrainCloud
         /// <summary>
         /// Returns the CDN url for a file
         /// </summary>
-        /// <param name="in_fileId">ID of file</param>
+        /// <remarks>
+        /// Service Name - s3Handling
+        /// Service Operation - GET_CDN_URL
+        /// </remarks>
+        /// <param name="fileId">ID of file</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCDNUrl(

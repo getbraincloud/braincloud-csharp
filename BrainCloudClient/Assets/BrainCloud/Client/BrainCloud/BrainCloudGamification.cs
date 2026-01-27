@@ -32,12 +32,14 @@ namespace BrainCloud
         /// Method retrieves all gamification data for the player.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - Read
+        /// Service Name - gamification
+        /// Service Operation - READ
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadAllGamification(
@@ -58,12 +60,14 @@ namespace BrainCloud
         /// Method retrieves all milestones defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_MILESTONES
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadMilestones(
@@ -84,12 +88,14 @@ namespace BrainCloud
         /// Read all of the achievements defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadAchievements
+        /// Service Name - gamification
+        /// Service Operation - READ_ACHIEVEMENTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadAchievements(
@@ -110,12 +116,13 @@ namespace BrainCloud
         /// Method returns all defined xp levels and any rewards associated
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadXpLevels
+        /// Service Name - gamification
+        /// Service Operation - READ_XP_LEVELS
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadXpLevelsMetaData(
@@ -132,12 +139,14 @@ namespace BrainCloud
         /// Method retrives the list of achieved achievements.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadAchievedAchievements
+        /// Service Name - gamification
+        /// Service Operation - READ_ACHIEVED_ACHIEVEMENTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadAchievedAchievements(
@@ -159,12 +168,14 @@ namespace BrainCloud
         /// Method retrieves the list of completed milestones.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadCompleteMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_COMPLETED_MILESTONES
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadCompletedMilestones(
@@ -185,12 +196,14 @@ namespace BrainCloud
         /// Method retrieves the list of in progress milestones
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadInProgressMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_IN_PROGRESS_MILESTONES
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadInProgressMilestones(
@@ -211,13 +224,15 @@ namespace BrainCloud
         /// Method retrieves milestones of the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadMilestonesByCategory
+        /// Service Name - gamification
+        /// Service Operation - READ_MILESTONES_BY_CATEGORY
         /// </remarks>
-        /// <param name="in_category">The milestone category</param>
+        /// <param name="category">The milestone category</param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadMilestonesByCategory(
@@ -240,13 +255,14 @@ namespace BrainCloud
         /// Method will award the achievements specified.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - AwardAchievements
+        /// Service Name - gamification
+        /// Service Operation - AWARD_ACHIEVEMENTS
         /// </remarks>
-        /// <param name="in_achievementIds">Collection of achievement ids to award</param>
+        /// <param name="achievementIds">Collection of achievement ids to award</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AwardAchievements(
@@ -267,12 +283,14 @@ namespace BrainCloud
         /// Method retrieves all of the quests defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadQuests(
@@ -294,12 +312,14 @@ namespace BrainCloud
         /// Method returns all completed quests.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadCompletedQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_COMPLETED_QUESTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadCompletedQuests(
@@ -320,12 +340,14 @@ namespace BrainCloud
         /// Method returns quests that are in progress.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadInProgressQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_IN_PROGRESS_QUESTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadInProgressQuests(
@@ -346,12 +368,14 @@ namespace BrainCloud
         /// Method returns quests that have not been started.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadNotStartedQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_NOT_STARTED_QUESTS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadNotStartedQuests(
@@ -372,12 +396,14 @@ namespace BrainCloud
         /// Method returns quests with a status.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithStatus
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_STATUS
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadQuestsWithStatus(
@@ -398,12 +424,14 @@ namespace BrainCloud
         /// Method returns quests with a basic percentage.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithBasicPercentage
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_BASIC_PERCENTAGE
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadQuestsWithBasicPercentage(
@@ -424,12 +452,14 @@ namespace BrainCloud
         /// Method returns quests with a complex percentage.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithComplexPercentage
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_COMPLEX_PERCENTAGE
         /// </remarks>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadQuestsWithComplexPercentage(
@@ -450,13 +480,15 @@ namespace BrainCloud
         /// Method returns quests for the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsByCategory
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_BY_CATEGORY
         /// </remarks>
-        /// <param name="in_category">The quest category</param>
+        /// <param name="category">The quest category</param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadQuestsByCategory(

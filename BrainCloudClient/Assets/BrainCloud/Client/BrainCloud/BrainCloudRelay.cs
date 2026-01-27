@@ -112,9 +112,12 @@ namespace BrainCloud
         /// <summary>
         /// Start a connection, based on connection type to
         /// </summary>
+        /// <param name="connectionType">The connection type. WEBSOCKET, TCP, UDP</param>
+        /// <param name="options">{ ssl: false, host: "168.0.1.192" port: 9000, passcode: "somePasscode", lobbyId: "55555:v5v:001" }</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void Connect(RelayConnectionType in_connectionType, RelayConnectOptions in_options, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
@@ -132,8 +135,10 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Requests to end the current match on the relay server
+        /// Terminate the match instance by the owner.
         /// </summary>
+        /// <param name="json">Payload data sent in JSON format. It will be relayed to other connnected players</param>
+
 
         public void EndMatch(Dictionary<string, object> json)
         {
@@ -156,6 +161,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void RegisterRelayCallback(RelayCallback in_callback)
         {
             m_commsLayer.RegisterRelayCallback(in_callback);
@@ -175,6 +181,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RegisterSystemCallback(RelaySystemCallback in_callback)
@@ -199,6 +206,7 @@ namespace BrainCloud
         /// <param name="reliable">Send this reliable or not.</param>
         /// <param name="ordered">Receive this ordered or not.</param>
         /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
+
 
 
         public void Send(byte[] in_data, ulong to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
@@ -231,6 +239,7 @@ namespace BrainCloud
         /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
 
 
+
         public void SendToPlayers(byte[] in_data, ulong in_playerMask, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             m_commsLayer.Send(in_data, in_playerMask, in_reliable, in_ordered, in_channel);
@@ -244,6 +253,7 @@ namespace BrainCloud
         /// <param name="reliable">Send this reliable or not.</param>
         /// <param name="ordered">Receive this ordered or not.</param>
         /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
+
 
 
         public void SendToAll(byte[] in_data, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
@@ -260,6 +270,7 @@ namespace BrainCloud
         /// <summary>
         /// Set the ping interval. Ping allows to keep the connection
         /// </summary>
+
 
 
         public void SetPingInterval(float in_interval)

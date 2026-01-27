@@ -22,17 +22,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deletes specified user messages on the server.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - DeleteMessages
-        /// </remarks>
-        /// <param name="in_msgbox">The message box to delete from.</param>
-        /// <param name="in_msgIds">Arrays of message ids to delete.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Deletes specified user messages on the server.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - DELETE_MESSAGES
+/// </remarks>
+/// <param name="msgbox">The message box to delete from.</param>
+/// <param name="msgIds">Arrays of message ids to delete.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteMessages(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -47,15 +48,16 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve user's message boxes, including 'inbox', 'sent', etc.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - GetMessageboxes
-        /// </remarks>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Retrieve user's message boxes, including 'inbox', 'sent', etc.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - GET_MESSAGE_BOXES
+/// </remarks>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMessageboxes(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -66,15 +68,16 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieve user's message boxes, including 'inbox', 'sent', etc.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - GetMessageCounts
-        /// </remarks>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Retrieve user's message boxes, including 'inbox', 'sent', etc.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - GET_MESSAGE_COUNTS
+/// </remarks>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMessageCounts(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -85,18 +88,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves list of specified messages.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - GetMessages
-        /// </remarks>
-        /// <param name="in_msgbox">The message box to get messages from.</param>
-        /// <param name="in_msgIds">Arrays of message ids to get.</param>
-        /// <param name="markAsRead">mark messages that are read</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Retrieves list of specified messages.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - GET_MESSAGES
+/// </remarks>
+/// <param name="msgbox">The message box to get messages from.</param>
+/// <param name="msgIds">Arrays of message ids to get.</param>
+/// <param name="markAsRead">mark messages that are read</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMessages(string in_msgBox, string[] in_msgsIds, bool markAsRead, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -112,16 +116,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Retrieves a page of messages.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - GetMessagesPage
-        /// </remarks>
-        /// <param name="in_context">The context for the page of messages.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Retrieves a page of messages.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - GET_MESSAGES_PAGE
+/// </remarks>
+/// <param name="context">The context for the page of messages.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMessagesPage(string in_context, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -136,17 +141,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Gets the page of messages from the server based on the encoded context and specified page offset.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - GetMessagesPageOffset
-        /// </remarks>
-        /// <param name="in_context">The context for the page of messages.</param>
-        /// <param name="pageOffset">The page offset.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Gets the page of messages from the server based on the encoded context and specified page offset.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - GET_MESSAGES_PAGE_OFFSET
+/// </remarks>
+/// <param name="context">The context for the page of messages.</param>
+/// <param name="pageOffset">The page offset.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetMessagesPageOffset(string in_context, int pageOffset, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -161,17 +167,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Marks list of user messages as read on the server.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - MarkMessagesRead
-        /// </remarks>
-        /// <param name="msgbox">The message box to mark as read.</param>
-        /// <param name="msgIds">Arrays of message ids to mark as read.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Marks list of user messages as read on the server.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - MARK_MESSAGES_READ
+/// </remarks>
+/// <param name="msgbox">The message box to mark as read.</param>
+/// <param name="msgIds">Arrays of message ids to mark as read.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void MarkMessagesRead(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -186,17 +193,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sends a message with specified 'subject' and 'text' to list of users.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - SendMessage
-        /// </remarks>
-        /// <param name="toProfileIds">The list of profile ids to send the message to.</param>
-        /// <param name="contentJson">The message you are sending</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Sends a message with specified 'subject' and 'text' to list of users.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - SEND_MESSAGE
+/// </remarks>
+/// <param name="toProfileIds">The list of profile ids to send the message to.</param>
+/// <param name="contentJson">The message you are sending</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendMessage(string[] in_toProfileIds, string in_contentJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -213,17 +221,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Sends a simple message to specified list of users.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Messaging
-        /// Service Operation - SendMessageSimple
-        /// </remarks>
-        /// <param name="toProfileIds">The list of profile ids to send the message to.</param>
-        /// <param name="messageText">The message text you are sending</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Sends a simple message to specified list of users.
+/// </summary>
+/// <remarks>
+/// Service Name - messaging
+/// Service Operation - SEND_MESSAGE_SIMPLE
+/// </remarks>
+/// <param name="toProfileIds">The list of profile ids to send the message to.</param>
+/// <param name="messageText">The message text you are sending</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendMessageSimple(string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)

@@ -28,12 +28,13 @@ namespace BrainCloud
         /// Service Name - mail
         /// Service Operation - SEND_BASIC_EMAIL
         /// </remarks>
-        /// <param name="in_profileId">The user to send the email to</param>
-        /// <param name="in_subject">The email subject</param>
-        /// <param name="in_body">The email body</param>
+        /// <param name="profileId">The user to send the email to</param>
+        /// <param name="subject">The email subject</param>
+        /// <param name="body">The email body</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendBasicEmail(
@@ -60,11 +61,12 @@ namespace BrainCloud
         /// Service Name - mail
         /// Service Operation - SEND_ADVANCED_EMAIL
         /// </remarks>
-        /// <param name="in_profileId">The user to send the email to</param>
-        /// <param name="in_jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+        /// <param name="profileId">The user to send the email to</param>
+        /// <param name="jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendAdvancedEmail(
@@ -89,11 +91,12 @@ namespace BrainCloud
         /// Service Name - mail
         /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESS
         /// </remarks>
-        /// <param name="in_emailAddress">The address to send the email to</param>
-        /// <param name="in_jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+        /// <param name="emailAddress">The address to send the email to</param>
+        /// <param name="jsonServiceParams">Parameters to send to the email service. See the documentation for a full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendAdvancedEmailByAddress(
@@ -115,14 +118,15 @@ namespace BrainCloud
         /// Sends an advanced email to the specified email addresses.
         /// </summary>
         /// <remarks>
-        /// Service Name - Mail
+        /// Service Name - mail
         /// Service Operation - SEND_ADVANCED_EMAIL_BY_ADDRESSES
         /// </remarks>
-        /// <param name="in_emailAddress">The list of addresses to send the email to</param>
-        /// <param name="in_serviceParams">Set of parameters dependant on the mail service configured</param>
+        /// <param name="emailAddress">The list of addresses to send the email to</param>
+        /// <param name="serviceParams">Set of parameters dependant on the mail service configured</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SendAdvancedEmailByAddresses(

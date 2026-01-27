@@ -26,14 +26,15 @@ namespace BrainCloud
         /// Registers a listener for incoming events from <channelId>.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - ChannelConnect
+        /// Service Name - chat
+        /// Service Operation - CHANNEL_CONNECT
         /// </remarks>
         /// <param name="channelId">The id of the chat channel to return history from.</param>
         /// <param name="maxReturn">Maximum number of messages to return.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ChannelConnect(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -50,13 +51,14 @@ namespace BrainCloud
         /// Unregisters a listener for incoming events from <channelId>.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - ChannelDisconnect
+        /// Service Name - chat
+        /// Service Operation - CHANNEL_DISCONNECT
         /// </remarks>
         /// <param name="channelId">The id of the chat channel to unsubscribed from.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void ChannelDisconnect(string in_channelId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -72,8 +74,8 @@ namespace BrainCloud
         /// Delete a chat message. <version> must match the latest or pass -1 to bypass version check.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - DeleteChatMessage
+        /// Service Name - chat
+        /// Service Operation - DELETE_CHAT_MESSAGE
         /// </remarks>
         /// <param name="channelId">The id of the chat channel that contains the message to delete.</param>
         /// <param name="msgId">The message id to delete.</param>
@@ -81,6 +83,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void DeleteChatMessage(string in_channelId, string in_messageId, int in_version, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -98,14 +101,15 @@ namespace BrainCloud
         /// Gets the channelId for the given <channelType> and <channelSubId>. Channel type must be one of "gl" or "gr".
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - GetChannelId
+        /// Service Name - chat
+        /// Service Operation - GET_CHANNEL_ID
         /// </remarks>
         /// <param name="channelType">Channel type must be one of "gl" or "gr". For (global) or (group) respectively.</param>
         /// <param name="channelSubId">The sub id of the channel.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetChannelId(string in_channelType, string in_channelSubId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -122,13 +126,14 @@ namespace BrainCloud
         /// Gets description info and activity stats for channel <channelId>.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - GetChannelInfo
+        /// Service Name - chat
+        /// Service Operation - GET_CHANNEL_INFO
         /// </remarks>
         /// <param name="channelId">Id of the channel to receive the info from.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetChannelInfo(string in_channelId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -144,14 +149,15 @@ namespace BrainCloud
         /// Gets a populated chat object (normally for editing).
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - GetChatMessage
+        /// Service Name - chat
+        /// Service Operation - GET_CHAT_MESSAGE
         /// </remarks>
         /// <param name="channelId">Id of the channel to receive the message from.</param>
         /// <param name="msgId">Id of the message to read.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetChatMessage(string in_channelId, string in_messageId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -168,14 +174,15 @@ namespace BrainCloud
         /// Get a list of <maxReturn> messages from history of channel <channelId>.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - GetRecentChatMessages
+        /// Service Name - chat
+        /// Service Operation - GET_RECENT_CHAT_MESSAGES
         /// </remarks>
         /// <param name="channelId">Id of the channel to receive the info from.</param>
         /// <param name="maxReturn">Maximum message count to return.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetRecentChatMessages(string in_channelId, int in_maxToReturn, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -192,13 +199,14 @@ namespace BrainCloud
         /// Gets a list of the channels of type <channelType> that the user has access to.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - GetSubscribedChannels
+        /// Service Name - chat
+        /// Service Operation - GET_SUBSCRIBED_CHANNELS
         /// </remarks>
         /// <param name="channelType">Type of channels to get back. "gl" for global, "gr" for group or "all" for both.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetSubscribedChannels(string in_channelType, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -214,14 +222,15 @@ namespace BrainCloud
         /// Send a potentially rich chat message.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - PostChatMessage
+        /// Service Name - chat
+        /// Service Operation - POST_CHAT_MESSAGE
         /// </remarks>
         /// <param name="channelId">Channel id to post message to.</param>
         /// <param name="content">Object containing "text" for the text message. Can also has rich content for custom data.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostChatMessage(string in_channelId, string in_contentJson, bool in_recordInHistory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -271,14 +280,15 @@ namespace BrainCloud
         /// Send a chat message with text only
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - PostChatMessage
+        /// Service Name - chat
+        /// Service Operation - POST_CHAT_MESSAGE
         /// </remarks>
         /// <param name="channelId">Channel id to post message to.</param>
         /// <param name="text">The text message.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void PostChatMessageSimple(string in_channelId, string in_plain, bool in_recordInHistory = true, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -297,8 +307,8 @@ namespace BrainCloud
         /// Update a chat message.
         /// </summary>
         /// <remarks>
-        /// Service Name - Chat
-        /// Service Operation - UpdateChatMessage
+        /// Service Name - chat
+        /// Service Operation - UPDATE_CHAT_MESSAGE
         /// </remarks>
         /// <param name="channelId">Channel id where the message to update is.</param>
         /// <param name="msgId">Message id to update.</param>
@@ -307,6 +317,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void UpdateChatMessage(string in_channelId, string in_messageId, int in_version, string in_contentJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {

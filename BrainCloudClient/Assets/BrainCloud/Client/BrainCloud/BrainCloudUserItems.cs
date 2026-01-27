@@ -29,12 +29,13 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - AWARD_USER_ITEM
         /// </remarks>
-        /// <param name="in_defId">The unique id of the item definition to award.</param>
-        /// <param name="in_quantity">The quantity of the item to award.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="defId">The unique id of the item definition to award.</param>
+        /// <param name="quantity">The quantity of the item to award.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AwardUserItem(
@@ -62,12 +63,13 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - DROP_USER_ITEM
         /// </remarks>
-        /// <param name="in_defId">The unique id of the item definition to drop.</param>
-        /// <param name="in_quantity">The quantity of the item to drop.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="defId">The unique id of the item definition to drop.</param>
+        /// <param name="quantity">The quantity of the item to drop.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DropUserItem(
@@ -95,11 +97,12 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GET_USER_INVENTORY_PAGE
         /// </remarks>
-        /// <param name="in_context">Context string used to filter inventory.</param>
-        /// <param name="in_includeDef">If true, include associated item definitions in the response.</param>
+        /// <param name="context">Context string used to filter inventory.</param>
+        /// <param name="includeDef">If true, include associated item definitions in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetUserItemsPage(
@@ -127,12 +130,13 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GET_USER_INVENTORY_PAGE_OFFSET
         /// </remarks>
-        /// <param name="in_context">Context string used to filter inventory.</param>
-        /// <param name="in_pageOffset">Page offset to retrieve.</param>
-        /// <param name="in_includeDef">If true, include associated item definitions in the response.</param>
+        /// <param name="context">Context string used to filter inventory.</param>
+        /// <param name="pageOffset">Page offset to retrieve.</param>
+        /// <param name="includeDef">If true, include associated item definitions in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetUserItemsPageOffset(
@@ -162,11 +166,12 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GET_USER_ITEM
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to retrieve.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="itemId">ID of the user item to retrieve.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetUserItem(
@@ -195,14 +200,15 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GIVE_USER_ITEM_TO
         /// </remarks>
-        /// <param name="in_profileId">Profile ID of the recipient.</param>
-        /// <param name="in_itemId">ID of the item to gift.</param>
-        /// <param name="in_version">Version of the item being gifted.</param>
-        /// <param name="in_quantity">Quantity of the item to gift.</param>
-        /// <param name="in_immediate">If true, the gift is delivered immediately.</param>
+        /// <param name="profileId">Profile ID of the recipient.</param>
+        /// <param name="itemId">ID of the item to gift.</param>
+        /// <param name="version">Version of the item being gifted.</param>
+        /// <param name="quantity">Quantity of the item to gift.</param>
+        /// <param name="immediate">If true, the gift is delivered immediately.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GiveUserItemTo(
@@ -234,13 +240,14 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - PURCHASE_USER_ITEM
         /// </remarks>
-        /// <param name="in_defId">The unique id of the item definition to purchase.</param>
-        /// <param name="in_quantity">Quantity of the item to purchase.</param>
-        /// <param name="in_shopId">Store ID for the purchase.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="defId">The unique id of the item definition to purchase.</param>
+        /// <param name="quantity">Quantity of the item to purchase.</param>
+        /// <param name="shopId">Store ID for the purchase.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PurchaseUserItem(
@@ -270,11 +277,12 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - RECEIVE_USER_ITEM_FROM
         /// </remarks>
-        /// <param name="in_profileId">Profile ID of the sender.</param>
-        /// <param name="in_itemId">ID of the item being received.</param>
+        /// <param name="profileId">Profile ID of the sender.</param>
+        /// <param name="itemId">ID of the item being received.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReceiveUserItemFrom(
@@ -294,20 +302,21 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Opens a quantity of a bundle user item.
+        /// Allows a quantity of a specified bundle user item to be opened. Response
         /// </summary>
         /// <remarks>
         /// Service Name - userItems
         /// Service Operation - OPEN_BUNDLE
         /// </remarks>
-        /// <param name="in_itemId">ID of the bundle item to open.</param>
-        /// <param name="in_version">Version of the bundle item (pass -1 for any version).</param>
-        /// <param name="in_quantity">Quantity of the item to open.</param>
-        /// <param name="in_includeDef">Include associated item definitions if true.</param>
-        /// <param name="in_optionsJson">JSON string specifying additional options.</param>
+        /// <param name="itemId">ID of the bundle item to open.</param>
+        /// <param name="version">Version of the bundle item (pass -1 for any version).</param>
+        /// <param name="quantity">Quantity of the item to open.</param>
+        /// <param name="includeDef">Include associated item definitions if true.</param>
+        /// <param name="optionsJson">JSON string specifying additional options.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void OpenBundle(
         string itemId,
@@ -337,20 +346,21 @@ namespace BrainCloud
 
 
         /// <summary>
-        /// Sells a user item back to the store.
+        /// Allows a quantity of a specified user item to be sold.
         /// </summary>
         /// <remarks>
         /// Service Name - userItems
         /// Service Operation - SELL_USER_ITEM
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to sell.</param>
-        /// <param name="in_version">Version of the item being sold.</param>
-        /// <param name="in_quantity">Quantity of the item to sell.</param>
-        /// <param name="in_shopId">Store ID for the sale.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="itemId">ID of the user item to sell.</param>
+        /// <param name="version">Version of the item being sold.</param>
+        /// <param name="quantity">Quantity of the item to sell.</param>
+        /// <param name="shopId">Store ID for the sale.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SellUserItem(
@@ -382,12 +392,13 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - UPDATE_USER_ITEM_DATA
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to update.</param>
-        /// <param name="in_version">Version of the item being updated.</param>
-        /// <param name="in_newItemData">JSON string with updated item data.</param>
+        /// <param name="itemId">ID of the user item to update.</param>
+        /// <param name="version">Version of the item being updated.</param>
+        /// <param name="newItemData">JSON string with updated item data.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateUserItemData(
@@ -416,13 +427,14 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - USE_USER_ITEM
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to use.</param>
-        /// <param name="in_version">Version of the user item (pass -1 for any version).</param>
-        /// <param name="in_newItemData">Optional JSON string to update item fields.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="itemId">ID of the user item to use.</param>
+        /// <param name="version">Version of the user item (pass -1 for any version).</param>
+        /// <param name="newItemData">Optional JSON string to update item fields.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UseUserItem(
@@ -454,11 +466,12 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - PUBLISH_USER_ITEM_TO_BLOCKCHAIN
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to publish.</param>
-        /// <param name="in_version">Version of the item to publish.</param>
+        /// <param name="itemId">ID of the user item to publish.</param>
+        /// <param name="version">Version of the item to publish.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void PublishUserItemToBlockchain(
@@ -482,11 +495,12 @@ namespace BrainCloud
         /// </summary>
         /// <remarks>
         /// Service Name - userItems
-        /// Service Operation - REFRESH_BLOCKCHAIN_USER_ITEMS
+        /// Service Operation - REFRESH_BLOCKCHAUSER_ITEMS
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RefreshBlockchainUserItems(
@@ -509,11 +523,12 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - REMOVE_USER_ITEM_FROM_BLOCKCHAIN
         /// </remarks>
-        /// <param name="in_itemId">ID of the user item to remove.</param>
-        /// <param name="in_version">Version of the user item to remove.</param>
+        /// <param name="itemId">ID of the user item to remove.</param>
+        /// <param name="version">Version of the user item to remove.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void RemoveUserItemFromBlockchain(
@@ -539,13 +554,14 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - AWARD_USER_ITEM
         /// </remarks>
-        /// <param name="in_defId">The unique id of the item definition to award.</param>
-        /// <param name="in_quantity">The quantity of the item to award.</param>
-        /// <param name="in_includeDef">If true, include associated item definition in the response.</param>
-        /// <param name="in_optionsJson">JSON string specifying additional options (e.g., blockIfExceedItemMaxStackable).</param>
+        /// <param name="defId">The unique id of the item definition to award.</param>
+        /// <param name="quantity">The quantity of the item to award.</param>
+        /// <param name="includeDef">If true, include associated item definition in the response.</param>
+        /// <param name="optionsJson">JSON string specifying additional options (e.g., blockIfExceedItemMaxStackable).</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void AwardUserItemWithOptions(
         string defId,
@@ -577,13 +593,14 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GET_ITEMS_ON_PROMOTION
         /// </remarks>
-        /// <param name="in_shopId">Store ID.</param>
-        /// <param name="in_includeDef">Include associated item definition if true.</param>
-        /// <param name="in_includePromotionDetails">Include promotion details if true.</param>
-        /// <param name="in_optionsJson">JSON string specifying additional options (e.g., category).</param>
+        /// <param name="shopId">Store ID.</param>
+        /// <param name="includeDef">Include associated item definition if true.</param>
+        /// <param name="includePromotionDetails">Include promotion details if true.</param>
+        /// <param name="optionsJson">JSON string specifying additional options (e.g., category).</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetItemsOnPromotion(
         string shopId,
@@ -616,13 +633,14 @@ namespace BrainCloud
         /// Service Name - userItems
         /// Service Operation - GET_ITEM_PROMOTION_DETAILS
         /// </remarks>
-        /// <param name="in_defId">Item definition ID.</param>
-        /// <param name="in_shopId">Store ID.</param>
-        /// <param name="in_includeDef">Include associated item definition if true.</param>
-        /// <param name="in_includePromotionDetails">Include promotion details if true.</param>
+        /// <param name="defId">Item definition ID.</param>
+        /// <param name="shopId">Store ID.</param>
+        /// <param name="includeDef">Include associated item definition if true.</param>
+        /// <param name="includePromotionDetails">Include promotion details if true.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void GetItemPromotionDetails(
         string defId,

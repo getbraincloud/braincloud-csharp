@@ -22,12 +22,13 @@ namespace BrainCloud
         /// Method returns the server time in UTC. This is in UNIX millis time format.
         /// </summary>
         /// <remarks>
-        /// Service Name - Time
-        /// Service Operation - Read
+        /// Service Name - time
+        /// Service Operation - READ
         /// </remarks>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadServerTime(

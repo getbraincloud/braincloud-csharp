@@ -29,8 +29,9 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Used to create the anonymous installation id for the brainCloud profile.
-        /// </summary>
+/// Used to create the anonymous installation id for the brainCloud profile.
+/// </summary>
+
 
 
         public string GenerateAnonymousId()
@@ -39,10 +40,11 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Initialize - initializes the identity service with a saved
-        /// </summary>
-        /// <param name="in_anonymousId">The anonymous installation id that was generated for this device</param>
-        /// <param name="in_profileId">The id of the profile id that was most recently used by the app (on this device)</param>
+/// Initialize - initializes the identity service with a saved
+/// </summary>
+/// <param name="anonymousId">The anonymous installation id that was generated for this device</param>
+/// <param name="profileId">The id of the profile id that was most recently used by the app (on this device)</param>
+
 
 
         public void Initialize(string profileId, string anonymousId)
@@ -53,8 +55,9 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Used to clear the saved profile id - to use in cases when the user is
-        /// </summary>
+/// Used to clear the saved profile id - to use in cases when the user is
+/// </summary>
+
 
 
         public void ClearSavedProfileID()
@@ -63,8 +66,12 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Get server version.
-        /// </summary>
+/// Get server version.
+/// </summary>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
         public void getServerVersion(SuccessCallback success = null, FailureCallback failure = null)
         {
@@ -77,16 +84,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_forceCreate">Should a new profile be created if it does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate a user anonymously with brainCloud - used for apps that don't want to bother
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="forceCreate">Should a new profile be created if it does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateAnonymous(
@@ -136,18 +144,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user with a custom Email and Password.  Note that the client app
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_email">The e-mail address of the user</param>
-        /// <param name="in_password">The password of the user</param>
-        /// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user with a custom Email and Password.  Note that the client app
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="email">The e-mail address of the user</param>
+/// <param name="password">The password of the user</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateEmailPassword(
@@ -163,18 +172,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a userid and password (without any validation on the userid).
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_email">The e-mail address of the user</param>
-        /// <param name="in_password">The password of the user</param>
-        /// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a userid and password (without any validation on the userid).
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="email">The e-mail address of the user</param>
+/// <param name="password">The password of the user</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateUniversal(
@@ -190,18 +200,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user with brainCloud using their Facebook Credentials
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_fbUserId">The facebook id of the user</param>
-        /// <param name="in_fbAuthToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user with brainCloud using their Facebook Credentials
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="fbUserId">The facebook id of the user</param>
+/// <param name="fbAuthToken">The validated token from the Facebook SDK (that will be further validated when sent to the bC service)</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateFacebook(
@@ -255,18 +266,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user with brainCloud using their Oculus Credentials
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_oculusUserId">The oculus id of the user</param>
-        /// <param name="in_oculusNonce">Oculus token from the Oculus SDK</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user with brainCloud using their Oculus Credentials
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="oculusUserId">The oculus id of the user</param>
+/// <param name="oculusNonce">Oculus token from the Oculus SDK</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateOculus(
@@ -356,17 +368,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using their Game Center id
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using their Game Center id
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="gameCenterId">The player's game center id  (use the playerID property from the local GKPlayer object)</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateGameCenter(
@@ -381,18 +394,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_userId">String representation of 64 bit steam id</param>
-        /// <param name="in_sessionticket">The session ticket of the user (hex encoded)</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="userId">String representation of 64 bit steam id</param>
+/// <param name="sessionticket">The session ticket of the user (hex encoded)</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateSteam(
@@ -408,18 +422,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a google userid(email address) and google authentication token.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_appleUserId">String of the apple accounts user Id OR email</param>
-        /// <param name="in_identityToken">The authentication token confirming users identity</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a google userid(email address) and google authentication token.
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="appleUserId">String of the apple accounts user Id OR email</param>
+/// <param name="identityToken">The authentication token confirming users identity</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateApple(
@@ -435,18 +450,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a google userid(email address) and google authentication token.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_googleUserId">String representation of google+ userid (email)</param>
-        /// <param name="in_serverAuthCode">The authentication token derived via the google apis.</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a google userid(email address) and google authentication token.
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="googleUserId">String representation of google+ userid (email)</param>
+/// <param name="serverAuthCode">The authentication token derived via the google apis.</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateGoogle(
@@ -462,18 +478,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a google userid(email address) and google authentication token.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_googleUserAccountEmail">String representation of google+ userid (email)</param>
-        /// <param name="in_IdToken">The authentication token derived via the google apis.</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a google userid(email address) and google authentication token.
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="googleUserAccountEmail">String representation of google+ userid (email)</param>
+/// <param name="IdToken">The authentication token derived via the google apis.</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateGoogleOpenId(
@@ -489,19 +506,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a Twitter userid, authentication token, and secret from Twitter.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_userId">String representation of Twitter userid</param>
-        /// <param name="in_token">The authentication token derived via the Twitter apis.</param>
-        /// <param name="in_secret">The secret given when attempting to link with Twitter</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a Twitter userid, authentication token, and secret from Twitter.
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="userId">String representation of Twitter userid</param>
+/// <param name="token">The authentication token derived via the Twitter apis.</param>
+/// <param name="secret">The secret given when attempting to link with Twitter</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateTwitter(
@@ -518,18 +536,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a Pase userid and authentication token
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_userId">String representation of Parse userid</param>
-        /// <param name="in_token">The authentication token</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a Parse userid and authentication token
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="userId">String representation of Parse userid</param>
+/// <param name="token">The authentication token</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateParse(
@@ -545,16 +564,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using a handoffCode
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_handoffCode">the code we generate in cloudcode</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a handoffCode
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="handoffCode">the code we generate in cloudcode</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateSettopHandoff(
@@ -569,17 +589,18 @@ namespace BrainCloud
 
 
         /// <summary>
-        /// Authenticate the user using a handoffId and authentication token
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_handoffId">braincloud handoff id generated from cloud script</param>
-        /// <param name="in_securityToken">The authentication token</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user using a handoffId and authentication token
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="handoffId">braincloud handoff id generated from cloud script</param>
+/// <param name="securityToken">The authentication token</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateHandoff(
@@ -594,18 +615,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="in_userId">The user id</param>
-        /// <param name="in_token">The user token (password etc)</param>
-        /// <param name="in_externalAuthName">The name of the cloud script to call for external authentication</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="userId">The user id</param>
+/// <param name="token">The user token (password etc)</param>
+/// <param name="externalAuthName">The name of the cloud script to call for external authentication</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateExternal(
@@ -622,19 +645,20 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// Service Operation - Authenticate
-        /// </remarks>
-        /// <param name="in_authenticationType">Universal, Email, Facebook, etc</param>
-        /// <param name="in_ids">Auth IDs structure</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="in_extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="authenticationType">Universal, Email, Facebook, etc</param>
+/// <param name="ids">Auth IDs structure</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="extraJson">Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateAdvanced(
@@ -651,17 +675,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user for Ultra.
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="in_ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
-        /// <param name="in_ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
-        /// <param name="in_forceCreate">Should a new profile be created for this user if the account does not exist?</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Authenticate the user for Ultra.
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - AUTHENTICATE
+/// </remarks>
+/// <param name="ultraUsername">it's what the user uses to log into the Ultra endpoint initially</param>
+/// <param name="ultraIdToken">The "id_token" taken from Ultra's JWT.</param>
+/// <param name="forceCreate">Should a new profile be created for this user if the account does not exist?</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void AuthenticateUltra(
@@ -714,15 +740,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Reset Email password - Sends a password reset email to the specified address
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="in_externalId">The email address to send the reset email to.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Reset Email password - Sends a password reset email to the specified address
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_EMAIL_PASSWORD
+/// </remarks>
+/// <param name="externalId">The email address to send the reset email to.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetEmailPassword(
@@ -741,15 +769,17 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Reset Email password - Sends a password reset email to the specified address
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="in_externalId">The email address to send the reset email to.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Reset Email password - Sends a password reset email to the specified address
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_EMAIL_PASSWORD_WITH_EXPIRY
+/// </remarks>
+/// <param name="externalId">The email address to send the reset email to.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetEmailPasswordWithExpiry(
@@ -771,17 +801,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Reset Email password with service parameters - Sends a password reset email to
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_emailAddress">The email address to send the reset email to.</param>
-        /// <param name="in_serviceParams">- parameters to send to the email service. See documentation for full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Reset Email password with service parameters - Sends a password reset email to
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_EMAIL_PASSWORD_ADVANCED
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="emailAddress">The email address to send the reset email to.</param>
+/// <param name="serviceParams">- parameters to send to the email service. See documentation for full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetEmailPasswordAdvanced(
@@ -805,17 +837,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Reset Email password with service parameters - Sends a password reset email to
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_emailAddress">The email address to send the reset email to.</param>
-        /// <param name="in_serviceParams">- parameters to send to the email service. See documentation for full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Reset Email password with service parameters - Sends a password reset email to
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_EMAIL_PASSWORD_ADVANCED
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="emailAddress">The email address to send the reset email to.</param>
+/// <param name="serviceParams">- parameters to send to the email service. See documentation for full list. http://getbraincloud.com/apidocs/apiref/#capi-mail</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetEmailPasswordAdvancedWithExpiry(
@@ -842,16 +876,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Resets Universal ID password
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_universalId">the universal Id in question</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Resets Universal ID password
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_UNIVERSAL_ID_PASSWORD
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="universalId">the universal Id in question</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetUniversalIdPassword(
@@ -870,16 +906,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Resets Universal ID password
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_universalId">the universal Id in question</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Resets Universal ID password
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_UNIVERSAL_ID_PASSWORD_WITH_EXPIRY
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="universalId">the universal Id in question</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetUniversalIdPasswordWithExpiry(
@@ -900,17 +938,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Advanced Universal ID password reset using templates
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_universalId">the universal Id in question</param>
-        /// <param name="in_serviceParams">- parameters to send to the email service.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Advanced Universal ID password reset using templates
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_UNIVERSAL_ID_PASSWORD_ADVANCED
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="universalId">the universal Id in question</param>
+/// <param name="serviceParams">- parameters to send to the email service.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetUniversalIdPasswordAdvanced(
@@ -933,17 +973,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Advanced Universal ID password reset using templates
-        /// </summary>
-        /// <remarks>
-        /// Service Name - Authenticate
-        /// </remarks>
-        /// <param name="appId">the applicationId</param>
-        /// <param name="in_universalId">the universal Id in question</param>
-        /// <param name="in_serviceParams">- parameters to send to the email service.</param>
-        /// <param name="success">The success callback.</param>
-        /// <param name="failure">The failure callback.</param>
-        /// <param name="cbObject">The user object sent to the callback.</param>
+/// Advanced Universal ID password reset using templates
+/// </summary>
+/// <remarks>
+/// Service Name - authenticationV2
+/// Service Operation - RESET_UNIVERSAL_ID_PASSWORD_ADVANCED_WITH_EXPIRY
+/// </remarks>
+/// <param name="appId">the applicationId</param>
+/// <param name="universalId">the universal Id in question</param>
+/// <param name="serviceParams">- parameters to send to the email service.</param>
+/// <param name="success">The success callback.</param>
+/// <param name="failure">The failure callback.</param>
+/// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ResetUniversalIdPasswordAdvancedWithExpiry(

@@ -25,15 +25,17 @@ namespace BrainCloud
         /// Creates new custom entity.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - CreateEntity
+        /// Service Name - customEntity
+        /// Service Operation - CREATE_ENTITY
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
-        /// <param name="in_jsonEntityData">The entity's data as a json string</param>
-        /// <param name="in_jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user. @param timeToLive @param isOwned</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string</param>
+        /// <param name="jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="timeToLive">The duration of time, in milliseconds, the singleton custom entity should live before being expired. Null indicates never expires. Value of -1 indicates no change for updates. @param isOwned</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CreateEntity(
@@ -80,13 +82,16 @@ namespace BrainCloud
         /// Gets the page of custom entities from the server based on the encoded context and specified page offset.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - GetEntityPageOffset
+        /// Service Name - customEntity
+        /// Service Operation - GET_ENTITY_PAGE_OFFSET
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_context @param in_pageOffset</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="context">The context string returned from the server from a previous call to GetPage or GetPageOffset.</param>
+        /// <param name="pageOffset">The positive or negative page offset to fetch. Uses the last page retrieved using the context string to determine a starting point.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetEntityPageOffset(
@@ -111,14 +116,15 @@ namespace BrainCloud
         /// Reads the specified custom entity from the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - ReadEntity
+        /// Service Name - customEntity
+        /// Service Operation - READ_ENTITY
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
-        /// <param name="in_entityId">The entity id as defined by the system</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="entityId">The entity id as defined by the system</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadEntity(
@@ -141,15 +147,16 @@ namespace BrainCloud
         /// Increments fields on the specified custom entity owned by the user on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - IncrementData
+        /// Service Name - customEntity
+        /// Service Operation - INCREMENT_DATA
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
-        /// <param name="in_entityId">The entity id as defined by the system</param>
-        /// <param name="in_fieldsJson">Specific fields, as JSON, within entity's custom data, with respective increment amount.</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="entityId">The entity id as defined by the system</param>
+        /// <param name="fieldsJson">Specific fields, as JSON, within entity's custom data, with respective increment amount.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementData(
@@ -174,14 +181,15 @@ namespace BrainCloud
         /// Increments the specified fields, of the singleton owned by the user, by the specified amount within the custom entity data on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - IncrementSingletonData
+        /// Service Name - customEntity
+        /// Service Operation - INCREMENT_SINGLETON_DATA
         /// </remarks>
-        /// <param name="in_entityType">The type of custom entity being updated.</param>
-        /// <param name="in_fieldsJson">Specific fields, as JSON, within entity's custom data, with respective increment amount.</param>
+        /// <param name="entityType">The type of custom entity being updated.</param>
+        /// <param name="fieldsJson">Specific fields, as JSON, within entity's custom data, with respective increment amount.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void IncrementSingletonData(
@@ -204,15 +212,19 @@ namespace BrainCloud
         /// Replaces the specified custom entity's data, and optionally updates the acl and expiry, on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - UpdateEntity
+        /// Service Name - customEntity
+        /// Service Operation - UPDATE_ENTITY
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_entityId @param in_version</param>
-        /// <param name="in_jsonEntityData">The entity's data as a json string</param>
-        /// <param name="in_jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user. @param timeToLive</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="entityId">The id of custom entity being updated.</param>
+        /// <param name="version">Version of the custom entity being updated.</param>
+        /// <param name="jsonEntityData">The entity's data as a json string</param>
+        /// <param name="jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="timeToLive">The duration of time, in milliseconds, the singleton custom entity should live before being expired. Null indicates never expires. Value of -1 indicates no change for updates.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateEntity(
@@ -245,13 +257,17 @@ namespace BrainCloud
         /// Replaces the specified custom entity's data, and optionally updates the acl and expiry, on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - UpdateEntityFields
+        /// Service Name - customEntity
+        /// Service Operation - UPDATE_ENTITY_FIELDS
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_entityId @param in_version @param in_fieldsJson</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="entityId">The id of custom entity being updated.</param>
+        /// <param name="version">Version of the custom entity being updated.</param>
+        /// <param name="fieldsJson">Specific fields, as JSON, to set within entity's custom data.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateEntityFields(
@@ -278,14 +294,18 @@ namespace BrainCloud
         /// For sharded custom collection entities. Sets the specified fields within custom entity data on the server, enforcing ownership/ACL permissions.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - UpdateEntityFieldsSharded
+        /// Service Name - customEntity
+        /// Service Operation - UPDATE_ENTITY_FIELDS_SHARDED
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_entityId @param in_version @param in_fieldsJson</param>
-        /// <param name="in_shardKeyJson">The shard key field(s) and value(s), as JSON, applicable to the entity being updated.</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="entityId">The id of custom entity being updated.</param>
+        /// <param name="version">Version of the custom entity being updated.</param>
+        /// <param name="fieldsJson">Specific fields, as JSON, to set within entity's custom data.</param>
+        /// <param name="shardKeyJson">The shard key field(s) and value(s), as JSON, applicable to the entity being updated.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateEntityFieldsSharded(
@@ -314,14 +334,15 @@ namespace BrainCloud
         /// deletes entities based on the delete criteria.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - DeleteEntities
+        /// Service Name - customEntity
+        /// Service Operation - DELETE_ENTITIES
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
-        /// <param name="in_deleteCriteria">Json string of criteria wanted for deletion</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="deleteCriteria">Json string of criteria wanted for deletion</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteEntities(
@@ -341,16 +362,18 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Deletes the specified custom entity on the server.
+        /// Counts the number of custom entities meeting the specified where clause, enforcing ownership/ACL permissions
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - GetCount
+        /// Service Name - customEntity
+        /// Service Operation - GET_COUNT
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_whereJson</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="whereJson">Mongo style query string</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetCount(
@@ -373,14 +396,16 @@ namespace BrainCloud
         /// Deletes the specified custom entity on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - DeleteEntity
+        /// Service Name - customEntity
+        /// Service Operation - DELETE_ENTITY
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
-        /// <param name="in_jsonEntityData">The entity's data as a json string @param version</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string</param>
+        /// <param name="version">Version of the custom entity being updated.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteEntity(
@@ -402,15 +427,19 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Service Name - CustomEntity
+        /// Gets a list of up to maxReturn randomly selected custom entities from the
         /// </summary>
         /// <remarks>
-        /// Service Operation - GetRandomEntitiesMatching
+        /// Service Name - customEntity
+        /// Service Operation - GET_RANDOM_ENTITIES_MATCHING
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_whereJson @param in_maxReturn</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="whereJson">Mongo style query string</param>
+        /// <param name="maxReturn">Max number of returns</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void GetRandomEntitiesMatching(
@@ -435,10 +464,15 @@ namespace BrainCloud
         /// Deletes the specified custom entity singleton, owned by the session's user,
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - DeleteSingleton
+        /// Service Name - customEntity
+        /// Service Operation - DELETE_SINGLETON
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_version</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="version">Version of the singleton being deleted.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void DeleteSingleton(
@@ -462,13 +496,14 @@ namespace BrainCloud
         /// Reads the custom entity singleton owned by the session's user.
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - ReadSingleton
+        /// Service Name - customEntity
+        /// Service Operation - READ_SINGLETON
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void ReadSingleton(
@@ -489,13 +524,16 @@ namespace BrainCloud
         /// Partially updates the data, of the singleton owned by the user for the specified custom entity type,
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - UpdateSingletonFields
+        /// Service Name - customEntity
+        /// Service Operation - UPDATE_SINGLETON_FIELDS
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_version @param in_fieldsJson</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="version">Version of the singleton being updated.</param>
+        /// <param name="fieldsJson">Specific fields, as JSON, within entity's custom data to be updated.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateSingletonFields(
@@ -520,13 +558,18 @@ namespace BrainCloud
         /// Updates the singleton owned by the user for the specified custom entity type on the server,
         /// </summary>
         /// <remarks>
-        /// Service Name - CustomEntity
-        /// Service Operation - UpdateSingleton
+        /// Service Name - customEntity
+        /// Service Operation - UPDATE_SINGLETON
         /// </remarks>
-        /// <param name="in_entityType">The entity type as defined by the user @param in_version @param in_dataJson @param in_acl @param in_timeToLive</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="version">Version of the singleton being updated.</param>
+        /// <param name="dataJson">The full data for the singleton as a json string</param>
+        /// <param name="acl">The singleton entity's Access Control List as an object. A null ACL implies default permissions which make the entity readable by others.</param>
+        /// <param name="timeToLive">The duration of time, in milliseconds, the singleton custom entity should live before being expired. Null indicates never expires. Value of -1 indicates no change for updates.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void UpdateSingleton(

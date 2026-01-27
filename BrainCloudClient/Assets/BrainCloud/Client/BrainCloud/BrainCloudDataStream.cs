@@ -32,6 +32,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void CustomPageEvent(
             string eventName,
             string jsonEventProperties,
@@ -61,6 +62,7 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void CustomScreenEvent(
@@ -94,6 +96,7 @@ namespace BrainCloud
         /// <param name="cbObject">The user object sent to the callback.</param>
 
 
+
         public void CustomTrackEvent(
             string eventName,
             string jsonEventProperties,
@@ -118,9 +121,18 @@ namespace BrainCloud
         /// <summary>
         /// Send crash report
         /// </summary>
+        /// <param name="crashType">Identifies the crash category. Developer-defined, can be anything.</param>
+        /// <param name="errorMsg">Short message describing the crash.</param>
+        /// <param name="crashJson">Exception data.</param>
+        /// <param name="crashLog">Client log up until the crash (if available.)</param>
+        /// <param name="userName">Name provided by the user (if provided.)</param>
+        /// <param name="userEmail">Email address to respond to (if provided.)</param>
+        /// <param name="userNotes">Notes provided by the user (if provided.)</param>
+        /// <param name="userSubmitted">User submitted flag.</param>
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
+
 
 
         public void SubmitCrashReport(
