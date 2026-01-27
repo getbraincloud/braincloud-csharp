@@ -41,11 +41,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
-
+  using System;
+  using System.ComponentModel;
+  using System.Runtime.Serialization;
   /// <summary>
   /// The exception that is thrown when a <see cref="HttpListener"/> gets an error
   /// processing an HTTP request.
@@ -65,9 +63,9 @@ using System.Runtime.Serialization;
     /// <param name="streamingContext">
     /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
     /// </param>
-    protected HttpListenerException (
+    protected HttpListenerException(
       SerializationInfo serializationInfo, StreamingContext streamingContext)
-      : base (serializationInfo, streamingContext)
+      : base(serializationInfo, streamingContext)
     {
     }
 
@@ -78,7 +76,7 @@ using System.Runtime.Serialization;
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListenerException"/> class.
     /// </summary>
-    public HttpListenerException ()
+    public HttpListenerException()
     {
     }
 
@@ -89,8 +87,8 @@ using System.Runtime.Serialization;
     /// <param name="errorCode">
     /// An <see cref="int"/> that identifies the error.
     /// </param>
-    public HttpListenerException (int errorCode)
-      : base (errorCode)
+    public HttpListenerException(int errorCode)
+      : base(errorCode)
     {
     }
 
@@ -104,8 +102,8 @@ using System.Runtime.Serialization;
     /// <param name="message">
     /// A <see cref="string"/> that describes the error.
     /// </param>
-    public HttpListenerException (int errorCode, string message)
-      : base (errorCode, message)
+    public HttpListenerException(int errorCode, string message)
+      : base(errorCode, message)
     {
     }
 
@@ -119,8 +117,10 @@ using System.Runtime.Serialization;
     /// <value>
     /// An <see cref="int"/> that identifies the error.
     /// </value>
-    public override int ErrorCode {
-      get {
+    public override int ErrorCode
+    {
+      get
+      {
         return NativeErrorCode;
       }
     }

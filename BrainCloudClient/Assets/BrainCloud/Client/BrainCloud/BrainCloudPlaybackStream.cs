@@ -34,8 +34,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void StartStream(
             string targetPlayerId,
             bool includeSharedData,
@@ -63,8 +61,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void ReadStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -90,8 +86,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void EndStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -117,8 +111,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void DeleteStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -146,8 +138,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void AddEvent(
             string playbackStreamId,
             string eventData,
@@ -188,8 +178,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetRecentStreamsForInitiatingPlayer(
             string initiatingPlayerId,
             int maxNumStreams,
@@ -218,8 +206,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetRecentStreamsForTargetPlayer(
             string targetPlayerId,
             int maxNumStreams,
@@ -248,8 +234,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void ProtectStreamUntil(
             string playbackStreamId,
             int numDays,

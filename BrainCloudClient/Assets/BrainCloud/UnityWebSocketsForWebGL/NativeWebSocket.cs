@@ -55,8 +55,6 @@ public class NativeWebSocket
 
     [DllImport("__Internal")]
     private static extern int BrainCloudSocketError(byte[] ptr, int length, int id);
-
-
     public NativeWebSocket(string url)
     {
         Id = UnityEngine.Random.Range(0, int.MaxValue);

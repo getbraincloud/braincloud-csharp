@@ -41,11 +41,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Security.Principal;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
-
+  using System;
+  using System.Security.Principal;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   /// <summary>
   /// Provides the access to the HTTP request and response objects used by
   /// the <see cref="HttpListener"/>.
@@ -57,69 +55,82 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   {
     #region Private Fields
 
-    private HttpConnection               _connection;
-    private string                       _error;
-    private int                          _errorStatus;
-    private HttpListener                 _listener;
-    private HttpListenerRequest          _request;
-    private HttpListenerResponse         _response;
-    private IPrincipal                   _user;
+    private HttpConnection _connection;
+    private string _error;
+    private int _errorStatus;
+    private HttpListener _listener;
+    private HttpListenerRequest _request;
+    private HttpListenerResponse _response;
+    private IPrincipal _user;
     private HttpListenerWebSocketContext _websocketContext;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpListenerContext (HttpConnection connection)
+    internal HttpListenerContext(HttpConnection connection)
     {
       _connection = connection;
       _errorStatus = 400;
-      _request = new HttpListenerRequest (this);
-      _response = new HttpListenerResponse (this);
+      _request = new HttpListenerRequest(this);
+      _response = new HttpListenerResponse(this);
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal HttpConnection Connection {
-      get {
+    internal HttpConnection Connection
+    {
+      get
+      {
         return _connection;
       }
     }
 
-    internal string ErrorMessage {
-      get {
+    internal string ErrorMessage
+    {
+      get
+      {
         return _error;
       }
 
-      set {
+      set
+      {
         _error = value;
       }
     }
 
-    internal int ErrorStatus {
-      get {
+    internal int ErrorStatus
+    {
+      get
+      {
         return _errorStatus;
       }
 
-      set {
+      set
+      {
         _errorStatus = value;
       }
     }
 
-    internal bool HasError {
-      get {
+    internal bool HasError
+    {
+      get
+      {
         return _error != null;
       }
     }
 
-    internal HttpListener Listener {
-      get {
+    internal HttpListener Listener
+    {
+      get
+      {
         return _listener;
       }
 
-      set {
+      set
+      {
         _listener = value;
       }
     }
@@ -134,8 +145,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="HttpListenerRequest"/> that represents the client request.
     /// </value>
-    public HttpListenerRequest Request {
-      get {
+    public HttpListenerRequest Request
+    {
+      get
+      {
         return _request;
       }
     }
@@ -146,8 +159,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="HttpListenerResponse"/> that represents a response to the client request.
     /// </value>
-    public HttpListenerResponse Response {
-      get {
+    public HttpListenerResponse Response
+    {
+      get
+      {
         return _response;
       }
     }
@@ -158,8 +173,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="IPrincipal"/> instance that represents the client information.
     /// </value>
-    public IPrincipal User {
-      get {
+    public IPrincipal User
+    {
+      get
+      {
         return _user;
       }
     }
@@ -168,29 +185,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
     #region Internal Methods
 
-    internal bool Authenticate ()
+    internal bool Authenticate()
     {
-      var schm = _listener.SelectAuthenticationScheme (_request);
+      var schm = _listener.SelectAuthenticationScheme(_request);
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (schm == AuthenticationSchemes.None) {
-        _response.Close (HttpStatusCode.Forbidden);
+      if (schm == AuthenticationSchemes.None)
+      {
+        _response.Close(HttpStatusCode.Forbidden);
         return false;
       }
 
-      var realm = _listener.GetRealm ();
+      var realm = _listener.GetRealm();
       var user =
-        HttpUtility.CreateUser (
+        HttpUtility.CreateUser(
           _request.Headers["Authorization"],
           schm,
           realm,
           _request.HttpMethod,
-          _listener.GetUserCredentialsFinder ()
+          _listener.GetUserCredentialsFinder()
         );
 
-      if (user == null || !user.Identity.IsAuthenticated) {
-        _response.CloseWithAuthChallenge (new AuthenticationChallenge (schm, realm).ToString ());
+      if (user == null || !user.Identity.IsAuthenticated)
+      {
+        _response.CloseWithAuthChallenge(new AuthenticationChallenge(schm, realm).ToString());
         return false;
       }
 
@@ -198,14 +217,14 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    internal bool Register ()
+    internal bool Register()
     {
-      return _listener.RegisterContext (this);
+      return _listener.RegisterContext(this);
     }
 
-    internal void Unregister ()
+    internal void Unregister()
     {
-      _listener.UnregisterContext (this);
+      _listener.UnregisterContext(this);
     }
 
     #endregion
@@ -237,20 +256,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// This method has already been called.
     /// </exception>
-    public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
+    public HttpListenerWebSocketContext AcceptWebSocket(string protocol)
     {
       if (_websocketContext != null)
-        throw new InvalidOperationException ("The accepting is already in progress.");
+        throw new InvalidOperationException("The accepting is already in progress.");
 
-      if (protocol != null) {
+      if (protocol != null)
+      {
         if (protocol.Length == 0)
-          throw new ArgumentException ("An empty string.", "protocol");
+          throw new ArgumentException("An empty string.", "protocol");
 
-        if (!protocol.IsToken ())
-          throw new ArgumentException ("Contains an invalid character.", "protocol");
+        if (!protocol.IsToken())
+          throw new ArgumentException("Contains an invalid character.", "protocol");
       }
 
-      _websocketContext = new HttpListenerWebSocketContext (this, protocol);
+      _websocketContext = new HttpListenerWebSocketContext(this, protocol);
       return _websocketContext;
     }
 

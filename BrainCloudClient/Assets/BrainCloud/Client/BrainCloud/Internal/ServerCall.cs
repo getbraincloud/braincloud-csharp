@@ -7,9 +7,7 @@
 namespace BrainCloud.Internal
 {
 
-using System.Collections;
-
-
+    using System.Collections;
     internal class ServerCall
     {
         #region Constructors
@@ -69,8 +67,6 @@ using System.Collections;
         {
             return m_callback;
         }
-
-
         /// <summary>
         /// Get the type of operation to perform with this service. This value usually represents
         /// a particular server method, ie: read, update, create...

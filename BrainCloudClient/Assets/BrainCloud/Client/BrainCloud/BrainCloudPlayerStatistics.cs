@@ -54,8 +54,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadUserStatsSubset(
             IList<string> playerStats,
             SuccessCallback success = null,
@@ -81,8 +79,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadUserStatsForCategory(
             string category,
@@ -130,8 +126,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void IncrementUserStats(
             string jsonData,
@@ -208,8 +202,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ProcessStatistics(
             string statisticsData,
@@ -299,8 +291,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void IncrementExperiencePoints(
             int xpValue,
             SuccessCallback success = null,
@@ -326,8 +316,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SetExperiencePoints(
             int xpValue,

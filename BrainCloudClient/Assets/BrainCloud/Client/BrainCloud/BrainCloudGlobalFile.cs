@@ -34,8 +34,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetFileInfo(
             string fileId,
             SuccessCallback success = null,
@@ -63,8 +61,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetFileInfoSimple(
             string folderPath,
             string filename,
@@ -80,8 +76,6 @@ namespace BrainCloud
             ServerCall serverCall = new ServerCall(ServiceName.GlobalFile, ServiceOperation.GetFileInfoSimple, data, callback);
             _client.SendRequest(serverCall);
         }
-
-
         /// <summary>
         /// Returns the CDN of the specified file.
         /// </summary>
@@ -93,8 +87,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetGlobalCDNUrl(
             string fileId,
@@ -122,8 +114,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetGlobalFileList(
             string folderPath,

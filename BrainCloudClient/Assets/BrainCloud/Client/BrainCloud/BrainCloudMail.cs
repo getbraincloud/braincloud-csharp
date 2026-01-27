@@ -35,8 +35,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendBasicEmail(
             string profileId,
             string subject,
@@ -67,8 +65,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendAdvancedEmail(
             string profileId,
             string jsonServiceParams,
@@ -97,8 +93,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendAdvancedEmailByAddress(
             string emailAddress,
             string jsonServiceParams,
@@ -126,8 +120,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SendAdvancedEmailByAddresses(
             string[] emailAddresses,

@@ -32,8 +32,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void RunScript(
             string scriptName,
             string jsonScriptData,
@@ -68,8 +66,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void ScheduleRunScriptMillisUTC(
             string scriptName,
             string jsonScriptData,
@@ -107,8 +103,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void ScheduleRunScriptMinutes(
             string scriptName,
             string jsonScriptData,
@@ -146,8 +140,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void RunParentScript(
             string scriptName,
             string jsonScriptData,
@@ -183,8 +175,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void CancelScheduledScript(
             string jobId,
             SuccessCallback success = null,
@@ -210,8 +200,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetScheduledCloudScripts(
             ulong startDateUTC,
             SuccessCallback success = null,
@@ -236,8 +224,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetRunningOrQueuedCloudScripts(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -247,8 +233,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Script, ServiceOperation.GetRunningOrQueuedCloudScripts, null, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Runs a script from the context of a peer
         /// </summary>
@@ -261,8 +245,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void RunPeerScript(
             string scriptName,
             string jsonScriptData,
@@ -299,8 +281,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void RunPeerScriptAsync(
             string scriptName,
             string jsonScriptData,

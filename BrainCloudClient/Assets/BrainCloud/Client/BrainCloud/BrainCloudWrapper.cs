@@ -84,8 +84,6 @@ public class BrainCloudWrapper
     private string _lastAppVersion = "";
 
     private bool _alwaysAllowProfileSwitch = true;
-
-
     //Getting this error? - "An object reference is required for the non-static field, method, or property 'BrainCloudWrapper.Client'"
     //Switch to BrainCloudWrapper.GetBC();
     public BrainCloudClient Client { get; private set; }
@@ -445,8 +443,6 @@ public class BrainCloudWrapper
 
         LoadData();
     }
-
-
     /// <summary>
     /// Resets the wrapper.
     /// Since the WrapperName is set upon re-initialization of the wrapper, the name is reset by choice here. As the user
@@ -469,8 +465,6 @@ public class BrainCloudWrapper
     /// </summary>
     /// <param name="alwaysAllow">Controls whether the profile id is passed in with non-anonymous authentications.</param>
 
-
-
     public void SetAlwaysAllowProfileSwitch(bool enabled)
     {
         AlwaysAllowProfileSwitch = enabled;
@@ -488,8 +482,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateAnonymous(
         SuccessCallback success = null,
@@ -514,8 +506,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateHandoff(
         string handoffId,
@@ -543,8 +533,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateSettopHandoff(
         string handoffCode,
         SuccessCallback success = null,
@@ -571,8 +559,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateEmailPassword(
         string email,
         string password,
@@ -598,8 +584,6 @@ public class BrainCloudWrapper
     /// <param name="token">The user token (password etc)</param>
     /// <param name="externalAuthName">The name of the cloud script to call for external authentication</param>
     /// <param name="force">Should a new profile be created for this user if the account does not exist? @returns   performs the success callback on success, failure callback on failure</param>
-
-
 
     public void AuthenticateExternal(
         string userid,
@@ -629,8 +613,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateFacebook(
         string fbUserId,
@@ -699,8 +681,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateOculus(
         string oculusUserId,
@@ -806,8 +786,6 @@ public class BrainCloudWrapper
     /// <param name="success">The method to call in event of successful login</param>
     /// <param name="failure">The method to call in the event of an error during authentication @returns   performs the success callback on success, failure callback on failure</param>
 
-
-
     public void AuthenticateGameCenter(
         string gameCenterId,
         bool forceCreate,
@@ -834,8 +812,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateApple(
         string appleUserId,
@@ -865,8 +841,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateGoogle(
     string googleUserId,
     string serverAuthCode,
@@ -895,8 +869,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateGoogleOpenId(
         string googleUserAccountEmail,
         string IdToken,
@@ -924,8 +896,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateSteam(
         string userid,
@@ -956,8 +926,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateTwitter(
         string userid,
         string token,
@@ -987,8 +955,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void AuthenticateUniversal(
         string username,
         string password,
@@ -1017,8 +983,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateAdvanced(
         AuthenticationType authenticationType,
@@ -1052,8 +1016,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void AuthenticateUltra(
         string ultraUsername,
@@ -1920,8 +1882,6 @@ public class BrainCloudWrapper
     /// </summary>
     /// <returns>true if reconnect possible</returns>
 
-
-
     public bool CanReconnect()
     {
         return GetStoredProfileId() != String.Empty && GetStoredAnonymousId() != String.Empty;
@@ -1939,8 +1899,6 @@ public class BrainCloudWrapper
     /// <remarks>
     /// Service Name - Name
     /// </remarks>
-
-
 
     public void Logout(
         bool forgetUser,
@@ -2039,8 +1997,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void ResetEmailPassword(
         string externalId,
         SuccessCallback success = null,
@@ -2064,8 +2020,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void ResetEmailPasswordAdvanced(
         string emailAddress,
         //Dictionary<string, object> serviceParams,
@@ -2088,8 +2042,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void ResetEmailPasswordWithExpiry(
         string externalId,
@@ -2115,8 +2067,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void ResetEmailPasswordAdvancedWithExpiry(
         string emailAddress,
         string serviceParams,
@@ -2139,8 +2089,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void ResetUniversalIdPassword(
         string externalId,
@@ -2165,8 +2113,6 @@ public class BrainCloudWrapper
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
     public void ResetUniversalIdPasswordAdvanced(
         string emailAddress,
         //Dictionary<string, object> serviceParams,
@@ -2189,8 +2135,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void ResetUniversalIdPasswordWithExpiry(
         string externalId,
@@ -2215,8 +2159,6 @@ public class BrainCloudWrapper
     /// <param name="success">The success callback.</param>
     /// <param name="failure">The failure callback.</param>
     /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
     public void ResetUniversalIdPasswordAdvancedWithExpiry(
         string emailAddress,

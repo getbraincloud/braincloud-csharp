@@ -36,8 +36,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RegisterPushNotificationDeviceToken(
             byte[] token,
             SuccessCallback success = null,
@@ -103,8 +101,6 @@ namespace BrainCloud
                     string errorJson = "{\"status\":" + statusCode +
                                        ",\"reason_code\":" + ReasonCodes.INVALID_DEVICE_TOKEN +
                                        ",\"message\":\"Invalid device token: " + token + " \"}";
-
-
                     failure(statusCode, ReasonCodes.INVALID_DEVICE_TOKEN, errorJson, cbObject);
                 }
                 if (_client.LoggingEnabled)
@@ -156,8 +152,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DeregisterPushNotificationDeviceToken(
             Platform platform,
             string token,
@@ -174,8 +168,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.Deregister, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Registers the given device token with the server to enable this device
         /// to receive push notifications.
@@ -241,8 +233,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendSimplePushNotification(
             string toProfileId,
             string message,
@@ -268,8 +258,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendRichPushNotification(
             string toProfileId,
             int notificationTemplateId,
@@ -289,8 +277,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SendRichPushNotificationWithParams(
             string toProfileId,
@@ -312,8 +298,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SendTemplatedPushNotificationToGroup(
             string groupId,
@@ -347,8 +331,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendNormalizedPushNotificationToGroup(
             string groupId,
             string alertContentJson,
@@ -381,8 +363,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ScheduleRawPushNotificationUTC(
             string profileId,
@@ -431,8 +411,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ScheduleRawPushNotificationMinutes(
             string profileId,
             string fcmContent,
@@ -479,8 +457,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendRawPushNotification(
             string toProfileId,
             string fcmContent,
@@ -523,8 +499,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SendRawPushNotificationBatch(
             IList<string> profileIds,
@@ -570,8 +544,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendRawPushNotificationToGroup(
             string groupId,
             string fcmContent,
@@ -603,8 +575,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRawToGroup, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Schedules a normalized push notification to a user
         /// </summary>
@@ -615,8 +585,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ScheduleNormalizedPushNotificationUTC(
             string profileId,
@@ -654,8 +622,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ScheduleNormalizedPushNotificationMinutes(
             string profileId,
             string alertContentJson,
@@ -691,8 +657,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ScheduleRichPushNotificationUTC(
             string profileId,
@@ -730,8 +694,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ScheduleRichPushNotificationMinutes(
             string profileId,
             int notificationTemplateId,
@@ -767,8 +729,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendNormalizedPushNotification(
             string toProfileId,
             string alertContentJson,
@@ -799,8 +759,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SendNormalizedPushNotificationBatch(
             IList<string> profileIds,
@@ -845,8 +803,6 @@ namespace BrainCloud
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.PushNotification, ServiceOperation.SendRich, data, callback);
             _client.SendRequest(sc);
-
-
         }
 
         #endregion

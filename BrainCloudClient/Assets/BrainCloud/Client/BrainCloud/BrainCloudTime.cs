@@ -29,8 +29,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadServerTime(
             SuccessCallback success = null,
             FailureCallback failure = null,

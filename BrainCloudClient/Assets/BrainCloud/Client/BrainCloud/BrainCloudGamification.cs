@@ -26,8 +26,6 @@ namespace BrainCloud
         {
             _client = client;
         }
-
-
         /// <summary>
         /// Method retrieves all gamification data for the player.
         /// </summary>
@@ -39,8 +37,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadAllGamification(
             bool includeMetaData = false,
@@ -68,8 +64,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadMilestones(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -96,8 +90,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadAchievements(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -123,8 +115,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadXpLevelsMetaData(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -147,8 +137,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadAchievedAchievements(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -162,8 +150,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ReadAchievedAchievements, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Method retrieves the list of completed milestones.
         /// </summary>
@@ -175,8 +161,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadCompletedMilestones(
             bool includeMetaData = false,
@@ -204,8 +188,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadInProgressMilestones(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -232,8 +214,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadMilestonesByCategory(
             string category,
@@ -263,8 +243,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AwardAchievements(
             IList<string> achievementIds,
             SuccessCallback success = null,
@@ -291,8 +269,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -306,8 +282,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ReadQuests, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Method returns all completed quests.
         /// </summary>
@@ -319,8 +293,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadCompletedQuests(
             bool includeMetaData = false,
@@ -348,8 +320,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadInProgressQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -375,8 +345,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadNotStartedQuests(
             bool includeMetaData = false,
@@ -404,8 +372,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadQuestsWithStatus(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -431,8 +397,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadQuestsWithBasicPercentage(
             bool includeMetaData = false,
@@ -460,8 +424,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadQuestsWithComplexPercentage(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -488,8 +450,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ReadQuestsByCategory(
             string category,

@@ -14,7 +14,7 @@ namespace BrainCloudTests
         private readonly string _groupType = "test";
         private readonly string _entityType = "test";
 
-        private readonly string[] _groupTypes = {"test","test"};
+        private readonly string[] _groupTypes = { "test", "test" };
 
         private string _groupId = "";
 
@@ -102,8 +102,6 @@ namespace BrainCloudTests
 
             DeleteGroup();
         }
-
-
         [Test]
         public void TestAutoJoinGroup()
         {
@@ -122,7 +120,7 @@ namespace BrainCloudTests
             DeleteGroupAsUserA();
         }
 
-                [Test]
+        [Test]
         public void TestAutoJoinGroupMulti()
         {
             CreateGroupAsUserA(true);
@@ -181,8 +179,6 @@ namespace BrainCloudTests
             DeleteGroup();
             Logout();
         }
-
-
         [Test]
         public void TestCreateGroupEntity()
         {
@@ -201,8 +197,6 @@ namespace BrainCloudTests
             DeleteGroup();
             Logout();
         }
-
-
         [Test]
         public void TestDeleteGroupEntity()
         {
@@ -676,8 +670,6 @@ namespace BrainCloudTests
             DeleteGroup();
             Logout();
         }
-
-        
         [Test]
         public void TestUpdateGroupSummaryData()
         {
@@ -712,7 +704,7 @@ namespace BrainCloudTests
             DeleteGroup();
             Logout();
         }
-        
+
         [Test]
         public void TestDeleteGroupJoinRequest()
         {
@@ -724,22 +716,22 @@ namespace BrainCloudTests
                 _groupId,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
+
             _bc.GroupService.GetMyGroups(tr.ApiSuccess, tr.ApiError);
             tr.Run();
             var data = tr.m_response["data"] as Dictionary<string, object>;
             var groups = data["requested"] as Dictionary<string, object>[];
-            if(groups != null && groups.Length > 0)
+            if (groups != null && groups.Length > 0)
             {
                 _bc.GroupService.DeleteGroupJoinRequest(_groupId, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                
+
                 _bc.GroupService.GetMyGroups(tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                
+
                 data = tr.m_response["data"] as Dictionary<string, object>;
                 groups = data["requested"] as Dictionary<string, object>[];
-                if(groups == null)
+                if (groups == null)
                 {
                     Logout();
                     DeleteGroupAsUserA();

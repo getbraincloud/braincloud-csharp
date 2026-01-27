@@ -36,8 +36,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void CreateEntity(
             string entityType,
             long timeToLive,
@@ -80,8 +78,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void CreateEntityWithIndexedId(
             string entityType,
@@ -126,8 +122,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateEntity(
             string entityId,
             int version,
@@ -161,8 +155,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateEntityAcl(
             string entityId,
@@ -201,8 +193,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateEntityTimeToLive(
             string entityId,
             int version,
@@ -234,8 +224,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DeleteEntity(
             string entityId,
             int version,
@@ -264,8 +252,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadEntity(
             string entityId,
             SuccessCallback success = null,
@@ -293,8 +279,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetList(
             string whereJson,
@@ -336,8 +320,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetListByIndexedId(
             string entityIndexedId,
             int maxReturn,
@@ -365,8 +347,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetListCount(
             string whereJson,
@@ -399,8 +379,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -430,8 +408,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetPageOffset(
             string context,
             int pageOffset,
@@ -448,8 +424,6 @@ namespace BrainCloud
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.GetPageOffset, data, callback);
             _client.SendRequest(serverCall);
         }
-
-
         /// <summary>
         /// Partial increment of global entity data field items. Partial set of items incremented as specified.
         /// </summary>
@@ -462,8 +436,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void IncrementGlobalEntityData(
             string entityId,
@@ -498,8 +470,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetRandomEntitiesMatching(
             string whereJson,
@@ -537,8 +507,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateEntityIndexedId(
             string entityId,
             long version,
@@ -571,8 +539,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateEntityOwnerAndAcl(
             string entityId,
@@ -607,8 +573,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MakeSystemEntity(
             string entityId,

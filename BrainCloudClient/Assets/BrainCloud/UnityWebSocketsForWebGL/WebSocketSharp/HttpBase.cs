@@ -30,22 +30,20 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-
-
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.IO;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
   internal abstract class HttpBase
   {
     #region Private Fields
 
     private NameValueCollection _headers;
-    private const int           _headersMaxLength = 8192;
-    private Version             _version;
+    private const int _headersMaxLength = 8192;
+    private Version _version;
 
     #endregion
 
@@ -63,7 +61,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Protected Constructors
 
-    protected HttpBase (Version version, NameValueCollection headers)
+    protected HttpBase(Version version, NameValueCollection headers)
     {
       _version = version;
       _headers = headers;
@@ -73,8 +71,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Public Properties
 
-    public string EntityBody {
-      get {
+    public string EntityBody
+    {
+      get
+      {
         if (EntityBodyData == null || EntityBodyData.LongLength == 0)
           return String.Empty;
 
@@ -82,20 +82,24 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
         var contentType = _headers["Content-Type"];
         if (contentType != null && contentType.Length > 0)
-          enc = HttpUtility.GetEncoding (contentType);
+          enc = HttpUtility.GetEncoding(contentType);
 
-        return (enc ?? Encoding.UTF8).GetString (EntityBodyData);
+        return (enc ?? Encoding.UTF8).GetString(EntityBodyData);
       }
     }
 
-    public NameValueCollection Headers {
-      get {
+    public NameValueCollection Headers
+    {
+      get
+      {
         return _headers;
       }
     }
 
-    public Version ProtocolVersion {
-      get {
+    public Version ProtocolVersion
+    {
+      get
+      {
         return _version;
       }
     }
@@ -104,66 +108,70 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Private Methods
 
-    private static byte[] readEntityBody (Stream stream, string length)
+    private static byte[] readEntityBody(Stream stream, string length)
     {
       long len;
-      if (!Int64.TryParse (length, out len))
-        throw new ArgumentException ("Cannot be parsed.", "length");
+      if (!Int64.TryParse(length, out len))
+        throw new ArgumentException("Cannot be parsed.", "length");
 
       if (len < 0)
-        throw new ArgumentOutOfRangeException ("length", "Less than zero.");
+        throw new ArgumentOutOfRangeException("length", "Less than zero.");
 
       return len > 1024
-             ? stream.ReadBytes (len, 1024)
+             ? stream.ReadBytes(len, 1024)
              : len > 0
-               ? stream.ReadBytes ((int) len)
+               ? stream.ReadBytes((int)len)
                : null;
     }
 
-    private static string[] readHeaders (Stream stream, int maxLength)
+    private static string[] readHeaders(Stream stream, int maxLength)
     {
-      var buff = new List<byte> ();
+      var buff = new List<byte>();
       var cnt = 0;
-      Action<int> add = i => {
+      Action<int> add = i =>
+      {
         if (i == -1)
-          throw new EndOfStreamException ("The header cannot be read from the data source.");
+          throw new EndOfStreamException("The header cannot be read from the data source.");
 
-        buff.Add ((byte) i);
+        buff.Add((byte)i);
         cnt++;
       };
 
       var read = false;
-      while (cnt < maxLength) {
-        if (stream.ReadByte ().EqualsWith ('\r', add) &&
-            stream.ReadByte ().EqualsWith ('\n', add) &&
-            stream.ReadByte ().EqualsWith ('\r', add) &&
-            stream.ReadByte ().EqualsWith ('\n', add)) {
+      while (cnt < maxLength)
+      {
+        if (stream.ReadByte().EqualsWith('\r', add) &&
+            stream.ReadByte().EqualsWith('\n', add) &&
+            stream.ReadByte().EqualsWith('\r', add) &&
+            stream.ReadByte().EqualsWith('\n', add))
+        {
           read = true;
           break;
         }
       }
 
       if (!read)
-        throw new WebSocketException ("The length of header part is greater than the max length.");
+        throw new WebSocketException("The length of header part is greater than the max length.");
 
-      return Encoding.UTF8.GetString (buff.ToArray ())
-             .Replace (CrLf + " ", " ")
-             .Replace (CrLf + "\t", " ")
-             .Split (new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
+      return Encoding.UTF8.GetString(buff.ToArray())
+             .Replace(CrLf + " ", " ")
+             .Replace(CrLf + "\t", " ")
+             .Split(new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
     #endregion
 
     #region Protected Methods
 
-    protected static T Read<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
+    protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
       where T : HttpBase
     {
       var timeout = false;
-      var timer = new Timer (
-        state => {
+      var timer = new Timer(
+        state =>
+        {
           timeout = true;
-          stream.Close ();
+          stream.Close();
         },
         null,
         millisecondsTimeout,
@@ -171,18 +179,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
       T http = null;
       Exception exception = null;
-      try {
-        http = parser (readHeaders (stream, _headersMaxLength));
+      try
+      {
+        http = parser(readHeaders(stream, _headersMaxLength));
         var contentLen = http.Headers["Content-Length"];
         if (contentLen != null && contentLen.Length > 0)
-          http.EntityBodyData = readEntityBody (stream, contentLen);
+          http.EntityBodyData = readEntityBody(stream, contentLen);
       }
-      catch (Exception ex) {
+      catch (Exception ex)
+      {
         exception = ex;
       }
-      finally {
-        timer.Change (-1, -1);
-        timer.Dispose ();
+      finally
+      {
+        timer.Change(-1, -1);
+        timer.Dispose();
       }
 
       var msg = timeout
@@ -192,7 +203,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
                   : null;
 
       if (msg != null)
-        throw new WebSocketException (msg, exception);
+        throw new WebSocketException(msg, exception);
 
       return http;
     }
@@ -201,11 +212,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Public Methods
 
-    public byte[] ToByteArray ()
+    public byte[] ToByteArray()
     {
-      return Encoding.UTF8.GetBytes (ToString ());
+      return Encoding.UTF8.GetBytes(ToString());
     }
-    
+
     #endregion
   }
 }

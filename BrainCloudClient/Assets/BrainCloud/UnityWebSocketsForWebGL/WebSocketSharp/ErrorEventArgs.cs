@@ -37,9 +37,7 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-
-
+  using System;
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnError"/> event.
   /// </summary>
@@ -61,18 +59,18 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     #region Private Fields
 
     private Exception _exception;
-    private string    _message;
+    private string _message;
 
     #endregion
 
     #region Internal Constructors
 
-    internal ErrorEventArgs (string message)
-      : this (message, null)
+    internal ErrorEventArgs(string message)
+      : this(message, null)
     {
     }
 
-    internal ErrorEventArgs (string message, Exception exception)
+    internal ErrorEventArgs(string message, Exception exception)
     {
       _message = message;
       _exception = exception;
@@ -89,8 +87,10 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     /// An <see cref="System.Exception"/> instance that represents the cause of
     /// the error if it is due to an exception; otherwise, <see langword="null"/>.
     /// </value>
-    public Exception Exception {
-      get {
+    public Exception Exception
+    {
+      get
+      {
         return _exception;
       }
     }
@@ -101,8 +101,10 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     /// <value>
     /// A <see cref="string"/> that represents the error message.
     /// </value>
-    public string Message {
-      get {
+    public string Message
+    {
+      get
+      {
         return _message;
       }
     }

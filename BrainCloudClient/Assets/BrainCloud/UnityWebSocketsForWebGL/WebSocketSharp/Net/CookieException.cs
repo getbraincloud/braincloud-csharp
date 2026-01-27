@@ -40,11 +40,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-
-
+  using System;
+  using System.Runtime.Serialization;
+  using System.Security.Permissions;
   /// <summary>
   /// The exception that is thrown when a <see cref="Cookie"/> gets an error.
   /// </summary>
@@ -53,13 +51,13 @@ using System.Security.Permissions;
   {
     #region Internal Constructors
 
-    internal CookieException (string message)
-      : base (message)
+    internal CookieException(string message)
+      : base(message)
     {
     }
 
-    internal CookieException (string message, Exception innerException)
-      : base (message, innerException)
+    internal CookieException(string message, Exception innerException)
+      : base(message, innerException)
     {
     }
 
@@ -81,10 +79,10 @@ using System.Security.Permissions;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
-    protected CookieException (
+    protected CookieException(
       SerializationInfo serializationInfo, StreamingContext streamingContext
     )
-      : base (serializationInfo, streamingContext)
+      : base(serializationInfo, streamingContext)
     {
     }
 
@@ -95,8 +93,8 @@ using System.Security.Permissions;
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieException"/> class.
     /// </summary>
-    public CookieException ()
-      : base ()
+    public CookieException()
+      : base()
     {
     }
 
@@ -119,16 +117,16 @@ using System.Security.Permissions;
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
     [
-      SecurityPermission (
+      SecurityPermission(
         SecurityAction.LinkDemand,
         Flags = SecurityPermissionFlag.SerializationFormatter
       )
     ]
-    public override void GetObjectData (
+    public override void GetObjectData(
       SerializationInfo serializationInfo, StreamingContext streamingContext
     )
     {
-      base.GetObjectData (serializationInfo, streamingContext);
+      base.GetObjectData(serializationInfo, streamingContext);
     }
 
     #endregion
@@ -150,17 +148,17 @@ using System.Security.Permissions;
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
     [
-      SecurityPermission (
+      SecurityPermission(
         SecurityAction.LinkDemand,
         Flags = SecurityPermissionFlag.SerializationFormatter,
         SerializationFormatter = true
       )
     ]
-    void ISerializable.GetObjectData (
+    void ISerializable.GetObjectData(
       SerializationInfo serializationInfo, StreamingContext streamingContext
     )
     {
-      base.GetObjectData (serializationInfo, streamingContext);
+      base.GetObjectData(serializationInfo, streamingContext);
     }
 
     #endregion

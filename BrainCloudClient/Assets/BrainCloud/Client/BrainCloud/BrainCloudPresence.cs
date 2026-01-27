@@ -11,8 +11,6 @@ namespace BrainCloud
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
     using System;
-
-
     public class BrainCloudPresence
     {
         private BrainCloudClient _client;
@@ -32,8 +30,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ForcePush(
             SuccessCallback success = null,
@@ -59,8 +55,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetPresenceOfFriends(
             string platform,
@@ -91,8 +85,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetPresenceOfGroup(
             string groupId,
             bool includeOffline,
@@ -121,8 +113,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetPresenceOfUsers(
             List<string> profileIds,
@@ -153,8 +143,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RegisterListenersForFriends(
             string platform,
             bool bidirectional,
@@ -183,8 +171,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void RegisterListenersForGroup(
             string groupId,
@@ -215,8 +201,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RegisterListenersForProfiles(
             List<string> profileIds,
             bool bidirectional,
@@ -245,8 +229,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SetVisibility(
             bool visible,
             SuccessCallback success = null,
@@ -272,8 +254,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void StopListening(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -297,8 +277,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateActivity(
             string jsonActivity,

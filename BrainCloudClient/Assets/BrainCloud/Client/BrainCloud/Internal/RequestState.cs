@@ -12,8 +12,6 @@ namespace BrainCloud.Internal
 {
     using System;
     using System.Collections.Generic;
-
-
 #if (DOT_NET || GODOT)
 using System.Net;
 using System.Net.Http;

@@ -36,8 +36,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ProfanityCheck(
             string text,
             string languages,
@@ -62,8 +60,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Profanity, ServiceOperation.ProfanityCheck, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Replaces the characters of profanity text with a passed character(s).
         /// </summary>
@@ -80,8 +76,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ProfanityReplaceText(
             string text,
@@ -109,8 +103,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Profanity, ServiceOperation.ProfanityReplaceText, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Checks supplied text for profanity and returns a list of bad wors.
         /// </summary>
@@ -126,8 +118,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ProfanityIdentifyBadWords(
             string text,

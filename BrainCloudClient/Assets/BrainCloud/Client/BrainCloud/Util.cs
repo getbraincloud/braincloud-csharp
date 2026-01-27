@@ -7,17 +7,17 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
 
 #if !(DOT_NET || GODOT)
-using UnityEngine;
-using SysLanguageObject = UnityEngine.SystemLanguage;
+    using UnityEngine;
+    using SysLanguageObject = UnityEngine.SystemLanguage;
 #else
 using SysLanguageObject = System.String; // todo
 #endif
-    
+
     //[Serializable]
     public class Util
     {
@@ -39,8 +39,6 @@ using SysLanguageObject = System.String; // todo
         #region Language
         protected static Dictionary<SysLanguageObject, String> s_langCodes = new Dictionary<SysLanguageObject, String>();
         protected static SysLanguageObject s_defaultLang;
-
-
         static Util()
         {
 #if !(DOT_NET || GODOT)
@@ -176,6 +174,6 @@ using SysLanguageObject = System.String; // todo
             return (long)((TimeZoneInfo.ConvertTimeToUtc(dateTime) -
                    new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
         }
-#endregion
+        #endregion
     }
 }

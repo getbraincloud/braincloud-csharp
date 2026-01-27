@@ -24,8 +24,6 @@ namespace BrainCloud.Entity
 
         // one way to support delta updates...
         //protected IDictionary<string, object> m_cachedServerData = new Dictionary<string, object>();
-
-
         protected enum EntityState
         {
             // New client-side entity - hasn't been fetched from or created on the server
@@ -61,8 +59,6 @@ namespace BrainCloud.Entity
         protected BrainCloudEntity m_bcEntityService;
 
         //protected JsonData m_cachedServerObject;
-
-
         #region properties
         public string EntityId
         {
@@ -134,8 +130,6 @@ namespace BrainCloud.Entity
             }
         }
         #endregion
-
-
         #region abstractMethods
         protected abstract void CreateEntity(SuccessCallback success, FailureCallback failure);
         protected abstract void UpdateEntity(SuccessCallback success, FailureCallback failure);
@@ -292,8 +286,6 @@ namespace BrainCloud.Entity
                 m_data.Remove(key);
             }
         }
-
-
         public T Get<T>(string key)
         {
             return EntityUtil.GetObjectAsType<T>(m_data[key]);

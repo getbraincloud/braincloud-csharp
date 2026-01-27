@@ -49,19 +49,17 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.IO.Compression;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
-
-
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.IO;
+  using System.IO.Compression;
+  using System.Net.Sockets;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Text;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
   /// <summary>
   /// Provides a set of static methods for websocket-sharp.
   /// </summary>
@@ -70,81 +68,85 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     #region Private Fields
 
     private static readonly byte[] _last = new byte[] { 0x00 };
-    private static readonly int    _retry = 5;
-    private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
+    private static readonly int _retry = 5;
+    private const string _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
     #endregion
 
     #region Private Methods
 
-    private static byte[] compress (this byte[] data)
+    private static byte[] compress(this byte[] data)
     {
       if (data.LongLength == 0)
         //return new byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
         return data;
 
-      using (var input = new MemoryStream (data))
-        return input.compressToArray ();
+      using (var input = new MemoryStream(data))
+        return input.compressToArray();
     }
 
-    private static MemoryStream compress (this Stream stream)
+    private static MemoryStream compress(this Stream stream)
     {
-      var output = new MemoryStream ();
+      var output = new MemoryStream();
       if (stream.Length == 0)
         return output;
 
       stream.Position = 0;
-      using (var ds = new DeflateStream (output, CompressionMode.Compress, true)) {
-        stream.CopyTo (ds, 1024);
-        ds.Close (); // BFINAL set to 1.
-        output.Write (_last, 0, 1);
+      using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
+      {
+        stream.CopyTo(ds, 1024);
+        ds.Close(); // BFINAL set to 1.
+        output.Write(_last, 0, 1);
         output.Position = 0;
 
         return output;
       }
     }
 
-    private static byte[] compressToArray (this Stream stream)
+    private static byte[] compressToArray(this Stream stream)
     {
-      using (var output = stream.compress ()) {
-        output.Close ();
-        return output.ToArray ();
+      using (var output = stream.compress())
+      {
+        output.Close();
+        return output.ToArray();
       }
     }
 
-    private static byte[] decompress (this byte[] data)
+    private static byte[] decompress(this byte[] data)
     {
       if (data.LongLength == 0)
         return data;
 
-      using (var input = new MemoryStream (data))
-        return input.decompressToArray ();
+      using (var input = new MemoryStream(data))
+        return input.decompressToArray();
     }
 
-    private static MemoryStream decompress (this Stream stream)
+    private static MemoryStream decompress(this Stream stream)
     {
-      var output = new MemoryStream ();
+      var output = new MemoryStream();
       if (stream.Length == 0)
         return output;
 
       stream.Position = 0;
-      using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
-        ds.CopyTo (output, 1024);
+      using (var ds = new DeflateStream(stream, CompressionMode.Decompress, true))
+      {
+        ds.CopyTo(output, 1024);
         output.Position = 0;
 
         return output;
       }
     }
 
-    private static byte[] decompressToArray (this Stream stream)
+    private static byte[] decompressToArray(this Stream stream)
     {
-      using (var output = stream.decompress ()) {
-        output.Close ();
-        return output.ToArray ();
+      using (var output = stream.decompress())
+      {
+        output.Close();
+        return output.ToArray();
       }
     }
 
-    private static bool isHttpMethod (this string value)
+    private static bool isHttpMethod(this string value)
     {
       return value == "GET"
              || value == "HEAD"
@@ -156,7 +158,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
              || value == "TRACE";
     }
 
-    private static bool isHttpMethod10 (this string value)
+    private static bool isHttpMethod10(this string value)
     {
       return value == "GET"
              || value == "HEAD"
@@ -167,54 +169,54 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
 
     #region Internal Methods
 
-    internal static byte[] Append (this ushort code, string reason)
+    internal static byte[] Append(this ushort code, string reason)
     {
-      var bytes = code.InternalToByteArray (ByteOrder.Big);
+      var bytes = code.InternalToByteArray(ByteOrder.Big);
 
       if (reason == null || reason.Length == 0)
         return bytes;
 
-      var buff = new List<byte> (bytes);
-      buff.AddRange (Encoding.UTF8.GetBytes (reason));
+      var buff = new List<byte>(bytes);
+      buff.AddRange(Encoding.UTF8.GetBytes(reason));
 
-      return buff.ToArray ();
+      return buff.ToArray();
     }
 
-    internal static void Close (
+    internal static void Close(
       this HttpListenerResponse response, HttpStatusCode code
     )
     {
-      response.StatusCode = (int) code;
-      response.OutputStream.Close ();
+      response.StatusCode = (int)code;
+      response.OutputStream.Close();
     }
 
-    internal static void CloseWithAuthChallenge (
+    internal static void CloseWithAuthChallenge(
       this HttpListenerResponse response, string challenge
     )
     {
-      response.Headers.InternalSet ("WWW-Authenticate", challenge, true);
-      response.Close (HttpStatusCode.Unauthorized);
+      response.Headers.InternalSet("WWW-Authenticate", challenge, true);
+      response.Close(HttpStatusCode.Unauthorized);
     }
 
-    internal static byte[] Compress (this byte[] data, CompressionMethod method)
+    internal static byte[] Compress(this byte[] data, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? data.compress ()
+             ? data.compress()
              : data;
     }
 
-    internal static Stream Compress (this Stream stream, CompressionMethod method)
+    internal static Stream Compress(this Stream stream, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? stream.compress ()
+             ? stream.compress()
              : stream;
     }
 
-    internal static byte[] CompressToArray (this Stream stream, CompressionMethod method)
+    internal static byte[] CompressToArray(this Stream stream, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? stream.compressToArray ()
-             : stream.ToByteArray ();
+             ? stream.compressToArray()
+             : stream.ToByteArray();
     }
 
     /// <summary>
@@ -232,21 +234,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// An array of <see cref="char"/> that contains one or more characters to
     /// seek.
     /// </param>
-    internal static bool Contains (this string value, params char[] anyOf)
+    internal static bool Contains(this string value, params char[] anyOf)
     {
       return anyOf != null && anyOf.Length > 0
-             ? value.IndexOfAny (anyOf) > -1
+             ? value.IndexOfAny(anyOf) > -1
              : false;
     }
 
-    internal static bool Contains (
+    internal static bool Contains(
       this NameValueCollection collection, string name
     )
     {
       return collection[name] != null;
     }
 
-    internal static bool Contains (
+    internal static bool Contains(
       this NameValueCollection collection,
       string name,
       string value,
@@ -257,81 +259,86 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       if (val == null)
         return false;
 
-      foreach (var elm in val.Split (',')) {
-        if (elm.Trim ().Equals (value, comparisonTypeForValue))
+      foreach (var elm in val.Split(','))
+      {
+        if (elm.Trim().Equals(value, comparisonTypeForValue))
           return true;
       }
 
       return false;
     }
 
-    internal static bool Contains<T> (
+    internal static bool Contains<T>(
       this IEnumerable<T> source, Func<T, bool> condition
     )
     {
-      foreach (T elm in source) {
-        if (condition (elm))
+      foreach (T elm in source)
+      {
+        if (condition(elm))
           return true;
       }
 
       return false;
     }
 
-    internal static bool ContainsTwice (this string[] values)
+    internal static bool ContainsTwice(this string[] values)
     {
       var len = values.Length;
       var end = len - 1;
 
       Func<int, bool> seek = null;
-      seek = idx => {
-               if (idx == end)
-                 return false;
+      seek = idx =>
+      {
+        if (idx == end)
+          return false;
 
-               var val = values[idx];
-               for (var i = idx + 1; i < len; i++) {
-                 if (values[i] == val)
-                   return true;
-               }
+        var val = values[idx];
+        for (var i = idx + 1; i < len; i++)
+        {
+          if (values[i] == val)
+            return true;
+        }
 
-               return seek (++idx);
-             };
+        return seek(++idx);
+      };
 
-      return seek (0);
+      return seek(0);
     }
 
-    internal static T[] Copy<T> (this T[] source, int length)
+    internal static T[] Copy<T>(this T[] source, int length)
     {
       var dest = new T[length];
-      Array.Copy (source, 0, dest, 0, length);
+      Array.Copy(source, 0, dest, 0, length);
 
       return dest;
     }
 
-    internal static T[] Copy<T> (this T[] source, long length)
+    internal static T[] Copy<T>(this T[] source, long length)
     {
       var dest = new T[length];
-      Array.Copy (source, 0, dest, 0, length);
+      Array.Copy(source, 0, dest, 0, length);
 
       return dest;
     }
 
-    internal static void CopyTo (
+    internal static void CopyTo(
       this Stream source, Stream destination, int bufferLength
     )
     {
       var buff = new byte[bufferLength];
       var nread = 0;
 
-      while (true) {
-        nread = source.Read (buff, 0, bufferLength);
+      while (true)
+      {
+        nread = source.Read(buff, 0, bufferLength);
         if (nread <= 0)
           break;
 
-        destination.Write (buff, 0, nread);
+        destination.Write(buff, 0, nread);
       }
     }
 
-    internal static void CopyToAsync (
+    internal static void CopyToAsync(
       this Stream source,
       Stream destination,
       int bufferLength,
@@ -343,53 +350,59 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
 
       AsyncCallback callback = null;
       callback =
-        ar => {
-          try {
-            var nread = source.EndRead (ar);
-            if (nread <= 0) {
+        ar =>
+        {
+          try
+          {
+            var nread = source.EndRead(ar);
+            if (nread <= 0)
+            {
               if (completed != null)
-                completed ();
+                completed();
 
               return;
             }
 
-            destination.Write (buff, 0, nread);
-            source.BeginRead (buff, 0, bufferLength, callback, null);
+            destination.Write(buff, 0, nread);
+            source.BeginRead(buff, 0, bufferLength, callback, null);
           }
-          catch (Exception ex) {
+          catch (Exception ex)
+          {
             if (error != null)
-              error (ex);
+              error(ex);
           }
         };
 
-      try {
-        source.BeginRead (buff, 0, bufferLength, callback, null);
+      try
+      {
+        source.BeginRead(buff, 0, bufferLength, callback, null);
       }
-      catch (Exception ex) {
+      catch (Exception ex)
+      {
         if (error != null)
-          error (ex);
+          error(ex);
       }
     }
 
-    internal static byte[] Decompress (this byte[] data, CompressionMethod method)
+    internal static byte[] Decompress(this byte[] data, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? data.decompress ()
+             ? data.decompress()
              : data;
     }
 
-    internal static Stream Decompress (this Stream stream, CompressionMethod method)
+    internal static Stream Decompress(this Stream stream, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? stream.decompress ()
+             ? stream.decompress()
              : stream;
     }
 
-    internal static byte[] DecompressToArray (this Stream stream, CompressionMethod method)
+    internal static byte[] DecompressToArray(this Stream stream, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
-             ? stream.decompressToArray ()
-             : stream.ToByteArray ();
+             ? stream.decompressToArray()
+             : stream.ToByteArray();
     }
 
     /// <summary>
@@ -411,9 +424,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// at the same time as comparing. An <see cref="int"/> parameter to pass to
     /// the method(s) is <paramref name="value"/>.
     /// </param>
-    internal static bool EqualsWith (this int value, char c, Action<int> action)
+    internal static bool EqualsWith(this int value, char c, Action<int> action)
     {
-      action (value);
+      action(value);
       return value == c - 0;
     }
 
@@ -427,7 +440,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="uri">
     /// A <see cref="Uri"/> that represents the URI to get the absolute path from.
     /// </param>
-    internal static string GetAbsolutePath (this Uri uri)
+    internal static string GetAbsolutePath(this Uri uri)
     {
       if (uri.IsAbsoluteUri)
         return uri.AbsolutePath;
@@ -436,28 +449,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       if (original[0] != '/')
         return null;
 
-      var idx = original.IndexOfAny (new[] { '?', '#' });
-      return idx > 0 ? original.Substring (0, idx) : original;
+      var idx = original.IndexOfAny(new[] { '?', '#' });
+      return idx > 0 ? original.Substring(0, idx) : original;
     }
 
-    internal static CookieCollection GetCookies (
+    internal static CookieCollection GetCookies(
       this NameValueCollection headers, bool response
     )
     {
       var val = headers[response ? "Set-Cookie" : "Cookie"];
       return val != null
-             ? CookieCollection.Parse (val, response)
-             : new CookieCollection ();
+             ? CookieCollection.Parse(val, response)
+             : new CookieCollection();
     }
 
-    internal static string GetDnsSafeHost (this Uri uri, bool bracketIPv6)
+    internal static string GetDnsSafeHost(this Uri uri, bool bracketIPv6)
     {
       return bracketIPv6 && uri.HostNameType == UriHostNameType.IPv6
              ? uri.Host
              : uri.DnsSafeHost;
     }
 
-    internal static string GetMessage (this CloseStatusCode code)
+    internal static string GetMessage(this CloseStatusCode code)
     {
       return code == CloseStatusCode.ProtocolError
              ? "A WebSocket protocol error has occurred."
@@ -498,20 +511,20 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="separator">
     /// A <see cref="char"/> used to separate name and value.
     /// </param>
-    internal static string GetName (this string nameAndValue, char separator)
+    internal static string GetName(this string nameAndValue, char separator)
     {
-      var idx = nameAndValue.IndexOf (separator);
-      return idx > 0 ? nameAndValue.Substring (0, idx).Trim () : null;
+      var idx = nameAndValue.IndexOf(separator);
+      return idx > 0 ? nameAndValue.Substring(0, idx).Trim() : null;
     }
 
-    internal static string GetUTF8DecodedString (this byte[] bytes)
+    internal static string GetUTF8DecodedString(this byte[] bytes)
     {
-      return Encoding.UTF8.GetString (bytes);
+      return Encoding.UTF8.GetString(bytes);
     }
 
-    internal static byte[] GetUTF8EncodedBytes (this string s)
+    internal static byte[] GetUTF8EncodedBytes(this string s)
     {
-      return Encoding.UTF8.GetBytes (s);
+      return Encoding.UTF8.GetBytes(s);
     }
 
     /// <summary>
@@ -532,9 +545,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="separator">
     /// A <see cref="char"/> used to separate name and value.
     /// </param>
-    internal static string GetValue (this string nameAndValue, char separator)
+    internal static string GetValue(this string nameAndValue, char separator)
     {
-      return nameAndValue.GetValue (separator, false);
+      return nameAndValue.GetValue(separator, false);
     }
 
     /// <summary>
@@ -559,82 +572,82 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// A <see cref="bool"/>: <c>true</c> if unquotes the value; otherwise,
     /// <c>false</c>.
     /// </param>
-    internal static string GetValue (
+    internal static string GetValue(
       this string nameAndValue, char separator, bool unquote
     )
     {
-      var idx = nameAndValue.IndexOf (separator);
+      var idx = nameAndValue.IndexOf(separator);
       if (idx < 0 || idx == nameAndValue.Length - 1)
         return null;
 
-      var val = nameAndValue.Substring (idx + 1).Trim ();
-      return unquote ? val.Unquote () : val;
+      var val = nameAndValue.Substring(idx + 1).Trim();
+      return unquote ? val.Unquote() : val;
     }
 
-    internal static byte[] InternalToByteArray (
+    internal static byte[] InternalToByteArray(
       this ushort value, ByteOrder order
     )
     {
-      var ret = BitConverter.GetBytes (value);
+      var ret = BitConverter.GetBytes(value);
 
-      if (!order.IsHostOrder ())
-        Array.Reverse (ret);
+      if (!order.IsHostOrder())
+        Array.Reverse(ret);
 
       return ret;
     }
 
-    internal static byte[] InternalToByteArray (
+    internal static byte[] InternalToByteArray(
       this ulong value, ByteOrder order
     )
     {
-      var ret = BitConverter.GetBytes (value);
+      var ret = BitConverter.GetBytes(value);
 
-      if (!order.IsHostOrder ())
-        Array.Reverse (ret);
+      if (!order.IsHostOrder())
+        Array.Reverse(ret);
 
       return ret;
     }
 
-    internal static bool IsCompressionExtension (
+    internal static bool IsCompressionExtension(
       this string value, CompressionMethod method
     )
     {
-      return value.StartsWith (method.ToExtensionString ());
+      return value.StartsWith(method.ToExtensionString());
     }
 
-    internal static bool IsControl (this byte opcode)
+    internal static bool IsControl(this byte opcode)
     {
       return opcode > 0x7 && opcode < 0x10;
     }
 
-    internal static bool IsControl (this Opcode opcode)
+    internal static bool IsControl(this Opcode opcode)
     {
       return opcode >= Opcode.Close;
     }
 
-    internal static bool IsData (this byte opcode)
+    internal static bool IsData(this byte opcode)
     {
       return opcode == 0x1 || opcode == 0x2;
     }
 
-    internal static bool IsData (this Opcode opcode)
+    internal static bool IsData(this Opcode opcode)
     {
       return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
-    internal static bool IsHttpMethod (this string value, Version version)
+    internal static bool IsHttpMethod(this string value, Version version)
     {
       return version == HttpVersion.Version10
-             ? value.isHttpMethod10 ()
-             : value.isHttpMethod ();
+             ? value.isHttpMethod10()
+             : value.isHttpMethod();
     }
 
-    internal static bool IsPortNumber (this int value)
+    internal static bool IsPortNumber(this int value)
     {
       return value > 0 && value < 65536;
     }
 
-    internal static bool IsReserved (this ushort code)
+    internal static bool IsReserved(this ushort code)
     {
       return code == 1004
              || code == 1005
@@ -642,7 +655,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
              || code == 1015;
     }
 
-    internal static bool IsReserved (this CloseStatusCode code)
+    internal static bool IsReserved(this CloseStatusCode code)
     {
       return code == CloseStatusCode.Undefined
              || code == CloseStatusCode.NoStatus
@@ -650,28 +663,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
              || code == CloseStatusCode.TlsHandshakeFailure;
     }
 
-    internal static bool IsSupported (this byte opcode)
+    internal static bool IsSupported(this byte opcode)
     {
-      return Enum.IsDefined (typeof (Opcode), opcode);
+      return Enum.IsDefined(typeof(Opcode), opcode);
     }
 
-    internal static bool IsText (this string value)
+    internal static bool IsText(this string value)
     {
       var len = value.Length;
 
-      for (var i = 0; i < len; i++) {
+      for (var i = 0; i < len; i++)
+      {
         var c = value[i];
-        if (c < 0x20) {
-          if ("\r\n\t".IndexOf (c) == -1)
+        if (c < 0x20)
+        {
+          if ("\r\n\t".IndexOf(c) == -1)
             return false;
 
-          if (c == '\n') {
+          if (c == '\n')
+          {
             i++;
             if (i == len)
               break;
 
             c = value[i];
-            if (" \t".IndexOf (c) == -1)
+            if (" \t".IndexOf(c) == -1)
               return false;
           }
 
@@ -685,53 +701,57 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       return true;
     }
 
-    internal static bool IsToken (this string value)
+    internal static bool IsToken(this string value)
     {
-      foreach (var c in value) {
+      foreach (var c in value)
+      {
         if (c < 0x20)
           return false;
 
         if (c > 0x7e)
           return false;
 
-        if (_tspecials.IndexOf (c) > -1)
+        if (_tspecials.IndexOf(c) > -1)
           return false;
       }
 
       return true;
     }
 
-    internal static bool KeepsAlive (
+    internal static bool KeepsAlive(
       this NameValueCollection headers, Version version
     )
     {
       var comparison = StringComparison.OrdinalIgnoreCase;
       return version < HttpVersion.Version11
-             ? headers.Contains ("Connection", "keep-alive", comparison)
-             : !headers.Contains ("Connection", "close", comparison);
+             ? headers.Contains("Connection", "keep-alive", comparison)
+             : !headers.Contains("Connection", "close", comparison);
     }
 
-    internal static string Quote (this string value)
+    internal static string Quote(this string value)
     {
-      return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
+      return String.Format("\"{0}\"", value.Replace("\"", "\\\""));
     }
 
-    internal static byte[] ReadBytes (this Stream stream, int length)
+    internal static byte[] ReadBytes(this Stream stream, int length)
     {
       var buff = new byte[length];
       var offset = 0;
       var retry = 0;
       var nread = 0;
 
-      while (length > 0) {
-        nread = stream.Read (buff, offset, length);
-        if (nread <= 0) {
-          if (retry < _retry) {
+      while (length > 0)
+      {
+        nread = stream.Read(buff, offset, length);
+        if (nread <= 0)
+        {
+          if (retry < _retry)
+          {
             retry++;
             continue;
           }
 
-          return buff.SubArray (0, offset);
+          return buff.SubArray(0, offset);
         }
 
         retry = 0;
@@ -743,22 +763,26 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       return buff;
     }
 
-    internal static byte[] ReadBytes (
+    internal static byte[] ReadBytes(
       this Stream stream, long length, int bufferLength
     )
     {
-      using (var dest = new MemoryStream ()) {
+      using (var dest = new MemoryStream())
+      {
         var buff = new byte[bufferLength];
         var retry = 0;
         var nread = 0;
 
-        while (length > 0) {
+        while (length > 0)
+        {
           if (length < bufferLength)
-            bufferLength = (int) length;
+            bufferLength = (int)length;
 
-          nread = stream.Read (buff, 0, bufferLength);
-          if (nread <= 0) {
-            if (retry < _retry) {
+          nread = stream.Read(buff, 0, bufferLength);
+          if (nread <= 0)
+          {
+            if (retry < _retry)
+            {
               retry++;
               continue;
             }
@@ -768,16 +792,16 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
 
           retry = 0;
 
-          dest.Write (buff, 0, nread);
+          dest.Write(buff, 0, nread);
           length -= nread;
         }
 
-        dest.Close ();
-        return dest.ToArray ();
+        dest.Close();
+        return dest.ToArray();
       }
     }
 
-    internal static void ReadBytesAsync (
+    internal static void ReadBytesAsync(
       this Stream stream,
       int length,
       Action<byte[]> completed,
@@ -790,26 +814,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
 
       AsyncCallback callback = null;
       callback =
-        ar => {
-          try {
-            var nread = stream.EndRead (ar);
-            if (nread <= 0) {
-              if (retry < _retry) {
+        ar =>
+        {
+          try
+          {
+            var nread = stream.EndRead(ar);
+            if (nread <= 0)
+            {
+              if (retry < _retry)
+              {
                 retry++;
-                stream.BeginRead (buff, offset, length, callback, null);
+                stream.BeginRead(buff, offset, length, callback, null);
 
                 return;
               }
 
               if (completed != null)
-                completed (buff.SubArray (0, offset));
+                completed(buff.SubArray(0, offset));
 
               return;
             }
 
-            if (nread == length) {
+            if (nread == length)
+            {
               if (completed != null)
-                completed (buff);
+                completed(buff);
 
               return;
             }
@@ -819,24 +848,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
             offset += nread;
             length -= nread;
 
-            stream.BeginRead (buff, offset, length, callback, null);
+            stream.BeginRead(buff, offset, length, callback, null);
           }
-          catch (Exception ex) {
+          catch (Exception ex)
+          {
             if (error != null)
-              error (ex);
+              error(ex);
           }
         };
 
-      try {
-        stream.BeginRead (buff, offset, length, callback, null);
+      try
+      {
+        stream.BeginRead(buff, offset, length, callback, null);
       }
-      catch (Exception ex) {
+      catch (Exception ex)
+      {
         if (error != null)
-          error (ex);
+          error(ex);
       }
     }
 
-    internal static void ReadBytesAsync (
+    internal static void ReadBytesAsync(
       this Stream stream,
       long length,
       int bufferLength,
@@ -844,77 +876,88 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       Action<Exception> error
     )
     {
-      var dest = new MemoryStream ();
+      var dest = new MemoryStream();
       var buff = new byte[bufferLength];
       var retry = 0;
 
       Action<long> read = null;
       read =
-        len => {
+        len =>
+        {
           if (len < bufferLength)
-            bufferLength = (int) len;
+            bufferLength = (int)len;
 
-          stream.BeginRead (
+          stream.BeginRead(
             buff,
             0,
             bufferLength,
-            ar => {
-              try {
-                var nread = stream.EndRead (ar);
-                if (nread <= 0) {
-                  if (retry < _retry) {
+            ar =>
+            {
+              try
+              {
+                var nread = stream.EndRead(ar);
+                if (nread <= 0)
+                {
+                  if (retry < _retry)
+                  {
                     retry++;
-                    read (len);
+                    read(len);
 
                     return;
                   }
 
-                  if (completed != null) {
-                    dest.Close ();
-                    completed (dest.ToArray ());
+                  if (completed != null)
+                  {
+                    dest.Close();
+                    completed(dest.ToArray());
                   }
 
-                  dest.Dispose ();
+                  dest.Dispose();
                   return;
                 }
 
-                dest.Write (buff, 0, nread);
+                dest.Write(buff, 0, nread);
 
-                if (nread == len) {
-                  if (completed != null) {
-                    dest.Close ();
-                    completed (dest.ToArray ());
+                if (nread == len)
+                {
+                  if (completed != null)
+                  {
+                    dest.Close();
+                    completed(dest.ToArray());
                   }
 
-                  dest.Dispose ();
+                  dest.Dispose();
                   return;
                 }
 
                 retry = 0;
 
-                read (len - nread);
+                read(len - nread);
               }
-              catch (Exception ex) {
-                dest.Dispose ();
+              catch (Exception ex)
+              {
+                dest.Dispose();
                 if (error != null)
-                  error (ex);
+                  error(ex);
               }
             },
             null
           );
         };
 
-      try {
-        read (length);
+      try
+      {
+        read(length);
       }
-      catch (Exception ex) {
-        dest.Dispose ();
+      catch (Exception ex)
+      {
+        dest.Dispose();
         if (error != null)
-          error (ex);
+          error(ex);
       }
     }
 
-    internal static T[] Reverse<T> (this T[] array)
+    internal static T[] Reverse<T>(this T[] array)
     {
       var len = array.Length;
       var ret = new T[len];
@@ -926,23 +969,26 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       return ret;
     }
 
-    internal static IEnumerable<string> SplitHeaderValue (
+    internal static IEnumerable<string> SplitHeaderValue(
       this string value, params char[] separators
     )
     {
       var len = value.Length;
 
-      var buff = new StringBuilder (32);
+      var buff = new StringBuilder(32);
       var end = len - 1;
       var escaped = false;
       var quoted = false;
 
-      for (var i = 0; i <= end; i++) {
+      for (var i = 0; i <= end; i++)
+      {
         var c = value[i];
-        buff.Append (c);
+        buff.Append(c);
 
-        if (c == '"') {
-          if (escaped) {
+        if (c == '"')
+        {
+          if (escaped)
+          {
             escaped = false;
             continue;
           }
@@ -951,7 +997,8 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
           continue;
         }
 
-        if (c == '\\') {
+        if (c == '\\')
+        {
           if (i == end)
             break;
 
@@ -961,132 +1008,139 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
           continue;
         }
 
-        if (Array.IndexOf (separators, c) > -1) {
+        if (Array.IndexOf(separators, c) > -1)
+        {
           if (quoted)
             continue;
 
           buff.Length -= 1;
-          yield return buff.ToString ();
+          yield return buff.ToString();
 
           buff.Length = 0;
           continue;
         }
       }
 
-      yield return buff.ToString ();
+      yield return buff.ToString();
     }
 
-    internal static byte[] ToByteArray (this Stream stream)
+    internal static byte[] ToByteArray(this Stream stream)
     {
-      using (var output = new MemoryStream ()) {
+      using (var output = new MemoryStream())
+      {
         stream.Position = 0;
-        stream.CopyTo (output, 1024);
-        output.Close ();
+        stream.CopyTo(output, 1024);
+        output.Close();
 
-        return output.ToArray ();
+        return output.ToArray();
       }
     }
 
-    internal static CompressionMethod ToCompressionMethod (this string value)
+    internal static CompressionMethod ToCompressionMethod(this string value)
     {
-      var methods = Enum.GetValues (typeof (CompressionMethod));
-      foreach (CompressionMethod method in methods) {
-        if (method.ToExtensionString () == value)
+      var methods = Enum.GetValues(typeof(CompressionMethod));
+      foreach (CompressionMethod method in methods)
+      {
+        if (method.ToExtensionString() == value)
           return method;
       }
 
       return CompressionMethod.None;
     }
 
-    internal static string ToExtensionString (
+    internal static string ToExtensionString(
       this CompressionMethod method, params string[] parameters
     )
     {
       if (method == CompressionMethod.None)
         return String.Empty;
 
-      var name = String.Format (
-                   "permessage-{0}", method.ToString ().ToLower ()
+      var name = String.Format(
+                   "permessage-{0}", method.ToString().ToLower()
                  );
 
       return parameters != null && parameters.Length > 0
-             ? String.Format ("{0}; {1}", name, parameters.ToString ("; "))
+             ? String.Format("{0}; {1}", name, parameters.ToString("; "))
              : name;
     }
 
-    internal static System.Net.IPAddress ToIPAddress (this string value)
+    internal static System.Net.IPAddress ToIPAddress(this string value)
     {
       if (value == null || value.Length == 0)
         return null;
 
       System.Net.IPAddress addr;
-      if (System.Net.IPAddress.TryParse (value, out addr))
+      if (System.Net.IPAddress.TryParse(value, out addr))
         return addr;
 
-      try {
-        var addrs = System.Net.Dns.GetHostAddresses (value);
+      try
+      {
+        var addrs = System.Net.Dns.GetHostAddresses(value);
         return addrs[0];
       }
-      catch {
+      catch
+      {
         return null;
       }
     }
 
-    internal static List<TSource> ToList<TSource> (
+    internal static List<TSource> ToList<TSource>(
       this IEnumerable<TSource> source
     )
     {
-      return new List<TSource> (source);
+      return new List<TSource>(source);
     }
 
-    internal static string ToString (
+    internal static string ToString(
       this System.Net.IPAddress address, bool bracketIPv6
     )
     {
       return bracketIPv6
              && address.AddressFamily == AddressFamily.InterNetworkV6
-             ? String.Format ("[{0}]", address.ToString ())
-             : address.ToString ();
+             ? String.Format("[{0}]", address.ToString())
+             : address.ToString();
     }
 
-    internal static ushort ToUInt16 (this byte[] source, ByteOrder sourceOrder)
+    internal static ushort ToUInt16(this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt16 (source.ToHostOrder (sourceOrder), 0);
+      return BitConverter.ToUInt16(source.ToHostOrder(sourceOrder), 0);
     }
 
-    internal static ulong ToUInt64 (this byte[] source, ByteOrder sourceOrder)
+    internal static ulong ToUInt64(this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
+      return BitConverter.ToUInt64(source.ToHostOrder(sourceOrder), 0);
     }
 
-    internal static IEnumerable<string> Trim (this IEnumerable<string> source)
+    internal static IEnumerable<string> Trim(this IEnumerable<string> source)
     {
       foreach (var elm in source)
-        yield return elm.Trim ();
+        yield return elm.Trim();
     }
 
-    internal static string TrimSlashFromEnd (this string value)
+    internal static string TrimSlashFromEnd(this string value)
     {
-      var ret = value.TrimEnd ('/');
+      var ret = value.TrimEnd('/');
       return ret.Length > 0 ? ret : "/";
     }
 
-    internal static string TrimSlashOrBackslashFromEnd (this string value)
+    internal static string TrimSlashOrBackslashFromEnd(this string value)
     {
-      var ret = value.TrimEnd ('/', '\\');
-      return ret.Length > 0 ? ret : value[0].ToString ();
+      var ret = value.TrimEnd('/', '\\');
+      return ret.Length > 0 ? ret : value[0].ToString();
     }
 
-    internal static bool TryCreateVersion (
+    internal static bool TryCreateVersion(
       this string versionString, out Version result
     )
     {
       result = null;
 
-      try {
-        result = new Version (versionString);
+      try
+      {
+        result = new Version(versionString);
       }
-      catch {
+      catch
+      {
         return false;
       }
 
@@ -1114,45 +1168,50 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// represents an error message or <see langword="null"/>
     /// if <paramref name="uriString"/> is valid.
     /// </param>
-    internal static bool TryCreateWebSocketUri (
+    internal static bool TryCreateWebSocketUri(
       this string uriString, out Uri result, out string message
     )
     {
       result = null;
       message = null;
 
-      var uri = uriString.ToUri ();
-      if (uri == null) {
+      var uri = uriString.ToUri();
+      if (uri == null)
+      {
         message = "An invalid URI string.";
         return false;
       }
 
-      if (!uri.IsAbsoluteUri) {
+      if (!uri.IsAbsoluteUri)
+      {
         message = "A relative URI.";
         return false;
       }
 
       var schm = uri.Scheme;
-      if (!(schm == "ws" || schm == "wss")) {
+      if (!(schm == "ws" || schm == "wss"))
+      {
         message = "The scheme part is not 'ws' or 'wss'.";
         return false;
       }
 
       var port = uri.Port;
-      if (port == 0) {
+      if (port == 0)
+      {
         message = "The port part is zero.";
         return false;
       }
 
-      if (uri.Fragment.Length > 0) {
+      if (uri.Fragment.Length > 0)
+      {
         message = "It includes the fragment component.";
         return false;
       }
 
       result = port != -1
                ? uri
-               : new Uri (
-                   String.Format (
+               : new Uri(
+                   String.Format(
                      "{0}://{1}:{2}{3}",
                      schm,
                      uri.Host,
@@ -1164,94 +1223,100 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       return true;
     }
 
-    internal static bool TryGetUTF8DecodedString (this byte[] bytes, out string s)
+    internal static bool TryGetUTF8DecodedString(this byte[] bytes, out string s)
     {
       s = null;
 
-      try {
-        s = Encoding.UTF8.GetString (bytes);
+      try
+      {
+        s = Encoding.UTF8.GetString(bytes);
       }
-      catch {
+      catch
+      {
         return false;
       }
 
       return true;
     }
 
-    internal static bool TryGetUTF8EncodedBytes (this string s, out byte[] bytes)
+    internal static bool TryGetUTF8EncodedBytes(this string s, out byte[] bytes)
     {
       bytes = null;
 
-      try {
-        bytes = Encoding.UTF8.GetBytes (s);
+      try
+      {
+        bytes = Encoding.UTF8.GetBytes(s);
       }
-      catch {
+      catch
+      {
         return false;
       }
 
       return true;
     }
 
-    internal static bool TryOpenRead (
+    internal static bool TryOpenRead(
       this FileInfo fileInfo, out FileStream fileStream
     )
     {
       fileStream = null;
 
-      try {
-        fileStream = fileInfo.OpenRead ();
+      try
+      {
+        fileStream = fileInfo.OpenRead();
       }
-      catch {
+      catch
+      {
         return false;
       }
 
       return true;
     }
 
-    internal static string Unquote (this string value)
+    internal static string Unquote(this string value)
     {
-      var start = value.IndexOf ('"');
+      var start = value.IndexOf('"');
       if (start == -1)
         return value;
 
-      var end = value.LastIndexOf ('"');
+      var end = value.LastIndexOf('"');
       if (end == start)
         return value;
 
       var len = end - start - 1;
       return len > 0
-             ? value.Substring (start + 1, len).Replace ("\\\"", "\"")
+             ? value.Substring(start + 1, len).Replace("\\\"", "\"")
              : String.Empty;
     }
 
-    internal static bool Upgrades (
+    internal static bool Upgrades(
       this NameValueCollection headers, string protocol
     )
     {
       var comparison = StringComparison.OrdinalIgnoreCase;
-      return headers.Contains ("Upgrade", protocol, comparison)
-             && headers.Contains ("Connection", "Upgrade", comparison);
+      return headers.Contains("Upgrade", protocol, comparison)
+             && headers.Contains("Connection", "Upgrade", comparison);
     }
 
-    internal static string UrlDecode (this string value, Encoding encoding)
+    internal static string UrlDecode(this string value, Encoding encoding)
     {
-      return HttpUtility.UrlDecode (value, encoding);
+      return HttpUtility.UrlDecode(value, encoding);
     }
 
-    internal static string UrlEncode (this string value, Encoding encoding)
+    internal static string UrlEncode(this string value, Encoding encoding)
     {
-      return HttpUtility.UrlEncode (value, encoding);
+      return HttpUtility.UrlEncode(value, encoding);
     }
 
-    internal static void WriteBytes (
+    internal static void WriteBytes(
       this Stream stream, byte[] bytes, int bufferLength
     )
     {
-      using (var src = new MemoryStream (bytes))
-        src.CopyTo (stream, bufferLength);
+      using (var src = new MemoryStream(bytes))
+        src.CopyTo(stream, bufferLength);
     }
 
-    internal static void WriteBytesAsync (
+    internal static void WriteBytesAsync(
       this Stream stream,
       byte[] bytes,
       int bufferLength,
@@ -1259,20 +1324,22 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       Action<Exception> error
     )
     {
-      var src = new MemoryStream (bytes);
-      src.CopyToAsync (
+      var src = new MemoryStream(bytes);
+      src.CopyToAsync(
         stream,
         bufferLength,
-        () => {
+        () =>
+        {
           if (completed != null)
-            completed ();
+            completed();
 
-          src.Dispose ();
+          src.Dispose();
         },
-        ex => {
-          src.Dispose ();
+        ex =>
+        {
+          src.Dispose();
           if (error != null)
-            error (ex);
+            error(ex);
         }
       );
     }
@@ -1293,10 +1360,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="e">
     /// A <see cref="EventArgs"/> that contains no event data.
     /// </param>
-    public static void Emit (this EventHandler eventHandler, object sender, EventArgs e)
+    public static void Emit(this EventHandler eventHandler, object sender, EventArgs e)
     {
       if (eventHandler != null)
-        eventHandler (sender, e);
+        eventHandler(sender, e);
     }
 
     /// <summary>
@@ -1315,12 +1382,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <typeparam name="TEventArgs">
     /// The type of the event data generated by the event.
     /// </typeparam>
-    public static void Emit<TEventArgs> (
+    public static void Emit<TEventArgs>(
       this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e)
       where TEventArgs : EventArgs
     {
       if (eventHandler != null)
-        eventHandler (sender, e);
+        eventHandler(sender, e);
     }
 
     /// <summary>
@@ -1332,9 +1399,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="code">
     /// One of <see cref="HttpStatusCode"/> enum values, indicates the HTTP status code.
     /// </param>
-    public static string GetDescription (this HttpStatusCode code)
+    public static string GetDescription(this HttpStatusCode code)
     {
-      return ((int) code).GetStatusDescription ();
+      return ((int)code).GetStatusDescription();
     }
 
     /// <summary>
@@ -1346,9 +1413,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="code">
     /// An <see cref="int"/> that represents the HTTP status code.
     /// </param>
-    public static string GetStatusDescription (this int code)
+    public static string GetStatusDescription(this int code)
     {
-      switch (code) {
+      switch (code)
+      {
         case 100: return "Continue";
         case 101: return "Switching Protocols";
         case 102: return "Processing";
@@ -1435,7 +1503,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="value">
     /// A <see cref="ushort"/> to test.
     /// </param>
-    public static bool IsCloseStatusCode (this ushort value)
+    public static bool IsCloseStatusCode(this ushort value)
     {
       return value > 999 && value < 5000;
     }
@@ -1454,7 +1522,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="c">
     /// A <see cref="char"/> to find.
     /// </param>
-    public static bool IsEnclosedIn (this string value, char c)
+    public static bool IsEnclosedIn(this string value, char c)
     {
       if (value == null)
         return false;
@@ -1477,7 +1545,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="order">
     /// One of the <see cref="ByteOrder"/> enum values to test.
     /// </param>
-    public static bool IsHostOrder (this ByteOrder order)
+    public static bool IsHostOrder(this ByteOrder order)
     {
       // true: !(true ^ true) or !(false ^ false)
       // false: !(true ^ false) or !(false ^ true)
@@ -1500,29 +1568,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
-    public static bool IsLocal (this System.Net.IPAddress address)
+    public static bool IsLocal(this System.Net.IPAddress address)
     {
       if (address == null)
-        throw new ArgumentNullException ("address");
+        throw new ArgumentNullException("address");
 
-      if (address.Equals (System.Net.IPAddress.Any))
+      if (address.Equals(System.Net.IPAddress.Any))
         return true;
 
-      if (address.Equals (System.Net.IPAddress.Loopback))
+      if (address.Equals(System.Net.IPAddress.Loopback))
         return true;
 
-      if (Socket.OSSupportsIPv6) {
-        if (address.Equals (System.Net.IPAddress.IPv6Any))
+      if (Socket.OSSupportsIPv6)
+      {
+        if (address.Equals(System.Net.IPAddress.IPv6Any))
           return true;
 
-        if (address.Equals (System.Net.IPAddress.IPv6Loopback))
+        if (address.Equals(System.Net.IPAddress.IPv6Loopback))
           return true;
       }
 
-      var host = System.Net.Dns.GetHostName ();
-      var addrs = System.Net.Dns.GetHostAddresses (host);
-      foreach (var addr in addrs) {
-        if (address.Equals (addr))
+      var host = System.Net.Dns.GetHostName();
+      var addrs = System.Net.Dns.GetHostAddresses(host);
+      foreach (var addr in addrs)
+      {
+        if (address.Equals(addr))
           return true;
       }
 
@@ -1540,7 +1610,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
-    public static bool IsNullOrEmpty (this string value)
+    public static bool IsNullOrEmpty(this string value)
     {
       return value == null || value.Length == 0;
     }
@@ -1555,7 +1625,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
-    public static bool IsPredefinedScheme (this string value)
+    public static bool IsPredefinedScheme(this string value)
     {
       if (value == null || value.Length < 2)
         return false;
@@ -1576,7 +1646,8 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       if (c == 'm')
         return value == "mailto";
 
-      if (c == 'n') {
+      if (c == 'n')
+      {
         c = value[1];
         return c == 'e'
                ? value == "news" || value == "net.pipe" || value == "net.tcp"
@@ -1596,7 +1667,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
-    public static bool MaybeUri (this string value)
+    public static bool MaybeUri(this string value)
     {
       if (value == null)
         return false;
@@ -1604,15 +1675,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       if (value.Length == 0)
         return false;
 
-      var idx = value.IndexOf (':');
+      var idx = value.IndexOf(':');
       if (idx == -1)
         return false;
 
       if (idx >= 10)
         return false;
 
-      var schm = value.Substring (0, idx);
-      return schm.IsPredefinedScheme ();
+      var schm = value.Substring(0, idx);
+      return schm.IsPredefinedScheme();
     }
 
     /// <summary>
@@ -1662,27 +1733,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   <paramref name="startIndex"/> to the end of the array.
     ///   </para>
     /// </exception>
-    public static T[] SubArray<T> (this T[] array, int startIndex, int length)
+    public static T[] SubArray<T>(this T[] array, int startIndex, int length)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException("array");
 
       var len = array.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         if (startIndex != 0)
-          throw new ArgumentOutOfRangeException ("startIndex");
+          throw new ArgumentOutOfRangeException("startIndex");
 
         if (length != 0)
-          throw new ArgumentOutOfRangeException ("length");
+          throw new ArgumentOutOfRangeException("length");
 
         return array;
       }
 
       if (startIndex < 0 || startIndex >= len)
-        throw new ArgumentOutOfRangeException ("startIndex");
+        throw new ArgumentOutOfRangeException("startIndex");
 
       if (length < 0 || length > len - startIndex)
-        throw new ArgumentOutOfRangeException ("length");
+        throw new ArgumentOutOfRangeException("length");
 
       if (length == 0)
         return new T[0];
@@ -1691,7 +1763,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return array;
 
       var subArray = new T[length];
-      Array.Copy (array, startIndex, subArray, 0, length);
+      Array.Copy(array, startIndex, subArray, 0, length);
 
       return subArray;
     }
@@ -1743,27 +1815,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   <paramref name="startIndex"/> to the end of the array.
     ///   </para>
     /// </exception>
-    public static T[] SubArray<T> (this T[] array, long startIndex, long length)
+    public static T[] SubArray<T>(this T[] array, long startIndex, long length)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException("array");
 
       var len = array.LongLength;
-      if (len == 0) {
+      if (len == 0)
+      {
         if (startIndex != 0)
-          throw new ArgumentOutOfRangeException ("startIndex");
+          throw new ArgumentOutOfRangeException("startIndex");
 
         if (length != 0)
-          throw new ArgumentOutOfRangeException ("length");
+          throw new ArgumentOutOfRangeException("length");
 
         return array;
       }
 
       if (startIndex < 0 || startIndex >= len)
-        throw new ArgumentOutOfRangeException ("startIndex");
+        throw new ArgumentOutOfRangeException("startIndex");
 
       if (length < 0 || length > len - startIndex)
-        throw new ArgumentOutOfRangeException ("length");
+        throw new ArgumentOutOfRangeException("length");
 
       if (length == 0)
         return new T[0];
@@ -1772,7 +1845,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return array;
 
       var subArray = new T[length];
-      Array.Copy (array, startIndex, subArray, 0, length);
+      Array.Copy(array, startIndex, subArray, 0, length);
 
       return subArray;
     }
@@ -1786,7 +1859,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="action">
     /// An <see cref="Action"/> delegate to execute.
     /// </param>
-    public static void Times (this int n, Action action)
+    public static void Times(this int n, Action action)
     {
       if (n <= 0)
         return;
@@ -1795,7 +1868,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (int i = 0; i < n; i++)
-        action ();
+        action();
     }
 
     /// <summary>
@@ -1807,7 +1880,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="action">
     /// An <see cref="Action"/> delegate to execute.
     /// </param>
-    public static void Times (this long n, Action action)
+    public static void Times(this long n, Action action)
     {
       if (n <= 0)
         return;
@@ -1816,7 +1889,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (long i = 0; i < n; i++)
-        action ();
+        action();
     }
 
     /// <summary>
@@ -1828,7 +1901,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="action">
     /// An <see cref="Action"/> delegate to execute.
     /// </param>
-    public static void Times (this uint n, Action action)
+    public static void Times(this uint n, Action action)
     {
       if (n == 0)
         return;
@@ -1837,7 +1910,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (uint i = 0; i < n; i++)
-        action ();
+        action();
     }
 
     /// <summary>
@@ -1849,7 +1922,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="action">
     /// An <see cref="Action"/> delegate to execute.
     /// </param>
-    public static void Times (this ulong n, Action action)
+    public static void Times(this ulong n, Action action)
     {
       if (n == 0)
         return;
@@ -1858,7 +1931,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (ulong i = 0; i < n; i++)
-        action ();
+        action();
     }
 
     /// <summary>
@@ -1875,7 +1948,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   The <see cref="int"/> parameter is the zero-based count of iteration.
     ///   </para>
     /// </param>
-    public static void Times (this int n, Action<int> action)
+    public static void Times(this int n, Action<int> action)
     {
       if (n <= 0)
         return;
@@ -1884,7 +1957,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (int i = 0; i < n; i++)
-        action (i);
+        action(i);
     }
 
     /// <summary>
@@ -1901,7 +1974,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   The <see cref="long"/> parameter is the zero-based count of iteration.
     ///   </para>
     /// </param>
-    public static void Times (this long n, Action<long> action)
+    public static void Times(this long n, Action<long> action)
     {
       if (n <= 0)
         return;
@@ -1910,7 +1983,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (long i = 0; i < n; i++)
-        action (i);
+        action(i);
     }
 
     /// <summary>
@@ -1927,7 +2000,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   The <see cref="uint"/> parameter is the zero-based count of iteration.
     ///   </para>
     /// </param>
-    public static void Times (this uint n, Action<uint> action)
+    public static void Times(this uint n, Action<uint> action)
     {
       if (n == 0)
         return;
@@ -1936,7 +2009,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (uint i = 0; i < n; i++)
-        action (i);
+        action(i);
     }
 
     /// <summary>
@@ -1953,7 +2026,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   The <see cref="ulong"/> parameter is the zero-based count of iteration.
     ///   </para>
     /// </param>
-    public static void Times (this ulong n, Action<ulong> action)
+    public static void Times(this ulong n, Action<ulong> action)
     {
       if (n == 0)
         return;
@@ -1962,7 +2035,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
         return;
 
       for (ulong i = 0; i < n; i++)
-        action (i);
+        action(i);
     }
 
     /// <summary>
@@ -2001,40 +2074,40 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public static T To<T> (this byte[] source, ByteOrder sourceOrder)
+    [Obsolete("This method will be removed.")]
+    public static T To<T>(this byte[] source, ByteOrder sourceOrder)
       where T : struct
     {
       if (source == null)
-        throw new ArgumentNullException ("source");
+        throw new ArgumentNullException("source");
 
       if (source.Length == 0)
-        return default (T);
+        return default(T);
 
-      var type = typeof (T);
-      var val = source.ToHostOrder (sourceOrder);
+      var type = typeof(T);
+      var val = source.ToHostOrder(sourceOrder);
 
-      return type == typeof (Boolean)
-             ? (T)(object) BitConverter.ToBoolean (val, 0)
-             : type == typeof (Char)
-               ? (T)(object) BitConverter.ToChar (val, 0)
-               : type == typeof (Double)
-                 ? (T)(object) BitConverter.ToDouble (val, 0)
-                 : type == typeof (Int16)
-                   ? (T)(object) BitConverter.ToInt16 (val, 0)
-                   : type == typeof (Int32)
-                     ? (T)(object) BitConverter.ToInt32 (val, 0)
-                     : type == typeof (Int64)
-                       ? (T)(object) BitConverter.ToInt64 (val, 0)
-                       : type == typeof (Single)
-                         ? (T)(object) BitConverter.ToSingle (val, 0)
-                         : type == typeof (UInt16)
-                           ? (T)(object) BitConverter.ToUInt16 (val, 0)
-                           : type == typeof (UInt32)
-                             ? (T)(object) BitConverter.ToUInt32 (val, 0)
-                             : type == typeof (UInt64)
-                               ? (T)(object) BitConverter.ToUInt64 (val, 0)
-                               : default (T);
+      return type == typeof(Boolean)
+             ? (T)(object)BitConverter.ToBoolean(val, 0)
+             : type == typeof(Char)
+               ? (T)(object)BitConverter.ToChar(val, 0)
+               : type == typeof(Double)
+                 ? (T)(object)BitConverter.ToDouble(val, 0)
+                 : type == typeof(Int16)
+                   ? (T)(object)BitConverter.ToInt16(val, 0)
+                   : type == typeof(Int32)
+                     ? (T)(object)BitConverter.ToInt32(val, 0)
+                     : type == typeof(Int64)
+                       ? (T)(object)BitConverter.ToInt64(val, 0)
+                       : type == typeof(Single)
+                         ? (T)(object)BitConverter.ToSingle(val, 0)
+                         : type == typeof(UInt16)
+                           ? (T)(object)BitConverter.ToUInt16(val, 0)
+                           : type == typeof(UInt32)
+                             ? (T)(object)BitConverter.ToUInt32(val, 0)
+                             : type == typeof(UInt64)
+                               ? (T)(object)BitConverter.ToUInt64(val, 0)
+                               : default(T);
     }
 
     /// <summary>
@@ -2065,38 +2138,39 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   <see cref="ulong"/>, or <see cref="ushort"/>.
     ///   </para>
     /// </typeparam>
-    [Obsolete ("This method will be removed.")]
-    public static byte[] ToByteArray<T> (this T value, ByteOrder order)
+    [Obsolete("This method will be removed.")]
+    public static byte[] ToByteArray<T>(this T value, ByteOrder order)
       where T : struct
     {
-      var type = typeof (T);
-      var bytes = type == typeof (Boolean)
-                  ? BitConverter.GetBytes ((Boolean)(object) value)
-                  : type == typeof (Byte)
-                    ? new byte[] { (Byte)(object) value }
-                    : type == typeof (Char)
-                      ? BitConverter.GetBytes ((Char)(object) value)
-                      : type == typeof (Double)
-                        ? BitConverter.GetBytes ((Double)(object) value)
-                        : type == typeof (Int16)
-                          ? BitConverter.GetBytes ((Int16)(object) value)
-                          : type == typeof (Int32)
-                            ? BitConverter.GetBytes ((Int32)(object) value)
-                            : type == typeof (Int64)
-                              ? BitConverter.GetBytes ((Int64)(object) value)
-                              : type == typeof (Single)
-                                ? BitConverter.GetBytes ((Single)(object) value)
-                                : type == typeof (UInt16)
-                                  ? BitConverter.GetBytes ((UInt16)(object) value)
-                                  : type == typeof (UInt32)
-                                    ? BitConverter.GetBytes ((UInt32)(object) value)
-                                    : type == typeof (UInt64)
-                                      ? BitConverter.GetBytes ((UInt64)(object) value)
+      var type = typeof(T);
+      var bytes = type == typeof(Boolean)
+                  ? BitConverter.GetBytes((Boolean)(object)value)
+                  : type == typeof(Byte)
+                    ? new byte[] { (Byte)(object)value }
+                    : type == typeof(Char)
+                      ? BitConverter.GetBytes((Char)(object)value)
+                      : type == typeof(Double)
+                        ? BitConverter.GetBytes((Double)(object)value)
+                        : type == typeof(Int16)
+                          ? BitConverter.GetBytes((Int16)(object)value)
+                          : type == typeof(Int32)
+                            ? BitConverter.GetBytes((Int32)(object)value)
+                            : type == typeof(Int64)
+                              ? BitConverter.GetBytes((Int64)(object)value)
+                              : type == typeof(Single)
+                                ? BitConverter.GetBytes((Single)(object)value)
+                                : type == typeof(UInt16)
+                                  ? BitConverter.GetBytes((UInt16)(object)value)
+                                  : type == typeof(UInt32)
+                                    ? BitConverter.GetBytes((UInt32)(object)value)
+                                    : type == typeof(UInt64)
+                                      ? BitConverter.GetBytes((UInt64)(object)value)
                                       : WebSocket.EmptyBytes;
 
-      if (bytes.Length > 1) {
-        if (!order.IsHostOrder ())
-          Array.Reverse (bytes);
+      if (bytes.Length > 1)
+      {
+        if (!order.IsHostOrder())
+          Array.Reverse(bytes);
       }
 
       return bytes;
@@ -2131,18 +2205,18 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
-    public static byte[] ToHostOrder (this byte[] source, ByteOrder sourceOrder)
+    public static byte[] ToHostOrder(this byte[] source, ByteOrder sourceOrder)
     {
       if (source == null)
-        throw new ArgumentNullException ("source");
+        throw new ArgumentNullException("source");
 
       if (source.Length < 2)
         return source;
 
-      if (sourceOrder.IsHostOrder ())
+      if (sourceOrder.IsHostOrder())
         return source;
 
-      return source.Reverse ();
+      return source.Reverse();
     }
 
     /// <summary>
@@ -2170,10 +2244,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="array"/> is <see langword="null"/>.
     /// </exception>
-    public static string ToString<T> (this T[] array, string separator)
+    public static string ToString<T>(this T[] array, string separator)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException("array");
 
       var len = array.Length;
       if (len == 0)
@@ -2182,14 +2256,14 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       if (separator == null)
         separator = String.Empty;
 
-      var buff = new StringBuilder (64);
+      var buff = new StringBuilder(64);
       var end = len - 1;
 
       for (var i = 0; i < end; i++)
-        buff.AppendFormat ("{0}{1}", array[i], separator);
+        buff.AppendFormat("{0}{1}", array[i], separator);
 
-      buff.Append (array[end].ToString ());
-      return buff.ToString ();
+      buff.Append(array[end].ToString());
+      return buff.ToString();
     }
 
     /// <summary>
@@ -2206,11 +2280,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     /// <param name="value">
     /// A <see cref="string"/> to convert.
     /// </param>
-    public static Uri ToUri (this string value)
+    public static Uri ToUri(this string value)
     {
       Uri ret;
-      Uri.TryCreate (
-        value, value.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out ret
+      Uri.TryCreate(
+        value, value.MaybeUri() ? UriKind.Absolute : UriKind.Relative, out ret
       );
 
       return ret;
@@ -2237,20 +2311,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
     ///   <paramref name="content"/> is <see langword="null"/>.
     ///   </para>
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public static void WriteContent (
+    [Obsolete("This method will be removed.")]
+    public static void WriteContent(
       this HttpListenerResponse response, byte[] content
     )
     {
       if (response == null)
-        throw new ArgumentNullException ("response");
+        throw new ArgumentNullException("response");
 
       if (content == null)
-        throw new ArgumentNullException ("content");
+        throw new ArgumentNullException("content");
 
       var len = content.LongLength;
-      if (len == 0) {
-        response.Close ();
+      if (len == 0)
+      {
+        response.Close();
         return;
       }
 
@@ -2259,11 +2334,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
       var output = response.OutputStream;
 
       if (len <= Int32.MaxValue)
-        output.Write (content, 0, (int) len);
+        output.Write(content, 0, (int)len);
       else
-        output.WriteBytes (content, 1024);
+        output.WriteBytes(content, 1024);
 
-      output.Close ();
+      output.Close();
     }
 
     #endregion

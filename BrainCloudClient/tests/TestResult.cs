@@ -5,8 +5,6 @@ using NUnit.Framework;
 using BrainCloud.JsonFx.Json;
 using BrainCloud;
 using System;
-
-
 namespace BrainCloudTests
 {
     public class TestResult
@@ -62,15 +60,13 @@ namespace BrainCloudTests
 
             return m_result;
         }
-
-
         public bool RunExpectFail(int in_expectedStatusCode, int in_expectedReasonCode)
         {
             Reset();
             Spin();
 
             Assert.That(!m_result);
-            
+
             if (in_expectedStatusCode != -1)
             {
                 Assert.That(in_expectedStatusCode == m_statusCode);
@@ -98,7 +94,7 @@ namespace BrainCloudTests
             Spin();
 
             Assert.That(!m_result);
-            
+
             return !m_result;
         }
 

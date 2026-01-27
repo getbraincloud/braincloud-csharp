@@ -52,8 +52,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SetPlayerRating(
             long playerRating,
             SuccessCallback success = null,
@@ -101,8 +99,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void IncrementPlayerRating(
             long increment,
             SuccessCallback success = null,
@@ -128,8 +124,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DecrementPlayerRating(
             long decrement,
@@ -178,8 +172,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void TurnShieldOnFor(
             int minutes,
             SuccessCallback success = null,
@@ -227,8 +219,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void IncrementShieldOnFor(
             int minutes,
             SuccessCallback success = null,
@@ -254,8 +244,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetShieldExpiry(
             string playerId,
@@ -287,8 +275,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void FindPlayers(
             long rangeDelta,
             long numMatches,
@@ -312,8 +298,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void FindPlayersWithAttributes(
             long rangeDelta,
@@ -352,8 +336,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void FindPlayersUsingFilter(
             long rangeDelta,
             long numMatches,
@@ -379,8 +361,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void FindPlayersWithAttributesUsingFilter(
             long rangeDelta,

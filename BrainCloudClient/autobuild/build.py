@@ -56,8 +56,6 @@ def main():
 #	prefabsPath = os.path.abspath(".." + os.sep + "BrainCloudPrefabs" + os.sep + "Assets")
 	projectFile = projectPath + os.sep + "BrainCloudClient.csproj"
 	targets = "Rebuild"
-
-
 	# clean up old builds
 	cleanArtifacts(artifacts)
 
@@ -98,6 +96,4 @@ def main():
 	return
 
 main()
-
-
 

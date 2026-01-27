@@ -30,11 +30,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-using System.Diagnostics;
-using System.IO;
-
-
+  using System;
+  using System.Diagnostics;
+  using System.IO;
   /// <summary>
   /// Provides a set of methods and properties for logging.
   /// </summary>
@@ -57,10 +55,10 @@ using System.IO;
   {
     #region Private Fields
 
-    private volatile string         _file;
-    private volatile LogLevel       _level;
+    private volatile string _file;
+    private volatile LogLevel _level;
     private Action<LogData, string> _output;
-    private object                  _sync;
+    private object _sync;
 
     #endregion
 
@@ -72,8 +70,8 @@ using System.IO;
     /// <remarks>
     /// This constructor initializes the current logging level with <see cref="LogLevel.Error"/>.
     /// </remarks>
-    public Logger ()
-      : this (LogLevel.Error, null, null)
+    public Logger()
+      : this(LogLevel.Error, null, null)
     {
     }
 
@@ -84,8 +82,8 @@ using System.IO;
     /// <param name="level">
     /// One of the <see cref="LogLevel"/> enum values.
     /// </param>
-    public Logger (LogLevel level)
-      : this (level, null, null)
+    public Logger(LogLevel level)
+      : this(level, null, null)
     {
     }
 
@@ -105,12 +103,12 @@ using System.IO;
     /// output a log. A <see cref="string"/> parameter passed to this delegate is
     /// <paramref name="file"/>.
     /// </param>
-    public Logger (LogLevel level, string file, Action<LogData, string> output)
+    public Logger(LogLevel level, string file, Action<LogData, string> output)
     {
       _level = level;
       _file = file;
       _output = output ?? defaultOutput;
-      _sync = new object ();
+      _sync = new object();
     }
 
     #endregion
@@ -123,16 +121,20 @@ using System.IO;
     /// <value>
     /// A <see cref="string"/> that represents the current path to the log file if any.
     /// </value>
-    public string File {
-      get {
+    public string File
+    {
+      get
+      {
         return _file;
       }
 
-      set {
-        lock (_sync) {
+      set
+      {
+        lock (_sync)
+        {
           _file = value;
-          Warn (
-            String.Format ("The current path to the log file has been changed to {0}.", _file));
+          Warn(
+            String.Format("The current path to the log file has been changed to {0}.", _file));
         }
       }
     }
@@ -146,15 +148,19 @@ using System.IO;
     /// <value>
     /// One of the <see cref="LogLevel"/> enum values, specifies the current logging level.
     /// </value>
-    public LogLevel Level {
-      get {
+    public LogLevel Level
+    {
+      get
+      {
         return _level;
       }
 
-      set {
-        lock (_sync) {
+      set
+      {
+        lock (_sync)
+        {
           _level = value;
-          Warn (String.Format ("The current logging level has been changed to {0}.", _level));
+          Warn(String.Format("The current logging level has been changed to {0}.", _level));
         }
       }
     }
@@ -173,15 +179,19 @@ using System.IO;
     ///   the default output action.
     ///   </para>
     /// </value>
-    public Action<LogData, string> Output {
-      get {
+    public Action<LogData, string> Output
+    {
+      get
+      {
         return _output;
       }
 
-      set {
-        lock (_sync) {
+      set
+      {
+        lock (_sync)
+        {
           _output = value ?? defaultOutput;
-          Warn ("The current output action has been changed.");
+          Warn("The current output action has been changed.");
         }
       }
     }
@@ -190,37 +200,40 @@ using System.IO;
 
     #region Private Methods
 
-    private static void defaultOutput (LogData data, string path)
+    private static void defaultOutput(LogData data, string path)
     {
-      var log = data.ToString ();
-      Console.WriteLine (log);
+      var log = data.ToString();
+      Console.WriteLine(log);
       if (path != null && path.Length > 0)
-        writeToFile (log, path);
+        writeToFile(log, path);
     }
 
-    private void output (string message, LogLevel level)
+    private void output(string message, LogLevel level)
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         if (_level > level)
           return;
 
         LogData data = null;
-        try {
-          data = new LogData (level, new StackFrame (2, true), message);
-          _output (data, _file);
+        try
+        {
+          data = new LogData(level, new StackFrame(2, true), message);
+          _output(data, _file);
         }
-        catch (Exception ex) {
-          data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
-          Console.WriteLine (data.ToString ());
+        catch (Exception ex)
+        {
+          data = new LogData(LogLevel.Fatal, new StackFrame(0, true), ex.Message);
+          Console.WriteLine(data.ToString());
         }
       }
     }
 
-    private static void writeToFile (string value, string path)
+    private static void writeToFile(string value, string path)
     {
-      using (var writer = new StreamWriter (path, true))
-      using (var syncWriter = TextWriter.Synchronized (writer))
-        syncWriter.WriteLine (value);
+      using (var writer = new StreamWriter(path, true))
+      using (var syncWriter = TextWriter.Synchronized(writer))
+        syncWriter.WriteLine(value);
     }
 
     #endregion
@@ -237,12 +250,12 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Debug (string message)
+    public void Debug(string message)
     {
       if (_level > LogLevel.Debug)
         return;
 
-      output (message, LogLevel.Debug);
+      output(message, LogLevel.Debug);
     }
 
     /// <summary>
@@ -255,12 +268,12 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Error (string message)
+    public void Error(string message)
     {
       if (_level > LogLevel.Error)
         return;
 
-      output (message, LogLevel.Error);
+      output(message, LogLevel.Error);
     }
 
     /// <summary>
@@ -269,9 +282,9 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Fatal (string message)
+    public void Fatal(string message)
     {
-      output (message, LogLevel.Fatal);
+      output(message, LogLevel.Fatal);
     }
 
     /// <summary>
@@ -284,12 +297,12 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Info (string message)
+    public void Info(string message)
     {
       if (_level > LogLevel.Info)
         return;
 
-      output (message, LogLevel.Info);
+      output(message, LogLevel.Info);
     }
 
     /// <summary>
@@ -302,12 +315,12 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Trace (string message)
+    public void Trace(string message)
     {
       if (_level > LogLevel.Trace)
         return;
 
-      output (message, LogLevel.Trace);
+      output(message, LogLevel.Trace);
     }
 
     /// <summary>
@@ -320,12 +333,12 @@ using System.IO;
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Warn (string message)
+    public void Warn(string message)
     {
       if (_level > LogLevel.Warn)
         return;
 
-      output (message, LogLevel.Warn);
+      output(message, LogLevel.Warn);
     }
 
     #endregion

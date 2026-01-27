@@ -86,8 +86,6 @@ def writeFooterOfFile(in_outFile):
 	# force create new
 	writeStringOut(stringFooter, in_outFile, 0)
 	return
-
-
 #numToProcess	10
 def writeAllLists(in_outFile, in_numToProcess = 0):
 	

@@ -11,8 +11,6 @@ namespace BrainCloud
     using System.Collections.Generic;
     using System.IO;
     using System;
-
-
     public class BrainCloudFile
     {
         private BrainCloudClient _client;
@@ -75,8 +73,6 @@ namespace BrainCloud
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
 
-
-
         public void CancelUpload(string uploadId)
         {
             _client.Comms.CancelUpload(uploadId);
@@ -87,8 +83,6 @@ namespace BrainCloud
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
         /// <returns>A progress from 0.0 to 1.0 or -1 if upload not found.</returns>
-
-
 
         public double GetUploadProgress(string uploadId)
         {
@@ -122,16 +116,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
-
-
-
-
-
-
-
-
 
 
         public void ListUserFiles(
@@ -178,8 +162,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DeleteUserFile(
             string cloudPath,
             string cloudFileName,
@@ -206,8 +188,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DeleteUserFiles(
             string cloudPath,
             bool recurse,
@@ -233,8 +213,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetCDNUrl(
             string cloudPath,

@@ -159,8 +159,6 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-
         [Test]
         public void TestFindPlayersWithAttributes()
         {

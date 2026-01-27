@@ -53,8 +53,6 @@ ExportedObj/
 *.svd
 *.pdb
 *.vs
-
-
 *.asset
 *.asset.meta
 *.idea

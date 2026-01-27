@@ -120,8 +120,6 @@ using System.Globalization;
         #region Private Data
 
         private string s_defaultServerURL = "https://api.braincloudservers.com/dispatcherv2";
-
-
         private string _appVersion = "";
         private Platform _platform;
         private string _languageCode;
@@ -778,8 +776,6 @@ using System.Globalization;
         /// </summary>
         /// <returns>True if authenticated, false otherwise.</returns>
 
-
-
         public bool IsAuthenticated()
         {
             return Authenticated;
@@ -794,8 +790,6 @@ using System.Globalization;
         /// Returns whether the client is initialized.
         /// </summary>
         /// <returns>True if initialized, false otherwise.</returns>
-
-
 
         public bool IsInitialized()
         {
@@ -812,24 +806,12 @@ using System.Globalization;
         }
         #endregion
 
-
-
         /// <summary>
         /// Method initializes the BrainCloudClient. Automatically passes in current serverURL
         /// </summary>
         /// <param name="secretKey">The secret key for your game</param>
         /// <param name="appId">The app id</param>
         /// <param name="appVersion">The version</param>
-
-
-
-
-
-
-
-
-
-
 
 
         public void Initialize(string secretKey, string appId, string appVersion)
@@ -843,16 +825,6 @@ using System.Globalization;
         /// <param name="defaultAppId">The default app id that we start with</param>
         /// <param name="secretMap">A map of <appId, secretKey></param>
         /// <param name="appVersion">The version</param>
-
-
-
-
-
-
-
-
-
-
 
 
         public void InitializeWithApps(string defaultAppId, Dictionary<string, string> appIdSecrectMap, string appVersion)
@@ -895,8 +867,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="profileId">The id of the profile id that was most recently used by the app (on this device)</param>
         /// <param name="anonymousId">The anonymous installation id that was generated for this device</param>
-
-
 
         public void InitializeIdentity(string profileId, string anonymousId)
         {
@@ -970,8 +940,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="eventCallback">A function which takes a json string as it's only parameter. The json format looks like the following: { "events": [{ "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventId": 3967, "createdAt": 1441742105908, "gameId": "123", "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventType": "test", "eventData": {"testData": 117} }], ] }</param>
 
-
-
         public void RegisterEventCallback(EventCallback cb)
         {
             _comms.RegisterEventCallback(cb);
@@ -990,8 +958,6 @@ using System.Globalization;
         /// Sets a reward handler for any api call results that return rewards.
         /// </summary>
         /// <param name="rewardCallback">The reward callback handler. @see The brainCloud apidocs site for more information on the return JSON</param>
-
-
 
         public void RegisterRewardCallback(RewardCallback cb)
         {
@@ -1023,8 +989,6 @@ using System.Globalization;
         /// Registers a file upload callback handler to listen for status updates on uploads
         /// </summary>
         /// <param name="fileUploadCallback">The file upload callback handler.</param>
-
-
         public void RegisterFileUploadCallback(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
         {
             _comms.RegisterFileUploadCallbacks(success, failure);
@@ -1043,8 +1007,6 @@ using System.Globalization;
         /// Registers a callback that is invoked for all errors generated
         /// </summary>
         /// <param name="globalErrorCallback">The global error callback handler.</param>
-
-
         public void RegisterGlobalErrorCallback(FailureCallback callback)
         {
             _comms.RegisterGlobalErrorCallback(callback);
@@ -1063,8 +1025,6 @@ using System.Globalization;
         /// Registers a callback that is invoked for network errors.
         /// </summary>
         /// <param name="networkErrorCallback">The network error callback handler.</param>
-
-
 
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
@@ -1130,8 +1090,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="timeouts">A vector of packet timeouts.</param>
 
-
-
         public void SetPacketTimeouts(List<int> timeouts)
         {
             _comms.PacketTimeouts = timeouts;
@@ -1159,8 +1117,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="timeoutSecs">The timeout in seconds</param>
 
-
-
         public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
             _comms.AuthenticationPacketTimeoutSecs = timeoutSecs;
@@ -1170,8 +1126,6 @@ using System.Globalization;
         /// Gets the authentication packet timeout which is tracked separately
         /// </summary>
         /// <returns>The timeout in seconds</returns>
-
-
 
         public int GetAuthenticationPacketTimeout()
         {
@@ -1183,8 +1137,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="enabled">If set to true, enable</param>
 
-
-
         public void SetOldStyleStatusMessageErrorCallback(bool enabled)
         {
             _comms.OldStyleStatusResponseInErrorCallback = enabled;
@@ -1193,8 +1145,6 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate timeout in secs
         /// </summary>
-
-
 
         public int GetUploadLowTransferRateTimeout()
         {
@@ -1206,8 +1156,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="timeoutSecs">The timeout in secs</param>
 
-
-
         public void SetUploadLowTransferRateTimeout(int timeoutSecs)
         {
             _comms.UploadLowTransferRateTimeout = timeoutSecs;
@@ -1216,8 +1164,6 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
-
-
 
         public int GetUploadLowTransferRateThreshold()
         {
@@ -1229,8 +1175,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="bytesPerSec">The low transfer rate threshold in bytes/sec</param>
 
-
-
         public void SetUploadLowTransferRateThreshold(int bytesPerSec)
         {
             _comms.UploadLowTransferRateThreshold = bytesPerSec;
@@ -1241,8 +1185,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="enabled">True if message should be cached on timeout</param>
 
-
-
         public void EnableNetworkErrorMessageCaching(bool enabled)
         {
             _comms.EnableNetworkErrorMessageCaching(enabled);
@@ -1251,8 +1193,6 @@ using System.Globalization;
         /// <summary>
         /// Attempts to resend any cached messages. If no messages are in the cache,
         /// </summary>
-
-
 
         public void RetryCachedMessages()
         {
@@ -1263,8 +1203,6 @@ using System.Globalization;
         /// Flushes the cached messages to resume api call processing. This will dump
         /// </summary>
         /// <param name="sendApiErrorCallbacks">If set to true API error callbacks will be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.</param>
-
-
 
         public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
@@ -1295,8 +1233,6 @@ using System.Globalization;
         /// </summary>
         /// <param name="countryCode">ISO 3166-1 two-letter country code</param>
 
-
-
         public void OverrideCountryCode(string countryCode)
         {
             _countryCode = countryCode;
@@ -1306,8 +1242,6 @@ using System.Globalization;
         /// Sets the language code sent to brainCloud when a user authenticates.
         /// </summary>
         /// <param name="languageCode">ISO 639-1 two-letter language code</param>
-
-
 
         public void OverrideLanguageCode(string languageCode)
         {

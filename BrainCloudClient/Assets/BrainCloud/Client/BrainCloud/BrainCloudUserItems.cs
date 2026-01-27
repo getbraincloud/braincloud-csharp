@@ -11,8 +11,6 @@ namespace BrainCloud
     using BrainCloud.Internal;
     using BrainCloud.JsonFx.Json;
     using System;
-
-
     public class BrainCloudUserItems
     {
         private BrainCloudClient _client;
@@ -35,8 +33,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AwardUserItem(
         string defId,
@@ -70,8 +66,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DropUserItem(
         string itemId,
         int quantity,
@@ -103,8 +97,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetUserItemsPage(
         string context,
         bool includeDef,
@@ -121,8 +113,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItemsPage, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Retrieves a page of the user's inventory with an offset.
         /// </summary>
@@ -136,8 +126,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetUserItemsPageOffset(
         string context,
@@ -157,8 +145,6 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-
-
         /// <summary>
         /// Retrieves a specific user item.
         /// </summary>
@@ -171,8 +157,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetUserItem(
         String itemId,
@@ -189,10 +173,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.GetUserItem, data, callback);
             _client.SendRequest(sc);
         }
-
-
-
-
         /// <summary>
         /// Gifts an item to another user.
         /// </summary>
@@ -208,8 +188,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GiveUserItemTo(
         String profileId,
@@ -248,8 +226,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void PurchaseUserItem(
         String defId,
         int quantity,
@@ -283,8 +259,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReceiveUserItemFrom(
         string profileId,
         string itemId,
@@ -316,8 +290,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void OpenBundle(
         string itemId,
         int version,
@@ -343,8 +315,6 @@ namespace BrainCloud
             _client.SendRequest(sc);
         }
 
-
-
         /// <summary>
         /// Allows a quantity of a specified user item to be sold.
         /// </summary>
@@ -360,8 +330,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SellUserItem(
         string itemId,
@@ -399,8 +367,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateUserItemData(
         string itemId,
         int version,
@@ -434,8 +400,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UseUserItem(
         string itemId,
@@ -472,8 +436,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void PublishUserItemToBlockchain(
         string itemId,
         int version,
@@ -501,8 +463,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RefreshBlockchainUserItems(
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -514,8 +474,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.UserItems, ServiceOperation.RefreshBlockchainUserItems, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Removes a user item from the blockchain.
         /// </summary>
@@ -528,8 +486,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void RemoveUserItemFromBlockchain(
         string itemId,
@@ -561,8 +517,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void AwardUserItemWithOptions(
         string defId,
         int quantity,
@@ -600,8 +554,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetItemsOnPromotion(
         string shopId,
         bool includeDef,
@@ -640,8 +592,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void GetItemPromotionDetails(
         string defId,
         string shopId,

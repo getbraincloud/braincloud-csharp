@@ -61,8 +61,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void FindLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -107,8 +105,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo, Dictionary<string, object> in_filterJson,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -148,8 +144,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void CreateLobby(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
@@ -191,8 +185,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void CreateLobbyWithPingData(string in_roomType, int in_rating,
             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
             Dictionary<string, object> in_settings, string[] in_otherUserCxIds = null,
@@ -232,8 +224,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void FindOrCreateLobby(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
@@ -284,8 +274,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
             Dictionary<string, object> in_algo,
             Dictionary<string, object> in_filterJson,
@@ -324,8 +312,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetLobbyData(string in_lobbyID,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -350,8 +336,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateReady(string in_lobbyID, bool in_isReady, Dictionary<string, object> in_extraJson,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -379,8 +363,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateSettings(string in_lobbyID, Dictionary<string, object> in_settings,
                                 SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -405,8 +387,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SwitchTeam(string in_lobbyID, string in_toTeamName,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -433,8 +413,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SendSignal(string in_lobbyID, Dictionary<string, object> in_signalData, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -445,8 +423,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.SendSignal, data, callback);
             m_clientRef.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Joins the specified lobby.
         /// </summary>
@@ -462,8 +438,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void JoinLobby(string in_lobbyID,
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -501,8 +475,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void JoinLobbyWithPingData(string in_lobbyID,
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
                             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
@@ -532,8 +504,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void LeaveLobby(string in_lobbyID, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -557,8 +527,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RemoveMember(string in_lobbyID, string in_connectionId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -578,8 +546,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void CancelFindRequest(string in_roomType, string in_entryId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -603,8 +569,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetRegionsForLobbies(string[] in_roomTypes, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -627,8 +591,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetLobbyInstances(string in_lobbyType, Dictionary<string, object> criteriaJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -654,8 +616,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetLobbyInstancesWithPingData(string in_lobbyType, Dictionary<string, object> criteriaJson,
             SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
@@ -672,8 +632,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void PingRegions(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {

@@ -34,8 +34,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachFacebookIdentity(
             string facebookId,
             string authenticationToken,
@@ -79,8 +77,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeFacebookIdentity(
             string facebookId,
             string authenticationToken,
@@ -103,8 +99,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachFacebookIdentity(
             string facebookId,
@@ -129,8 +123,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachAdvancedIdentity(
             AuthenticationType authenticationType,
@@ -173,8 +165,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeAdvancedIdentity(
             AuthenticationType authenticationType,
@@ -219,8 +209,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachAdvancedIdentity(
             AuthenticationType authenticationType,
             string externalId,
@@ -258,8 +246,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachUltraIdentity(
             string ultraUsername,
             string ultraIdToken,
@@ -282,8 +268,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeUltraIdentity(
             string ultraUsername,
@@ -308,8 +292,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachUltraIdentity(
             string ultraUsername,
             bool continueAnon,
@@ -332,8 +314,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachOculusIdentity(
             string oculusId,
@@ -358,8 +338,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeOculusIdentity(
             string oculusId,
             string oculusNonce,
@@ -383,8 +361,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachOculusIdentity(
             string oculusId,
             bool continueAnon,
@@ -394,8 +370,6 @@ namespace BrainCloud
         {
             DetachIdentity(oculusId, AuthenticationType.Oculus, continueAnon, success, failure, cbObject);
         }
-
-
         /// <summary>
         /// Attach the user's FacebookLimited credentials to the current profile.
         /// </summary>
@@ -705,8 +679,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachGameCenterIdentity(
             string gameCenterId,
             SuccessCallback success = null,
@@ -727,8 +699,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeGameCenterIdentity(
             string gameCenterId,
@@ -751,8 +721,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachGameCenterIdentity(
             string gameCenterId,
@@ -777,8 +745,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachEmailIdentity(
             string email,
             string password,
@@ -801,8 +767,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeEmailIdentity(
             string email,
@@ -827,8 +791,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachEmailIdentity(
             string email,
             bool continueAnon,
@@ -851,8 +813,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachUniversalIdentity(
             string userId,
@@ -877,8 +837,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeUniversalIdentity(
             string userId,
             string password,
@@ -901,8 +859,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachUniversalIdentity(
             string userId,
@@ -927,8 +883,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachSteamIdentity(
             string steamId,
             string sessionTicket,
@@ -951,8 +905,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeSteamIdentity(
             string steamId,
@@ -977,8 +929,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachSteamIdentity(
             string steamId,
             bool continueAnon,
@@ -1001,8 +951,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachGoogleIdentity(
             string googleUserId,
@@ -1027,8 +975,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeGoogleIdentity(
             string googleUserId,
             string serverAuthCode,
@@ -1051,8 +997,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachGoogleIdentity(
             string googleUserId,
@@ -1077,8 +1021,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void AttachGoogleOpenIdIdentity(
             string googleUserAccountEmail,
             string IdToken,
@@ -1101,8 +1043,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void MergeGoogleOpenIdIdentity(
             string googleUserAccountEmail,
@@ -1127,8 +1067,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachGoogleOpenIdIdentity(
             string googleUserAccountEmail,
             bool continueAnon,
@@ -1151,8 +1089,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachAppleIdentity(
             string appleUserId,
@@ -1177,8 +1113,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeAppleIdentity(
             string appleUserId,
             string identityToken,
@@ -1201,8 +1135,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachAppleIdentity(
             string appleUserId,
@@ -1227,8 +1159,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachTwitterIdentity(
             string twitterId,
@@ -1255,8 +1185,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeTwitterIdentity(
             string twitterId,
             string authenticationToken,
@@ -1281,8 +1209,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void DetachTwitterIdentity(
             string twitterId,
             bool continueAnon,
@@ -1305,8 +1231,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachParseIdentity(
             string parseId,
@@ -1331,8 +1255,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void MergeParseIdentity(
             string parseId,
             string authenticationToken,
@@ -1355,8 +1277,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void DetachParseIdentity(
             string parseId,
@@ -1481,8 +1401,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SwitchToChildProfile(
             string childProfileId,
             string childAppId,
@@ -1507,8 +1425,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SwitchToSingletonChildProfile(
             string childAppId,
             bool forceCreate,
@@ -1530,8 +1446,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void AttachNonLoginUniversalId(
             string externalId,
@@ -1558,8 +1472,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateUniversalIdLogin(
             string externalId,
@@ -1590,8 +1502,6 @@ namespace BrainCloud
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
-
-
 
         public void AttachParentWithIdentity(
             string externalId,
@@ -1631,8 +1541,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void SwitchToParentProfile(
             string parentLevelName,
             SuccessCallback success = null,
@@ -1658,8 +1566,6 @@ namespace BrainCloud
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
 
-
-
         public void DetachParent(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1681,8 +1587,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void GetChildProfiles(
             bool includeSummaryData,
@@ -1758,8 +1662,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void RefreshIdentity(
             string externalId,
             string authenticationToken,
@@ -1793,8 +1695,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ChangeEmailIdentity(
             string oldEmailAddress,
             string password,
@@ -1809,14 +1709,10 @@ namespace BrainCloud
             data[OperationParam.AuthenticateServiceAuthenticateAuthenticationToken.Value] = password;
             data[OperationParam.IdentityServiceNewEmailAddress.Value] = newEmailAddress;
             data[OperationParam.IdentityServiceUpdateContactEmail.Value] = updateContactEmail;
-
-
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.ChangeEmailIdentity, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Attaches a peer identity to this user's profile
         /// </summary>
@@ -1833,8 +1729,6 @@ namespace BrainCloud
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
-
-
 
         public void AttachPeerProfile(
             string peer,
@@ -1876,8 +1770,6 @@ namespace BrainCloud
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
 
-
-
         public void DetachPeer(
             string peer,
             SuccessCallback success = null,
@@ -1904,8 +1796,6 @@ namespace BrainCloud
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
 
-
-
         public void GetPeerProfiles(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -1926,8 +1816,6 @@ namespace BrainCloud
         /// <param name="successCallback">The success callback</param>
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
-
-
 
         public void AttachBlockChainIdentity(
             string blockchainConfig,
@@ -1956,8 +1844,6 @@ namespace BrainCloud
         /// <param name="errorCallback">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback</param>
 
-
-
         public void DetachBlockChainIdentity(
             string blockchainConfig,
             SuccessCallback success = null,
@@ -1971,8 +1857,6 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.DetachBlockChain, data, callback);
             _client.SendRequest(sc);
         }
-
-
         #region Private Methods
 
         private void AttachIdentity(string externalId, string authenticationToken, AuthenticationType authenticationType, SuccessCallback success, FailureCallback failure,

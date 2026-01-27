@@ -43,13 +43,11 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.Text;
   /// <summary>
   /// Provides a collection of instances of the <see cref="Cookie"/> class.
   /// </summary>
@@ -59,8 +57,8 @@ using System.Text;
     #region Private Fields
 
     private List<Cookie> _list;
-    private bool         _readOnly;
-    private object       _sync;
+    private bool _readOnly;
+    private object _sync;
 
     #endregion
 
@@ -69,27 +67,31 @@ using System.Text;
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieCollection"/> class.
     /// </summary>
-    public CookieCollection ()
+    public CookieCollection()
     {
-      _list = new List<Cookie> ();
-      _sync = ((ICollection) _list).SyncRoot;
+      _list = new List<Cookie>();
+      _sync = ((ICollection)_list).SyncRoot;
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal IList<Cookie> List {
-      get {
+    internal IList<Cookie> List
+    {
+      get
+      {
         return _list;
       }
     }
 
-    internal IEnumerable<Cookie> Sorted {
-      get {
-        var list = new List<Cookie> (_list);
+    internal IEnumerable<Cookie> Sorted
+    {
+      get
+      {
+        var list = new List<Cookie>(_list);
         if (list.Count > 1)
-          list.Sort (compareForSorted);
+          list.Sort(compareForSorted);
 
         return list;
       }
@@ -106,8 +108,10 @@ using System.Text;
     /// An <see cref="int"/> that represents the number of cookies in
     /// the collection.
     /// </value>
-    public int Count {
-      get {
+    public int Count
+    {
+      get
+      {
         return _list.Count;
       }
     }
@@ -123,12 +127,15 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool IsReadOnly {
-      get {
+    public bool IsReadOnly
+    {
+      get
+      {
         return _readOnly;
       }
 
-      internal set {
+      internal set
+      {
         _readOnly = value;
       }
     }
@@ -146,8 +153,10 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool IsSynchronized {
-      get {
+    public bool IsSynchronized
+    {
+      get
+      {
         return false;
       }
     }
@@ -165,10 +174,12 @@ using System.Text;
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index"/> is out of allowable range for the collection.
     /// </exception>
-    public Cookie this[int index] {
-      get {
+    public Cookie this[int index]
+    {
+      get
+      {
         if (index < 0 || index >= _list.Count)
-          throw new ArgumentOutOfRangeException ("index");
+          throw new ArgumentOutOfRangeException("index");
 
         return _list[index];
       }
@@ -191,15 +202,18 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
-    public Cookie this[string name] {
-      get {
+    public Cookie this[string name]
+    {
+      get
+      {
         if (name == null)
-          throw new ArgumentNullException ("name");
+          throw new ArgumentNullException("name");
 
         var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-        foreach (var cookie in Sorted) {
-          if (cookie.Name.Equals (name, caseInsensitive))
+        foreach (var cookie in Sorted)
+        {
+          if (cookie.Name.Equals(name, caseInsensitive))
             return cookie;
         }
 
@@ -213,8 +227,10 @@ using System.Text;
     /// <value>
     /// An <see cref="object"/> used to synchronize access to the collection.
     /// </value>
-    public object SyncRoot {
-      get {
+    public object SyncRoot
+    {
+      get
+      {
         return _sync;
       }
     }
@@ -223,54 +239,58 @@ using System.Text;
 
     #region Private Methods
 
-    private void add (Cookie cookie)
+    private void add(Cookie cookie)
     {
-      var idx = search (cookie);
-      if (idx == -1) {
-        _list.Add (cookie);
+      var idx = search(cookie);
+      if (idx == -1)
+      {
+        _list.Add(cookie);
         return;
       }
 
       _list[idx] = cookie;
     }
 
-    private static int compareForSort (Cookie x, Cookie y)
+    private static int compareForSort(Cookie x, Cookie y)
     {
       return (x.Name.Length + x.Value.Length)
              - (y.Name.Length + y.Value.Length);
     }
 
-    private static int compareForSorted (Cookie x, Cookie y)
+    private static int compareForSorted(Cookie x, Cookie y)
     {
       var ret = x.Version - y.Version;
       return ret != 0
              ? ret
-             : (ret = x.Name.CompareTo (y.Name)) != 0
+             : (ret = x.Name.CompareTo(y.Name)) != 0
                ? ret
                : y.Path.Length - x.Path.Length;
     }
 
-    private static CookieCollection parseRequest (string value)
+    private static CookieCollection parseRequest(string value)
     {
-      var ret = new CookieCollection ();
+      var ret = new CookieCollection();
 
       Cookie cookie = null;
       var ver = 0;
 
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
-      var pairs = value.SplitHeaderValue (',', ';').ToList ();
+      var pairs = value.SplitHeaderValue(',', ';').ToList();
 
-      for (var i = 0; i < pairs.Count; i++) {
-        var pair = pairs[i].Trim ();
+      for (var i = 0; i < pairs.Count; i++)
+      {
+        var pair = pairs[i].Trim();
         if (pair.Length == 0)
           continue;
 
-        var idx = pair.IndexOf ('=');
-        if (idx == -1) {
+        var idx = pair.IndexOf('=');
+        if (idx == -1)
+        {
           if (cookie == null)
             continue;
 
-          if (pair.Equals ("$port", caseInsensitive)) {
+          if (pair.Equals("$port", caseInsensitive))
+          {
             cookie.Port = "\"\"";
             continue;
           }
@@ -278,33 +298,37 @@ using System.Text;
           continue;
         }
 
-        if (idx == 0) {
-          if (cookie != null) {
-            ret.add (cookie);
+        if (idx == 0)
+        {
+          if (cookie != null)
+          {
+            ret.add(cookie);
             cookie = null;
           }
 
           continue;
         }
 
-        var name = pair.Substring (0, idx).TrimEnd (' ');
+        var name = pair.Substring(0, idx).TrimEnd(' ');
         var val = idx < pair.Length - 1
-                  ? pair.Substring (idx + 1).TrimStart (' ')
+                  ? pair.Substring(idx + 1).TrimStart(' ')
                   : String.Empty;
 
-        if (name.Equals ("$version", caseInsensitive)) {
+        if (name.Equals("$version", caseInsensitive))
+        {
           if (val.Length == 0)
             continue;
 
           int num;
-          if (!Int32.TryParse (val.Unquote (), out num))
+          if (!Int32.TryParse(val.Unquote(), out num))
             continue;
 
           ver = num;
           continue;
         }
 
-        if (name.Equals ("$path", caseInsensitive)) {
+        if (name.Equals("$path", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -315,7 +339,8 @@ using System.Text;
           continue;
         }
 
-        if (name.Equals ("$domain", caseInsensitive)) {
+        if (name.Equals("$domain", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -326,7 +351,8 @@ using System.Text;
           continue;
         }
 
-        if (name.Equals ("$port", caseInsensitive)) {
+        if (name.Equals("$port", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -338,9 +364,9 @@ using System.Text;
         }
 
         if (cookie != null)
-          ret.add (cookie);
+          ret.add(cookie);
 
-        if (!Cookie.TryCreate (name, val, out cookie))
+        if (!Cookie.TryCreate(name, val, out cookie))
           continue;
 
         if (ver != 0)
@@ -348,46 +374,52 @@ using System.Text;
       }
 
       if (cookie != null)
-        ret.add (cookie);
+        ret.add(cookie);
 
       return ret;
     }
 
-    private static CookieCollection parseResponse (string value)
+    private static CookieCollection parseResponse(string value)
     {
-      var ret = new CookieCollection ();
+      var ret = new CookieCollection();
 
       Cookie cookie = null;
 
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
-      var pairs = value.SplitHeaderValue (',', ';').ToList ();
+      var pairs = value.SplitHeaderValue(',', ';').ToList();
 
-      for (var i = 0; i < pairs.Count; i++) {
-        var pair = pairs[i].Trim ();
+      for (var i = 0; i < pairs.Count; i++)
+      {
+        var pair = pairs[i].Trim();
         if (pair.Length == 0)
           continue;
 
-        var idx = pair.IndexOf ('=');
-        if (idx == -1) {
+        var idx = pair.IndexOf('=');
+        if (idx == -1)
+        {
           if (cookie == null)
             continue;
 
-          if (pair.Equals ("port", caseInsensitive)) {
+          if (pair.Equals("port", caseInsensitive))
+          {
             cookie.Port = "\"\"";
             continue;
           }
 
-          if (pair.Equals ("discard", caseInsensitive)) {
+          if (pair.Equals("discard", caseInsensitive))
+          {
             cookie.Discard = true;
             continue;
           }
 
-          if (pair.Equals ("secure", caseInsensitive)) {
+          if (pair.Equals("secure", caseInsensitive))
+          {
             cookie.Secure = true;
             continue;
           }
 
-          if (pair.Equals ("httponly", caseInsensitive)) {
+          if (pair.Equals("httponly", caseInsensitive))
+          {
             cookie.HttpOnly = true;
             continue;
           }
@@ -395,21 +427,24 @@ using System.Text;
           continue;
         }
 
-        if (idx == 0) {
-          if (cookie != null) {
-            ret.add (cookie);
+        if (idx == 0)
+        {
+          if (cookie != null)
+          {
+            ret.add(cookie);
             cookie = null;
           }
 
           continue;
         }
 
-        var name = pair.Substring (0, idx).TrimEnd (' ');
+        var name = pair.Substring(0, idx).TrimEnd(' ');
         var val = idx < pair.Length - 1
-                  ? pair.Substring (idx + 1).TrimStart (' ')
+                  ? pair.Substring(idx + 1).TrimStart(' ')
                   : String.Empty;
 
-        if (name.Equals ("version", caseInsensitive)) {
+        if (name.Equals("version", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -417,14 +452,15 @@ using System.Text;
             continue;
 
           int num;
-          if (!Int32.TryParse (val.Unquote (), out num))
+          if (!Int32.TryParse(val.Unquote(), out num))
             continue;
 
           cookie.Version = num;
           continue;
         }
 
-        if (name.Equals ("expires", caseInsensitive)) {
+        if (name.Equals("expires", caseInsensitive))
+        {
           if (val.Length == 0)
             continue;
 
@@ -439,15 +475,15 @@ using System.Text;
           if (cookie.Expires != DateTime.MinValue)
             continue;
 
-          var buff = new StringBuilder (val, 32);
-          buff.AppendFormat (", {0}", pairs[i].Trim ());
+          var buff = new StringBuilder(val, 32);
+          buff.AppendFormat(", {0}", pairs[i].Trim());
 
           DateTime expires;
           if (
-            !DateTime.TryParseExact (
-              buff.ToString (),
+            !DateTime.TryParseExact(
+              buff.ToString(),
               new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
-              CultureInfo.CreateSpecificCulture ("en-US"),
+              CultureInfo.CreateSpecificCulture("en-US"),
               DateTimeStyles.AdjustToUniversal
               | DateTimeStyles.AssumeUniversal,
               out expires
@@ -455,11 +491,12 @@ using System.Text;
           )
             continue;
 
-          cookie.Expires = expires.ToLocalTime ();
+          cookie.Expires = expires.ToLocalTime();
           continue;
         }
 
-        if (name.Equals ("max-age", caseInsensitive)) {
+        if (name.Equals("max-age", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -467,14 +504,15 @@ using System.Text;
             continue;
 
           int num;
-          if (!Int32.TryParse (val.Unquote (), out num))
+          if (!Int32.TryParse(val.Unquote(), out num))
             continue;
 
           cookie.MaxAge = num;
           continue;
         }
 
-        if (name.Equals ("path", caseInsensitive)) {
+        if (name.Equals("path", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -485,7 +523,8 @@ using System.Text;
           continue;
         }
 
-        if (name.Equals ("domain", caseInsensitive)) {
+        if (name.Equals("domain", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -496,7 +535,8 @@ using System.Text;
           continue;
         }
 
-        if (name.Equals ("port", caseInsensitive)) {
+        if (name.Equals("port", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
@@ -507,70 +547,76 @@ using System.Text;
           continue;
         }
 
-        if (name.Equals ("comment", caseInsensitive)) {
+        if (name.Equals("comment", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
           if (val.Length == 0)
             continue;
 
-          cookie.Comment = urlDecode (val, Encoding.UTF8);
+          cookie.Comment = urlDecode(val, Encoding.UTF8);
           continue;
         }
 
-        if (name.Equals ("commenturl", caseInsensitive)) {
+        if (name.Equals("commenturl", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
           if (val.Length == 0)
             continue;
 
-          cookie.CommentUri = val.Unquote ().ToUri ();
+          cookie.CommentUri = val.Unquote().ToUri();
           continue;
         }
 
-        if (name.Equals ("samesite", caseInsensitive)) {
+        if (name.Equals("samesite", caseInsensitive))
+        {
           if (cookie == null)
             continue;
 
           if (val.Length == 0)
             continue;
 
-          cookie.SameSite = val.Unquote ();
+          cookie.SameSite = val.Unquote();
           continue;
         }
 
         if (cookie != null)
-          ret.add (cookie);
+          ret.add(cookie);
 
-        Cookie.TryCreate (name, val, out cookie);
+        Cookie.TryCreate(name, val, out cookie);
       }
 
       if (cookie != null)
-        ret.add (cookie);
+        ret.add(cookie);
 
       return ret;
     }
 
-    private int search (Cookie cookie)
+    private int search(Cookie cookie)
     {
-      for (var i = _list.Count - 1; i >= 0; i--) {
-        if (_list[i].EqualsWithoutValue (cookie))
+      for (var i = _list.Count - 1; i >= 0; i--)
+      {
+        if (_list[i].EqualsWithoutValue(cookie))
           return i;
       }
 
       return -1;
     }
 
-    private static string urlDecode (string s, Encoding encoding)
+    private static string urlDecode(string s, Encoding encoding)
     {
-      if (s.IndexOfAny (new[] { '%', '+' }) == -1)
+      if (s.IndexOfAny(new[] { '%', '+' }) == -1)
         return s;
 
-      try {
-        return HttpUtility.UrlDecode (s, encoding);
+      try
+      {
+        return HttpUtility.UrlDecode(s, encoding);
       }
-      catch {
+      catch
+      {
         return null;
       }
     }
@@ -579,47 +625,51 @@ using System.Text;
 
     #region Internal Methods
 
-    internal static CookieCollection Parse (string value, bool response)
+    internal static CookieCollection Parse(string value, bool response)
     {
-      try {
+      try
+      {
         return response
-               ? parseResponse (value)
-               : parseRequest (value);
+               ? parseResponse(value)
+               : parseRequest(value);
       }
-      catch (Exception ex) {
-        throw new CookieException ("It could not be parsed.", ex);
+      catch (Exception ex)
+      {
+        throw new CookieException("It could not be parsed.", ex);
       }
     }
 
-    internal void SetOrRemove (Cookie cookie)
+    internal void SetOrRemove(Cookie cookie)
     {
-      var idx = search (cookie);
-      if (idx == -1) {
+      var idx = search(cookie);
+      if (idx == -1)
+      {
         if (cookie.Expired)
           return;
 
-        _list.Add (cookie);
+        _list.Add(cookie);
         return;
       }
 
-      if (cookie.Expired) {
-        _list.RemoveAt (idx);
+      if (cookie.Expired)
+      {
+        _list.RemoveAt(idx);
         return;
       }
 
       _list[idx] = cookie;
     }
 
-    internal void SetOrRemove (CookieCollection cookies)
+    internal void SetOrRemove(CookieCollection cookies)
     {
       foreach (var cookie in cookies._list)
-        SetOrRemove (cookie);
+        SetOrRemove(cookie);
     }
 
-    internal void Sort ()
+    internal void Sort()
     {
       if (_list.Count > 1)
-        _list.Sort (compareForSort);
+        _list.Sort(compareForSort);
     }
 
     #endregion
@@ -638,17 +688,18 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public void Add (Cookie cookie)
+    public void Add(Cookie cookie)
     {
-      if (_readOnly) {
+      if (_readOnly)
+      {
         var msg = "The collection is read-only.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException("cookie");
 
-      add (cookie);
+      add(cookie);
     }
 
     /// <summary>
@@ -663,18 +714,19 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookies"/> is <see langword="null"/>.
     /// </exception>
-    public void Add (CookieCollection cookies)
+    public void Add(CookieCollection cookies)
     {
-      if (_readOnly) {
+      if (_readOnly)
+      {
         var msg = "The collection is read-only.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (cookies == null)
-        throw new ArgumentNullException ("cookies");
+        throw new ArgumentNullException("cookies");
 
       foreach (var cookie in cookies._list)
-        add (cookie);
+        add(cookie);
     }
 
     /// <summary>
@@ -683,14 +735,15 @@ using System.Text;
     /// <exception cref="InvalidOperationException">
     /// The collection is read-only.
     /// </exception>
-    public void Clear ()
+    public void Clear()
     {
-      if (_readOnly) {
+      if (_readOnly)
+      {
         var msg = "The collection is read-only.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      _list.Clear ();
+      _list.Clear();
     }
 
     /// <summary>
@@ -706,12 +759,12 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public bool Contains (Cookie cookie)
+    public bool Contains(Cookie cookie)
     {
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException("cookie");
 
-      return search (cookie) > -1;
+      return search(cookie) > -1;
     }
 
     /// <summary>
@@ -736,20 +789,21 @@ using System.Text;
     /// The space from <paramref name="index"/> to the end of
     /// <paramref name="array"/> is not enough to copy to.
     /// </exception>
-    public void CopyTo (Cookie[] array, int index)
+    public void CopyTo(Cookie[] array, int index)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException("array");
 
       if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
+        throw new ArgumentOutOfRangeException("index", "Less than zero.");
 
-      if (array.Length - index < _list.Count) {
+      if (array.Length - index < _list.Count)
+      {
         var msg = "The available space of the array is not enough to copy to.";
-        throw new ArgumentException (msg);
+        throw new ArgumentException(msg);
       }
 
-      _list.CopyTo (array, index);
+      _list.CopyTo(array, index);
     }
 
     /// <summary>
@@ -759,9 +813,9 @@ using System.Text;
     /// An <see cref="T:System.Collections.Generic.IEnumerator{Cookie}"/>
     /// instance that can be used to iterate through the collection.
     /// </returns>
-    public IEnumerator<Cookie> GetEnumerator ()
+    public IEnumerator<Cookie> GetEnumerator()
     {
-      return _list.GetEnumerator ();
+      return _list.GetEnumerator();
     }
 
     /// <summary>
@@ -785,21 +839,22 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public bool Remove (Cookie cookie)
+    public bool Remove(Cookie cookie)
     {
-      if (_readOnly) {
+      if (_readOnly)
+      {
         var msg = "The collection is read-only.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException("cookie");
 
-      var idx = search (cookie);
+      var idx = search(cookie);
       if (idx == -1)
         return false;
 
-      _list.RemoveAt (idx);
+      _list.RemoveAt(idx);
       return true;
     }
 
@@ -814,9 +869,9 @@ using System.Text;
     /// An <see cref="IEnumerator"/> instance that can be used to iterate
     /// through the collection.
     /// </returns>
-    IEnumerator IEnumerable.GetEnumerator ()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-      return _list.GetEnumerator ();
+      return _list.GetEnumerator();
     }
 
     #endregion

@@ -43,21 +43,19 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Diagnostics;
+  using System.IO;
+  using System.Net.Security;
+  using System.Net.Sockets;
+  using System.Security.Cryptography;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   /// <summary>
   /// Implements the WebSocket interface.
   /// </summary>
@@ -73,57 +71,57 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   /// </remarks>
   public class WebSocket : IDisposable
   {
-        public TcpClient TCPClient { get { return _tcpClient; } }
+    public TcpClient TCPClient { get { return _tcpClient; } }
 
-        #region Private Fields
+    #region Private Fields
 
-        private AuthenticationChallenge        _authChallenge;
-    private string                         _base64Key;
-    private bool                           _client;
-    private Action                         _closeContext;
-    private CompressionMethod              _compression;
-    private WebSocketContext               _context;
-    private CookieCollection               _cookies;
-    private NetworkCredential              _credentials;
-    private bool                           _emitOnPing;
-    private bool                           _enableRedirection;
-    private string                         _extensions;
-    private bool                           _extensionsRequested;
-    private object                         _forMessageEventQueue;
-    private object                         _forPing;
-    private object                         _forSend;
-    private object                         _forState;
-    private MemoryStream                   _fragmentsBuffer;
-    private bool                           _fragmentsCompressed;
-    private Opcode                         _fragmentsOpcode;
-    private const string                   _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private AuthenticationChallenge _authChallenge;
+    private string _base64Key;
+    private bool _client;
+    private Action _closeContext;
+    private CompressionMethod _compression;
+    private WebSocketContext _context;
+    private CookieCollection _cookies;
+    private NetworkCredential _credentials;
+    private bool _emitOnPing;
+    private bool _enableRedirection;
+    private string _extensions;
+    private bool _extensionsRequested;
+    private object _forMessageEventQueue;
+    private object _forPing;
+    private object _forSend;
+    private object _forState;
+    private MemoryStream _fragmentsBuffer;
+    private bool _fragmentsCompressed;
+    private Opcode _fragmentsOpcode;
+    private const string _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string> _handshakeRequestChecker;
-    private bool                           _ignoreExtensions;
-    private bool                           _inContinuation;
-    private volatile bool                  _inMessage;
-    private volatile Logger                _logger;
-    private static readonly int            _maxRetryCountForConnect;
-    private Action<MessageEventArgs>       _message;
-    private Queue<MessageEventArgs>        _messageEventQueue;
-    private uint                           _nonceCount;
-    private string                         _origin;
-    private ManualResetEvent               _pongReceived;
-    private bool                           _preAuth;
-    private string                         _protocol;
-    private string[]                       _protocols;
-    private bool                           _protocolsRequested;
-    private NetworkCredential              _proxyCredentials;
-    private Uri                            _proxyUri;
-    private volatile WebSocketState        _readyState;
-    private ManualResetEvent               _receivingExited;
-    private int                            _retryCountForConnect;
-    private bool                           _secure;
-    private ClientSslConfiguration         _sslConfig;
-    private Stream                         _stream;
-    private TcpClient                      _tcpClient;
-    private Uri                            _uri;
-    private const string                   _version = "13";
-    private TimeSpan                       _waitTime;
+    private bool _ignoreExtensions;
+    private bool _inContinuation;
+    private volatile bool _inMessage;
+    private volatile Logger _logger;
+    private static readonly int _maxRetryCountForConnect;
+    private Action<MessageEventArgs> _message;
+    private Queue<MessageEventArgs> _messageEventQueue;
+    private uint _nonceCount;
+    private string _origin;
+    private ManualResetEvent _pongReceived;
+    private bool _preAuth;
+    private string _protocol;
+    private string[] _protocols;
+    private bool _protocolsRequested;
+    private NetworkCredential _proxyCredentials;
+    private Uri _proxyUri;
+    private volatile WebSocketState _readyState;
+    private ManualResetEvent _receivingExited;
+    private int _retryCountForConnect;
+    private bool _secure;
+    private ClientSslConfiguration _sslConfig;
+    private Stream _stream;
+    private TcpClient _tcpClient;
+    private Uri _uri;
+    private const string _version = "13";
+    private TimeSpan _waitTime;
 
     #endregion
 
@@ -157,12 +155,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
     #region Static Constructor
 
-    static WebSocket ()
+    static WebSocket()
     {
       _maxRetryCountForConnect = 10;
       EmptyBytes = new byte[0];
       FragmentLength = 1016;
-      RandomNumber = new RNGCryptoServiceProvider ();
+      RandomNumber = new RNGCryptoServiceProvider();
     }
 
     #endregion
@@ -170,7 +168,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     #region Internal Constructors
 
     // As server
-    internal WebSocket (HttpListenerWebSocketContext context, string protocol)
+    internal WebSocket(HttpListenerWebSocketContext context, string protocol)
     {
       _context = context;
       _protocol = protocol;
@@ -180,13 +178,13 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _waitTime = TimeSpan.FromSeconds (1);
+      _waitTime = TimeSpan.FromSeconds(1);
 
-      init ();
+      init();
     }
 
     // As server
-    internal WebSocket (TcpListenerWebSocketContext context, string protocol)
+    internal WebSocket(TcpListenerWebSocketContext context, string protocol)
     {
       _context = context;
       _protocol = protocol;
@@ -196,9 +194,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _waitTime = TimeSpan.FromSeconds (1);
+      _waitTime = TimeSpan.FromSeconds(1);
 
-      init ();
+      init();
     }
 
     #endregion
@@ -257,76 +255,89 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="protocols"/> contains a value twice.
     ///   </para>
     /// </exception>
-    public WebSocket (string url, params string[] protocols)
+    public WebSocket(string url, params string[] protocols)
     {
       if (url == null)
-        throw new ArgumentNullException ("url");
+        throw new ArgumentNullException("url");
 
       if (url.Length == 0)
-        throw new ArgumentException ("An empty string.", "url");
+        throw new ArgumentException("An empty string.", "url");
 
       string msg;
-      if (!url.TryCreateWebSocketUri (out _uri, out msg))
-        throw new ArgumentException (msg, "url");
+      if (!url.TryCreateWebSocketUri(out _uri, out msg))
+        throw new ArgumentException(msg, "url");
 
-      if (protocols != null && protocols.Length > 0) {
-        if (!checkProtocols (protocols, out msg))
-          throw new ArgumentException (msg, "protocols");
+      if (protocols != null && protocols.Length > 0)
+      {
+        if (!checkProtocols(protocols, out msg))
+          throw new ArgumentException(msg, "protocols");
 
         _protocols = protocols;
       }
 
-      _base64Key = CreateBase64Key ();
+      _base64Key = CreateBase64Key();
       _client = true;
-      _logger = new Logger ();
+      _logger = new Logger();
       _message = messagec;
       _secure = _uri.Scheme == "wss";
-      _waitTime = TimeSpan.FromSeconds (5);
+      _waitTime = TimeSpan.FromSeconds(5);
 
-      init ();
+      init();
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal CookieCollection CookieCollection {
-      get {
+    internal CookieCollection CookieCollection
+    {
+      get
+      {
         return _cookies;
       }
     }
 
     // As server
-    internal Func<WebSocketContext, string> CustomHandshakeRequestChecker {
-      get {
+    internal Func<WebSocketContext, string> CustomHandshakeRequestChecker
+    {
+      get
+      {
         return _handshakeRequestChecker;
       }
 
-      set {
+      set
+      {
         _handshakeRequestChecker = value;
       }
     }
 
-    internal bool HasMessage {
-      get {
+    internal bool HasMessage
+    {
+      get
+      {
         lock (_forMessageEventQueue)
           return _messageEventQueue.Count > 0;
       }
     }
 
     // As server
-    internal bool IgnoreExtensions {
-      get {
+    internal bool IgnoreExtensions
+    {
+      get
+      {
         return _ignoreExtensions;
       }
 
-      set {
+      set
+      {
         _ignoreExtensions = value;
       }
     }
 
-    internal bool IsConnected {
-      get {
+    internal bool IsConnected
+    {
+      get
+      {
         return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
       }
     }
@@ -356,27 +367,34 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// The set operation is not available if this instance is not a client.
     /// </exception>
-    public CompressionMethod Compression {
-      get {
+    public CompressionMethod Compression
+    {
+      get
+      {
         return _compression;
       }
 
-      set {
+      set
+      {
         string msg = null;
 
-        if (!_client) {
+        if (!_client)
+        {
           msg = "This instance is not a client.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+        lock (_forState)
+        {
+          if (!canSet(out msg))
+          {
+            _logger.Warn(msg);
             return;
           }
 
@@ -398,9 +416,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   the collection of the cookies.
     ///   </para>
     /// </value>
-    public IEnumerable<Cookie> Cookies {
-      get {
-        lock (_cookies.SyncRoot) {
+    public IEnumerable<Cookie> Cookies
+    {
+      get
+      {
+        lock (_cookies.SyncRoot)
+        {
           foreach (Cookie cookie in _cookies)
             yield return cookie;
         }
@@ -419,8 +440,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public NetworkCredential Credentials {
-      get {
+    public NetworkCredential Credentials
+    {
+      get
+      {
         return _credentials;
       }
     }
@@ -438,12 +461,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool EmitOnPing {
-      get {
+    public bool EmitOnPing
+    {
+      get
+      {
         return _emitOnPing;
       }
 
-      set {
+      set
+      {
         _emitOnPing = value;
       }
     }
@@ -468,27 +494,34 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// The set operation is not available if this instance is not a client.
     /// </exception>
-    public bool EnableRedirection {
-      get {
+    public bool EnableRedirection
+    {
+      get
+      {
         return _enableRedirection;
       }
 
-      set {
+      set
+      {
         string msg = null;
 
-        if (!_client) {
+        if (!_client)
+        {
           msg = "This instance is not a client.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+        lock (_forState)
+        {
+          if (!canSet(out msg))
+          {
+            _logger.Warn(msg);
             return;
           }
 
@@ -505,8 +538,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// negotiated between client and server, or an empty string if
     /// not specified or selected.
     /// </value>
-    public string Extensions {
-      get {
+    public string Extensions
+    {
+      get
+      {
         return _extensions ?? String.Empty;
       }
     }
@@ -521,9 +556,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
     /// </value>
-    public bool IsAlive {
-      get {
-        return ping (EmptyBytes);
+    public bool IsAlive
+    {
+      get
+      {
+        return ping(EmptyBytes);
       }
     }
 
@@ -534,8 +571,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <c>true</c> if this instance uses a secure connection; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool IsSecure {
-      get {
+    public bool IsSecure
+    {
+      get
+      {
         return _secure;
       }
     }
@@ -549,12 +588,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="Logger"/> that provides the logging function.
     /// </value>
-    public Logger Log {
-      get {
+    public Logger Log
+    {
+      get
+      {
         return _logger;
       }
 
-      internal set {
+      internal set
+      {
         _logger = value;
       }
     }
@@ -603,44 +645,54 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The value specified for a set operation includes the path segments.
     ///   </para>
     /// </exception>
-    public string Origin {
-      get {
+    public string Origin
+    {
+      get
+      {
         return _origin;
       }
 
-      set {
+      set
+      {
         string msg = null;
 
-        if (!_client) {
+        if (!_client)
+        {
           msg = "This instance is not a client.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (!value.IsNullOrEmpty ()) {
+        if (!value.IsNullOrEmpty())
+        {
           Uri uri;
-          if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
+          if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
+          {
             msg = "Not an absolute URI string.";
-            throw new ArgumentException (msg, "value");
+            throw new ArgumentException(msg, "value");
           }
 
-          if (uri.Segments.Length > 1) {
+          if (uri.Segments.Length > 1)
+          {
             msg = "It includes the path segments.";
-            throw new ArgumentException (msg, "value");
+            throw new ArgumentException(msg, "value");
           }
         }
 
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+        lock (_forState)
+        {
+          if (!canSet(out msg))
+          {
+            _logger.Warn(msg);
             return;
           }
 
-          _origin = !value.IsNullOrEmpty () ? value.TrimEnd ('/') : value;
+          _origin = !value.IsNullOrEmpty() ? value.TrimEnd('/') : value;
         }
       }
     }
@@ -657,12 +709,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   An empty string if not specified or selected.
     ///   </para>
     /// </value>
-    public string Protocol {
-      get {
+    public string Protocol
+    {
+      get
+      {
         return _protocol ?? String.Empty;
       }
 
-      internal set {
+      internal set
+      {
         _protocol = value;
       }
     }
@@ -681,8 +736,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <see cref="WebSocketState.Connecting"/>.
     ///   </para>
     /// </value>
-    public WebSocketState ReadyState {
-      get {
+    public WebSocketState ReadyState
+    {
+      get
+      {
         return _readyState;
       }
     }
@@ -706,19 +763,23 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   This instance does not use a secure connection.
     ///   </para>
     /// </exception>
-    public ClientSslConfiguration SslConfiguration {
-      get {
-        if (!_client) {
+    public ClientSslConfiguration SslConfiguration
+    {
+      get
+      {
+        if (!_client)
+        {
           var msg = "This instance is not a client.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (!_secure) {
+        if (!_secure)
+        {
           var msg = "This instance does not use a secure connection.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        return getSslConfiguration ();
+        return getSslConfiguration();
       }
     }
 
@@ -728,8 +789,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="Uri"/> that represents the URL to which to connect.
     /// </value>
-    public Uri Url {
-      get {
+    public Uri Url
+    {
+      get
+      {
         return _client ? _uri : _context.RequestUri;
       }
     }
@@ -753,24 +816,30 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
     /// </exception>
-    public TimeSpan WaitTime {
-      get {
+    public TimeSpan WaitTime
+    {
+      get
+      {
         return _waitTime;
       }
 
-      set {
+      set
+      {
         if (value <= TimeSpan.Zero)
-          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
+          throw new ArgumentOutOfRangeException("value", "Zero or less.");
 
         string msg;
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+        lock (_forState)
+        {
+          if (!canSet(out msg))
+          {
+            _logger.Warn(msg);
             return;
           }
 
@@ -808,53 +877,60 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     #region Private Methods
 
     // As server
-    private bool accept ()
+    private bool accept()
     {
-      if (_readyState == WebSocketState.Open) {
+      if (_readyState == WebSocketState.Open)
+      {
         var msg = "The handshake request has already been accepted.";
-        _logger.Warn (msg);
+        _logger.Warn(msg);
 
         return false;
       }
 
-      lock (_forState) {
-        if (_readyState == WebSocketState.Open) {
+      lock (_forState)
+      {
+        if (_readyState == WebSocketState.Open)
+        {
           var msg = "The handshake request has already been accepted.";
-          _logger.Warn (msg);
+          _logger.Warn(msg);
 
           return false;
         }
 
-        if (_readyState == WebSocketState.Closing) {
+        if (_readyState == WebSocketState.Closing)
+        {
           var msg = "The close process has set in.";
-          _logger.Error (msg);
+          _logger.Error(msg);
 
           msg = "An interruption has occurred while attempting to accept.";
-          error (msg, null);
+          error(msg, null);
 
           return false;
         }
 
-        if (_readyState == WebSocketState.Closed) {
+        if (_readyState == WebSocketState.Closed)
+        {
           var msg = "The connection has been closed.";
-          _logger.Error (msg);
+          _logger.Error(msg);
 
           msg = "An interruption has occurred while attempting to accept.";
-          error (msg, null);
+          error(msg, null);
 
           return false;
         }
 
-        try {
-          if (!acceptHandshake ())
+        try
+        {
+          if (!acceptHandshake())
             return false;
         }
-        catch (Exception ex) {
-          _logger.Fatal (ex.Message);
-          _logger.Debug (ex.ToString ());
+        catch (Exception ex)
+        {
+          _logger.Fatal(ex.Message);
+          _logger.Debug(ex.ToString());
 
           var msg = "An exception has occurred while attempting to accept.";
-          fatal (msg, ex);
+          fatal(msg, ex);
 
           return false;
         }
@@ -865,19 +941,20 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As server
-    private bool acceptHandshake ()
+    private bool acceptHandshake()
     {
-      _logger.Debug (
-        String.Format (
+      _logger.Debug(
+        String.Format(
           "A handshake request from {0}:\n{1}", _context.UserEndPoint, _context
         )
       );
 
       string msg;
-      if (!checkHandshakeRequest (_context, out msg)) {
-        _logger.Error (msg);
+      if (!checkHandshakeRequest(_context, out msg))
+      {
+        _logger.Error(msg);
 
-        refuseHandshake (
+        refuseHandshake(
           CloseStatusCode.ProtocolError,
           "A handshake error has occurred while attempting to accept."
         );
@@ -885,10 +962,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         return false;
       }
 
-      if (!customCheckHandshakeRequest (_context, out msg)) {
-        _logger.Error (msg);
+      if (!customCheckHandshakeRequest(_context, out msg))
+      {
+        _logger.Error(msg);
 
-        refuseHandshake (
+        refuseHandshake(
           CloseStatusCode.PolicyViolation,
           "A handshake error has occurred while attempting to accept."
         );
@@ -898,29 +976,33 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
       _base64Key = _context.Headers["Sec-WebSocket-Key"];
 
-      if (_protocol != null) {
+      if (_protocol != null)
+      {
         var vals = _context.SecWebSocketProtocols;
-        processSecWebSocketProtocolClientHeader (vals);
+        processSecWebSocketProtocolClientHeader(vals);
       }
 
-      if (!_ignoreExtensions) {
+      if (!_ignoreExtensions)
+      {
         var val = _context.Headers["Sec-WebSocket-Extensions"];
-        processSecWebSocketExtensionsClientHeader (val);
+        processSecWebSocketExtensionsClientHeader(val);
       }
 
-      return sendHttpResponse (createHandshakeResponse ());
+      return sendHttpResponse(createHandshakeResponse());
     }
 
-    private bool canSet (out string message)
+    private bool canSet(out string message)
     {
       message = null;
 
-      if (_readyState == WebSocketState.Open) {
+      if (_readyState == WebSocketState.Open)
+      {
         message = "The connection has already been established.";
         return false;
       }
 
-      if (_readyState == WebSocketState.Closing) {
+      if (_readyState == WebSocketState.Closing)
+      {
         message = "The connection is closing.";
         return false;
       }
@@ -929,18 +1011,20 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As server
-    private bool checkHandshakeRequest (
+    private bool checkHandshakeRequest(
       WebSocketContext context, out string message
     )
     {
       message = null;
 
-      if (!context.IsWebSocketRequest) {
+      if (!context.IsWebSocketRequest)
+      {
         message = "Not a handshake request.";
         return false;
       }
 
-      if (context.RequestUri == null) {
+      if (context.RequestUri == null)
+      {
         message = "It specifies an invalid Request-URI.";
         return false;
       }
@@ -948,36 +1032,43 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       var headers = context.Headers;
 
       var key = headers["Sec-WebSocket-Key"];
-      if (key == null) {
+      if (key == null)
+      {
         message = "It includes no Sec-WebSocket-Key header.";
         return false;
       }
 
-      if (key.Length == 0) {
+      if (key.Length == 0)
+      {
         message = "It includes an invalid Sec-WebSocket-Key header.";
         return false;
       }
 
       var version = headers["Sec-WebSocket-Version"];
-      if (version == null) {
+      if (version == null)
+      {
         message = "It includes no Sec-WebSocket-Version header.";
         return false;
       }
 
-      if (version != _version) {
+      if (version != _version)
+      {
         message = "It includes an invalid Sec-WebSocket-Version header.";
         return false;
       }
 
       var protocol = headers["Sec-WebSocket-Protocol"];
-      if (protocol != null && protocol.Length == 0) {
+      if (protocol != null && protocol.Length == 0)
+      {
         message = "It includes an invalid Sec-WebSocket-Protocol header.";
         return false;
       }
 
-      if (!_ignoreExtensions) {
+      if (!_ignoreExtensions)
+      {
         var extensions = headers["Sec-WebSocket-Extensions"];
-        if (extensions != null && extensions.Length == 0) {
+        if (extensions != null && extensions.Length == 0)
+        {
           message = "It includes an invalid Sec-WebSocket-Extensions header.";
           return false;
         }
@@ -987,42 +1078,49 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private bool checkHandshakeResponse (HttpResponse response, out string message)
+    private bool checkHandshakeResponse(HttpResponse response, out string message)
     {
       message = null;
 
-      if (response.IsRedirect) {
+      if (response.IsRedirect)
+      {
         message = "Indicates the redirection.";
         return false;
       }
 
-      if (response.IsUnauthorized) {
+      if (response.IsUnauthorized)
+      {
         message = "Requires the authentication.";
         return false;
       }
 
-      if (!response.IsWebSocketResponse) {
+      if (!response.IsWebSocketResponse)
+      {
         message = "Not a WebSocket handshake response.";
         return false;
       }
 
       var headers = response.Headers;
-      if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
+      if (!validateSecWebSocketAcceptHeader(headers["Sec-WebSocket-Accept"]))
+      {
         message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
+      if (!validateSecWebSocketProtocolServerHeader(headers["Sec-WebSocket-Protocol"]))
+      {
         message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
+      if (!validateSecWebSocketExtensionsServerHeader(headers["Sec-WebSocket-Extensions"]))
+      {
         message = "Includes an invalid Sec-WebSocket-Extensions header.";
         return false;
       }
 
-      if (!validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])) {
+      if (!validateSecWebSocketVersionServerHeader(headers["Sec-WebSocket-Version"]))
+      {
         message = "Includes an invalid Sec-WebSocket-Version header.";
         return false;
       }
@@ -1030,19 +1128,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private static bool checkProtocols (string[] protocols, out string message)
+    private static bool checkProtocols(string[] protocols, out string message)
     {
       message = null;
 
-      Func<string, bool> cond = protocol => protocol.IsNullOrEmpty ()
-                                            || !protocol.IsToken ();
+      Func<string, bool> cond = protocol => protocol.IsNullOrEmpty()
+                                            || !protocol.IsToken();
 
-      if (protocols.Contains (cond)) {
+      if (protocols.Contains(cond))
+      {
         message = "It contains a value that is not a token.";
         return false;
       }
 
-      if (protocols.ContainsTwice ()) {
+      if (protocols.ContainsTwice())
+      {
         message = "It contains a value twice.";
         return false;
       }
@@ -1050,37 +1150,43 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private bool checkReceivedFrame (WebSocketFrame frame, out string message)
+    private bool checkReceivedFrame(WebSocketFrame frame, out string message)
     {
       message = null;
 
       var masked = frame.IsMasked;
-      if (_client && masked) {
+      if (_client && masked)
+      {
         message = "A frame from the server is masked.";
         return false;
       }
 
-      if (!_client && !masked) {
+      if (!_client && !masked)
+      {
         message = "A frame from a client is not masked.";
         return false;
       }
 
-      if (_inContinuation && frame.IsData) {
+      if (_inContinuation && frame.IsData)
+      {
         message = "A data frame has been received while receiving continuation frames.";
         return false;
       }
 
-      if (frame.IsCompressed && _compression == CompressionMethod.None) {
+      if (frame.IsCompressed && _compression == CompressionMethod.None)
+      {
         message = "A compressed frame has been received without any agreement for it.";
         return false;
       }
 
-      if (frame.Rsv2 == Rsv.On) {
+      if (frame.Rsv2 == Rsv.On)
+      {
         message = "The RSV2 of a frame is non-zero without any negotiation for it.";
         return false;
       }
 
-      if (frame.Rsv3 == Rsv.On) {
+      if (frame.Rsv3 == Rsv.On)
+      {
         message = "The RSV3 of a frame is non-zero without any negotiation for it.";
         return false;
       }
@@ -1088,39 +1194,45 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private void close (ushort code, string reason)
+    private void close(ushort code, string reason)
     {
-      if (_readyState == WebSocketState.Closing) {
-        _logger.Info ("The closing is already in progress.");
+      if (_readyState == WebSocketState.Closing)
+      {
+        _logger.Info("The closing is already in progress.");
         return;
       }
 
-      if (_readyState == WebSocketState.Closed) {
-        _logger.Info ("The connection has already been closed.");
+      if (_readyState == WebSocketState.Closed)
+      {
+        _logger.Info("The connection has already been closed.");
         return;
       }
 
-      if (code == 1005) { // == no status
-        close (PayloadData.Empty, true, true, false);
+      if (code == 1005)
+      { // == no status
+        close(PayloadData.Empty, true, true, false);
         return;
       }
 
-      var send = !code.IsReserved ();
-      close (new PayloadData (code, reason), send, send, false);
+      var send = !code.IsReserved();
+      close(new PayloadData(code, reason), send, send, false);
     }
 
-    private void close (
+    private void close(
       PayloadData payloadData, bool send, bool receive, bool received
     )
     {
-      lock (_forState) {
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
+      lock (_forState)
+      {
+        if (_readyState == WebSocketState.Closing)
+        {
+          _logger.Info("The closing is already in progress.");
           return;
         }
 
-        if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
+        if (_readyState == WebSocketState.Closed)
+        {
+          _logger.Info("The connection has already been closed.");
           return;
         }
 
@@ -1130,69 +1242,74 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         _readyState = WebSocketState.Closing;
       }
 
-      _logger.Trace ("Begin closing the connection.");
+      _logger.Trace("Begin closing the connection.");
 
-      var res = closeHandshake (payloadData, send, receive, received);
-      releaseResources ();
+      var res = closeHandshake(payloadData, send, receive, received);
+      releaseResources();
 
-      _logger.Trace ("End closing the connection.");
+      _logger.Trace("End closing the connection.");
 
       _readyState = WebSocketState.Closed;
 
-      var e = new CloseEventArgs (payloadData, res);
+      var e = new CloseEventArgs(payloadData, res);
 
-      try {
-        OnClose.Emit (this, e);
+      try
+      {
+        OnClose.Emit(this, e);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
       }
     }
 
-    private void closeAsync (ushort code, string reason)
+    private void closeAsync(ushort code, string reason)
     {
-      if (_readyState == WebSocketState.Closing) {
-        _logger.Info ("The closing is already in progress.");
+      if (_readyState == WebSocketState.Closing)
+      {
+        _logger.Info("The closing is already in progress.");
         return;
       }
 
-      if (_readyState == WebSocketState.Closed) {
-        _logger.Info ("The connection has already been closed.");
+      if (_readyState == WebSocketState.Closed)
+      {
+        _logger.Info("The connection has already been closed.");
         return;
       }
 
-      if (code == 1005) { // == no status
-        closeAsync (PayloadData.Empty, true, true, false);
+      if (code == 1005)
+      { // == no status
+        closeAsync(PayloadData.Empty, true, true, false);
         return;
       }
 
-      var send = !code.IsReserved ();
-      closeAsync (new PayloadData (code, reason), send, send, false);
+      var send = !code.IsReserved();
+      closeAsync(new PayloadData(code, reason), send, send, false);
     }
 
-    private void closeAsync (
+    private void closeAsync(
       PayloadData payloadData, bool send, bool receive, bool received
     )
     {
       Action<PayloadData, bool, bool, bool> closer = close;
-      closer.BeginInvoke (
-        payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
+      closer.BeginInvoke(
+        payloadData, send, receive, received, ar => closer.EndInvoke(ar), null
       );
     }
 
-    private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
+    private bool closeHandshake(byte[] frameAsBytes, bool receive, bool received)
     {
-      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
+      var sent = frameAsBytes != null && sendBytes(frameAsBytes);
 
       var wait = !received && sent && receive && _receivingExited != null;
       if (wait)
-        received = _receivingExited.WaitOne (_waitTime);
+        received = _receivingExited.WaitOne(_waitTime);
 
       var ret = sent && received;
 
-      _logger.Debug (
-        String.Format (
+      _logger.Debug(
+        String.Format(
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
         )
       );
@@ -1200,27 +1317,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return ret;
     }
 
-    private bool closeHandshake (
+    private bool closeHandshake(
       PayloadData payloadData, bool send, bool receive, bool received
     )
     {
       var sent = false;
-      if (send) {
-        var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
-        sent = sendBytes (frame.ToArray ());
+      if (send)
+      {
+        var frame = WebSocketFrame.CreateCloseFrame(payloadData, _client);
+        sent = sendBytes(frame.ToArray());
 
         if (_client)
-          frame.Unmask ();
+          frame.Unmask();
       }
 
       var wait = !received && sent && receive && _receivingExited != null;
       if (wait)
-        received = _receivingExited.WaitOne (_waitTime);
+        received = _receivingExited.WaitOne(_waitTime);
 
       var ret = sent && received;
 
-      _logger.Debug (
-        String.Format (
+      _logger.Debug(
+        String.Format(
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
         )
       );
@@ -1229,56 +1347,63 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private bool connect ()
+    private bool connect()
     {
-      if (_readyState == WebSocketState.Open) {
+      if (_readyState == WebSocketState.Open)
+      {
         var msg = "The connection has already been established.";
-        _logger.Warn (msg);
+        _logger.Warn(msg);
 
         return false;
       }
 
-      lock (_forState) {
-        if (_readyState == WebSocketState.Open) {
+      lock (_forState)
+      {
+        if (_readyState == WebSocketState.Open)
+        {
           var msg = "The connection has already been established.";
-          _logger.Warn (msg);
+          _logger.Warn(msg);
 
           return false;
         }
 
-        if (_readyState == WebSocketState.Closing) {
+        if (_readyState == WebSocketState.Closing)
+        {
           var msg = "The close process has set in.";
-          _logger.Error (msg);
+          _logger.Error(msg);
 
           msg = "An interruption has occurred while attempting to connect.";
-          error (msg, null);
+          error(msg, null);
 
           return false;
         }
 
-        if (_retryCountForConnect > _maxRetryCountForConnect) {
+        if (_retryCountForConnect > _maxRetryCountForConnect)
+        {
           var msg = "An opportunity for reconnecting has been lost.";
-          _logger.Error (msg);
+          _logger.Error(msg);
 
           msg = "An interruption has occurred while attempting to connect.";
-          error (msg, null);
+          error(msg, null);
 
           return false;
         }
 
         _readyState = WebSocketState.Connecting;
 
-        try {
-          doHandshake ();
+        try
+        {
+          doHandshake();
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
           _retryCountForConnect++;
 
-          _logger.Fatal (ex.Message);
-          _logger.Debug (ex.ToString ());
+          _logger.Fatal(ex.Message);
+          _logger.Debug(ex.ToString());
 
           var msg = "An exception has occurred while attempting to connect.";
-          fatal (msg, ex);
+          fatal(msg, ex);
 
           return false;
         }
@@ -1291,81 +1416,85 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private string createExtensions ()
+    private string createExtensions()
     {
-      var buff = new StringBuilder (80);
+      var buff = new StringBuilder(80);
 
-      if (_compression != CompressionMethod.None) {
-        var str = _compression.ToExtensionString (
+      if (_compression != CompressionMethod.None)
+      {
+        var str = _compression.ToExtensionString(
           "server_no_context_takeover", "client_no_context_takeover");
 
-        buff.AppendFormat ("{0}, ", str);
+        buff.AppendFormat("{0}, ", str);
       }
 
       var len = buff.Length;
-      if (len > 2) {
+      if (len > 2)
+      {
         buff.Length = len - 2;
-        return buff.ToString ();
+        return buff.ToString();
       }
 
       return null;
     }
 
     // As server
-    private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
+    private HttpResponse createHandshakeFailureResponse(HttpStatusCode code)
     {
-      var ret = HttpResponse.CreateCloseResponse (code);
+      var ret = HttpResponse.CreateCloseResponse(code);
       ret.Headers["Sec-WebSocket-Version"] = _version;
 
       return ret;
     }
 
     // As client
-    private HttpRequest createHandshakeRequest ()
+    private HttpRequest createHandshakeRequest()
     {
-      var ret = HttpRequest.CreateWebSocketRequest (_uri);
+      var ret = HttpRequest.CreateWebSocketRequest(_uri);
 
       var headers = ret.Headers;
-      if (!_origin.IsNullOrEmpty ())
+      if (!_origin.IsNullOrEmpty())
         headers["Origin"] = _origin;
 
       headers["Sec-WebSocket-Key"] = _base64Key;
 
       _protocolsRequested = _protocols != null;
       if (_protocolsRequested)
-        headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
+        headers["Sec-WebSocket-Protocol"] = _protocols.ToString(", ");
 
       _extensionsRequested = _compression != CompressionMethod.None;
       if (_extensionsRequested)
-        headers["Sec-WebSocket-Extensions"] = createExtensions ();
+        headers["Sec-WebSocket-Extensions"] = createExtensions();
 
       headers["Sec-WebSocket-Version"] = _version;
 
       AuthenticationResponse authRes = null;
-      if (_authChallenge != null && _credentials != null) {
-        authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
+      if (_authChallenge != null && _credentials != null)
+      {
+        authRes = new AuthenticationResponse(_authChallenge, _credentials, _nonceCount);
         _nonceCount = authRes.NonceCount;
       }
-      else if (_preAuth) {
-        authRes = new AuthenticationResponse (_credentials);
+      else if (_preAuth)
+      {
+        authRes = new AuthenticationResponse(_credentials);
       }
 
       if (authRes != null)
-        headers["Authorization"] = authRes.ToString ();
+        headers["Authorization"] = authRes.ToString();
 
       if (_cookies.Count > 0)
-        ret.SetCookies (_cookies);
+        ret.SetCookies(_cookies);
 
       return ret;
     }
 
     // As server
-    private HttpResponse createHandshakeResponse ()
+    private HttpResponse createHandshakeResponse()
     {
-      var ret = HttpResponse.CreateWebSocketResponse ();
+      var ret = HttpResponse.CreateWebSocketResponse();
 
       var headers = ret.Headers;
-      headers["Sec-WebSocket-Accept"] = CreateResponseKey (_base64Key);
+      headers["Sec-WebSocket-Accept"] = CreateResponseKey(_base64Key);
 
       if (_protocol != null)
         headers["Sec-WebSocket-Protocol"] = _protocol;
@@ -1374,13 +1503,13 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         headers["Sec-WebSocket-Extensions"] = _extensions;
 
       if (_cookies.Count > 0)
-        ret.SetCookies (_cookies);
+        ret.SetCookies(_cookies);
 
       return ret;
     }
 
     // As server
-    private bool customCheckHandshakeRequest (
+    private bool customCheckHandshakeRequest(
       WebSocketContext context, out string message
     )
     {
@@ -1389,177 +1518,193 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       if (_handshakeRequestChecker == null)
         return true;
 
-      message = _handshakeRequestChecker (context);
+      message = _handshakeRequestChecker(context);
       return message == null;
     }
 
-    private MessageEventArgs dequeueFromMessageEventQueue ()
+    private MessageEventArgs dequeueFromMessageEventQueue()
     {
       lock (_forMessageEventQueue)
-        return _messageEventQueue.Count > 0 ? _messageEventQueue.Dequeue () : null;
+        return _messageEventQueue.Count > 0 ? _messageEventQueue.Dequeue() : null;
     }
 
     // As client
-    private void doHandshake ()
+    private void doHandshake()
     {
-      setClientStream ();
-      var res = sendHandshakeRequest ();
+      setClientStream();
+      var res = sendHandshakeRequest();
 
       string msg;
-      if (!checkHandshakeResponse (res, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkHandshakeResponse(res, out msg))
+        throw new WebSocketException(CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
       if (_extensionsRequested)
-        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+        processSecWebSocketExtensionsServerHeader(res.Headers["Sec-WebSocket-Extensions"]);
 
-      processCookies (res.Cookies);
+      processCookies(res.Cookies);
     }
 
-    private void enqueueToMessageEventQueue (MessageEventArgs e)
+    private void enqueueToMessageEventQueue(MessageEventArgs e)
     {
       lock (_forMessageEventQueue)
-        _messageEventQueue.Enqueue (e);
+        _messageEventQueue.Enqueue(e);
     }
 
-    private void error (string message, Exception exception)
+    private void error(string message, Exception exception)
     {
-      try {
-        OnError.Emit (this, new ErrorEventArgs (message, exception));
+      try
+      {
+        OnError.Emit(this, new ErrorEventArgs(message, exception));
       }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
       }
     }
 
-    private void fatal (string message, Exception exception)
+    private void fatal(string message, Exception exception)
     {
       var code = exception is WebSocketException
-                 ? ((WebSocketException) exception).Code
+                 ? ((WebSocketException)exception).Code
                  : CloseStatusCode.Abnormal;
 
-      fatal (message, (ushort) code);
+      fatal(message, (ushort)code);
     }
 
-    private void fatal (string message, ushort code)
+    private void fatal(string message, ushort code)
     {
-      var payload = new PayloadData (code, message);
-      close (payload, !code.IsReserved (), false, false);
+      var payload = new PayloadData(code, message);
+      close(payload, !code.IsReserved(), false, false);
     }
 
-    private void fatal (string message, CloseStatusCode code)
+    private void fatal(string message, CloseStatusCode code)
     {
-      fatal (message, (ushort) code);
+      fatal(message, (ushort)code);
     }
 
-    private ClientSslConfiguration getSslConfiguration ()
+    private ClientSslConfiguration getSslConfiguration()
     {
       if (_sslConfig == null)
-        _sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost);
+        _sslConfig = new ClientSslConfiguration(_uri.DnsSafeHost);
 
       return _sslConfig;
     }
 
-    private void init ()
+    private void init()
     {
       _compression = CompressionMethod.None;
-      _cookies = new CookieCollection ();
-      _forPing = new object ();
-      _forSend = new object ();
-      _forState = new object ();
-      _messageEventQueue = new Queue<MessageEventArgs> ();
-      _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
+      _cookies = new CookieCollection();
+      _forPing = new object();
+      _forSend = new object();
+      _forState = new object();
+      _messageEventQueue = new Queue<MessageEventArgs>();
+      _forMessageEventQueue = ((ICollection)_messageEventQueue).SyncRoot;
       _readyState = WebSocketState.Connecting;
     }
 
-    private void message ()
+    private void message()
     {
       MessageEventArgs e = null;
-      lock (_forMessageEventQueue) {
+      lock (_forMessageEventQueue)
+      {
         if (_inMessage || _messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
           return;
 
         _inMessage = true;
-        e = _messageEventQueue.Dequeue ();
+        e = _messageEventQueue.Dequeue();
       }
 
-      _message (e);
+      _message(e);
     }
 
-    private void messagec (MessageEventArgs e)
+    private void messagec(MessageEventArgs e)
     {
-      do {
-        try {
-          OnMessage.Emit (this, e);
+      do
+      {
+        try
+        {
+          OnMessage.Emit(this, e);
         }
-        catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-          error ("An error has occurred during an OnMessage event.", ex);
+        catch (Exception ex)
+        {
+          _logger.Error(ex.ToString());
+          error("An error has occurred during an OnMessage event.", ex);
         }
 
-        lock (_forMessageEventQueue) {
-          if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+        lock (_forMessageEventQueue)
+        {
+          if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+          {
             _inMessage = false;
             break;
           }
 
-          e = _messageEventQueue.Dequeue ();
+          e = _messageEventQueue.Dequeue();
         }
       }
       while (true);
     }
 
-    private void messages (MessageEventArgs e)
+    private void messages(MessageEventArgs e)
     {
-      try {
-        OnMessage.Emit (this, e);
+      try
+      {
+        OnMessage.Emit(this, e);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during an OnMessage event.", ex);
+      catch (Exception ex)
+      {
+        _logger.Error(ex.ToString());
+        error("An error has occurred during an OnMessage event.", ex);
       }
 
-      lock (_forMessageEventQueue) {
-        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+      lock (_forMessageEventQueue)
+      {
+        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+        {
           _inMessage = false;
           return;
         }
 
-        e = _messageEventQueue.Dequeue ();
+        e = _messageEventQueue.Dequeue();
       }
 
-      ThreadPool.QueueUserWorkItem (state => messages (e));
+      ThreadPool.QueueUserWorkItem(state => messages(e));
     }
 
-    private void open ()
+    private void open()
     {
       _inMessage = true;
-      startReceiving ();
-      try {
-        OnOpen.Emit (this, EventArgs.Empty);
+      startReceiving();
+      try
+      {
+        OnOpen.Emit(this, EventArgs.Empty);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during the OnOpen event.", ex);
+      catch (Exception ex)
+      {
+        _logger.Error(ex.ToString());
+        error("An error has occurred during the OnOpen event.", ex);
       }
 
       MessageEventArgs e = null;
-      lock (_forMessageEventQueue) {
-        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+      lock (_forMessageEventQueue)
+      {
+        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+        {
           _inMessage = false;
           return;
         }
 
-        e = _messageEventQueue.Dequeue ();
+        e = _messageEventQueue.Dequeue();
       }
 
-      _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
+      _message.BeginInvoke(e, ar => _message.EndInvoke(ar), null);
     }
 
-    private bool ping (byte[] data)
+    private bool ping(byte[] data)
     {
       if (_readyState != WebSocketState.Open)
         return false;
@@ -1568,69 +1713,75 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       if (pongReceived == null)
         return false;
 
-      lock (_forPing) {
-        try {
-          pongReceived.Reset ();
-          if (!send (Fin.Final, Opcode.Ping, data, false))
+      lock (_forPing)
+      {
+        try
+        {
+          pongReceived.Reset();
+          if (!send(Fin.Final, Opcode.Ping, data, false))
             return false;
 
-          return pongReceived.WaitOne (_waitTime);
+          return pongReceived.WaitOne(_waitTime);
         }
-        catch (ObjectDisposedException) {
+        catch (ObjectDisposedException)
+        {
           return false;
         }
       }
     }
 
-    private bool processCloseFrame (WebSocketFrame frame)
+    private bool processCloseFrame(WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (payload, !payload.HasReservedCode, false, true);
+      close(payload, !payload.HasReservedCode, false, true);
 
       return false;
     }
 
     // As client
-    private void processCookies (CookieCollection cookies)
+    private void processCookies(CookieCollection cookies)
     {
       if (cookies.Count == 0)
         return;
 
-      _cookies.SetOrRemove (cookies);
+      _cookies.SetOrRemove(cookies);
     }
 
-    private bool processDataFrame (WebSocketFrame frame)
+    private bool processDataFrame(WebSocketFrame frame)
     {
-      enqueueToMessageEventQueue (
+      enqueueToMessageEventQueue(
         frame.IsCompressed
-        ? new MessageEventArgs (
-            frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-        : new MessageEventArgs (frame));
+        ? new MessageEventArgs(
+            frame.Opcode, frame.PayloadData.ApplicationData.Decompress(_compression))
+        : new MessageEventArgs(frame));
 
       return true;
     }
 
-    private bool processFragmentFrame (WebSocketFrame frame)
+    private bool processFragmentFrame(WebSocketFrame frame)
     {
-      if (!_inContinuation) {
+      if (!_inContinuation)
+      {
         // Must process first fragment.
         if (frame.IsContinuation)
           return true;
 
         _fragmentsOpcode = frame.Opcode;
         _fragmentsCompressed = frame.IsCompressed;
-        _fragmentsBuffer = new MemoryStream ();
+        _fragmentsBuffer = new MemoryStream();
         _inContinuation = true;
       }
 
-      _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData, 1024);
-      if (frame.IsFinal) {
-        using (_fragmentsBuffer) {
+      _fragmentsBuffer.WriteBytes(frame.PayloadData.ApplicationData, 1024);
+      if (frame.IsFinal)
+      {
+        using (_fragmentsBuffer)
+        {
           var data = _fragmentsCompressed
-                     ? _fragmentsBuffer.DecompressToArray (_compression)
-                     : _fragmentsBuffer.ToArray ();
+                     ? _fragmentsBuffer.DecompressToArray(_compression)
+                     : _fragmentsBuffer.ToArray();
 
-          enqueueToMessageEventQueue (new MessageEventArgs (_fragmentsOpcode, data));
+          enqueueToMessageEventQueue(new MessageEventArgs(_fragmentsOpcode, data));
         }
 
         _fragmentsBuffer = null;
@@ -1640,100 +1791,109 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private bool processPingFrame (WebSocketFrame frame)
+    private bool processPingFrame(WebSocketFrame frame)
     {
-      _logger.Trace ("A ping was received.");
+      _logger.Trace("A ping was received.");
 
-      var pong = WebSocketFrame.CreatePongFrame (frame.PayloadData, _client);
+      var pong = WebSocketFrame.CreatePongFrame(frame.PayloadData, _client);
 
-      lock (_forState) {
-        if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The connection is closing.");
+      lock (_forState)
+      {
+        if (_readyState != WebSocketState.Open)
+        {
+          _logger.Error("The connection is closing.");
           return true;
         }
 
-        if (!sendBytes (pong.ToArray ()))
+        if (!sendBytes(pong.ToArray()))
           return false;
       }
 
-      _logger.Trace ("A pong to this ping has been sent.");
+      _logger.Trace("A pong to this ping has been sent.");
 
-      if (_emitOnPing) {
+      if (_emitOnPing)
+      {
         if (_client)
-          pong.Unmask ();
+          pong.Unmask();
 
-        enqueueToMessageEventQueue (new MessageEventArgs (frame));
+        enqueueToMessageEventQueue(new MessageEventArgs(frame));
       }
 
       return true;
     }
 
-    private bool processPongFrame (WebSocketFrame frame)
+    private bool processPongFrame(WebSocketFrame frame)
     {
-      _logger.Trace ("A pong was received.");
+      _logger.Trace("A pong was received.");
 
-      try {
-        _pongReceived.Set ();
+      try
+      {
+        _pongReceived.Set();
       }
-      catch (NullReferenceException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (NullReferenceException ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
 
         return false;
       }
-      catch (ObjectDisposedException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (ObjectDisposedException ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
 
         return false;
       }
 
-      _logger.Trace ("It has been signaled.");
+      _logger.Trace("It has been signaled.");
 
       return true;
     }
 
-    private bool processReceivedFrame (WebSocketFrame frame)
+    private bool processReceivedFrame(WebSocketFrame frame)
     {
       string msg;
-      if (!checkReceivedFrame (frame, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkReceivedFrame(frame, out msg))
+        throw new WebSocketException(CloseStatusCode.ProtocolError, msg);
 
-      frame.Unmask ();
+      frame.Unmask();
       return frame.IsFragment
-             ? processFragmentFrame (frame)
+             ? processFragmentFrame(frame)
              : frame.IsData
-               ? processDataFrame (frame)
+               ? processDataFrame(frame)
                : frame.IsPing
-                 ? processPingFrame (frame)
+                 ? processPingFrame(frame)
                  : frame.IsPong
-                   ? processPongFrame (frame)
+                   ? processPongFrame(frame)
                    : frame.IsClose
-                     ? processCloseFrame (frame)
-                     : processUnsupportedFrame (frame);
+                     ? processCloseFrame(frame)
+                     : processUnsupportedFrame(frame);
     }
 
     // As server
-    private void processSecWebSocketExtensionsClientHeader (string value)
+    private void processSecWebSocketExtensionsClientHeader(string value)
     {
       if (value == null)
         return;
 
-      var buff = new StringBuilder (80);
+      var buff = new StringBuilder(80);
       var comp = false;
 
-      foreach (var elm in value.SplitHeaderValue (',')) {
-        var extension = elm.Trim ();
+      foreach (var elm in value.SplitHeaderValue(','))
+      {
+        var extension = elm.Trim();
         if (extension.Length == 0)
           continue;
 
-        if (!comp) {
-          if (extension.IsCompressionExtension (CompressionMethod.Deflate)) {
+        if (!comp)
+        {
+          if (extension.IsCompressionExtension(CompressionMethod.Deflate))
+          {
             _compression = CompressionMethod.Deflate;
 
-            buff.AppendFormat (
+            buff.AppendFormat(
               "{0}, ",
-              _compression.ToExtensionString (
+              _compression.ToExtensionString(
                 "client_no_context_takeover", "server_no_context_takeover"
               )
             );
@@ -1748,13 +1908,14 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         return;
 
       buff.Length = len - 2;
-      _extensions = buff.ToString ();
+      _extensions = buff.ToString();
     }
 
     // As client
-    private void processSecWebSocketExtensionsServerHeader (string value)
+    private void processSecWebSocketExtensionsServerHeader(string value)
     {
-      if (value == null) {
+      if (value == null)
+      {
         _compression = CompressionMethod.None;
         return;
       }
@@ -1763,169 +1924,184 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As server
-    private void processSecWebSocketProtocolClientHeader (
+    private void processSecWebSocketProtocolClientHeader(
       IEnumerable<string> values
     )
     {
-      if (values.Contains (val => val == _protocol))
+      if (values.Contains(val => val == _protocol))
         return;
 
       _protocol = null;
     }
 
-    private bool processUnsupportedFrame (WebSocketFrame frame)
+    private bool processUnsupportedFrame(WebSocketFrame frame)
     {
-      _logger.Fatal ("An unsupported frame:" + frame.PrintToString (false));
-      fatal ("There is no way to handle it.", CloseStatusCode.PolicyViolation);
+      _logger.Fatal("An unsupported frame:" + frame.PrintToString(false));
+      fatal("There is no way to handle it.", CloseStatusCode.PolicyViolation);
 
       return false;
     }
 
     // As server
-    private void refuseHandshake (CloseStatusCode code, string reason)
+    private void refuseHandshake(CloseStatusCode code, string reason)
     {
       _readyState = WebSocketState.Closing;
 
-      var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
-      sendHttpResponse (res);
+      var res = createHandshakeFailureResponse(HttpStatusCode.BadRequest);
+      sendHttpResponse(res);
 
-      releaseServerResources ();
+      releaseServerResources();
 
       _readyState = WebSocketState.Closed;
 
-      var e = new CloseEventArgs ((ushort) code, reason, false);
+      var e = new CloseEventArgs((ushort)code, reason, false);
 
-      try {
-        OnClose.Emit (this, e);
+      try
+      {
+        OnClose.Emit(this, e);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
       }
     }
 
     // As client
-    private void releaseClientResources ()
+    private void releaseClientResources()
     {
-      if (_stream != null) {
-        _stream.Dispose ();
+      if (_stream != null)
+      {
+        _stream.Dispose();
         _stream = null;
       }
 
-      if (_tcpClient != null) {
-        _tcpClient.Close ();
+      if (_tcpClient != null)
+      {
+        _tcpClient.Close();
         _tcpClient = null;
       }
     }
 
-    private void releaseCommonResources ()
+    private void releaseCommonResources()
     {
-      if (_fragmentsBuffer != null) {
-        _fragmentsBuffer.Dispose ();
+      if (_fragmentsBuffer != null)
+      {
+        _fragmentsBuffer.Dispose();
         _fragmentsBuffer = null;
         _inContinuation = false;
       }
 
-      if (_pongReceived != null) {
-        _pongReceived.Close ();
+      if (_pongReceived != null)
+      {
+        _pongReceived.Close();
         _pongReceived = null;
       }
 
-      if (_receivingExited != null) {
-        _receivingExited.Close ();
+      if (_receivingExited != null)
+      {
+        _receivingExited.Close();
         _receivingExited = null;
       }
     }
 
-    private void releaseResources ()
+    private void releaseResources()
     {
       if (_client)
-        releaseClientResources ();
+        releaseClientResources();
       else
-        releaseServerResources ();
+        releaseServerResources();
 
-      releaseCommonResources ();
+      releaseCommonResources();
     }
 
     // As server
-    private void releaseServerResources ()
+    private void releaseServerResources()
     {
       if (_closeContext == null)
         return;
 
-      _closeContext ();
+      _closeContext();
       _closeContext = null;
       _stream = null;
       _context = null;
     }
 
-    private bool send (Opcode opcode, Stream stream)
+    private bool send(Opcode opcode, Stream stream)
     {
-      lock (_forSend) {
+      lock (_forSend)
+      {
         var src = stream;
         var compressed = false;
         var sent = false;
-        try {
-          if (_compression != CompressionMethod.None) {
-            stream = stream.Compress (_compression);
+        try
+        {
+          if (_compression != CompressionMethod.None)
+          {
+            stream = stream.Compress(_compression);
             compressed = true;
           }
 
-          sent = send (opcode, stream, compressed);
+          sent = send(opcode, stream, compressed);
           if (!sent)
-            error ("A send has been interrupted.", null);
+            error("A send has been interrupted.", null);
         }
-        catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-          error ("An error has occurred during a send.", ex);
+        catch (Exception ex)
+        {
+          _logger.Error(ex.ToString());
+          error("An error has occurred during a send.", ex);
         }
-        finally {
+        finally
+        {
           if (compressed)
-            stream.Dispose ();
+            stream.Dispose();
 
-          src.Dispose ();
+          src.Dispose();
         }
 
         return sent;
       }
     }
 
-    private bool send (Opcode opcode, Stream stream, bool compressed)
+    private bool send(Opcode opcode, Stream stream, bool compressed)
     {
       var len = stream.Length;
       if (len == 0)
-        return send (Fin.Final, opcode, EmptyBytes, false);
+        return send(Fin.Final, opcode, EmptyBytes, false);
 
       var quo = len / FragmentLength;
-      var rem = (int) (len % FragmentLength);
+      var rem = (int)(len % FragmentLength);
 
       byte[] buff = null;
-      if (quo == 0) {
+      if (quo == 0)
+      {
         buff = new byte[rem];
-        return stream.Read (buff, 0, rem) == rem
-               && send (Fin.Final, opcode, buff, compressed);
+        return stream.Read(buff, 0, rem) == rem
+               && send(Fin.Final, opcode, buff, compressed);
       }
 
-      if (quo == 1 && rem == 0) {
+      if (quo == 1 && rem == 0)
+      {
         buff = new byte[FragmentLength];
-        return stream.Read (buff, 0, FragmentLength) == FragmentLength
-               && send (Fin.Final, opcode, buff, compressed);
+        return stream.Read(buff, 0, FragmentLength) == FragmentLength
+               && send(Fin.Final, opcode, buff, compressed);
       }
 
       /* Send fragments */
 
       // Begin
       buff = new byte[FragmentLength];
-      var sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
-                 && send (Fin.More, opcode, buff, compressed);
+      var sent = stream.Read(buff, 0, FragmentLength) == FragmentLength
+                 && send(Fin.More, opcode, buff, compressed);
 
       if (!sent)
         return false;
 
       var n = rem == 0 ? quo - 2 : quo - 1;
-      for (long i = 0; i < n; i++) {
-        sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
-               && send (Fin.More, Opcode.Cont, buff, false);
+      for (long i = 0; i < n; i++)
+      {
+        sent = stream.Read(buff, 0, FragmentLength) == FragmentLength
+               && send(Fin.More, Opcode.Cont, buff, false);
 
         if (!sent)
           return false;
@@ -1937,38 +2113,43 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       else
         buff = new byte[rem];
 
-      return stream.Read (buff, 0, rem) == rem
-             && send (Fin.Final, Opcode.Cont, buff, false);
+      return stream.Read(buff, 0, rem) == rem
+             && send(Fin.Final, Opcode.Cont, buff, false);
     }
 
-    private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
+    private bool send(Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
-      lock (_forState) {
-        if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The connection is closing.");
+      lock (_forState)
+      {
+        if (_readyState != WebSocketState.Open)
+        {
+          _logger.Error("The connection is closing.");
           return false;
         }
 
-        var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
-        return sendBytes (frame.ToArray ());
+        var frame = new WebSocketFrame(fin, opcode, data, compressed, _client);
+        return sendBytes(frame.ToArray());
       }
     }
 
-    private void sendAsync (Opcode opcode, Stream stream, Action<bool> completed)
+    private void sendAsync(Opcode opcode, Stream stream, Action<bool> completed)
     {
       Func<Opcode, Stream, bool> sender = send;
-      sender.BeginInvoke (
+      sender.BeginInvoke(
         opcode,
         stream,
-        ar => {
-          try {
-            var sent = sender.EndInvoke (ar);
+        ar =>
+        {
+          try
+          {
+            var sent = sender.EndInvoke(ar);
             if (completed != null)
-              completed (sent);
+              completed(sent);
           }
-          catch (Exception ex) {
-            _logger.Error (ex.ToString ());
-            error (
+          catch (Exception ex)
+          {
+            _logger.Error(ex.ToString());
+            error(
               "An error has occurred during the callback for an async send.",
               ex
             );
@@ -1978,14 +2159,16 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       );
     }
 
-    private bool sendBytes (byte[] bytes)
+    private bool sendBytes(byte[] bytes)
     {
-      try {
-        _stream.Write (bytes, 0, bytes.Length);
+      try
+      {
+        _stream.Write(bytes, 0, bytes.Length);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
 
         return false;
       }
@@ -1994,61 +2177,70 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private HttpResponse sendHandshakeRequest ()
+    private HttpResponse sendHandshakeRequest()
     {
-      var req = createHandshakeRequest ();
-      var res = sendHttpRequest (req, 90000);
-      if (res.IsUnauthorized) {
+      var req = createHandshakeRequest();
+      var res = sendHttpRequest(req, 90000);
+      if (res.IsUnauthorized)
+      {
         var chal = res.Headers["WWW-Authenticate"];
-        _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
-        if (chal.IsNullOrEmpty ()) {
-          _logger.Error ("No authentication challenge is specified.");
+        _logger.Warn(String.Format("Received an authentication requirement for '{0}'.", chal));
+        if (chal.IsNullOrEmpty())
+        {
+          _logger.Error("No authentication challenge is specified.");
           return res;
         }
 
-        _authChallenge = AuthenticationChallenge.Parse (chal);
-        if (_authChallenge == null) {
-          _logger.Error ("An invalid authentication challenge is specified.");
+        _authChallenge = AuthenticationChallenge.Parse(chal);
+        if (_authChallenge == null)
+        {
+          _logger.Error("An invalid authentication challenge is specified.");
           return res;
         }
 
         if (_credentials != null &&
-            (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            setClientStream ();
+            (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest))
+        {
+          if (res.HasConnectionClose)
+          {
+            releaseClientResources();
+            setClientStream();
           }
 
-          var authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
+          var authRes = new AuthenticationResponse(_authChallenge, _credentials, _nonceCount);
           _nonceCount = authRes.NonceCount;
-          req.Headers["Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+          req.Headers["Authorization"] = authRes.ToString();
+          res = sendHttpRequest(req, 15000);
         }
       }
 
-      if (res.IsRedirect) {
+      if (res.IsRedirect)
+      {
         var url = res.Headers["Location"];
-        _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
-        if (_enableRedirection) {
-          if (url.IsNullOrEmpty ()) {
-            _logger.Error ("No url to redirect is located.");
+        _logger.Warn(String.Format("Received a redirection to '{0}'.", url));
+        if (_enableRedirection)
+        {
+          if (url.IsNullOrEmpty())
+          {
+            _logger.Error("No url to redirect is located.");
             return res;
           }
 
           Uri uri;
           string msg;
-          if (!url.TryCreateWebSocketUri (out uri, out msg)) {
-            _logger.Error ("An invalid url to redirect is located: " + msg);
+          if (!url.TryCreateWebSocketUri(out uri, out msg))
+          {
+            _logger.Error("An invalid url to redirect is located: " + msg);
             return res;
           }
 
-          releaseClientResources ();
+          releaseClientResources();
 
           _uri = uri;
           _secure = uri.Scheme == "wss";
 
-          setClientStream ();
-          return sendHandshakeRequest ();
+          setClientStream();
+          return sendHandshakeRequest();
         }
       }
 
@@ -2056,93 +2248,100 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private HttpResponse sendHttpRequest (HttpRequest request, int millisecondsTimeout)
+    private HttpResponse sendHttpRequest(HttpRequest request, int millisecondsTimeout)
     {
-      _logger.Debug ("A request to the server:\n" + request.ToString ());
-      var res = request.GetResponse (_stream, millisecondsTimeout);
-      _logger.Debug ("A response to this request:\n" + res.ToString ());
+      _logger.Debug("A request to the server:\n" + request.ToString());
+      var res = request.GetResponse(_stream, millisecondsTimeout);
+      _logger.Debug("A response to this request:\n" + res.ToString());
 
       return res;
     }
 
     // As server
-    private bool sendHttpResponse (HttpResponse response)
+    private bool sendHttpResponse(HttpResponse response)
     {
-      _logger.Debug (
-        String.Format (
+      _logger.Debug(
+        String.Format(
           "A response to {0}:\n{1}", _context.UserEndPoint, response
         )
       );
 
-      return sendBytes (response.ToByteArray ());
+      return sendBytes(response.ToByteArray());
     }
 
     // As client
-    private void sendProxyConnectRequest ()
+    private void sendProxyConnectRequest()
     {
-      var req = HttpRequest.CreateConnectRequest (_uri);
-      var res = sendHttpRequest (req, 90000);
-      if (res.IsProxyAuthenticationRequired) {
+      var req = HttpRequest.CreateConnectRequest(_uri);
+      var res = sendHttpRequest(req, 90000);
+      if (res.IsProxyAuthenticationRequired)
+      {
         var chal = res.Headers["Proxy-Authenticate"];
-        _logger.Warn (
-          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
+        _logger.Warn(
+          String.Format("Received a proxy authentication requirement for '{0}'.", chal));
 
-        if (chal.IsNullOrEmpty ())
-          throw new WebSocketException ("No proxy authentication challenge is specified.");
+        if (chal.IsNullOrEmpty())
+          throw new WebSocketException("No proxy authentication challenge is specified.");
 
-        var authChal = AuthenticationChallenge.Parse (chal);
+        var authChal = AuthenticationChallenge.Parse(chal);
         if (authChal == null)
-          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
+          throw new WebSocketException("An invalid proxy authentication challenge is specified.");
 
-        if (_proxyCredentials != null) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
+        if (_proxyCredentials != null)
+        {
+          if (res.HasConnectionClose)
+          {
+            releaseClientResources();
+            _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _stream = _tcpClient.GetStream();
           }
 
-          var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
-          req.Headers["Proxy-Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+          var authRes = new AuthenticationResponse(authChal, _proxyCredentials, 0);
+          req.Headers["Proxy-Authorization"] = authRes.ToString();
+          res = sendHttpRequest(req, 15000);
         }
 
         if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("A proxy authentication is required.");
+          throw new WebSocketException("A proxy authentication is required.");
       }
 
       if (res.StatusCode[0] != '2')
-        throw new WebSocketException (
+        throw new WebSocketException(
           "The proxy has failed a connection to the requested host and port.");
     }
 
     // As client
-    private void setClientStream ()
+    private void setClientStream()
     {
-      if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = _tcpClient.GetStream ();
-        sendProxyConnectRequest ();
+      if (_proxyUri != null)
+      {
+        _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _stream = _tcpClient.GetStream();
+        sendProxyConnectRequest();
       }
-      else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = _tcpClient.GetStream ();
+      else
+      {
+        _tcpClient = new TcpClient(_uri.DnsSafeHost, _uri.Port);
+        _stream = _tcpClient.GetStream();
       }
 
-      if (_secure) {
-        var conf = getSslConfiguration ();
+      if (_secure)
+      {
+        var conf = getSslConfiguration();
         var host = conf.TargetHost;
         if (host != _uri.DnsSafeHost)
-          throw new WebSocketException (
+          throw new WebSocketException(
             CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
 
-        try {
-          var sslStream = new SslStream (
+        try
+        {
+          var sslStream = new SslStream(
             _stream,
             false,
             conf.ServerCertificateValidationCallback,
             conf.ClientCertificateSelectionCallback);
 
-            sslStream.AuthenticateAsClient(host);
+          sslStream.AuthenticateAsClient(host);
           //sslStream.AuthenticateAsClient (
           //  host,
           //  conf.ClientCertificates,
@@ -2151,60 +2350,64 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
           _stream = sslStream;
         }
-        catch (Exception ex) {
-          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
+        catch (Exception ex)
+        {
+          throw new WebSocketException(CloseStatusCode.TlsHandshakeFailure, ex);
         }
       }
     }
 
-    private void startReceiving ()
+    private void startReceiving()
     {
       if (_messageEventQueue.Count > 0)
-        _messageEventQueue.Clear ();
+        _messageEventQueue.Clear();
 
-      _pongReceived = new ManualResetEvent (false);
-      _receivingExited = new ManualResetEvent (false);
+      _pongReceived = new ManualResetEvent(false);
+      _receivingExited = new ManualResetEvent(false);
 
       Action receive = null;
       receive =
         () =>
-          WebSocketFrame.ReadFrameAsync (
+          WebSocketFrame.ReadFrameAsync(
             _stream,
             false,
-            frame => {
-              if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
+            frame =>
+            {
+              if (!processReceivedFrame(frame) || _readyState == WebSocketState.Closed)
+              {
                 var exited = _receivingExited;
                 if (exited != null)
-                  exited.Set ();
+                  exited.Set();
 
                 return;
               }
 
               // Receive next asap because the Ping or Close needs a response to it.
-              receive ();
+              receive();
 
               if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
                 return;
 
-              message ();
+              message();
             },
-            ex => {
-              _logger.Fatal (ex.ToString ());
-              fatal ("An exception has occurred while receiving.", ex);
+            ex =>
+            {
+              _logger.Fatal(ex.ToString());
+              fatal("An exception has occurred while receiving.", ex);
             }
           );
 
-      receive ();
+      receive();
     }
 
     // As client
-    private bool validateSecWebSocketAcceptHeader (string value)
+    private bool validateSecWebSocketAcceptHeader(string value)
     {
-      return value != null && value == CreateResponseKey (_base64Key);
+      return value != null && value == CreateResponseKey(_base64Key);
     }
 
     // As client
-    private bool validateSecWebSocketExtensionsServerHeader (string value)
+    private bool validateSecWebSocketExtensionsServerHeader(string value)
     {
       if (value == null)
         return true;
@@ -2216,22 +2419,26 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         return false;
 
       var comp = _compression != CompressionMethod.None;
-      foreach (var e in value.SplitHeaderValue (',')) {
-        var ext = e.Trim ();
-        if (comp && ext.IsCompressionExtension (_compression)) {
-          if (!ext.Contains ("server_no_context_takeover")) {
-            _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
+      foreach (var e in value.SplitHeaderValue(','))
+      {
+        var ext = e.Trim();
+        if (comp && ext.IsCompressionExtension(_compression))
+        {
+          if (!ext.Contains("server_no_context_takeover"))
+          {
+            _logger.Error("The server hasn't sent back 'server_no_context_takeover'.");
             return false;
           }
 
-          if (!ext.Contains ("client_no_context_takeover"))
-            _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
+          if (!ext.Contains("client_no_context_takeover"))
+            _logger.Warn("The server hasn't sent back 'client_no_context_takeover'.");
 
-          var method = _compression.ToExtensionString ();
+          var method = _compression.ToExtensionString();
           var invalid =
-            ext.SplitHeaderValue (';').Contains (
-              t => {
-                t = t.Trim ();
+            ext.SplitHeaderValue(';').Contains(
+              t =>
+              {
+                t = t.Trim();
                 return t != method
                        && t != "server_no_context_takeover"
                        && t != "client_no_context_takeover";
@@ -2241,7 +2448,8 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
           if (invalid)
             return false;
         }
-        else {
+        else
+        {
           return false;
         }
       }
@@ -2250,7 +2458,7 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     }
 
     // As client
-    private bool validateSecWebSocketProtocolServerHeader (string value)
+    private bool validateSecWebSocketProtocolServerHeader(string value)
     {
       if (value == null)
         return !_protocolsRequested;
@@ -2258,11 +2466,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       if (value.Length == 0)
         return false;
 
-      return _protocolsRequested && _protocols.Contains (p => p == value);
+      return _protocolsRequested && _protocols.Contains(p => p == value);
     }
 
     // As client
-    private bool validateSecWebSocketVersionServerHeader (string value)
+    private bool validateSecWebSocketVersionServerHeader(string value)
     {
       return value == null || value == _version;
     }
@@ -2272,115 +2480,122 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     #region Internal Methods
 
     // As server
-    internal void Close (HttpResponse response)
+    internal void Close(HttpResponse response)
     {
       _readyState = WebSocketState.Closing;
 
-      sendHttpResponse (response);
-      releaseServerResources ();
+      sendHttpResponse(response);
+      releaseServerResources();
 
       _readyState = WebSocketState.Closed;
     }
 
     // As server
-    internal void Close (HttpStatusCode code)
+    internal void Close(HttpStatusCode code)
     {
-      Close (createHandshakeFailureResponse (code));
+      Close(createHandshakeFailureResponse(code));
     }
 
     // As server
-    internal void Close (PayloadData payloadData, byte[] frameAsBytes)
+    internal void Close(PayloadData payloadData, byte[] frameAsBytes)
     {
-      lock (_forState) {
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
+      lock (_forState)
+      {
+        if (_readyState == WebSocketState.Closing)
+        {
+          _logger.Info("The closing is already in progress.");
           return;
         }
 
-        if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
+        if (_readyState == WebSocketState.Closed)
+        {
+          _logger.Info("The connection has already been closed.");
           return;
         }
 
         _readyState = WebSocketState.Closing;
       }
 
-      _logger.Trace ("Begin closing the connection.");
+      _logger.Trace("Begin closing the connection.");
 
-      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
+      var sent = frameAsBytes != null && sendBytes(frameAsBytes);
       var received = sent && _receivingExited != null
-                     ? _receivingExited.WaitOne (_waitTime)
+                     ? _receivingExited.WaitOne(_waitTime)
                      : false;
 
       var res = sent && received;
 
-      _logger.Debug (
-        String.Format (
+      _logger.Debug(
+        String.Format(
           "Was clean?: {0}\n  sent: {1}\n  received: {2}", res, sent, received
         )
       );
 
-      releaseServerResources ();
-      releaseCommonResources ();
+      releaseServerResources();
+      releaseCommonResources();
 
-      _logger.Trace ("End closing the connection.");
+      _logger.Trace("End closing the connection.");
 
       _readyState = WebSocketState.Closed;
 
-      var e = new CloseEventArgs (payloadData, res);
+      var e = new CloseEventArgs(payloadData, res);
 
-      try {
-        OnClose.Emit (this, e);
+      try
+      {
+        OnClose.Emit(this, e);
       }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Error(ex.Message);
+        _logger.Debug(ex.ToString());
       }
     }
 
     // As client
-    internal static string CreateBase64Key ()
+    internal static string CreateBase64Key()
     {
       var src = new byte[16];
-      RandomNumber.GetBytes (src);
+      RandomNumber.GetBytes(src);
 
-      return Convert.ToBase64String (src);
+      return Convert.ToBase64String(src);
     }
 
-    internal static string CreateResponseKey (string base64Key)
+    internal static string CreateResponseKey(string base64Key)
     {
-      var buff = new StringBuilder (base64Key, 64);
-      buff.Append (_guid);
-      SHA1 sha1 = new SHA1CryptoServiceProvider ();
-      var src = sha1.ComputeHash (buff.ToString ().GetUTF8EncodedBytes ());
+      var buff = new StringBuilder(base64Key, 64);
+      buff.Append(_guid);
+      SHA1 sha1 = new SHA1CryptoServiceProvider();
+      var src = sha1.ComputeHash(buff.ToString().GetUTF8EncodedBytes());
 
-      return Convert.ToBase64String (src);
+      return Convert.ToBase64String(src);
     }
 
     // As server
-    internal void InternalAccept ()
+    internal void InternalAccept()
     {
-      try {
-        if (!acceptHandshake ())
+      try
+      {
+        if (!acceptHandshake())
           return;
       }
-      catch (Exception ex) {
-        _logger.Fatal (ex.Message);
-        _logger.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _logger.Fatal(ex.Message);
+        _logger.Debug(ex.ToString());
 
         var msg = "An exception has occurred while attempting to accept.";
-        fatal (msg, ex);
+        fatal(msg, ex);
 
         return;
       }
 
       _readyState = WebSocketState.Open;
 
-      open ();
+      open();
     }
 
     // As server
-    internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
+    internal bool Ping(byte[] frameAsBytes, TimeSpan timeout)
     {
       if (_readyState != WebSocketState.Open)
         return false;
@@ -2389,73 +2604,84 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       if (pongReceived == null)
         return false;
 
-      lock (_forPing) {
-        try {
-          pongReceived.Reset ();
+      lock (_forPing)
+      {
+        try
+        {
+          pongReceived.Reset();
 
-          lock (_forState) {
+          lock (_forState)
+          {
             if (_readyState != WebSocketState.Open)
               return false;
 
-            if (!sendBytes (frameAsBytes))
+            if (!sendBytes(frameAsBytes))
               return false;
           }
 
-          return pongReceived.WaitOne (timeout);
+          return pongReceived.WaitOne(timeout);
         }
-        catch (ObjectDisposedException) {
+        catch (ObjectDisposedException)
+        {
           return false;
         }
       }
     }
 
     // As server
-    internal void Send (
+    internal void Send(
       Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
     )
     {
-      lock (_forSend) {
-        lock (_forState) {
-          if (_readyState != WebSocketState.Open) {
-            _logger.Error ("The connection is closing.");
+      lock (_forSend)
+      {
+        lock (_forState)
+        {
+          if (_readyState != WebSocketState.Open)
+          {
+            _logger.Error("The connection is closing.");
             return;
           }
 
           byte[] found;
-          if (!cache.TryGetValue (_compression, out found)) {
-            found = new WebSocketFrame (
+          if (!cache.TryGetValue(_compression, out found))
+          {
+            found = new WebSocketFrame(
                       Fin.Final,
                       opcode,
-                      data.Compress (_compression),
+                      data.Compress(_compression),
                       _compression != CompressionMethod.None,
                       false
                     )
-                    .ToArray ();
+                    .ToArray();
 
-            cache.Add (_compression, found);
+            cache.Add(_compression, found);
           }
 
-          sendBytes (found);
+          sendBytes(found);
         }
       }
     }
 
     // As server
-    internal void Send (
+    internal void Send(
       Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache
     )
     {
-      lock (_forSend) {
+      lock (_forSend)
+      {
         Stream found;
-        if (!cache.TryGetValue (_compression, out found)) {
-          found = stream.Compress (_compression);
-          cache.Add (_compression, found);
+        if (!cache.TryGetValue(_compression, out found))
+        {
+          found = stream.Compress(_compression);
+          cache.Add(_compression, found);
         }
-        else {
+        else
+        {
           found.Position = 0;
         }
 
-        send (opcode, found, _compression != CompressionMethod.None);
+        send(opcode, found, _compression != CompressionMethod.None);
       }
     }
 
@@ -2487,25 +2713,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The connection has already been closed.
     ///   </para>
     /// </exception>
-    public void Accept ()
+    public void Accept()
     {
-      if (_client) {
+      if (_client)
+      {
         var msg = "This instance is a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
+      if (_readyState == WebSocketState.Closing)
+      {
         var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closed) {
+      if (_readyState == WebSocketState.Closed)
+      {
         var msg = "The connection has already been closed.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (accept ())
-        open ();
+      if (accept())
+        open();
     }
 
     /// <summary>
@@ -2537,28 +2766,32 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The connection has already been closed.
     ///   </para>
     /// </exception>
-    public void AcceptAsync ()
+    public void AcceptAsync()
     {
-      if (_client) {
+      if (_client)
+      {
         var msg = "This instance is a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
+      if (_readyState == WebSocketState.Closing)
+      {
         var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closed) {
+      if (_readyState == WebSocketState.Closed)
+      {
         var msg = "The connection has already been closed.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       Func<bool> acceptor = accept;
-      acceptor.BeginInvoke (
-        ar => {
-          if (acceptor.EndInvoke (ar))
-            open ();
+      acceptor.BeginInvoke(
+        ar =>
+        {
+          if (acceptor.EndInvoke(ar))
+            open();
         },
         null
       );
@@ -2571,9 +2804,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
-    public void Close ()
+    public void Close()
     {
-      close (1005, String.Empty);
+      close(1005, String.Empty);
     }
 
     /// <summary>
@@ -2610,24 +2843,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
-    public void Close (ushort code)
+    public void Close(ushort code)
     {
-      if (!code.IsCloseStatusCode ()) {
+      if (!code.IsCloseStatusCode())
+      {
         var msg = "Less than 1000 or greater than 4999.";
-        throw new ArgumentOutOfRangeException ("code", msg);
+        throw new ArgumentOutOfRangeException("code", msg);
       }
 
-      if (_client && code == 1011) {
+      if (_client && code == 1011)
+      {
         var msg = "1011 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == 1010) {
+      if (!_client && code == 1010)
+      {
         var msg = "1010 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      close (code, String.Empty);
+      close(code, String.Empty);
     }
 
     /// <summary>
@@ -2660,19 +2896,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
-    public void Close (CloseStatusCode code)
+    public void Close(CloseStatusCode code)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
+      if (_client && code == CloseStatusCode.ServerError)
+      {
         var msg = "ServerError cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+      if (!_client && code == CloseStatusCode.MandatoryExtension)
+      {
         var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      close ((ushort) code, String.Empty);
+      close((ushort)code, String.Empty);
     }
 
     /// <summary>
@@ -2737,45 +2975,52 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    public void Close (ushort code, string reason)
+    public void Close(ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ()) {
+      if (!code.IsCloseStatusCode())
+      {
         var msg = "Less than 1000 or greater than 4999.";
-        throw new ArgumentOutOfRangeException ("code", msg);
+        throw new ArgumentOutOfRangeException("code", msg);
       }
 
-      if (_client && code == 1011) {
+      if (_client && code == 1011)
+      {
         var msg = "1011 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == 1010) {
+      if (!_client && code == 1010)
+      {
         var msg = "1010 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (reason.IsNullOrEmpty ()) {
-        close (code, String.Empty);
+      if (reason.IsNullOrEmpty())
+      {
+        close(code, String.Empty);
         return;
       }
 
-      if (code == 1005) {
+      if (code == 1005)
+      {
         var msg = "1005 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
       byte[] bytes;
-      if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!reason.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "reason");
+        throw new ArgumentException(msg, "reason");
       }
 
-      if (bytes.Length > 123) {
+      if (bytes.Length > 123)
+      {
         var msg = "Its size is greater than 123 bytes.";
-        throw new ArgumentOutOfRangeException ("reason", msg);
+        throw new ArgumentOutOfRangeException("reason", msg);
       }
 
-      close (code, reason);
+      close(code, reason);
     }
 
     /// <summary>
@@ -2832,40 +3077,46 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
-    public void Close (CloseStatusCode code, string reason)
+    public void Close(CloseStatusCode code, string reason)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
+      if (_client && code == CloseStatusCode.ServerError)
+      {
         var msg = "ServerError cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+      if (!_client && code == CloseStatusCode.MandatoryExtension)
+      {
         var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (reason.IsNullOrEmpty ()) {
-        close ((ushort) code, String.Empty);
+      if (reason.IsNullOrEmpty())
+      {
+        close((ushort)code, String.Empty);
         return;
       }
 
-      if (code == CloseStatusCode.NoStatus) {
+      if (code == CloseStatusCode.NoStatus)
+      {
         var msg = "NoStatus cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
       byte[] bytes;
-      if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!reason.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "reason");
+        throw new ArgumentException(msg, "reason");
       }
 
-      if (bytes.Length > 123) {
+      if (bytes.Length > 123)
+      {
         var msg = "Its size is greater than 123 bytes.";
-        throw new ArgumentOutOfRangeException ("reason", msg);
+        throw new ArgumentOutOfRangeException("reason", msg);
       }
 
-      close ((ushort) code, reason);
+      close((ushort)code, reason);
     }
 
     /// <summary>
@@ -2880,9 +3131,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
-    public void CloseAsync ()
+    public void CloseAsync()
     {
-      closeAsync (1005, String.Empty);
+      closeAsync(1005, String.Empty);
     }
 
     /// <summary>
@@ -2924,24 +3175,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
-    public void CloseAsync (ushort code)
+    public void CloseAsync(ushort code)
     {
-      if (!code.IsCloseStatusCode ()) {
+      if (!code.IsCloseStatusCode())
+      {
         var msg = "Less than 1000 or greater than 4999.";
-        throw new ArgumentOutOfRangeException ("code", msg);
+        throw new ArgumentOutOfRangeException("code", msg);
       }
 
-      if (_client && code == 1011) {
+      if (_client && code == 1011)
+      {
         var msg = "1011 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == 1010) {
+      if (!_client && code == 1010)
+      {
         var msg = "1010 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      closeAsync (code, String.Empty);
+      closeAsync(code, String.Empty);
     }
 
     /// <summary>
@@ -2979,19 +3233,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
-    public void CloseAsync (CloseStatusCode code)
+    public void CloseAsync(CloseStatusCode code)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
+      if (_client && code == CloseStatusCode.ServerError)
+      {
         var msg = "ServerError cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+      if (!_client && code == CloseStatusCode.MandatoryExtension)
+      {
         var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      closeAsync ((ushort) code, String.Empty);
+      closeAsync((ushort)code, String.Empty);
     }
 
     /// <summary>
@@ -3061,45 +3317,52 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    public void CloseAsync (ushort code, string reason)
+    public void CloseAsync(ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ()) {
+      if (!code.IsCloseStatusCode())
+      {
         var msg = "Less than 1000 or greater than 4999.";
-        throw new ArgumentOutOfRangeException ("code", msg);
+        throw new ArgumentOutOfRangeException("code", msg);
       }
 
-      if (_client && code == 1011) {
+      if (_client && code == 1011)
+      {
         var msg = "1011 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == 1010) {
+      if (!_client && code == 1010)
+      {
         var msg = "1010 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (reason.IsNullOrEmpty ()) {
-        closeAsync (code, String.Empty);
+      if (reason.IsNullOrEmpty())
+      {
+        closeAsync(code, String.Empty);
         return;
       }
 
-      if (code == 1005) {
+      if (code == 1005)
+      {
         var msg = "1005 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
       byte[] bytes;
-      if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!reason.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "reason");
+        throw new ArgumentException(msg, "reason");
       }
 
-      if (bytes.Length > 123) {
+      if (bytes.Length > 123)
+      {
         var msg = "Its size is greater than 123 bytes.";
-        throw new ArgumentOutOfRangeException ("reason", msg);
+        throw new ArgumentOutOfRangeException("reason", msg);
       }
 
-      closeAsync (code, reason);
+      closeAsync(code, reason);
     }
 
     /// <summary>
@@ -3161,40 +3424,46 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
-    public void CloseAsync (CloseStatusCode code, string reason)
+    public void CloseAsync(CloseStatusCode code, string reason)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
+      if (_client && code == CloseStatusCode.ServerError)
+      {
         var msg = "ServerError cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+      if (!_client && code == CloseStatusCode.MandatoryExtension)
+      {
         var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (reason.IsNullOrEmpty ()) {
-        closeAsync ((ushort) code, String.Empty);
+      if (reason.IsNullOrEmpty())
+      {
+        closeAsync((ushort)code, String.Empty);
         return;
       }
 
-      if (code == CloseStatusCode.NoStatus) {
+      if (code == CloseStatusCode.NoStatus)
+      {
         var msg = "NoStatus cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
       byte[] bytes;
-      if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!reason.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "reason");
+        throw new ArgumentException(msg, "reason");
       }
 
-      if (bytes.Length > 123) {
+      if (bytes.Length > 123)
+      {
         var msg = "Its size is greater than 123 bytes.";
-        throw new ArgumentOutOfRangeException ("reason", msg);
+        throw new ArgumentOutOfRangeException("reason", msg);
       }
 
-      closeAsync ((ushort) code, reason);
+      closeAsync((ushort)code, reason);
     }
 
     /// <summary>
@@ -3220,25 +3489,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   A series of reconnecting has failed.
     ///   </para>
     /// </exception>
-    public void Connect ()
+    public void Connect()
     {
-      if (!_client) {
+      if (!_client)
+      {
         var msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
+      if (_readyState == WebSocketState.Closing)
+      {
         var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect > _maxRetryCountForConnect)
+      {
         var msg = "A series of reconnecting has failed.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (connect ())
-        open ();
+      if (connect())
+        open();
     }
 
     /// <summary>
@@ -3270,28 +3542,32 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   A series of reconnecting has failed.
     ///   </para>
     /// </exception>
-    public void ConnectAsync ()
+    public void ConnectAsync()
     {
-      if (!_client) {
+      if (!_client)
+      {
         var msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
+      if (_readyState == WebSocketState.Closing)
+      {
         var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect > _maxRetryCountForConnect)
+      {
         var msg = "A series of reconnecting has failed.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       Func<bool> connector = connect;
-      connector.BeginInvoke (
-        ar => {
-          if (connector.EndInvoke (ar))
-            open ();
+      connector.BeginInvoke(
+        ar =>
+        {
+          if (connector.EndInvoke(ar))
+            open();
         },
         null
       );
@@ -3304,9 +3580,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <c>true</c> if the send has done with no error and a pong has been
     /// received within a time; otherwise, <c>false</c>.
     /// </returns>
-    public bool Ping ()
+    public bool Ping()
     {
-      return ping (EmptyBytes);
+      return ping(EmptyBytes);
     }
 
     /// <summary>
@@ -3331,23 +3607,25 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
-    public bool Ping (string message)
+    public bool Ping(string message)
     {
-      if (message.IsNullOrEmpty ())
-        return ping (EmptyBytes);
+      if (message.IsNullOrEmpty())
+        return ping(EmptyBytes);
 
       byte[] bytes;
-      if (!message.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!message.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "message");
+        throw new ArgumentException(msg, "message");
       }
 
-      if (bytes.Length > 125) {
+      if (bytes.Length > 125)
+      {
         var msg = "Its size is greater than 125 bytes.";
-        throw new ArgumentOutOfRangeException ("message", msg);
+        throw new ArgumentOutOfRangeException("message", msg);
       }
 
-      return ping (bytes);
+      return ping(bytes);
     }
 
     /// <summary>
@@ -3362,17 +3640,18 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    public void Send (byte[] data)
+    public void Send(byte[] data)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
-      send (Opcode.Binary, new MemoryStream (data));
+      send(Opcode.Binary, new MemoryStream(data));
     }
 
     /// <summary>
@@ -3403,28 +3682,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The file could not be opened.
     ///   </para>
     /// </exception>
-    public void Send (FileInfo fileInfo)
+    public void Send(FileInfo fileInfo)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (fileInfo == null)
-        throw new ArgumentNullException ("fileInfo");
+        throw new ArgumentNullException("fileInfo");
 
-      if (!fileInfo.Exists) {
+      if (!fileInfo.Exists)
+      {
         var msg = "The file does not exist.";
-        throw new ArgumentException (msg, "fileInfo");
+        throw new ArgumentException(msg, "fileInfo");
       }
 
       FileStream stream;
-      if (!fileInfo.TryOpenRead (out stream)) {
+      if (!fileInfo.TryOpenRead(out stream))
+      {
         var msg = "The file could not be opened.";
-        throw new ArgumentException (msg, "fileInfo");
+        throw new ArgumentException(msg, "fileInfo");
       }
 
-      send (Opcode.Binary, stream);
+      send(Opcode.Binary, stream);
     }
 
     /// <summary>
@@ -3442,23 +3724,25 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    public void Send (string data)
+    public void Send(string data)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
-      send (Opcode.Text, new MemoryStream (bytes));
+      send(Opcode.Text, new MemoryStream(bytes));
     }
 
     /// <summary>
@@ -3498,44 +3782,49 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    public void Send (Stream stream, int length)
+    public void Send(Stream stream, int length)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (stream == null)
-        throw new ArgumentNullException ("stream");
+        throw new ArgumentNullException("stream");
 
-      if (!stream.CanRead) {
+      if (!stream.CanRead)
+      {
         var msg = "It cannot be read.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (length < 1) {
+      if (length < 1)
+      {
         var msg = "Less than 1.";
-        throw new ArgumentException (msg, "length");
+        throw new ArgumentException(msg, "length");
       }
 
-      var bytes = stream.ReadBytes (length);
+      var bytes = stream.ReadBytes(length);
 
       var len = bytes.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         var msg = "No data could be read from it.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (len < length) {
-        _logger.Warn (
-          String.Format (
+      if (len < length)
+      {
+        _logger.Warn(
+          String.Format(
             "Only {0} byte(s) of data could be read from the stream.",
             len
           )
         );
       }
 
-      send (Opcode.Binary, new MemoryStream (bytes));
+      send(Opcode.Binary, new MemoryStream(bytes));
     }
 
     /// <summary>
@@ -3566,17 +3855,18 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    public void SendAsync (byte[] data, Action<bool> completed)
+    public void SendAsync(byte[] data, Action<bool> completed)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
-      sendAsync (Opcode.Binary, new MemoryStream (data), completed);
+      sendAsync(Opcode.Binary, new MemoryStream(data), completed);
     }
 
     /// <summary>
@@ -3623,28 +3913,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The file could not be opened.
     ///   </para>
     /// </exception>
-    public void SendAsync (FileInfo fileInfo, Action<bool> completed)
+    public void SendAsync(FileInfo fileInfo, Action<bool> completed)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (fileInfo == null)
-        throw new ArgumentNullException ("fileInfo");
+        throw new ArgumentNullException("fileInfo");
 
-      if (!fileInfo.Exists) {
+      if (!fileInfo.Exists)
+      {
         var msg = "The file does not exist.";
-        throw new ArgumentException (msg, "fileInfo");
+        throw new ArgumentException(msg, "fileInfo");
       }
 
       FileStream stream;
-      if (!fileInfo.TryOpenRead (out stream)) {
+      if (!fileInfo.TryOpenRead(out stream))
+      {
         var msg = "The file could not be opened.";
-        throw new ArgumentException (msg, "fileInfo");
+        throw new ArgumentException(msg, "fileInfo");
       }
 
-      sendAsync (Opcode.Binary, stream, completed);
+      sendAsync(Opcode.Binary, stream, completed);
     }
 
     /// <summary>
@@ -3678,23 +3971,25 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    public void SendAsync (string data, Action<bool> completed)
+    public void SendAsync(string data, Action<bool> completed)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
-      sendAsync (Opcode.Text, new MemoryStream (bytes), completed);
+      sendAsync(Opcode.Text, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -3751,44 +4046,49 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    public void SendAsync (Stream stream, int length, Action<bool> completed)
+    public void SendAsync(Stream stream, int length, Action<bool> completed)
     {
-      if (_readyState != WebSocketState.Open) {
+      if (_readyState != WebSocketState.Open)
+      {
         var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (stream == null)
-        throw new ArgumentNullException ("stream");
+        throw new ArgumentNullException("stream");
 
-      if (!stream.CanRead) {
+      if (!stream.CanRead)
+      {
         var msg = "It cannot be read.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (length < 1) {
+      if (length < 1)
+      {
         var msg = "Less than 1.";
-        throw new ArgumentException (msg, "length");
+        throw new ArgumentException(msg, "length");
       }
 
-      var bytes = stream.ReadBytes (length);
+      var bytes = stream.ReadBytes(length);
 
       var len = bytes.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         var msg = "No data could be read from it.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (len < length) {
-        _logger.Warn (
-          String.Format (
+      if (len < length)
+      {
+        _logger.Warn(
+          String.Format(
             "Only {0} byte(s) of data could be read from the stream.",
             len
           )
         );
       }
 
-      sendAsync (Opcode.Binary, new MemoryStream (bytes), completed);
+      sendAsync(Opcode.Binary, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -3807,31 +4107,35 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public void SetCookie (Cookie cookie)
+    public void SetCookie(Cookie cookie)
     {
       string msg = null;
 
-      if (!_client) {
+      if (!_client)
+      {
         msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException("cookie");
 
-      if (!canSet (out msg)) {
-        _logger.Warn (msg);
+      if (!canSet(out msg))
+      {
+        _logger.Warn(msg);
         return;
       }
 
-      lock (_forState) {
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+      lock (_forState)
+      {
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
         lock (_cookies.SyncRoot)
-          _cookies.SetOrRemove (cookie);
+          _cookies.SetOrRemove(cookie);
       }
     }
 
@@ -3879,48 +4183,57 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="password"/> contains an invalid character.
     ///   </para>
     /// </exception>
-    public void SetCredentials (string username, string password, bool preAuth)
+    public void SetCredentials(string username, string password, bool preAuth)
     {
       string msg = null;
 
-      if (!_client) {
+      if (!_client)
+      {
         msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (!username.IsNullOrEmpty ()) {
-        if (username.Contains (':') || !username.IsText ()) {
+      if (!username.IsNullOrEmpty())
+      {
+        if (username.Contains(':') || !username.IsText())
+        {
           msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "username");
+          throw new ArgumentException(msg, "username");
         }
       }
 
-      if (!password.IsNullOrEmpty ()) {
-        if (!password.IsText ()) {
+      if (!password.IsNullOrEmpty())
+      {
+        if (!password.IsText())
+        {
           msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "password");
+          throw new ArgumentException(msg, "password");
         }
       }
 
-      if (!canSet (out msg)) {
-        _logger.Warn (msg);
+      if (!canSet(out msg))
+      {
+        _logger.Warn(msg);
         return;
       }
 
-      lock (_forState) {
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+      lock (_forState)
+      {
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        if (username.IsNullOrEmpty ()) {
+        if (username.IsNullOrEmpty())
+        {
           _credentials = null;
           _preAuth = false;
 
           return;
         }
 
-        _credentials = new NetworkCredential (
+        _credentials = new NetworkCredential(
                          username, password, _uri.PathAndQuery
                        );
 
@@ -4000,60 +4313,73 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="password"/> contains an invalid character.
     ///   </para>
     /// </exception>
-    public void SetProxy (string url, string username, string password)
+    public void SetProxy(string url, string username, string password)
     {
       string msg = null;
 
-      if (!_client) {
+      if (!_client)
+      {
         msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       Uri uri = null;
 
-      if (!url.IsNullOrEmpty ()) {
-        if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
+      if (!url.IsNullOrEmpty())
+      {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+        {
           msg = "Not an absolute URI string.";
-          throw new ArgumentException (msg, "url");
+          throw new ArgumentException(msg, "url");
         }
 
-        if (uri.Scheme != "http") {
+        if (uri.Scheme != "http")
+        {
           msg = "The scheme part is not http.";
-          throw new ArgumentException (msg, "url");
+          throw new ArgumentException(msg, "url");
         }
 
-        if (uri.Segments.Length > 1) {
+        if (uri.Segments.Length > 1)
+        {
           msg = "It includes the path segments.";
-          throw new ArgumentException (msg, "url");
+          throw new ArgumentException(msg, "url");
         }
       }
 
-      if (!username.IsNullOrEmpty ()) {
-        if (username.Contains (':') || !username.IsText ()) {
+      if (!username.IsNullOrEmpty())
+      {
+        if (username.Contains(':') || !username.IsText())
+        {
           msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "username");
+          throw new ArgumentException(msg, "username");
         }
       }
 
-      if (!password.IsNullOrEmpty ()) {
-        if (!password.IsText ()) {
+      if (!password.IsNullOrEmpty())
+      {
+        if (!password.IsText())
+        {
           msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "password");
+          throw new ArgumentException(msg, "password");
         }
       }
 
-      if (!canSet (out msg)) {
-        _logger.Warn (msg);
+      if (!canSet(out msg))
+      {
+        _logger.Warn(msg);
         return;
       }
 
-      lock (_forState) {
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+      lock (_forState)
+      {
+        if (!canSet(out msg))
+        {
+          _logger.Warn(msg);
           return;
         }
 
-        if (url.IsNullOrEmpty ()) {
+        if (url.IsNullOrEmpty())
+        {
           _proxyUri = null;
           _proxyCredentials = null;
 
@@ -4061,11 +4387,11 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
         }
 
         _proxyUri = uri;
-        _proxyCredentials = !username.IsNullOrEmpty ()
-                            ? new NetworkCredential (
+        _proxyCredentials = !username.IsNullOrEmpty()
+                            ? new NetworkCredential(
                                 username,
                                 password,
-                                String.Format (
+                                String.Format(
                                   "{0}:{1}", _uri.DnsSafeHost, _uri.Port
                                 )
                               )
@@ -4089,9 +4415,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
-    void IDisposable.Dispose ()
+    void IDisposable.Dispose()
     {
-      close (1001, String.Empty);
+      close(1001, String.Empty);
     }
 
     #endregion

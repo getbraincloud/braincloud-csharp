@@ -48,13 +48,11 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-
-
+  using System;
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.IO;
+  using System.Text;
   /// <summary>
   /// Provides the access to a response to a request received by the <see cref="HttpListener"/>.
   /// </summary>
@@ -65,28 +63,28 @@ using System.Text;
   {
     #region Private Fields
 
-    private bool                _closeConnection;
-    private Encoding            _contentEncoding;
-    private long                _contentLength;
-    private string              _contentType;
+    private bool _closeConnection;
+    private Encoding _contentEncoding;
+    private long _contentLength;
+    private string _contentType;
     private HttpListenerContext _context;
-    private CookieCollection    _cookies;
-    private bool                _disposed;
+    private CookieCollection _cookies;
+    private bool _disposed;
     private WebHeaderCollection _headers;
-    private bool                _headersSent;
-    private bool                _keepAlive;
-    private string              _location;
-    private ResponseStream      _outputStream;
-    private bool                _sendChunked;
-    private int                 _statusCode;
-    private string              _statusDescription;
-    private Version             _version;
+    private bool _headersSent;
+    private bool _keepAlive;
+    private string _location;
+    private ResponseStream _outputStream;
+    private bool _sendChunked;
+    private int _statusCode;
+    private string _statusDescription;
+    private Version _version;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpListenerResponse (HttpListenerContext context)
+    internal HttpListenerResponse(HttpListenerContext context)
     {
       _context = context;
       _keepAlive = true;
@@ -99,49 +97,58 @@ using System.Text;
 
     #region Internal Properties
 
-    internal bool CloseConnection {
-      get {
+    internal bool CloseConnection
+    {
+      get
+      {
         return _closeConnection;
       }
 
-      set {
+      set
+      {
         _closeConnection = value;
       }
     }
 
-    internal WebHeaderCollection FullHeaders {
-      get {
-        var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
+    internal WebHeaderCollection FullHeaders
+    {
+      get
+      {
+        var headers = new WebHeaderCollection(HttpHeaderType.Response, true);
 
         if (_headers != null)
-          headers.Add (_headers);
+          headers.Add(_headers);
 
-        if (_contentType != null) {
-          headers.InternalSet (
+        if (_contentType != null)
+        {
+          headers.InternalSet(
             "Content-Type",
-            createContentTypeHeaderText (_contentType, _contentEncoding),
+            createContentTypeHeaderText(_contentType, _contentEncoding),
             true
           );
         }
 
         if (headers["Server"] == null)
-          headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+          headers.InternalSet("Server", "websocket-sharp/1.0", true);
 
-        if (headers["Date"] == null) {
-          headers.InternalSet (
+        if (headers["Date"] == null)
+        {
+          headers.InternalSet(
             "Date",
-            DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture),
+            DateTime.UtcNow.ToString("r", CultureInfo.InvariantCulture),
             true
           );
         }
 
-        if (_sendChunked) {
-          headers.InternalSet ("Transfer-Encoding", "chunked", true);
+        if (_sendChunked)
+        {
+          headers.InternalSet("Transfer-Encoding", "chunked", true);
         }
-        else {
-          headers.InternalSet (
+        else
+        {
+          headers.InternalSet(
             "Content-Length",
-            _contentLength.ToString (CultureInfo.InvariantCulture),
+            _contentLength.ToString(CultureInfo.InvariantCulture),
             true
           );
         }
@@ -168,28 +175,32 @@ using System.Text;
 
         var reuses = _context.Connection.Reuses;
 
-        if (closeConn || reuses >= 100) {
-          headers.InternalSet ("Connection", "close", true);
+        if (closeConn || reuses >= 100)
+        {
+          headers.InternalSet("Connection", "close", true);
         }
-        else {
-          headers.InternalSet (
+        else
+        {
+          headers.InternalSet(
             "Keep-Alive",
-            String.Format ("timeout=15,max={0}", 100 - reuses),
+            String.Format("timeout=15,max={0}", 100 - reuses),
             true
           );
 
           if (_context.Request.ProtocolVersion < HttpVersion.Version11)
-            headers.InternalSet ("Connection", "keep-alive", true);
+            headers.InternalSet("Connection", "keep-alive", true);
         }
 
         if (_location != null)
-          headers.InternalSet ("Location", _location, true);
+          headers.InternalSet("Location", _location, true);
 
-        if (_cookies != null) {
-          foreach (var cookie in _cookies) {
-            headers.InternalSet (
+        if (_cookies != null)
+        {
+          foreach (var cookie in _cookies)
+          {
+            headers.InternalSet(
               "Set-Cookie",
-              cookie.ToResponseString (),
+              cookie.ToResponseString(),
               true
             );
           }
@@ -199,19 +210,24 @@ using System.Text;
       }
     }
 
-    internal bool HeadersSent {
-      get {
+    internal bool HeadersSent
+    {
+      get
+      {
         return _headersSent;
       }
 
-      set {
+      set
+      {
         _headersSent = value;
       }
     }
 
-    internal string StatusLine {
-      get {
-        return String.Format (
+    internal string StatusLine
+    {
+      get
+      {
+        return String.Format(
                  "HTTP/{0} {1} {2}\r\n",
                  _version,
                  _statusCode,
@@ -240,14 +256,17 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public Encoding ContentEncoding {
-      get {
+    public Encoding ContentEncoding
+    {
+      get
+      {
         return _contentEncoding;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
         _contentEncoding = value;
       }
@@ -270,23 +289,28 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public long ContentLength64 {
-      get {
+    public long ContentLength64
+    {
+      get
+      {
         return _contentLength;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (value < 0) {
+        if (value < 0)
+        {
           var msg = "Less than zero.";
-          throw new ArgumentOutOfRangeException (msg, "value");
+          throw new ArgumentOutOfRangeException(msg, "value");
         }
 
         _contentLength = value;
@@ -314,22 +338,26 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public string ContentType {
-      get {
+    public string ContentType
+    {
+      get
+      {
         return _contentType;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (value == null) {
+        if (value == null)
+        {
           _contentType = null;
           return;
         }
 
         if (value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
+          throw new ArgumentException("An empty string.", "value");
 
         _contentType = value;
       }
@@ -342,15 +370,18 @@ using System.Text;
     /// A <see cref="CookieCollection"/> that contains the cookies sent with
     /// the response.
     /// </value>
-    public CookieCollection Cookies {
-      get {
+    public CookieCollection Cookies
+    {
+      get
+      {
         if (_cookies == null)
-          _cookies = new CookieCollection ();
+          _cookies = new CookieCollection();
 
         return _cookies;
       }
 
-      set {
+      set
+      {
         _cookies = value;
       }
     }
@@ -365,23 +396,28 @@ using System.Text;
     /// <exception cref="InvalidOperationException">
     /// The value specified for a set operation is not valid for a response.
     /// </exception>
-    public WebHeaderCollection Headers {
-      get {
+    public WebHeaderCollection Headers
+    {
+      get
+      {
         if (_headers == null)
-          _headers = new WebHeaderCollection (HttpHeaderType.Response, false);
+          _headers = new WebHeaderCollection(HttpHeaderType.Response, false);
 
         return _headers;
       }
 
-      set {
-        if (value == null) {
+      set
+      {
+        if (value == null)
+        {
           _headers = null;
           return;
         }
 
-        if (value.State != HttpHeaderType.Response) {
+        if (value.State != HttpHeaderType.Response)
+        {
           var msg = "The value is not valid for a response.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
         _headers = value;
@@ -407,18 +443,22 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public bool KeepAlive {
-      get {
+    public bool KeepAlive
+    {
+      get
+      {
         return _keepAlive;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
         _keepAlive = value;
@@ -435,13 +475,15 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public Stream OutputStream {
-      get {
+    public Stream OutputStream
+    {
+      get
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
         if (_outputStream == null)
-          _outputStream = _context.Connection.GetResponseStream ();
+          _outputStream = _context.Connection.GetResponseStream();
 
         return _outputStream;
       }
@@ -476,31 +518,37 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public Version ProtocolVersion {
-      get {
+    public Version ProtocolVersion
+    {
+      get
+      {
         return _version;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
         if (value == null)
-          throw new ArgumentNullException ("value");
+          throw new ArgumentNullException("value");
 
-        if (value.Major != 1) {
+        if (value.Major != 1)
+        {
           var msg = "Its Major property is not 1.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
-        if (value.Minor < 0 || value.Minor > 1) {
+        if (value.Minor < 0 || value.Minor > 1)
+        {
           var msg = "Its Minor property is not 0 or 1.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
         _version = value;
@@ -526,26 +574,30 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public string RedirectLocation {
-      get {
+    public string RedirectLocation
+    {
+      get
+      {
         return _location;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (value == null) {
+        if (value == null)
+        {
           _location = null;
           return;
         }
 
-        if (!value.MaybeUri ())
-          throw new ArgumentException ("Not an absolute URL.", "value");
+        if (!value.MaybeUri())
+          throw new ArgumentException("Not an absolute URL.", "value");
 
         Uri uri;
-        if (!Uri.TryCreate (value, UriKind.Absolute, out uri))
-          throw new ArgumentException ("Not an absolute URL.", "value");
+        if (!Uri.TryCreate(value, UriKind.Absolute, out uri))
+          throw new ArgumentException("Not an absolute URL.", "value");
 
         _location = value;
       }
@@ -570,18 +622,22 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public bool SendChunked {
-      get {
+    public bool SendChunked
+    {
+      get
+      {
         return _sendChunked;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
         _sendChunked = value;
@@ -615,27 +671,32 @@ using System.Text;
     ///   Valid values are between 100 and 999 inclusive.
     ///   </para>
     /// </exception>
-    public int StatusCode {
-      get {
+    public int StatusCode
+    {
+      get
+      {
         return _statusCode;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        if (value < 100 || value > 999) {
+        if (value < 100 || value > 999)
+        {
           var msg = "A value is not between 100 and 999 inclusive.";
-          throw new System.Net.ProtocolViolationException (msg);
+          throw new System.Net.ProtocolViolationException(msg);
         }
 
         _statusCode = value;
-        _statusDescription = value.GetStatusDescription ();
+        _statusDescription = value.GetStatusDescription();
       }
     }
 
@@ -670,36 +731,43 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public string StatusDescription {
-      get {
+    public string StatusDescription
+    {
+      get
+      {
         return _statusDescription;
       }
 
-      set {
+      set
+      {
         if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+          throw new ObjectDisposedException(GetType().ToString());
 
-        if (_headersSent) {
+        if (_headersSent)
+        {
           var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
         if (value == null)
-          throw new ArgumentNullException ("value");
+          throw new ArgumentNullException("value");
 
-        if (value.Length == 0) {
-          _statusDescription = _statusCode.GetStatusDescription ();
+        if (value.Length == 0)
+        {
+          _statusDescription = _statusCode.GetStatusDescription();
           return;
         }
 
-        if (!value.IsText ()) {
+        if (!value.IsText())
+        {
           var msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
-        if (value.IndexOfAny (new[] { '\r', '\n' }) > -1) {
+        if (value.IndexOfAny(new[] { '\r', '\n' }) > -1)
+        {
           var msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
         _statusDescription = value;
@@ -710,16 +778,17 @@ using System.Text;
 
     #region Private Methods
 
-    private bool canSetCookie (Cookie cookie)
+    private bool canSetCookie(Cookie cookie)
     {
-      var found = findCookie (cookie).ToList ();
+      var found = findCookie(cookie).ToList();
 
       if (found.Count == 0)
         return true;
 
       var ver = cookie.Version;
 
-      foreach (var c in found) {
+      foreach (var c in found)
+      {
         if (c.Version == ver)
           return true;
       }
@@ -727,32 +796,33 @@ using System.Text;
       return false;
     }
 
-    private void close (bool force)
+    private void close(bool force)
     {
       _disposed = true;
-      _context.Connection.Close (force);
+      _context.Connection.Close(force);
     }
 
-    private static string createContentTypeHeaderText (
+    private static string createContentTypeHeaderText(
       string value, Encoding encoding
     )
     {
-      if (value.IndexOf ("charset=", StringComparison.Ordinal) > -1)
+      if (value.IndexOf("charset=", StringComparison.Ordinal) > -1)
         return value;
 
       if (encoding == null)
         return value;
 
-      return String.Format ("{0}; charset={1}", value, encoding.WebName);
+      return String.Format("{0}; charset={1}", value, encoding.WebName);
     }
 
-    private IEnumerable<Cookie> findCookie (Cookie cookie)
+    private IEnumerable<Cookie> findCookie(Cookie cookie)
     {
       if (_cookies == null || _cookies.Count == 0)
         yield break;
 
-      foreach (var c in _cookies) {
-        if (c.EqualsWithoutValueAndVersion (cookie))
+      foreach (var c in _cookies)
+      {
+        if (c.EqualsWithoutValueAndVersion(cookie))
           yield return c;
       }
     }
@@ -764,12 +834,12 @@ using System.Text;
     /// <summary>
     /// Closes the connection to the client without sending a response.
     /// </summary>
-    public void Abort ()
+    public void Abort()
     {
       if (_disposed)
         return;
 
-      close (true);
+      close(true);
     }
 
     /// <summary>
@@ -804,9 +874,9 @@ using System.Text;
     /// <exception cref="InvalidOperationException">
     /// The header cannot be allowed to add to the current headers.
     /// </exception>
-    public void AddHeader (string name, string value)
+    public void AddHeader(string name, string value)
     {
-      Headers.Set (name, value);
+      Headers.Set(name, value);
     }
 
     /// <summary>
@@ -818,9 +888,9 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public void AppendCookie (Cookie cookie)
+    public void AppendCookie(Cookie cookie)
     {
-      Cookies.Add (cookie);
+      Cookies.Add(cookie);
     }
 
     /// <summary>
@@ -857,21 +927,21 @@ using System.Text;
     /// <exception cref="InvalidOperationException">
     /// The header cannot be allowed to append to the current headers.
     /// </exception>
-    public void AppendHeader (string name, string value)
+    public void AppendHeader(string name, string value)
     {
-      Headers.Add (name, value);
+      Headers.Add(name, value);
     }
 
     /// <summary>
     /// Sends the response to the client and releases the resources used by
     /// this instance.
     /// </summary>
-    public void Close ()
+    public void Close()
     {
       if (_disposed)
         return;
 
-      close (false);
+      close(false);
     }
 
     /// <summary>
@@ -891,31 +961,33 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public void Close (byte[] responseEntity, bool willBlock)
+    public void Close(byte[] responseEntity, bool willBlock)
     {
       if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+        throw new ObjectDisposedException(GetType().ToString());
 
       if (responseEntity == null)
-        throw new ArgumentNullException ("responseEntity");
+        throw new ArgumentNullException("responseEntity");
 
       var len = responseEntity.Length;
       var output = OutputStream;
 
-      if (willBlock) {
-        output.Write (responseEntity, 0, len);
-        close (false);
+      if (willBlock)
+      {
+        output.Write(responseEntity, 0, len);
+        close(false);
 
         return;
       }
 
-      output.BeginWrite (
+      output.BeginWrite(
         responseEntity,
         0,
         len,
-        ar => {
-          output.EndWrite (ar);
-          close (false);
+        ar =>
+        {
+          output.EndWrite(ar);
+          close(false);
         },
         null
       );
@@ -931,20 +1003,22 @@ using System.Text;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="templateResponse"/> is <see langword="null"/>.
     /// </exception>
-    public void CopyFrom (HttpListenerResponse templateResponse)
+    public void CopyFrom(HttpListenerResponse templateResponse)
     {
       if (templateResponse == null)
-        throw new ArgumentNullException ("templateResponse");
+        throw new ArgumentNullException("templateResponse");
 
       var headers = templateResponse._headers;
 
-      if (headers != null) {
+      if (headers != null)
+      {
         if (_headers != null)
-          _headers.Clear ();
+          _headers.Clear();
 
-        Headers.Add (headers);
+        Headers.Add(headers);
       }
-      else {
+      else
+      {
         _headers = null;
       }
 
@@ -980,25 +1054,26 @@ using System.Text;
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
-    public void Redirect (string url)
+    public void Redirect(string url)
     {
       if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+        throw new ObjectDisposedException(GetType().ToString());
 
-      if (_headersSent) {
+      if (_headersSent)
+      {
         var msg = "The response is already being sent.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (url == null)
-        throw new ArgumentNullException ("url");
+        throw new ArgumentNullException("url");
 
-      if (!url.MaybeUri ())
-        throw new ArgumentException ("Not an absolute URL.", "url");
+      if (!url.MaybeUri())
+        throw new ArgumentException("Not an absolute URL.", "url");
 
       Uri uri;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
-        throw new ArgumentException ("Not an absolute URL.", "url");
+      if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+        throw new ArgumentException("Not an absolute URL.", "url");
 
       _location = url;
       _statusCode = 302;
@@ -1018,17 +1093,18 @@ using System.Text;
     /// <paramref name="cookie"/> already exists in the cookies but
     /// it cannot be updated.
     /// </exception>
-    public void SetCookie (Cookie cookie)
+    public void SetCookie(Cookie cookie)
     {
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException("cookie");
 
-      if (!canSetCookie (cookie)) {
+      if (!canSetCookie(cookie))
+      {
         var msg = "It cannot be updated.";
-        throw new ArgumentException (msg, "cookie");
+        throw new ArgumentException(msg, "cookie");
       }
 
-      Cookies.Add (cookie);
+      Cookies.Add(cookie);
     }
 
     #endregion
@@ -1038,12 +1114,12 @@ using System.Text;
     /// <summary>
     /// Releases all resources used by this instance.
     /// </summary>
-    void IDisposable.Dispose ()
+    void IDisposable.Dispose()
     {
       if (_disposed)
         return;
 
-      close (true);
+      close(true);
     }
 
     #endregion

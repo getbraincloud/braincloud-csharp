@@ -32,8 +32,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void ReadUserState(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -166,8 +164,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateSummaryFriendData(
             string jsonSummaryData,
             SuccessCallback success = null,
@@ -220,8 +216,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateAttributes(
             string jsonAttributes,
             bool wipeExisting,
@@ -252,14 +246,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
-
-
-
-
-
-
         public void RemoveAttributes(
             IList<string> attributeNames,
             SuccessCallback success = null,
@@ -285,8 +271,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void UpdateUserPictureUrl(
             string pictureUrl,
@@ -314,8 +298,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void UpdateContactEmail(
             string contactEmail,
             SuccessCallback success = null,
@@ -341,8 +323,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ClearUserStatus(
             string statusName,
@@ -371,8 +351,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void ExtendUserStatus(
             string statusName,
@@ -405,8 +383,6 @@ namespace BrainCloud
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
 
-
-
         public void GetUserStatus(
             string statusName,
             SuccessCallback success = null,
@@ -434,8 +410,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
 
         public void SetUserStatus(
             string statusName,
@@ -467,10 +441,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
-
-
         public void UpdateLanguageCode(
             string languageCode,
             SuccessCallback success = null,
@@ -496,8 +466,6 @@ namespace BrainCloud
         /// <param name="success">The success callback.</param>
         /// <param name="failure">The failure callback.</param>
         /// <param name="cbObject">The user object sent to the callback.</param>
-
-
         public void UpdateTimeZoneOffset(
             string timeZoneOffset,
             SuccessCallback success = null,
