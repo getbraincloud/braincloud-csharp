@@ -30,11 +30,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-using System.Diagnostics;
-using System.Text;
-
-
+  using System;
+  using System.Diagnostics;
+  using System.Text;
   /// <summary>
   /// Represents a log data used by the <see cref="Logger"/> class.
   /// </summary>
@@ -43,15 +41,15 @@ using System.Text;
     #region Private Fields
 
     private StackFrame _caller;
-    private DateTime   _date;
-    private LogLevel   _level;
-    private string     _message;
+    private DateTime _date;
+    private LogLevel _level;
+    private string _message;
 
     #endregion
 
     #region Internal Constructors
 
-    internal LogData (LogLevel level, StackFrame caller, string message)
+    internal LogData(LogLevel level, StackFrame caller, string message)
     {
       _level = level;
       _caller = caller;
@@ -69,8 +67,10 @@ using System.Text;
     /// <value>
     /// A <see cref="StackFrame"/> that provides the information of the logging method caller.
     /// </value>
-    public StackFrame Caller {
-      get {
+    public StackFrame Caller
+    {
+      get
+      {
         return _caller;
       }
     }
@@ -81,8 +81,10 @@ using System.Text;
     /// <value>
     /// A <see cref="DateTime"/> that represents the date and time when the log data was created.
     /// </value>
-    public DateTime Date {
-      get {
+    public DateTime Date
+    {
+      get
+      {
         return _date;
       }
     }
@@ -93,8 +95,10 @@ using System.Text;
     /// <value>
     /// One of the <see cref="LogLevel"/> enum values, indicates the logging level of the log data.
     /// </value>
-    public LogLevel Level {
-      get {
+    public LogLevel Level
+    {
+      get
+      {
         return _level;
       }
     }
@@ -105,8 +109,10 @@ using System.Text;
     /// <value>
     /// A <see cref="string"/> that represents the message of the log data.
     /// </value>
-    public string Message {
-      get {
+    public string Message
+    {
+      get
+      {
         return _message;
       }
     }
@@ -121,30 +127,30 @@ using System.Text;
     /// <returns>
     /// A <see cref="string"/> that represents the current <see cref="LogData"/>.
     /// </returns>
-    public override string ToString ()
+    public override string ToString()
     {
-      var header = String.Format ("{0}|{1,-5}|", _date, _level);
-      var method = _caller.GetMethod ();
+      var header = String.Format("{0}|{1,-5}|", _date, _level);
+      var method = _caller.GetMethod();
       var type = method.DeclaringType;
 #if DEBUG
-      var lineNum = _caller.GetFileLineNumber ();
+      var lineNum = _caller.GetFileLineNumber();
       var headerAndCaller =
-        String.Format ("{0}{1}.{2}:{3}|", header, type.Name, method.Name, lineNum);
+        String.Format("{0}{1}.{2}:{3}|", header, type.Name, method.Name, lineNum);
 #else
       var headerAndCaller = String.Format ("{0}{1}.{2}|", header, type.Name, method.Name);
 #endif
-      var msgs = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
+      var msgs = _message.Replace("\r\n", "\n").TrimEnd('\n').Split('\n');
       if (msgs.Length <= 1)
-        return String.Format ("{0}{1}", headerAndCaller, _message);
+        return String.Format("{0}{1}", headerAndCaller, _message);
 
-      var buff = new StringBuilder (String.Format ("{0}{1}\n", headerAndCaller, msgs[0]), 64);
+      var buff = new StringBuilder(String.Format("{0}{1}\n", headerAndCaller, msgs[0]), 64);
 
-      var fmt = String.Format ("{{0,{0}}}{{1}}\n", header.Length);
+      var fmt = String.Format("{{0,{0}}}{{1}}\n", header.Length);
       for (var i = 1; i < msgs.Length; i++)
-        buff.AppendFormat (fmt, "", msgs[i]);
+        buff.AppendFormat(fmt, "", msgs[i]);
 
       buff.Length--;
-      return buff.ToString ();
+      return buff.ToString();
     }
 
     #endregion

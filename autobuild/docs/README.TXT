@@ -8,7 +8,5 @@ http://apidocs.braincloudservers.com/
 Thanks and happy coding!
 - The brainCloud Team
 
-
-
 Platform: xxx
 Version: x.x.x

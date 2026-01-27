@@ -26,18 +26,16 @@
  * THE SOFTWARE.
  */
 #endregion
-
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
   /// <summary>
   /// Provides the management function for the WebSocket services.
@@ -50,26 +48,26 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
   {
     #region Private Fields
 
-    private volatile bool                            _clean;
+    private volatile bool _clean;
     private Dictionary<string, WebSocketServiceHost> _hosts;
-    private Logger                                   _log;
-    private volatile ServerState                     _state;
-    private object                                   _sync;
-    private TimeSpan                                 _waitTime;
+    private Logger _log;
+    private volatile ServerState _state;
+    private object _sync;
+    private TimeSpan _waitTime;
 
     #endregion
 
     #region Internal Constructors
 
-    internal WebSocketServiceManager (Logger log)
+    internal WebSocketServiceManager(Logger log)
     {
       _log = log;
 
       _clean = true;
-      _hosts = new Dictionary<string, WebSocketServiceHost> ();
+      _hosts = new Dictionary<string, WebSocketServiceHost>();
       _state = ServerState.Ready;
-      _sync = ((ICollection) _hosts).SyncRoot;
-      _waitTime = TimeSpan.FromSeconds (1);
+      _sync = ((ICollection)_hosts).SyncRoot;
+      _waitTime = TimeSpan.FromSeconds(1);
     }
 
     #endregion
@@ -82,8 +80,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <value>
     /// An <see cref="int"/> that represents the number of the services.
     /// </value>
-    public int Count {
-      get {
+    public int Count
+    {
+      get
+      {
         lock (_sync)
           return _hosts.Count;
       }
@@ -101,10 +101,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   the collection of the host instances.
     ///   </para>
     /// </value>
-    public IEnumerable<WebSocketServiceHost> Hosts {
-      get {
+    public IEnumerable<WebSocketServiceHost> Hosts
+    {
+      get
+      {
         lock (_sync)
-          return _hosts.Values.ToList ();
+          return _hosts.Values.ToList();
       }
     }
 
@@ -151,24 +153,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   query and fragment components.
     ///   </para>
     /// </exception>
-    public WebSocketServiceHost this[string path] {
-      get {
+    public WebSocketServiceHost this[string path]
+    {
+      get
+      {
         if (path == null)
-          throw new ArgumentNullException ("path");
+          throw new ArgumentNullException("path");
 
         if (path.Length == 0)
-          throw new ArgumentException ("An empty string.", "path");
+          throw new ArgumentException("An empty string.", "path");
 
         if (path[0] != '/')
-          throw new ArgumentException ("Not an absolute path.", "path");
+          throw new ArgumentException("Not an absolute path.", "path");
 
-        if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        if (path.IndexOfAny(new[] { '?', '#' }) > -1)
+        {
           var msg = "It includes either or both query and fragment components.";
-          throw new ArgumentException (msg, "path");
+          throw new ArgumentException(msg, "path");
         }
 
         WebSocketServiceHost host;
-        InternalTryGetServiceHost (path, out host);
+        InternalTryGetServiceHost(path, out host);
 
         return host;
       }
@@ -186,21 +191,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <c>true</c> if the inactive sessions are cleaned up every 60 seconds;
     /// otherwise, <c>false</c>.
     /// </value>
-    public bool KeepClean {
-      get {
+    public bool KeepClean
+    {
+      get
+      {
         return _clean;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -224,10 +235,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   the collection of the paths.
     ///   </para>
     /// </value>
-    public IEnumerable<string> Paths {
-      get {
+    public IEnumerable<string> Paths
+    {
+      get
+      {
         lock (_sync)
-          return _hosts.Keys.ToList ();
+          return _hosts.Keys.ToList();
       }
     }
 
@@ -238,11 +251,14 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// An <see cref="int"/> that represents the total number of
     /// the sessions in the services.
     /// </value>
-    [Obsolete ("This property will be removed.")]
-    public int SessionCount {
-      get {
+    [Obsolete("This property will be removed.")]
+    public int SessionCount
+    {
+      get
+      {
         var cnt = 0;
-        foreach (var host in Hosts) {
+        foreach (var host in Hosts)
+        {
           if (_state != ServerState.Start)
             break;
 
@@ -267,24 +283,30 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
     /// </exception>
-    public TimeSpan WaitTime {
-      get {
+    public TimeSpan WaitTime
+    {
+      get
+      {
         return _waitTime;
       }
 
-      set {
+      set
+      {
         if (value <= TimeSpan.Zero)
-          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
+          throw new ArgumentOutOfRangeException("value", "Zero or less.");
 
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -300,104 +322,118 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Private Methods
 
-    private void broadcast (Opcode opcode, byte[] data, Action completed)
+    private void broadcast(Opcode opcode, byte[] data, Action completed)
     {
-      var cache = new Dictionary<CompressionMethod, byte[]> ();
+      var cache = new Dictionary<CompressionMethod, byte[]>();
 
-      try {
-        foreach (var host in Hosts) {
-          if (_state != ServerState.Start) {
-            _log.Error ("The server is shutting down.");
+      try
+      {
+        foreach (var host in Hosts)
+        {
+          if (_state != ServerState.Start)
+          {
+            _log.Error("The server is shutting down.");
             break;
           }
 
-          host.Sessions.Broadcast (opcode, data, cache);
+          host.Sessions.Broadcast(opcode, data, cache);
         }
 
         if (completed != null)
-          completed ();
+          completed();
       }
-      catch (Exception ex) {
-        _log.Error (ex.Message);
-        _log.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _log.Error(ex.Message);
+        _log.Debug(ex.ToString());
       }
-      finally {
-        cache.Clear ();
+      finally
+      {
+        cache.Clear();
       }
     }
 
-    private void broadcast (Opcode opcode, Stream stream, Action completed)
+    private void broadcast(Opcode opcode, Stream stream, Action completed)
     {
-      var cache = new Dictionary<CompressionMethod, Stream> ();
+      var cache = new Dictionary<CompressionMethod, Stream>();
 
-      try {
-        foreach (var host in Hosts) {
-          if (_state != ServerState.Start) {
-            _log.Error ("The server is shutting down.");
+      try
+      {
+        foreach (var host in Hosts)
+        {
+          if (_state != ServerState.Start)
+          {
+            _log.Error("The server is shutting down.");
             break;
           }
 
-          host.Sessions.Broadcast (opcode, stream, cache);
+          host.Sessions.Broadcast(opcode, stream, cache);
         }
 
         if (completed != null)
-          completed ();
+          completed();
       }
-      catch (Exception ex) {
-        _log.Error (ex.Message);
-        _log.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _log.Error(ex.Message);
+        _log.Debug(ex.ToString());
       }
-      finally {
+      finally
+      {
         foreach (var cached in cache.Values)
-          cached.Dispose ();
+          cached.Dispose();
 
-        cache.Clear ();
+        cache.Clear();
       }
     }
 
-    private void broadcastAsync (Opcode opcode, byte[] data, Action completed)
+    private void broadcastAsync(Opcode opcode, byte[] data, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, data, completed)
+      ThreadPool.QueueUserWorkItem(
+        state => broadcast(opcode, data, completed)
       );
     }
 
-    private void broadcastAsync (Opcode opcode, Stream stream, Action completed)
+    private void broadcastAsync(Opcode opcode, Stream stream, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, stream, completed)
+      ThreadPool.QueueUserWorkItem(
+        state => broadcast(opcode, stream, completed)
       );
     }
 
-    private Dictionary<string, Dictionary<string, bool>> broadping (
+    private Dictionary<string, Dictionary<string, bool>> broadping(
       byte[] frameAsBytes, TimeSpan timeout
     )
     {
-      var ret = new Dictionary<string, Dictionary<string, bool>> ();
+      var ret = new Dictionary<string, Dictionary<string, bool>>();
 
-      foreach (var host in Hosts) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The server is shutting down.");
+      foreach (var host in Hosts)
+      {
+        if (_state != ServerState.Start)
+        {
+          _log.Error("The server is shutting down.");
           break;
         }
 
-        var res = host.Sessions.Broadping (frameAsBytes, timeout);
-        ret.Add (host.Path, res);
+        var res = host.Sessions.Broadping(frameAsBytes, timeout);
+        ret.Add(host.Path, res);
       }
 
       return ret;
     }
 
-    private bool canSet (out string message)
+    private bool canSet(out string message)
     {
       message = null;
 
-      if (_state == ServerState.Start) {
+      if (_state == ServerState.Start)
+      {
         message = "The server has already started.";
         return false;
       }
 
-      if (_state == ServerState.ShuttingDown) {
+      if (_state == ServerState.ShuttingDown)
+      {
         message = "The server is shutting down.";
         return false;
       }
@@ -409,17 +445,18 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Internal Methods
 
-    internal void Add<TBehavior> (string path, Func<TBehavior> creator)
+    internal void Add<TBehavior>(string path, Func<TBehavior> creator)
       where TBehavior : WebSocketBehavior
     {
-      path = path.TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd();
 
-      lock (_sync) {
+      lock (_sync)
+      {
         WebSocketServiceHost host;
-        if (_hosts.TryGetValue (path, out host))
-          throw new ArgumentException ("Already in use.", "path");
+        if (_hosts.TryGetValue(path, out host))
+          throw new ArgumentException("Already in use.", "path");
 
-        host = new WebSocketServiceHost<TBehavior> (
+        host = new WebSocketServiceHost<TBehavior>(
                  path, creator, null, _log
                );
 
@@ -430,39 +467,41 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
           host.WaitTime = _waitTime;
 
         if (_state == ServerState.Start)
-          host.Start ();
+          host.Start();
 
-        _hosts.Add (path, host);
+        _hosts.Add(path, host);
       }
     }
 
-    internal bool InternalTryGetServiceHost (
+    internal bool InternalTryGetServiceHost(
       string path, out WebSocketServiceHost host
     )
     {
-      path = path.TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd();
 
       lock (_sync)
-        return _hosts.TryGetValue (path, out host);
+        return _hosts.TryGetValue(path, out host);
     }
 
-    internal void Start ()
+    internal void Start()
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         foreach (var host in _hosts.Values)
-          host.Start ();
+          host.Start();
 
         _state = ServerState.Start;
       }
     }
 
-    internal void Stop (ushort code, string reason)
+    internal void Stop(ushort code, string reason)
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         _state = ServerState.ShuttingDown;
 
         foreach (var host in _hosts.Values)
-          host.Stop (code, reason);
+          host.Stop(code, reason);
 
         _state = ServerState.Stop;
       }
@@ -533,34 +572,36 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    public void AddService<TBehavior> (
+    public void AddService<TBehavior>(
       string path, Action<TBehavior> initializer
     )
-      where TBehavior : WebSocketBehavior, new ()
+      where TBehavior : WebSocketBehavior, new()
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
       if (path[0] != '/')
-        throw new ArgumentException ("Not an absolute path.", "path");
+        throw new ArgumentException("Not an absolute path.", "path");
 
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+      if (path.IndexOfAny(new[] { '?', '#' }) > -1)
+      {
         var msg = "It includes either or both query and fragment components.";
-        throw new ArgumentException (msg, "path");
+        throw new ArgumentException(msg, "path");
       }
 
-      path = path.TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd();
 
-      lock (_sync) {
+      lock (_sync)
+      {
         WebSocketServiceHost host;
-        if (_hosts.TryGetValue (path, out host))
-          throw new ArgumentException ("Already in use.", "path");
+        if (_hosts.TryGetValue(path, out host))
+          throw new ArgumentException("Already in use.", "path");
 
-        host = new WebSocketServiceHost<TBehavior> (
-                 path, () => new TBehavior (), initializer, _log
+        host = new WebSocketServiceHost<TBehavior>(
+                 path, () => new TBehavior(), initializer, _log
                );
 
         if (!_clean)
@@ -570,9 +611,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
           host.WaitTime = _waitTime;
 
         if (_state == ServerState.Start)
-          host.Start ();
+          host.Start();
 
-        _hosts.Add (path, host);
+        _hosts.Add(path, host);
       }
     }
 
@@ -588,21 +629,22 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void Broadcast (byte[] data)
+    [Obsolete("This method will be removed.")]
+    public void Broadcast(byte[] data)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.Binary, data, null);
+        broadcast(Opcode.Binary, data, null);
       else
-        broadcast (Opcode.Binary, new MemoryStream (data), null);
+        broadcast(Opcode.Binary, new MemoryStream(data), null);
     }
 
     /// <summary>
@@ -620,27 +662,29 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void Broadcast (string data)
+    [Obsolete("This method will be removed.")]
+    public void Broadcast(string data)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
       if (bytes.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.Text, bytes, null);
+        broadcast(Opcode.Text, bytes, null);
       else
-        broadcast (Opcode.Text, new MemoryStream (bytes), null);
+        broadcast(Opcode.Text, new MemoryStream(bytes), null);
     }
 
     /// <summary>
@@ -668,21 +712,22 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void BroadcastAsync (byte[] data, Action completed)
+    [Obsolete("This method will be removed.")]
+    public void BroadcastAsync(byte[] data, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Binary, data, completed);
+        broadcastAsync(Opcode.Binary, data, completed);
       else
-        broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
+        broadcastAsync(Opcode.Binary, new MemoryStream(data), completed);
     }
 
     /// <summary>
@@ -713,27 +758,29 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void BroadcastAsync (string data, Action completed)
+    [Obsolete("This method will be removed.")]
+    public void BroadcastAsync(string data, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
       if (bytes.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Text, bytes, completed);
+        broadcastAsync(Opcode.Text, bytes, completed);
       else
-        broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);
+        broadcastAsync(Opcode.Text, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -786,38 +833,43 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void BroadcastAsync (Stream stream, int length, Action completed)
+    [Obsolete("This method will be removed.")]
+    public void BroadcastAsync(Stream stream, int length, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (stream == null)
-        throw new ArgumentNullException ("stream");
+        throw new ArgumentNullException("stream");
 
-      if (!stream.CanRead) {
+      if (!stream.CanRead)
+      {
         var msg = "It cannot be read.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (length < 1) {
+      if (length < 1)
+      {
         var msg = "Less than 1.";
-        throw new ArgumentException (msg, "length");
+        throw new ArgumentException(msg, "length");
       }
 
-      var bytes = stream.ReadBytes (length);
+      var bytes = stream.ReadBytes(length);
 
       var len = bytes.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         var msg = "No data could be read from it.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (len < length) {
-        _log.Warn (
-          String.Format (
+      if (len < length)
+      {
+        _log.Warn(
+          String.Format(
             "Only {0} byte(s) of data could be read from the stream.",
             len
           )
@@ -825,9 +877,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
       }
 
       if (len <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Binary, bytes, completed);
+        broadcastAsync(Opcode.Binary, bytes, completed);
       else
-        broadcastAsync (Opcode.Binary, new MemoryStream (bytes), completed);
+        broadcastAsync(Opcode.Binary, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -846,15 +898,16 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="InvalidOperationException">
     /// The current state of the manager is not Start.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public Dictionary<string, Dictionary<string, bool>> Broadping ()
+    [Obsolete("This method will be removed.")]
+    public Dictionary<string, Dictionary<string, bool>> Broadping()
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      return broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
+      return broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
     }
 
     /// <summary>
@@ -888,30 +941,33 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
+    [Obsolete("This method will be removed.")]
+    public Dictionary<string, Dictionary<string, bool>> Broadping(string message)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (message.IsNullOrEmpty ())
-        return broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
+      if (message.IsNullOrEmpty())
+        return broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
 
       byte[] bytes;
-      if (!message.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!message.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "message");
+        throw new ArgumentException(msg, "message");
       }
 
-      if (bytes.Length > 125) {
+      if (bytes.Length > 125)
+      {
         var msg = "Its size is greater than 125 bytes.";
-        throw new ArgumentOutOfRangeException ("message", msg);
+        throw new ArgumentOutOfRangeException("message", msg);
       }
 
-      var frame = WebSocketFrame.CreatePingFrame (bytes, false);
-      return broadping (frame.ToArray (), _waitTime);
+      var frame = WebSocketFrame.CreatePingFrame(bytes, false);
+      return broadping(frame.ToArray(), _waitTime);
     }
 
     /// <summary>
@@ -921,18 +977,20 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// A service is stopped with close status 1001 (going away)
     /// if it has already started.
     /// </remarks>
-    public void Clear ()
+    public void Clear()
     {
       List<WebSocketServiceHost> hosts = null;
 
-      lock (_sync) {
-        hosts = _hosts.Values.ToList ();
-        _hosts.Clear ();
+      lock (_sync)
+      {
+        hosts = _hosts.Values.ToList();
+        _hosts.Clear();
       }
 
-      foreach (var host in hosts) {
+      foreach (var host in hosts)
+      {
         if (host.State == ServerState.Start)
-          host.Stop (1001, String.Empty);
+          host.Stop(1001, String.Empty);
       }
     }
 
@@ -977,34 +1035,36 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   query and fragment components.
     ///   </para>
     /// </exception>
-    public bool RemoveService (string path)
+    public bool RemoveService(string path)
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
       if (path[0] != '/')
-        throw new ArgumentException ("Not an absolute path.", "path");
+        throw new ArgumentException("Not an absolute path.", "path");
 
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+      if (path.IndexOfAny(new[] { '?', '#' }) > -1)
+      {
         var msg = "It includes either or both query and fragment components.";
-        throw new ArgumentException (msg, "path");
+        throw new ArgumentException(msg, "path");
       }
 
-      path = path.TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd();
 
       WebSocketServiceHost host;
-      lock (_sync) {
-        if (!_hosts.TryGetValue (path, out host))
+      lock (_sync)
+      {
+        if (!_hosts.TryGetValue(path, out host))
           return false;
 
-        _hosts.Remove (path);
+        _hosts.Remove(path);
       }
 
       if (host.State == ServerState.Start)
-        host.Stop (1001, String.Empty);
+        host.Stop(1001, String.Empty);
 
       return true;
     }
@@ -1057,23 +1117,24 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   query and fragment components.
     ///   </para>
     /// </exception>
-    public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
+    public bool TryGetServiceHost(string path, out WebSocketServiceHost host)
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
       if (path[0] != '/')
-        throw new ArgumentException ("Not an absolute path.", "path");
+        throw new ArgumentException("Not an absolute path.", "path");
 
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+      if (path.IndexOfAny(new[] { '?', '#' }) > -1)
+      {
         var msg = "It includes either or both query and fragment components.";
-        throw new ArgumentException (msg, "path");
+        throw new ArgumentException(msg, "path");
       }
 
-      return InternalTryGetServiceHost (path, out host);
+      return InternalTryGetServiceHost(path, out host);
     }
 
     #endregion

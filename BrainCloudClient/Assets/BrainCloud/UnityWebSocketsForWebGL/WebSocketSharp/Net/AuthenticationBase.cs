@@ -30,11 +30,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Specialized;
-using System.Text;
-
-
+  using System;
+  using System.Collections.Specialized;
+  using System.Text;
   internal abstract class AuthenticationBase
   {
     #region Private Fields
@@ -51,7 +49,7 @@ using System.Text;
 
     #region Protected Constructors
 
-    protected AuthenticationBase (AuthenticationSchemes scheme, NameValueCollection parameters)
+    protected AuthenticationBase(AuthenticationSchemes scheme, NameValueCollection parameters)
     {
       _scheme = scheme;
       Parameters = parameters;
@@ -61,38 +59,50 @@ using System.Text;
 
     #region Public Properties
 
-    public string Algorithm {
-      get {
+    public string Algorithm
+    {
+      get
+      {
         return Parameters["algorithm"];
       }
     }
 
-    public string Nonce {
-      get {
+    public string Nonce
+    {
+      get
+      {
         return Parameters["nonce"];
       }
     }
 
-    public string Opaque {
-      get {
+    public string Opaque
+    {
+      get
+      {
         return Parameters["opaque"];
       }
     }
 
-    public string Qop {
-      get {
+    public string Qop
+    {
+      get
+      {
         return Parameters["qop"];
       }
     }
 
-    public string Realm {
-      get {
+    public string Realm
+    {
+      get
+      {
         return Parameters["realm"];
       }
     }
 
-    public AuthenticationSchemes Scheme {
-      get {
+    public AuthenticationSchemes Scheme
+    {
+      get
+      {
         return _scheme;
       }
     }
@@ -101,51 +111,52 @@ using System.Text;
 
     #region Internal Methods
 
-    internal static string CreateNonceValue ()
+    internal static string CreateNonceValue()
     {
       var src = new byte[16];
-      var rand = new Random ();
-      rand.NextBytes (src);
+      var rand = new Random();
+      rand.NextBytes(src);
 
-      var res = new StringBuilder (32);
+      var res = new StringBuilder(32);
       foreach (var b in src)
-        res.Append (b.ToString ("x2"));
+        res.Append(b.ToString("x2"));
 
-      return res.ToString ();
+      return res.ToString();
     }
 
-    internal static NameValueCollection ParseParameters (string value)
+    internal static NameValueCollection ParseParameters(string value)
     {
-      var res = new NameValueCollection ();
-      foreach (var param in value.SplitHeaderValue (',')) {
-        var i = param.IndexOf ('=');
-        var name = i > 0 ? param.Substring (0, i).Trim () : null;
+      var res = new NameValueCollection();
+      foreach (var param in value.SplitHeaderValue(','))
+      {
+        var i = param.IndexOf('=');
+        var name = i > 0 ? param.Substring(0, i).Trim() : null;
         var val = i < 0
-                  ? param.Trim ().Trim ('"')
+                  ? param.Trim().Trim('"')
                   : i < param.Length - 1
-                    ? param.Substring (i + 1).Trim ().Trim ('"')
+                    ? param.Substring(i + 1).Trim().Trim('"')
                     : String.Empty;
 
-        res.Add (name, val);
+        res.Add(name, val);
       }
 
       return res;
     }
 
-    internal abstract string ToBasicString ();
+    internal abstract string ToBasicString();
 
-    internal abstract string ToDigestString ();
+    internal abstract string ToDigestString();
 
     #endregion
 
     #region Public Methods
 
-    public override string ToString ()
+    public override string ToString()
     {
       return _scheme == AuthenticationSchemes.Basic
-             ? ToBasicString ()
+             ? ToBasicString()
              : _scheme == AuthenticationSchemes.Digest
-               ? ToDigestString ()
+               ? ToDigestString()
                : String.Empty;
     }
 

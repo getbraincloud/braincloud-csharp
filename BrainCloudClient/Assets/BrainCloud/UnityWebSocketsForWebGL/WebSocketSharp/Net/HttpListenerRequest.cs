@@ -41,15 +41,13 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
-
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Globalization;
+  using System.IO;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Text;
   /// <summary>
   /// Represents an incoming request to a <see cref="HttpListener"/> instance.
   /// </summary>
@@ -61,47 +59,47 @@ using System.Text;
     #region Private Fields
 
     private static readonly byte[] _100continue;
-    private string[]               _acceptTypes;
-    private bool                   _chunked;
-    private HttpConnection         _connection;
-    private Encoding               _contentEncoding;
-    private long                   _contentLength;
-    private HttpListenerContext    _context;
-    private CookieCollection       _cookies;
-    private WebHeaderCollection    _headers;
-    private string                 _httpMethod;
-    private Stream                 _inputStream;
-    private Version                _protocolVersion;
-    private NameValueCollection    _queryString;
-    private string                 _rawUrl;
-    private Guid                   _requestTraceIdentifier;
-    private Uri                    _url;
-    private Uri                    _urlReferrer;
-    private bool                   _urlSet;
-    private string                 _userHostName;
-    private string[]               _userLanguages;
+    private string[] _acceptTypes;
+    private bool _chunked;
+    private HttpConnection _connection;
+    private Encoding _contentEncoding;
+    private long _contentLength;
+    private HttpListenerContext _context;
+    private CookieCollection _cookies;
+    private WebHeaderCollection _headers;
+    private string _httpMethod;
+    private Stream _inputStream;
+    private Version _protocolVersion;
+    private NameValueCollection _queryString;
+    private string _rawUrl;
+    private Guid _requestTraceIdentifier;
+    private Uri _url;
+    private Uri _urlReferrer;
+    private bool _urlSet;
+    private string _userHostName;
+    private string[] _userLanguages;
 
     #endregion
 
     #region Static Constructor
 
-    static HttpListenerRequest ()
+    static HttpListenerRequest()
     {
-      _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
+      _100continue = Encoding.ASCII.GetBytes("HTTP/1.1 100 Continue\r\n\r\n");
     }
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpListenerRequest (HttpListenerContext context)
+    internal HttpListenerRequest(HttpListenerContext context)
     {
       _context = context;
 
       _connection = context.Connection;
       _contentLength = -1;
-      _headers = new WebHeaderCollection ();
-      _requestTraceIdentifier = Guid.NewGuid ();
+      _headers = new WebHeaderCollection();
+      _requestTraceIdentifier = Guid.NewGuid();
     }
 
     #endregion
@@ -120,18 +118,21 @@ using System.Text;
     ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
-    public string[] AcceptTypes {
-      get {
+    public string[] AcceptTypes
+    {
+      get
+      {
         var val = _headers["Accept"];
         if (val == null)
           return null;
 
-        if (_acceptTypes == null) {
+        if (_acceptTypes == null)
+        {
           _acceptTypes = val
-                         .SplitHeaderValue (',')
-                         .Trim ()
-                         .ToList ()
-                         .ToArray ();
+                         .SplitHeaderValue(',')
+                         .Trim()
+                         .ToList()
+                         .ToArray();
         }
 
         return _acceptTypes;
@@ -148,9 +149,11 @@ using System.Text;
     /// <exception cref="NotSupportedException">
     /// This property is not supported.
     /// </exception>
-    public int ClientCertificateError {
-      get {
-        throw new NotSupportedException ();
+    public int ClientCertificateError
+    {
+      get
+      {
+        throw new NotSupportedException();
       }
     }
 
@@ -166,10 +169,12 @@ using System.Text;
     ///   <see cref="Encoding.UTF8"/> if the charset value is not available.
     ///   </para>
     /// </value>
-    public Encoding ContentEncoding {
-      get {
+    public Encoding ContentEncoding
+    {
+      get
+      {
         if (_contentEncoding == null)
-          _contentEncoding = getContentEncoding () ?? Encoding.UTF8;
+          _contentEncoding = getContentEncoding() ?? Encoding.UTF8;
 
         return _contentEncoding;
       }
@@ -188,8 +193,10 @@ using System.Text;
     ///   -1 if the header is not present.
     ///   </para>
     /// </value>
-    public long ContentLength64 {
-      get {
+    public long ContentLength64
+    {
+      get
+      {
         return _contentLength;
       }
     }
@@ -206,8 +213,10 @@ using System.Text;
     ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
-    public string ContentType {
-      get {
+    public string ContentType
+    {
+      get
+      {
         return _headers["Content-Type"];
       }
     }
@@ -223,10 +232,12 @@ using System.Text;
     ///   An empty collection if not included.
     ///   </para>
     /// </value>
-    public CookieCollection Cookies {
-      get {
+    public CookieCollection Cookies
+    {
+      get
+      {
         if (_cookies == null)
-          _cookies = _headers.GetCookies (false);
+          _cookies = _headers.GetCookies(false);
 
         return _cookies;
       }
@@ -239,8 +250,10 @@ using System.Text;
     /// <c>true</c> if the request has the entity body data; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool HasEntityBody {
-      get {
+    public bool HasEntityBody
+    {
+      get
+      {
         return _contentLength > 0 || _chunked;
       }
     }
@@ -251,8 +264,10 @@ using System.Text;
     /// <value>
     /// A <see cref="NameValueCollection"/> that contains the headers.
     /// </value>
-    public NameValueCollection Headers {
-      get {
+    public NameValueCollection Headers
+    {
+      get
+      {
         return _headers;
       }
     }
@@ -264,8 +279,10 @@ using System.Text;
     /// A <see cref="string"/> that represents the HTTP method specified in
     /// the request line.
     /// </value>
-    public string HttpMethod {
-      get {
+    public string HttpMethod
+    {
+      get
+      {
         return _httpMethod;
       }
     }
@@ -282,10 +299,12 @@ using System.Text;
     ///   <see cref="Stream.Null"/> if the entity body data is not available.
     ///   </para>
     /// </value>
-    public Stream InputStream {
-      get {
+    public Stream InputStream
+    {
+      get
+      {
         if (_inputStream == null)
-          _inputStream = getInputStream () ?? Stream.Null;
+          _inputStream = getInputStream() ?? Stream.Null;
 
         return _inputStream;
       }
@@ -297,8 +316,10 @@ using System.Text;
     /// <value>
     /// <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
     /// </value>
-    public bool IsAuthenticated {
-      get {
+    public bool IsAuthenticated
+    {
+      get
+      {
         return _context.User != null;
       }
     }
@@ -311,8 +332,10 @@ using System.Text;
     /// <c>true</c> if the request is sent from the same computer as the server;
     /// otherwise, <c>false</c>.
     /// </value>
-    public bool IsLocal {
-      get {
+    public bool IsLocal
+    {
+      get
+      {
         return _connection.IsLocal;
       }
     }
@@ -324,8 +347,10 @@ using System.Text;
     /// <value>
     /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
     /// </value>
-    public bool IsSecureConnection {
-      get {
+    public bool IsSecureConnection
+    {
+      get
+      {
         return _connection.IsSecure;
       }
     }
@@ -338,11 +363,13 @@ using System.Text;
     /// <c>true</c> if the request is a WebSocket handshake request; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool IsWebSocketRequest {
-      get {
+    public bool IsWebSocketRequest
+    {
+      get
+      {
         return _httpMethod == "GET"
                && _protocolVersion > HttpVersion.Version10
-               && _headers.Upgrades ("websocket");
+               && _headers.Upgrades("websocket");
       }
     }
 
@@ -353,9 +380,11 @@ using System.Text;
     /// <c>true</c> if the request specifies that the connection is kept open;
     /// otherwise, <c>false</c>.
     /// </value>
-    public bool KeepAlive {
-      get {
-        return _headers.KeepsAlive (_protocolVersion);
+    public bool KeepAlive
+    {
+      get
+      {
+        return _headers.KeepsAlive(_protocolVersion);
       }
     }
 
@@ -366,8 +395,10 @@ using System.Text;
     /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
     /// address and port number.
     /// </value>
-    public System.Net.IPEndPoint LocalEndPoint {
-      get {
+    public System.Net.IPEndPoint LocalEndPoint
+    {
+      get
+      {
         return _connection.LocalEndPoint;
       }
     }
@@ -379,8 +410,10 @@ using System.Text;
     /// A <see cref="Version"/> that represents the HTTP version specified in
     /// the request line.
     /// </value>
-    public Version ProtocolVersion {
-      get {
+    public Version ProtocolVersion
+    {
+      get
+      {
         return _protocolVersion;
       }
     }
@@ -397,11 +430,14 @@ using System.Text;
     ///   An empty collection if not included.
     ///   </para>
     /// </value>
-    public NameValueCollection QueryString {
-      get {
-        if (_queryString == null) {
+    public NameValueCollection QueryString
+    {
+      get
+      {
+        if (_queryString == null)
+        {
           var url = Url;
-          _queryString = QueryStringCollection.Parse (
+          _queryString = QueryStringCollection.Parse(
                            url != null ? url.Query : null,
                            Encoding.UTF8
                          );
@@ -418,8 +454,10 @@ using System.Text;
     /// A <see cref="string"/> that represents the request target specified in
     /// the request line.
     /// </value>
-    public string RawUrl {
-      get {
+    public string RawUrl
+    {
+      get
+      {
         return _rawUrl;
       }
     }
@@ -431,8 +469,10 @@ using System.Text;
     /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
     /// address and port number.
     /// </value>
-    public System.Net.IPEndPoint RemoteEndPoint {
-      get {
+    public System.Net.IPEndPoint RemoteEndPoint
+    {
+      get
+      {
         return _connection.RemoteEndPoint;
       }
     }
@@ -443,8 +483,10 @@ using System.Text;
     /// <value>
     /// A <see cref="Guid"/> that represents the trace identifier.
     /// </value>
-    public Guid RequestTraceIdentifier {
-      get {
+    public Guid RequestTraceIdentifier
+    {
+      get
+      {
         return _requestTraceIdentifier;
       }
     }
@@ -460,10 +502,13 @@ using System.Text;
     ///   <see langword="null"/> if the URL cannot be parsed.
     ///   </para>
     /// </value>
-    public Uri Url {
-      get {
-        if (!_urlSet) {
-          _url = HttpUtility.CreateRequestUrl (
+    public Uri Url
+    {
+      get
+      {
+        if (!_urlSet)
+        {
+          _url = HttpUtility.CreateRequestUrl(
                    _rawUrl,
                    _userHostName ?? UserHostAddress,
                    IsWebSocketRequest,
@@ -488,14 +533,16 @@ using System.Text;
     ///   <see langword="null"/> if the header value is not available.
     ///   </para>
     /// </value>
-    public Uri UrlReferrer {
-      get {
+    public Uri UrlReferrer
+    {
+      get
+      {
         var val = _headers["Referer"];
         if (val == null)
           return null;
 
         if (_urlReferrer == null)
-          _urlReferrer = val.ToUri ();
+          _urlReferrer = val.ToUri();
 
         return _urlReferrer;
       }
@@ -513,8 +560,10 @@ using System.Text;
     ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
-    public string UserAgent {
-      get {
+    public string UserAgent
+    {
+      get
+      {
         return _headers["User-Agent"];
       }
     }
@@ -526,9 +575,11 @@ using System.Text;
     /// A <see cref="string"/> that represents the server IP address and port
     /// number.
     /// </value>
-    public string UserHostAddress {
-      get {
-        return _connection.LocalEndPoint.ToString ();
+    public string UserHostAddress
+    {
+      get
+      {
+        return _connection.LocalEndPoint.ToString();
       }
     }
 
@@ -546,8 +597,10 @@ using System.Text;
     ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
-    public string UserHostName {
-      get {
+    public string UserHostName
+    {
+      get
+      {
         return _userHostName;
       }
     }
@@ -565,14 +618,16 @@ using System.Text;
     ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
-    public string[] UserLanguages {
-      get {
+    public string[] UserLanguages
+    {
+      get
+      {
         var val = _headers["Accept-Language"];
         if (val == null)
           return null;
 
         if (_userLanguages == null)
-          _userLanguages = val.Split (',').Trim ().ToList ().ToArray ();
+          _userLanguages = val.Split(',').Trim().ToList().ToArray();
 
         return _userLanguages;
       }
@@ -582,43 +637,47 @@ using System.Text;
 
     #region Private Methods
 
-    private void finishInitialization10 ()
+    private void finishInitialization10()
     {
       var transferEnc = _headers["Transfer-Encoding"];
-      if (transferEnc != null) {
+      if (transferEnc != null)
+      {
         _context.ErrorMessage = "Invalid Transfer-Encoding header";
         return;
       }
 
-      if (_httpMethod == "POST") {
-        if (_contentLength == -1) {
+      if (_httpMethod == "POST")
+      {
+        if (_contentLength == -1)
+        {
           _context.ErrorMessage = "Content-Length header required";
           return;
         }
 
-        if (_contentLength == 0) {
+        if (_contentLength == 0)
+        {
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
       }
     }
 
-    private Encoding getContentEncoding ()
+    private Encoding getContentEncoding()
     {
       var val = _headers["Content-Type"];
       if (val == null)
         return null;
 
       Encoding ret;
-      HttpUtility.TryGetEncoding (val, out ret);
+      HttpUtility.TryGetEncoding(val, out ret);
 
       return ret;
     }
 
-    private RequestStream getInputStream ()
+    private RequestStream getInputStream()
     {
       return _contentLength > 0 || _chunked
-             ? _connection.GetRequestStream (_contentLength, _chunked)
+             ? _connection.GetRequestStream(_contentLength, _chunked)
              : null;
     }
 
@@ -626,40 +685,46 @@ using System.Text;
 
     #region Internal Methods
 
-    internal void AddHeader (string headerField)
+    internal void AddHeader(string headerField)
     {
       var start = headerField[0];
-      if (start == ' ' || start == '\t') {
+      if (start == ' ' || start == '\t')
+      {
         _context.ErrorMessage = "Invalid header field";
         return;
       }
 
-      var colon = headerField.IndexOf (':');
-      if (colon < 1) {
+      var colon = headerField.IndexOf(':');
+      if (colon < 1)
+      {
         _context.ErrorMessage = "Invalid header field";
         return;
       }
 
-      var name = headerField.Substring (0, colon).Trim ();
-      if (name.Length == 0 || !name.IsToken ()) {
+      var name = headerField.Substring(0, colon).Trim();
+      if (name.Length == 0 || !name.IsToken())
+      {
         _context.ErrorMessage = "Invalid header name";
         return;
       }
 
       var val = colon < headerField.Length - 1
-                ? headerField.Substring (colon + 1).Trim ()
+                ? headerField.Substring(colon + 1).Trim()
                 : String.Empty;
 
-      _headers.InternalSet (name, val, false);
+      _headers.InternalSet(name, val, false);
 
-      var lower = name.ToLower (CultureInfo.InvariantCulture);
-      if (lower == "host") {
-        if (_userHostName != null) {
+      var lower = name.ToLower(CultureInfo.InvariantCulture);
+      if (lower == "host")
+      {
+        if (_userHostName != null)
+        {
           _context.ErrorMessage = "Invalid Host header";
           return;
         }
 
-        if (val.Length == 0) {
+        if (val.Length == 0)
+        {
           _context.ErrorMessage = "Invalid Host header";
           return;
         }
@@ -668,19 +733,23 @@ using System.Text;
         return;
       }
 
-      if (lower == "content-length") {
-        if (_contentLength > -1) {
+      if (lower == "content-length")
+      {
+        if (_contentLength > -1)
+        {
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
 
         long len;
-        if (!Int64.TryParse (val, out len)) {
+        if (!Int64.TryParse(val, out len))
+        {
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
 
-        if (len < 0) {
+        if (len < 0)
+        {
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
@@ -690,22 +759,26 @@ using System.Text;
       }
     }
 
-    internal void FinishInitialization ()
+    internal void FinishInitialization()
     {
-      if (_protocolVersion == HttpVersion.Version10) {
-        finishInitialization10 ();
+      if (_protocolVersion == HttpVersion.Version10)
+      {
+        finishInitialization10();
         return;
       }
 
-      if (_userHostName == null) {
+      if (_userHostName == null)
+      {
         _context.ErrorMessage = "Host header required";
         return;
       }
 
       var transferEnc = _headers["Transfer-Encoding"];
-      if (transferEnc != null) {
+      if (transferEnc != null)
+      {
         var comparison = StringComparison.OrdinalIgnoreCase;
-        if (!transferEnc.Equals ("chunked", comparison)) {
+        if (!transferEnc.Equals("chunked", comparison))
+        {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 501;
 
@@ -715,8 +788,10 @@ using System.Text;
         _chunked = true;
       }
 
-      if (_httpMethod == "POST" || _httpMethod == "PUT") {
-        if (_contentLength <= 0 && !_chunked) {
+      if (_httpMethod == "POST" || _httpMethod == "PUT")
+      {
+        if (_contentLength <= 0 && !_chunked)
+        {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 411;
 
@@ -725,19 +800,21 @@ using System.Text;
       }
 
       var expect = _headers["Expect"];
-      if (expect != null) {
+      if (expect != null)
+      {
         var comparison = StringComparison.OrdinalIgnoreCase;
-        if (!expect.Equals ("100-continue", comparison)) {
+        if (!expect.Equals("100-continue", comparison))
+        {
           _context.ErrorMessage = "Invalid Expect header";
           return;
         }
 
-        var output = _connection.GetResponseStream ();
-        output.InternalWrite (_100continue, 0, _100continue.Length);
+        var output = _connection.GetResponseStream();
+        output.InternalWrite(_100continue, 0, _100continue.Length);
       }
     }
 
-    internal bool FlushInput ()
+    internal bool FlushInput()
     {
       var input = InputStream;
       if (input == Stream.Null)
@@ -745,76 +822,88 @@ using System.Text;
 
       var len = 2048;
       if (_contentLength > 0 && _contentLength < len)
-        len = (int) _contentLength;
+        len = (int)_contentLength;
 
       var buff = new byte[len];
 
-      while (true) {
-        try {
-          var ares = input.BeginRead (buff, 0, len, null, null);
-          if (!ares.IsCompleted) {
+      while (true)
+      {
+        try
+        {
+          var ares = input.BeginRead(buff, 0, len, null, null);
+          if (!ares.IsCompleted)
+          {
             var timeout = 100;
-            if (!ares.AsyncWaitHandle.WaitOne (timeout))
+            if (!ares.AsyncWaitHandle.WaitOne(timeout))
               return false;
           }
 
-          if (input.EndRead (ares) <= 0)
+          if (input.EndRead(ares) <= 0)
             return true;
         }
-        catch {
+        catch
+        {
           return false;
         }
       }
     }
 
-    internal bool IsUpgradeRequest (string protocol)
+    internal bool IsUpgradeRequest(string protocol)
     {
-      return _headers.Upgrades (protocol);
+      return _headers.Upgrades(protocol);
     }
 
-    internal void SetRequestLine (string requestLine)
+    internal void SetRequestLine(string requestLine)
     {
-      var parts = requestLine.Split (new[] { ' ' }, 3);
-      if (parts.Length < 3) {
+      var parts = requestLine.Split(new[] { ' ' }, 3);
+      if (parts.Length < 3)
+      {
         _context.ErrorMessage = "Invalid request line (parts)";
         return;
       }
 
       var method = parts[0];
-      if (method.Length == 0) {
+      if (method.Length == 0)
+      {
         _context.ErrorMessage = "Invalid request line (method)";
         return;
       }
 
       var target = parts[1];
-      if (target.Length == 0) {
+      if (target.Length == 0)
+      {
         _context.ErrorMessage = "Invalid request line (target)";
         return;
       }
 
       var rawVer = parts[2];
-      if (rawVer.Length != 8) {
+      if (rawVer.Length != 8)
+      {
         _context.ErrorMessage = "Invalid request line (version)";
         return;
       }
 
-      if (rawVer.IndexOf ("HTTP/") != 0) {
+      if (rawVer.IndexOf("HTTP/") != 0)
+      {
         _context.ErrorMessage = "Invalid request line (version)";
         return;
       }
 
       Version ver;
-      if (!rawVer.Substring (5).TryCreateVersion (out ver)) {
+      if (!rawVer.Substring(5).TryCreateVersion(out ver))
+      {
         _context.ErrorMessage = "Invalid request line (version)";
         return;
       }
 
-      if (ver.Major < 1) {
+      if (ver.Major < 1)
+      {
         _context.ErrorMessage = "Invalid request line (version)";
         return;
       }
 
-      if (!method.IsHttpMethod (ver)) {
+      if (!method.IsHttpMethod(ver))
+      {
         _context.ErrorMessage = "Invalid request line (method)";
         return;
       }
@@ -846,11 +935,11 @@ using System.Text;
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
     /// </exception>
-    public IAsyncResult BeginGetClientCertificate (
+    public IAsyncResult BeginGetClientCertificate(
       AsyncCallback requestCallback, object state
     )
     {
-      throw new NotSupportedException ();
+      throw new NotSupportedException();
     }
 
     /// <summary>
@@ -868,9 +957,9 @@ using System.Text;
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
     /// </exception>
-    public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
+    public X509Certificate2 EndGetClientCertificate(IAsyncResult asyncResult)
     {
-      throw new NotSupportedException ();
+      throw new NotSupportedException();
     }
 
     /// <summary>
@@ -883,9 +972,9 @@ using System.Text;
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
     /// </exception>
-    public X509Certificate2 GetClientCertificate ()
+    public X509Certificate2 GetClientCertificate()
     {
-      throw new NotSupportedException ();
+      throw new NotSupportedException();
     }
 
     /// <summary>
@@ -895,17 +984,17 @@ using System.Text;
     /// A <see cref="string"/> that contains the request line and headers
     /// included in the request.
     /// </returns>
-    public override string ToString ()
+    public override string ToString()
     {
-      var buff = new StringBuilder (64);
+      var buff = new StringBuilder(64);
 
       buff
-      .AppendFormat (
+      .AppendFormat(
         "{0} {1} HTTP/{2}\r\n", _httpMethod, _rawUrl, _protocolVersion
       )
-      .Append (_headers.ToString ());
+      .Append(_headers.ToString());
 
-      return buff.ToString ();
+      return buff.ToString();
     }
 
     #endregion

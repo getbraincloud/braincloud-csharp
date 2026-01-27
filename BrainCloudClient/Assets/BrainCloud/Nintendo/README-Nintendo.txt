@@ -22,8 +22,6 @@ Setting up:
 7 - Use the Example Enumerator function provided as a reference that is provided below.
 8 - Once the ExternalID and NSA ID Token is saved, you can call AuthenticateNintendo() from BrainCloudWrapper.cs using those variables.
 
-
-
 Example Function for getting the External ID and NSA ID Token
 
     using System.Text;

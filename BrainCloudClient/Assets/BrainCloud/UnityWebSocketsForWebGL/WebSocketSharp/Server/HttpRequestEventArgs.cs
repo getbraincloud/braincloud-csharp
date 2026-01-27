@@ -30,13 +30,11 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-    using System;
-using System.IO;
-using System.Security.Principal;
-using System.Text;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-
-
+  using System;
+  using System.IO;
+  using System.Security.Principal;
+  using System.Text;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
   /// <summary>
   /// Represents the event data for the HTTP request events of
   /// the <see cref="HttpServer"/>.
@@ -60,13 +58,13 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     #region Private Fields
 
     private HttpListenerContext _context;
-    private string              _docRootPath;
+    private string _docRootPath;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpRequestEventArgs (
+    internal HttpRequestEventArgs(
       HttpListenerContext context, string documentRootPath
     )
     {
@@ -85,8 +83,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// A <see cref="HttpListenerRequest"/> that provides the methods and
     /// properties for the request data.
     /// </value>
-    public HttpListenerRequest Request {
-      get {
+    public HttpListenerRequest Request
+    {
+      get
+      {
         return _context.Request;
       }
     }
@@ -98,8 +98,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     /// A <see cref="HttpListenerResponse"/> that provides the methods and
     /// properties for the response data.
     /// </value>
-    public HttpListenerResponse Response {
-      get {
+    public HttpListenerResponse Response
+    {
+      get
+      {
         return _context.Response;
       }
     }
@@ -117,8 +119,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   and security roles for the client.
     ///   </para>
     /// </value>
-    public IPrincipal User {
-      get {
+    public IPrincipal User
+    {
+      get
+      {
         return _context.User;
       }
     }
@@ -127,26 +131,28 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
     #region Private Methods
 
-    private string createFilePath (string childPath)
+    private string createFilePath(string childPath)
     {
-      childPath = childPath.TrimStart ('/', '\\');
-      return new StringBuilder (_docRootPath, 32)
-             .AppendFormat ("/{0}", childPath)
-             .ToString ()
-             .Replace ('\\', '/');
+      childPath = childPath.TrimStart('/', '\\');
+      return new StringBuilder(_docRootPath, 32)
+             .AppendFormat("/{0}", childPath)
+             .ToString()
+             .Replace('\\', '/');
     }
 
-    private static bool tryReadFile (string path, out byte[] contents)
+    private static bool tryReadFile(string path, out byte[] contents)
     {
       contents = null;
 
-      if (!File.Exists (path))
+      if (!File.Exists(path))
         return false;
 
-      try {
-        contents = File.ReadAllBytes (path);
+      try
+      {
+        contents = File.ReadAllBytes(path);
       }
-      catch {
+      catch
+      {
         return false;
       }
 
@@ -188,19 +194,19 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   <paramref name="path"/> contains "..".
     ///   </para>
     /// </exception>
-    public byte[] ReadFile (string path)
+    public byte[] ReadFile(string path)
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
-      if (path.IndexOf ("..") > -1)
-        throw new ArgumentException ("It contains '..'.", "path");
+      if (path.IndexOf("..") > -1)
+        throw new ArgumentException("It contains '..'.", "path");
 
       byte[] contents;
-      tryReadFile (createFilePath (path), out contents);
+      tryReadFile(createFilePath(path), out contents);
 
       return contents;
     }
@@ -239,18 +245,18 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
     ///   <paramref name="path"/> contains "..".
     ///   </para>
     /// </exception>
-    public bool TryReadFile (string path, out byte[] contents)
+    public bool TryReadFile(string path, out byte[] contents)
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
-      if (path.IndexOf ("..") > -1)
-        throw new ArgumentException ("It contains '..'.", "path");
+      if (path.IndexOf("..") > -1)
+        throw new ArgumentException("It contains '..'.", "path");
 
-      return tryReadFile (createFilePath (path), out contents);
+      return tryReadFile(createFilePath(path), out contents);
     }
 
     #endregion

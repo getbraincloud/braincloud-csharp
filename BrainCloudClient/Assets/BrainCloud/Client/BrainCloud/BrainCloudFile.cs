@@ -7,17 +7,15 @@
 namespace BrainCloud
 {
 
-using BrainCloud.Internal;
-using System.Collections.Generic;
-using System.IO;
-using System;
-
-
+    using BrainCloud.Internal;
+    using System.Collections.Generic;
+    using System.IO;
+    using System;
     public class BrainCloudFile
     {
         private BrainCloudClient _client;
         public Dictionary<string, byte[]> FileStorage = new Dictionary<string, byte[]>();
-        
+
         public BrainCloudFile(BrainCloudClient client)
         {
             _client = client;
@@ -46,7 +44,7 @@ using System;
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
-        {   
+        {
             if (fileData.Length == 0)
             {
                 _client.Log("File data is empty");
@@ -54,7 +52,7 @@ using System;
             }
             string guid = Guid.NewGuid().ToString();
             _client.FileService.FileStorage.Add(guid, fileData);
-            
+
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.UploadLocalPath.Value] = guid;
             data[OperationParam.UploadCloudFilename.Value] = cloudFilename;
@@ -62,7 +60,7 @@ using System;
             data[OperationParam.UploadShareable.Value] = shareable;
             data[OperationParam.UploadReplaceIfExists.Value] = replaceIfExists;
             data[OperationParam.UploadFileSize.Value] = fileData.Length;
-            
+
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.File, ServiceOperation.PrepareUserUpload, data, callback);
             _client.SendRequest(sc);
@@ -72,21 +70,22 @@ using System;
 
         /// <summary>
         /// Method cancels an upload. If an IFileUploadCallback has been registered with the BrainCloudClient class,
-        /// the fileUploadFailed callback method will be called once the upload has been canceled.
-        /// NOTE: The upload will still continue in the background on versions of Unity before 5.3
-        /// and on Unity mobile platforms.
         /// </summary>
-        /// <param name="uploadId">Upload ID of the file to cancel</param>
+        /// <param name="uploadId">The id of the upload</param>
+
+
         public void CancelUpload(string uploadId)
         {
             _client.Comms.CancelUpload(uploadId);
         }
 
         /// <summary>
-        /// Returns the progress of the given upload from 0.0 to 1.0 or -1 if upload not found.
-        /// NOTE: This will always return 1 on Unity mobile platforms.
+        /// Returns the progress of the given upload from 0.0 to 1.0
         /// </summary>
         /// <param name="uploadId">The id of the upload</param>
+        /// <returns>A progress from 0.0 to 1.0 or -1 if upload not found.</returns>
+
+
         public double GetUploadProgress(string uploadId)
         {
             return _client.Comms.GetUploadProgress(uploadId);
@@ -112,11 +111,17 @@ using System;
         }
 
         /// <summary>
-        /// List all user files
+        /// List user files from the given cloud path
         /// </summary>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="cloudPath">File path</param>
+        /// <param name="recurse">Whether to recurse into sub-directories</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
+
+
         public void ListUserFiles(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -156,10 +161,12 @@ using System;
         /// Deletes a single user file.
         /// </summary>
         /// <param name="cloudPath">File path</param>
-        /// <param name="cloudFileName"></param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="cloudFilename">name of file</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteUserFile(
             string cloudPath,
             string cloudFileName,
@@ -181,10 +188,12 @@ using System;
         /// Delete multiple user files
         /// </summary>
         /// <param name="cloudPath">File path</param>
-        /// <param name="recurse">Whether to recurse down the path</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="recurse">Whether to recurse into sub-directories</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteUserFiles(
             string cloudPath,
             bool recurse,
@@ -203,13 +212,15 @@ using System;
         }
 
         /// <summary>
-        /// Returns the CDN URL for a file object.
+        /// Returns the CDN url for a file object
         /// </summary>
         /// <param name="cloudPath">File path</param>
-        /// <param name="cloudFilename">Name of file</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="cloudFileName">File name</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetCDNUrl(
             string cloudPath,
             string cloudFilename,

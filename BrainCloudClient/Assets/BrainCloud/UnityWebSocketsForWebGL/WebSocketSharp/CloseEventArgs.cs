@@ -30,9 +30,7 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
 
-    using System;
-
-
+  using System;
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnClose"/> event.
   /// </summary>
@@ -49,22 +47,22 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
   {
     #region Private Fields
 
-    private bool        _clean;
+    private bool _clean;
     private PayloadData _payloadData;
 
     #endregion
 
     #region Internal Constructors
 
-    internal CloseEventArgs (PayloadData payloadData, bool clean)
+    internal CloseEventArgs(PayloadData payloadData, bool clean)
     {
       _payloadData = payloadData;
       _clean = clean;
     }
 
-    internal CloseEventArgs (ushort code, string reason, bool clean)
+    internal CloseEventArgs(ushort code, string reason, bool clean)
     {
-      _payloadData = new PayloadData (code, reason);
+      _payloadData = new PayloadData(code, reason);
       _clean = clean;
     }
 
@@ -79,8 +77,10 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     /// A <see cref="ushort"/> that represents the status code for
     /// the connection close if present.
     /// </value>
-    public ushort Code {
-      get {
+    public ushort Code
+    {
+      get
+      {
         return _payloadData.Code;
       }
     }
@@ -92,8 +92,10 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     /// A <see cref="string"/> that represents the reason for
     /// the connection close if present.
     /// </value>
-    public string Reason {
-      get {
+    public string Reason
+    {
+      get
+      {
         return _payloadData.Reason;
       }
     }
@@ -105,8 +107,10 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
     /// <c>true</c> if the connection has been closed cleanly; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool WasClean {
-      get {
+    public bool WasClean
+    {
+      get
+      {
         return _clean;
       }
     }

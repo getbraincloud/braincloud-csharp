@@ -89,10 +89,8 @@ namespace BrainCloudTests
                 _rand.Next(1000),
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, ReasonCodes.DIVISION_SET_DOESNOT_EXIST);
-            
+
         }
-
-
         [Test]
         public void JoinTournament()
         {
@@ -131,7 +129,7 @@ namespace BrainCloudTests
                 null,
                 (UInt64)Util.DateTimeToUnixTimestamp(DateTime.UtcNow),
                 //(UInt64)((TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
-                  // new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
+                // new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds),
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
@@ -157,9 +155,9 @@ namespace BrainCloudTests
                 0,
                 tr.ApiSuccess, tr.ApiError);
 
-                Console.WriteLine("//////////////////////////////////////////"+DateTime.Now.Ticks+"//////////////////////////////////////////");
-                Console.WriteLine("//////////////////////////////////////////"+DateTime.Now+"//////////////////////////////////////////");
-                //Util.DateTimeToBcTimestamp(DateTime.Now)
+            Console.WriteLine("//////////////////////////////////////////" + DateTime.Now.Ticks + "//////////////////////////////////////////");
+            Console.WriteLine("//////////////////////////////////////////" + DateTime.Now + "//////////////////////////////////////////");
+            //Util.DateTimeToBcTimestamp(DateTime.Now)
 
             tr.Run();
 
@@ -198,8 +196,6 @@ namespace BrainCloudTests
 
             LeaveTestTournament();
         }
-
-
         // Helpers
         private int JoinTestTournament()
         {

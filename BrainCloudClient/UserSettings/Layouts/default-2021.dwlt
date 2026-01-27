@@ -12543,8 +12543,6 @@ MonoBehaviour:
       duration: 0.1184168
       messages: 
       output: 'Setting Up......
-
-
         IgnoreFailingMessages:true
 
         Max
@@ -13415,8 +13413,6 @@ MonoBehaviour:
       in a memory leak. Enable Full StackTraces to get more details.''. Use UnityEngine.TestTools.LogAssert.Expect
 
       ---
-
-
       ---
 
       Setting

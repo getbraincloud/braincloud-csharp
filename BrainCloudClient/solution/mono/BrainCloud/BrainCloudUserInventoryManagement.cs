@@ -7,11 +7,9 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using System;
-
-
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using System;
     public class BrainCloudUserInventoryManagement
     {
         private BrainCloudClient _client;
@@ -184,8 +182,6 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.GetUserInventoryPage, data, callback);
             _client.SendRequest(sc);
         }
-
-        
         /// <summary>
         /// Retrieves the page of user's inventory 
         ///from the server based on the encoded context. 
@@ -230,8 +226,6 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
-        
         /// <summary>
         /// Retrieves the identified user item from the server.
         /// If includeDef is true, response includes associated
@@ -271,9 +265,7 @@ using System;
             _client.SendRequest(sc);
         }
 
-        
-        
-        
+
         /// <summary>
         /// Gifts item to the specified player.
         /// </summary>
@@ -439,9 +431,9 @@ using System;
         /// </param>
         public void SellUserItem(
         string itemId,
-        int version, 
+        int version,
         int quantity,
-        string shopId, 
+        string shopId,
         bool includeDef,
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -453,10 +445,6 @@ using System;
             data[OperationParam.UserInventoryManagementServiceQuantity.Value] = quantity;
             data[OperationParam.UserInventoryManagementServiceShopId.Value] = shopId;
             data[OperationParam.UserInventoryManagementServiceIncludeDef.Value] = includeDef;
-
-
-
-
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.UserInventoryManagement, ServiceOperation.SellUserItem, data, callback);
@@ -487,7 +475,7 @@ using System;
         /// </param>
         public void UpdateUserItemData(
         string itemId,
-        int version, 
+        int version,
         Dictionary<string, object> newItemData,
         SuccessCallback success = null,
         FailureCallback failure = null,
@@ -529,7 +517,7 @@ using System;
         /// </param>
         public void UseUserItem(
         string itemId,
-        int version, 
+        int version,
         Dictionary<string, object> newItemData,
         bool includeDef,
         SuccessCallback success = null,

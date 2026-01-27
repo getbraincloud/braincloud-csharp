@@ -30,11 +30,9 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Specialized;
-using System.Security.Principal;
-
-
+  using System;
+  using System.Collections.Specialized;
+  using System.Security.Principal;
   /// <summary>
   /// Holds the username and other parameters from
   /// an HTTP Digest authentication attempt.
@@ -49,8 +47,8 @@ using System.Security.Principal;
 
     #region Internal Constructors
 
-    internal HttpDigestIdentity (NameValueCollection parameters)
-      : base (parameters["username"], "Digest")
+    internal HttpDigestIdentity(NameValueCollection parameters)
+      : base(parameters["username"], "Digest")
     {
       _parameters = parameters;
     }
@@ -65,8 +63,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the algorithm parameter.
     /// </value>
-    public string Algorithm {
-      get {
+    public string Algorithm
+    {
+      get
+      {
         return _parameters["algorithm"];
       }
     }
@@ -77,8 +77,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the cnonce parameter.
     /// </value>
-    public string Cnonce {
-      get {
+    public string Cnonce
+    {
+      get
+      {
         return _parameters["cnonce"];
       }
     }
@@ -89,8 +91,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the nc parameter.
     /// </value>
-    public string Nc {
-      get {
+    public string Nc
+    {
+      get
+      {
         return _parameters["nc"];
       }
     }
@@ -101,8 +105,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the nonce parameter.
     /// </value>
-    public string Nonce {
-      get {
+    public string Nonce
+    {
+      get
+      {
         return _parameters["nonce"];
       }
     }
@@ -113,8 +119,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the opaque parameter.
     /// </value>
-    public string Opaque {
-      get {
+    public string Opaque
+    {
+      get
+      {
         return _parameters["opaque"];
       }
     }
@@ -125,8 +133,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the qop parameter.
     /// </value>
-    public string Qop {
-      get {
+    public string Qop
+    {
+      get
+      {
         return _parameters["qop"];
       }
     }
@@ -137,8 +147,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the realm parameter.
     /// </value>
-    public string Realm {
-      get {
+    public string Realm
+    {
+      get
+      {
         return _parameters["realm"];
       }
     }
@@ -149,8 +161,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the response parameter.
     /// </value>
-    public string Response {
-      get {
+    public string Response
+    {
+      get
+      {
         return _parameters["response"];
       }
     }
@@ -161,8 +175,10 @@ using System.Security.Principal;
     /// <value>
     /// A <see cref="string"/> that represents the uri parameter.
     /// </value>
-    public string Uri {
-      get {
+    public string Uri
+    {
+      get
+      {
         return _parameters["uri"];
       }
     }
@@ -171,17 +187,17 @@ using System.Security.Principal;
 
     #region Internal Methods
 
-    internal bool IsValid (
+    internal bool IsValid(
       string password, string realm, string method, string entity
     )
     {
-      var copied = new NameValueCollection (_parameters);
+      var copied = new NameValueCollection(_parameters);
       copied["password"] = password;
       copied["realm"] = realm;
       copied["method"] = method;
       copied["entity"] = entity;
 
-      var expected = AuthenticationResponse.CreateRequestDigest (copied);
+      var expected = AuthenticationResponse.CreateRequestDigest(copied);
       return _parameters["response"] == expected;
     }
 

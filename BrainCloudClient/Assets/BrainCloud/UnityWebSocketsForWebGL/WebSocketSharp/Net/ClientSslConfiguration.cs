@@ -38,12 +38,10 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Net.Security;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-
-
+  using System;
+  using System.Net.Security;
+  using System.Security.Authentication;
+  using System.Security.Cryptography.X509Certificates;
   /// <summary>
   /// Stores the parameters for the <see cref="SslStream"/> used by clients.
   /// </summary>
@@ -51,12 +49,12 @@ using System.Security.Cryptography.X509Certificates;
   {
     #region Private Fields
 
-    private bool                                _checkCertRevocation;
-    private LocalCertificateSelectionCallback   _clientCertSelectionCallback;
-    private X509CertificateCollection           _clientCerts;
-    private SslProtocols                        _enabledSslProtocols;
+    private bool _checkCertRevocation;
+    private LocalCertificateSelectionCallback _clientCertSelectionCallback;
+    private X509CertificateCollection _clientCerts;
+    private SslProtocols _enabledSslProtocols;
     private RemoteCertificateValidationCallback _serverCertValidationCallback;
-    private string                              _targetHost;
+    private string _targetHost;
 
     #endregion
 
@@ -65,7 +63,7 @@ using System.Security.Cryptography.X509Certificates;
     /// <summary>
     /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class.
     /// </summary>
-    public ClientSslConfiguration ()
+    public ClientSslConfiguration()
     {
       _enabledSslProtocols = SslProtocols.Default;
     }
@@ -77,7 +75,7 @@ using System.Security.Cryptography.X509Certificates;
     /// <param name="targetHost">
     /// A <see cref="string"/> that represents the target host server name.
     /// </param>
-    public ClientSslConfiguration (string targetHost)
+    public ClientSslConfiguration(string targetHost)
     {
       _targetHost = targetHost;
       _enabledSslProtocols = SslProtocols.Default;
@@ -93,10 +91,10 @@ using System.Security.Cryptography.X509Certificates;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="configuration"/> is <see langword="null"/>.
     /// </exception>
-    public ClientSslConfiguration (ClientSslConfiguration configuration)
+    public ClientSslConfiguration(ClientSslConfiguration configuration)
     {
       if (configuration == null)
-        throw new ArgumentNullException ("configuration");
+        throw new ArgumentNullException("configuration");
 
       _checkCertRevocation = configuration._checkCertRevocation;
       _clientCertSelectionCallback = configuration._clientCertSelectionCallback;
@@ -123,12 +121,15 @@ using System.Security.Cryptography.X509Certificates;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool CheckCertificateRevocation {
-      get {
+    public bool CheckCertificateRevocation
+    {
+      get
+      {
         return _checkCertRevocation;
       }
 
-      set {
+      set
+      {
         _checkCertRevocation = value;
       }
     }
@@ -148,12 +149,15 @@ using System.Security.Cryptography.X509Certificates;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public X509CertificateCollection ClientCertificates {
-      get {
+    public X509CertificateCollection ClientCertificates
+    {
+      get
+      {
         return _clientCerts;
       }
 
-      set {
+      set
+      {
         _clientCerts = value;
       }
     }
@@ -176,15 +180,18 @@ using System.Security.Cryptography.X509Certificates;
     ///   only returns <see langword="null"/>.
     ///   </para>
     /// </value>
-    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
-      get {
+    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
+    {
+      get
+      {
         if (_clientCertSelectionCallback == null)
           _clientCertSelectionCallback = defaultSelectClientCertificate;
 
         return _clientCertSelectionCallback;
       }
 
-      set {
+      set
+      {
         _clientCertSelectionCallback = value;
       }
     }
@@ -201,12 +208,15 @@ using System.Security.Cryptography.X509Certificates;
     ///   The default value is <see cref="SslProtocols.Default"/>.
     ///   </para>
     /// </value>
-    public SslProtocols EnabledSslProtocols {
-      get {
+    public SslProtocols EnabledSslProtocols
+    {
+      get
+      {
         return _enabledSslProtocols;
       }
 
-      set {
+      set
+      {
         _enabledSslProtocols = value;
       }
     }
@@ -228,15 +238,18 @@ using System.Security.Cryptography.X509Certificates;
     ///   only returns <c>true</c>.
     ///   </para>
     /// </value>
-    public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
-      get {
+    public RemoteCertificateValidationCallback ServerCertificateValidationCallback
+    {
+      get
+      {
         if (_serverCertValidationCallback == null)
           _serverCertValidationCallback = defaultValidateServerCertificate;
 
         return _serverCertValidationCallback;
       }
 
-      set {
+      set
+      {
         _serverCertValidationCallback = value;
       }
     }
@@ -254,12 +267,15 @@ using System.Security.Cryptography.X509Certificates;
     ///   will share a secure connection with a client.
     ///   </para>
     /// </value>
-    public string TargetHost {
-      get {
+    public string TargetHost
+    {
+      get
+      {
         return _targetHost;
       }
 
-      set {
+      set
+      {
         _targetHost = value;
       }
     }
@@ -268,7 +284,7 @@ using System.Security.Cryptography.X509Certificates;
 
     #region Private Methods
 
-    private static X509Certificate defaultSelectClientCertificate (
+    private static X509Certificate defaultSelectClientCertificate(
       object sender,
       string targetHost,
       X509CertificateCollection clientCertificates,
@@ -279,7 +295,7 @@ using System.Security.Cryptography.X509Certificates;
       return null;
     }
 
-    private static bool defaultValidateServerCertificate (
+    private static bool defaultValidateServerCertificate(
       object sender,
       X509Certificate certificate,
       X509Chain chain,

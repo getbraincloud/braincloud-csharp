@@ -87,7 +87,7 @@ namespace BrainCloudTests
                true,
                tr6.ApiSuccess, tr6.ApiError
              );
-             tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
+            tr6.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.MISSING_IDENTITY_ERROR);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace BrainCloudTests
             tr3.Run();
 
             TestResult tr2 = new TestResult(_bc);
-            _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            _bc.ScriptService.RunScript("createHandoffId", Helpers.CreateJsonPair("", ""), tr2.ApiSuccess, tr2.ApiError);
             if (tr2.Run())
             {
                 var data = tr2.m_response["data"] as Dictionary<string, object>;
@@ -136,8 +136,6 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
-        
-
         [Test]
         public void TestAuthenticateSettopHandoff()
         {
@@ -153,12 +151,12 @@ namespace BrainCloudTests
             tr3.Run();
 
             TestResult tr2 = new TestResult(_bc);
-            _bc.ScriptService.RunScript("CreateSettopHandoffCode", Helpers.CreateJsonPair("",""), tr2.ApiSuccess, tr2.ApiError);
+            _bc.ScriptService.RunScript("CreateSettopHandoffCode", Helpers.CreateJsonPair("", ""), tr2.ApiSuccess, tr2.ApiError);
             if (tr2.Run())
             {
                 var data = tr2.m_response["data"] as Dictionary<string, object>;
                 var response = data["response"] as Dictionary<string, object>;
-                handoffCode= (string)response["handoffCode"];
+                handoffCode = (string)response["handoffCode"];
             }
 
             TestResult tr = new TestResult(_bc);
@@ -268,7 +266,7 @@ namespace BrainCloudTests
         public void TestResetEmailPasswordAdvancedWithExpiry()
         {
             TestResult tr = new TestResult(_bc);
-            
+
             string email = "braincloudunittest@gmail.com";
             _bc.Client.AuthenticationService.AuthenticateEmailPassword
             (
@@ -278,9 +276,9 @@ namespace BrainCloudTests
                 tr.ApiSuccess,
                 tr.ApiError
             );
-            
+
             tr.Run();
-            
+
             string content = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
 
             _bc.Client.AuthenticationService.ResetEmailPasswordAdvancedWithExpiry
@@ -338,8 +336,6 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-
         [Test]
         public void TestResetUniversalIdPasswordAdvanced()
         {
@@ -467,22 +463,22 @@ namespace BrainCloudTests
             tr.Run();
             tr.Run();
         }
-        
+
         [Test]
         public void TestAuthenticateAdvanced()
         {
             TestResult tr = new TestResult(_bc);
-            
+
             AuthenticationIds ids;
             ids.externalId = "authAdvancedUser";
             ids.authenticationToken = "authAdvancedPass";
             ids.authenticationSubType = "";
             Dictionary<string, object> extraJson = new Dictionary<string, object>();
             extraJson["AnswerToEverything"] = 42;
-            
+
             _bc.Client.AuthenticationService.AuthenticateAdvanced
             (
-                AuthenticationType.Universal, 
+                AuthenticationType.Universal,
                 ids,
                 true,
                 extraJson,
@@ -504,23 +500,23 @@ namespace BrainCloudTests
                 return;
             }
 
-                TestResult tr = new TestResult(_bc);
+            TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
                 true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
+
             _bc.ScriptService.RunScript("getUltraToken", "{}", tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
+
             var data = tr.m_response["data"] as Dictionary<string, object>;
             var response = data["response"] as Dictionary<string, object>;
             var data2 = response["data"] as Dictionary<string, object>;
             var json = data2["json"] as Dictionary<string, object>;
             string idToken = json["id_token"] as string;
-            
+
             _bc.PlayerStateService.Logout();
 
             _bc.AuthenticateUltra("braincloud1", idToken, true, tr.ApiSuccess, tr.ApiError);
@@ -550,7 +546,7 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-        
+
         [Test]
         public void TestAuthenticatePlaystation()
         {
@@ -586,16 +582,12 @@ namespace BrainCloudTests
             originalAppSecretMap.Add(AppId, Secret);
             originalAppSecretMap.Add(ChildAppId, ChildSecret);
             int numRepeatBadSigFailures = 0;
-
-
             // mess up the app
-            Dictionary<string, string> updatedAppSecretMap = new Dictionary<string,string>(originalAppSecretMap);
+            Dictionary<string, string> updatedAppSecretMap = new Dictionary<string, string>(originalAppSecretMap);
             foreach (var kvPair in originalAppSecretMap)
             {
                 updatedAppSecretMap[kvPair.Key] = kvPair.Value + "123";
             }
-
-
             // authenticate
             TestResult tr1 = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
@@ -603,10 +595,10 @@ namespace BrainCloudTests
                 GetUser(Users.UserA).Password,
                 true,
                 tr1.ApiSuccess, tr1.ApiError);
-            if(tr1.Run())
+            if (tr1.Run())
             {
                 //Check the packet coming in and compare it to the last recevied packet. if they're both -1, we may be in a repeating scenario.
-                if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
+                if (mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
                 {
                     mostRecentPacket = _bc.Client.GetReceivedPacketId();
                     Console.WriteLine("MOST RECENT PACKET " + _bc.Client.GetReceivedPacketId());
@@ -620,13 +612,13 @@ namespace BrainCloudTests
                 }
 
                 //Is there the sign of a repeat?
-                if(mostRecentPacket == -1 && secondMostRecentPacket == -1)
+                if (mostRecentPacket == -1 && secondMostRecentPacket == -1)
                 {
                     numRepeatBadSigFailures++;
                 }
 
                 //we shouldnt expect more than 2 times that most recent and second most recent are both bad sig errors for this test, else its repeating itself. 
-                if(numRepeatBadSigFailures > 2)
+                if (numRepeatBadSigFailures > 2)
                 {
                     Assert.Fail("Repeating bad sig error");
                 }
@@ -644,9 +636,9 @@ namespace BrainCloudTests
                 true,
                 tr3.ApiSuccess, tr3.ApiError);
             Console.WriteLine("AUTHENTICATION RESPONSE");
-            if(tr3.RunExpectFail())
+            if (tr3.RunExpectFail())
             {
-                if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
+                if (mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
                 {
                     mostRecentPacket = _bc.Client.GetReceivedPacketId();
                     Console.WriteLine("MOST RECENT PACKET " + _bc.Client.GetReceivedPacketId());
@@ -660,23 +652,19 @@ namespace BrainCloudTests
                 }
 
                 //Is there the sign of a repeat?
-                if(mostRecentPacket == -1 && secondMostRecentPacket == -1)
+                if (mostRecentPacket == -1 && secondMostRecentPacket == -1)
                 {
                     numRepeatBadSigFailures++;
                 }
-                
+
                 //we shouldnt expect more than 2 times that most recent and second most recent are both bad sig errors for this test, else its repeating itself. 
-                if(numRepeatBadSigFailures > 2)
+                if (numRepeatBadSigFailures > 2)
                 {
                     Assert.Fail("Repeating bad sig error");
                 }
             }
-
-
             //check state
             _bc.PlayerStateService.ReadUserState(tr3.ApiSuccess, tr3.ApiError);
-
-
             // wait some time
             DateTime _testPauseStart = DateTime.Now;
             TimeSpan _testPauseDuration = TimeSpan.FromSeconds(5 * 0.05);
@@ -688,8 +676,6 @@ namespace BrainCloudTests
                 //float time = (float)DateTime.Now.Subtract(_testPauseStart).TotalSeconds;
                 //Console.WriteLine(time);
             }
-
-
             //Try things with the proper secret.
             //Do a normal test.
             TestResult tr5 = new TestResult(_bc);
@@ -701,9 +687,9 @@ namespace BrainCloudTests
                 true,
                 tr5.ApiSuccess, tr5.ApiError);
             //the packetId upon re-initializinf is going to change 
-            if(tr5.Run())
+            if (tr5.Run())
             {
-                if(mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
+                if (mostRecentPacket == -1000000 && secondMostRecentPacket == -1000000)
                 {
                     mostRecentPacket = _bc.Client.GetReceivedPacketId();
                     Console.WriteLine("MOST RECENT PACKET " + _bc.Client.GetReceivedPacketId());
@@ -717,13 +703,13 @@ namespace BrainCloudTests
                 }
 
                 //Is there the sign of a repeat?
-                if(mostRecentPacket == -1 && secondMostRecentPacket == -1)
+                if (mostRecentPacket == -1 && secondMostRecentPacket == -1)
                 {
                     numRepeatBadSigFailures++;
-                    
+
                 }
                 //we shouldnt expect more than 2 times that most recent and second most recent are both bad sig errors for this test, else its repeating itself. 
-                if(numRepeatBadSigFailures > 2)
+                if (numRepeatBadSigFailures > 2)
                 {
                     Assert.Fail("Repeating bad sig error");
                 }

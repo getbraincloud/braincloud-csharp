@@ -40,17 +40,15 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
-
+  using System;
+  using System.Collections.Generic;
+  using System.Net.Sockets;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Security.Principal;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   /// <summary>
   /// Provides a WebSocket protocol server.
   /// </summary>
@@ -61,32 +59,32 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   {
     #region Private Fields
 
-    private System.Net.IPAddress               _address;
-    private bool                               _allowForwardedRequest;
-    private AuthenticationSchemes              _authSchemes;
-    private static readonly string             _defaultRealm;
-    private bool                               _dnsStyle;
-    private string                             _hostname;
-    private TcpListener                        _listener;
-    private Logger                             _log;
-    private int                                _port;
-    private string                             _realm;
-    private string                             _realmInUse;
-    private Thread                             _receiveThread;
-    private bool                               _reuseAddress;
-    private bool                               _secure;
-    private WebSocketServiceManager            _services;
-    private ServerSslConfiguration             _sslConfig;
-    private ServerSslConfiguration             _sslConfigInUse;
-    private volatile ServerState               _state;
-    private object                             _sync;
+    private System.Net.IPAddress _address;
+    private bool _allowForwardedRequest;
+    private AuthenticationSchemes _authSchemes;
+    private static readonly string _defaultRealm;
+    private bool _dnsStyle;
+    private string _hostname;
+    private TcpListener _listener;
+    private Logger _log;
+    private int _port;
+    private string _realm;
+    private string _realmInUse;
+    private Thread _receiveThread;
+    private bool _reuseAddress;
+    private bool _secure;
+    private WebSocketServiceManager _services;
+    private ServerSslConfiguration _sslConfig;
+    private ServerSslConfiguration _sslConfigInUse;
+    private volatile ServerState _state;
+    private object _sync;
     private Func<IIdentity, NetworkCredential> _userCredFinder;
 
     #endregion
 
     #region Static Constructor
 
-    static WebSocketServer ()
+    static WebSocketServer()
     {
       _defaultRealm = "SECRET AREA";
     }
@@ -102,10 +100,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// The new instance listens for incoming handshake requests on
     /// <see cref="System.Net.IPAddress.Any"/> and port 80.
     /// </remarks>
-    public WebSocketServer ()
+    public WebSocketServer()
     {
       var addr = System.Net.IPAddress.Any;
-      init (addr.ToString (), addr, 80, false);
+      init(addr.ToString(), addr, 80, false);
     }
 
     /// <summary>
@@ -128,8 +126,8 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
-    public WebSocketServer (int port)
-      : this (port, port == 443)
+    public WebSocketServer(int port)
+      : this(port, port == 443)
     {
     }
 
@@ -170,33 +168,35 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="url"/> is invalid.
     ///   </para>
     /// </exception>
-    public WebSocketServer (string url)
+    public WebSocketServer(string url)
     {
       if (url == null)
-        throw new ArgumentNullException ("url");
+        throw new ArgumentNullException("url");
 
       if (url.Length == 0)
-        throw new ArgumentException ("An empty string.", "url");
+        throw new ArgumentException("An empty string.", "url");
 
       Uri uri;
       string msg;
-      if (!tryCreateUri (url, out uri, out msg))
-        throw new ArgumentException (msg, "url");
+      if (!tryCreateUri(url, out uri, out msg))
+        throw new ArgumentException(msg, "url");
 
       var host = uri.DnsSafeHost;
 
-      var addr = host.ToIPAddress ();
-      if (addr == null) {
+      var addr = host.ToIPAddress();
+      if (addr == null)
+      {
         msg = "The host part could not be converted to an IP address.";
-        throw new ArgumentException (msg, "url");
+        throw new ArgumentException(msg, "url");
       }
 
-      if (!addr.IsLocal ()) {
+      if (!addr.IsLocal())
+      {
         msg = "The IP address of the host is not a local IP address.";
-        throw new ArgumentException (msg, "url");
+        throw new ArgumentException(msg, "url");
       }
 
-      init (host, addr, uri.Port, uri.Scheme == "wss");
+      init(host, addr, uri.Port, uri.Scheme == "wss");
     }
 
     /// <summary>
@@ -218,15 +218,16 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
-    public WebSocketServer (int port, bool secure)
+    public WebSocketServer(int port, bool secure)
     {
-      if (!port.IsPortNumber ()) {
+      if (!port.IsPortNumber())
+      {
         var msg = "Less than 1 or greater than 65535.";
-        throw new ArgumentOutOfRangeException ("port", msg);
+        throw new ArgumentOutOfRangeException("port", msg);
       }
 
       var addr = System.Net.IPAddress.Any;
-      init (addr.ToString (), addr, port, secure);
+      init(addr.ToString(), addr, port, secure);
     }
 
     /// <summary>
@@ -259,8 +260,8 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
-    public WebSocketServer (System.Net.IPAddress address, int port)
-      : this (address, port, port == 443)
+    public WebSocketServer(System.Net.IPAddress address, int port)
+      : this(address, port, port == 443)
     {
     }
 
@@ -294,20 +295,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
-    public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
+    public WebSocketServer(System.Net.IPAddress address, int port, bool secure)
     {
       if (address == null)
-        throw new ArgumentNullException ("address");
+        throw new ArgumentNullException("address");
 
-      if (!address.IsLocal ())
-        throw new ArgumentException ("Not a local IP address.", "address");
+      if (!address.IsLocal())
+        throw new ArgumentException("Not a local IP address.", "address");
 
-      if (!port.IsPortNumber ()) {
+      if (!port.IsPortNumber())
+      {
         var msg = "Less than 1 or greater than 65535.";
-        throw new ArgumentOutOfRangeException ("port", msg);
+        throw new ArgumentOutOfRangeException("port", msg);
       }
 
-      init (address.ToString (), address, port, secure);
+      init(address.ToString(), address, port, secure);
     }
 
     #endregion
@@ -321,8 +323,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// A <see cref="System.Net.IPAddress"/> that represents the local
     /// IP address on which to listen for incoming handshake requests.
     /// </value>
-    public System.Net.IPAddress Address {
-      get {
+    public System.Net.IPAddress Address
+    {
+      get
+      {
         return _address;
       }
     }
@@ -344,21 +348,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool AllowForwardedRequest {
-      get {
+    public bool AllowForwardedRequest
+    {
+      get
+      {
         return _allowForwardedRequest;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -387,21 +397,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
     ///   </para>
     /// </value>
-    public AuthenticationSchemes AuthenticationSchemes {
-      get {
+    public AuthenticationSchemes AuthenticationSchemes
+    {
+      get
+      {
         return _authSchemes;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -416,8 +432,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// <c>true</c> if the server has started; otherwise, <c>false</c>.
     /// </value>
-    public bool IsListening {
-      get {
+    public bool IsListening
+    {
+      get
+      {
         return _state == ServerState.Start;
       }
     }
@@ -429,8 +447,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <c>true</c> if this instance provides secure connections; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool IsSecure {
-      get {
+    public bool IsSecure
+    {
+      get
+      {
         return _secure;
       }
     }
@@ -452,12 +472,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <c>true</c>.
     ///   </para>
     /// </value>
-    public bool KeepClean {
-      get {
+    public bool KeepClean
+    {
+      get
+      {
         return _services.KeepClean;
       }
 
-      set {
+      set
+      {
         _services.KeepClean = value;
       }
     }
@@ -471,8 +494,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <value>
     /// A <see cref="Logger"/> that provides the logging function.
     /// </value>
-    public Logger Log {
-      get {
+    public Logger Log
+    {
+      get
+      {
         return _log;
       }
     }
@@ -484,8 +509,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// An <see cref="int"/> that represents the number of the port
     /// on which to listen for incoming handshake requests.
     /// </value>
-    public int Port {
-      get {
+    public int Port
+    {
+      get
+      {
         return _port;
       }
     }
@@ -511,21 +538,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   That string represents the name of the realm.
     ///   </para>
     /// </value>
-    public string Realm {
-      get {
+    public string Realm
+    {
+      get
+      {
         return _realm;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -557,21 +590,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool ReuseAddress {
-      get {
+    public bool ReuseAddress
+    {
+      get
+      {
         return _reuseAddress;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -594,14 +633,17 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// This instance does not provide secure connections.
     /// </exception>
-    public ServerSslConfiguration SslConfiguration {
-      get {
-        if (!_secure) {
+    public ServerSslConfiguration SslConfiguration
+    {
+      get
+      {
+        if (!_secure)
+        {
           var msg = "This instance does not provide secure connections.";
-          throw new InvalidOperationException (msg);
+          throw new InvalidOperationException(msg);
         }
 
-        return getSslConfiguration ();
+        return getSslConfiguration();
       }
     }
 
@@ -634,21 +676,27 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
-      get {
+    public Func<IIdentity, NetworkCredential> UserCredentialsFinder
+    {
+      get
+      {
         return _userCredFinder;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -676,12 +724,15 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
     /// </exception>
-    public TimeSpan WaitTime {
-      get {
+    public TimeSpan WaitTime
+    {
+      get
+      {
         return _services.WaitTime;
       }
 
-      set {
+      set
+      {
         _services.WaitTime = value;
       }
     }
@@ -694,8 +745,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// A <see cref="WebSocketServiceManager"/> that manages
     /// the WebSocket services provided by the server.
     /// </value>
-    public WebSocketServiceManager WebSocketServices {
-      get {
+    public WebSocketServiceManager WebSocketServices
+    {
+      get
+      {
         return _services;
       }
     }
@@ -704,30 +757,35 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
     #region Private Methods
 
-    private void abort ()
+    private void abort()
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         if (_state != ServerState.Start)
           return;
 
         _state = ServerState.ShuttingDown;
       }
 
-      try {
-        try {
-          _listener.Stop ();
+      try
+      {
+        try
+        {
+          _listener.Stop();
         }
-        finally {
-          _services.Stop (1006, String.Empty);
+        finally
+        {
+          _services.Stop(1006, String.Empty);
         }
       }
-      catch {
+      catch
+      {
       }
 
       _state = ServerState.Stop;
     }
 
-    private bool authenticateClient (TcpListenerWebSocketContext context)
+    private bool authenticateClient(TcpListenerWebSocketContext context)
     {
       if (_authSchemes == AuthenticationSchemes.Anonymous)
         return true;
@@ -735,19 +793,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       if (_authSchemes == AuthenticationSchemes.None)
         return false;
 
-      return context.Authenticate (_authSchemes, _realmInUse, _userCredFinder);
+      return context.Authenticate(_authSchemes, _realmInUse, _userCredFinder);
     }
 
-    private bool canSet (out string message)
+    private bool canSet(out string message)
     {
       message = null;
 
-      if (_state == ServerState.Start) {
+      if (_state == ServerState.Start)
+      {
         message = "The server has already started.";
         return false;
       }
 
-      if (_state == ServerState.ShuttingDown) {
+      if (_state == ServerState.ShuttingDown)
+      {
         message = "The server is shutting down.";
         return false;
       }
@@ -755,20 +815,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private bool checkHostNameForRequest (string name)
+    private bool checkHostNameForRequest(string name)
     {
       return !_dnsStyle
-             || Uri.CheckHostName (name) != UriHostNameType.Dns
+             || Uri.CheckHostName(name) != UriHostNameType.Dns
              || name == _hostname;
     }
 
-    private static bool checkSslConfiguration (
+    private static bool checkSslConfiguration(
       ServerSslConfiguration configuration, out string message
     )
     {
       message = null;
 
-      if (configuration.ServerCertificate == null) {
+      if (configuration.ServerCertificate == null)
+      {
         message = "There is no server certificate for secure connection.";
         return false;
       }
@@ -776,21 +837,21 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       return true;
     }
 
-    private string getRealm ()
+    private string getRealm()
     {
       var realm = _realm;
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
-    private ServerSslConfiguration getSslConfiguration ()
+    private ServerSslConfiguration getSslConfiguration()
     {
       if (_sslConfig == null)
-        _sslConfig = new ServerSslConfiguration ();
+        _sslConfig = new ServerSslConfiguration();
 
       return _sslConfig;
     }
 
-    private void init (
+    private void init(
       string hostname, System.Net.IPAddress address, int port, bool secure
     )
     {
@@ -800,133 +861,154 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       _secure = secure;
 
       _authSchemes = AuthenticationSchemes.Anonymous;
-      _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
-      _listener = new TcpListener (address, port);
-      _log = new Logger ();
-      _services = new WebSocketServiceManager (_log);
-      _sync = new object ();
+      _dnsStyle = Uri.CheckHostName(hostname) == UriHostNameType.Dns;
+      _listener = new TcpListener(address, port);
+      _log = new Logger();
+      _services = new WebSocketServiceManager(_log);
+      _sync = new object();
     }
 
-    private void processRequest (TcpListenerWebSocketContext context)
+    private void processRequest(TcpListenerWebSocketContext context)
     {
-      if (!authenticateClient (context)) {
-        context.Close (HttpStatusCode.Forbidden);
+      if (!authenticateClient(context))
+      {
+        context.Close(HttpStatusCode.Forbidden);
         return;
       }
 
       var uri = context.RequestUri;
-      if (uri == null) {
-        context.Close (HttpStatusCode.BadRequest);
+      if (uri == null)
+      {
+        context.Close(HttpStatusCode.BadRequest);
         return;
       }
 
-      if (!_allowForwardedRequest) {
-        if (uri.Port != _port) {
-          context.Close (HttpStatusCode.BadRequest);
+      if (!_allowForwardedRequest)
+      {
+        if (uri.Port != _port)
+        {
+          context.Close(HttpStatusCode.BadRequest);
           return;
         }
 
-        if (!checkHostNameForRequest (uri.DnsSafeHost)) {
-          context.Close (HttpStatusCode.NotFound);
+        if (!checkHostNameForRequest(uri.DnsSafeHost))
+        {
+          context.Close(HttpStatusCode.NotFound);
           return;
         }
       }
 
       var path = uri.AbsolutePath;
-      if (path.IndexOfAny (new[] { '%', '+' }) > -1)
-        path = HttpUtility.UrlDecode (path, Encoding.UTF8);
+      if (path.IndexOfAny(new[] { '%', '+' }) > -1)
+        path = HttpUtility.UrlDecode(path, Encoding.UTF8);
 
       WebSocketServiceHost host;
-      if (!_services.InternalTryGetServiceHost (path, out host)) {
-        context.Close (HttpStatusCode.NotImplemented);
+      if (!_services.InternalTryGetServiceHost(path, out host))
+      {
+        context.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
-      host.StartSession (context);
+      host.StartSession(context);
     }
 
-    private void receiveRequest ()
+    private void receiveRequest()
     {
-      while (true) {
+      while (true)
+      {
         TcpClient cl = null;
-        try {
-          cl = _listener.AcceptTcpClient ();
-          ThreadPool.QueueUserWorkItem (
-            state => {
-              try {
-                var ctx = new TcpListenerWebSocketContext (
+        try
+        {
+          cl = _listener.AcceptTcpClient();
+          ThreadPool.QueueUserWorkItem(
+            state =>
+            {
+              try
+              {
+                var ctx = new TcpListenerWebSocketContext(
                             cl, null, _secure, _sslConfigInUse, _log
                           );
 
-                processRequest (ctx);
+                processRequest(ctx);
               }
-              catch (Exception ex) {
-                _log.Error (ex.Message);
-                _log.Debug (ex.ToString ());
+              catch (Exception ex)
+              {
+                _log.Error(ex.Message);
+                _log.Debug(ex.ToString());
 
-                cl.Close ();
+                cl.Close();
               }
             }
           );
         }
-        catch (SocketException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The underlying listener is stopped.");
+        catch (SocketException ex)
+        {
+          if (_state == ServerState.ShuttingDown)
+          {
+            _log.Info("The underlying listener is stopped.");
             break;
           }
 
-          _log.Fatal (ex.Message);
-          _log.Debug (ex.ToString ());
+          _log.Fatal(ex.Message);
+          _log.Debug(ex.ToString());
 
           break;
         }
-        catch (Exception ex) {
-          _log.Fatal (ex.Message);
-          _log.Debug (ex.ToString ());
+        catch (Exception ex)
+        {
+          _log.Fatal(ex.Message);
+          _log.Debug(ex.ToString());
 
           if (cl != null)
-            cl.Close ();
+            cl.Close();
 
           break;
         }
       }
 
       if (_state != ServerState.ShuttingDown)
-        abort ();
+        abort();
     }
 
-    private void start (ServerSslConfiguration sslConfig)
+    private void start(ServerSslConfiguration sslConfig)
     {
-      if (_state == ServerState.Start) {
-        _log.Info ("The server has already started.");
+      if (_state == ServerState.Start)
+      {
+        _log.Info("The server has already started.");
         return;
       }
 
-      if (_state == ServerState.ShuttingDown) {
-        _log.Warn ("The server is shutting down.");
+      if (_state == ServerState.ShuttingDown)
+      {
+        _log.Warn("The server is shutting down.");
         return;
       }
 
-      lock (_sync) {
-        if (_state == ServerState.Start) {
-          _log.Info ("The server has already started.");
+      lock (_sync)
+      {
+        if (_state == ServerState.Start)
+        {
+          _log.Info("The server has already started.");
           return;
         }
 
-        if (_state == ServerState.ShuttingDown) {
-          _log.Warn ("The server is shutting down.");
+        if (_state == ServerState.ShuttingDown)
+        {
+          _log.Warn("The server is shutting down.");
           return;
         }
 
         _sslConfigInUse = sslConfig;
-        _realmInUse = getRealm ();
+        _realmInUse = getRealm();
 
-        _services.Start ();
-        try {
-          startReceiving ();
+        _services.Start();
+        try
+        {
+          startReceiving();
         }
-        catch {
-          _services.Stop (1011, String.Empty);
+        catch
+        {
+          _services.Stop(1011, String.Empty);
           throw;
         }
 
@@ -934,103 +1016,122 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
       }
     }
 
-    private void startReceiving ()
+    private void startReceiving()
     {
-      if (_reuseAddress) {
-        _listener.Server.SetSocketOption (
+      if (_reuseAddress)
+      {
+        _listener.Server.SetSocketOption(
           SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true
         );
       }
 
-      try {
-        _listener.Start ();
+      try
+      {
+        _listener.Start();
       }
-      catch (Exception ex) {
+      catch (Exception ex)
+      {
         var msg = "The underlying listener has failed to start.";
-        throw new InvalidOperationException (msg, ex);
+        throw new InvalidOperationException(msg, ex);
       }
 
-      _receiveThread = new Thread (new ThreadStart (receiveRequest));
+      _receiveThread = new Thread(new ThreadStart(receiveRequest));
       _receiveThread.IsBackground = true;
-      _receiveThread.Start ();
+      _receiveThread.Start();
     }
 
-    private void stop (ushort code, string reason)
+    private void stop(ushort code, string reason)
     {
-      if (_state == ServerState.Ready) {
-        _log.Info ("The server is not started.");
+      if (_state == ServerState.Ready)
+      {
+        _log.Info("The server is not started.");
         return;
       }
 
-      if (_state == ServerState.ShuttingDown) {
-        _log.Info ("The server is shutting down.");
+      if (_state == ServerState.ShuttingDown)
+      {
+        _log.Info("The server is shutting down.");
         return;
       }
 
-      if (_state == ServerState.Stop) {
-        _log.Info ("The server has already stopped.");
+      if (_state == ServerState.Stop)
+      {
+        _log.Info("The server has already stopped.");
         return;
       }
 
-      lock (_sync) {
-        if (_state == ServerState.ShuttingDown) {
-          _log.Info ("The server is shutting down.");
+      lock (_sync)
+      {
+        if (_state == ServerState.ShuttingDown)
+        {
+          _log.Info("The server is shutting down.");
           return;
         }
 
-        if (_state == ServerState.Stop) {
-          _log.Info ("The server has already stopped.");
+        if (_state == ServerState.Stop)
+        {
+          _log.Info("The server has already stopped.");
           return;
         }
 
         _state = ServerState.ShuttingDown;
       }
 
-      try {
+      try
+      {
         var threw = false;
-        try {
-          stopReceiving (5000);
+        try
+        {
+          stopReceiving(5000);
         }
-        catch {
+        catch
+        {
           threw = true;
           throw;
         }
-        finally {
-          try {
-            _services.Stop (code, reason);
+        finally
+        {
+          try
+          {
+            _services.Stop(code, reason);
           }
-          catch {
+          catch
+          {
             if (!threw)
               throw;
           }
         }
       }
-      finally {
+      finally
+      {
         _state = ServerState.Stop;
       }
     }
 
-    private void stopReceiving (int millisecondsTimeout)
+    private void stopReceiving(int millisecondsTimeout)
     {
-      try {
-        _listener.Stop ();
+      try
+      {
+        _listener.Stop();
       }
-      catch (Exception ex) {
+      catch (Exception ex)
+      {
         var msg = "The underlying listener has failed to stop.";
-        throw new InvalidOperationException (msg, ex);
+        throw new InvalidOperationException(msg, ex);
       }
 
-      _receiveThread.Join (millisecondsTimeout);
+      _receiveThread.Join(millisecondsTimeout);
     }
 
-    private static bool tryCreateUri (
+    private static bool tryCreateUri(
       string uriString, out Uri result, out string message
     )
     {
-      if (!uriString.TryCreateWebSocketUri (out result, out message))
+      if (!uriString.TryCreateWebSocketUri(out result, out message))
         return false;
 
-      if (result.PathAndQuery != "/") {
+      if (result.PathAndQuery != "/")
+      {
         result = null;
         message = "It includes either or both path and query components.";
 
@@ -1113,30 +1214,31 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    [Obsolete ("This method will be removed. Use added one instead.")]
-    public void AddWebSocketService<TBehavior> (
+    [Obsolete("This method will be removed. Use added one instead.")]
+    public void AddWebSocketService<TBehavior>(
       string path, Func<TBehavior> creator
     )
       where TBehavior : WebSocketBehavior
     {
       if (path == null)
-        throw new ArgumentNullException ("path");
+        throw new ArgumentNullException("path");
 
       if (creator == null)
-        throw new ArgumentNullException ("creator");
+        throw new ArgumentNullException("creator");
 
       if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
+        throw new ArgumentException("An empty string.", "path");
 
       if (path[0] != '/')
-        throw new ArgumentException ("Not an absolute path.", "path");
+        throw new ArgumentException("Not an absolute path.", "path");
 
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+      if (path.IndexOfAny(new[] { '?', '#' }) > -1)
+      {
         var msg = "It includes either or both query and fragment components.";
-        throw new ArgumentException (msg, "path");
+        throw new ArgumentException(msg, "path");
       }
 
-      _services.Add<TBehavior> (path, creator);
+      _services.Add<TBehavior>(path, creator);
     }
 
     /// <summary>
@@ -1189,10 +1291,10 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    public void AddWebSocketService<TBehaviorWithNew> (string path)
-      where TBehaviorWithNew : WebSocketBehavior, new ()
+    public void AddWebSocketService<TBehaviorWithNew>(string path)
+      where TBehaviorWithNew : WebSocketBehavior, new()
     {
-      _services.AddService<TBehaviorWithNew> (path, null);
+      _services.AddService<TBehaviorWithNew>(path, null);
     }
 
     /// <summary>
@@ -1256,12 +1358,12 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    public void AddWebSocketService<TBehaviorWithNew> (
+    public void AddWebSocketService<TBehaviorWithNew>(
       string path, Action<TBehaviorWithNew> initializer
     )
-      where TBehaviorWithNew : WebSocketBehavior, new ()
+      where TBehaviorWithNew : WebSocketBehavior, new()
     {
-      _services.AddService<TBehaviorWithNew> (path, initializer);
+      _services.AddService<TBehaviorWithNew>(path, initializer);
     }
 
     /// <summary>
@@ -1305,9 +1407,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   query and fragment components.
     ///   </para>
     /// </exception>
-    public bool RemoveWebSocketService (string path)
+    public bool RemoveWebSocketService(string path)
     {
-      return _services.RemoveService (path);
+      return _services.RemoveService(path);
     }
 
     /// <summary>
@@ -1328,19 +1430,20 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     ///   The underlying <see cref="TcpListener"/> has failed to start.
     ///   </para>
     /// </exception>
-    public void Start ()
+    public void Start()
     {
       ServerSslConfiguration sslConfig = null;
 
-      if (_secure) {
-        sslConfig = new ServerSslConfiguration (getSslConfiguration ());
+      if (_secure)
+      {
+        sslConfig = new ServerSslConfiguration(getSslConfiguration());
 
         string msg;
-        if (!checkSslConfiguration (sslConfig, out msg))
-          throw new InvalidOperationException (msg);
+        if (!checkSslConfiguration(sslConfig, out msg))
+          throw new InvalidOperationException(msg);
       }
 
-      start (sslConfig);
+      start(sslConfig);
     }
 
     /// <summary>
@@ -1349,9 +1452,9 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
-    public void Stop ()
+    public void Stop()
     {
-      stop (1001, String.Empty);
+      stop(1001, String.Empty);
     }
 
     /// <summary>
@@ -1408,38 +1511,44 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void Stop (ushort code, string reason)
+    [Obsolete("This method will be removed.")]
+    public void Stop(ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ()) {
+      if (!code.IsCloseStatusCode())
+      {
         var msg = "Less than 1000 or greater than 4999.";
-        throw new ArgumentOutOfRangeException ("code", msg);
+        throw new ArgumentOutOfRangeException("code", msg);
       }
 
-      if (code == 1010) {
+      if (code == 1010)
+      {
         var msg = "1010 cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!reason.IsNullOrEmpty ()) {
-        if (code == 1005) {
+      if (!reason.IsNullOrEmpty())
+      {
+        if (code == 1005)
+        {
           var msg = "1005 cannot be used.";
-          throw new ArgumentException (msg, "code");
+          throw new ArgumentException(msg, "code");
         }
 
         byte[] bytes;
-        if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+        if (!reason.TryGetUTF8EncodedBytes(out bytes))
+        {
           var msg = "It could not be UTF-8-encoded.";
-          throw new ArgumentException (msg, "reason");
+          throw new ArgumentException(msg, "reason");
         }
 
-        if (bytes.Length > 123) {
+        if (bytes.Length > 123)
+        {
           var msg = "Its size is greater than 123 bytes.";
-          throw new ArgumentOutOfRangeException ("reason", msg);
+          throw new ArgumentOutOfRangeException("reason", msg);
         }
       }
 
-      stop (code, reason);
+      stop(code, reason);
     }
 
     /// <summary>
@@ -1487,33 +1596,38 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void Stop (CloseStatusCode code, string reason)
+    [Obsolete("This method will be removed.")]
+    public void Stop(CloseStatusCode code, string reason)
     {
-      if (code == CloseStatusCode.MandatoryExtension) {
+      if (code == CloseStatusCode.MandatoryExtension)
+      {
         var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
+        throw new ArgumentException(msg, "code");
       }
 
-      if (!reason.IsNullOrEmpty ()) {
-        if (code == CloseStatusCode.NoStatus) {
+      if (!reason.IsNullOrEmpty())
+      {
+        if (code == CloseStatusCode.NoStatus)
+        {
           var msg = "NoStatus cannot be used.";
-          throw new ArgumentException (msg, "code");
+          throw new ArgumentException(msg, "code");
         }
 
         byte[] bytes;
-        if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+        if (!reason.TryGetUTF8EncodedBytes(out bytes))
+        {
           var msg = "It could not be UTF-8-encoded.";
-          throw new ArgumentException (msg, "reason");
+          throw new ArgumentException(msg, "reason");
         }
 
-        if (bytes.Length > 123) {
+        if (bytes.Length > 123)
+        {
           var msg = "Its size is greater than 123 bytes.";
-          throw new ArgumentOutOfRangeException ("reason", msg);
+          throw new ArgumentOutOfRangeException("reason", msg);
         }
       }
 
-      stop ((ushort) code, reason);
+      stop((ushort)code, reason);
     }
 
     #endregion

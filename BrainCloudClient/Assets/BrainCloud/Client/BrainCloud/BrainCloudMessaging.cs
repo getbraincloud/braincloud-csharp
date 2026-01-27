@@ -7,9 +7,9 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
 
     public class BrainCloudMessaging
     {
@@ -22,8 +22,19 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Deletes specified user messages on the server. in_msgBox = OperationParam.InboxMessageType && OperationParam.SentMessageType
+        /// Deletes specified user messages on the server.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - DELETE_MESSAGES
+        /// </remarks>
+        /// <param name="msgbox">The message box to delete from.</param>
+        /// <param name="msgIds">Arrays of message ids to delete.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteMessages(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -38,6 +49,15 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Retrieve user's message boxes, including 'inbox', 'sent', etc.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - GET_MESSAGE_BOXES
+        /// </remarks>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMessageboxes(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -46,8 +66,17 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Returns count of user's 'total' messages and their 'unread' messages.
+        /// Retrieve user's message boxes, including 'inbox', 'sent', etc.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - GET_MESSAGE_COUNTS
+        /// </remarks>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMessageCounts(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -58,6 +87,18 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Retrieves list of specified messages.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - GET_MESSAGES
+        /// </remarks>
+        /// <param name="msgbox">The message box to get messages from.</param>
+        /// <param name="msgIds">Arrays of message ids to get.</param>
+        /// <param name="markAsRead">mark messages that are read</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMessages(string in_msgBox, string[] in_msgsIds, bool markAsRead, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -73,6 +114,16 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Retrieves a page of messages.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - GET_MESSAGES_PAGE
+        /// </remarks>
+        /// <param name="context">The context for the page of messages.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMessagesPage(string in_context, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             var data = new Dictionary<string, object>();
@@ -87,6 +138,17 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Gets the page of messages from the server based on the encoded context and specified page offset.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - GET_MESSAGES_PAGE_OFFSET
+        /// </remarks>
+        /// <param name="context">The context for the page of messages.</param>
+        /// <param name="pageOffset">The page offset.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMessagesPageOffset(string in_context, int pageOffset, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             var data = new Dictionary<string, object>();
@@ -101,6 +163,17 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Marks list of user messages as read on the server.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - MARK_MESSAGES_READ
+        /// </remarks>
+        /// <param name="msgbox">The message box to mark as read.</param>
+        /// <param name="msgIds">Arrays of message ids to mark as read.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void MarkMessagesRead(string in_msgBox, string[] in_msgsIds, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -115,6 +188,17 @@ using BrainCloud.JsonFx.Json;
         /// <summary>
         /// Sends a message with specified 'subject' and 'text' to list of users.
         /// </summary>
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - SEND_MESSAGE
+        /// </remarks>
+        /// <param name="toProfileIds">The list of profile ids to send the message to.</param>
+        /// <param name="contentJson">The message you are sending</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void SendMessage(string[] in_toProfileIds, string in_contentJson, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -129,9 +213,19 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Send a potentially rich chat message. <content> must contain at least a "plain" field for plain-text messaging.
+        /// Sends a simple message to specified list of users.
         /// </summary>
-        /// 
+        /// <remarks>
+        /// Service Name - messaging
+        /// Service Operation - SEND_MESSAGE_SIMPLE
+        /// </remarks>
+        /// <param name="toProfileIds">The list of profile ids to send the message to.</param>
+        /// <param name="messageText">The message text you are sending</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void SendMessageSimple(string[] in_toProfileIds, string in_messageText, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();

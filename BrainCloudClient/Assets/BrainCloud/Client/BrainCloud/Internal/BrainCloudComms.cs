@@ -62,17 +62,17 @@ using UnityEngine.Experimental.Networking;
         ///Compress bundles sent from the client to the server for faster sending of large bundles.
         /// </summary>
         public bool SupportsCompression { get; private set; } = true;
-        
+
         public void EnableCompression(bool compress)
         {
             SupportsCompression = compress;
-        } 
+        }
 
         /// <summary>
         /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
         ///auth response
         /// </summary>
-        public int ClientSideCompressionThreshold{get; private set;} = 51200;
+        public int ClientSideCompressionThreshold { get; private set; } = 51200;
 
         /// <summary>
         /// The id of _expectedIncomingPacketId when no packet expected
@@ -236,7 +236,7 @@ using UnityEngine.Experimental.Networking;
             get => _authInProgress;
             set => _authInProgress = value;
         }
-        
+
         private bool _isAuthenticated = false;
 
         public bool Authenticated
@@ -367,13 +367,13 @@ using UnityEngine.Experimental.Networking;
         {
             _cacheMessagesOnNetworkError = enabled;
         }
-        
+
         //Json Serialization
         private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
         private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
         private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
         private string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
-        
+
         public int MaxDepth
         {
             get => _maxDepth;
@@ -403,8 +403,6 @@ using UnityEngine.Experimental.Networking;
             _clientRef = client;
             ResetErrorCache();
         }
-
-
         /// <summary>
         /// Initialize the communications library with the specified serverURL and secretKey.
         /// </summary>
@@ -419,13 +417,13 @@ using UnityEngine.Experimental.Networking;
             ServerURL = serverURL;
 
             string suffix = @"/dispatcherv2";
-	    Uri url = ValidateURL(serverURL);
+            Uri url = ValidateURL(serverURL);
             ServerURL = url.AbsoluteUri;
 
             string formatURL = ServerURL.EndsWith(suffix) ? ServerURL.Substring(0, ServerURL.Length - suffix.Length) : ServerURL;
 
             //get rid of trailing "/" for format URL
-			if(formatURL.Length > 0 && formatURL.EndsWith("/"))
+            if (formatURL.Length > 0 && formatURL.EndsWith("/"))
             {
                 formatURL = formatURL.TrimEnd('/');
             }
@@ -462,7 +460,7 @@ using UnityEngine.Experimental.Networking;
                 {
                     Scheme = Uri.UriSchemeHttps
                 };
-            
+
                 if ((string.IsNullOrEmpty(builder.Path) || builder.Path == "/") &&
                     !builder.Path.Contains("dispatcherv2"))
                 {
@@ -470,7 +468,7 @@ using UnityEngine.Experimental.Networking;
                 }
 
                 builder.Path = builder.Path.TrimEnd('/');
-            
+
                 return builder.Uri;
             }
             catch
@@ -570,7 +568,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
-                    
+
 #if USE_WEB_REQUEST
                     //HttpStatusCode.OK
                     if (_activeRequest.WebRequest.responseCode == 200)
@@ -637,8 +635,8 @@ using UnityEngine.Experimental.Networking;
             }
 
             // is it time for a retry?
-            RetryRequest(status,bypassTimeout);
-            
+            RetryRequest(status, bypassTimeout);
+
             // is it time for a heartbeat?
             if (_isAuthenticated && !_blockingQueue)
             {
@@ -744,7 +742,7 @@ using UnityEngine.Experimental.Networking;
             {
                 if (_fileUploads[i].UploadId == uploadId) return _fileUploads[i];
             }
-            
+
             if (_clientRef.LoggingEnabled)
             {
                 _clientRef.Log("GetUploadProgress could not find upload ID " + uploadId);
@@ -802,21 +800,21 @@ using UnityEngine.Experimental.Networking;
             {
                 _serviceCallsWaiting.Clear();
             }
-            
+
             DisposeUploadHandler();
             _activeRequest = null;
-            
+
             // and then dump the comms layer
             ResetCommunication();
         }
-        
+
         internal void ClearAllRequests()
         {
             lock (_serviceCallsWaiting)
             {
                 _serviceCallsWaiting.Clear();
             }
-            
+
             DisposeUploadHandler();
             _activeRequest = null;
         }
@@ -910,8 +908,6 @@ using UnityEngine.Experimental.Networking;
                 _blockingQueue = false;
             }
         }
-
-
         internal void InsertEndOfMessageBundleMarker()
         {
             this.AddToQueue(new EndOfBundleMarker());
@@ -986,15 +982,15 @@ using UnityEngine.Experimental.Networking;
                         var serverCall = _serviceCallsInProgress[0];
                         if (serverCall?.GetCallback() != null)
                         {
-                            serverCall.GetCallback().OnErrorCallback(_cachedStatusCode,_cachedReasonCode,_cachedStatusMessage);
-                            _serviceCallsInProgress.RemoveAt(0);    
+                            serverCall.GetCallback().OnErrorCallback(_cachedStatusCode, _cachedReasonCode, _cachedStatusMessage);
+                            _serviceCallsInProgress.RemoveAt(0);
                         }
                     }
                 }
                 _clientRef.Log(_cachedStatusMessage);
                 return;
             }
-            
+
             Dictionary<string, object>[] responseBundle = bundleObj.responses;
             Dictionary<string, object> response = null;
             long receivedPacketId = (long)bundleObj.packetId;
@@ -1022,7 +1018,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 return;
             }
-            
+
             _expectedIncomingPacketId = NO_PACKET_EXPECTED;
             IList<Exception> exceptions = new List<Exception>();
 
@@ -1110,11 +1106,11 @@ using UnityEngine.Experimental.Networking;
                             // we are no longer authenticated
                             _isAuthenticated = false;
                             SessionID = "";
-                            if(operation == ServiceOperation.FullReset.Value)
-                            {   
+                            if (operation == ServiceOperation.FullReset.Value)
+                            {
                                 _clientRef.AuthenticationService.ClearSavedProfileID();
                             }
-                            
+
                             ResetErrorCache();
                         }
                         //either off of authenticate or identity call, be sure to save the profileId and sessionId
@@ -1138,14 +1134,14 @@ using UnityEngine.Experimental.Networking;
                             {
                                 string uploadId = (string)fileData["uploadId"];
                                 string guid = (string)fileData["localPath"];
-                                string fileName = (string) fileData["cloudFilename"];
+                                string fileName = (string)fileData["cloudFilename"];
                                 var uploader = new FileUploader(uploadId, guid, UploadURL, SessionID,
                                     _uploadLowTransferRateTimeout, _uploadLowTransferRateThreshold, _clientRef, peerCode);
-                                
+
                                 uploader.FileName = fileName;
                                 if (_clientRef.FileService.FileStorage.ContainsKey(guid))
                                 {
-                                    uploader.TotalBytesToTransfer = _clientRef.FileService.FileStorage[guid].Length;    
+                                    uploader.TotalBytesToTransfer = _clientRef.FileService.FileStorage[guid].Length;
                                 }
 #if DOT_NET || GODOT                     
                                 uploader.HttpClient = _httpClient;
@@ -1171,8 +1167,6 @@ using UnityEngine.Experimental.Networking;
                                 exceptions.Add(e);
                             }
                         }
-                        
-
                         _failedAuthenticationAttempts = 0;
 
                         // now deal with rewards
@@ -1324,7 +1318,7 @@ using UnityEngine.Experimental.Networking;
                         // Attempt to re-authenticate
                         _clientRef.AuthenticationService.AuthenticateAnonymous(false, successCallback, failureCallback);
 
-                        return; 
+                        return;
                     }
 
                     if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED
@@ -1612,7 +1606,7 @@ using UnityEngine.Experimental.Networking;
                         Dictionary<string, object> message = new Dictionary<string, object>();
                         message[OperationParam.ServiceMessageService.Value] = scIndex.Service;
                         message[OperationParam.ServiceMessageOperation.Value] = scIndex.Operation;
-                        message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData(); 
+                        message[OperationParam.ServiceMessageData.Value] = scIndex.GetJsonData();
 
                         messageList.Add(message);
 
@@ -1722,12 +1716,12 @@ using UnityEngine.Experimental.Networking;
                 {
                     //Contains will fail if one input is off, so I had to break it up like this for more consistency
                     //IE: The maxiumum depth of 24 was exceeded. Check for cycles in object graph.
-                    if (exception.Message.Contains("The maxiumum depth") && 
+                    if (exception.Message.Contains("The maxiumum depth") &&
                         exception.Message.Contains("exceeded"))
                     {
                         lock (_serviceCallsInProgress)
                         {
-                            if(_serviceCallsInProgress.Count > 0)
+                            if (_serviceCallsInProgress.Count > 0)
                             {
                                 for (int i = _serviceCallsInProgress.Count - 1; i < 0; --i)
                                 {
@@ -1759,7 +1753,7 @@ using UnityEngine.Experimental.Networking;
         internal Dictionary<string, object> DeserializeJson(string jsonData)
         {
             JsonResponseBundleV2 responseBundle = DeserializeJsonBundle(jsonData);
-            if (responseBundle?.responses == null || 
+            if (responseBundle?.responses == null ||
                 responseBundle.responses.Length == 0)
             {
                 return null;
@@ -1790,20 +1784,20 @@ using UnityEngine.Experimental.Networking;
                 packet[OperationParam.ServiceMessageGameId.Value] = AppId;
             }
             packet[OperationParam.ServiceMessageMessages.Value] = requestState.MessageList;
-            
+
             string jsonRequestString = SerializeJson(packet);
             string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
 
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
-            
+
             requestState.Signature = sig;
-            
+
             bool compressMessage = SupportsCompression &&                               // compression enabled
                                    ClientSideCompressionThreshold >= 0 &&               // server says we can compress
                                    byteArray.Length >= ClientSideCompressionThreshold;  // and byte array is greater or equal to the threshold
 
             //if the packet we're sending is larger than the size before compressing, then we want to compress it otherwise we're good to send it. AND we have to support compression
-            if(compressMessage)
+            if (compressMessage)
             {
                 byteArray = Compress(byteArray);
             }
@@ -1821,7 +1815,7 @@ using UnityEngine.Experimental.Networking;
             {
 #if !(DOT_NET || GODOT)
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
-    #if USE_WEB_REQUEST
+#if USE_WEB_REQUEST
                 UnityWebRequest request = UnityWebRequest.Post(ServerURL, formTable);
                 request.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
                 request.SetRequestHeader("X-SIG", sig);
@@ -1833,9 +1827,9 @@ using UnityEngine.Experimental.Networking;
 
                 if(compressMessage)
                 {
-    #if DOT_NET || GODOT
+#if DOT_NET || GODOT
                     request.SetRequestHeader("Accept-Encoding", "gzip");
-    #endif
+#endif
                     request.SetRequestHeader("Content-Encoding", "gzip");
                 }          
 
@@ -1849,7 +1843,7 @@ using UnityEngine.Experimental.Networking;
                     formTable["X-APPID"] = AppId;
                 }
 
-                if(compressMessage)
+                if (compressMessage)
                 {
                     formTable["Accept-Encoding"] = "gzip";
                     formTable["Content-Encoding"] = "gzip";
@@ -1985,8 +1979,6 @@ using UnityEngine.Experimental.Networking;
 #endif
             return status;
         }
-
-
         /// <summary>
         /// Gets the web request response.
         /// </summary>
@@ -1996,7 +1988,7 @@ using UnityEngine.Experimental.Networking;
         {
             string response = "";
 #if USE_WEB_REQUEST
-            #if UNITY_2018 || UNITY_2019
+#if UNITY_2018 || UNITY_2019
             if (_activeRequest.WebRequest.isNetworkError)
             {
                 Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
@@ -2005,7 +1997,7 @@ using UnityEngine.Experimental.Networking;
             {
                 Debug.LogWarning("Something went wrong, received a isHttpError flag. Examples for this to happen are: failure to resolve a DNS entry, a socket error or a redirect limit being exceeded. When this property returns true, the error property will contain a human-readable string describing the error.");
             }
-            #elif UNITY_2020_1_OR_NEWER
+#elif UNITY_2020_1_OR_NEWER
             if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
@@ -2018,7 +2010,7 @@ using UnityEngine.Experimental.Networking;
             {
                 Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
             }
-            #endif
+#endif
             if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
@@ -2157,7 +2149,7 @@ using UnityEngine.Experimental.Networking;
             {
                 return null;
             }
-            
+
             if (string.IsNullOrEmpty(jsonData))
             {
                 if (_clientRef.LoggingEnabled)
@@ -2166,7 +2158,7 @@ using UnityEngine.Experimental.Networking;
                 }
                 return null;
             }
-            
+
             jsonData = jsonData.Trim();
             if ((jsonData.StartsWith("{") && jsonData.EndsWith("}")) || //For object
                 (jsonData.StartsWith("[") && jsonData.EndsWith("]"))) //For array
@@ -2185,7 +2177,7 @@ using UnityEngine.Experimental.Networking;
                     {
                         lock (_serviceCallsInProgress)
                         {
-                            if(_serviceCallsInProgress.Count > 0)
+                            if (_serviceCallsInProgress.Count > 0)
                             {
                                 for (int i = _serviceCallsInProgress.Count - 1; i < 0; --i)
                                 {
@@ -2194,14 +2186,14 @@ using UnityEngine.Experimental.Networking;
                                     {
                                         serviceCall.GetCallback().OnErrorCallback(900, ReasonCodes.JSON_RESPONSE_MAXDEPTH_EXCEEDS_LIMIT, JSON_ERROR_MESSAGE);
                                         _serviceCallsInProgress.RemoveAt(i);
-                                    }    
+                                    }
                                 }
                             }
                         }
                     }
                     else
                     {
-                        ResendMessage(_activeRequest);    
+                        ResendMessage(_activeRequest);
                     }
                     _clientRef.Log(ex.Message);
                     return null;
@@ -2230,8 +2222,6 @@ using UnityEngine.Experimental.Networking;
                 _packetId = 0;
             }
         }
-
-
 #if (DOT_NET || GODOT)
         private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult, RequestState requestState)
         {
@@ -2282,8 +2272,6 @@ using UnityEngine.Experimental.Networking;
             if (message != null) message.Dispose();
         }
 #endif
-
-
         private string CalculateMD5Hash(string input)
         {
 #if !(DOT_NET || GODOT)
@@ -2315,8 +2303,8 @@ using UnityEngine.Experimental.Networking;
         private void ProcessAuthenticate(Dictionary<string, object> jsonData)
         {
             //we want to extract the compressIfLarger amount
-            if(jsonData.ContainsKey("compressIfLarger"))
-                ClientSideCompressionThreshold = (int) jsonData["compressIfLarger"];
+            if (jsonData.ContainsKey("compressIfLarger"))
+                ClientSideCompressionThreshold = (int)jsonData["compressIfLarger"];
 
             long playerSessionExpiry = GetJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry.Value, 5 * 60);
             long idleTimeout = (long)(playerSessionExpiry * 0.85);
@@ -2350,8 +2338,6 @@ using UnityEngine.Experimental.Networking;
             jsonData.TryGetValue(key, out retVal);
             return retVal != null ? retVal as string : defaultReturn;
         }
-
-
         private static long GetJsonLong(Dictionary<string, object> jsonData, string key, long defaultReturn)
         {
             object outObj = null;
@@ -2386,7 +2372,7 @@ using UnityEngine.Experimental.Networking;
                             errorResponse = GetWebRequestResponse(_activeRequest);
                             if (!string.IsNullOrEmpty(errorResponse))
                             {
-                                _clientRef.Log("Timeout with network error: " + errorResponse);        
+                                _clientRef.Log("Timeout with network error: " + errorResponse);
                             }
                             else
                             {
@@ -2426,7 +2412,7 @@ using UnityEngine.Experimental.Networking;
                             // Fake a message bundle to keep the callback logic in one place
                             TriggerCommsError(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "Timeout trying to reach brainCloud server");
                         }
-                    }    
+                    }
                 }
             }
             else // send the next message if we're ready
@@ -2434,7 +2420,7 @@ using UnityEngine.Experimental.Networking;
                 _activeRequest = CreateAndSendNextRequestBundle();
             }
         }
-        
+
         /// <summary>
         /// Resets the cached error message for local session error handling to default
         /// </summary>
@@ -2493,9 +2479,9 @@ using UnityEngine.Experimental.Networking;
     [Serializable]
     internal class JsonResponseBundleV2
     {
-        [JsonName("packetId")]  public long packetId = 0;
+        [JsonName("packetId")] public long packetId = 0;
         [JsonName("responses")] public Dictionary<string, object>[] responses = null;
-        [JsonName("events")]    public Dictionary<string, object>[] events = null;
+        [JsonName("events")] public Dictionary<string, object>[] events = null;
 
         public JsonResponseBundleV2() { }
     }
@@ -2503,7 +2489,7 @@ using UnityEngine.Experimental.Networking;
     [Serializable]
     internal class JsonResponseErrorBundleV2
     {
-        [JsonName("packetId")]  public long packetId;
+        [JsonName("packetId")] public long packetId;
         [JsonName("responses")] public JsonErrorMessage[] responses;
 
         public JsonResponseErrorBundleV2() { }
@@ -2512,10 +2498,10 @@ using UnityEngine.Experimental.Networking;
     [Serializable]
     internal class JsonErrorMessage
     {
-        [JsonName("reason_code")]    public int reason_code;
-        [JsonName("status")]         public int status;
+        [JsonName("reason_code")] public int reason_code;
+        [JsonName("status")] public int status;
         [JsonName("status_message")] public string status_message;
-        [JsonName("severity")]       public string severity = "ERROR";
+        [JsonName("severity")] public string severity = "ERROR";
 
         public JsonErrorMessage() { }
 

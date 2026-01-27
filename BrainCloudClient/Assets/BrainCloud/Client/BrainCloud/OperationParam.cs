@@ -24,8 +24,6 @@ namespace BrainCloud
         public static readonly OperationParam PushNotificationSendParamFcmContent = new("fcmContent");
         public static readonly OperationParam PushNotificationSendParamIosContent = new("iosContent");
         public static readonly OperationParam PushNotificationSendParamFacebookContent = new("facebookContent");
-
-
         public static readonly OperationParam AlertContent = new("alertContent");
         public static readonly OperationParam CustomData = new("customData");
 
@@ -82,12 +80,10 @@ namespace BrainCloud
         public static readonly OperationParam IdentityServiceExternalId = new("externalId");
         public static readonly OperationParam IdentityServiceAuthenticationType = new("authenticationType");
         public static readonly OperationParam IdentityServiceConfirmAnonymous = new("confirmAnonymous");
-        
+
         public static readonly OperationParam IdentityServiceOldEmailAddress = new("oldEmailAddress");
         public static readonly OperationParam IdentityServiceNewEmailAddress = new("newEmailAddress");
         public static readonly OperationParam IdentityServiceUpdateContactEmail = new("updateContactEmail");
-
-
         // Peer
         public static readonly OperationParam Peer = new("peer");
 
@@ -130,10 +126,10 @@ namespace BrainCloud
         public static readonly OperationParam EventServiceUpdateEventDataEventId = new("eventId");
         public static readonly OperationParam EventServiceUpdateEventDataData = new("eventData");
         public static readonly OperationParam EvId = new("evId");
-        public static readonly OperationParam EventServiceEvIds  = new("evIds");
-        public static readonly OperationParam EventServiceDateMillis  = new("dateMillis");
-        public static readonly OperationParam EventServiceEventType   = new("eventType");
-        
+        public static readonly OperationParam EventServiceEvIds = new("evIds");
+        public static readonly OperationParam EventServiceDateMillis = new("dateMillis");
+        public static readonly OperationParam EventServiceEventType = new("eventType");
+
         // Event Service - Delete Incoming Params
         public static readonly OperationParam EventServiceDeleteIncomingEventId = new("eventId");
         public static readonly OperationParam EventServiceDeleteIncomingFromId = new("fromId");
@@ -166,8 +162,6 @@ namespace BrainCloud
         public static readonly OperationParam FriendServiceReadPlayerStateFriendId = new("friendId");
         public static readonly OperationParam FriendServiceSearchText = new("searchText");
         public static readonly OperationParam FriendServiceMaxResults = new("maxResults");
-
-
         // Friend Data Service - Read Friends Params (C++ only?)
         //public static readonly Operation FriendDataServiceReadFriends = new Operation("");
         //friendIdList;
@@ -216,8 +210,6 @@ namespace BrainCloud
 
         // Player State Service - Reset Params
         //public static readonly Operation PlayerStateServiceReset = new Operation("");
-        
-
         // Player Statistics Service - Update Increment Params
         public static readonly OperationParam PlayerStatisticsServiceStats = new("statistics");
         public static readonly OperationParam PlayerStatisticsServiceStatNames = new("statNames");
@@ -225,7 +217,7 @@ namespace BrainCloud
 
         // Player Statistics Service - Status Param
         public static readonly OperationParam PlayerStateServiceStatusName = new("statusName");
-        
+
         // Player Statistics Service - Extend User Status Params
         public static readonly OperationParam PlayerStateServiceAdditionalSecs = new("additionalSecs");
         public static readonly OperationParam PlayerStateServiceDetails = new("details");
@@ -269,8 +261,6 @@ namespace BrainCloud
         public static readonly OperationParam SocialLeaderboardServiceGroupId = new("groupId");
         public static readonly OperationParam SocialLeaderboardServiceProfileIds = new("profileIds");
         public static readonly OperationParam SocialLeaderboardServiceRotationResetTime = new("rotationResetTime");
-
-
         // Social Leaderboard Service - Reset Score Params
         //public static readonly Operation SocialLeaderboardServiceResetScore = new Operation("");
 
@@ -438,7 +428,7 @@ namespace BrainCloud
         public static readonly OperationParam GroupAutoJoinStrategy = new("autoJoinStrategy");
         public static readonly OperationParam GroupWhere = new("where");
         public static readonly OperationParam GroupMaxReturn = new("maxReturn");
-        
+
         //group file
         public static readonly OperationParam FolderPath = new("folderPath");
         public static readonly OperationParam FileName = new("filename");
@@ -456,8 +446,6 @@ namespace BrainCloud
         public static readonly OperationParam GroupFilename = new("groupFilename");
         public static readonly OperationParam GroupFileACL = new("groupFileAcl");
         public static readonly OperationParam NewACL = new("newAcl");
-
-
         //GlobalFile
         public static readonly OperationParam GlobalFileServiceFileId = new("fileId");
         public static readonly OperationParam GlobalFileServiceFolderPath = new("folderPath");
@@ -485,7 +473,7 @@ namespace BrainCloud
         public static readonly OperationParam ChatMaxReturn = new("maxReturn");
         public static readonly OperationParam ChatMessageId = new("msgId");
         public static readonly OperationParam ChatVersion = new("version");
-        
+
         public static readonly OperationParam ChatChannelType = new("channelType");
         public static readonly OperationParam ChatChannelSubId = new("channelSubId");
         public static readonly OperationParam ChatContent = new("content");
@@ -563,7 +551,7 @@ namespace BrainCloud
         public static readonly OperationParam CustomEntityServiceSortJson = new("sortJson");
         public static readonly OperationParam CustomEntityServiceDoCount = new("doCount");
         public static readonly OperationParam CustomEntityServiceContext = new("context");
-        public static readonly OperationParam CustomEntityServicePageOffset= new("pageOffset");
+        public static readonly OperationParam CustomEntityServicePageOffset = new("pageOffset");
         public static readonly OperationParam CustomEntityServiceTimeToLive = new("timeToLive");
         public static readonly OperationParam CustomEntityServiceAcl = new("acl");
         public static readonly OperationParam CustomEntityServiceDataJson = new("dataJson");

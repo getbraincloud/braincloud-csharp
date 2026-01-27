@@ -30,10 +30,8 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-    using System;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
-
+  using System;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
   /// <summary>
   /// Exposes the access to the information in a WebSocket session.
   /// </summary>

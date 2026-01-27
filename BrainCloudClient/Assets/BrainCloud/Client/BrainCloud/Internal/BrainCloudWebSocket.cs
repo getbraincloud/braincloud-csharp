@@ -276,8 +276,6 @@ namespace BrainCloud.Internal
 #endif
         }
 
-
-
         public delegate void OnOpenHandler(BrainCloudWebSocket accepted);
 
         public delegate void OnMessageHandler(BrainCloudWebSocket sender, byte[] data);

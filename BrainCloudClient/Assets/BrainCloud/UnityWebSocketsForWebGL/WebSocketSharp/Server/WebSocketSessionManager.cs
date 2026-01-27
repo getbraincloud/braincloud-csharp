@@ -30,16 +30,14 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
 
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Timers;
-
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Linq;
+  using System.Text;
+  using System.Threading;
+  using System.Timers;
   /// <summary>
   /// Provides the management function for the sessions in a WebSocket service.
   /// </summary>
@@ -51,40 +49,42 @@ using System.Timers;
   {
     #region Private Fields
 
-    private volatile bool                         _clean;
-    private object                                _forSweep;
-    private Logger                                _log;
+    private volatile bool _clean;
+    private object _forSweep;
+    private Logger _log;
     private Dictionary<string, IWebSocketSession> _sessions;
-    private volatile ServerState                  _state;
-    private volatile bool                         _sweeping;
-    private System.Timers.Timer                   _sweepTimer;
-    private object                                _sync;
-    private TimeSpan                              _waitTime;
+    private volatile ServerState _state;
+    private volatile bool _sweeping;
+    private System.Timers.Timer _sweepTimer;
+    private object _sync;
+    private TimeSpan _waitTime;
 
     #endregion
 
     #region Internal Constructors
 
-    internal WebSocketSessionManager (Logger log)
+    internal WebSocketSessionManager(Logger log)
     {
       _log = log;
 
       _clean = true;
-      _forSweep = new object ();
-      _sessions = new Dictionary<string, IWebSocketSession> ();
+      _forSweep = new object();
+      _sessions = new Dictionary<string, IWebSocketSession>();
       _state = ServerState.Ready;
-      _sync = ((ICollection) _sessions).SyncRoot;
-      _waitTime = TimeSpan.FromSeconds (1);
+      _sync = ((ICollection)_sessions).SyncRoot;
+      _waitTime = TimeSpan.FromSeconds(1);
 
-      setSweepTimer (60000);
+      setSweepTimer(60000);
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal ServerState State {
-      get {
+    internal ServerState State
+    {
+      get
+      {
         return _state;
       }
     }
@@ -105,9 +105,12 @@ using System.Timers;
     ///   the collection of the IDs for the active sessions.
     ///   </para>
     /// </value>
-    public IEnumerable<string> ActiveIDs {
-      get {
-        foreach (var res in broadping (WebSocketFrame.EmptyPingBytes)) {
+    public IEnumerable<string> ActiveIDs
+    {
+      get
+      {
+        foreach (var res in broadping(WebSocketFrame.EmptyPingBytes))
+        {
           if (res.Value)
             yield return res.Key;
         }
@@ -120,8 +123,10 @@ using System.Timers;
     /// <value>
     /// An <see cref="int"/> that represents the number of the sessions.
     /// </value>
-    public int Count {
-      get {
+    public int Count
+    {
+      get
+      {
         lock (_sync)
           return _sessions.Count;
       }
@@ -139,16 +144,19 @@ using System.Timers;
     ///   the collection of the IDs for the sessions.
     ///   </para>
     /// </value>
-    public IEnumerable<string> IDs {
-      get {
+    public IEnumerable<string> IDs
+    {
+      get
+      {
         if (_state != ServerState.Start)
-          return Enumerable.Empty<string> ();
+          return Enumerable.Empty<string>();
 
-        lock (_sync) {
+        lock (_sync)
+        {
           if (_state != ServerState.Start)
-            return Enumerable.Empty<string> ();
+            return Enumerable.Empty<string>();
 
-          return _sessions.Keys.ToList ();
+          return _sessions.Keys.ToList();
         }
       }
     }
@@ -165,9 +173,12 @@ using System.Timers;
     ///   the collection of the IDs for the inactive sessions.
     ///   </para>
     /// </value>
-    public IEnumerable<string> InactiveIDs {
-      get {
-        foreach (var res in broadping (WebSocketFrame.EmptyPingBytes)) {
+    public IEnumerable<string> InactiveIDs
+    {
+      get
+      {
+        foreach (var res in broadping(WebSocketFrame.EmptyPingBytes))
+        {
           if (!res.Value)
             yield return res.Key;
         }
@@ -196,16 +207,18 @@ using System.Timers;
     /// <exception cref="ArgumentException">
     /// <paramref name="id"/> is an empty string.
     /// </exception>
-    public IWebSocketSession this[string id] {
-      get {
+    public IWebSocketSession this[string id]
+    {
+      get
+      {
         if (id == null)
-          throw new ArgumentNullException ("id");
+          throw new ArgumentNullException("id");
 
         if (id.Length == 0)
-          throw new ArgumentException ("An empty string.", "id");
+          throw new ArgumentException("An empty string.", "id");
 
         IWebSocketSession session;
-        tryGetSession (id, out session);
+        tryGetSession(id, out session);
 
         return session;
       }
@@ -223,21 +236,27 @@ using System.Timers;
     /// <c>true</c> if the inactive sessions are cleaned up every 60 seconds;
     /// otherwise, <c>false</c>.
     /// </value>
-    public bool KeepClean {
-      get {
+    public bool KeepClean
+    {
+      get
+      {
         return _clean;
       }
 
-      set {
+      set
+      {
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -258,16 +277,19 @@ using System.Timers;
     ///   the collection of the session instances.
     ///   </para>
     /// </value>
-    public IEnumerable<IWebSocketSession> Sessions {
-      get {
+    public IEnumerable<IWebSocketSession> Sessions
+    {
+      get
+      {
         if (_state != ServerState.Start)
-          return Enumerable.Empty<IWebSocketSession> ();
+          return Enumerable.Empty<IWebSocketSession>();
 
-        lock (_sync) {
+        lock (_sync)
+        {
           if (_state != ServerState.Start)
-            return Enumerable.Empty<IWebSocketSession> ();
+            return Enumerable.Empty<IWebSocketSession>();
 
-          return _sessions.Values.ToList ();
+          return _sessions.Values.ToList();
         }
       }
     }
@@ -286,24 +308,30 @@ using System.Timers;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
     /// </exception>
-    public TimeSpan WaitTime {
-      get {
+    public TimeSpan WaitTime
+    {
+      get
+      {
         return _waitTime;
       }
 
-      set {
+      set
+      {
         if (value <= TimeSpan.Zero)
-          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
+          throw new ArgumentOutOfRangeException("value", "Zero or less.");
 
         string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
+        if (!canSet(out msg))
+        {
+          _log.Warn(msg);
           return;
         }
 
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
+        lock (_sync)
+        {
+          if (!canSet(out msg))
+          {
+            _log.Warn(msg);
             return;
           }
 
@@ -316,102 +344,116 @@ using System.Timers;
 
     #region Private Methods
 
-    private void broadcast (Opcode opcode, byte[] data, Action completed)
+    private void broadcast(Opcode opcode, byte[] data, Action completed)
     {
-      var cache = new Dictionary<CompressionMethod, byte[]> ();
+      var cache = new Dictionary<CompressionMethod, byte[]>();
 
-      try {
-        foreach (var session in Sessions) {
-          if (_state != ServerState.Start) {
-            _log.Error ("The service is shutting down.");
+      try
+      {
+        foreach (var session in Sessions)
+        {
+          if (_state != ServerState.Start)
+          {
+            _log.Error("The service is shutting down.");
             break;
           }
 
-          session.Context.WebSocket.Send (opcode, data, cache);
+          session.Context.WebSocket.Send(opcode, data, cache);
         }
 
         if (completed != null)
-          completed ();
+          completed();
       }
-      catch (Exception ex) {
-        _log.Error (ex.Message);
-        _log.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _log.Error(ex.Message);
+        _log.Debug(ex.ToString());
       }
-      finally {
-        cache.Clear ();
+      finally
+      {
+        cache.Clear();
       }
     }
 
-    private void broadcast (Opcode opcode, Stream stream, Action completed)
+    private void broadcast(Opcode opcode, Stream stream, Action completed)
     {
-      var cache = new Dictionary <CompressionMethod, Stream> ();
+      var cache = new Dictionary<CompressionMethod, Stream>();
 
-      try {
-        foreach (var session in Sessions) {
-          if (_state != ServerState.Start) {
-            _log.Error ("The service is shutting down.");
+      try
+      {
+        foreach (var session in Sessions)
+        {
+          if (_state != ServerState.Start)
+          {
+            _log.Error("The service is shutting down.");
             break;
           }
 
-          session.Context.WebSocket.Send (opcode, stream, cache);
+          session.Context.WebSocket.Send(opcode, stream, cache);
         }
 
         if (completed != null)
-          completed ();
+          completed();
       }
-      catch (Exception ex) {
-        _log.Error (ex.Message);
-        _log.Debug (ex.ToString ());
+      catch (Exception ex)
+      {
+        _log.Error(ex.Message);
+        _log.Debug(ex.ToString());
       }
-      finally {
+      finally
+      {
         foreach (var cached in cache.Values)
-          cached.Dispose ();
+          cached.Dispose();
 
-        cache.Clear ();
+        cache.Clear();
       }
     }
 
-    private void broadcastAsync (Opcode opcode, byte[] data, Action completed)
+    private void broadcastAsync(Opcode opcode, byte[] data, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, data, completed)
+      ThreadPool.QueueUserWorkItem(
+        state => broadcast(opcode, data, completed)
       );
     }
 
-    private void broadcastAsync (Opcode opcode, Stream stream, Action completed)
+    private void broadcastAsync(Opcode opcode, Stream stream, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, stream, completed)
+      ThreadPool.QueueUserWorkItem(
+        state => broadcast(opcode, stream, completed)
       );
     }
 
-    private Dictionary<string, bool> broadping (byte[] frameAsBytes)
+    private Dictionary<string, bool> broadping(byte[] frameAsBytes)
     {
-      var ret = new Dictionary<string, bool> ();
+      var ret = new Dictionary<string, bool>();
 
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
+      foreach (var session in Sessions)
+      {
+        if (_state != ServerState.Start)
+        {
+          _log.Error("The service is shutting down.");
           break;
         }
 
-        var res = session.Context.WebSocket.Ping (frameAsBytes, _waitTime);
-        ret.Add (session.ID, res);
+        var res = session.Context.WebSocket.Ping(frameAsBytes, _waitTime);
+        ret.Add(session.ID, res);
       }
 
       return ret;
     }
 
-    private bool canSet (out string message)
+    private bool canSet(out string message)
     {
       message = null;
 
-      if (_state == ServerState.Start) {
+      if (_state == ServerState.Start)
+      {
         message = "The service has already started.";
         return false;
       }
 
-      if (_state == ServerState.ShuttingDown) {
+      if (_state == ServerState.ShuttingDown)
+      {
         message = "The service is shutting down.";
         return false;
       }
@@ -419,46 +461,48 @@ using System.Timers;
       return true;
     }
 
-    private static string createID ()
+    private static string createID()
     {
-      return Guid.NewGuid ().ToString ("N");
+      return Guid.NewGuid().ToString("N");
     }
 
-    private void setSweepTimer (double interval)
+    private void setSweepTimer(double interval)
     {
-      _sweepTimer = new System.Timers.Timer (interval);
-      _sweepTimer.Elapsed += (sender, e) => Sweep ();
+      _sweepTimer = new System.Timers.Timer(interval);
+      _sweepTimer.Elapsed += (sender, e) => Sweep();
     }
 
-    private void stop (PayloadData payloadData, bool send)
+    private void stop(PayloadData payloadData, bool send)
     {
       var bytes = send
-                  ? WebSocketFrame.CreateCloseFrame (payloadData, false).ToArray ()
+                  ? WebSocketFrame.CreateCloseFrame(payloadData, false).ToArray()
                   : null;
 
-      lock (_sync) {
+      lock (_sync)
+      {
         _state = ServerState.ShuttingDown;
 
         _sweepTimer.Enabled = false;
-        foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (payloadData, bytes);
+        foreach (var session in _sessions.Values.ToList())
+          session.Context.WebSocket.Close(payloadData, bytes);
 
         _state = ServerState.Stop;
       }
     }
 
-    private bool tryGetSession (string id, out IWebSocketSession session)
+    private bool tryGetSession(string id, out IWebSocketSession session)
     {
       session = null;
 
       if (_state != ServerState.Start)
         return false;
 
-      lock (_sync) {
+      lock (_sync)
+      {
         if (_state != ServerState.Start)
           return false;
 
-        return _sessions.TryGetValue (id, out session);
+        return _sessions.TryGetValue(id, out session);
       }
     }
 
@@ -466,88 +510,97 @@ using System.Timers;
 
     #region Internal Methods
 
-    internal string Add (IWebSocketSession session)
+    internal string Add(IWebSocketSession session)
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         if (_state != ServerState.Start)
           return null;
 
-        var id = createID ();
-        _sessions.Add (id, session);
+        var id = createID();
+        _sessions.Add(id, session);
 
         return id;
       }
     }
 
-    internal void Broadcast (
+    internal void Broadcast(
       Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
     )
     {
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
+      foreach (var session in Sessions)
+      {
+        if (_state != ServerState.Start)
+        {
+          _log.Error("The service is shutting down.");
           break;
         }
 
-        session.Context.WebSocket.Send (opcode, data, cache);
+        session.Context.WebSocket.Send(opcode, data, cache);
       }
     }
 
-    internal void Broadcast (
-      Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache
+    internal void Broadcast(
+      Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache
     )
     {
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
+      foreach (var session in Sessions)
+      {
+        if (_state != ServerState.Start)
+        {
+          _log.Error("The service is shutting down.");
           break;
         }
 
-        session.Context.WebSocket.Send (opcode, stream, cache);
+        session.Context.WebSocket.Send(opcode, stream, cache);
       }
     }
 
-    internal Dictionary<string, bool> Broadping (
+    internal Dictionary<string, bool> Broadping(
       byte[] frameAsBytes, TimeSpan timeout
     )
     {
-      var ret = new Dictionary<string, bool> ();
+      var ret = new Dictionary<string, bool>();
 
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
+      foreach (var session in Sessions)
+      {
+        if (_state != ServerState.Start)
+        {
+          _log.Error("The service is shutting down.");
           break;
         }
 
-        var res = session.Context.WebSocket.Ping (frameAsBytes, timeout);
-        ret.Add (session.ID, res);
+        var res = session.Context.WebSocket.Ping(frameAsBytes, timeout);
+        ret.Add(session.ID, res);
       }
 
       return ret;
     }
 
-    internal bool Remove (string id)
+    internal bool Remove(string id)
     {
       lock (_sync)
-        return _sessions.Remove (id);
+        return _sessions.Remove(id);
     }
 
-    internal void Start ()
+    internal void Start()
     {
-      lock (_sync) {
+      lock (_sync)
+      {
         _sweepTimer.Enabled = _clean;
         _state = ServerState.Start;
       }
     }
 
-    internal void Stop (ushort code, string reason)
+    internal void Stop(ushort code, string reason)
     {
-      if (code == 1005) { // == no status
-        stop (PayloadData.Empty, true);
+      if (code == 1005)
+      { // == no status
+        stop(PayloadData.Empty, true);
         return;
       }
 
-      stop (new PayloadData (code, reason), !code.IsReserved ());
+      stop(new PayloadData(code, reason), !code.IsReserved());
     }
 
     #endregion
@@ -566,20 +619,21 @@ using System.Timers;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    public void Broadcast (byte[] data)
+    public void Broadcast(byte[] data)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.Binary, data, null);
+        broadcast(Opcode.Binary, data, null);
       else
-        broadcast (Opcode.Binary, new MemoryStream (data), null);
+        broadcast(Opcode.Binary, new MemoryStream(data), null);
     }
 
     /// <summary>
@@ -597,26 +651,28 @@ using System.Timers;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    public void Broadcast (string data)
+    public void Broadcast(string data)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
       if (bytes.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.Text, bytes, null);
+        broadcast(Opcode.Text, bytes, null);
       else
-        broadcast (Opcode.Text, new MemoryStream (bytes), null);
+        broadcast(Opcode.Text, new MemoryStream(bytes), null);
     }
 
     /// <summary>
@@ -655,37 +711,42 @@ using System.Timers;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    public void Broadcast (Stream stream, int length)
+    public void Broadcast(Stream stream, int length)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (stream == null)
-        throw new ArgumentNullException ("stream");
+        throw new ArgumentNullException("stream");
 
-      if (!stream.CanRead) {
+      if (!stream.CanRead)
+      {
         var msg = "It cannot be read.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (length < 1) {
+      if (length < 1)
+      {
         var msg = "Less than 1.";
-        throw new ArgumentException (msg, "length");
+        throw new ArgumentException(msg, "length");
       }
 
-      var bytes = stream.ReadBytes (length);
+      var bytes = stream.ReadBytes(length);
 
       var len = bytes.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         var msg = "No data could be read from it.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (len < length) {
-        _log.Warn (
-          String.Format (
+      if (len < length)
+      {
+        _log.Warn(
+          String.Format(
             "Only {0} byte(s) of data could be read from the stream.",
             len
           )
@@ -693,9 +754,9 @@ using System.Timers;
       }
 
       if (len <= WebSocket.FragmentLength)
-        broadcast (Opcode.Binary, bytes, null);
+        broadcast(Opcode.Binary, bytes, null);
       else
-        broadcast (Opcode.Binary, new MemoryStream (bytes), null);
+        broadcast(Opcode.Binary, new MemoryStream(bytes), null);
     }
 
     /// <summary>
@@ -723,20 +784,21 @@ using System.Timers;
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    public void BroadcastAsync (byte[] data, Action completed)
+    public void BroadcastAsync(byte[] data, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Binary, data, completed);
+        broadcastAsync(Opcode.Binary, data, completed);
       else
-        broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
+        broadcastAsync(Opcode.Binary, new MemoryStream(data), completed);
     }
 
     /// <summary>
@@ -767,26 +829,28 @@ using System.Timers;
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
-    public void BroadcastAsync (string data, Action completed)
+    public void BroadcastAsync(string data, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (data == null)
-        throw new ArgumentNullException ("data");
+        throw new ArgumentNullException("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!data.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
+        throw new ArgumentException(msg, "data");
       }
 
       if (bytes.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Text, bytes, completed);
+        broadcastAsync(Opcode.Text, bytes, completed);
       else
-        broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);
+        broadcastAsync(Opcode.Text, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -839,37 +903,42 @@ using System.Timers;
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
-    public void BroadcastAsync (Stream stream, int length, Action completed)
+    public void BroadcastAsync(Stream stream, int length, Action completed)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
       if (stream == null)
-        throw new ArgumentNullException ("stream");
+        throw new ArgumentNullException("stream");
 
-      if (!stream.CanRead) {
+      if (!stream.CanRead)
+      {
         var msg = "It cannot be read.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (length < 1) {
+      if (length < 1)
+      {
         var msg = "Less than 1.";
-        throw new ArgumentException (msg, "length");
+        throw new ArgumentException(msg, "length");
       }
 
-      var bytes = stream.ReadBytes (length);
+      var bytes = stream.ReadBytes(length);
 
       var len = bytes.Length;
-      if (len == 0) {
+      if (len == 0)
+      {
         var msg = "No data could be read from it.";
-        throw new ArgumentException (msg, "stream");
+        throw new ArgumentException(msg, "stream");
       }
 
-      if (len < length) {
-        _log.Warn (
-          String.Format (
+      if (len < length)
+      {
+        _log.Warn(
+          String.Format(
             "Only {0} byte(s) of data could be read from the stream.",
             len
           )
@@ -877,9 +946,9 @@ using System.Timers;
       }
 
       if (len <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Binary, bytes, completed);
+        broadcastAsync(Opcode.Binary, bytes, completed);
       else
-        broadcastAsync (Opcode.Binary, new MemoryStream (bytes), completed);
+        broadcastAsync(Opcode.Binary, new MemoryStream(bytes), completed);
     }
 
     /// <summary>
@@ -898,15 +967,16 @@ using System.Timers;
     /// <exception cref="InvalidOperationException">
     /// The current state of the manager is not Start.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public Dictionary<string, bool> Broadping ()
+    [Obsolete("This method will be removed.")]
+    public Dictionary<string, bool> Broadping()
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      return Broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
+      return Broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
     }
 
     /// <summary>
@@ -940,30 +1010,33 @@ using System.Timers;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public Dictionary<string, bool> Broadping (string message)
+    [Obsolete("This method will be removed.")]
+    public Dictionary<string, bool> Broadping(string message)
     {
-      if (_state != ServerState.Start) {
+      if (_state != ServerState.Start)
+      {
         var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      if (message.IsNullOrEmpty ())
-        return Broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
+      if (message.IsNullOrEmpty())
+        return Broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
 
       byte[] bytes;
-      if (!message.TryGetUTF8EncodedBytes (out bytes)) {
+      if (!message.TryGetUTF8EncodedBytes(out bytes))
+      {
         var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "message");
+        throw new ArgumentException(msg, "message");
       }
 
-      if (bytes.Length > 125) {
+      if (bytes.Length > 125)
+      {
         var msg = "Its size is greater than 125 bytes.";
-        throw new ArgumentOutOfRangeException ("message", msg);
+        throw new ArgumentOutOfRangeException("message", msg);
       }
 
-      var frame = WebSocketFrame.CreatePingFrame (bytes, false);
-      return Broadping (frame.ToArray (), _waitTime);
+      var frame = WebSocketFrame.CreatePingFrame(bytes, false);
+      return Broadping(frame.ToArray(), _waitTime);
     }
 
     /// <summary>
@@ -981,15 +1054,16 @@ using System.Timers;
     /// <exception cref="InvalidOperationException">
     /// The session could not be found.
     /// </exception>
-    public void CloseSession (string id)
+    public void CloseSession(string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Close ();
+      session.Context.WebSocket.Close();
     }
 
     /// <summary>
@@ -1059,15 +1133,16 @@ using System.Timers;
     ///   The size of <paramref name="reason"/> is greater than 123 bytes.
     ///   </para>
     /// </exception>
-    public void CloseSession (string id, ushort code, string reason)
+    public void CloseSession(string id, ushort code, string reason)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Close (code, reason);
+      session.Context.WebSocket.Close(code, reason);
     }
 
     /// <summary>
@@ -1128,15 +1203,16 @@ using System.Timers;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
-    public void CloseSession (string id, CloseStatusCode code, string reason)
+    public void CloseSession(string id, CloseStatusCode code, string reason)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Close (code, reason);
+      session.Context.WebSocket.Close(code, reason);
     }
 
     /// <summary>
@@ -1158,15 +1234,16 @@ using System.Timers;
     /// <exception cref="InvalidOperationException">
     /// The session could not be found.
     /// </exception>
-    public bool PingTo (string id)
+    public bool PingTo(string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      return session.Context.WebSocket.Ping ();
+      return session.Context.WebSocket.Ping();
     }
 
     /// <summary>
@@ -1208,15 +1285,16 @@ using System.Timers;
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
-    public bool PingTo (string message, string id)
+    public bool PingTo(string message, string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      return session.Context.WebSocket.Ping (message);
+      return session.Context.WebSocket.Ping(message);
     }
 
     /// <summary>
@@ -1253,15 +1331,16 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendTo (byte[] data, string id)
+    public void SendTo(byte[] data, string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Send (data);
+      session.Context.WebSocket.Send(data);
     }
 
     /// <summary>
@@ -1306,15 +1385,16 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendTo (string data, string id)
+    public void SendTo(string data, string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Send (data);
+      session.Context.WebSocket.Send(data);
     }
 
     /// <summary>
@@ -1378,15 +1458,16 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendTo (Stream stream, int length, string id)
+    public void SendTo(Stream stream, int length, string id)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.Send (stream, length);
+      session.Context.WebSocket.Send(stream, length);
     }
 
     /// <summary>
@@ -1440,15 +1521,16 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendToAsync (byte[] data, string id, Action<bool> completed)
+    public void SendToAsync(byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.SendAsync (data, completed);
+      session.Context.WebSocket.SendAsync(data, completed);
     }
 
     /// <summary>
@@ -1510,15 +1592,16 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendToAsync (string data, string id, Action<bool> completed)
+    public void SendToAsync(string data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.SendAsync (data, completed);
+      session.Context.WebSocket.SendAsync(data, completed);
     }
 
     /// <summary>
@@ -1600,55 +1683,62 @@ using System.Timers;
     ///   The current state of the WebSocket connection is not Open.
     ///   </para>
     /// </exception>
-    public void SendToAsync (
+    public void SendToAsync(
       Stream stream, int length, string id, Action<bool> completed
     )
     {
       IWebSocketSession session;
-      if (!TryGetSession (id, out session)) {
+      if (!TryGetSession(id, out session))
+      {
         var msg = "The session could not be found.";
-        throw new InvalidOperationException (msg);
+        throw new InvalidOperationException(msg);
       }
 
-      session.Context.WebSocket.SendAsync (stream, length, completed);
+      session.Context.WebSocket.SendAsync(stream, length, completed);
     }
 
     /// <summary>
     /// Cleans up the inactive sessions in the WebSocket service.
     /// </summary>
-    public void Sweep ()
+    public void Sweep()
     {
-      if (_sweeping) {
-        _log.Info ("The sweeping is already in progress.");
+      if (_sweeping)
+      {
+        _log.Info("The sweeping is already in progress.");
         return;
       }
 
-      lock (_forSweep) {
-        if (_sweeping) {
-          _log.Info ("The sweeping is already in progress.");
+      lock (_forSweep)
+      {
+        if (_sweeping)
+        {
+          _log.Info("The sweeping is already in progress.");
           return;
         }
 
         _sweeping = true;
       }
 
-      foreach (var id in InactiveIDs) {
+      foreach (var id in InactiveIDs)
+      {
         if (_state != ServerState.Start)
           break;
 
-        lock (_sync) {
+        lock (_sync)
+        {
           if (_state != ServerState.Start)
             break;
 
           IWebSocketSession session;
-          if (_sessions.TryGetValue (id, out session)) {
+          if (_sessions.TryGetValue(id, out session))
+          {
             var state = session.ConnectionState;
             if (state == WebSocketState.Open)
-              session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
+              session.Context.WebSocket.Close(CloseStatusCode.Abnormal);
             else if (state == WebSocketState.Closing)
               continue;
             else
-              _sessions.Remove (id);
+              _sessions.Remove(id);
           }
         }
       }
@@ -1682,15 +1772,15 @@ using System.Timers;
     /// <exception cref="ArgumentException">
     /// <paramref name="id"/> is an empty string.
     /// </exception>
-    public bool TryGetSession (string id, out IWebSocketSession session)
+    public bool TryGetSession(string id, out IWebSocketSession session)
     {
       if (id == null)
-        throw new ArgumentNullException ("id");
+        throw new ArgumentNullException("id");
 
       if (id.Length == 0)
-        throw new ArgumentException ("An empty string.", "id");
+        throw new ArgumentException("An empty string.", "id");
 
-      return tryGetSession (id, out session);
+      return tryGetSession(id, out session);
     }
 
     #endregion

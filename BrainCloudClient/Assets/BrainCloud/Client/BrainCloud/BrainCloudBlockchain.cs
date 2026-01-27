@@ -22,11 +22,21 @@ namespace BrainCloud
         /// <summary>
         /// Retrieves the blockchain items owned by the caller.
         /// </summary>
+        /// <remarks>
+        /// Service Name - blockchain
+        /// Service Operation - GET_BLOCKCHAIN_ITEMS
+        /// </remarks>
+        /// <param name="integrationID">The blockchain integration id. Currently only 'default' is supported.</param>
+        /// <param name="contextJson">Optional. Reserved for future use.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetBlockchainItems(
-            string in_integrationID = "default", 
+            string in_integrationID = "default",
             string in_contextJson = "{}",
-            SuccessCallback in_success = null, 
-            FailureCallback in_failure = null, 
+            SuccessCallback in_success = null,
+            FailureCallback in_failure = null,
             object in_cbObject = null)
         {
             var context = JsonReader.Deserialize<Dictionary<string, object>>(in_contextJson);
@@ -43,6 +53,16 @@ namespace BrainCloud
         /// <summary>
         /// Retrieves the uniqs owned by the caller.
         /// </summary>
+        /// <remarks>
+        /// Service Name - blockchain
+        /// Service Operation - GET_UNIQS
+        /// </remarks>
+        /// <param name="integrationID">The blockchain integration id. Currently only 'default' is supported.</param>
+        /// <param name="contextJson">Optional. Reserved for future use.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetUniqs(
             string in_integrationID = "default",
             string in_contextJson = "",

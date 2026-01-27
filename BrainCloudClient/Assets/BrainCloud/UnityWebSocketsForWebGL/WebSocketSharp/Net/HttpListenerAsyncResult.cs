@@ -47,57 +47,61 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-
-    using System;
-using System.Threading;
+  using System;
+  using System.Threading;
 
   internal class HttpListenerAsyncResult : IAsyncResult
   {
     #region Private Fields
 
-    private AsyncCallback       _callback;
-    private bool                _completed;
+    private AsyncCallback _callback;
+    private bool _completed;
     private HttpListenerContext _context;
-    private bool                _endCalled;
-    private Exception           _exception;
-    private bool                _inGet;
-    private object              _state;
-    private object              _sync;
-    private bool                _syncCompleted;
-    private ManualResetEvent    _waitHandle;
+    private bool _endCalled;
+    private Exception _exception;
+    private bool _inGet;
+    private object _state;
+    private object _sync;
+    private bool _syncCompleted;
+    private ManualResetEvent _waitHandle;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpListenerAsyncResult (AsyncCallback callback, object state)
+    internal HttpListenerAsyncResult(AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
-      _sync = new object ();
+      _sync = new object();
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal bool EndCalled {
-      get {
+    internal bool EndCalled
+    {
+      get
+      {
         return _endCalled;
       }
 
-      set {
+      set
+      {
         _endCalled = value;
       }
     }
 
-    internal bool InGet {
-      get {
+    internal bool InGet
+    {
+      get
+      {
         return _inGet;
       }
 
-      set {
+      set
+      {
         _inGet = value;
       }
     }
@@ -106,27 +110,35 @@ using System.Threading;
 
     #region Public Properties
 
-    public object AsyncState {
-      get {
+    public object AsyncState
+    {
+      get
+      {
         return _state;
       }
     }
 
-    public WaitHandle AsyncWaitHandle {
-      get {
+    public WaitHandle AsyncWaitHandle
+    {
+      get
+      {
         lock (_sync)
-          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
+          return _waitHandle ?? (_waitHandle = new ManualResetEvent(_completed));
       }
     }
 
-    public bool CompletedSynchronously {
-      get {
+    public bool CompletedSynchronously
+    {
+      get
+      {
         return _syncCompleted;
       }
     }
 
-    public bool IsCompleted {
-      get {
+    public bool IsCompleted
+    {
+      get
+      {
         lock (_sync)
           return _completed;
       }
@@ -136,26 +148,30 @@ using System.Threading;
 
     #region Private Methods
 
-    private static void complete (HttpListenerAsyncResult asyncResult)
+    private static void complete(HttpListenerAsyncResult asyncResult)
     {
-      lock (asyncResult._sync) {
+      lock (asyncResult._sync)
+      {
         asyncResult._completed = true;
 
         var waitHandle = asyncResult._waitHandle;
         if (waitHandle != null)
-          waitHandle.Set ();
+          waitHandle.Set();
       }
 
       var callback = asyncResult._callback;
       if (callback == null)
         return;
 
-      ThreadPool.QueueUserWorkItem (
-        state => {
-          try {
-            callback (asyncResult);
+      ThreadPool.QueueUserWorkItem(
+        state =>
+        {
+          try
+          {
+            callback(asyncResult);
           }
-          catch {
+          catch
+          {
           }
         },
         null
@@ -166,29 +182,29 @@ using System.Threading;
 
     #region Internal Methods
 
-    internal void Complete (Exception exception)
+    internal void Complete(Exception exception)
     {
       _exception = _inGet && (exception is ObjectDisposedException)
-                   ? new HttpListenerException (995, "The listener is closed.")
+                   ? new HttpListenerException(995, "The listener is closed.")
                    : exception;
 
-      complete (this);
+      complete(this);
     }
 
-    internal void Complete (HttpListenerContext context)
+    internal void Complete(HttpListenerContext context)
     {
-      Complete (context, false);
+      Complete(context, false);
     }
 
-    internal void Complete (HttpListenerContext context, bool syncCompleted)
+    internal void Complete(HttpListenerContext context, bool syncCompleted)
     {
       _context = context;
       _syncCompleted = syncCompleted;
 
-      complete (this);
+      complete(this);
     }
 
-    internal HttpListenerContext GetContext ()
+    internal HttpListenerContext GetContext()
     {
       if (_exception != null)
         throw _exception;

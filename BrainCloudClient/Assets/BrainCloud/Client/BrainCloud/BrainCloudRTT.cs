@@ -7,13 +7,15 @@
 namespace BrainCloud
 {
 
-using BrainCloud.Internal;
+    using BrainCloud.Internal;
 
     public class BrainCloudRTT
     {
         /// <summary>
-        /// 
+        /// Listen to real time events.
         /// </summary>
+
+
         internal BrainCloudRTT(RTTComms in_comms, BrainCloudClient in_client)
         {
             m_commsLayer = in_comms;
@@ -22,16 +24,13 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Enables Real Time event for this session.
-        /// Real Time events are disabled by default. Usually events
-        /// need to be polled using GET_EVENTS. By enabling this, events will
-        /// be received instantly when they happen through a TCP connection to an Event Server.
-        ///
-        ///This function will first call requestClientConnection, then connect to the address
         /// </summary>
-        /// <param name="in_connectionType"></param>
-        /// <param name="in_success"></param>
-        /// <param name="in_failure"></param>
-        /// <param name="cb_object"></param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        /// <param name="useWebSocket">Use web sockets instead of TCP for the internal connections. Default is true</param>
+
+
         public void EnableRTT(SuccessCallback in_success, FailureCallback in_failure, RTTConnectionType in_connectionType = RTTConnectionType.WEBSOCKET, object cb_object = null)
         {
             m_commsLayer.EnableRTT(in_success, in_failure, in_connectionType, cb_object);
@@ -62,55 +61,63 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time events.
         /// </summary>
+
         public void RegisterRTTEventCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.Event, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time messaging.
         /// </summary>
+
+
         public void DeregisterRTTEventCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Event);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time chat messages.
         /// </summary>
+
         public void RegisterRTTChatCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.Chat, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time presence events.
         /// </summary>
+
+
         public void DeregisterRTTChatCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Chat);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time presence events.
         /// </summary>
+
         public void RegisterRTTPresenceCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.Presence, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time blockchain events.
         /// </summary>
+
         public void DeregisterRTTPresenceCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Presence);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time messaging.
         /// </summary>
         public void RegisterRTTMessagingCallback(RTTCallback in_callback)
         {
@@ -118,23 +125,26 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time lobby events.
         /// </summary>
+
+
         public void DeregisterRTTMessagingCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.Messaging);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time lobby events.
         /// </summary>
+
         public void RegisterRTTLobbyCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.Lobby, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time blockchain events.
         /// </summary>
         public void DeregisterRTTLobbyCallback()
         {
@@ -142,15 +152,16 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time blockchain events.
         /// </summary>
+
         public void RegisterRTTAsyncMatchCallback(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.AsyncMatch, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Listen to real time blockchain events.
         /// </summary>
         public void RegisterRTTBlockchainRefresh(RTTCallback in_callback)
         {
@@ -158,31 +169,35 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// 
+        /// Clear all set RTT callbacks
         /// </summary>
+
         public void DeregisterRTTBlockchainRefresh()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.UserItems);
         }
-        
+
         /// <summary>
-        /// 
+        /// Clear all set RTT callbacks
         /// </summary>
+
         public void RegisterRTTBlockchainItemEvent(RTTCallback in_callback)
         {
             m_commsLayer.RegisterRTTCallback(ServiceName.BlockChain, in_callback);
         }
 
         /// <summary>
-        /// 
+        /// Clear all set RTT callbacks
         /// </summary>
+
         public void DeregisterRTTBlockchainItemEvent()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.BlockChain);
         }
         /// <summary>
-        /// 
+        /// Clear all set RTT callbacks
         /// </summary>
+
         public void DeregisterRTTAsyncMatchCallback()
         {
             m_commsLayer.DeregisterRTTCallback(ServiceName.AsyncMatch);
@@ -207,13 +222,18 @@ using BrainCloud.Internal;
         /// <summary>
         /// Requests the event server address
         /// </summary>
-        public void RequestClientConnection(  SuccessCallback success = null, FailureCallback failure = null,  object cbObject = null)
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
+        public void RequestClientConnection(SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.RTTRegistration, ServiceOperation.RequestClientConnection, null, callback);
-                m_clientRef.SendRequest(sc);
+            m_clientRef.SendRequest(sc);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -221,7 +241,7 @@ using BrainCloud.Internal;
         {
             return m_commsLayer.RTTConnectionID;
         }
-        
+
         #region private
 
         /// <summary>

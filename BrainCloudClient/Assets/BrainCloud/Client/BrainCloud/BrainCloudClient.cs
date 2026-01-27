@@ -120,8 +120,6 @@ using System.Globalization;
         #region Private Data
 
         private string s_defaultServerURL = "https://api.braincloudservers.com/dispatcherv2";
-
-
         private string _appVersion = "";
         private Platform _platform;
         private string _languageCode;
@@ -177,7 +175,7 @@ using System.Globalization;
         private BrainCloudMessaging _messagingService;
         private BrainCloudBlockchain _blockchain;
         private BrainCloudGroupFile _groupFileService;
-        
+
         // RTT service
         private BrainCloudLobby _lobbyService;
         private BrainCloudChat _chatService;
@@ -332,7 +330,7 @@ using System.Globalization;
         {
             get { return _appVersion; }
         }
-        
+
         public string GetAppVersion() { return AppVersion; }
 
         public string BrainCloudClientVersion
@@ -774,10 +772,11 @@ using System.Globalization;
         }
 
         /// <summary>
-        /// Returns true if the user is currently authenticated.
-        /// If a session time out or session invalidation is returned from executing a
-        /// sever API call, this flag will reset back to false.
+        /// Returns whether the client is authenticated with the brainCloud server.
         /// </summary>
+        /// <returns>True if authenticated, false otherwise.</returns>
+
+
         public bool IsAuthenticated()
         {
             return Authenticated;
@@ -789,8 +788,11 @@ using System.Globalization;
         }
 
         /// <summary>
-        /// Returns true if brainCloud has been initialized.
+        /// Returns whether the client is initialized.
         /// </summary>
+        /// <returns>True if initialized, false otherwise.</returns>
+
+
         public bool IsInitialized()
         {
             return Initialized;
@@ -806,21 +808,31 @@ using System.Globalization;
         }
         #endregion
 
+        /// <summary>
+        /// Method initializes the BrainCloudClient. Automatically passes in current serverURL
+        /// </summary>
+        /// <param name="secretKey">The secret key for your game</param>
+        /// <param name="appId">The app id</param>
+        /// <param name="appVersion">The version</param>
 
 
-        /// <summary>Method initializes the BrainCloudClient.</summary>
-        /// <param name="secretKey">The secret key for your app</param>
-        /// <param name="appId ">The app id</param>
-        /// <param name="appVersion"> The app version</param>
+
+
         public void Initialize(string secretKey, string appId, string appVersion)
         {
             Initialize(s_defaultServerURL, secretKey, appId, appVersion);
         }
 
-        /// <summary>Method initializes the BrainCloudClient.</summary>
-        /// <param name="appId ">The app id</param>
-        /// <param name="appIdSecrectMap">The map of appid to secret</param>
-        /// <param name="appVersion"> The app version</param>
+        /// <summary>
+        /// Method initializes the BrainCloudClient with multiple app/secret.
+        /// </summary>
+        /// <param name="defaultAppId">The default app id that we start with</param>
+        /// <param name="secretMap">A map of <appId, secretKey></param>
+        /// <param name="appVersion">The version</param>
+
+
+
+
         public void InitializeWithApps(string defaultAppId, Dictionary<string, string> appIdSecrectMap, string appVersion)
         {
             InitializeWithApps(s_defaultServerURL, defaultAppId, appIdSecrectMap, appVersion);
@@ -856,27 +868,31 @@ using System.Globalization;
             _initialized = true;
         }
 
-        /// <summary>Initialize the identity aspects of brainCloud.</summary>
-        /// <param name="profileId">The profile id</param>
-        /// <param name="anonymousId">The anonymous id</param>
+        /// <summary>
+        /// Initialize - initializes the identity service with the saved
+        /// </summary>
+        /// <param name="profileId">The id of the profile id that was most recently used by the app (on this device)</param>
+        /// <param name="anonymousId">The anonymous installation id that was generated for this device</param>
+
+
         public void InitializeIdentity(string profileId, string anonymousId)
         {
             AuthenticationService.Initialize(profileId, anonymousId);
         }
 
-        /// <summary>Shuts down all systems needed for BrainCloudClient
-        /// Only call this from the main thread.
-        /// Should be used at the end of the app, and opposite of Initialize Client
+        /// <summary>
+        /// Shuts the brainCloud client down.
         /// </summary>
+
         public void ShutDown()
         {
             _comms.ShutDown();
         }
 
-        /// <summary>Update method needs to be called regularly in order
-        /// to process incoming and outgoing messages.
+        /// <summary>
+        /// Run callbacks, to be called once per frame from your main thread
         /// </summary>
-        /// 
+
         public void RunCallbacks(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
             Update(in_updateType);
@@ -928,48 +944,39 @@ using System.Globalization;
 
         /// <summary>
         /// Sets a callback handler for any out of band event messages that come from
-        /// brainCloud.
         /// </summary>
-        /// <param name="cb">eventCallback A function which takes a JSON string as it's only parameter.
-        ///  The JSON format looks like the following:
-        /// {
-        ///   "events": [{
-        ///      "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
-        ///      "eventId": 3967,
-        ///      "createdAt": 1441742105908,
-        ///      "gameId": "123",
-        ///      "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df",
-        ///      "eventType": "test",
-        ///      "eventData": {"testData": 117}
-        ///    }],
-        ///    ]
-        ///  }
+        /// <param name="eventCallback">A function which takes a json string as it's only parameter. The json format looks like the following: { "events": [{ "fromPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventId": 3967, "createdAt": 1441742105908, "gameId": "123", "toPlayerId": "178ed06a-d575-4591-8970-e23a5d35f9df", "eventType": "test", "eventData": {"testData": 117} }], ] }</param>
+
+
         public void RegisterEventCallback(EventCallback cb)
         {
             _comms.RegisterEventCallback(cb);
         }
 
         /// <summary>
-        /// De-registers the event callback.
+        /// Deregisters the event callback
         /// </summary>
+
         public void DeregisterEventCallback()
         {
             _comms.DeregisterEventCallback();
         }
 
         /// <summary>
-        /// Sets a reward handler for any API call results that return rewards.
+        /// Sets a reward handler for any api call results that return rewards.
         /// </summary>
-        /// <param name="cb">The reward callback handler.</param>
-        /// <see cref="http://getbraincloud.com/apidocs">The brainCloud API docs site for more information on the return JSON</see>
+        /// <param name="rewardCallback">The reward callback handler. @see The brainCloud apidocs site for more information on the return JSON</param>
+
+
         public void RegisterRewardCallback(RewardCallback cb)
         {
             _comms.RegisterRewardCallback(cb);
         }
 
         /// <summary>
-        /// De-registers the reward callback.
+        /// Deregisters the reward callback
         /// </summary>
+
         public void DeregisterRewardCallback()
         {
             _comms.DeregisterRewardCallback();
@@ -988,32 +995,36 @@ using System.Globalization;
         }
 
         /// <summary>
-        /// Registers the file upload callbacks.
+        /// Registers a file upload callback handler to listen for status updates on uploads
         /// </summary>
+        /// <param name="fileUploadCallback">The file upload callback handler.</param>
         public void RegisterFileUploadCallback(FileUploadSuccessCallback success, FileUploadFailedCallback failure)
         {
             _comms.RegisterFileUploadCallbacks(success, failure);
         }
 
         /// <summary>
-        /// De-registers the file upload callbacks.
+        /// Deregisters the file upload callback
         /// </summary>
+
         public void DeregisterFileUploadCallback()
         {
             _comms.DeregisterFileUploadCallbacks();
         }
 
         /// <summary>
-        /// Failure callback invoked for all errors generated
+        /// Registers a callback that is invoked for all errors generated
         /// </summary>
+        /// <param name="globalErrorCallback">The global error callback handler.</param>
         public void RegisterGlobalErrorCallback(FailureCallback callback)
         {
             _comms.RegisterGlobalErrorCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the global error callback.
+        /// Deregisters the global error callback
         /// </summary>
+
         public void DeregisterGlobalErrorCallback()
         {
             _comms.DeregisterGlobalErrorCallback();
@@ -1021,24 +1032,28 @@ using System.Globalization;
 
         /// <summary>
         /// Registers a callback that is invoked for network errors.
-        /// Note this is only called if EnableNetworkErrorMessageCaching
-        /// has been set to true.
         /// </summary>
+        /// <param name="networkErrorCallback">The network error callback handler.</param>
+
+
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
         {
             _comms.RegisterNetworkErrorCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the network error callback.
+        /// Deregisters the network error callback
         /// </summary>
+
         public void DeregisterNetworkErrorCallback()
         {
             _comms.DeregisterNetworkErrorCallback();
         }
 
-        /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>
-        /// <param name="enable">True if logging is to be enabled</param>
+        /// <summary>
+        /// Set to true to enable logging packets to std::out
+        /// </summary>
+
         public void EnableLogging(bool enable)
         {
             _loggingEnabled = enable;
@@ -1060,7 +1075,10 @@ using System.Globalization;
             return _comms.ServerURL;
         }
 
-        /// <summary>Resets all messages and calls to the server</summary>
+        /// <summary>
+        /// Clears any pending messages from communication library.
+        /// </summary>
+
         public void ResetCommunication()
         {
             _comms.ResetCommunication();
@@ -1079,28 +1097,19 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the packet timeouts using a list of integers that
-        /// represent timeout values for each packet retry. The
-        /// first item in the list represents the timeout for the first packet
-        /// attempt, the second for the second packet attempt, and so on.
-        ///
-        /// The number of entries in this array determines how many packet
-        /// retries will occur.
-        ///
-        /// By default, the packet timeout array is {15, 20, 35, 50}
-        ///
-        /// Note that this method does not change the timeout for authentication
-        /// packets (use SetAuthenticationPacketTimeout method).
-        ///
         /// </summary>
-        /// <param name="timeouts">An array of packet timeouts.</param>
+        /// <param name="timeouts">A vector of packet timeouts.</param>
+
+
         public void SetPacketTimeouts(List<int> timeouts)
         {
             _comms.PacketTimeouts = timeouts;
         }
 
         /// <summary>
-        /// Sets the packet timeouts back to default.
+        /// Sets the packet timeouts back to the default ie {10, 10, 10}
         /// </summary>
+
         public void SetPacketTimeoutsToDefault()
         {
             _comms.SetPacketTimeoutsToDefault();
@@ -1116,12 +1125,10 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the authentication packet timeout which is tracked separately
-        /// from all other packets. Note that authentication packets are never
-        /// retried and so this value represents the total time a client would
-        /// wait to receive a reply to an authentication API call. By default
-        /// this timeout is set to 15 seconds.
         /// </summary>
-        /// <param name="valueSecs">The timeout in seconds.</param>
+        /// <param name="timeoutSecs">The timeout in seconds</param>
+
+
         public void SetAuthenticationPacketTimeout(int timeoutSecs)
         {
             _comms.AuthenticationPacketTimeoutSecs = timeoutSecs;
@@ -1129,11 +1136,10 @@ using System.Globalization;
 
         /// <summary>
         /// Gets the authentication packet timeout which is tracked separately
-        /// from all other packets. Note that authentication packets are never
-        /// retried and so this value represents the total time a client would
-        /// wait to receive a reply to an authentication API call. By default
-        /// this timeout is set to 15 seconds.
         /// </summary>
+        /// <returns>The timeout in seconds</returns>
+
+
         public int GetAuthenticationPacketTimeout()
         {
             return _comms.AuthenticationPacketTimeoutSecs;
@@ -1141,10 +1147,10 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the error callback to return the status message instead of the
-        /// error JSON string. This flag is used to conform to pre-2.17 client
-        /// behavior.
         /// </summary>
-        /// <param name="enabled">If set to <c>true</c>, enable.</param>
+        /// <param name="enabled">If set to true, enable</param>
+
+
         public void SetOldStyleStatusMessageErrorCallback(bool enabled)
         {
             _comms.OldStyleStatusResponseInErrorCallback = enabled;
@@ -1153,6 +1159,8 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate timeout in secs
         /// </summary>
+
+
         public int GetUploadLowTransferRateTimeout()
         {
             return _comms.UploadLowTransferRateTimeout;
@@ -1160,12 +1168,10 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the timeout in seconds of a low speed upload
-        /// (i.e. transfer rate which is underneath the low transfer rate threshold).
-        /// By default this is set to 120 secs.Setting this value to 0 will
-        /// turn off the timeout. Note that this timeout method
-        /// does not work on Unity mobile platforms.
         /// </summary>
-        /// <param name="timeoutSecs"></param>
+        /// <param name="timeoutSecs">The timeout in secs</param>
+
+
         public void SetUploadLowTransferRateTimeout(int timeoutSecs)
         {
             _comms.UploadLowTransferRateTimeout = timeoutSecs;
@@ -1174,6 +1180,8 @@ using System.Globalization;
         /// <summary>
         /// Returns the low transfer rate threshold in bytes/sec
         /// </summary>
+
+
         public int GetUploadLowTransferRateThreshold()
         {
             return _comms.UploadLowTransferRateThreshold;
@@ -1181,43 +1189,21 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the low transfer rate threshold of an upload in bytes/sec.
-        /// If the transfer rate dips below the given threshold longer
-        /// than the specified timeout, the transfer will fail.
-        /// By default this is set to 50 bytes/sec. Note that this timeout method
-        /// does not work on Unity mobile platforms.
         /// </summary>
         /// <param name="bytesPerSec">The low transfer rate threshold in bytes/sec</param>
+
+
         public void SetUploadLowTransferRateThreshold(int bytesPerSec)
         {
             _comms.UploadLowTransferRateThreshold = bytesPerSec;
         }
 
         /// <summary>
-        /// Enables the timeout message caching which is disabled by default.
-        /// Once enabled, if a client side timeout is encountered
-        /// (i.e. brainCloud server is unreachable presumably due to the client
-        /// network being down) the SDK will do the following:
-        ///
-        /// 1 - cache the currently queued messages to brainCloud
-        /// 2 - call the network error callback
-        /// 3 - then expect the app to call either:
-        ///     a) RetryCachedMessages() to retry sending to brainCloud
-        ///     b) FlushCachedMessages() to dump all messages in the queue.
-        ///
-        /// Between steps 2 & 3, the app can prompt the user to retry connecting
-        /// to brainCloud to determine whether to follow path 3a or 3b.
-        ///
-        /// Note that if path 3a is followed, and another timeout is encountered,
-        /// the process will begin all over again from step 1.
-        ///
-        /// WARNING - the brainCloud SDK will cache *all* API calls sent
-        /// when a timeout is encountered if this mechanism is enabled.
-        /// This effectively freezes all communication with brainCloud.
-        /// Apps must call either RetryCachedMessages() or FlushCachedMessages()
-        /// for the brainCloud SDK to resume sending messages.
-        /// ResetCommunication() will also clear the message cache.
+        /// Enables the message caching upon network error, which is disabled by default.
         /// </summary>
         /// <param name="enabled">True if message should be cached on timeout</param>
+
+
         public void EnableNetworkErrorMessageCaching(bool enabled)
         {
             _comms.EnableNetworkErrorMessageCaching(enabled);
@@ -1225,20 +1211,20 @@ using System.Globalization;
 
         /// <summary>
         /// Attempts to resend any cached messages. If no messages are in the cache,
-        /// this method does nothing.
         /// </summary>
+
+
         public void RetryCachedMessages()
         {
             _comms.RetryCachedMessages();
         }
 
         /// <summary>
-        /// Flushes the cached messages to resume API call processing. This will dump
-        /// all of the cached messages in the queue.
+        /// Flushes the cached messages to resume api call processing. This will dump
         /// </summary>
-        /// <param name="sendApiErrorCallbacks">If set to <c>true</c> API error callbacks will
-        /// be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.
-        /// </param>
+        /// <param name="sendApiErrorCallbacks">If set to true API error callbacks will be called for every cached message with statusCode CLIENT_NETWORK_ERROR and reasonCode CLIENT_NETWORK_ERROR_TIMEOUT.</param>
+
+
         public void FlushCachedMessages(bool sendApiErrorCallbacks)
         {
             _comms.FlushCachedMessages(sendApiErrorCallbacks);
@@ -1265,9 +1251,10 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the country code sent to brainCloud when a user authenticates.
-        /// Will override any auto detected country.
         /// </summary>
         /// <param name="countryCode">ISO 3166-1 two-letter country code</param>
+
+
         public void OverrideCountryCode(string countryCode)
         {
             _countryCode = countryCode;
@@ -1275,10 +1262,10 @@ using System.Globalization;
 
         /// <summary>
         /// Sets the language code sent to brainCloud when a user authenticates.
-        /// If the language is set to a non-ISO 639-1 standard value the game default will be used instead.
-        /// Will override any auto detected language.
         /// </summary>
         /// <param name="languageCode">ISO 639-1 two-letter language code</param>
+
+
         public void OverrideLanguageCode(string languageCode)
         {
             _languageCode = languageCode;

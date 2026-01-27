@@ -126,8 +126,6 @@ namespace Tests.PlayMode
                 }
                 _tc.ApiSuccess(response, cbObject);
             };
-
-
             _tc.bcWrapper.GroupService.UpdateGroupEntityAcl(myGroupId, myEntityId, acl, updateEntityCallback, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
 
@@ -137,6 +135,6 @@ namespace Tests.PlayMode
             _tc.bcWrapper.GroupService.DeleteGroup(myGroupId, 1, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
         }
-    }    
+    }
 }
 

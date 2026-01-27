@@ -65,11 +65,7 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateAnonymous(tr.ApiSuccess, tr.ApiError);
             tr.Run();
-
-
             tr = new TestResult(_bc);
-
-
             _bc.SmartSwitchAuthenticateEmail(
                "testAuth",
                "testPass",
@@ -272,8 +268,6 @@ namespace BrainCloudTests
 
             tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
         }
-
-
         [Test]
         public void TestReInit()
         {
@@ -337,7 +331,5 @@ namespace BrainCloudTests
             _bc.Client.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
-
-
     }
 }

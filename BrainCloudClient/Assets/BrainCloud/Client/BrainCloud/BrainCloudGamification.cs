@@ -7,15 +7,15 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
 #if !(DOT_NET || GODOT)
-using UnityEngine.SocialPlatforms;
-using UnityEngine;
+    using UnityEngine.SocialPlatforms;
+    using UnityEngine;
 #endif
 
     public class BrainCloudGamification
@@ -26,24 +26,19 @@ using UnityEngine;
         {
             _client = client;
         }
-
-
         /// <summary>
         /// Method retrieves all gamification data for the player.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - Read
+        /// Service Name - gamification
+        /// Service Operation - READ
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadAllGamification(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -62,18 +57,15 @@ using UnityEngine;
         /// Method retrieves all milestones defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_MILESTONES
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadMilestones(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -92,18 +84,15 @@ using UnityEngine;
         /// Read all of the achievements defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadAchievements
+        /// Service Name - gamification
+        /// Service Operation - READ_ACHIEVEMENTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadAchievements(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -120,21 +109,16 @@ using UnityEngine;
 
         /// <summary>
         /// Method returns all defined xp levels and any rewards associated
-        /// with those xp levels.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadXpLevels
+        /// Service Name - gamification
+        /// Service Operation - READ_XP_LEVELS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadXpLevelsMetaData(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -149,18 +133,15 @@ using UnityEngine;
         /// Method retrives the list of achieved achievements.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadAchievedAchievements
+        /// Service Name - gamification
+        /// Service Operation - READ_ACHIEVED_ACHIEVEMENTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadAchievedAchievements(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -174,24 +155,19 @@ using UnityEngine;
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ReadAchievedAchievements, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Method retrieves the list of completed milestones.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadCompleteMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_COMPLETED_MILESTONES
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadCompletedMilestones(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -210,18 +186,15 @@ using UnityEngine;
         /// Method retrieves the list of in progress milestones
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadInProgressMilestones
+        /// Service Name - gamification
+        /// Service Operation - READ_IN_PROGRESS_MILESTONES
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadInProgressMilestones(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -240,21 +213,16 @@ using UnityEngine;
         /// Method retrieves milestones of the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadMilestonesByCategory
+        /// Service Name - gamification
+        /// Service Operation - READ_MILESTONES_BY_CATEGORY
         /// </remarks>
-        /// <param name="category">
-        /// The milestone category
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="category">The milestone category</param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadMilestonesByCategory(
             string category,
             bool includeMetaData = false,
@@ -272,26 +240,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Method will award the achievements specified. On success, this will
-        /// call AwardThirdPartyAchievement to hook into the client-side Achievement
-        /// service (ie GameCentre, Facebook etc).
+        /// Method will award the achievements specified.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - AwardAchievements
+        /// Service Name - gamification
+        /// Service Operation - AWARD_ACHIEVEMENTS
         /// </remarks>
-        /// <param name="achievementIds">
-        /// A collection of achievement ids to award
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="achievementIds">Collection of achievement ids to award</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void AwardAchievements(
             IList<string> achievementIds,
             SuccessCallback success = null,
@@ -310,18 +270,15 @@ using UnityEngine;
         /// Method retrieves all of the quests defined for the game.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -335,24 +292,19 @@ using UnityEngine;
             ServerCall sc = new ServerCall(ServiceName.Gamification, ServiceOperation.ReadQuests, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
-        ///  Method returns all completed quests.
+        /// Method returns all completed quests.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadCompletedQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_COMPLETED_QUESTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadCompletedQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -368,21 +320,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Method returns all in progress quests.
+        /// Method returns quests that are in progress.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadInProgressQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_IN_PROGRESS_QUESTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadInProgressQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -398,21 +347,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Method returns all quests that haven't been started.
+        /// Method returns quests that have not been started.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadNotStartedQuests
+        /// Service Name - gamification
+        /// Service Operation - READ_NOT_STARTED_QUESTS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadNotStartedQuests(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -428,21 +374,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        ///  Method returns all quests with status.
+        /// Method returns quests with a status.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithStatus
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_STATUS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadQuestsWithStatus(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -458,21 +401,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Method returns all quests with a basic percentage.
+        /// Method returns quests with a basic percentage.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithBasicPercentage
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_BASIC_PERCENTAGE
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadQuestsWithBasicPercentage(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -488,21 +428,18 @@ using UnityEngine;
         }
 
         /// <summary>
-        ///  Method returns all quests with a complex percentage.
+        /// Method returns quests with a complex percentage.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsWithComplexPercentage
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_WITH_COMPLEX_PERCENTAGE
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadQuestsWithComplexPercentage(
             bool includeMetaData = false,
             SuccessCallback success = null,
@@ -518,24 +455,19 @@ using UnityEngine;
         }
 
         /// <summary>
-        /// Method returns all quests for the given category.
+        /// Method returns quests for the given category.
         /// </summary>
         /// <remarks>
-        /// Service Name - Gamification
-        /// Service Operation - ReadQuestsByCategory
+        /// Service Name - gamification
+        /// Service Operation - READ_QUESTS_BY_CATEGORY
         /// </remarks>
-        /// <param name="category">
-        /// The quest category
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="category">The quest category</param>
+        /// <param name="includeMetaData">Whether to return meta data as well</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadQuestsByCategory(
             string category,
             bool includeMetaData = false,

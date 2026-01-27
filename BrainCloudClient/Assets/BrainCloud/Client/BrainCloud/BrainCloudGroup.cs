@@ -7,12 +7,12 @@
 namespace BrainCloud
 {
 
-using BrainCloud.Common;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+    using BrainCloud.Common;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System;
 
     public class BrainCloudGroup
     {
@@ -44,12 +44,12 @@ using System;
         /// Service Name - group
         /// Service Operation - ACCEPT_GROUP_INVITATION
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void AcceptGroupInvitation(
             string groupId,
             SuccessCallback success = null,
@@ -69,21 +69,15 @@ using System;
         /// Service Name - group
         /// Service Operation - ADD_GROUP_MEMBER
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the member being added.
-        /// </param>
-        /// <param name="role">
-        /// Role of the member being added.
-        /// </param>
-        /// <param name="jsonAttributes">
-        /// Attributes of the member being added.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the member being added.</param>
+        /// <param name="role">Role of the member being added.</param>
+        /// <param name="jsonAttributes">Attributes of the member being added.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void AddGroupMember(
             string groupId,
             string profileId,
@@ -112,22 +106,17 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - APPROVE_GROUP_JOIN_REQUEST
+        /// Service Operation - APPROVE_GROUP_JOREQUEST
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the invitation being deleted.
-        /// </param>
-        /// <param name="role">
-        /// Role of the member being invited.
-        /// <param name="jsonAttributes">
-        /// Attributes of the member being invited.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the invitation being deleted.</param>
+        /// <param name="role">Role of the member being invited.</param>
+        /// <param name="jsonAttributes">Attributes of the member being invited.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ApproveGroupJoinRequest(
             string groupId,
             string profileId,
@@ -156,20 +145,16 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - AUTO_JOIN_GROUP
+        /// Service Operation - AUTO_JOGROUP
         /// </remarks>
-        /// <param name="groupType">
-        /// Name of the associated group type.
-        /// </param>
-        /// <param name="autoJoinStrategy">
-        /// Selection strategy to employ when there are multiple matches
-        /// </param>
-        /// <param name="dataQueryJson">
-        /// Query parameters (optional)
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupType">Name of the associated group type.</param>
+        /// <param name="autoJoinStrategy">Selection strategy to employ when there are multiple matches</param>
+        /// <param name="dataQueryJson">Query parameters (optional)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void AutoJoinGroup(
             string groupType,
             AutoJoinStrategy autoJoinStrategy,
@@ -189,24 +174,20 @@ using System;
         }
 
         /// <summary>
-        /// Find and join an open group in the pool of groups in multiple group types provided as input arguments.
+        /// Find and join an open group in the pool of groups in multiple group types provided as input arguments.		*
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - AUTO_JOIN_GROUP_MULTI
+        /// Service Operation - AUTO_JOGROUP_MULTI
         /// </remarks>
-        /// <param name="groupTypes">
-        /// Name of the associated group types.
-        /// </param>
-        /// <param name="autoJoinStrategy">
-        /// Selection strategy to employ when there are multiple matches
-        /// </param>
-        /// <param name="dataQueryJson">
-        /// Query parameters (optional)
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupTypes">Name of the associated group type.</param>
+        /// <param name="autoJoinStrategy">Selection strategy to employ when there are multiple matches</param>
+        /// <param name="where">Query parameters (optional)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void AutoJoinGroupMulti(
             string[] groupTypes,
             AutoJoinStrategy autoJoinStrategy,
@@ -232,15 +213,13 @@ using System;
         /// Service Name - group
         /// Service Operation - CANCEL_GROUP_INVITATION
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the invitation being deleted.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the invitation being deleted.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void CancelGroupInvitation(
             string groupId,
             string profileId,
@@ -254,26 +233,20 @@ using System;
 
             SendRequest(ServiceOperation.CancelGroupInvitation, success, failure, cbObject, data);
         }
-        
+
         /// <summary>
-        /// Delete a request to join the group.
+        /// Delete an outstanding request to join the group.
         /// </summary>
         /// <remarks>
-        /// Service Name - Group
-        /// Service Operation - DELETE_GROUP_JOIN_REQUEST
+        /// Service Name - group
+        /// Service Operation - DELETE_GROUP_JOREQUEST
         /// </remarks>
-        /// <param name="groupId">
-        /// The id of the group.
-        /// </param>
-        /// <param name="success">
-        /// The success callback
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback
-        /// </param>
-        /// <param name="cbObject">
-        /// The callback object
-        /// </param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteGroupJoinRequest(
             string groupId,
             SuccessCallback success = null,
@@ -282,7 +255,7 @@ using System;
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.GroupId.Value] = groupId;
-            
+
             SendRequest(ServiceOperation.DeleteGroupJoinRequest, success, failure, cbObject, data);
         }
 
@@ -293,30 +266,18 @@ using System;
         /// Service Name - group
         /// Service Operation - CREATE_GROUP
         /// </remarks>
-        /// <param name="name">
-        /// Name of the group.
-        /// </param>
-        /// <param name="groupType">
-        /// Name of the type of group.
-        /// </param>
-        /// <param name="isOpenGroup">
-        /// true if group is open; false if closed.
-        /// </param>
-        /// <param name="acl">
-        /// The group's access control list. A null ACL implies default.
-        /// </param>
-        /// <param name="jsonOwnerAttributes">
-        /// Attributes for the group owner (current user).
-        /// </param>
-        /// <param name="jsonDefaultMemberAttributes">
-        /// Default attributes for group members.
-        /// </param>
-        /// <param name="jsonData">
-        /// Custom application data.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="name">Name of the group.</param>
+        /// <param name="groupType">Name of the type of group.</param>
+        /// <param name="isOpenGroup">true if group is open; false if closed.</param>
+        /// <param name="acl">The group's access control list. A null ACL implies default.</param>
+        /// <param name="jsonOwnerAttributes">Attributes for the group owner (current user).</param>
+        /// <param name="jsonDefaultMemberAttributes">Default attributes for group members.</param>
+        /// <param name="jsonData">Custom application data.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void CreateGroup(
             string name,
             string groupType,
@@ -351,14 +312,13 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_ACL
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group
-        /// </param>
-        /// <param name="acl">
-        /// The group's access control list. A null ACL implies default
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group</param>
+        /// <param name="acl">The group's access control list. A null ACL implies default</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupAcl(
             string groupId,
             GroupACL acl,
@@ -380,16 +340,14 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_ENTITY_ACL
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group
-        /// <param name="entityId">
-        /// ID of the entity
-        /// </param>
-        /// <param name="acl">
-        /// Access control list for the group entity.
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">The id of the group</param>
+        /// <param name="entityId">The id of the entity to update</param>
+        /// <param name="acl">Access control list for the group entity</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupEntityAcl(
             string groupId,
             string entityId,
@@ -407,40 +365,25 @@ using System;
         }
 
         /// <summary>
-        /// Create a group. With additional summary data
+        /// Create a group with Summary Data.
         /// </summary>
         /// <remarks>
         /// Service Name - group
         /// Service Operation - CREATE_GROUP
         /// </remarks>
-        /// <param name="name">
-        /// Name of the group.
-        /// </param>
-        /// <param name="groupType">
-        /// Name of the type of group.
-        /// </param>
-        /// <param name="isOpenGroup">
-        /// true if group is open; false if closed.
-        /// </param>
-        /// <param name="acl">
-        /// The group's access control list. A null ACL implies default.
-        /// </param>
-        /// <param name="jsonOwnerAttributes">
-        /// Attributes for the group owner (current user).
-        /// </param>
-        /// <param name="jsonDefaultMemberAttributes">
-        /// Default attributes for group members.
-        /// </param>
-        /// <param name="jsonData">
-        /// Custom application data.
-        /// </param>
-        /// </param>
-        /// <param name="jsonSummaryData">
-        /// Custom application data.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="name">Name of the group.</param>
+        /// <param name="groupType">Name of the type of group.</param>
+        /// <param name="isOpenGroup">true if group is open; false if closed.</param>
+        /// <param name="acl">The group's access control list. A null ACL implies default.</param>
+        /// <param name="jsonOwnerAttributes">Attributes for the group owner (current user).</param>
+        /// <param name="jsonDefaultMemberAttributes">Default attributes for group members.</param>
+        /// <param name="jsonSummaryData">the summary.</param>
+        /// <param name="jsonData">Custom application data.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void CreateGroupWithSummaryData(
             string name,
             string groupType,
@@ -478,24 +421,16 @@ using System;
         /// Service Name - group
         /// Service Operation - CREATE_GROUP_ENTITY
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="isOwnedByGroupMember">
-        /// true if entity is owned by a member; false if owned by the entire group.
-        /// </param>
-        /// <param name="type">
-        /// Type of the group entity.
-        /// </param>
-        /// <param name="acl">
-        /// Access control list for the group entity.
-        /// </param>
-        /// <param name="jsonData">
-        /// Custom application data.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="isOwnedByGroupMember">true if entity is owned by a member; false if owned by the entire group.</param>
+        /// <param name="entityType">Type of the group entity.</param>
+        /// <param name="acl">Access control list for the group entity.</param>
+        /// <param name="jsonData">Custom application data.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void CreateGroupEntity(
             string groupId,
             string entityType,
@@ -523,15 +458,13 @@ using System;
         /// Service Name - group
         /// Service Operation - DELETE_GROUP
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the group
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="version">Current version of the group</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteGroup(
             string groupId,
             long version,
@@ -553,18 +486,14 @@ using System;
         /// Service Name - group
         /// Service Operation - DELETE_GROUP_ENTITY
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="entityId">
-        /// ID of the entity.
-        /// </param>
-        /// <param name="version">
-        /// The current version of the group entity (for concurrency checking).
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="entityId">ID of the entity.</param>
+        /// <param name="version">The current version of the group entity (for concurrency checking).</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteGroupEntity(
             string groupId,
             string entityId,
@@ -587,9 +516,12 @@ using System;
         /// <remarks>
         /// Service Name - group
         /// Service Operation - GET_MY_GROUPS
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// </remarks>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMyGroups(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -605,15 +537,13 @@ using System;
         /// Service Name - group
         /// Service Operation - INCREMENT_GROUP_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="jsonData">
-        /// Partial data map with incremental values.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="jsonData">Partial data map with incremental values.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void IncrementGroupData(
             string groupId,
             string jsonData,
@@ -635,18 +565,14 @@ using System;
         /// Service Name - group
         /// Service Operation - INCREMENT_GROUP_ENTITY_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="entityId">
-        /// ID of the entity.
-        /// </param>
-        /// <param name="jsonData">
-        /// Partial data map with incremental values.
-        /// </param> 
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="entityId">ID of the entity.</param>
+        /// <param name="jsonData">Partial data map with incremental values.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void IncrementGroupEntityData(
             string groupId,
             string entityId,
@@ -670,21 +596,15 @@ using System;
         /// Service Name - group
         /// Service Operation - INVITE_GROUP_MEMBER
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the member being invited.
-        /// </param>
-        /// <param name="role">
-        /// Role of the member being invited.
-        /// </param>
-        /// <param name="jsonAttributes">
-        /// Attributes of the member being invited.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the member being invited.</param>
+        /// <param name="role">Role of the member being invited.</param>
+        /// <param name="jsonAttributes">Attributes of the member being invited.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void InviteGroupMember(
             string groupId,
             string profileId,
@@ -710,12 +630,12 @@ using System;
         /// Service Name - group
         /// Service Operation - JOIN_GROUP
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void JoinGroup(
             string groupId,
             SuccessCallback success = null,
@@ -735,12 +655,12 @@ using System;
         /// Service Name - group
         /// Service Operation - LEAVE_GROUP
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void LeaveGroup(
             string groupId,
             SuccessCallback success = null,
@@ -754,17 +674,18 @@ using System;
         }
 
         /// <summary>
-        /// Retrieve a page of group summary information based on the specified context.
+        /// Read a page of group information.
         /// </summary>
         /// <remarks>
         /// Service Name - group
         /// Service Operation - LIST_GROUPS_PAGE
         /// </remarks>
-        /// <param name="jsonContext">
-        /// Query context.
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="context">Query context.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ListGroupsPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -778,22 +699,19 @@ using System;
         }
 
         /// <summary>
-        /// Retrieve a page of group summary information based on the encoded context 
-        /// and specified page offset.
+        /// Read a page of group information.
         /// </summary>
         /// <remarks>
         /// Service Name - group
         /// Service Operation - LIST_GROUPS_PAGE_BY_OFFSET
         /// </remarks>
-        /// <param name="context">
-        /// Encoded reference query context.
-        /// </param>
-        /// <param name="pageOffset">
-        /// Number of pages by which to offset the query.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="encodedContext">Encoded reference query context.</param>
+        /// <param name="offset">Number of pages by which to offset the query.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ListGroupsPageByOffset(
             string context,
             int pageOffset,
@@ -815,11 +733,11 @@ using System;
         /// Service Name - group
         /// Service Operation - LIST_GROUPS_WITH_MEMBER
         /// </remarks>
-        /// <param name="profileId">
-        /// User to read groups for
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ListGroupsWithMember(
             string profileId,
             SuccessCallback success = null,
@@ -839,12 +757,12 @@ using System;
         /// Service Name - group
         /// Service Operation - READ_GROUP
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroup(
             string groupId,
             SuccessCallback success = null,
@@ -858,18 +776,18 @@ using System;
         }
 
         /// <summary>
-        /// Read the data of the specified group.
+        /// Read the specified group's data.
         /// </summary>
         /// <remarks>
         /// Service Name - group
         /// Service Operation - READ_GROUP_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroupData(
             string groupId,
             SuccessCallback success = null,
@@ -889,12 +807,12 @@ using System;
         /// Service Name - group
         /// Service Operation - READ_GROUP_ENTITIES_PAGE
         /// </remarks>
-        /// <param name="jsonContext">
-        /// Query context.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="context">Query context.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroupEntitiesPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -914,15 +832,13 @@ using System;
         /// Service Name - group
         /// Service Operation - READ_GROUP_ENTITIES_PAGE_BY_OFFSET
         /// </remarks>
-        /// <param name="encodedContext">
-        /// Encoded reference query context.
-        /// </param>
-        /// <param name="pageOffset">
-        /// Number of pages by which to offset the query.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="encodedContext">Encoded reference query context.</param>
+        /// <param name="offset">Number of pages by which to offset the query.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroupEntitiesPageByOffset(
             string encodedContext,
             int pageOffset,
@@ -944,15 +860,13 @@ using System;
         /// Service Name - group
         /// Service Operation - READ_GROUP_ENTITY
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="entityId">
-        /// ID of the entity.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="entityId">ID of the entity.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroupEntity(
             string groupId,
             string entityId,
@@ -974,12 +888,12 @@ using System;
         /// Service Name - group
         /// Service Operation - READ_MEMBERS_OF_GROUP
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ReadGroupMembers(
             string groupId,
             SuccessCallback success = null,
@@ -999,12 +913,12 @@ using System;
         /// Service Name - group
         /// Service Operation - REJECT_GROUP_INVITATION
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void RejectGroupInvitation(
             string groupId,
             SuccessCallback success = null,
@@ -1022,17 +936,15 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - REJECT_GROUP_JOIN_REQUEST
+        /// Service Operation - REJECT_GROUP_JOREQUEST
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the invitation being deleted.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the invitation being deleted.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void RejectGroupJoinRequest(
             string groupId,
             string profileId,
@@ -1054,15 +966,13 @@ using System;
         /// Service Name - group
         /// Service Operation - REMOVE_GROUP_MEMBER
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the member being deleted.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the member being deleted.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void RemoveGroupMember(
             string groupId,
             string profileId,
@@ -1084,18 +994,14 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="version">
-        /// Version to verify.
-        /// </param>
-        /// <param name="jsonData">
-        /// Data to apply.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="version">Version to verify.</param>
+        /// <param name="jsonData">Data to apply.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupData(
             string groupId,
             long version,
@@ -1119,21 +1025,15 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_ENTITY_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="entityId">
-        /// ID of the entity.
-        /// </param>
-        /// <param name="version">
-        /// The current version of the group entity (for concurrency checking).
-        /// </param>
-        /// <param name="jsonData">
-        /// Custom application data.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="entityId">ID of the entity.</param>
+        /// <param name="version">The current version of the group entity (for concurrency checking).</param>
+        /// <param name="jsonData">Custom application data.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupEntityData(
             string groupId,
             string entityId,
@@ -1159,21 +1059,15 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_MEMBER
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="profileId">
-        /// Profile ID of the member being updated.
-        /// </param>
-        /// <param name="role">
-        /// Role of the member being updated (optional).
-        /// </param>
-        /// <param name="jsonAttributes">
-        /// Attributes of the member being updated (optional).
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="profileId">Profile ID of the member being updated.</param>
+        /// <param name="role">Role of the member being updated (optional).</param>
+        /// <param name="jsonAttributes">Attributes of the member being updated (optional).</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupMember(
             string groupId,
             string profileId,
@@ -1199,15 +1093,13 @@ using System;
         /// Service Name - group
         /// Service Operation - UPDATE_GROUP_NAME
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="name">
-        /// Name to apply.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="name">Name to apply.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupName(
             string groupId,
             string name,
@@ -1223,21 +1115,19 @@ using System;
         }
 
         /// <summary>
-        /// set a group to be open true or false
+        /// Set whether a group is open true or false
         /// </summary>
         /// <remarks>
         /// Service Name - group
         /// Service Operation - SET_GROUP_OPEN
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="isOpenGroup">
-        /// true or false if a group is open.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="isOpenGroup">whether its open or not</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void SetGroupOpen(
             string groupId,
             bool isOpenGroup,
@@ -1250,27 +1140,23 @@ using System;
             data[OperationParam.GroupIsOpenGroup.Value] = isOpenGroup;
 
             SendRequest(ServiceOperation.SetGroupOpen, success, failure, cbObject, data);
-        }        
-        
+        }
+
         /// <summary>
         /// Update a group's summary data
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - UPDATE_SUMMARY_DATA
+        /// Service Operation - UPDATE_GROUP_SUMMARY_DATA
         /// </remarks>
-        /// <param name="groupId">
-        /// ID of the group.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the group
-        /// </param>
-        /// <param name="jsonSummaryData">
-        /// Custom application data.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="groupId">ID of the group.</param>
+        /// <param name="version">the version of the group</param>
+        /// <param name="jsonSummaryData">custom application data</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateGroupSummaryData(
             string groupId,
             int version,
@@ -1293,18 +1179,15 @@ using System;
         /// </summary>
         /// <remarks>
         /// Service Name - group
-        /// Service Operation - UPDATE_SUMMARY_DATA
+        /// Service Operation - GET_RANDOM_GROUPS_MATCHING
         /// </remarks>
-        /// <param name="jsonWhere">
-        /// where to search
-        /// ex . "where": {"groupType": "BLUE"}
-        /// </param>
-        /// <param name="maxReturn">
-        /// max num groups wanted
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="jsonWhere">where to search</param>
+        /// <param name="maxReturn"># of groups to search</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetRandomGroupsMatching(
             string jsonWhere,
             int maxReturn,
@@ -1329,5 +1212,5 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.Group, operation, data, callback);
             _bcClient.SendRequest(sc);
         }
-    } 
+    }
 }

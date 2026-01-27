@@ -5,8 +5,6 @@ if [ "$build_version" == "" ]; then
   echo "Must pass in build version"
   exit 1
 fi
-
-
 rm -rf artifacts
 
 # Create C# Client
@@ -16,8 +14,6 @@ sed -i.temp "s/Platform.*/Platform\: C\#/g" artifacts/brainCloudClient/README.TX
 sed -i.temp "s/Version.*/Version\: $build_version/g" artifacts/brainCloudClient/README.TXT
 
 rm -rf artifacts/brainCloudClient/README.TXT.temp
-
-
 cp -r ../BrainCloudClient/Assets/BrainCloud artifacts/brainCloudClient
 
 rm -rf artifacts/brainCloudClient/BrainCloud/Unity 
@@ -26,20 +22,14 @@ rm -rf artifacts/brainCloudClient/BrainCloud/Resources
 pushd artifacts/brainCloudClient
 
 find . -name "*.meta" -delete
-
-
 find . -name '*.cs' -type f -exec sed -i.temp '1i \
 \#define DOT_NET \
 \
 ' {} \;
 
 find . -name "*.cs.temp" -delete
-
-
 zip -r ../brainCloudClient_csharp_$build_version.zip .
 popd
-
-
 # Create Unity Client
 mkdir -p artifacts/brainCloudUnityPackage
 

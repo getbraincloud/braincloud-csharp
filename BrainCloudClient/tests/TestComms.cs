@@ -70,7 +70,7 @@ namespace BrainCloudTests
             tr.Run();
         }
 
-        [Test] 
+        [Test]
         public void TestBadUrl()
         {
             _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
@@ -96,8 +96,6 @@ namespace BrainCloudTests
                 tr.SetTimeToWaitSecs(120);
                 _bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
-
-
                 DateTime timeEnd = DateTime.Now;
                 TimeSpan delta = timeEnd.Subtract(timeStart);
                 if (delta < TimeSpan.FromSeconds(8) && delta > TimeSpan.FromSeconds(15))
@@ -116,7 +114,7 @@ namespace BrainCloudTests
 
         public void MessageCacheGlobalError()
         {
-            
+
         }
 
         //[Test] //TODO Fix
@@ -134,7 +132,7 @@ namespace BrainCloudTests
                 _bc.Client.RegisterNetworkErrorCallback(tr.NetworkError);
                 _bc.Client.AuthenticationService.AuthenticateUniversal("abc", "abc", true, tr.ApiSuccess, tr.ApiError);
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
-                
+
                 _bc.Client.RetryCachedMessages();
                 tr.RunExpectFail(StatusCodes.CLIENT_NETWORK_ERROR, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT);
 
@@ -152,8 +150,6 @@ namespace BrainCloudTests
                 _bc.Client.DeregisterNetworkErrorCallback();
             }
         }
-
-
         /*
         [Test]
         public void Test503()
@@ -295,13 +291,13 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
             _bc.PlayerStatisticsService.ReadAllUserStats(
                 tr.ApiSuccess, tr.ApiError);
-            
+
             // should result in three packets
             tr.Run();
             tr.Run();
             tr.Run();
         }
-        
+
         //needs further investigation on why its not working.
         // [Test]
         // public void TestAuthFirst()
@@ -320,8 +316,6 @@ namespace BrainCloudTests
         //         GetUser(Users.UserA).Id,
         //         GetUser(Users.UserA).Password,
         //         false, tr.ApiSuccess, tr.ApiError);
-
-
 
         //     // should result in two packets
         //     tr.RunExpectFail(403, ReasonCodes.NO_SESSION);

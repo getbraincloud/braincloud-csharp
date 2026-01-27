@@ -40,14 +40,12 @@
  * - Sebastien Pouliot <sebastien@ximian.com>
  */
 #endregion
-
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Globalization;
-using System.Text;
+  using System;
+  using System.Globalization;
+  using System.Text;
 
   /// <summary>
   /// Provides a set of methods and properties used to manage an HTTP cookie.
@@ -87,29 +85,29 @@ using System.Text;
   {
     #region Private Fields
 
-    private string                 _comment;
-    private Uri                    _commentUri;
-    private bool                   _discard;
-    private string                 _domain;
-    private static readonly int[]  _emptyPorts;
-    private DateTime               _expires;
-    private bool                   _httpOnly;
-    private string                 _name;
-    private string                 _path;
-    private string                 _port;
-    private int[]                  _ports;
+    private string _comment;
+    private Uri _commentUri;
+    private bool _discard;
+    private string _domain;
+    private static readonly int[] _emptyPorts;
+    private DateTime _expires;
+    private bool _httpOnly;
+    private string _name;
+    private string _path;
+    private string _port;
+    private int[] _ports;
     private static readonly char[] _reservedCharsForValue;
-    private string                 _sameSite;
-    private bool                   _secure;
-    private DateTime               _timeStamp;
-    private string                 _value;
-    private int                    _version;
+    private string _sameSite;
+    private bool _secure;
+    private DateTime _timeStamp;
+    private string _value;
+    private int _version;
 
     #endregion
 
     #region Static Constructor
 
-    static Cookie ()
+    static Cookie()
     {
       _emptyPorts = new int[0];
       _reservedCharsForValue = new[] { ';', ',' };
@@ -122,9 +120,9 @@ using System.Text;
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class.
     /// </summary>
-    internal Cookie ()
+    internal Cookie()
     {
-      init (String.Empty, String.Empty, String.Empty, String.Empty);
+      init(String.Empty, String.Empty, String.Empty, String.Empty);
     }
 
     #endregion
@@ -175,8 +173,8 @@ using System.Text;
     ///   that contains an invalid character.
     ///   </para>
     /// </exception>
-    public Cookie (string name, string value)
-      : this (name, value, String.Empty, String.Empty)
+    public Cookie(string name, string value)
+      : this(name, value, String.Empty, String.Empty)
     {
     }
 
@@ -228,8 +226,8 @@ using System.Text;
     ///   that contains an invalid character.
     ///   </para>
     /// </exception>
-    public Cookie (string name, string value, string path)
-      : this (name, value, path, String.Empty)
+    public Cookie(string name, string value, string path)
+      : this(name, value, path, String.Empty)
     {
     }
 
@@ -285,81 +283,95 @@ using System.Text;
     ///   that contains an invalid character.
     ///   </para>
     /// </exception>
-    public Cookie (string name, string value, string path, string domain)
+    public Cookie(string name, string value, string path, string domain)
     {
       if (name == null)
-        throw new ArgumentNullException ("name");
+        throw new ArgumentNullException("name");
 
       if (name.Length == 0)
-        throw new ArgumentException ("An empty string.", "name");
+        throw new ArgumentException("An empty string.", "name");
 
-      if (name[0] == '$') {
+      if (name[0] == '$')
+      {
         var msg = "It starts with a dollar sign.";
-        throw new ArgumentException (msg, "name");
+        throw new ArgumentException(msg, "name");
       }
 
-      if (!name.IsToken ()) {
+      if (!name.IsToken())
+      {
         var msg = "It contains an invalid character.";
-        throw new ArgumentException (msg, "name");
+        throw new ArgumentException(msg, "name");
       }
 
       if (value == null)
         value = String.Empty;
 
-      if (value.Contains (_reservedCharsForValue)) {
-        if (!value.IsEnclosedIn ('"')) {
+      if (value.Contains(_reservedCharsForValue))
+      {
+        if (!value.IsEnclosedIn('"'))
+        {
           var msg = "A string not enclosed in double quotes.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
       }
 
-      init (name, value, path ?? String.Empty, domain ?? String.Empty);
+      init(name, value, path ?? String.Empty, domain ?? String.Empty);
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal bool ExactDomain {
-      get {
+    internal bool ExactDomain
+    {
+      get
+      {
         return _domain.Length == 0 || _domain[0] != '.';
       }
     }
 
-    internal int MaxAge {
-      get {
+    internal int MaxAge
+    {
+      get
+      {
         if (_expires == DateTime.MinValue)
           return 0;
 
         var expires = _expires.Kind != DateTimeKind.Local
-                      ? _expires.ToLocalTime ()
+                      ? _expires.ToLocalTime()
                       : _expires;
 
         var span = expires - DateTime.Now;
         return span > TimeSpan.Zero
-               ? (int) span.TotalSeconds
+               ? (int)span.TotalSeconds
                : 0;
       }
 
-      set {
+      set
+      {
         _expires = value > 0
-                   ? DateTime.Now.AddSeconds ((double) value)
+                   ? DateTime.Now.AddSeconds((double)value)
                    : DateTime.Now;
       }
     }
 
-    internal int[] Ports {
-      get {
+    internal int[] Ports
+    {
+      get
+      {
         return _ports ?? _emptyPorts;
       }
     }
 
-    internal string SameSite {
-      get {
+    internal string SameSite
+    {
+      get
+      {
         return _sameSite;
       }
 
-      set {
+      set
+      {
         _sameSite = value;
       }
     }
@@ -383,12 +395,15 @@ using System.Text;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public string Comment {
-      get {
+    public string Comment
+    {
+      get
+      {
         return _comment;
       }
 
-      internal set {
+      internal set
+      {
         _comment = value;
       }
     }
@@ -408,12 +423,15 @@ using System.Text;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public Uri CommentUri {
-      get {
+    public Uri CommentUri
+    {
+      get
+      {
         return _commentUri;
       }
 
-      internal set {
+      internal set
+      {
         _commentUri = value;
       }
     }
@@ -431,12 +449,15 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool Discard {
-      get {
+    public bool Discard
+    {
+      get
+      {
         return _discard;
       }
 
-      internal set {
+      internal set
+      {
         _discard = value;
       }
     }
@@ -453,12 +474,15 @@ using System.Text;
     ///   An empty string if this attribute is not needed.
     ///   </para>
     /// </value>
-    public string Domain {
-      get {
+    public string Domain
+    {
+      get
+      {
         return _domain;
       }
 
-      set {
+      set
+      {
         _domain = value ?? String.Empty;
       }
     }
@@ -474,12 +498,15 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool Expired {
-      get {
+    public bool Expired
+    {
+      get
+      {
         return _expires != DateTime.MinValue && _expires <= DateTime.Now;
       }
 
-      set {
+      set
+      {
         _expires = value ? DateTime.Now : DateTime.MinValue;
       }
     }
@@ -499,12 +526,15 @@ using System.Text;
     ///   The default value is <see cref="DateTime.MinValue"/>.
     ///   </para>
     /// </value>
-    public DateTime Expires {
-      get {
+    public DateTime Expires
+    {
+      get
+      {
         return _expires;
       }
 
-      set {
+      set
+      {
         _expires = value;
       }
     }
@@ -522,12 +552,15 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool HttpOnly {
-      get {
+    public bool HttpOnly
+    {
+      get
+      {
         return _httpOnly;
       }
 
-      set {
+      set
+      {
         _httpOnly = value;
       }
     }
@@ -565,26 +598,31 @@ using System.Text;
     ///   The value specified for a set operation contains an invalid character.
     ///   </para>
     /// </exception>
-    public string Name {
-      get {
+    public string Name
+    {
+      get
+      {
         return _name;
       }
 
-      set {
+      set
+      {
         if (value == null)
-          throw new ArgumentNullException ("value");
+          throw new ArgumentNullException("value");
 
         if (value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
+          throw new ArgumentException("An empty string.", "value");
 
-        if (value[0] == '$') {
+        if (value[0] == '$')
+        {
           var msg = "It starts with a dollar sign.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
-        if (!value.IsToken ()) {
+        if (!value.IsToken())
+        {
           var msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "value");
+          throw new ArgumentException(msg, "value");
         }
 
         _name = value;
@@ -598,12 +636,15 @@ using System.Text;
     /// A <see cref="string"/> that represents the subset of URI on
     /// the origin server that the cookie applies to.
     /// </value>
-    public string Path {
-      get {
+    public string Path
+    {
+      get
+      {
         return _path;
       }
 
-      set {
+      set
+      {
         _path = value ?? String.Empty;
       }
     }
@@ -623,14 +664,17 @@ using System.Text;
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public string Port {
-      get {
+    public string Port
+    {
+      get
+      {
         return _port;
       }
 
-      internal set {
+      internal set
+      {
         int[] ports;
-        if (!tryCreatePorts (value, out ports))
+        if (!tryCreatePorts(value, out ports))
           return;
 
         _port = value;
@@ -655,12 +699,15 @@ using System.Text;
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
-    public bool Secure {
-      get {
+    public bool Secure
+    {
+      get
+      {
         return _secure;
       }
 
-      set {
+      set
+      {
         _secure = value;
       }
     }
@@ -672,8 +719,10 @@ using System.Text;
     /// A <see cref="DateTime"/> that represents the time when
     /// the cookie was issued.
     /// </value>
-    public DateTime TimeStamp {
-      get {
+    public DateTime TimeStamp
+    {
+      get
+      {
         return _timeStamp;
       }
     }
@@ -688,19 +737,24 @@ using System.Text;
     /// The value specified for a set operation is a string not enclosed in
     /// double quotes that contains an invalid character.
     /// </exception>
-    public string Value {
-      get {
+    public string Value
+    {
+      get
+      {
         return _value;
       }
 
-      set {
+      set
+      {
         if (value == null)
           value = String.Empty;
 
-        if (value.Contains (_reservedCharsForValue)) {
-          if (!value.IsEnclosedIn ('"')) {
+        if (value.Contains(_reservedCharsForValue))
+        {
+          if (!value.IsEnclosedIn('"'))
+          {
             var msg = "A string not enclosed in double quotes.";
-            throw new ArgumentException (msg, "value");
+            throw new ArgumentException(msg, "value");
           }
         }
 
@@ -723,12 +777,15 @@ using System.Text;
     ///   The default value is 0.
     ///   </para>
     /// </value>
-    public int Version {
-      get {
+    public int Version
+    {
+      get
+      {
         return _version;
       }
 
-      internal set {
+      internal set
+      {
         if (value < 0 || value > 1)
           return;
 
@@ -740,16 +797,16 @@ using System.Text;
 
     #region Private Methods
 
-    private static int hash (int i, int j, int k, int l, int m)
+    private static int hash(int i, int j, int k, int l, int m)
     {
       return i
              ^ (j << 13 | j >> 19)
-             ^ (k << 26 | k >>  6)
-             ^ (l <<  7 | l >> 25)
+             ^ (k << 26 | k >> 6)
+             ^ (l << 7 | l >> 25)
              ^ (m << 20 | m >> 12);
     }
 
-    private void init (string name, string value, string path, string domain)
+    private void init(string name, string value, string path, string domain)
     {
       _name = name;
       _value = value;
@@ -760,97 +817,102 @@ using System.Text;
       _timeStamp = DateTime.Now;
     }
 
-    private string toResponseStringVersion0 ()
+    private string toResponseStringVersion0()
     {
-      var buff = new StringBuilder (64);
+      var buff = new StringBuilder(64);
 
-      buff.AppendFormat ("{0}={1}", _name, _value);
+      buff.AppendFormat("{0}={1}", _name, _value);
 
-      if (_expires != DateTime.MinValue) {
-        buff.AppendFormat (
+      if (_expires != DateTime.MinValue)
+      {
+        buff.AppendFormat(
           "; Expires={0}",
-          _expires.ToUniversalTime ().ToString (
+          _expires.ToUniversalTime().ToString(
             "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
-            CultureInfo.CreateSpecificCulture ("en-US")
+            CultureInfo.CreateSpecificCulture("en-US")
           )
         );
       }
 
-      if (!_path.IsNullOrEmpty ())
-        buff.AppendFormat ("; Path={0}", _path);
+      if (!_path.IsNullOrEmpty())
+        buff.AppendFormat("; Path={0}", _path);
 
-      if (!_domain.IsNullOrEmpty ())
-        buff.AppendFormat ("; Domain={0}", _domain);
+      if (!_domain.IsNullOrEmpty())
+        buff.AppendFormat("; Domain={0}", _domain);
 
-      if (!_sameSite.IsNullOrEmpty ())
-        buff.AppendFormat ("; SameSite={0}", _sameSite);
+      if (!_sameSite.IsNullOrEmpty())
+        buff.AppendFormat("; SameSite={0}", _sameSite);
 
       if (_secure)
-        buff.Append ("; Secure");
+        buff.Append("; Secure");
 
       if (_httpOnly)
-        buff.Append ("; HttpOnly");
+        buff.Append("; HttpOnly");
 
-      return buff.ToString ();
+      return buff.ToString();
     }
 
-    private string toResponseStringVersion1 ()
+    private string toResponseStringVersion1()
     {
-      var buff = new StringBuilder (64);
+      var buff = new StringBuilder(64);
 
-      buff.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
+      buff.AppendFormat("{0}={1}; Version={2}", _name, _value, _version);
 
       if (_expires != DateTime.MinValue)
-        buff.AppendFormat ("; Max-Age={0}", MaxAge);
+        buff.AppendFormat("; Max-Age={0}", MaxAge);
 
-      if (!_path.IsNullOrEmpty ())
-        buff.AppendFormat ("; Path={0}", _path);
+      if (!_path.IsNullOrEmpty())
+        buff.AppendFormat("; Path={0}", _path);
 
-      if (!_domain.IsNullOrEmpty ())
-        buff.AppendFormat ("; Domain={0}", _domain);
+      if (!_domain.IsNullOrEmpty())
+        buff.AppendFormat("; Domain={0}", _domain);
 
-      if (_port != null) {
+      if (_port != null)
+      {
         if (_port != "\"\"")
-          buff.AppendFormat ("; Port={0}", _port);
+          buff.AppendFormat("; Port={0}", _port);
         else
-          buff.Append ("; Port");
+          buff.Append("; Port");
       }
 
       if (_comment != null)
-        buff.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
+        buff.AppendFormat("; Comment={0}", HttpUtility.UrlEncode(_comment));
 
-      if (_commentUri != null) {
+      if (_commentUri != null)
+      {
         var url = _commentUri.OriginalString;
-        buff.AppendFormat (
-          "; CommentURL={0}", !url.IsToken () ? url.Quote () : url
+        buff.AppendFormat(
+          "; CommentURL={0}", !url.IsToken() ? url.Quote() : url
         );
       }
 
       if (_discard)
-        buff.Append ("; Discard");
+        buff.Append("; Discard");
 
       if (_secure)
-        buff.Append ("; Secure");
+        buff.Append("; Secure");
 
-      return buff.ToString ();
+      return buff.ToString();
     }
 
-    private static bool tryCreatePorts (string value, out int[] result)
+    private static bool tryCreatePorts(string value, out int[] result)
     {
       result = null;
 
-      var arr = value.Trim ('"').Split (',');
+      var arr = value.Trim('"').Split(',');
       var len = arr.Length;
       var res = new int[len];
 
-      for (var i = 0; i < len; i++) {
-        var s = arr[i].Trim ();
-        if (s.Length == 0) {
+      for (var i = 0; i < len; i++)
+      {
+        var s = arr[i].Trim();
+        if (s.Length == 0)
+        {
           res[i] = Int32.MinValue;
           continue;
         }
 
-        if (!Int32.TryParse (s, out res[i]))
+        if (!Int32.TryParse(s, out res[i]))
           return false;
       }
 
@@ -862,59 +924,61 @@ using System.Text;
 
     #region Internal Methods
 
-    internal bool EqualsWithoutValue (Cookie cookie)
+    internal bool EqualsWithoutValue(Cookie cookie)
     {
       var caseSensitive = StringComparison.InvariantCulture;
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-      return _name.Equals (cookie._name, caseInsensitive)
-             && _path.Equals (cookie._path, caseSensitive)
-             && _domain.Equals (cookie._domain, caseInsensitive)
+      return _name.Equals(cookie._name, caseInsensitive)
+             && _path.Equals(cookie._path, caseSensitive)
+             && _domain.Equals(cookie._domain, caseInsensitive)
              && _version == cookie._version;
     }
 
-    internal bool EqualsWithoutValueAndVersion (Cookie cookie)
+    internal bool EqualsWithoutValueAndVersion(Cookie cookie)
     {
       var caseSensitive = StringComparison.InvariantCulture;
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-      return _name.Equals (cookie._name, caseInsensitive)
-             && _path.Equals (cookie._path, caseSensitive)
-             && _domain.Equals (cookie._domain, caseInsensitive);
+      return _name.Equals(cookie._name, caseInsensitive)
+             && _path.Equals(cookie._path, caseSensitive)
+             && _domain.Equals(cookie._domain, caseInsensitive);
     }
 
-    internal string ToRequestString (Uri uri)
+    internal string ToRequestString(Uri uri)
     {
       if (_name.Length == 0)
         return String.Empty;
 
       if (_version == 0)
-        return String.Format ("{0}={1}", _name, _value);
+        return String.Format("{0}={1}", _name, _value);
 
-      var buff = new StringBuilder (64);
+      var buff = new StringBuilder(64);
 
-      buff.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
+      buff.AppendFormat("$Version={0}; {1}={2}", _version, _name, _value);
 
-      if (!_path.IsNullOrEmpty ())
-        buff.AppendFormat ("; $Path={0}", _path);
+      if (!_path.IsNullOrEmpty())
+        buff.AppendFormat("; $Path={0}", _path);
       else if (uri != null)
-        buff.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
+        buff.AppendFormat("; $Path={0}", uri.GetAbsolutePath());
       else
-        buff.Append ("; $Path=/");
+        buff.Append("; $Path=/");
 
-      if (!_domain.IsNullOrEmpty ()) {
+      if (!_domain.IsNullOrEmpty())
+      {
         if (uri == null || uri.Host != _domain)
-          buff.AppendFormat ("; $Domain={0}", _domain);
+          buff.AppendFormat("; $Domain={0}", _domain);
       }
 
-      if (_port != null) {
+      if (_port != null)
+      {
         if (_port != "\"\"")
-          buff.AppendFormat ("; $Port={0}", _port);
+          buff.AppendFormat("; $Port={0}", _port);
         else
-          buff.Append ("; $Port");
+          buff.Append("; $Port");
       }
 
-      return buff.ToString ();
+      return buff.ToString();
     }
 
     /// <summary>
@@ -924,25 +988,27 @@ using System.Text;
     /// A <see cref="string"/> that is suitable for the Set-Cookie response
     /// header.
     /// </returns>
-    internal string ToResponseString ()
+    internal string ToResponseString()
     {
       return _name.Length == 0
              ? String.Empty
              : _version == 0
-               ? toResponseStringVersion0 ()
-               : toResponseStringVersion1 ();
+               ? toResponseStringVersion0()
+               : toResponseStringVersion1();
     }
 
-    internal static bool TryCreate (
+    internal static bool TryCreate(
       string name, string value, out Cookie result
     )
     {
       result = null;
 
-      try {
-        result = new Cookie (name, value);
+      try
+      {
+        result = new Cookie(name, value);
       }
-      catch {
+      catch
+      {
         return false;
       }
 
@@ -970,7 +1036,7 @@ using System.Text;
     /// <c>true</c> if the current cookie instance is equal to
     /// <paramref name="comparand"/>; otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (object comparand)
+    public override bool Equals(object comparand)
     {
       var cookie = comparand as Cookie;
       if (cookie == null)
@@ -979,10 +1045,10 @@ using System.Text;
       var caseSensitive = StringComparison.InvariantCulture;
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-      return _name.Equals (cookie._name, caseInsensitive)
-             && _value.Equals (cookie._value, caseSensitive)
-             && _path.Equals (cookie._path, caseSensitive)
-             && _domain.Equals (cookie._domain, caseInsensitive)
+      return _name.Equals(cookie._name, caseInsensitive)
+             && _value.Equals(cookie._value, caseSensitive)
+             && _path.Equals(cookie._path, caseSensitive)
+             && _domain.Equals(cookie._domain, caseInsensitive)
              && _version == cookie._version;
     }
 
@@ -992,13 +1058,13 @@ using System.Text;
     /// <returns>
     /// An <see cref="int"/> that represents the hash code.
     /// </returns>
-    public override int GetHashCode ()
+    public override int GetHashCode()
     {
-      return hash (
-               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
-               _value.GetHashCode (),
-               _path.GetHashCode (),
-               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
+      return hash(
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode(_name),
+               _value.GetHashCode(),
+               _path.GetHashCode(),
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode(_domain),
                _version
              );
     }
@@ -1009,9 +1075,9 @@ using System.Text;
     /// <returns>
     /// A <see cref="string"/> that is suitable for the Cookie request header.
     /// </returns>
-    public override string ToString ()
+    public override string ToString()
     {
-      return ToRequestString (null);
+      return ToRequestString(null);
     }
 
     #endregion

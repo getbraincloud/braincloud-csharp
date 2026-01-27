@@ -7,9 +7,9 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.JsonFx.Json;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
 
     public class BrainCloudEntity
     {
@@ -24,28 +24,17 @@ using BrainCloud.JsonFx.Json;
         /// Method creates a new entity on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Create
+        /// Service Name - entity
+        /// Service Operation - CREATE
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// permissions which make the entity readable/writeable by only the user.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string</param>
+        /// <param name="jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void CreateEntity(
             string entityType,
             string jsonEntityData,
@@ -70,26 +59,19 @@ using BrainCloud.JsonFx.Json;
             var serverCall = new ServerCall(ServiceName.Entity, ServiceOperation.Create, data, callback);
             _client.SendRequest(serverCall);
         }
-
-
-        /// <summary> Method returns all user entities that match the given type.
+        /// <summary>
+        /// Method returns all user entities that match the given type.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - ReadByType
+        /// Service Name - entity
+        /// Service Operation - READ_BY_TYPE
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type to search for
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityType">The entity type to search for</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetEntitiesByType(
             string entityType,
             SuccessCallback success = null,
@@ -103,43 +85,23 @@ using BrainCloud.JsonFx.Json;
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.ReadByType, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
         /// Method updates a new entity on the server. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Update
+        /// Service Name - entity
+        /// Service Operation - UPDATE
         /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity to update
-        /// </param>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// permissions which make the entity readable/writeable by only the user.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        /// entity on the server does not match the version passed in, the
-        /// server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityId">The id of the entity to update</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string.</param>
+        /// <param name="jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="version">Current version of the entity. If the version of the entity on the server does not match the version passed in, the server operation will fail. Use -1 to skip version checking.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateEntity(
             string entityId,
             string entityType,
@@ -171,38 +133,20 @@ using BrainCloud.JsonFx.Json;
 
         /// <summary>
         /// Method updates a shared entity owned by another user. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - UpdateShared
+        /// Service Name - entity
+        /// Service Operation - UPDATE_SHARED
         /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity to update
-        /// </param>
-        /// <param name="targetProfileId">
-        /// The id of the entity's owner
-        /// </param>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityId">The id of the entity to update</param>
+        /// <param name="targetProfileId">The id of the user who owns the shared entity</param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateSharedEntity(
             string entityId,
             string targetProfileId,
@@ -241,26 +185,16 @@ using BrainCloud.JsonFx.Json;
         /// Method deletes the given entity on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Delete
+        /// Service Name - entity
+        /// Service Operation - DELETE
         /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity to update
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityId">The id of the entity to update</param>
+        /// <param name="version">Current version of the entity. If the version of the entity on the server does not match the version passed in, the server operation will fail. Use -1 to skip version checking.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteEntity(
             string entityId,
             int version,
@@ -278,36 +212,21 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Method updates a singleton entity on the server. This operation results in the entity
-        /// data being completely replaced by the passed in JSON string. If the entity doesn't exist it is created.
+        /// Method updates a new singleton entity on the server. This operation results in the entity
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Update_Singleton
+        /// Service Name - entity
+        /// Service Operation - UPDATE_SINGLETON
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="jsonEntityData">
-        /// The entity's data as a json string.
-        /// </param>
-        /// <param name="jsonEntityAcl">
-        /// The entity's access control list as json. A null acl implies default
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="jsonEntityData">The entity's data as a json string. permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="jsonEntityAcl">The entity's access control list as json. A null acl implies default permissions which make the entity readable/writeable by only the user.</param>
+        /// <param name="version">Current version of the entity. If the version of the entity on the server does not match the version passed in, the server operation will fail. Use -1 to skip version checking.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void UpdateSingleton(
             string entityType,
             string jsonEntityData,
@@ -335,32 +254,20 @@ using BrainCloud.JsonFx.Json;
             var sc = new ServerCall(ServiceName.Entity, ServiceOperation.UpdateSingleton, data, callback);
             _client.SendRequest(sc);
         }
-
-
         /// <summary>
-        /// Method deletes the given singleton on the server.
+        /// Method deletes the given singleton entity on the server.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Delete
+        /// Service Name - entity
+        /// Service Operation - DELETE_SINGLETON
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="version">
-        /// Current version of the entity. If the version of the
-        ///  entity on the server does not match the version passed in, the
-        ///  server operation will fail. Use -1 to skip version checking.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityType">The type of the entity to delete</param>
+        /// <param name="version">Current version of the entity. If the version of the entity on the server does not match the version passed in, the server operation will fail. Use -1 to skip version checking.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void DeleteSingleton(
             string entityType,
             int version,
@@ -381,21 +288,15 @@ using BrainCloud.JsonFx.Json;
         /// Method to get a specific entity.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - Read
+        /// Service Name - entity
+        /// Service Operation - READ
         /// </remarks>
-        /// <param name="entityId">
-        /// The id of the entity
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityId">The entity id</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetEntity(
             string entityId,
             SuccessCallback success = null,
@@ -411,24 +312,18 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Method retrieves a singleton entity on the server. If the entity doesn't exist, null is returned.
+        /// Method retreives a singleton entity on the server. If the entity doesn't exist, null is returned.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - ReadSingleton
+        /// Service Name - entity
+        /// Service Operation - READ_SINGLETON
         /// </remarks>
-        /// <param name="entityType">
-        /// The entity type as defined by the user
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="entityType">The entity type as defined by the user</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetSingleton(
             string entityType,
             SuccessCallback success = null,
@@ -444,29 +339,19 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Method returns a shared entity for the given profile and entity ID.
-        /// An entity is shared if its ACL allows for the currently logged
-        /// in user to read the data.
+        /// Method returns a shared entity for the given user and entity ID.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
+        /// Service Name - entity
         /// Service Operation - READ_SHARED_ENTITY
         /// </remarks>
-        /// <param name="profileId">
-        /// The the profile ID of the user who owns the entity
-        /// </param>
-        /// <param name="entityId">
-        /// The ID of the entity that will be retrieved
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="profileId">The the profile ID of the user who owns the entity</param>
+        /// <param name="entityId">The ID of the entity that will be retrieved</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetSharedEntityForProfileId(
             string profileId,
             string entityId,
@@ -485,25 +370,17 @@ using BrainCloud.JsonFx.Json;
 
         /// <summary>
         /// Method returns all shared entities for the given profile id.
-        /// An entity is shared if its ACL allows for the currently logged
-        /// in user to read the data.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - ReadShared
+        /// Service Name - entity
+        /// Service Operation - READ_SHARED
         /// </remarks>
-        /// <param name="profileId">
-        /// The profile id to retrieve shared entities for
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="profileId">The profile id to retrieve shared entities for</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetSharedEntitiesForProfileId(
             string profileId,
             SuccessCallback success = null,
@@ -522,27 +399,17 @@ using BrainCloud.JsonFx.Json;
         /// Method gets list of entities from the server base on type and/or where clause
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
+        /// Service Name - entity
         /// Service Operation - GET_LIST
         /// </remarks>
-        /// <param name="whereJson">
-        /// Mongo style query string
-        /// </param>
-        /// <param name="orderByJson">
-        /// Sort order
-        /// </param>
-        /// <param name="maxReturn">
-        /// The maximum number of entities to return
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="whereJson">Mongo style query string</param>
+        /// <param name="orderByJson">Sort order</param>
+        /// <param name="maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetList(
             string whereJson,
             string orderByJson,
@@ -574,30 +441,18 @@ using BrainCloud.JsonFx.Json;
         /// Method gets list of shared entities for the specified user based on type and/or where clause
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - GET_LIST
+        /// Service Name - entity
+        /// Service Operation - READ_SHARED_ENTITIES_LIST
         /// </remarks>
-        /// <param name="profileId">
-        /// The profile ID to retrieve shared entities for
-        /// </param>
-        /// <param name="whereJson">
-        /// Mongo style query string
-        /// </param>
-        /// <param name="orderByJson">
-        /// Sort order
-        /// </param>
-        /// <param name="maxReturn">
-        /// The maximum number of entities to return
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="profileId">The profile ID to retrieve shared entities for</param>
+        /// <param name="whereJson">Mongo style query</param>
+        /// <param name="orderByJson">Sort order</param>
+        /// <param name="maxReturn">The maximum number of entities to return</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetSharedEntitiesListForProfileId(
             string profileId,
             string whereJson,
@@ -631,21 +486,15 @@ using BrainCloud.JsonFx.Json;
         /// Method gets a count of entities based on the where clause
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - GetListCount
+        /// Service Name - entity
+        /// Service Operation - GET_LIST_COUNT
         /// </remarks>
-        /// <param name="whereJson">
-        /// Mongo style query string
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="whereJson">Mongo style query string</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetListCount(
             string whereJson,
             SuccessCallback success = null,
@@ -666,20 +515,18 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Method uses a paging system to iterate through user entities.
-        /// After retrieving a page of entities with this method,
-        /// use GetPageOffset() to retrieve previous or next pages.
+        /// Method uses a paging system to iterate through user entities
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - GetPage
+        /// Service Name - entity
+        /// Service Operation - GET_PAGE
         /// </remarks>
-        /// <param name="jsonContext">The json context for the page request.
-        /// See the portal appendix documentation for format</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
-        /// 
+        /// <param name="context">The json context for the page request. See the portal appendix documentation for format.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetPage(
             string jsonContext,
             SuccessCallback success = null,
@@ -697,25 +544,19 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Method to retrieve previous or next pages after having called
-        /// the GetPage method.
+        /// Method to retrieve previous or next pages after having called the GetPage method.
         /// </summary>
         /// <remarks>
-        /// Service Name - Entity
-        /// Service Operation - GetPageOffset
+        /// Service Name - entity
+        /// Service Operation - GET_PAGE_OFFSET
         /// </remarks>
-        /// <param name="context">
-        /// The context string returned from the server from a previous call
-        /// to GetPage() or GetPageOffset()
-        /// </param>
-        /// <param name="pageOffset">
-        /// The positive or negative page offset to fetch. Uses the last page
-        /// retrieved using the context string to determine a starting point.
-        /// </param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
-        /// 
+        /// <param name="context">The context string returned from the server from a previous call to GetPage or GetPageOffset</param>
+        /// <param name="pageOffset">The positive or negative page offset to fetch. Uses the last page retrieved using the context string to determine a starting point.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetPageOffset(
             string context,
             int pageOffset,
@@ -740,11 +581,13 @@ using BrainCloud.JsonFx.Json;
         /// Service Name - entity
         /// Service Operation - INCREMENT_USER_ENTITY_DATA
         /// </remarks>
-        /// <param name="entityId">The entity to increment</param>
-        /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="entityId">The id of the entity to update</param>
+        /// <param name="jsonData">The entity's data object</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void IncrementUserEntityData(
             string entityId,
             string jsonData,
@@ -767,18 +610,20 @@ using BrainCloud.JsonFx.Json;
         }
 
         /// <summary>
-        /// Partial increment of shared entity data field items. Partial set of items incremented as specified.
+        /// Partial increment of entity data field items. Partial set of items incremented as specified.
         /// </summary>
         /// <remarks>
         /// Service Name - entity
         /// Service Operation - INCREMENT_SHARED_USER_ENTITY_DATA
         /// </remarks>
-        /// <param name="entityId">The entity to increment</param>
+        /// <param name="entityId">The id of the entity to update</param>
         /// <param name="targetProfileId">Profile ID of the entity owner</param>
-        /// <param name="jsonData">The subset of data to increment</param>
-        /// <param name="success">The success callback</param>
-        /// <param name="failure">The failure callback</param>
-        /// <param name="cbObject">The callback object</param>
+        /// <param name="jsonData">The entity's data object</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void IncrementSharedUserEntityData(
             string entityId,
             string targetProfileId,

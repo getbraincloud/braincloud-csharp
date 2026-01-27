@@ -11,8 +11,6 @@ namespace BrainCloud.Internal
     using System.Collections.Generic;
     using System.Text;
     using BrainCloud.JsonFx.Json;
-
-
     internal sealed class RTTComms
     {
         /// <summary>
@@ -39,17 +37,17 @@ namespace BrainCloud.Internal
         {
             m_disconnectedWithReason = false;
 
-            if(IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
+            if (IsRTTEnabled() || m_rttConnectionStatus == RTTConnectionStatus.CONNECTING)
             {
                 return;
             }
-            if(!m_clientRef.Authenticated || m_clientRef.Comms.KillSwitchEngaged)
+            if (!m_clientRef.Authenticated || m_clientRef.Comms.KillSwitchEngaged)
             {
-                if(m_clientRef.LoggingEnabled)
+                if (m_clientRef.LoggingEnabled)
                 {
                     m_clientRef.Log("RTT: EnableRTT called before calling authentication request. Disabling RTT.");
                 }
-                if(in_failure != null)
+                if (in_failure != null)
                 {
                     in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RTT_NO_API_SESSION_ERROR, "RTT: EnableRTT called before calling authentication request. Disabling RTT.", cb_object);
                 }
@@ -143,7 +141,7 @@ namespace BrainCloud.Internal
                 for (int i = 0; i < m_queuedRTTCommands.Count; ++i)
                 {
                     toProcessResponse = m_queuedRTTCommands[i];
- 
+
                     //the rtt websocket has closed and RTT needs to be re-enabled. disconnect is called to fully reset connection 
                     if (m_webSocketStatus == WebsocketStatus.CLOSED)
                     {
@@ -177,10 +175,10 @@ namespace BrainCloud.Internal
                     //If there's an error, we send back the error
                     else if (m_connectionFailureCallback != null && toProcessResponse.Operation == "error")
                     {
-                        if(toProcessResponse.JsonMessage != null)
-                        {   
+                        if (toProcessResponse.JsonMessage != null)
+                        {
                             Dictionary<string, object> messageData = (Dictionary<string, object>)JsonReader.Deserialize(toProcessResponse.JsonMessage);
-                            if(messageData.ContainsKey("status") && messageData.ContainsKey("reason_code"))
+                            if (messageData.ContainsKey("status") && messageData.ContainsKey("reason_code"))
                             {
                                 m_connectionFailureCallback((int)messageData["status"], (int)messageData["reason_code"], toProcessResponse.JsonMessage, m_connectedObj);
                             }
@@ -550,7 +548,7 @@ namespace BrainCloud.Internal
 
         private bool m_disconnectedWithReason = false;
         private Dictionary<string, object> m_disconnectJson = new Dictionary<string, object>();
-        
+
         private Dictionary<string, object> m_endpoint = null;
         private RTTConnectionType m_currentConnectionType = RTTConnectionType.INVALID;
         private BrainCloudWebSocket m_webSocket = null;
@@ -598,7 +596,7 @@ namespace BrainCloud
     {
         OPEN,
         CLOSED,
-        MESSAGE, 
+        MESSAGE,
         ERROR,
         NONE
     }

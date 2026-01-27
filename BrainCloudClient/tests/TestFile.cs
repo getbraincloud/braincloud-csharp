@@ -48,7 +48,7 @@ namespace BrainCloudTests
             _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
 
             FileInfo info = new FileInfo(CreateFile(4024));
-            
+
             _bc.FileService.UploadFileFromMemory(
                 _cloudPath,
                 info.FullName,
@@ -63,7 +63,7 @@ namespace BrainCloudTests
 
             Assert.That(!(_failCount > 0));
         }
-        
+
         [Test]
         public void TestUploadFromMemory()
         {
@@ -81,7 +81,7 @@ namespace BrainCloudTests
                 true,
                 fileData,
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
@@ -94,7 +94,7 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
             _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
-            
+
             string fileName1 = "testFile1.txt";
             string fileContent1 = "Hello, I'm a file !";
             byte[] fileData1 = ConvertFileToByteArray(fileContent1);
@@ -142,12 +142,12 @@ namespace BrainCloudTests
         public void TestSimpleUploadFailedFromPrivacySettings()
         {
             String cloudPath = "test";
-        
+
             TestResult tr = new TestResult(_bc);
             _bc.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
-        
+
             FileInfo info = new FileInfo(CreateFile(4024));
-        
+
             _bc.FileService.UploadFileFromMemory(
                 cloudPath,
                 info.Name,
@@ -155,7 +155,7 @@ namespace BrainCloudTests
                 true,
                 ConvertFileToByteArray(info),
                 tr.ApiSuccess, tr.ApiError);
-        
+
             tr.Run();
 
             WaitForReturn(new[] { GetUploadId(tr.m_response) });
@@ -172,7 +172,7 @@ namespace BrainCloudTests
             {
                 webClient.DownloadFile(fullPath, name);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return;
             }
@@ -244,8 +244,6 @@ namespace BrainCloudTests
 
             tr.Run();
         }
-
-
         [Test]
         public void TestGetCdnUrl()
         {
@@ -409,7 +407,7 @@ namespace BrainCloudTests
             _bc.FileService.DeleteUserFiles("", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
-        
+
         /// <summary>
         /// Creates a test file filled with garbage
         /// </summary>
@@ -432,16 +430,16 @@ namespace BrainCloudTests
             if (Uri.IsWellFormedUriString(fileContent, UriKind.Absolute))
             {
                 Stream info = new FileStream(fileContent, FileMode.Open);
-                byte[] fileData = new Byte[(int) info.Length];
+                byte[] fileData = new Byte[(int)info.Length];
                 info.Seek(0, SeekOrigin.Begin);
-                info.Read(fileData, 0, (int) info.Length);
+                info.Read(fileData, 0, (int)info.Length);
                 info.Close();
                 return fileData;
             }
 
             return Encoding.ASCII.GetBytes(fileContent);
         }
-        
+
         private byte[] ConvertFileToByteArray(FileInfo fileContent)
         {
             return System.IO.File.ReadAllBytes(fileContent.FullName);

@@ -7,8 +7,8 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
 
     public struct RelayConnectOptions
     {
@@ -110,30 +110,33 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
+        /// Start a connection, based on connection type to
         /// </summary>
-        /// <param name="in_connectionType"></param>
-        /// <param name="in_options"></param>
-        /// <param name="in_success"></param>
-        /// <param name="in_failure"></param>
-        /// <param name="cb_object"></param>
+        /// <param name="connectionType">The connection type. WEBSOCKET, TCP, UDP</param>
+        /// <param name="options">{ ssl: false, host: "168.0.1.192" port: 9000, passcode: "somePasscode", lobbyId: "55555:v5v:001" }</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void Connect(RelayConnectionType in_connectionType, RelayConnectOptions in_options, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             m_commsLayer.Connect(in_connectionType, in_options, in_success, in_failure, cb_object);
         }
 
         /// <summary>
-        /// Disables relay event for this session.
+        /// Disconnects from the relay server
         /// </summary>
+
         public void Disconnect()
         {
             m_commsLayer.Disconnect();
         }
-        
+
         /// <summary>
         /// Terminate the match instance by the owner.
         /// </summary>
-        /// <param name="json">payload data sent in JSON format. It will be relayed to other connnected players.</param>
+        /// <param name="json">Payload data sent in JSON format. It will be relayed to other connnected players</param>
         public void EndMatch(Dictionary<string, object> json)
         {
             m_commsLayer.EndMatch(json);
@@ -148,8 +151,13 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Register callback for relay messages coming from peers on the main thread
+        /// Register callback for relay messages coming from peers.
         /// </summary>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void RegisterRelayCallback(RelayCallback in_callback)
         {
             m_commsLayer.RegisterRelayCallback(in_callback);
@@ -165,46 +173,12 @@ using BrainCloud.Internal;
 
         /// <summary>
         /// Register callback for RelayServer system messages.
-        /// 
-        /// # CONNECT
-        /// Received when a new member connects to the server.
-        /// {
-        ///   op: "CONNECT",
-        ///   profileId: "...",
-        ///   ownerId: "...",
-        ///   netId: #
-        /// }
-        /// 
-        /// # NET_ID
-        /// Receive the Net Id assossiated with a profile Id. This is
-        /// sent for each already connected members once you
-        /// successfully connected.
-        /// {
-        ///   op: "NET_ID",
-        ///   profileId: "...",
-        ///   netId: #
-        /// }
-        /// 
-        /// # DISCONNECT
-        /// Received when a member disconnects from the server.
-        /// {
-        ///   op: "DISCONNECT",
-        ///   profileId: "..."
-        /// }
-        /// 
-        /// # MIGRATE_OWNER
-        /// If the owner left or never connected in a timely manner,
-        /// the relay-server will migrate the role to the next member
-        /// with the best ping. If no one else is currently connected
-        /// yet, it will be transferred to the next member in the
-        /// lobby members' list. This last scenario can only occur if
-        /// the owner connected first, then quickly disconnected.
-        /// Leaving only unconnected lobby members.
-        /// {
-        ///   op: "MIGRATE_OWNER",
-        ///   profileId: "..."
-        /// }
         /// </summary>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void RegisterSystemCallback(RelaySystemCallback in_callback)
         {
             m_commsLayer.RegisterSystemCallback(in_callback);
@@ -221,16 +195,14 @@ using BrainCloud.Internal;
         /// <summary>
         /// Send a packet to peer(s)
         /// </summary>
-        /// <param in_data="message to be sent"></param>
-        /// <param to_netId="the net id to send to, BrainCloudRelay.TO_ALL_PLAYERS to relay to all"></param>
-        /// <param in_reliable="send this reliably or not"></param>
-        /// <param in_ordered="received this ordered or not"></param>
-        /// <param in_channel="0,1,2,3 (max of four channels)">
-        /// CHANNEL_HIGH_PRIORITY_1 = 0;
-        /// CHANNEL_HIGH_PRIORITY_2 = 1;
-        /// CHANNEL_NORMAL_PRIORITY = 2;
-        /// CHANNEL_LOW_PRIORITY = 3;
-        /// </param>
+        /// <param name="data">Byte array for the data to send</param>
+        /// <param name="size">Size of data in bytes</param>
+        /// <param name="toNetId">The net id to send to, TO_ALL_PLAYERS to relay to all.</param>
+        /// <param name="reliable">Send this reliable or not.</param>
+        /// <param name="ordered">Receive this ordered or not.</param>
+        /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
+
+
         public void Send(byte[] in_data, ulong to_netId, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             if (to_netId == TO_ALL_PLAYERS)
@@ -253,16 +225,14 @@ using BrainCloud.Internal;
         /// <summary>
         /// Send a packet to any players by using a mask
         /// </summary>
-        /// <param in_data="message to be sent"></param>
-        /// <param in_playerMask="Mask of the players to send to. 0001 = netId 0, 0010 = netId 1, etc. If you pass ALL_PLAYER_MASK you will be included and you will get an echo for your message. Use sendToAll instead, you will be filtered out. You can manually filter out by : ALL_PLAYER_MASK &= ~(1 << myNetId)"></param>
-        /// <param in_reliable="send this reliably or not"></param>
-        /// <param in_ordered="received this ordered or not"></param>
-        /// <param in_channel="0,1,2,3 (max of four channels)">
-        /// CHANNEL_HIGH_PRIORITY_1 = 0;
-        /// CHANNEL_HIGH_PRIORITY_2 = 1;
-        /// CHANNEL_NORMAL_PRIORITY = 2;
-        /// CHANNEL_LOW_PRIORITY = 3;
-        /// </param>
+        /// <param name="data">Byte array for the data to send</param>
+        /// <param name="size">Size of data in bytes</param>
+        /// <param name="playerMask">Mask of the players to send to. 0001 = netId 0, 0010 = netId 1, etc. If you pass ALL_PLAYER_MASK you will be included and you will get an echo for your message. Use sendToAll instead, you will be filtered out. You can manually filter out by : ALL_PLAYER_MASK &= ~(1 << myNetId)</param>
+        /// <param name="reliable">Send this reliable or not.</param>
+        /// <param name="ordered">Receive this ordered or not.</param>
+        /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
+
+
         public void SendToPlayers(byte[] in_data, ulong in_playerMask, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             m_commsLayer.Send(in_data, in_playerMask, in_reliable, in_ordered, in_channel);
@@ -271,15 +241,13 @@ using BrainCloud.Internal;
         /// <summary>
         /// Send a packet to all except yourself
         /// </summary>
-        /// <param in_data="message to be sent"></param>
-        /// <param in_reliable="send this reliably or not"></param>
-        /// <param in_ordered="received this ordered or not"></param>
-        /// <param in_channel="0,1,2,3 (max of four channels)">
-        /// CHANNEL_HIGH_PRIORITY_1 = 0;
-        /// CHANNEL_HIGH_PRIORITY_2 = 1;
-        /// CHANNEL_NORMAL_PRIORITY = 2;
-        /// CHANNEL_LOW_PRIORITY = 3;
-        /// </param>
+        /// <param name="data">Byte array for the data to send</param>
+        /// <param name="size">Size of data in bytes</param>
+        /// <param name="reliable">Send this reliable or not.</param>
+        /// <param name="ordered">Receive this ordered or not.</param>
+        /// <param name="channel">One of: (CHANNEL_HIGH_PRIORITY_1, CHANNEL_HIGH_PRIORITY_2, CHANNEL_NORMAL_PRIORITY, CHANNEL_LOW_PRIORITY)</param>
+
+
         public void SendToAll(byte[] in_data, bool in_reliable = true, bool in_ordered = true, int in_channel = 0)
         {
             var myProfileId = m_clientRef.AuthenticationService.ProfileId;
@@ -292,8 +260,10 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Set the ping interval.
+        /// Set the ping interval. Ping allows to keep the connection
         /// </summary>
+
+
         public void SetPingInterval(float in_interval)
         {
             m_commsLayer.SetPingInterval(in_interval);

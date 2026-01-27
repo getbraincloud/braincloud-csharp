@@ -7,11 +7,11 @@
 namespace BrainCloud
 {
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudPlaybackStream
     {
@@ -26,24 +26,15 @@ using BrainCloud.Internal;
         /// Starts a stream
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - StartStream
+        /// Service Name - playbackStream
+        /// Service Operation - START_STREAM
         /// </remarks>
-        /// <param name="targetPlayerId">
-        /// The player to start a stream with
-        /// </param>
-        /// <param name="includeSharedData">
-        /// Whether to include shared data in the stream
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="targetPlayerId">The player to start a stream with</param>
+        /// <param name="includeSharedData">Whether to include shared data in the stream</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void StartStream(
             string targetPlayerId,
             bool includeSharedData,
@@ -64,21 +55,14 @@ using BrainCloud.Internal;
         /// Reads a stream
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - ReadStream
+        /// Service Name - playbackStream
+        /// Service Operation - READ_STREAM
         /// </remarks>
-        /// <param name="playbackStreamId">
-        /// Identifies the stream to read
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="playbackStreamId">Identifies the stream to read</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ReadStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -97,21 +81,14 @@ using BrainCloud.Internal;
         /// Ends a stream
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - EndStream
+        /// Service Name - playbackStream
+        /// Service Operation - END_STREAM
         /// </remarks>
-        /// <param name="playbackStreamId">
-        /// Identifies the stream to read
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="playbackStreamId">Identifies the stream to read</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void EndStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -130,21 +107,14 @@ using BrainCloud.Internal;
         /// Deletes a stream
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - DeleteStream
+        /// Service Name - playbackStream
+        /// Service Operation - DELETE_STREAM
         /// </remarks>
-        /// <param name="playbackStreamId">
-        /// Identifies the stream to read
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="playbackStreamId">Identifies the stream to read</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void DeleteStream(
             string playbackStreamId,
             SuccessCallback success = null,
@@ -163,27 +133,16 @@ using BrainCloud.Internal;
         /// Adds a stream event
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - AddEvent
+        /// Service Name - playbackStream
+        /// Service Operation - ADD_EVENT
         /// </remarks>
-        /// <param name="playbackStreamId">
-        /// Identifies the stream to read
-        /// </param>
-        /// <param name="eventData">
-        /// Describes the event
-        /// </param>
-        /// <param name="summary">
-        /// Current summary data as of this event
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="playbackStreamId">Identifies the stream to read</param>
+        /// <param name="jsonEventData">Describes the event</param>
+        /// <param name="jsonSummary">Current summary data as of this event</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void AddEvent(
             string playbackStreamId,
             string eventData,
@@ -213,27 +172,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Gets recent streams for initiating player
+        /// Gets recent stream summaries for initiating player
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - GetRecentSteamsForInitiatingPlayer
+        /// Service Name - playbackStream
+        /// Service Operation - GET_RECENT_STREAMS_FOR_INITIATING_PLAYER
         /// </remarks>
-        /// <param name="initiatingPlayerId">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="maxNumStreams">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="targetPlayerId">The player that started the stream</param>
+        /// <param name="maxNumStreams">The max number of streams to query</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetRecentStreamsForInitiatingPlayer(
             string initiatingPlayerId,
             int maxNumStreams,
@@ -251,27 +201,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Gets recent streams for target player
+        /// Gets recent stream summaries for target player
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
-        /// Service Operation - GetRecentSteamsForTargetPlayer
+        /// Service Name - playbackStream
+        /// Service Operation - GET_RECENT_STREAMS_FOR_TARGET_PLAYER
         /// </remarks>
-        /// <param name="targetPlayerId">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="maxNumStreams">
-        /// The player that started the stream
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="targetPlayerId">The player that was target of the stream</param>
+        /// <param name="maxNumStreams">The max number of streams to query</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void GetRecentStreamsForTargetPlayer(
             string targetPlayerId,
             int maxNumStreams,
@@ -289,29 +230,18 @@ using BrainCloud.Internal;
         }
 
         /// <summary>
-        /// Protects a playback stream from being purged (but not deleted) for the given number of days (from now). 
-        /// If the number of days given is less than the normal purge interval days (from createdAt), the longer protection date is applied. 
-        /// Can only be called by users involved in the playback stream.
+        /// Protects a playback stream from being purged (but not deleted) for the given number of days (from now).
         /// </summary>
         /// <remarks>
-        /// Service Name - PlaybackStream
+        /// Service Name - playbackStream
         /// Service Operation - PROTECT_STREAM_UNTIL
         /// </remarks>
-        /// <param name="playbackStreamId">
-        /// Identifies the stream to protect.
-        /// </param>
-        /// <param name="numDays">
-        /// The number of days the stream is to be protected (from now).
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="playbackStreamId">Identifies the stream to protect</param>
+        /// <param name="numDays">The number of days the stream is to be protected (from now)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
         public void ProtectStreamUntil(
             string playbackStreamId,
             int numDays,

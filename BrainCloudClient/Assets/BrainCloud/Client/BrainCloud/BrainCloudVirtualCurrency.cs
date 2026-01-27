@@ -7,11 +7,9 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using System;
-
-
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using System;
     public class BrainCloudVirtualCurrency
     {
         private BrainCloudClient _client;
@@ -22,26 +20,18 @@ using System;
         }
 
         /// <summary>
-        /// Gets the player's currency for the given currency type
-        /// or all currency types if null passed in.
+        /// Retrieve the user's currency account. Optional parameter: `vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
-        /// Service Name - VirtalCurrency
-        /// Service Operation - GetPlayerVC
+        /// Service Name - virtualCurrency
+        /// Service Operation - GET_PLAYER_VC
         /// </remarks>
-        /// <param name="currencyType">
-        /// The currency type to retrieve or null
-        /// if all currency types are being requested.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetCurrency(
             string currencyType,
             SuccessCallback success = null,
@@ -57,29 +47,19 @@ using System;
         }
 
         /// <summary>
-        /// Gets the parents's currency for the given currency type
-        /// or all currency types if null passed in.
+        /// Retrieve the parent user's currency account. Optional parameter: `vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
-        /// Service Name - VirtalCurrency
-        /// Service Operation - GetParentVC
+        /// Service Name - virtualCurrency
+        /// Service Operation - GET_PARENT_VC
         /// </remarks>
-        /// <param name="currencyType">
-        /// The currency type to retrieve or null
-        /// if all currency types are being requested.
-        /// </param>
-        /// <param name="levelName">
-        /// The parent level name
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
+        /// <param name="levelName">The parent level name</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetParentCurrency(
             string currencyType, string levelName,
             SuccessCallback success = null,
@@ -96,29 +76,19 @@ using System;
         }
 
         /// <summary>
-        /// Gets the peers's currency for the given currency type
-        /// or all currency types if null passed in.
+        /// Retrieve the peer user's currency account. Optional parameter: `vcId` (if retrieving a specific currency).
         /// </summary>
         /// <remarks>
-        /// Service Name - VirtalCurrency
-        /// Service Operation - GetPeerVC
+        /// Service Name - virtualCurrency
+        /// Service Operation - GET_PEER_VC
         /// </remarks>
-        /// <param name="currencyType">
-        /// The currency type to retrieve or null
-        /// if all currency types are being requested.
-        /// </param>
-        /// <param name="peerCode">
-        /// The peer code
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="vcId">Optional currency id to retrieve (pass NULL to get all currencies)</param>
+        /// <param name="peerCode">The peer code identifying the other user</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetPeerCurrency(
             string currencyType, string peerCode,
             SuccessCallback success = null,
@@ -135,21 +105,17 @@ using System;
         }
 
         /// <summary>
-        /// Resets player currency to zero
+        /// Reset player's currency to zero
         /// </summary>
         /// <remarks>
-        /// Service Name - VirtalCurrency
-        /// Service Operation - ResetCurrency
+        /// Service Name - virtualCurrency
+        /// Service Operation - RESET_PLAYER_VC
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ResetCurrency(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -161,8 +127,6 @@ using System;
             ServerCall sc = new ServerCall(ServiceName.VirtualCurrency, ServiceOperation.ResetPlayerVC, data, callback);
             _client.SendRequest(sc);
         }
-
-        
         #region Obsolete
         [Obsolete("For security reasons calling this API from the client is not recommended, and is rejected at the server by default. To over-ride, enable the 'Allow Currency Calls from Client' compatibility setting in the Design Portal.")]
         public void AwardCurrency(

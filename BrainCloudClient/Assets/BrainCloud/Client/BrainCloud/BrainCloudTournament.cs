@@ -7,10 +7,10 @@
 namespace BrainCloud
 {
 
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
+    using System;
 
     public class BrainCloudTournament
     {
@@ -27,22 +27,13 @@ using System;
         /// Service Name - tournament
         /// Service Operation - CLAIM_TOURNAMENT_REWARD
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="versionId">
-        /// Version of the tournament to claim rewards for.
-        /// Use -1 for the latest version.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ClaimTournamentReward(
             string leaderboardId,
             int versionId,
@@ -60,24 +51,18 @@ using System;
         }
 
         /// <summary>
-        /// Gets the info of specified division set
+        /// Get the status of a division
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
         /// Service Operation - GET_DIVISION_INFO
         /// </remarks>
-        /// <param name="divSetId">
-        /// The division 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="divSetId">The id for the division</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetDivisionInfo(
             string divSetId,
             SuccessCallback success = null,
@@ -93,21 +78,17 @@ using System;
         }
 
         /// <summary>
-        /// Gets the player's recently active divisions
+        /// Returns list of player's recently active divisions
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
         /// Service Operation - GET_MY_DIVISIONS
         /// </remarks>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetMyDivisions(
             SuccessCallback success = null,
             FailureCallback failure = null,
@@ -125,21 +106,13 @@ using System;
         /// Service Name - tournament
         /// Service Operation - GET_TOURNAMENT_STATUS
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="versionId">
-        /// Version of the tournament. Use -1 for the latest version.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void GetTournamentStatus(
             string leaderboardId,
             int versionId,
@@ -157,31 +130,20 @@ using System;
         }
 
         /// <summary>
-        /// Gets the info of specified division set
+        /// Join the specified division.
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
-        /// Service Operation - GET_DIVISION_INFO
+        /// Service Operation - JOIN_DIVISION
         /// </remarks>
-        /// <param name="divSetId">
-        /// The division 
-        /// </param>
-        /// <param name="tournamentCode">
-        /// The tournament to join
-        /// </param>
-        /// <param name="initialScore">
-        /// The initial score for players first joining a tournament
-        /// Usually 0, unless leaderboard is LOW_VALUE
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="divSetId">The id for the division</param>
+        /// <param name="tournamentCode">Tournament to join</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void JoinDivision(
             string divSetId,
             string tournamentCode,
@@ -202,31 +164,19 @@ using System;
 
         /// <summary>
         /// Join the specified tournament.
-        /// Any entry fees will be automatically collected.
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
         /// Service Operation - JOIN_TOURNAMENT
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="tournamentCode">
-        /// Tournament to join
-        /// </param>
-        /// <param name="initialScore">
-        /// The initial score for players first joining a tournament
-        /// Usually 0, unless leaderboard is LOW_VALUE
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="tournamentCode">Tournament to join</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void JoinTournament(
             string leaderboardId,
             string tournamentCode,
@@ -246,24 +196,18 @@ using System;
         }
 
         /// <summary>
-        /// Gets the info of specified division set
+        /// Removes player from division instance
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
-        /// Service Operation - GET_DIVISION_INFO
+        /// Service Operation - LEAVE_DIVISION_INSTANCE
         /// </remarks>
-        /// <param name="learboardId">
-        /// The division 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void LeaveDivisionInstance(
             string leaderboardId,
             SuccessCallback success = null,
@@ -285,18 +229,12 @@ using System;
         /// Service Name - tournament
         /// Service Operation - LEAVE_TOURNAMENT
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void LeaveTournament(
             string leaderboardId,
             SuccessCallback success = null,
@@ -312,33 +250,21 @@ using System;
         }
 
         /// <summary>
-        /// Post the users score to the leaderboard
+        /// Post the users score to the leaderboard - UTC time
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
         /// Service Operation - POST_TOURNAMENT_SCORE
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="score">
-        /// The score to post
-        /// </param>
-        /// <param name="jsonData">
-        /// Optional data attached to the leaderboard entry
-        /// </param>
-        /// <param name="roundStartTimeUTC">
-        /// Uses UTC time in milliseconds since epoch 
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+        /// <param name="roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void PostTournamentScoreUTC(
             string leaderboardId,
             long score,
@@ -364,46 +290,25 @@ using System;
         }
 
         /// <summary>
-        /// Post the users score to the leaderboard and returns the results
+        /// Post the users score to the leaderboard - UTC time
         /// </summary>
         /// <remarks>
         /// Service Name - tournament
         /// Service Operation - POST_TOURNAMENT_SCORE_WITH_RESULTS
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="score">
-        /// The score to post
-        /// </param>
-        /// <param name="jsonData">
-        /// Optional data attached to the leaderboard entry
-        /// </param>
-        /// <param name="roundStartTimeUTC">
-        /// Uses UTC time in milliseconds since epoch
-        /// </param>
-        /// <param name="sort">
-        /// Sort key Sort order of page.
-        /// </param>
-        /// <param name="beforeCount">
-        /// The count of number of players before the current player to include.
-        /// </param>
-        /// <param name="afterCount">
-        /// The count of number of players after the current player to include.
-        /// </param>
-        /// <param name="initialScore">
-        /// The initial score for players first joining a tournament
-        /// Usually 0, unless leaderboard is LOW_VALUE
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+        /// <param name="roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void PostTournamentScoreWithResultsUTC(
              string leaderboardId,
              long score,
@@ -422,7 +327,7 @@ using System;
             data[OperationParam.Score.Value] = score;
             data[OperationParam.RoundStartedEpoch.Value] = roundStartTimeUTC;
             data[OperationParam.InitialScore.Value] = initialScore;
-           
+
             if (Util.IsOptionalParameterValid(jsonData))
             {
                 Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
@@ -444,18 +349,12 @@ using System;
         /// Service Name - tournament
         /// Service Operation - VIEW_CURRENT_REWARD
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ViewCurrentReward(
             string leaderboardId,
             SuccessCallback success = null,
@@ -477,21 +376,13 @@ using System;
         /// Service Name - tournament
         /// Service Operation - VIEW_REWARD
         /// </remarks>
-        /// <param name="leaderboardId">
-        /// The leaderboard for the tournament
-        /// </param
-        /// <param name="versionId">
-        /// Version of the tournament. Use -1 for the latest version.
-        /// </param>
-        /// <param name="success">
-        /// The success callback.
-        /// </param>
-        /// <param name="failure">
-        /// The failure callback.
-        /// </param>
-        /// <param name="cbObject">
-        /// The user object sent to the callback.
-        /// </param>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="versionId">Version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+
+
         public void ViewReward(
             string leaderboardId,
             int versionId,
