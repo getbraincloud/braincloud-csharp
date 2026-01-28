@@ -1239,7 +1239,7 @@ namespace BrainCloud.Internal
                         }
                     }
                 }
-                else //if non-200
+                else // If non-200
                 {
                     object statusMessageObj = null;
                     int reasonCode = 0;
@@ -1263,21 +1263,21 @@ namespace BrainCloud.Internal
                         _authInProgress = false;
                     }
 
-                    if (responseData.TryGetValue("reason_code", out object reasonCodeObj))
+                    if (getDeserializedResponseData().TryGetValue("reason_code", out object reasonCodeObj))
                     {
                         reasonCode = (int)reasonCodeObj;
                     }
 
                     if (_oldStyleStatusResponseInErrorCallback)
                     {
-                        if (responseData.TryGetValue("status_message", out statusMessageObj))
+                        if (getDeserializedResponseData().TryGetValue("status_message", out statusMessageObj))
                         {
                             errorJson = (string)statusMessageObj;
                         }
                     }
                     else
                     {
-                        errorJson = SerializeJson(response);
+                        errorJson = response;
                     }
 
                     // If the authenticated session has expired, and long session is enabled, attempt to re-authenticate and retry lost call(s)
@@ -1340,7 +1340,7 @@ namespace BrainCloud.Internal
                         _cachedReasonCode = reasonCode;
 
                         object status = null;
-                        if (responseData.TryGetValue("status_message", out status))
+                        if (getDeserializedResponseData().TryGetValue("status_message", out status))
                         {
                             _cachedStatusMessage = status as string;
                         }
@@ -2636,10 +2636,8 @@ namespace BrainCloud.Internal
 
         internal string GetSerializedEvents() => GetSerializedArray("events", events);
 
-        private int GetStatus(string json)
+        private int GetValue(string key, string json, int defaultValue)
         {
-            const string STATUS_KEY = "status";
-
             char current;
             bool insideProperty = false;
             StringBuilder copy = new();
@@ -2672,7 +2670,7 @@ namespace BrainCloud.Internal
                 }
                 else if (!insideProperty && copy.Length > 0)
                 {
-                    if (copy.ToString() == STATUS_KEY)
+                    if (copy.ToString() == key)
                     {
                         getValue();
 
@@ -2688,12 +2686,12 @@ namespace BrainCloud.Internal
                 }
             }
 
-            return StatusCodes.BAD_REQUEST;
+            return defaultValue;
         }
 
-        internal int GetResponseStatus(int index) => GetStatus(responses[index]);
+        internal int GetResponseStatus(int index) => GetValue("status", responses[index], StatusCodes.BAD_REQUEST);
 
-        internal int GetEventStatus(int index) => GetStatus(events[index]);
+        internal int GetEventStatus(int index) => GetValue("status", events[index], StatusCodes.BAD_REQUEST);
     }
 
     [Serializable]
