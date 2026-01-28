@@ -138,23 +138,23 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PlayerStateService.UpdateName(
+            _bc.PlayerStateService.UpdateUserName(
                 "ABC",
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
 
-        
+
         [Test]
         public void TestUpdateSummaryFriendData()
         {
             TestResult tr = new TestResult(_bc);
-            
+
             _bc.PlayerStateService.UpdateSummaryFriendData(
                 "{\"field\":\"value\"}",
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
