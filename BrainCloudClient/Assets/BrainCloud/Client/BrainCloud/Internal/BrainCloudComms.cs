@@ -4,13 +4,16 @@
 //----------------------------------------------------
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
-#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+#define USE_WEB_REQUEST // Comment out to force use of old WWW class on Unity 5.3+
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
+using System.Collections.Generic;
 #endif
+
+using System;
 
 namespace BrainCloud.Internal
 {
-    using System;
+    using BrainCloud.Common;
     using System.Collections.Generic;
     using System.Text;
 
@@ -68,8 +71,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Byte size threshold that determines if the message size is something we want to compress or not. We make an initial value, but recevie the value for future calls based on the servers 
-        ///auth response
+        /// Byte size threshold that determines if the message size is something we want to compress or not.
+        /// We make an initial value, but recevie the value for future calls based on the servers auth response
         /// </summary>
         public int ClientSideCompressionThreshold { get; private set; } = 51200;
 
@@ -97,6 +100,16 @@ namespace BrainCloud.Internal
         /// The packet id we're expecting
         /// </summary>
         private long _expectedIncomingPacketId = JsonResponseBundleV2.NO_PACKET_EXPECTED;
+
+        /// <summary>
+        /// Default time for how long a session should expire before timing out.
+        /// </summary>
+        private long _defaultPlayerSessionExpiry => 5 * 60; // 5 Minutes
+
+        /// <summary>
+        /// Modify expiry timeout value by this percentage.
+        /// </summary>
+        private double _idleTimeoutModifier => 0.85;
 
         /// <summary>
         /// The service calls that are waiting to be sent.
@@ -208,12 +221,12 @@ namespace BrainCloud.Internal
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
-        //For handling local session errors
+        // For handling local session errors
         private int _cachedStatusCode;
         private int _cachedReasonCode;
         private string _cachedStatusMessage;
 
-        //For kill switch
+        // For kill switch
         private bool _killSwitchEngaged;
         public bool KillSwitchEngaged
         {
@@ -312,7 +325,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// A list of packet timeouts. Index represents the packet attempt number.
         /// </summary>
-        private List<int> _packetTimeouts = new List<int> { 15, 20, 35, 50 };
+        private List<int> _packetTimeouts = new() { 15, 20, 35, 50 };
         public List<int> PacketTimeouts
         {
             get
@@ -324,6 +337,7 @@ namespace BrainCloud.Internal
                 _packetTimeouts = value;
             }
         }
+
         public void SetPacketTimeoutsToDefault()
         {
             _packetTimeouts = new List<int> { 15, 20, 35, 50 };
@@ -362,12 +376,12 @@ namespace BrainCloud.Internal
             _cacheMessagesOnNetworkError = enabled;
         }
 
-        //Json Serialization
-        private JsonWriterSettings _writerSettings = new JsonWriterSettings(); //Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
-        private StringBuilder _stringBuilderOutput; //String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
-        private static int _maxDepth = 25; //Set to the default maxDepth within JsonFx sdk.
-        private string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
+        // Json Serialization
+        private JsonWriterSettings _writerSettings = new(); // Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
+        private StringBuilder _stringBuilderOutput;         // String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
+        private readonly string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
 
+        private static int _maxDepth = 25; // Set to the default maxDepth within JsonFx SDK
         public int MaxDepth
         {
             get => _maxDepth;
@@ -403,7 +417,7 @@ namespace BrainCloud.Internal
         /// Initialize the communications library with the specified serverURL and secretKey.
         /// </summary>
         /// <param name="serverURL">Server URL.</param>
-        /// /// <param name="appId">AppId</param>
+        /// <param name="appId">AppId</param>
         /// <param name="secretKey">Secret key.</param>
         public void Initialize(string serverURL, string appId, string secretKey)
         {
@@ -439,7 +453,7 @@ namespace BrainCloud.Internal
         /// </summary>
         /// <param name="serverURL">Server URL.</param>
         /// <param name="defaultAppId">default appId </param>
-        /// /// <param name="appIdSecretMap">map of appId -> secrets, to allow the client to safely switch between apps with secret being secure</param>
+        /// <param name="appIdSecretMap">map of appId -> secrets, to allow the client to safely switch between apps with secret being secure</param>
         public void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, string> appIdSecretMap)
         {
             AppIdSecretMap.Clear();
@@ -566,7 +580,7 @@ namespace BrainCloud.Internal
                 {
 
 #if USE_WEB_REQUEST
-                    //HttpStatusCode.OK
+                    // HttpStatusCode.OK
                     if (_activeRequest.WebRequest.responseCode == 200)
                     {
                         ResetIdleTimer();
@@ -574,19 +588,19 @@ namespace BrainCloud.Internal
                         DisposeUploadHandler();
                         _activeRequest = null;
                     }
-                    //HttpStatusCode.ServiceUnavailable
+                    // HttpStatusCode.ServiceUnavailable
                     else if (_activeRequest.WebRequest.responseCode == 503 ||
                              _activeRequest.WebRequest.responseCode == 502 ||
                              _activeRequest.WebRequest.responseCode == 504)
                     {
-                        //Packet in progress
+                        // Packet in progress
                         _clientRef.Log("Packet in progress");
                         RetryRequest(status, bypassTimeout);
                         return;
                     }
                     else
                     {
-                        //Error Callback
+                        // Error Callback
                         var errorResponse = GetWebRequestResponse(_activeRequest);
                         if (_serviceCallsInProgress.Count > 0)
                         {
@@ -636,7 +650,7 @@ namespace BrainCloud.Internal
                 }
             }
 
-            //if the client is currently locked on authentication calls. 
+            // if the client is currently locked on authentication calls. 
             if (tooManyAuthenticationAttempts())
             {
                 if (_clientRef.LoggingEnabled)
@@ -644,7 +658,7 @@ namespace BrainCloud.Internal
                     _clientRef.Log("TIMER ON");
                     _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
                 }
-                //check the timeout, has enough time passed?
+                // check the timeout, has enough time passed?
                 if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
                 {
                     if (_clientRef.LoggingEnabled)
@@ -769,13 +783,17 @@ namespace BrainCloud.Internal
                 numMessagesToReturn = 1; // for when we want to send to only global error callback
             }
 
-            JsonResponseErrorBundleV2 bundleObj = new JsonResponseErrorBundleV2();
-            bundleObj.packetId = _expectedIncomingPacketId;
-            bundleObj.responses = new JsonErrorMessage[numMessagesToReturn];
+            JsonResponseErrorBundleV2 bundleObj = new()
+            {
+                packetId = _expectedIncomingPacketId,
+                responses = new JsonErrorMessage[numMessagesToReturn]
+            };
+
             for (int i = 0; i < numMessagesToReturn; ++i)
             {
                 bundleObj.responses[i] = new JsonErrorMessage(status, reasonCode, statusMessage);
             }
+
             string jsonError = _clientRef.SerializeJson(bundleObj);
             HandleResponseBundle(jsonError);
         }
@@ -899,7 +917,6 @@ namespace BrainCloud.Internal
             }
         }
 
-
         internal void InsertEndOfMessageBundleMarker()
         {
             this.AddToQueue(new EndOfBundleMarker());
@@ -929,12 +946,14 @@ namespace BrainCloud.Internal
             return _failedAuthenticationAttempts >= _identicalFailedAuthAttemptThreshold;
         }
 
-        //save profileid and sessionId of response
-        void SaveProfileAndSessionIds(Dictionary<string, object> responseData, string data)
+        /// <summary>
+        /// Saves the profileId and sessionIds from the authentication.
+        /// </summary>
+        private void SaveProfileAndSessionIds(string jsonData)
         {
             // save the session ID
-            string sessionId = GetJsonString(responseData, OperationParam.ServiceMessageSessionId, null);
-            if (sessionId != null)
+            string sessionId = JsonParser.GetString(jsonData, OperationParam.ServiceMessageSessionId);
+            if (!string.IsNullOrWhiteSpace(sessionId))
             {
                 SessionID = sessionId;
                 _isAuthenticated = true;
@@ -942,8 +961,8 @@ namespace BrainCloud.Internal
             }
 
             // save the profile Id
-            string profileId = GetJsonString(responseData, OperationParam.ProfileId, null);
-            if (profileId != null)
+            string profileId = JsonParser.GetString(jsonData, OperationParam.ProfileId);
+            if (!string.IsNullOrWhiteSpace(profileId))
             {
                 _clientRef.AuthenticationService.ProfileId = profileId;
             }
@@ -1016,28 +1035,19 @@ namespace BrainCloud.Internal
 
             ServerCall sc = null;
             ServerCallback callback = null;
-            string service = "";
-            string operation = "";
-            Dictionary<string, object> responseData = null;
+            string service = string.Empty;
+            string operation = string.Empty;
+            string responseData = string.Empty;
             for (int j = 0; j < responseBundle.Length; ++j)
             {
                 response = responseBundle[j];
-                int statusCode = bundleObj.GetResponseStatus(j);
                 sc = null;
                 callback = null;
-                service = "";
-                operation = "";
+                service = string.Empty;
+                operation = string.Empty;
+                responseData = string.Empty;
 
-                responseData?.Clear();
-                responseData = null;
-                Dictionary<string, object> getDeserializedResponseData()
-                {
-                    responseData ??= JsonReader.Deserialize<Dictionary<string, object>>(response);
-                    responseData = responseData != null && response.Length > 0 && responseData.ContainsKey(OperationParam.ServiceMessageData)
-                                 ? responseData[OperationParam.ServiceMessageData] as Dictionary<string, object>
-                                 : responseData;
-                    return responseData != null && response.Length > 0 ? responseData : null;
-                }
+                int statusCode = JsonParser.GetValue<int>(response, "status") is int code && code > 0 ? code : StatusCodes.BAD_REQUEST;
 
                 /*
                  * It's important to note here that a user error callback *might* call
@@ -1067,11 +1077,12 @@ namespace BrainCloud.Internal
                     service = sc.GetService();
                     if (response.Contains(OperationParam.ServiceMessageData))
                     {
+                        responseData = JsonParser.GetString(response, OperationParam.ServiceMessageData);
                         if (service == ServiceName.Authenticate || service == ServiceName.Identity)
                         {
                             // Reset authenticate timeout
                             _authPacketTimeoutSecs = _listAuthPacketTimeouts[0];
-                            SaveProfileAndSessionIds(getDeserializedResponseData(), response);
+                            SaveProfileAndSessionIds(responseData);
                         }
                     }
 
@@ -1080,17 +1091,10 @@ namespace BrainCloud.Internal
                     {
                         callback = sc.GetCallback();
                         operation = sc.GetOperation();
-                        bool bIsPeerScriptUploadCall = false;
-                        if (operation == ServiceOperation.RunPeerScript && response.Contains("fileDetails"))
+                        string fileDetails = string.Empty;
+                        if (operation == ServiceOperation.RunPeerScript && responseData.Contains("fileDetails"))
                         {
-                            try
-                            {
-                                bIsPeerScriptUploadCall = getDeserializedResponseData().ContainsKey(OperationParam.ServiceMessageData) &&
-                                                          (responseData[OperationParam.ServiceMessageData] as Dictionary<string, object>).ContainsKey("response") &&
-                                                          ((responseData[OperationParam.ServiceMessageData] as Dictionary<string, object>)["response"] as Dictionary<string, object>).ContainsKey(OperationParam.ServiceMessageData) &&
-                                                          (((responseData[OperationParam.ServiceMessageData] as Dictionary<string, object>)["response"] as Dictionary<string, object>)[OperationParam.ServiceMessageData] as Dictionary<string, object>).ContainsKey("fileDetails");
-                            }
-                            catch { }
+                            fileDetails = JsonParser.GetString(responseData, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
                         }
 
                         if (operation == ServiceOperation.FullReset ||
@@ -1110,25 +1114,24 @@ namespace BrainCloud.Internal
                         // either off of authenticate or identity call, be sure to save the profileId and sessionId
                         else if (operation == ServiceOperation.Authenticate)
                         {
-                            ProcessAuthenticate(getDeserializedResponseData());
+                            ProcessAuthenticate(responseData);
                         }
                         // switch to child
                         else if (operation.Equals(ServiceOperation.SwitchToChildProfile) ||
                                  operation.Equals(ServiceOperation.SwitchToParentProfile))
                         {
-                            ProcessSwitchResponse(getDeserializedResponseData());
+                            ProcessSwitchResponse(responseData);
                         }
-                        else if ((operation == ServiceOperation.PrepareUserUpload && getDeserializedResponseData() != null) || bIsPeerScriptUploadCall)
+                        else if (operation == ServiceOperation.PrepareUserUpload || !string.IsNullOrWhiteSpace(fileDetails))
                         {
-                            string peerCode = bIsPeerScriptUploadCall && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
-                            var fileData = string.IsNullOrEmpty(peerCode) ? (Dictionary<string, object>)responseData["fileDetails"] :
-                                (Dictionary<string, object>)((Dictionary<string, object>)((Dictionary<string, object>)responseData["response"])[OperationParam.ServiceMessageData])["fileDetails"];
+                            string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
+                            fileDetails = string.IsNullOrEmpty(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
 
-                            if (fileData.ContainsKey("uploadId") && fileData.ContainsKey("localPath"))
+                            if (fileDetails.Contains("uploadId") && fileDetails.Contains("localPath"))
                             {
-                                string uploadId = (string)fileData["uploadId"];
-                                string guid = (string)fileData["localPath"];
-                                string fileName = (string)fileData["cloudFilename"];
+                                string uploadId = JsonParser.GetString(fileDetails, "uploadId");
+                                string guid = JsonParser.GetString(fileDetails, "localPath");
+                                string fileName = JsonParser.GetString(fileDetails, "cloudFilename");
                                 var uploader = new FileUploader(uploadId,
                                                                 guid,
                                                                 UploadURL,
@@ -1173,7 +1176,7 @@ namespace BrainCloud.Internal
                         _failedAuthenticationAttempts = 0;
 
                         // now deal with rewards
-                        if (_rewardCallback != null && getDeserializedResponseData() != null)
+                        if (_rewardCallback != null && !string.IsNullOrWhiteSpace(responseData))
                         {
                             try
                             {
@@ -1182,16 +1185,14 @@ namespace BrainCloud.Internal
                                 // it's an operation that return a reward
                                 if (operation == ServiceOperation.Authenticate)
                                 {
-                                    if (responseData.TryGetValue("rewards", out object objRewards))
+                                    if (JsonParser.GetString(responseData, "rewards") is string outerRewards && !string.IsNullOrWhiteSpace(outerRewards))
                                     {
-                                        Dictionary<string, object> outerRewards = (Dictionary<string, object>)objRewards;
-                                        if (outerRewards.TryGetValue("rewards", out objRewards))
+                                        if (JsonParser.GetString(outerRewards, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
                                         {
-                                            Dictionary<string, object> innerRewards = (Dictionary<string, object>)objRewards;
-                                            if (innerRewards.Count > 0)
+                                            if (innerRewards.Length > 5) // Minimum a Json string can be
                                             {
                                                 // we found rewards
-                                                rewards = outerRewards;
+                                                rewards = JsonReader.Deserialize<Dictionary<string, object>>(outerRewards);
                                             }
                                         }
                                     }
@@ -1200,13 +1201,12 @@ namespace BrainCloud.Internal
                                          operation == ServiceOperation.Trigger ||
                                          operation == ServiceOperation.TriggerMultiple)
                                 {
-                                    if (getDeserializedResponseData().TryGetValue("rewards", out object objRewards))
+                                    if (JsonParser.GetString(responseData, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
                                     {
-                                        Dictionary<string, object> innerRewards = (Dictionary<string, object>)objRewards;
-                                        if (innerRewards.Count > 0)
+                                        if (innerRewards.Length > 5) // Minimum a Json string can be
                                         {
                                             // we found rewards
-                                            rewards = responseData;
+                                            rewards = JsonReader.Deserialize<Dictionary<string, object>>(responseData);
                                         }
                                     }
                                 }
@@ -1241,7 +1241,6 @@ namespace BrainCloud.Internal
                 }
                 else // If non-200
                 {
-                    object statusMessageObj = null;
                     int reasonCode = 0;
                     string errorJson = "";
                     callback = sc.GetCallback();
@@ -1263,16 +1262,16 @@ namespace BrainCloud.Internal
                         _authInProgress = false;
                     }
 
-                    if (getDeserializedResponseData().TryGetValue("reason_code", out object reasonCodeObj))
+                    if (JsonParser.GetValue<int>(response, "reason_code") is int reasonCodeVal && reasonCodeVal != default)
                     {
-                        reasonCode = (int)reasonCodeObj;
+                        reasonCode = reasonCodeVal;
                     }
 
                     if (_oldStyleStatusResponseInErrorCallback)
                     {
-                        if (getDeserializedResponseData().TryGetValue("status_message", out statusMessageObj))
+                        if (JsonParser.GetString(response, "status_message") is string statusMessage && !string.IsNullOrWhiteSpace(statusMessage))
                         {
-                            errorJson = (string)statusMessageObj;
+                            errorJson = statusMessage;
                         }
                     }
                     else
@@ -1339,10 +1338,9 @@ namespace BrainCloud.Internal
                         _cachedStatusCode = statusCode;
                         _cachedReasonCode = reasonCode;
 
-                        object status = null;
-                        if (getDeserializedResponseData().TryGetValue("status_message", out status))
+                        if (JsonParser.GetString(response, "status_message") is string statusMessage && !string.IsNullOrWhiteSpace(statusMessage))
                         {
-                            _cachedStatusMessage = status as string;
+                            _cachedStatusMessage = statusMessage;
                         }
                     }
 
@@ -1401,7 +1399,7 @@ namespace BrainCloud.Internal
             {
                 try
                 {
-                    _eventCallback(bundleObj.GetSerializedEvents());
+                    _eventCallback(bundleObj.GetEventsJsonArray());
                 }
                 catch (Exception e)
                 {
@@ -1446,8 +1444,7 @@ namespace BrainCloud.Internal
                 }
             }
 
-            //Authentication check for kill switch. 
-            //did the client make an authentication call?
+            // Authentication check for kill switch. Did the client make an authentication call?
             if (operation == ServiceOperation.Authenticate)
             {
                 if (_clientRef.LoggingEnabled)
@@ -1475,7 +1472,6 @@ namespace BrainCloud.Internal
                     _killSwitchEngaged = true;
                     ResetAuthenticationTimer();
                 }
-
             }
         }
 
@@ -1509,7 +1505,7 @@ namespace BrainCloud.Internal
                 {
                     if (_serviceCallsWaiting.Count > 0)
                     {
-                        //put auth first
+                        // put auth first
                         ServerCall call = null;
                         int numMessagesWaiting = _serviceCallsWaiting.Count;
                         for (int i = 0; i < _serviceCallsWaiting.Count; ++i)
@@ -1576,7 +1572,7 @@ namespace BrainCloud.Internal
                     requestState = new RequestState();
 
                     // prepare json data for server
-                    List<object> messageList = new List<object>();
+                    List<object> messageList = new();
                     bool isAuth = false;
 
                     ServerCall scIndex;
@@ -1587,6 +1583,7 @@ namespace BrainCloud.Internal
                         scIndex = _serviceCallsInProgress[i];
                         operation = scIndex.GetOperation();
                         service = scIndex.GetService();
+
                         // don't send heartbeat if it was generated by comms (null callbacks)
                         // and there are other messages in the bundle - it's unnecessary
                         if (service.Equals(ServiceName.HeartBeat)
@@ -1713,8 +1710,8 @@ namespace BrainCloud.Internal
                 }
                 catch (JsonSerializationException exception)
                 {
-                    //Contains will fail if one input is off, so I had to break it up like this for more consistency
-                    //IE: The maxiumum depth of 24 was exceeded. Check for cycles in object graph.
+                    // Contains will fail if one input is off, so I had to break it up like this for more consistency
+                    // IE: The maxiumum depth of 24 was exceeded. Check for cycles in object graph.
                     if (exception.Message.Contains("The maxiumum depth") &&
                         exception.Message.Contains("exceeded"))
                     {
@@ -1722,7 +1719,7 @@ namespace BrainCloud.Internal
                         {
                             if (_serviceCallsInProgress.Count > 0)
                             {
-                                for (int i = _serviceCallsInProgress.Count - 1; i < 0; --i)
+                                for (int i = _serviceCallsInProgress.Count - 1; i >= 0; --i)
                                 {
                                     var serviceCall = _serviceCallsInProgress[i];
                                     if (serviceCall?.GetCallback() != null)
@@ -1742,6 +1739,7 @@ namespace BrainCloud.Internal
                             }
                         }
                     }
+
                     _clientRef.Log("JSON Exception: " + exception.Message, true);
                 }
             }
@@ -1803,6 +1801,7 @@ namespace BrainCloud.Internal
             }
 
             requestState.ByteArray = byteArray;
+
             /*
             if (_debugPacketLossRate > 0.0)
             {
@@ -1811,7 +1810,7 @@ namespace BrainCloud.Internal
             }
             */
 
-            //if (!requestState.LoseThisPacket)
+            // if (!requestState.LoseThisPacket)
             {
 #if !(DOT_NET || GODOT)
                 Dictionary<string, string> formTable = new Dictionary<string, string>();
@@ -1843,7 +1842,7 @@ namespace BrainCloud.Internal
                     formTable["X-APPID"] = AppId;
                 }
 
-                if(compressMessage)
+                if (compressMessage)
                 {
                     formTable["Accept-Encoding"] = "gzip";
                     formTable["Content-Encoding"] = "gzip";
@@ -1887,7 +1886,6 @@ namespace BrainCloud.Internal
                     await AsyncHttpTaskCallback(t, requestState);
                 });
 #endif
-
                 requestState.RequestString = jsonRequestString;
                 requestState.TimeSent = DateTime.Now;
 
@@ -1980,7 +1978,6 @@ namespace BrainCloud.Internal
 #endif
             return status;
         }
-
 
         /// <summary>
         /// Gets the web request response.
@@ -2076,8 +2073,7 @@ namespace BrainCloud.Internal
             int currentRetry = requestState.Retries;
             TimeSpan ret;
 
-            // if this is a delete player, or logout we change the
-            // timeout behaviour
+            // if this is a delete player, or logout we change the timeout behaviour
             if (requestState.PacketRequiresLongTimeout)
             {
                 // unused as default timeouts are now quite long
@@ -2253,7 +2249,6 @@ namespace BrainCloud.Internal
         }
 #endif
 
-
         private string CalculateMD5Hash(string input)
         {
 #if !(DOT_NET || GODOT)
@@ -2270,7 +2265,7 @@ namespace BrainCloud.Internal
             byte[] hash = md5.ComputeHash(inputBytes);
 #endif
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             for (int i = 0; i < hash.Length; i++)
             {
                 sb.Append(hash[i].ToString("X2"));
@@ -2281,60 +2276,40 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Handles authenticate-specific data from successful request
         /// </summary>
-        /// <param name="jsonString"></param>
-        private void ProcessAuthenticate(Dictionary<string, object> jsonData)
+        private void ProcessAuthenticate(string jsonData)
         {
-            //we want to extract the compressIfLarger amount
-            if (jsonData.ContainsKey("compressIfLarger"))
-                ClientSideCompressionThreshold = (int)jsonData["compressIfLarger"];
+            // We want to extract the compressIfLarger amount
+            ClientSideCompressionThreshold = jsonData.Contains("compressIfLarger") ? JsonParser.GetValue<int>(jsonData, "compressIfLarger")
+                                                                                   : ClientSideCompressionThreshold;
 
-            long playerSessionExpiry = GetJsonLong(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry, 5 * 60);
-            long idleTimeout = (long)(playerSessionExpiry * 0.85);
+            _idleTimeout = TimeSpan.FromSeconds((long)((JsonParser.GetValue<long>(jsonData, OperationParam.AuthenticateServicePlayerSessionExpiry)
+                           is long expiry && expiry > 0 ? expiry : _defaultPlayerSessionExpiry) * _idleTimeoutModifier));
 
-            _idleTimeout = TimeSpan.FromSeconds(idleTimeout);
+            if (JsonParser.GetValue<int>(jsonData, "maxBundleMsgs") is int maxBundleMsgs && maxBundleMsgs > 0)
+            {
+                _maxBundleMessages = maxBundleMsgs;
+            }
 
-            object bundleMsgs = null;
-            jsonData.TryGetValue("maxBundleMsgs", out bundleMsgs);
-            if (bundleMsgs != null) _maxBundleMessages = (int)bundleMsgs;
-
-            object killCount = null;
-            jsonData.TryGetValue("maxKillCount", out killCount);
-            if (killCount != null) _killSwitchThreshold = (int)killCount;
+            if (JsonParser.GetValue<int>(jsonData, "maxKillCount") is int maxKillCount && maxKillCount > 0)
+            {
+                _killSwitchThreshold = maxKillCount;
+            }
 
             ResetErrorCache();
             _isAuthenticated = true;
         }
 
-        private void ProcessSwitchResponse(Dictionary<string, object> jsonData)
+        /// <summary>
+        /// Switches AppId to one provided from Json.
+        /// </summary>
+        private void ProcessSwitchResponse(string jsonData)
         {
-            if (jsonData.ContainsKey("switchToAppId"))
+            if (JsonParser.GetString(jsonData, "switchToAppId") is string switchToAppId && !string.IsNullOrWhiteSpace(switchToAppId))
             {
-                string switchToAppId = (string)jsonData["switchToAppId"];
                 AppId = switchToAppId;
             }
         }
 
-        private static string GetJsonString(Dictionary<string, object> jsonData, string key, string defaultReturn)
-        {
-            object retVal = null;
-            jsonData.TryGetValue(key, out retVal);
-            return retVal != null ? retVal as string : defaultReturn;
-        }
-
-
-        private static long GetJsonLong(Dictionary<string, object> jsonData, string key, long defaultReturn)
-        {
-            object outObj = null;
-            if (jsonData.TryGetValue(key, out outObj))
-            {
-                if (outObj is long)
-                    return (long)outObj;
-                if (outObj is int)
-                    return (int)outObj;
-            }
-
-            return defaultReturn;
-        }
         /// <summary>
         /// Attempts to create and send next request bundle.
         /// If to many attempts have been made, the request becomes an error
@@ -2456,25 +2431,21 @@ namespace BrainCloud.Internal
 
     #region brainCloud JSON Objects
 
-    // These classes help handle JSON serialization with brainCloud Responses.
-    // Do not edit these classes or change names to conform with coding standards.
-    // These must be structured the same as the Responses received from brainCloud.
-
     internal readonly struct JsonResponseBundleV2
     {
-        internal const int NO_PACKET_EXPECTED = -1; // The Id of _expectedIncomingPacketId when no packet expected
+        public const int NO_PACKET_EXPECTED = -1; // The Id of _expectedIncomingPacketId when no packet expected
 
-        internal const int EMPTY_RESPONSE_BUNDLE = int.MinValue; // The Id we use when we want to denote an "empty" struct
+        public const int EMPTY_RESPONSE_BUNDLE = int.MinValue; // The Id we use when we want to denote an "empty" struct
 
-        internal readonly long packetId;
-        internal readonly string[] responses;
-        internal readonly string[] events;
+        public readonly long     packetId;
+        public readonly string[] responses;
+        public readonly string[] events;
 
-        internal bool IsError => packetId == NO_PACKET_EXPECTED;
+        public bool IsError => packetId == NO_PACKET_EXPECTED;
 
-        internal bool IsEmpty => packetId == EMPTY_RESPONSE_BUNDLE;
+        public bool IsEmpty => packetId == EMPTY_RESPONSE_BUNDLE;
 
-        internal static JsonResponseBundleV2 CreateEmpty() => new(EMPTY_RESPONSE_BUNDLE);
+        public static JsonResponseBundleV2 CreateEmpty() => new(EMPTY_RESPONSE_BUNDLE);
 
         private JsonResponseBundleV2(long id)
         {
@@ -2483,120 +2454,9 @@ namespace BrainCloud.Internal
             events = null;
         }
 
-        internal JsonResponseBundleV2(string json)
+        public JsonResponseBundleV2(string jsonData)
         {
-            const int COPYTO_NONE = 0;
-            const int COPYTO_RESPONSES = 1 << 0;
-            const int COPYTO_EVENTS = 1 << 1;
-            const char SPLIT_TOKEN = (char)0x1F;
-
-            string packetId = string.Empty;
-            string[] responses = null;
-            string[] events = null;
-
-            char current;
-            bool insideProperty = false;
-            int copyTo = COPYTO_NONE;
-            StringBuilder copy = new();
-
-            for (int i = 1; i < json.Length; ++i)
-            {
-                void getNumber()
-                {
-                    copy.Clear();
-                    while (json[i + 1] != ',')
-                    {
-                        current = json[++i];
-                        copy.Append(current);
-                    }
-                }
-
-                current = json[i];
-
-                if (current == '\"' && json[i - 1] != '\\')
-                {
-                    insideProperty = !insideProperty;
-                    if (insideProperty)
-                    {
-                        copy.Clear();
-                    }
-                }
-                else if (insideProperty)
-                {
-                    copy.Append(current);
-                }
-                else if (!insideProperty && copy.Length > 0)
-                {
-                    copyTo = COPYTO_NONE;
-                    switch (copy.ToString())
-                    {
-                        case "packetId":
-                            getNumber();
-                            packetId = copy.ToString().Replace(" ", string.Empty);
-                            break;
-                        case "responses":
-                            copyTo = COPYTO_RESPONSES;
-                            break;
-                        case "events":
-                            copyTo = COPYTO_EVENTS;
-                            break;
-                        default:
-                            throw new Exception($"Got a string that isn't what we were expecting: {copy}");
-                    }
-
-                    copy.Clear();
-                }
-                else if (current == '[' || current == '{')
-                {
-                    int level = 1;
-
-                    while (level > 0)
-                    {
-                        current = json[++i];
-
-                        switch (current)
-                        {
-                            case '[':
-                            case '{':
-                                level++;
-                                goto default;
-                            case ']':
-                            case '}':
-                                level--;
-                                goto default;
-                            case ',':
-                                if (level == 1)
-                                {
-                                    copy.Append(SPLIT_TOKEN);
-                                    continue;
-                                }
-                                goto default;
-                            default:
-                                if (level != 0)
-                                {
-                                    copy.Append(current);
-                                }
-                                continue;
-                        }
-                    }
-
-                    switch (copyTo)
-                    {
-                        case COPYTO_RESPONSES:
-                            responses = copy.ToString().Split(SPLIT_TOKEN);
-                            break;
-                        case COPYTO_EVENTS:
-                            events = copy.ToString().Split(SPLIT_TOKEN);
-                            break;
-                        case COPYTO_NONE:
-                        default:
-                            throw new Exception($"Got a COPYTO int that isn't what we were expecting: {copyTo}");
-                    }
-
-                    copy.Clear();
-                    copyTo = COPYTO_NONE;
-                }
-            }
+            JsonParser.GetJsonResponseBundleV2(jsonData, out string packetId, out string[] responses, out string[] events);
 
             this.packetId = long.TryParse(packetId, out long result) ? result : NO_PACKET_EXPECTED;
             if (this.packetId < 0)
@@ -2608,96 +2468,18 @@ namespace BrainCloud.Internal
             this.events = events != null && events.Length > 0 ? events : null;
         }
 
-        private string GetSerializedArray(string key, string[] array)
-        {
-            if (array != null && array.Length > 0)
-            {
-                StringBuilder sb = new($"{{\"{key}\":[");
-
-                for (int i = 0; i < array.Length;)
-                {
-                    sb.Append(array[i]);
-
-                    if (++i < array.Length)
-                    {
-                        sb.Append(',');
-                    }
-                }
-
-                sb.Append("]}");
-
-                return sb.ToString();
-            }
-
-            return $"{{\"{key}\":null}}";
-        }
-
-        internal string GetSerializedResponses() => GetSerializedArray("responses", responses);
-
-        internal string GetSerializedEvents() => GetSerializedArray("events", events);
-
-        private int GetValue(string key, string json, int defaultValue)
-        {
-            char current;
-            bool insideProperty = false;
-            StringBuilder copy = new();
-
-            for (int i = 0; i < json.Length; i++)
-            {
-                void getValue()
-                {
-                    copy.Clear();
-                    while (json[i + 1] != '}' && json[i + 1] != ']' && json[i + 1] != '\"' && json[i + 1] != ',')
-                    {
-                        current = json[++i];
-                        copy.Append(current);
-                    }
-                }
-
-                current = json[i];
-
-                if (current == '\"' && json[i - 1] != '\\')
-                {
-                    insideProperty = !insideProperty;
-                    if (insideProperty)
-                    {
-                        copy.Clear();
-                    }
-                }
-                else if (insideProperty)
-                {
-                    copy.Append(current);
-                }
-                else if (!insideProperty && copy.Length > 0)
-                {
-                    if (copy.ToString() == key)
-                    {
-                        getValue();
-
-                        if (int.TryParse(copy.ToString(), out int status))
-                        {
-                            return status;
-                        }
-
-                        break;
-                    }
-
-                    copy.Clear();
-                }
-            }
-
-            return defaultValue;
-        }
-
-        internal int GetResponseStatus(int index) => GetValue("status", responses[index], StatusCodes.BAD_REQUEST);
-
-        internal int GetEventStatus(int index) => GetValue("status", events[index], StatusCodes.BAD_REQUEST);
+        public string GetEventsJsonArray() => JsonParser.GetSerializedJsonArray(events, "events");
     }
+
+    // These classes help handle JSON serialization with brainCloud Error Responses.
+    // Do not edit these classes or change names to conform with coding standards.
+    // These must be structured the same as the Error Responses received from brainCloud.
+    // Note: These will be restructured to be the same as JsonResponseBundleV2 as well.
 
     [Serializable]
     internal class JsonResponseErrorBundleV2
     {
-        [JsonName("packetId")]  public long packetId;
+        [JsonName("packetId")]  public long               packetId;
         [JsonName("responses")] public JsonErrorMessage[] responses;
 
         public JsonResponseErrorBundleV2() { }
@@ -2706,8 +2488,8 @@ namespace BrainCloud.Internal
     [Serializable]
     internal class JsonErrorMessage
     {
-        [JsonName("reason_code")]    public int reason_code;
-        [JsonName("status")]         public int status;
+        [JsonName("reason_code")]    public int    reason_code;
+        [JsonName("status")]         public int    status;
         [JsonName("status_message")] public string status_message;
         [JsonName("severity")]       public string severity = "ERROR";
 
@@ -2727,4 +2509,143 @@ namespace BrainCloud.Internal
     }
 
     #endregion
+}
+
+/*
+ * Extending JsonParser here just for JsonResponseBundleV2 handling.
+ */
+namespace BrainCloud.Common
+{
+    public static partial class JsonParser
+    {
+        internal static void GetJsonResponseBundleV2(string jsonData, out string packetId,
+                                                                      out string[] responses,
+                                                                      out string[] events)
+        {
+            const char SPLIT_TOKEN = (char)0x1F;
+
+            packetId = string.Empty;
+            responses = null;
+            events = null;
+
+            char current;
+            bool insideProperty = false;
+            bool copyToEvents = false;
+
+            sbHelper.Clear();
+
+            for (int i = 1; i < jsonData.Length; i++)
+            {
+                current = jsonData[i];
+
+                if (current == '\"' && jsonData[i - 1] != '\\')
+                {
+                    insideProperty = !insideProperty;
+                    if (insideProperty)
+                    {
+                        sbHelper.Clear();
+                    }
+                }
+                else if (insideProperty)
+                {
+                    sbHelper.Append(current);
+                }
+                else if (!insideProperty && sbHelper.Length > 0)
+                {
+                    switch (sbHelper.ToString())
+                    {
+                        case "packetId":
+                            sbHelper.Clear();
+                            while (jsonData[i + 1] != ',')
+                            {
+                                current = jsonData[++i];
+                                sbHelper.Append(current);
+                            }
+                            packetId = sbHelper.ToString().Replace(" ", string.Empty);
+                            break;
+                        case "responses":
+                            copyToEvents = false;
+                            break;
+                        case "events":
+                            copyToEvents = true;
+                            break;
+                        default:
+                            throw new Exception($"Got a string that isn't what we were expecting: {sbHelper}");
+                    }
+
+                    sbHelper.Clear();
+                }
+                else if (current == '{' || current == '[')
+                {
+                    int level = 1;
+
+                    while (level > 0)
+                    {
+                        current = jsonData[++i];
+
+                        switch (current)
+                        {
+                            case '{':
+                            case '[':
+                                level++;
+                                goto default;
+                            case '}':
+                            case ']':
+                                level--;
+                                goto default;
+                            case ',':
+                                if (level == 1)
+                                {
+                                    sbHelper.Append(SPLIT_TOKEN);
+                                    continue;
+                                }
+                                goto default;
+                            default:
+                                if (level != 0)
+                                {
+                                    sbHelper.Append(current);
+                                }
+                                continue;
+                        }
+                    }
+
+                    if (copyToEvents)
+                    {
+                        events = sbHelper.ToString().Split(SPLIT_TOKEN);
+                    }
+                    else
+                    {
+                        responses = sbHelper.ToString().Split(SPLIT_TOKEN);
+                    }
+
+                    sbHelper.Clear();
+                }
+            }
+        }
+
+        internal static string GetSerializedJsonArray(string[] array, string property)
+        {
+            if (array != null && array.Length > 0)
+            {
+                sbHelper.Clear();
+                sbHelper.Append($"{{\"{property}\":[");
+
+                for (int i = 0; i < array.Length;)
+                {
+                    sbHelper.Append(array[i]);
+
+                    if (++i < array.Length)
+                    {
+                        sbHelper.Append(',');
+                    }
+                }
+
+                sbHelper.Append("]}");
+
+                return sbHelper.ToString();
+            }
+
+            return $"{{\"{property}\":null}}";
+        }
+    }
 }
