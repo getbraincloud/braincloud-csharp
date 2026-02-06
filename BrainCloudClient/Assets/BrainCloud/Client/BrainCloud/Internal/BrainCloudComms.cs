@@ -1749,14 +1749,18 @@ namespace BrainCloud.Internal
 
         internal Dictionary<string, object> DeserializeJson(string jsonData)
         {
-            JsonResponseBundleV2 responseBundle = DeserializeJsonBundle(jsonData);
-            if (responseBundle.responses == null ||
-                responseBundle.responses.Length == 0)
+            if (JsonParser.GetString(jsonData, "packetId") is string response && !string.IsNullOrWhiteSpace(response))
             {
-                return null;
+                JsonResponseBundleV2 responseBundle = DeserializeJsonBundle(jsonData);
+                if (responseBundle.responses == null || responseBundle.responses.Length == 0)
+                {
+                    return null;
+                }
+
+                return JsonReader.Deserialize<Dictionary<string, object>>(responseBundle.responses[0]);
             }
 
-            return JsonReader.Deserialize<Dictionary<string, object>>(responseBundle.responses[0]);
+            return JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
         }
 
         /// <summary>
