@@ -1047,7 +1047,8 @@ namespace BrainCloud.Internal
                 operation = string.Empty;
                 responseData = string.Empty;
 
-                int statusCode = JsonParser.GetValue<int>(response, "status") is int code && code > 0 ? code : StatusCodes.BAD_REQUEST;
+                int statusCode = JsonParser.GetValue<int>(response, "status") is int code && code > 0 ? code
+                                                                                                      : StatusCodes.BAD_REQUEST;
 
                 /*
                  * It's important to note here that a user error callback *might* call
@@ -1075,9 +1076,8 @@ namespace BrainCloud.Internal
                 {
                     ResetKillSwitch();
                     service = sc.GetService();
-                    if (response.Contains(OperationParam.ServiceMessageData))
+                    if (JsonParser.TryGetString(response, out responseData, OperationParam.ServiceMessageData))
                     {
-                        responseData = JsonParser.GetString(response, OperationParam.ServiceMessageData);
                         if (service == ServiceName.Authenticate || service == ServiceName.Identity)
                         {
                             // Reset authenticate timeout
@@ -1092,9 +1092,9 @@ namespace BrainCloud.Internal
                         callback = sc.GetCallback();
                         operation = sc.GetOperation();
                         string fileDetails = string.Empty;
-                        if (operation == ServiceOperation.RunPeerScript && responseData.Contains("fileDetails"))
+                        if (operation == ServiceOperation.RunPeerScript)
                         {
-                            fileDetails = JsonParser.GetString(responseData, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
+                            JsonParser.TryGetString(responseData, out fileDetails, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
                         }
 
                         if (operation == ServiceOperation.FullReset ||
@@ -1127,10 +1127,9 @@ namespace BrainCloud.Internal
                             string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
                             fileDetails = string.IsNullOrEmpty(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
 
-                            if (fileDetails.Contains("uploadId") && fileDetails.Contains("localPath"))
+                            if (JsonParser.TryGetString(fileDetails, out string uploadId, "uploadId") &&
+                                JsonParser.TryGetString(fileDetails, out string guid, "localPath"))
                             {
-                                string uploadId = JsonParser.GetString(fileDetails, "uploadId");
-                                string guid = JsonParser.GetString(fileDetails, "localPath");
                                 string fileName = JsonParser.GetString(fileDetails, "cloudFilename");
                                 var uploader = new FileUploader(uploadId,
                                                                 guid,
@@ -1395,11 +1394,11 @@ namespace BrainCloud.Internal
                 }
             }
 
-            if (bundleObj.events != null && bundleObj.events.Length > 0 && _eventCallback != null)
+            if (!string.IsNullOrWhiteSpace(bundleObj.events) && _eventCallback != null)
             {
                 try
                 {
-                    _eventCallback(bundleObj.GetEventsJsonArray());
+                    _eventCallback(bundleObj.events);
                 }
                 catch (Exception e)
                 {
@@ -1749,7 +1748,7 @@ namespace BrainCloud.Internal
 
         internal Dictionary<string, object> DeserializeJson(string jsonData)
         {
-            if (JsonParser.GetString(jsonData, "packetId") is string response && !string.IsNullOrWhiteSpace(response))
+            if (JsonParser.TryGetString(jsonData, out _, "packetId"))
             {
                 JsonResponseBundleV2 responseBundle = DeserializeJsonBundle(jsonData);
                 if (responseBundle.responses == null || responseBundle.responses.Length == 0)
@@ -2442,8 +2441,8 @@ namespace BrainCloud.Internal
         public const int EMPTY_RESPONSE_BUNDLE = int.MinValue; // The Id we use when we want to denote an "empty" struct
 
         public readonly long     packetId;
+        public readonly string   events;
         public readonly string[] responses;
-        public readonly string[] events;
 
         public bool IsError => packetId == NO_PACKET_EXPECTED;
 
@@ -2454,13 +2453,13 @@ namespace BrainCloud.Internal
         private JsonResponseBundleV2(long id)
         {
             packetId = id;
+            events = string.Empty;
             responses = null;
-            events = null;
         }
 
         public JsonResponseBundleV2(string jsonData)
         {
-            JsonParser.GetJsonResponseBundleV2(jsonData, out string packetId, out string[] responses, out string[] events);
+            JsonParser.GetJsonResponseBundleV2(jsonData, out string packetId, out string events, out string[] responses);
 
             this.packetId = long.TryParse(packetId, out long result) ? result : NO_PACKET_EXPECTED;
             if (this.packetId < 0)
@@ -2468,11 +2467,9 @@ namespace BrainCloud.Internal
                 throw new Exception($"packetId is not a valid value! packetId: {this.packetId}");
             }
 
+            this.events = !string.IsNullOrWhiteSpace(events) ? $"{{\"events\":[{events}]}}" : string.Empty;
             this.responses = responses != null && responses.Length > 0 ? responses : null;
-            this.events = events != null && events.Length > 0 ? events : null;
         }
-
-        public string GetEventsJsonArray() => JsonParser.GetSerializedJsonArray(events, "events");
     }
 
     // These classes help handle JSON serialization with brainCloud Error Responses.
@@ -2523,18 +2520,18 @@ namespace BrainCloud.Common
     public static partial class JsonParser
     {
         internal static void GetJsonResponseBundleV2(string jsonData, out string packetId,
-                                                                      out string[] responses,
-                                                                      out string[] events)
+                                                                      out string events,
+                                                                      out string[] responses)
         {
             const char SPLIT_TOKEN = (char)0x1F;
 
             packetId = string.Empty;
+            events = string.Empty;
             responses = null;
-            events = null;
 
             char current;
             bool insideProperty = false;
-            bool copyToEvents = false;
+            bool splitToResponses = false;
 
             sbHelper.Clear();
 
@@ -2568,10 +2565,10 @@ namespace BrainCloud.Common
                             packetId = sbHelper.ToString().Replace(" ", string.Empty);
                             break;
                         case "responses":
-                            copyToEvents = false;
+                            splitToResponses = true;
                             break;
                         case "events":
-                            copyToEvents = true;
+                            splitToResponses = false;
                             break;
                         default:
                             throw new Exception($"Got a string that isn't what we were expecting: {sbHelper}");
@@ -2598,10 +2595,28 @@ namespace BrainCloud.Common
                                 level--;
                                 goto default;
                             case ',':
-                                if (level == 1)
+                                if (level == 1 && splitToResponses)
                                 {
                                     sbHelper.Append(SPLIT_TOKEN);
                                     continue;
+                                }
+                                goto default;
+                            case '"':
+                                if (jsonData[i - 1] != '\\')
+                                {
+                                    while (i < jsonData.Length)
+                                    {
+                                        current = jsonData[i];
+                                        sbHelper.Append(current);
+
+                                        if (jsonData[++i] == '"' && current != '\\')
+                                        {
+                                            current = jsonData[i];
+                                            goto default;
+                                        }
+                                    }
+
+                                    throw new Exception("JsonParser could not parse this property's value!");
                                 }
                                 goto default;
                             default:
@@ -2613,43 +2628,18 @@ namespace BrainCloud.Common
                         }
                     }
 
-                    if (copyToEvents)
+                    if (splitToResponses)
                     {
-                        events = sbHelper.ToString().Split(SPLIT_TOKEN);
+                        responses = sbHelper.ToString().Split(SPLIT_TOKEN); 
                     }
                     else
                     {
-                        responses = sbHelper.ToString().Split(SPLIT_TOKEN);
+                        events = sbHelper.ToString();
                     }
 
                     sbHelper.Clear();
                 }
             }
-        }
-
-        internal static string GetSerializedJsonArray(string[] array, string property)
-        {
-            if (array != null && array.Length > 0)
-            {
-                sbHelper.Clear();
-                sbHelper.Append($"{{\"{property}\":[");
-
-                for (int i = 0; i < array.Length;)
-                {
-                    sbHelper.Append(array[i]);
-
-                    if (++i < array.Length)
-                    {
-                        sbHelper.Append(',');
-                    }
-                }
-
-                sbHelper.Append("]}");
-
-                return sbHelper.ToString();
-            }
-
-            return $"{{\"{property}\":null}}";
         }
     }
 }

@@ -15,6 +15,8 @@ namespace BrainCloud
         /// </summary>
         public static partial class JsonParser
         {
+            private const char SPLIT_TOKEN = (char)0x1F;
+
             private static readonly StringBuilder sbHelper = null;
 
             static JsonParser()
@@ -43,19 +45,19 @@ namespace BrainCloud
             /// The full content of the <see cref="string"/> value for the property name including objects and arrays.
             /// <br><b>Note</b>: If the property isn't valid or not found it will return <see cref="string.Empty"/>.</br>
             /// </returns>
-            /// <exception cref="Exception">If <paramref name="jsonData"/> isn't a proper Json string then this exception will be thrown.</exception>
             public static string GetString(string jsonData, string property)
             {
                 if (string.IsNullOrWhiteSpace(jsonData) ||
                     !(jsonData.StartsWith("{") && jsonData.EndsWith("}")) &&
                     !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
                 {
-                    throw new Exception("jsonData is not a valid Json!");
+                    // Should maybe log that this isn't a proper Json string?
+                    // throw new Exception("jsonData is not a valid Json!");
+                    return string.Empty;
                 }
 
                 char current, next;
                 bool insideProperty = false;
-
                 for (int i = 0; i < jsonData.Length; i++)
                 {
                     current = jsonData[i];
@@ -93,6 +95,25 @@ namespace BrainCloud
                                         case ']':
                                             level--;
                                             goto default;
+                                        case '"':
+                                            if (jsonData[i - 1] != '\\')
+                                            {
+                                                while (++i < jsonData.Length)
+                                                {
+                                                    current = jsonData[i - 1];
+                                                    next = jsonData[i];
+                                                    sbHelper.Append(current);
+
+                                                    if (next == '"' && current != '\\')
+                                                    {
+                                                        current = jsonData[i];
+                                                        goto default;
+                                                    }
+                                                }
+
+                                                throw new Exception("JsonParser could not parse this property's value!");
+                                            }
+                                            goto default;
                                         default:
                                             sbHelper.Append(current);
                                             continue;
@@ -102,21 +123,42 @@ namespace BrainCloud
 
                                 return sbHelper.ToString();
                             }
-                            else
+                            else // Not an array or object
                             {
+                                i++;
                                 sbHelper.Clear();
-                                next = jsonData[++i];
-                                if (next == '"')
+                                if (next == '"') // String value
                                 {
-                                    next = jsonData[++i];
-                                }
+                                    i++;
+                                    while (++i < jsonData.Length)
+                                    {
+                                        current = jsonData[i - 1];
+                                        next = jsonData[i];
+                                        sbHelper.Append(current);
 
-                                while (next != '}' && next != ']' &&
-                                       next != '"' && next != ',')
+                                        if (next == '"' && current != '\\')
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    if (sbHelper.ToString() == "\"" || sbHelper.ToString() == "\",") // We must have grabbed an empty string
+                                    {
+                                        sbHelper.Clear();
+                                    }
+                                    else if (i >= jsonData.Length)
+                                    {
+                                        throw new Exception("JsonParser could not parse this property's value!");
+                                    }
+                                }
+                                else // Non-string value
                                 {
-                                    current = jsonData[i];
-                                    next = jsonData[++i];
-                                    sbHelper.Append(current);
+                                    while (next != ',' && next != '}' && next != ']')
+                                    {
+                                        current = jsonData[i];
+                                        next = jsonData[++i];
+                                        sbHelper.Append(current);
+                                    }
                                 }
 
                                 return sbHelper.ToString();
@@ -140,6 +182,23 @@ namespace BrainCloud
                                     case ']':
                                         level--;
                                         continue;
+                                    case '"':
+                                        if (jsonData[i - 1] != '\\')
+                                        {
+                                            while (++i < jsonData.Length)
+                                            {
+                                                current = jsonData[i - 1];
+                                                next = jsonData[i];
+
+                                                if (next == '"' && current != '\\')
+                                                {
+                                                    goto default;
+                                                }
+                                            }
+
+                                            return string.Empty; // If we reached the end of the string, then the Json doesn't contain the property
+                                        }
+                                        continue;
                                     default:
                                         continue;
                                 }
@@ -160,7 +219,7 @@ namespace BrainCloud
             /// Gets a full <see cref="string"/> value of a property at the end of the hierarchy within the Json string.
             /// </summary>
             /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
-            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The full content of the <see cref="string"/> value for the property name at the end of the hierarchy including objects and arrays.
             /// <br><b>Note</b>: If the hierarchy isn't valid or the property is not found it will return <see cref="string.Empty"/>.</br>
@@ -189,13 +248,148 @@ namespace BrainCloud
 
                     if (level < hierarchy.Length)
                     {
-                        return null;
+                        return string.Empty;
                     }
 
                     return jsonData;
                 }
 
                 return string.Empty;
+            }
+
+            /// <summary>
+            /// Gets a <see cref="string"/> array that contains full <see cref="string"/> values of the property's array within the Json string.
+            /// </summary>
+            /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
+            /// <param name="property">
+            /// The name of the property you want within the Json string's highest hierarchy layer.
+            /// <br><b>Note</b>: Leave this empty if <paramref name="jsonData"/> is already a serialized array string.</br>
+            /// </param>
+            /// <returns>
+            /// A <see cref="string"/> array that contains full <see cref="string"/> values of the property's array including objects and arrays.
+            /// <br><b>Note</b>: If the property isn't valid or not found it will return <b>null</b>.</br>
+            /// </returns>
+            public static string[] GetArrayString(string jsonData, string property = "")
+            {
+                if (!string.IsNullOrWhiteSpace(property))
+                {
+                    jsonData = GetString(jsonData, property);
+                }
+
+                if (string.IsNullOrWhiteSpace(jsonData) ||
+                    !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
+                {
+                    // Should maybe log that this isn't a proper Json array?
+                    // throw new Exception($"{property} is not a Json array!");
+                    return null;
+                }
+
+                char current;
+                int i = 0, level = 1;
+                sbHelper.Clear();
+                while (level > 0)
+                {
+                    current = jsonData[++i];
+
+                    switch (current)
+                    {
+                        case '{':
+                        case '[':
+                            level++;
+                            goto default;
+                        case '}':
+                        case ']':
+                            level--;
+                            goto default;
+                        case ',':
+                            if (level == 1)
+                            {
+                                sbHelper.Append(SPLIT_TOKEN);
+                                continue;
+                            }
+                            goto default;
+                        case '"':
+                            while (i < jsonData.Length)
+                            {
+                                current = jsonData[i];
+                                sbHelper.Append(current);
+
+                                if (jsonData[++i] == '"' && current != '\\')
+                                {
+                                    current = jsonData[i];
+                                    goto default;
+                                }
+                            }
+
+                            throw new Exception("JsonParser could not parse this property's array!");
+                        default:
+                            if (level != 0)
+                            {
+                                sbHelper.Append(current);
+                            }
+                            continue;
+                    }
+                }
+
+                string arrays = sbHelper.ToString();
+                if (!string.IsNullOrWhiteSpace(arrays))
+                {
+                    return arrays.Split(SPLIT_TOKEN);
+                }
+
+                return null;
+            }
+
+            /// <summary>
+            /// Gets a <see cref="string"/> array that contains full <see cref="string"/> values of the property's array at the end of the hierarchy within the Json string.
+            /// </summary>
+            /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy with the last property being an array.</param>
+            /// <returns>
+            /// A <see cref="string"/> array that contains full <see cref="string"/> values of the property's array at the end of the hierarchy including objects and arrays.
+            /// <br><b>Note</b>: If the property isn't valid or not found it will return <b>null</b>.</br>
+            /// </returns>
+            public static string[] GetArrayString(string jsonData, params string[] hierarchy)
+            {
+                return GetArrayString(GetString(jsonData, GetHierarchyMinusOne(hierarchy)), hierarchy[hierarchy.Length - 1]);
+            }
+
+            /// <summary>
+            /// Tries to get a full <see cref="string"/> value of a property within the Json string.
+            /// </summary>
+            /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
+            /// <param name="value">
+            /// When this method returns, contains the full content of the <see cref="string"/> value for the property name including objects and arrays,
+            /// if the property is found. Otherwise, it will return as <see cref="string.Empty"/>. This parameter is passed uninitialized.
+            /// </param>
+            /// <param name="property">The name of the property you want within the Json string's highest hierarchy layer.</param>
+            /// <returns>
+            /// <b>true</b> if the property is found and has a value. Otherwise <b>false</b>.
+            /// <br><b>Note</b>: This will return <b>true</b> if the property contains <b>any</b> kind of value, including <b>null</b> and empty <b>objects</b> and <b>arrays</b>.</br>
+            /// </returns>
+            public static bool TryGetString(string jsonData, out string value, string property)
+            {
+                value = GetString(jsonData, property);
+                return !string.IsNullOrWhiteSpace(value);
+            }
+
+            /// <summary>
+            /// Tries to get a full <see cref="string"/> value of a property at the end of the hierarchy within the Json string.
+            /// </summary>
+            /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
+            /// <param name="value">
+            /// When this method returns, contains the full content of the <see cref="string"/> value for the property name including objects and arrays,
+            /// if the property at the end of the hierarchy is found. Otherwise, it will return as <see cref="string.Empty"/>. This parameter is passed uninitialized.
+            /// </param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
+            /// <returns>
+            /// <b>true</b> if the property at the end of the hierarchy is found and has a value. Otherwise <b>false</b>.
+            /// <br><b>Note</b>: This will return <b>true</b> if the property contains <b>any</b> kind of value, including <b>null</b> and empty <b>objects</b> and <b>arrays</b>.</br>
+            /// </returns>
+            public static bool TryGetString(string jsonData, out string value, params string[] hierarchy)
+            {
+                value = GetString(jsonData, hierarchy);
+                return !string.IsNullOrWhiteSpace(value);
             }
 
             /// <summary>
@@ -206,7 +400,9 @@ namespace BrainCloud
             /// <param name="property">The name of the property you want within the Json string's highest hierarchy layer.</param>
             /// <returns>
             /// The value for the property name if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note¹</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note²</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, string property) where T : struct, IConvertible
             {
@@ -216,8 +412,12 @@ namespace BrainCloud
                     {
                         if (typeof(T) == typeof(bool))
                         {
-                            value = value.ToLower();
-                            return (T)((value != "0" && value != "false" && value != "null") as T?);
+                            value = value.Replace(" ", string.Empty).ToLower();
+                            return (T)((value != "0" &&
+                                        value != "false" &&
+                                        value != "null" &&
+                                        value != "{}" &&
+                                        value != "[]") as T?);
                         }
 
                         if (typeof(T).IsEnum)
@@ -238,10 +438,12 @@ namespace BrainCloud
             /// </summary>
             /// <typeparam name="T">A non-nullable <b>struct</b> and <see cref="IConvertible"/> value type that can be converted from a string.</typeparam>
             /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
-            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The value for the property name at the end of the hierarchy if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note¹</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note²</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, params string[] hierarchy) where T : struct, IConvertible
             {
@@ -267,7 +469,7 @@ namespace BrainCloud
             /// Gets a <see cref="DateTime"/> value from a <see cref="long"/> brainCloud time value at the end of a hierarchy within the Json string.
             /// </summary>
             /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
-            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The <see cref="DateTime"/> value for the property name at the end of the hierarchy converted from a <see cref="long"/> brainCloud time value.
             /// <br><b>Note</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="DateTime"/> set to the unix epoch.</br>
@@ -287,13 +489,15 @@ namespace BrainCloud
             /// <br><b>Note</b>: If the property isn't valid or not found it will return a <see cref="TimeSpan"/> with minimum value.</br>
             /// </returns>
             public static TimeSpan GetTimeSpan(string jsonData, string property)
-                    => TimeSpan.FromMilliseconds(GetValue<double>(jsonData, property));
+            {
+                return TimeSpan.FromMilliseconds(GetValue<double>(jsonData, property));
+            }
 
             /// <summary>
             /// Gets a <see cref="TimeSpan"/> value from a <see cref="double"/> millisecond value at the end of a hierarchy within the Json string.
             /// </summary>
             /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
-            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The <see cref="TimeSpan"/> for the property name at the end of the hierarchy converted from a <see cref="double"/> millisecond value.
             /// <br><b>Note</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="TimeSpan"/> with minimum value.</br>
@@ -329,7 +533,7 @@ namespace BrainCloud
             /// Gets an <see cref="ACL"/> object at the end of a hierarchy within the Json string.
             /// </summary>
             /// <param name="jsonData">A valid Json <see cref="string"/>.</param>
-            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy</param>
+            /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The <see cref="ACL"/> object for the property name at the end of the hierachy.
             /// <br><b>Note</b>: If the hierarchy isn't valid or the property is not found it will return <b>null</b>.</br>
