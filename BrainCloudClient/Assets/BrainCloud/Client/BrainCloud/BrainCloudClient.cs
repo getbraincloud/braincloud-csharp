@@ -14,6 +14,8 @@ namespace BrainCloud
 #if !XAMARIN
     using BrainCloud.Entity;
     using System;
+#elif XAMARIN
+    using System;
 #endif
 
 #if !(DOT_NET || GODOT)
@@ -1372,6 +1374,8 @@ using System.Globalization;
             Platform platform = Platform.Windows;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
+#elif XAMARIN
+            platform = Platform.FromRuntime();
 #endif
 
             _appVersion = appVersion;
