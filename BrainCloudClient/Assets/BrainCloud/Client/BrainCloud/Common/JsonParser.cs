@@ -6,7 +6,12 @@
 namespace BrainCloud
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
+
+#if !(DOT_NET || GODOT || XAMARIN)
+    using UnityEngine;
+#endif
 
     namespace Common
     {
@@ -15,13 +20,17 @@ namespace BrainCloud
         /// </summary>
         public static partial class JsonParser
         {
-            private const char SPLIT_TOKEN = (char)0x1F;
+            private const string INVALID_JSON = "jsonData is an invalid Json string!";
+            private const string INVALID_ARRAY = "jsonData is an invalid array string!";
 
             private static readonly StringBuilder sbHelper = null;
+
+            private static readonly List<string> splitArrays = null;
 
             static JsonParser()
             {
                 sbHelper = new(2048);
+                splitArrays = new(4);
             }
 
             // This is a helper function for the hierarchy functions to get the hierarchy minus the last value.
@@ -47,12 +56,17 @@ namespace BrainCloud
             /// </returns>
             public static string GetString(string jsonData, string property)
             {
-                if (string.IsNullOrWhiteSpace(jsonData) ||
+                if (string.IsNullOrWhiteSpace(jsonData) || jsonData.Length < 2 ||
                     !(jsonData.StartsWith("{") && jsonData.EndsWith("}")) &&
                     !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
                 {
-                    // Should maybe log that this isn't a proper Json string?
-                    // throw new Exception("jsonData is not a valid Json!");
+#if GODOT
+                    Godot.GD.Print(INVALID_JSON);
+#elif !DOT_NET
+                    Debug.Log(INVALID_JSON);
+#elif !XAMARIN
+                    Console.WriteLine(INVALID_JSON);
+#endif
                     return string.Empty;
                 }
 
@@ -276,68 +290,80 @@ namespace BrainCloud
                     jsonData = GetString(jsonData, property);
                 }
 
-                if (string.IsNullOrWhiteSpace(jsonData) ||
+                if (string.IsNullOrWhiteSpace(jsonData) || jsonData.Length < 2 ||
                     !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
                 {
-                    // Should maybe log that this isn't a proper Json array?
-                    // throw new Exception($"{property} is not a Json array!");
+#if GODOT
+                    Godot.GD.Print(INVALID_ARRAY);
+#elif !DOT_NET
+                    Debug.Log(INVALID_ARRAY);
+#elif !XAMARIN
+                    Console.WriteLine(INVALID_ARRAY);
+#endif
                     return null;
                 }
 
                 char current;
-                int i = 0, level = 1;
-                sbHelper.Clear();
-                while (level > 0)
+                int i = 0, level = 1, start = 1; // start after '['
+                splitArrays.Clear();
+
+                while (level > 0 && ++i < jsonData.Length)
                 {
-                    current = jsonData[++i];
+                    current = jsonData[i];
 
                     switch (current)
                     {
                         case '{':
                         case '[':
                             level++;
-                            goto default;
+                            break;
                         case '}':
                         case ']':
                             level--;
-                            goto default;
+                            if (level == 0) // Last element
+                            {
+                                int len = i - start;
+                                if (len > 0)
+                                {
+                                    string array = jsonData.Substring(start, i - start).Trim();
+                                    if (array.StartsWith("\"") && array.EndsWith("\""))
+                                    {
+                                        array = array.Substring(1, array.Length - 2);
+                                    }
+
+                                    splitArrays.Add(array);
+                                }
+                            }
+                            break;
                         case ',':
                             if (level == 1)
                             {
-                                sbHelper.Append(SPLIT_TOKEN);
-                                continue;
+                                string array = jsonData.Substring(start, i - start).Trim();
+                                if (array.StartsWith("\"") && array.EndsWith("\""))
+                                {
+                                    array = array.Substring(1, array.Length - 2);
+                                }
+
+                                splitArrays.Add(array);
+                                start = i + 1;
                             }
-                            goto default;
+                            break;
                         case '"':
+                            i++; // Skip over string literal safely
                             while (i < jsonData.Length)
                             {
                                 current = jsonData[i];
-                                sbHelper.Append(current);
-
-                                if (jsonData[++i] == '"' && current != '\\')
+                                if (current == '"' && jsonData[i - 1] != '\\')
                                 {
-                                    current = jsonData[i];
-                                    goto default;
+                                    break;
                                 }
+                                i++;
                             }
-
-                            throw new Exception("JsonParser could not parse this property's array!");
-                        default:
-                            if (level != 0)
-                            {
-                                sbHelper.Append(current);
-                            }
-                            continue;
+                            break;
                     }
                 }
 
-                string arrays = sbHelper.ToString();
-                if (!string.IsNullOrWhiteSpace(arrays))
-                {
-                    return arrays.Split(SPLIT_TOKEN);
-                }
-
-                return null;
+                return splitArrays.Count > 0 ? splitArrays.ToArray() : null;
             }
 
             /// <summary>

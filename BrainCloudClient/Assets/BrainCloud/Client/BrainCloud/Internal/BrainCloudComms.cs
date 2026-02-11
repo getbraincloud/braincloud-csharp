@@ -2434,14 +2434,14 @@ namespace BrainCloud.Internal
 
     #region brainCloud JSON Objects
 
-    internal readonly struct JsonResponseBundleV2
+    public readonly struct JsonResponseBundleV2
     {
         public const int NO_PACKET_EXPECTED = -1; // The Id of _expectedIncomingPacketId when no packet expected
 
         public const int EMPTY_RESPONSE_BUNDLE = int.MinValue; // The Id we use when we want to denote an "empty" struct
 
-        public readonly long     packetId;
-        public readonly string   events;
+        public readonly long packetId;
+        public readonly string events;
         public readonly string[] responses;
 
         public bool IsError => packetId == NO_PACKET_EXPECTED;
@@ -2480,7 +2480,7 @@ namespace BrainCloud.Internal
     [Serializable]
     internal class JsonResponseErrorBundleV2
     {
-        [JsonName("packetId")]  public long               packetId;
+        [JsonName("packetId")] public long packetId;
         [JsonName("responses")] public JsonErrorMessage[] responses;
 
         public JsonResponseErrorBundleV2() { }
@@ -2489,10 +2489,10 @@ namespace BrainCloud.Internal
     [Serializable]
     internal class JsonErrorMessage
     {
-        [JsonName("reason_code")]    public int    reason_code;
-        [JsonName("status")]         public int    status;
+        [JsonName("reason_code")] public int reason_code;
+        [JsonName("status")] public int status;
         [JsonName("status_message")] public string status_message;
-        [JsonName("severity")]       public string severity = "ERROR";
+        [JsonName("severity")] public string severity = "ERROR";
 
         public JsonErrorMessage() { }
 
@@ -2523,8 +2523,6 @@ namespace BrainCloud.Common
                                                                       out string events,
                                                                       out string[] responses)
         {
-            const char SPLIT_TOKEN = (char)0x1F;
-
             packetId = string.Empty;
             events = string.Empty;
             responses = null;
@@ -2562,10 +2560,11 @@ namespace BrainCloud.Common
                                 current = jsonData[++i];
                                 sbHelper.Append(current);
                             }
-                            packetId = sbHelper.ToString().Replace(" ", string.Empty);
+                            packetId = sbHelper.ToString().Trim();
                             break;
                         case "responses":
                             splitToResponses = true;
+                            splitArrays.Clear();
                             break;
                         case "events":
                             splitToResponses = false;
@@ -2578,7 +2577,7 @@ namespace BrainCloud.Common
                 }
                 else if (current == '{' || current == '[')
                 {
-                    int level = 1;
+                    int level = 1, start = i + 1;
 
                     while (level > 0)
                     {
@@ -2593,11 +2592,21 @@ namespace BrainCloud.Common
                             case '}':
                             case ']':
                                 level--;
+                                if (level == 0 && splitToResponses) // Last element
+                                {
+                                    int len = i - start;
+                                    if (len > 0)
+                                    {
+                                        splitArrays.Add(jsonData.Substring(start, len).Trim());
+                                    }
+                                }
                                 goto default;
                             case ',':
                                 if (level == 1 && splitToResponses)
                                 {
-                                    sbHelper.Append(SPLIT_TOKEN);
+                                    int len = i - start;
+                                    splitArrays.Add(jsonData.Substring(start, len).Trim());
+                                    start = i + 1;
                                     continue;
                                 }
                                 goto default;
@@ -2630,7 +2639,7 @@ namespace BrainCloud.Common
 
                     if (splitToResponses)
                     {
-                        responses = sbHelper.ToString().Split(SPLIT_TOKEN); 
+                        responses = splitArrays.Count > 0 ? splitArrays.ToArray() : null;
                     }
                     else
                     {
