@@ -57,9 +57,9 @@ namespace BrainCloud
                     !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
                 {
 #if GODOT
-                    Godot.GD.Print(INVALID_JSON);
+                    Godot.GD.PushWarning(INVALID_JSON);
 #elif !DOT_NET
-                    UnityEngine.Debug.Log(INVALID_JSON);
+                    UnityEngine.Debug.LogWarning(INVALID_JSON);
 #else
                     Console.WriteLine(INVALID_JSON);
 #endif
@@ -290,9 +290,9 @@ namespace BrainCloud
                     !(jsonData.StartsWith("[") && jsonData.EndsWith("]")))
                 {
 #if GODOT
-                    Godot.GD.Print(INVALID_ARRAY);
+                    Godot.GD.PushWarning(INVALID_ARRAY);
 #elif !DOT_NET
-                    UnityEngine.Debug.Log(INVALID_ARRAY);
+                    UnityEngine.Debug.LogWarning(INVALID_ARRAY);
 #else
                     Console.WriteLine(INVALID_ARRAY);
 #endif
