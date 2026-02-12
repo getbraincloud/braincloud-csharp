@@ -4,8 +4,9 @@
 //----------------------------------------------------
 
 using System.Collections.Generic;
+
 #if XAMARIN
-    using Xamarin.Essentials;
+using Xamarin.Essentials;
 #endif
 
 namespace BrainCloud.Common

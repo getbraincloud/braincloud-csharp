@@ -1,14 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud.Internal
 {
-
-using System.Collections;
-
+    using System.Collections;
 
     internal class ServerCall
     {

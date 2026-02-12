@@ -1,4 +1,5 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
 using BrainCloud;
 using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
@@ -368,6 +369,22 @@ namespace BrainCloudTests
             Assert.That(JsonParser.TryGetString(JSON, out string result, "responses", "evenMoreData", "status"));
 
             Console.WriteLine($"Retrived this value using JsonParser (responses > evenMoreData > status): {result}");
+        }
+
+        [Test]
+        public void TestJsonParserBadJson()
+        {
+            //string JSON = JsonWriter.Serialize(new Dictionary<string, object>()
+            //{
+            //    { "packetId", 0 },
+            //    { "responses", new Dictionary<string, object>() {
+            //        { "data", new Dictionary<string, object>() },
+            //        { "status", 200 },
+            //    }},
+            //    { "events", null }
+            //});
+
+            Assert.That(!JsonParser.TryGetString(Guid.NewGuid().ToString(), out _, "packetId"));
         }
     }
 }

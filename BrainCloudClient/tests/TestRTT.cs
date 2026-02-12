@@ -1,12 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud.JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
-using BrainCloud;
-using BrainCloud.Common;
-using BrainCloud.JsonFx.Json;
 using System;
-using System.Threading;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace BrainCloudTests
 {

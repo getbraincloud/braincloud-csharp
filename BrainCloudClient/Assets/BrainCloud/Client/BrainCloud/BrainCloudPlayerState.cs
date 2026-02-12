@@ -1,12 +1,10 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
     using System;
     using System.Collections.Generic;
     using BrainCloud.JsonFx.Json;
