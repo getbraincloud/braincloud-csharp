@@ -9,10 +9,6 @@ namespace BrainCloud
     using System.Collections.Generic;
     using System.Text;
 
-#if !(DOT_NET || GODOT || XAMARIN)
-    using UnityEngine;
-#endif
-
     namespace Common
     {
         /// <summary>
@@ -63,8 +59,8 @@ namespace BrainCloud
 #if GODOT
                     Godot.GD.Print(INVALID_JSON);
 #elif !DOT_NET
-                    Debug.Log(INVALID_JSON);
-#elif !XAMARIN
+                    UnityEngine.Debug.Log(INVALID_JSON);
+#else
                     Console.WriteLine(INVALID_JSON);
 #endif
                     return string.Empty;
@@ -296,8 +292,8 @@ namespace BrainCloud
 #if GODOT
                     Godot.GD.Print(INVALID_ARRAY);
 #elif !DOT_NET
-                    Debug.Log(INVALID_ARRAY);
-#elif !XAMARIN
+                    UnityEngine.Debug.Log(INVALID_ARRAY);
+#else
                     Console.WriteLine(INVALID_ARRAY);
 #endif
                     return null;
