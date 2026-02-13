@@ -6,16 +6,13 @@
 
 namespace BrainCloud
 {
-
+    using System;
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
     using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
-    using System;
-#elif XAMARIN
-    using System;
 #endif
 
 #if !(DOT_NET || GODOT)
