@@ -183,7 +183,6 @@ namespace BrainCloud.Common
                 case Device.Android:
                     platform = Platform.GooglePlayAndroid;
                     break;
-                case Device.UWP:
                 case Device.WPF:
                     platform = Platform.Windows;
                     break;
