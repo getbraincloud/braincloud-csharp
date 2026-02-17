@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 
 #if XAMARIN
-using Xamarin.Essentials;
+using Xamarin.Forms;
 #endif
 
 namespace BrainCloud.Common
@@ -163,6 +163,34 @@ namespace BrainCloud.Common
 
 #endif // NO_UNITY_DEFINES
         }
+#endif
+
+#if XAMARIN
+    public static Platform FromRuntime()
+    {
+        Platform platform = Platform.Unknown;
+        try
+        {
+            switch (Device.RuntimePlatform)
+            {
+                case Device.iOS:
+                    platform = Platform.iOS;
+                    break;
+                case Device.macOS:
+                    platform = Platform.Mac;
+                    break;
+                case Device.Android:
+                    platform = Platform.GooglePlayAndroid;
+                    break;
+                case Device.WPF:
+                    platform = Platform.Windows;
+                    break;
+            }
+        }
+        catch{}
+
+        return platform;
+    }
 #endif
 
         #region Overrides and Operators

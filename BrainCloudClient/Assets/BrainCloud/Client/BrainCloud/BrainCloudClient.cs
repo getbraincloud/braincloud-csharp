@@ -5,13 +5,13 @@
 
 namespace BrainCloud
 {
+    using System;
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
     using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
-    using System;
 #endif
 
 #if !(DOT_NET || GODOT)
@@ -804,8 +804,6 @@ namespace BrainCloud
         }
         #endregion
 
-
-
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>
         /// <param name="appId ">The app id</param>
@@ -1370,6 +1368,8 @@ namespace BrainCloud
             Platform platform = Platform.Windows;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
+#elif XAMARIN
+            platform = Platform.FromRuntime();
 #endif
 
             _appVersion = appVersion;
