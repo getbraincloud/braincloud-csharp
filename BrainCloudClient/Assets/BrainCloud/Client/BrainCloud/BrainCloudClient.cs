@@ -6,14 +6,13 @@
 
 namespace BrainCloud
 {
-
+    using System;
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
     using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
-    using System;
 #endif
 
 #if !(DOT_NET || GODOT)
@@ -1372,6 +1371,8 @@ using System.Globalization;
             Platform platform = Platform.Windows;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
+#elif XAMARIN
+            platform = Platform.FromRuntime();
 #endif
 
             _appVersion = appVersion;
