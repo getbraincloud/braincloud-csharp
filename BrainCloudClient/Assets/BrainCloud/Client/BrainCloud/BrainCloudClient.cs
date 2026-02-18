@@ -1367,10 +1367,11 @@ using System.Globalization;
                 return;
             }
 
-            // TODO: what is our default c# platform?
-            Platform platform = Platform.Windows;
+            Platform platform = Platform.Unknown;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
+#elif GODOT
+            platform = Platform.GodotFromRuntime();
 #elif XAMARIN
             platform = Platform.FromRuntime();
 #endif
