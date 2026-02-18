@@ -1882,12 +1882,12 @@ namespace BrainCloud.Internal
                 CancellationTokenSource source = new CancellationTokenSource();
                 requestState.CancelToken = source;
 
-                Task<HttpResponseMessage> httpRequest = _httpClient.SendAsync(req, HttpCompletionOption.ResponseContentRead, source.Token);
-                requestState.WebRequest = httpRequest;
-                httpRequest.ContinueWith(async (t) =>
-                {
-                    await AsyncHttpTaskCallback(t, requestState);
-                });
+                requestState.RequestString = jsonRequestString;
+                requestState.TimeSent = DateTime.Now;
+                ResetIdleTimer();
+                TimeSpan packetTimeout = GetPacketTimeout(requestState);
+                //_ is a discard feature for C# however the request will still await.
+                _ = InternalSendMessageAsync(req, requestState, packetTimeout);
 #endif
                 requestState.RequestString = jsonRequestString;
                 requestState.TimeSent = DateTime.Now;
@@ -2056,7 +2056,7 @@ namespace BrainCloud.Internal
         {
             if (requestState.PacketNoRetry)
             {
-                if (DateTime.Now.Subtract(_activeRequest.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
+                if (DateTime.Now.Subtract(requestState.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
                 {
                     for (int i = 0; i < _listAuthPacketTimeouts.Length; i++)
                     {
@@ -2199,58 +2199,6 @@ namespace BrainCloud.Internal
                 _packetId = 0;
             }
         }
-
-
-#if (DOT_NET || GODOT)
-        private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult, RequestState requestState)
-        {
-            if (asyncResult.IsCanceled) return;
-
-            HttpResponseMessage message = null;
-
-            try
-            {
-                message = asyncResult.Result;
-                HttpContent content = message.Content;
-
-                //if its gzipped, the message is compressed
-                if (content.Headers.ContentEncoding.ToString() != "gzip")
-                {
-                    requestState.DotNetResponseString = await content.ReadAsStringAsync();
-                }
-                else
-                {
-                    var byteArray = await content.ReadAsByteArrayAsync();
-                    var decompressedByteArray = IsGzip(byteArray) ? Decompress(byteArray) : byteArray;
-                    requestState.DotNetResponseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
-                }
-
-                // End the operation
-                requestState.DotNetRequestStatus = message.IsSuccessStatusCode ?
-                    RequestState.eWebRequestStatus.STATUS_DONE : RequestState.eWebRequestStatus.STATUS_ERROR;
-            }
-
-            catch (WebException wex)
-            {
-                if (_clientRef.LoggingEnabled)
-                {
-                    _clientRef.Log("GetResponseCallback - WebException: " + wex.ToString());
-                }
-                requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-            }
-            catch (Exception ex)
-            {
-                if (_clientRef.LoggingEnabled)
-                {
-                    _clientRef.Log("GetResponseCallback - Exception: " + ex.ToString());
-                }
-                requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-            }
-
-            // Release the HttpResponseMessage
-            if (message != null) message.Dispose();
-        }
-#endif
 
         private string CalculateMD5Hash(string input)
         {
@@ -2430,7 +2378,182 @@ namespace BrainCloud.Internal
             }
             return inProgress;
         }
+    
+#if (DOT_NET || GODOT)
+        private async Task<HttpResult> SendAsync(HttpRequestMessage request, TimeSpan timeout, CancellationToken externalToken = default)
+        {
+            using var timeoutCts = new CancellationTokenSource(timeout);
+            using var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(
+                timeoutCts.Token, externalToken);
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseContentRead,
+                    linkedCts.Token).ConfigureAwait(false);
+
+                HttpContent content = response.Content;
+                string responseString;
+
+                if (content.Headers.ContentEncoding.ToString() != "gzip")
+                {
+                    responseString = await content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    var byteArray           = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var decompressedByteArray = IsGzip(byteArray) ? Decompress(byteArray) : byteArray;
+                    responseString          = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+                }
+
+                if (!response.IsSuccessStatusCode)
+                    return HttpResult.HttpError(response.StatusCode, responseString);
+
+                return HttpResult.Success(responseString, response.StatusCode);
+            }
+            catch (TaskCanceledException)
+            {
+                return timeoutCts.IsCancellationRequested
+                    ? HttpResult.Timeout()
+                    : HttpResult.Cancelled();
+            }
+            catch (HttpRequestException ex)
+            {
+                return HttpResult.NetworkError(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return HttpResult.UnknownError(ex.Message);
+            }
+        }
+
+        private void ProcessHttpResult(HttpResult result, RequestState requestState)
+        {
+            if (result.IsSuccess)
+            {
+                ResetIdleTimer();
+                HandleResponseBundle(result.Content);
+                _activeRequest = null;
+                return;
+            }
+
+            switch (result.FailureType)
+            {
+                case HttpFailureType.Timeout:
+                    if (_clientRef.LoggingEnabled)
+                        _clientRef.Log("Request timed out (client-side timeout).");
+                    requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
+                    break;
+
+                case HttpFailureType.Cancelled:
+                    if (_clientRef.LoggingEnabled)
+                        _clientRef.Log("Request was cancelled.");
+                    requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
+                    break;
+
+                case HttpFailureType.NetworkError:
+                    if (_clientRef.LoggingEnabled)
+                        _clientRef.Log("Network error: " + result.ErrorMessage);
+                    requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
+                    break;
+
+                case HttpFailureType.HttpError:
+                    int statusCode = result.StatusCode.HasValue ? (int)result.StatusCode.Value : 0;
+
+                    if (statusCode == 503 || statusCode == 502 || statusCode == 504)
+                    {
+                        if (_clientRef.LoggingEnabled)
+                            _clientRef.Log("Server temporarily unavailable, retrying...");
+                        requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
+                        return;
+                    }
+
+                    if (_serviceCallsInProgress.Count > 0)
+                    {
+                        ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
+                        if (sc != null)
+                            sc.OnErrorCallback(404, statusCode, result.Content);
+                    }
+                    requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
+                    break;
+
+                case HttpFailureType.Unknown:
+                default:
+                    if (_clientRef.LoggingEnabled)
+                        _clientRef.Log("Unknown error: " + result.ErrorMessage);
+                    requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
+                    break;
+            }
+        }
+
+        private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
+        {
+            HttpResult result = await SendAsync(req, timeout);
+            ProcessHttpResult(result, requestState);
+        }
+#endif
     }
+
+#if DOT_NET || GODOT
+    public enum HttpFailureType
+    {
+        Timeout,
+        NetworkError,
+        HttpError,
+        Cancelled,
+        Unknown
+    }
+
+    internal class HttpResult
+    {
+        public bool             IsSuccess    { get; }
+        public HttpStatusCode?  StatusCode   { get; }
+        public string           Content      { get; }
+        public HttpFailureType? FailureType  { get; }
+        public string           ErrorMessage { get; }
+
+        // When an HTTP status code is present
+        private HttpResult(bool isSuccess, HttpStatusCode statusCode, string content,
+                           HttpFailureType? failureType, string errorMessage)
+        {
+            IsSuccess    = isSuccess;
+            StatusCode   = statusCode;
+            Content      = content;
+            FailureType  = failureType;
+            ErrorMessage = errorMessage;
+        }
+
+        // When there is no HTTP status code (transport-level failures)
+        private HttpResult(bool isSuccess, string content,
+                           HttpFailureType? failureType, string errorMessage)
+        {
+            IsSuccess    = isSuccess;
+            StatusCode   = null;
+            Content      = content;
+            FailureType  = failureType;
+            ErrorMessage = errorMessage;
+        }
+
+        public static HttpResult Success(string content, HttpStatusCode code)
+            => new HttpResult(true, code, content, null, null);
+
+        public static HttpResult HttpError(HttpStatusCode code, string content)
+            => new HttpResult(false, code, content, HttpFailureType.HttpError, null);
+
+        public static HttpResult Timeout()
+            => new HttpResult(false, null, HttpFailureType.Timeout, null);
+
+        public static HttpResult NetworkError(string message)
+            => new HttpResult(false, null, HttpFailureType.NetworkError, message);
+
+        public static HttpResult Cancelled()
+            => new HttpResult(false, null, HttpFailureType.Cancelled, null);
+
+        public static HttpResult UnknownError(string message)
+            => new HttpResult(false, null, HttpFailureType.Unknown, message);
+    }
+#endif
 
     #region brainCloud JSON Objects
 
