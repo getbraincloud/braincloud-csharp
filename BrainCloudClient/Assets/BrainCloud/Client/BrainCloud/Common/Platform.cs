@@ -166,7 +166,6 @@ namespace BrainCloud.Common
 #endif
 
 #if XAMARIN
-
     public static Platform FromRuntime()
     {
         Platform platform = Platform.Unknown;

@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
@@ -24,11 +23,12 @@ using UnityEngine.Experimental.Networking;
 #endif
 #endif
 #else
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
 #endif
+
     /*
      * FileUploader is not supported in WebPlayer && WebGL
      */

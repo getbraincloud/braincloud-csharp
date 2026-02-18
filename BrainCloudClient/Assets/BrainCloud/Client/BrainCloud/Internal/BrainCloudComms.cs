@@ -9,12 +9,14 @@ using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 using System.Collections.Generic;
 #endif
 
-using System;
-
 namespace BrainCloud.Internal
 {
     using BrainCloud.Common;
+    using BrainCloud.JsonFx.Json;
+    using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Compression;
     using System.Text;
 
 #if (DOT_NET || GODOT || DISABLE_SSL_CHECK)
@@ -36,11 +38,8 @@ namespace BrainCloud.Internal
     using UnityEngine;
 #endif
 
-    using BrainCloud.JsonFx.Json;
-    using System.IO;
-    using System.IO.Compression;
-
     #region Processed Server Call Class
+
     public class ServerCallProcessed
     {
         internal ServerCall ServerCall { get; set; }
@@ -2640,6 +2639,8 @@ namespace BrainCloud.Internal
  */
 namespace BrainCloud.Common
 {
+    using System;
+
     public static partial class JsonParser
     {
         internal static void GetJsonResponseBundleV2(string jsonData, out string packetId,

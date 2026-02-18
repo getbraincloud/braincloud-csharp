@@ -1,13 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using BrainCloud.Internal;
+    using BrainCloud.Internal;
 
     public class BrainCloudRTT
     {

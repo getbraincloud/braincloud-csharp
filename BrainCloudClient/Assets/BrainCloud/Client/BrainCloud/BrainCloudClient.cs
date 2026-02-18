@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -20,7 +19,7 @@ namespace BrainCloud
     using UnityEngine.Assertions;
     using System.Text;
 #else
-using System.Globalization;
+    using System.Globalization;
 #endif
 
     #region Enums
@@ -804,8 +803,6 @@ using System.Globalization;
             }
         }
         #endregion
-
-
 
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>

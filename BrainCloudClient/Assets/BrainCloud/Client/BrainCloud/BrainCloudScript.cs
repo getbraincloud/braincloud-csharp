@@ -5,12 +5,11 @@
 
 namespace BrainCloud
 {
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
     public class BrainCloudScript
     {
