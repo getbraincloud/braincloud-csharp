@@ -1,20 +1,17 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using System;
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Common;
-using BrainCloud.Internal;
+    using System.Collections.Generic;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Common;
+    using BrainCloud.Internal;
 
 #if !(DOT_NET || GODOT)
-using System;
+    using System;
 #endif
 
     public class BrainCloudPushNotification

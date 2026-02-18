@@ -1,17 +1,14 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud.Internal
 {
-
     using System;
     using System.Collections.Generic;
     using System.Text;
     using BrainCloud.JsonFx.Json;
-
 
     internal sealed class RTTComms
     {

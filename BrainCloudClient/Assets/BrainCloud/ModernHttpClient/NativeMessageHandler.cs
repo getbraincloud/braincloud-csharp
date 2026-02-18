@@ -1,10 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
-using System;
-using System.Net;
-using System.Net.Http;
 
 namespace BrainCloud
 {
+    using System;
+    using System.Net;
+    using System.Net.Http;
+
     namespace ModernHttpClient
     {
         //public delegate void ProgressDelegate(long bytes, long totalBytes, long totalBytesExpected);

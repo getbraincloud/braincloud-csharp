@@ -1,7 +1,8 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud;
 using NUnit.Core;
 using NUnit.Framework;
-using BrainCloud;
 using System;
 using System.Collections.Generic;
 
@@ -108,7 +109,7 @@ namespace BrainCloudTests
                 "Invalid_id",
                 tr.ApiSuccess, tr.ApiError
             );
-            tr.RunExpectFail(400, ReasonCodes.LEADERBOARD_NOT_DIVISION_SET_INSTANCE);
+            tr.RunExpectFail(500, ReasonCodes.NO_LEADERBOARD_FOUND);
         }
 
         [Test]

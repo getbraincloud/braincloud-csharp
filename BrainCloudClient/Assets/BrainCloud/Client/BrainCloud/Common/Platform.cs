@@ -227,7 +227,6 @@ namespace BrainCloud.Common
         return platform;
     }
 #endif
-
         #region Overrides and Operators
 
         public readonly override bool Equals(object obj)
