@@ -107,7 +107,8 @@ namespace Tests.PlayMode
         /// </summary>
         private void LoadIds()
         {
-            pathToIds = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\ids.txt";
+            pathToIds = Path.Combine(Application.dataPath, "tests", "ids.txt");
+            pathToIds = pathToIds.Replace("/BrainCloudClient/Assets", "/BrainCloudClient");
             using (var reader = new StreamReader(pathToIds))
             {
                 string line;
