@@ -30,14 +30,12 @@
 
 namespace BrainCloud
 {
-
-using System;
-using System.IO;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-
-using BrainCloud.JsonFx.Json;
+    using BrainCloud.JsonFx.Json;
+    using System;
+    using System.IO;
+    using System.Text;
+    using System.Xml;
+    using System.Xml.Serialization;
 
     namespace JsonFx.Xml
     {

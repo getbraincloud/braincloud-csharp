@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpResponse.cs
@@ -29,13 +28,11 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-
+  using System;
+  using System.Collections.Specialized;
+  using System.IO;
+  using System.Text;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
   internal class HttpResponse : HttpBase
   {

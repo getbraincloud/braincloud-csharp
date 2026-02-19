@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * WebSocketFrame.cs
@@ -36,13 +35,11 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
 
   internal class WebSocketFrame : IEnumerable<byte>
   {

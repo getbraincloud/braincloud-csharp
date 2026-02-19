@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * WebSocketServiceManager.cs
@@ -27,17 +26,15 @@
  */
 #endregion
 
-
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
   /// <summary>
   /// Provides the management function for the WebSocket services.

@@ -402,7 +402,6 @@
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\TLSConfig.cs">
       <Link>ModernHttpClient\TLSConfig.cs</Link>
     </Compile>
-    <Content Include="ids.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

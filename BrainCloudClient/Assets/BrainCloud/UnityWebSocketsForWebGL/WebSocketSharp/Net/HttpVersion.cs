@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpVersion.cs
@@ -39,8 +38,7 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-    using System;
-
+  using System;
 
   /// <summary>
   /// Provides the HTTP version numbers.

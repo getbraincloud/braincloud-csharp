@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpListenerException.cs
@@ -40,11 +39,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
+  using System;
+  using System.ComponentModel;
+  using System.Runtime.Serialization;
 
   /// <summary>
   /// The exception that is thrown when a <see cref="HttpListener"/> gets an error
