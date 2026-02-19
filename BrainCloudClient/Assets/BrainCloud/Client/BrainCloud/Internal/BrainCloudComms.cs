@@ -616,7 +616,9 @@ namespace BrainCloud.Internal
                         _activeRequest = null;
                     }
                     //HttpStatusCode.ServiceUnavailable
-                    else if ((int)_activeRequest.WebRequest.Result.StatusCode == 503)
+                    else if ((int)_activeRequest.WebRequest.Result.StatusCode == 503 ||
+                             (int)_activeRequest.WebRequest.Result.StatusCode == 502 ||
+                             (int)_activeRequest.WebRequest.Result.StatusCode == 504)
                     {
                         //Packet in progress
                         _clientRef.Log("Packet in progress");
