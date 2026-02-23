@@ -27,6 +27,7 @@
 
 \*---------------------------------------------------------------------------------*/
 #endregion License
+
 namespace BrainCloud
 {
     using System;

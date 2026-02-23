@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpListenerAsyncResult.cs
@@ -47,10 +46,8 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-
-    using System;
-using System.Threading;
+  using System;
+  using System.Threading;
 
   internal class HttpListenerAsyncResult : IAsyncResult
   {
