@@ -470,7 +470,7 @@ namespace BrainCloud.Internal
                     Scheme = Uri.UriSchemeHttps
                 };
 
-                if ((string.IsNullOrEmpty(builder.Path) || builder.Path == "/") &&
+                if ((string.IsNullOrWhiteSpace(builder.Path) || builder.Path == "/") &&
                     !builder.Path.Contains("dispatcherv2"))
                 {
                     builder.Path += builder.Path.EndsWith("/") ? "dispatcherv2" : "/dispatcherv2";
@@ -1120,7 +1120,7 @@ namespace BrainCloud.Internal
                         else if (operation == ServiceOperation.PrepareUserUpload || !string.IsNullOrWhiteSpace(fileDetails))
                         {
                             string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
-                            fileDetails = string.IsNullOrEmpty(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
+                            fileDetails = string.IsNullOrWhiteSpace(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
 
                             if (JsonParser.TryGetString(fileDetails, out string uploadId, "uploadId") &&
                                 JsonParser.TryGetString(fileDetails, out string guid, "localPath"))
@@ -1958,7 +1958,7 @@ namespace BrainCloud.Internal
                 return status;
             }
 #if USE_WEB_REQUEST
-            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
@@ -2009,7 +2009,7 @@ namespace BrainCloud.Internal
                 Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
             }
 #endif
-            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
             }
@@ -2275,7 +2275,7 @@ namespace BrainCloud.Internal
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
                             errorResponse = GetWebRequestResponse(_activeRequest);
-                            if (!string.IsNullOrEmpty(errorResponse))
+                            if (!string.IsNullOrWhiteSpace(errorResponse))
                             {
                                 _clientRef.Log("Timeout with network error: " + errorResponse);
                             }
