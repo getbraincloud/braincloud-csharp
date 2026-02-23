@@ -9,6 +9,10 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 #endif
 
+#if GODOT
+using Godot;
+#endif
+
 namespace BrainCloud.Common
 {
     public readonly struct Platform : System.IEquatable<Platform>, System.IComparable<Platform>
@@ -164,8 +168,39 @@ namespace BrainCloud.Common
 #endif // NO_UNITY_DEFINES
         }
 #endif
+        
+                
+#if GODOT
+	public static Platform GodotFromRuntime()
+	{
+		Platform platform = Platform.Unknown;
+		switch(OS.GetName())
+		{
+			case "Windows":
+				platform = Platform.Windows;
+				break;
+			case "macOS":
+				platform = Platform.Mac;
+				break;
+			case "Linux":
+				platform = Platform.Linux;
+				break;
+			case "Android":
+				platform = Platform.GooglePlayAndroid;
+				break;
+			case "iOS":
+				platform = Platform.iOS;
+				break;
+			case "Web":
+				platform = Platform.Web;
+				break;
+		}
+		return platform;
+	}
+#endif
 
 #if XAMARIN
+
     public static Platform FromRuntime()
     {
         Platform platform = Platform.Unknown;
@@ -192,7 +227,6 @@ namespace BrainCloud.Common
         return platform;
     }
 #endif
-
         #region Overrides and Operators
 
         public readonly override bool Equals(object obj)
