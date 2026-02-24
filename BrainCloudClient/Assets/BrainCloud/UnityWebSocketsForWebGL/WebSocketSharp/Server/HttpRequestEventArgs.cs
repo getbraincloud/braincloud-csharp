@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpRequestEventArgs.cs
@@ -29,13 +28,11 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
-
-    using System;
-using System.IO;
-using System.Security.Principal;
-using System.Text;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-
+  using System;
+  using System.IO;
+  using System.Security.Principal;
+  using System.Text;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
 
   /// <summary>
   /// Represents the event data for the HTTP request events of

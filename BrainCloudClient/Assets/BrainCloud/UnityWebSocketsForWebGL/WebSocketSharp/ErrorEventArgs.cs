@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * ErrorEventArgs.cs
@@ -36,9 +35,7 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-
+  using System;
 
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnError"/> event.

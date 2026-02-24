@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 /****************************************************************************
      Copyright 2002-2005 GL Conseil/Flow Group SAS.  All rights reserved.
 
@@ -39,65 +38,62 @@
  All rights reserved.
  ****************************************************************************/
 
-// note that we've changed the namespace.
-
-
-namespace BrainCloud
+namespace BrainCloud // Note that we've changed the namespace.
 {
-using System;
-using System.IO;
-using System.Text;
+    using System;
+    using System.IO;
+    using System.Text;
 
-namespace MD5Unity
-{
-public class MD5CryptoServiceProvider : MD5
-{
-    public MD5CryptoServiceProvider()
-    : base()
+    namespace MD5Unity
     {
-    }
-}
-//[Serializable]
-public class MD5 : IDisposable
-{
-    static public MD5 Create(string hashName)
-    {
-        if (hashName == "MD5")
-            return new MD5();
-        else
-            throw new NotSupportedException();
-    }
-
-    static public string GetMd5String(String source)
-    {
-        MD5 md = MD5CryptoServiceProvider.Create();
-        byte[] hash;
-
-        //Create a new instance of ASCIIEncoding to
-        //convert the string into an array of Unicode bytes.
-        UTF8Encoding enc = new UTF8Encoding();
-        //            ASCIIEncoding enc = new ASCIIEncoding();
-
-        //Convert the string into an array of bytes.
-        byte[] buffer = enc.GetBytes(source);
-
-        //Create the hash value from the array of bytes.
-        hash = md.ComputeHash(buffer);
-
-        StringBuilder sb = new StringBuilder();
-        //foreach (byte b in hash)
-        for (int i = 0; i < hash.Length; ++i )
-            sb.Append(hash[i].ToString("x2"));
-
-        return sb.ToString();
-    }
-
-    static public MD5 Create()
-    {
-        return new MD5();
-    }
-
-    #region base implementation of the MD5
+        public class MD5CryptoServiceProvider : MD5
+        {
+            public MD5CryptoServiceProvider()
+            : base()
+            {
+            }
+        }
+        //[Serializable]
+        public class MD5 : IDisposable
+        {
+            static public MD5 Create(string hashName)
+            {
+                if (hashName == "MD5")
+                    return new MD5();
+                else
+                    throw new NotSupportedException();
+            }
+        
+            static public string GetMd5String(String source)
+            {
+                MD5 md = MD5CryptoServiceProvider.Create();
+                byte[] hash;
+        
+                //Create a new instance of ASCIIEncoding to
+                //convert the string into an array of Unicode bytes.
+                UTF8Encoding enc = new UTF8Encoding();
+                //            ASCIIEncoding enc = new ASCIIEncoding();
+        
+                //Convert the string into an array of bytes.
+                byte[] buffer = enc.GetBytes(source);
+        
+                //Create the hash value from the array of bytes.
+                hash = md.ComputeHash(buffer);
+        
+                StringBuilder sb = new StringBuilder();
+                //foreach (byte b in hash)
+                for (int i = 0; i < hash.Length; ++i )
+                    sb.Append(hash[i].ToString("x2"));
+        
+                return sb.ToString();
+            }
+        
+            static public MD5 Create()
+            {
+                return new MD5();
+            }
+        
+            #region base implementation of the MD5
     #region constants
     private const byte S11 = 7;
     private const byte S12 = 12;
@@ -438,8 +434,8 @@ public class MD5 : IDisposable
             output[i] = ((uint)input[j]) | (((uint)input[j + 1]) << 8) | (((uint)input[j + 2]) << 16) | (((uint)input[j + 3]) << 24);
     }
     #endregion
-
-    #region expose the same interface as the regular MD5 object
+        
+            #region expose the same interface as the regular MD5 object
 
     protected byte[] HashValue;
     protected int State;
@@ -592,17 +588,16 @@ public class MD5 : IDisposable
         return buffer;
     }
     #endregion
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposing)
-            Initialize();
-    }
-    public void Dispose()
-    {
-        Dispose(true);
-    }
-}
-}
-
+        
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposing)
+                    Initialize();
+            }
+            public void Dispose()
+            {
+                Dispose(true);
+            }
+        }
+    }    
 }

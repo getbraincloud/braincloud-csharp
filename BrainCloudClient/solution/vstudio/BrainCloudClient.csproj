@@ -216,6 +216,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\GroupACL.cs">
       <Link>BrainCloud\Common\GroupACL.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\JsonParser.cs">
+      <Link>BrainCloud\Common\JsonParser.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Common\Platform.cs">
       <Link>BrainCloud\Common\Platform.cs</Link>
     </Compile>
@@ -399,7 +402,6 @@
     <Compile Include="..\..\Assets\BrainCloud\ModernHttpClient\TLSConfig.cs">
       <Link>ModernHttpClient\TLSConfig.cs</Link>
     </Compile>
-    <Content Include="ids.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

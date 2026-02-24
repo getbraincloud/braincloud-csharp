@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * CookieCollection.cs
@@ -42,13 +41,11 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.Text;
 
   /// <summary>
   /// Provides a collection of instances of the <see cref="Cookie"/> class.

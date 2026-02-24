@@ -1,13 +1,13 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
-using System;
-using System.IO;
+
+using BrainCloud.Common;
 using BrainCloud.JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
-using BrainCloud;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
-using BrainCloud.Common;
 
 namespace BrainCloudTests
 {
@@ -42,7 +42,7 @@ namespace BrainCloudTests
             _bc.Client.RegisterLogDelegate(HandleLog);
 
             //set to enable compression
-            if(SupportsCompression != "")
+            if (SupportsCompression != "")
                 _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
 
             if (ShouldAuthenticate())
@@ -308,7 +308,7 @@ namespace BrainCloudTests
             {
                 _bc.MatchMakingService.EnableMatchMaking(tr.ApiSuccess, tr.ApiError);
                 tr.Run();
-                _bc.PlayerStateService.UpdateName(Id, tr.ApiSuccess, tr.ApiError);
+                _bc.PlayerStateService.UpdateUserName(Id, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
                 _bc.PlayerStateService.UpdateContactEmail("braincloudunittest@gmail.com", tr.ApiSuccess, tr.ApiError);
                 tr.Run();

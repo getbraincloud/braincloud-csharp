@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System;
 using System.Runtime.InteropServices;

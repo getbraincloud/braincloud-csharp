@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 using BrainCloud.Internal;
@@ -9,7 +8,7 @@ using BrainCloud.Internal;
 namespace BrainCloud
 {
     using System;
-//[Serializable]
+    //[Serializable]
     public class ServerCallback
     {
         /// ServerCallback

@@ -1,19 +1,17 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
+    using System;
     using System.Collections.Generic;
     using BrainCloud.Internal;
     using BrainCloud.Common;
     using BrainCloud.JsonFx.Json;
 #if !XAMARIN
     using BrainCloud.Entity;
-    using System;
 #endif
 
 #if !(DOT_NET || GODOT)
@@ -21,7 +19,7 @@ namespace BrainCloud
     using UnityEngine.Assertions;
     using System.Text;
 #else
-using System.Globalization;
+    using System.Globalization;
 #endif
 
     #region Enums
@@ -806,8 +804,6 @@ using System.Globalization;
         }
         #endregion
 
-
-
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="secretKey">The secret key for your app</param>
         /// <param name="appId ">The app id</param>
@@ -1368,10 +1364,13 @@ using System.Globalization;
                 return;
             }
 
-            // TODO: what is our default c# platform?
-            Platform platform = Platform.Windows;
+            Platform platform = Platform.Unknown;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
+#elif GODOT
+            platform = Platform.GodotFromRuntime();
+#elif XAMARIN
+            platform = Platform.FromRuntime();
 #endif
 
             _appVersion = appVersion;
