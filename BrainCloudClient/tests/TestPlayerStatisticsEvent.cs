@@ -95,6 +95,30 @@ namespace BrainCloudTests
             Assert.That(m_rewardCallbackHitCount == 2);
         }
 
+        [Test]
+        public void TestRewardHandlerOnAuthentication()
+        {
+            m_rewardCallbackHitCount = 0;
+
+            TestResult tr = new TestResult(_bc);
+            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
+            _bc.Client.Wrapper.Logout(false, tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectCount(2);
+
+            _bc.Client.RegisterRewardCallback(rewardCallback);
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                    GetUser(Users.UserA).Id,
+                    GetUser(Users.UserA).Password,
+                    true,
+                    tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.DeregisterRewardCallback();
+
+            Assert.That(m_rewardCallbackHitCount == 1);
+        }
+
         public void rewardCallback(string jsonData)
         {
             System.Console.WriteLine(jsonData);

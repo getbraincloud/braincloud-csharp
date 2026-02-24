@@ -168,8 +168,7 @@ namespace BrainCloud.Common
 #endif // NO_UNITY_DEFINES
         }
 #endif
-        
-                
+
 #if GODOT
 	public static Platform GodotFromRuntime()
 	{

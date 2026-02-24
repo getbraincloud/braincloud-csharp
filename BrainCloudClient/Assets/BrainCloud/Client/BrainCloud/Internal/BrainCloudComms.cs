@@ -470,7 +470,7 @@ namespace BrainCloud.Internal
                     Scheme = Uri.UriSchemeHttps
                 };
 
-                if ((string.IsNullOrEmpty(builder.Path) || builder.Path == "/") &&
+                if ((string.IsNullOrWhiteSpace(builder.Path) || builder.Path == "/") &&
                     !builder.Path.Contains("dispatcherv2"))
                 {
                     builder.Path += builder.Path.EndsWith("/") ? "dispatcherv2" : "/dispatcherv2";
@@ -784,19 +784,13 @@ namespace BrainCloud.Internal
                 numMessagesToReturn = 1; // for when we want to send to only global error callback
             }
 
-            JsonResponseErrorBundleV2 bundleObj = new()
-            {
-                packetId = _expectedIncomingPacketId,
-                responses = new JsonErrorMessage[numMessagesToReturn]
-            };
-
+            string[] responses = new string[numMessagesToReturn];
             for (int i = 0; i < numMessagesToReturn; ++i)
             {
-                bundleObj.responses[i] = new JsonErrorMessage(status, reasonCode, statusMessage);
+                responses[i] = JsonParser.GetJsonErrorMessage(status, reasonCode, statusMessage);
             }
 
-            string jsonError = _clientRef.SerializeJson(bundleObj);
-            HandleResponseBundle(jsonError);
+            HandleResponseBundle(JsonParser.GetJsonResponseErrorBundleV2(_expectedIncomingPacketId, responses));
         }
 
         /// <summary>
@@ -1126,7 +1120,7 @@ namespace BrainCloud.Internal
                         else if (operation == ServiceOperation.PrepareUserUpload || !string.IsNullOrWhiteSpace(fileDetails))
                         {
                             string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
-                            fileDetails = string.IsNullOrEmpty(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
+                            fileDetails = string.IsNullOrWhiteSpace(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
 
                             if (JsonParser.TryGetString(fileDetails, out string uploadId, "uploadId") &&
                                 JsonParser.TryGetString(fileDetails, out string guid, "localPath"))
@@ -1964,7 +1958,7 @@ namespace BrainCloud.Internal
                 return status;
             }
 #if USE_WEB_REQUEST
-            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
@@ -2015,7 +2009,7 @@ namespace BrainCloud.Internal
                 Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
             }
 #endif
-            if (!string.IsNullOrEmpty(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
             {
                 response = _activeRequest.WebRequest.error;
             }
@@ -2281,7 +2275,7 @@ namespace BrainCloud.Internal
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
                             errorResponse = GetWebRequestResponse(_activeRequest);
-                            if (!string.IsNullOrEmpty(errorResponse))
+                            if (!string.IsNullOrWhiteSpace(errorResponse))
                             {
                                 _clientRef.Log("Timeout with network error: " + errorResponse);
                             }
@@ -2496,6 +2490,8 @@ namespace BrainCloud.Internal
 #endif
     }
 
+    #region HttpResult
+
 #if DOT_NET || GODOT
     public enum HttpFailureType
     {
@@ -2556,9 +2552,11 @@ namespace BrainCloud.Internal
     }
 #endif
 
+    #endregion
+
     #region brainCloud JSON Objects
 
-    public readonly struct JsonResponseBundleV2
+    internal readonly struct JsonResponseBundleV2
     {
         public const int NO_PACKET_EXPECTED = -1; // The Id of _expectedIncomingPacketId when no packet expected
 
@@ -2574,14 +2572,17 @@ namespace BrainCloud.Internal
 
         public static JsonResponseBundleV2 CreateEmpty() => new(EMPTY_RESPONSE_BUNDLE);
 
-        private JsonResponseBundleV2(long id)
+        public static string GetErrorJson(int status, int reason_code, string status_message)
+            => JsonParser.GetJsonErrorMessage(status, reason_code, status_message);
+
+        internal JsonResponseBundleV2(long id)
         {
             packetId = id;
             events = string.Empty;
             responses = null;
         }
 
-        public JsonResponseBundleV2(string jsonData)
+        internal JsonResponseBundleV2(string jsonData)
         {
             JsonParser.GetJsonResponseBundleV2(jsonData, out string packetId, out string events, out string[] responses);
 
@@ -2593,43 +2594,6 @@ namespace BrainCloud.Internal
 
             this.events = !string.IsNullOrWhiteSpace(events) ? $"{{\"events\":[{events}]}}" : string.Empty;
             this.responses = responses != null && responses.Length > 0 ? responses : null;
-        }
-    }
-
-    // These classes help handle JSON serialization with brainCloud Error Responses.
-    // Do not edit these classes or change names to conform with coding standards.
-    // These must be structured the same as the Error Responses received from brainCloud.
-    // Note: These will be restructured to be the same as JsonResponseBundleV2 as well.
-
-    [Serializable]
-    internal class JsonResponseErrorBundleV2
-    {
-        [JsonName("packetId")] public long packetId;
-        [JsonName("responses")] public JsonErrorMessage[] responses;
-
-        public JsonResponseErrorBundleV2() { }
-    }
-
-    [Serializable]
-    internal class JsonErrorMessage
-    {
-        [JsonName("reason_code")] public int reason_code;
-        [JsonName("status")] public int status;
-        [JsonName("status_message")] public string status_message;
-        [JsonName("severity")] public string severity = "ERROR";
-
-        public JsonErrorMessage() { }
-
-        public JsonErrorMessage(int status, int reasonCode, string statusMessage)
-        {
-            this.status = status;
-            reason_code = reasonCode;
-            status_message = statusMessage;
-        }
-
-        public string GetJsonString()
-        {
-            return JsonWriter.Serialize(this);
         }
     }
 
@@ -2775,6 +2739,27 @@ namespace BrainCloud.Common
                     sbHelper.Clear();
                 }
             }
+        }
+
+        internal static string GetJsonResponseErrorBundleV2(long packetId, string[] responses)
+        {
+            sbHelper.Clear();
+
+            for (int i = 0; i < responses.Length;)
+            {
+                sbHelper.Append(responses[i]);
+                if (++i < responses.Length)
+                {
+                    sbHelper.Append(',');
+                }
+            }
+
+            return $"{{\"packetId\":{packetId},\"responses\":[{sbHelper}]}}";
+        }
+
+        internal static string GetJsonErrorMessage(int status, int reason_code, string status_message)
+        {
+            return $"{{\"status\":{status},\"reason_code\":{reason_code},\"status_message\":\"{status_message}\",\"severity\":\"ERROR\"}}";
         }
     }
 }
