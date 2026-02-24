@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * CookieException.cs
@@ -39,11 +38,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-
+  using System;
+  using System.Runtime.Serialization;
+  using System.Security.Permissions;
 
   /// <summary>
   /// The exception that is thrown when a <see cref="Cookie"/> gets an error.

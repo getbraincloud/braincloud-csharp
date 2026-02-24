@@ -1,21 +1,19 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
 
 #if !(DOT_NET || GODOT)
-using UnityEngine;
-using SysLanguageObject = UnityEngine.SystemLanguage;
+    using UnityEngine;
+    using SysLanguageObject = UnityEngine.SystemLanguage;
 #else
-using SysLanguageObject = System.String; // todo
+    using SysLanguageObject = System.String; // todo
 #endif
     
     //[Serializable]

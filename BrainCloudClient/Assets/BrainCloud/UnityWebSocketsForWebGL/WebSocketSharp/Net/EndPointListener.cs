@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * EndPointListener.cs
@@ -48,17 +47,15 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Net;
+  using System.Net.Sockets;
+  using System.Security.Cryptography;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Threading;
 
   internal sealed class EndPointListener
   {

@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * WebSocket.cs
@@ -42,21 +41,19 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Diagnostics;
+  using System.IO;
+  using System.Net.Security;
+  using System.Net.Sockets;
+  using System.Security.Cryptography;
+  using System.Text;
+  using System.Threading;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
   /// <summary>
   /// Implements the WebSocket interface.

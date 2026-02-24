@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * Logger.cs
@@ -29,11 +28,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Diagnostics;
-using System.IO;
-
+  using System;
+  using System.Diagnostics;
+  using System.IO;
 
   /// <summary>
   /// Provides a set of methods and properties for logging.

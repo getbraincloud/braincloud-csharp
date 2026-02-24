@@ -1,17 +1,14 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using BrainCloud.Internal;
-using System.Collections.Generic;
-using System.IO;
-using System;
-
+    using BrainCloud.Internal;
+    using System.Collections.Generic;
+    using System.IO;
+    using System;
 
     public class BrainCloudFile
     {

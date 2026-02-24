@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
@@ -11,24 +10,25 @@
 namespace BrainCloud.Internal
 {
     using System;
-    using System.IO;
-
 #if (!(DOT_NET || GODOT))
-    using UnityEngine;
     using BrainCloud.JsonFx.Json;
+    using System.Collections.Generic;
+    using UnityEngine;
 #if USE_WEB_REQUEST
 #if UNITY_5_3
-using UnityEngine.Experimental.Networking;
+    using UnityEngine.Experimental.Networking;
 #else
     using UnityEngine.Networking;
 #endif
 #endif
 #else
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+    using System.IO;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
 #endif
+
     /*
      * FileUploader is not supported in WebPlayer && WebGL
      */
@@ -182,7 +182,7 @@ using System.Threading.Tasks;
             Status = FileUploaderStatus.Uploading;
             if (_client.LoggingEnabled)
             {
-                _client.Log("Started upload of " + _fileName);
+                _client.Log($"Started upload of {_fileName}");
             }
             _lastTime = DateTime.Now;
 #endif
@@ -208,16 +208,16 @@ using System.Threading.Tasks;
                 Status = FileUploaderStatus.CompleteSuccess;
                 if (_client.LoggingEnabled)
                 {
-                    _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                    _client.Log($"Uploaded {_fileName} in {_elapsedTime:0.0##} seconds");
                 }
             }
             catch (WebException wex)
             {
-                Response = CreateErrorString(StatusCode, ReasonCode, wex.Message);
+                Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, wex.Message);
             }
             catch (Exception ex)
             {
-                Response = CreateErrorString(StatusCode, ReasonCode, ex.Message);
+                Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, ex.Message);
             }
 
             if (isError)
@@ -228,7 +228,7 @@ using System.Threading.Tasks;
             }
 
             // Release the HttpResponseMessage
-            if(message != null) message.Dispose();
+            message?.Dispose();
         }
 
         private void BytesReadCallback(object sender, ProgressStreamReportEventArgs args)
@@ -249,11 +249,11 @@ using System.Threading.Tasks;
             Status = FileUploaderStatus.CompleteFailed;
             StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
             ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_CANCELLED;
-            Response = CreateErrorString(StatusCode, ReasonCode, "Upload of " + _fileName + " cancelled by user");
-            
+            Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, $"Upload of {_fileName} cancelled by user");
+
             if (_client.LoggingEnabled)
             {
-                _client.Log("Upload of " + _fileName + " cancelled by user");
+                _client.Log($"Upload of {_fileName} cancelled by user");
             }
         }
 
@@ -302,7 +302,7 @@ using System.Threading.Tasks;
                 if (_request.error != null)
                 {
                     ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_UNKNOWN;
-                    Response = CreateErrorString(StatusCode, ReasonCode, _request.error);
+                    Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, _request.error);
                 }
                 else
 #if USE_WEB_REQUEST
@@ -310,9 +310,9 @@ using System.Threading.Tasks;
 #else
                     Response = _request.text;
 #endif
-                JsonErrorMessage resp = null;
+                Dictionary<string, object> resp = null;
 
-                try { resp = JsonReader.Deserialize<JsonErrorMessage>(Response); }
+                try { resp = JsonReader.Deserialize<Dictionary<string, object>>(Response); }
                 catch (JsonDeserializationException e)
                 {
                     if (_client.LoggingEnabled)
@@ -321,12 +321,15 @@ using System.Threading.Tasks;
                     }
                 }
 
-                if (resp != null)
-                    ReasonCode = resp.reason_code;
+                if (resp != null && resp.ContainsKey("reason_code") &&
+                    int.TryParse(resp["reason_code"].ToString(), out int reason_code))
+                {
+                    ReasonCode = reason_code;
+                }
                 else
                 {
                     ReasonCode = ReasonCodes.CLIENT_UPLOAD_FILE_UNKNOWN;
-                    Response = CreateErrorString(StatusCode, ReasonCode, Response);
+                    Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, Response);
                 }
             }
             else
@@ -340,7 +343,7 @@ using System.Threading.Tasks;
 #endif
                 if (_client.LoggingEnabled)
                 {
-                    _client.Log("Uploaded " + _fileName + " in " + _elapsedTime.ToString("0.0##") + " seconds");
+                    _client.Log($"Uploaded {_fileName} in {_elapsedTime:0.0##} seconds");
                 }
             }
 
@@ -367,7 +370,7 @@ using System.Threading.Tasks;
             }
         }
 
-        private void CheckTimeout()
+        private void CheckTimeout() // This function isn't referenced anywhere; do we still need it?
         {
             if (_transferRatePerSecond < _timeoutThreshold)
                 _timeUnderMinRate += _deltaTime;
@@ -375,7 +378,7 @@ using System.Threading.Tasks;
                 _timeUnderMinRate = 0.0;
 
             if (_timeUnderMinRate > _timeout)
-                ThrowError(ReasonCodes.CLIENT_UPLOAD_FILE_TIMED_OUT, "Upload of " + _fileName + " failed due to timeout.");
+                ThrowError(ReasonCodes.CLIENT_UPLOAD_FILE_TIMED_OUT, $"Upload of {_fileName} failed due to timeout.");
         }
 
         private void UpdateDeltaTime()
@@ -389,12 +392,7 @@ using System.Threading.Tasks;
             Status = FileUploaderStatus.CompleteFailed;
             StatusCode = StatusCodes.CLIENT_NETWORK_ERROR;
             ReasonCode = reasonCode;
-            Response = CreateErrorString(StatusCode, ReasonCode, message);
-        }
-
-        private string CreateErrorString(int statusCode, int reasonCode, string message)
-        {
-            return new JsonErrorMessage(statusCode, reasonCode, message).GetJsonString();
+            Response = JsonResponseBundleV2.GetErrorJson(StatusCode, ReasonCode, message);
         }
 
 #if USE_WEB_REQUEST

@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * ClientSslConfiguration.cs
@@ -37,12 +36,10 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Net.Security;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-
+  using System;
+  using System.Net.Security;
+  using System.Security.Authentication;
+  using System.Security.Cryptography.X509Certificates;
 
   /// <summary>
   /// Stores the parameters for the <see cref="SslStream"/> used by clients.
