@@ -19,15 +19,13 @@ namespace BrainCloud
             private const string INVALID_JSON = "jsonData is an invalid Json string!";
             private const string INVALID_ARRAY = "jsonData is an invalid array string!";
 
-            private static readonly StringBuilder sbHelper = null;
+            [ThreadStatic]
+            private static StringBuilder _sbHelper;
+            private static StringBuilder sbHelper => _sbHelper ??= new(2048);
 
-            private static readonly List<string> splitArrays = null;
-
-            static JsonParser()
-            {
-                sbHelper = new(2048);
-                splitArrays = new(4);
-            }
+            [ThreadStatic]
+            private static List<string> _splitArrays;
+            private static List<string> splitArrays => _splitArrays ??= new(4);
 
             // This is a helper function for the hierarchy functions to get the hierarchy minus the last value.
             private static string[] GetHierarchyMinusOne(string[] hierarchy)
