@@ -2554,7 +2554,7 @@ namespace BrainCloud.Internal
 
     #endregion
 
-    #region brainCloud JSON Objects
+    #region brainCloud JsonResponseBundleV2
 
     internal readonly struct JsonResponseBundleV2
     {
@@ -2620,6 +2620,7 @@ namespace BrainCloud.Common
             char current;
             bool insideProperty = false;
             bool splitToResponses = false;
+            bool skipValue = false;
 
             sbHelper.Clear();
 
@@ -2641,26 +2642,47 @@ namespace BrainCloud.Common
                 }
                 else if (!insideProperty && sbHelper.Length > 0)
                 {
-                    switch (sbHelper.ToString())
+                    if (skipValue)
                     {
-                        case "packetId":
-                            sbHelper.Clear();
-                            while (jsonData[i + 1] != ',')
-                            {
-                                current = jsonData[++i];
-                                sbHelper.Append(current);
-                            }
-                            packetId = sbHelper.ToString().Trim();
-                            break;
-                        case "responses":
-                            splitToResponses = true;
-                            splitArrays.Clear();
-                            break;
-                        case "events":
-                            splitToResponses = false;
-                            break;
-                        default:
-                            throw new Exception($"Got a string that isn't what we were expecting: {sbHelper}");
+                        skipValue = false; // This was the string value of an unknown key; discard it
+                    }
+                    else
+                    {
+                        switch (sbHelper.ToString())
+                        {
+                            case "packetId":
+                                sbHelper.Clear();
+                                while (jsonData[i + 1] != ',')
+                                {
+                                    current = jsonData[++i];
+                                    sbHelper.Append(current);
+                                }
+                                packetId = sbHelper.ToString().Trim();
+                                break;
+                            case "responses":
+                                splitToResponses = true;
+                                splitArrays.Clear();
+                                break;
+                            case "events":
+                                splitToResponses = false;
+                                break;
+                            default: // Unknown key
+                                // i is at ':', check the value type to decide how to skip
+                                current = jsonData[i + 1];
+                                if (current == '"' || current == '{' || current == '[')
+                                {
+                                    skipValue = true; // String/object/array; skipped below
+                                }
+                                else // Scalar; skip now
+                                {
+                                    while (i + 1 < jsonData.Length && current != ',' && current != '}')
+                                    {
+                                        i++;
+                                        current = jsonData[i + 1];
+                                    }
+                                }
+                                break;
+                        }
                     }
 
                     sbHelper.Clear();
@@ -2727,7 +2749,11 @@ namespace BrainCloud.Common
                         }
                     }
 
-                    if (splitToResponses)
+                    if (skipValue)
+                    {
+                        skipValue = false; // Unknown key; discard it
+                    }
+                    else if (splitToResponses)
                     {
                         responses = splitArrays.Count > 0 ? splitArrays.ToArray() : null;
                     }
