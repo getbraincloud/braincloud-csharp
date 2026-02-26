@@ -1364,7 +1364,7 @@ namespace BrainCloud
                 return;
             }
 
-            Platform platform = Platform.Unknown;
+            Platform platform = Platform.Windows;
 #if !(DOT_NET || GODOT)
             platform = Platform.FromUnityRuntime();
 #elif GODOT
