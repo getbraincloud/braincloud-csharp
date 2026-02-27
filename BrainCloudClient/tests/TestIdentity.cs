@@ -4,6 +4,7 @@ using BrainCloud;
 using BrainCloud.Common;
 using NUnit.Core;
 using NUnit.Framework;
+using System;
 
 namespace BrainCloudTests
 {
@@ -96,12 +97,49 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestAttachUniversalIdentity()
+        {
+            string externalId = GenerateUniversalId();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.Client.Wrapper.Logout(true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.Wrapper.AuthenticateEmailPassword(
+                GetUser(Users.UserA).Email,
+                GetUser(Users.UserA).Password,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.IdentityService.AttachUniversalIdentity(
+                externalId,
+                Guid.NewGuid().ToString(),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.IdentityService.DetachUniversalIdentity(
+                externalId,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
         public void TestAttachEmailIdentity()
         {
+            string email = GenerateEmailId();
+
             TestResult tr = new TestResult(_bc);
             _bc.IdentityService.AttachEmailIdentity(
-                "id_" + GetUser(Users.UserA).Email,
-                GetUser(Users.UserA).Password,
+                email,
+                Guid.NewGuid().ToString(),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            _bc.IdentityService.DetachEmailIdentity(
+                email,
+                true,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
@@ -188,6 +226,87 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestAttachAdvancedIdentity()
+        {
+            string externalId = GenerateEmailId();
+
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachAdvancedIdentity(
+                AuthenticationType.Email,
+                new AuthenticationIds() { 
+                    externalId = externalId,
+                    authenticationToken = Guid.NewGuid().ToString(),
+                    authenticationSubType = null
+                },
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.IdentityService.DetachAdvancedIdentity(
+                AuthenticationType.Email,
+                externalId,
+                true,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestAttachAdvancedIdentityInvalidAuthType()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachAdvancedIdentity(
+                AuthenticationType.Unknown,
+                new AuthenticationIds()
+                {
+                    externalId = GenerateUniversalId(),
+                    authenticationToken = Guid.NewGuid().ToString(),
+                    authenticationSubType = null
+                },
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.INVALID_AUTHENTICATION_TYPE);
+        }
+
+        [Test]
+        public void TestMergeAdvancedIdentity()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            var ids = CreateEmailUserToMergeWith(tr);
+
+            _bc.IdentityService.MergeAdvancedIdentity(
+                AuthenticationType.Email,
+                ids,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.IdentityService.DetachAdvancedIdentity(
+                AuthenticationType.Email,
+                ids.externalId,
+                true,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestMergeAdvancedIdentityDuplicateIdentity()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            var ids = CreateUniversalUserToMergeWith(tr);
+
+            _bc.IdentityService.MergeAdvancedIdentity(
+                AuthenticationType.Universal,
+                ids,
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.ACCEPTED, ReasonCodes.DUPLICATE_IDENTITY_TYPE);
+        }
+
+        [Test]
         public void TestAttachBlockChain()
         {
             TestResult tr = new TestResult(_bc);
@@ -207,8 +326,7 @@ namespace BrainCloudTests
         [Test]
         public void TestDetachBlockChain()
         {
-
-              TestResult tr1 = new TestResult(_bc);
+            TestResult tr1 = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChainIdentity(
                 "config",
                 "ew2",                
@@ -220,6 +338,93 @@ namespace BrainCloudTests
                 "config",
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
+        }
+
+        [Test]
+        public void TestAttachAdvancedIdentitySubTypeError()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.IdentityService.AttachAdvancedIdentity(
+                AuthenticationType.Email,
+                new AuthenticationIds()
+                {
+                    externalId = GenerateEmailId(),
+                    authenticationToken = Guid.NewGuid().ToString(),
+                    authenticationSubType = "someSortOfSubType"
+                },
+                null,
+                tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.INVALID_AUTHENTICATION_TYPE);
+        }
+
+        // Generating our own users
+        private static string GenerateUniversalId() => Guid.NewGuid().ToString().Replace("-", string.Empty);
+
+        private static string GenerateEmailId() => $"{GenerateUniversalId()}@bctestuser.com";
+
+        // These logs out of the default user (Users.UserA) and creates a new one before logging back into the default user
+        private AuthenticationIds CreateUniversalUserToMergeWith(TestResult tr)
+        {
+            _bc.Client.Wrapper.Logout(true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var ids = new AuthenticationIds()
+            {
+                externalId = GenerateUniversalId(),
+                authenticationToken = Guid.NewGuid().ToString(),
+                authenticationSubType = null
+            };
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                ids.externalId,
+                ids.authenticationToken,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.Wrapper.Logout(true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            return ids;
+        }
+
+        private AuthenticationIds CreateEmailUserToMergeWith(TestResult tr)
+        {
+            _bc.Client.Wrapper.Logout(true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var ids = new AuthenticationIds()
+            {
+                externalId = GenerateEmailId(),
+                authenticationToken = Guid.NewGuid().ToString(),
+                authenticationSubType = null
+            };
+
+            _bc.Client.AuthenticationService.AuthenticateEmailPassword(
+                ids.externalId,
+                ids.authenticationToken,
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.Wrapper.Logout(true, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                GetUser(Users.UserA).Id,
+                GetUser(Users.UserA).Password,
+                false,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            return ids;
         }
     }
 }

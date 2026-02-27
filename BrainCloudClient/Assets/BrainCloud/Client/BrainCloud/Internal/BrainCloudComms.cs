@@ -2667,13 +2667,12 @@ namespace BrainCloud.Common
                                 splitToResponses = false;
                                 break;
                             default: // Unknown key
-                                // i is at ':', check the value type to decide how to skip
                                 current = jsonData[i + 1];
                                 if (current == '"' || current == '{' || current == '[')
                                 {
-                                    skipValue = true; // String/object/array; skipped below
+                                    skipValue = true; // String/object/array, skipped below
                                 }
-                                else // Scalar; skip now
+                                else // Skip now
                                 {
                                     while (i + 1 < jsonData.Length && current != ',' && current != '}')
                                     {
