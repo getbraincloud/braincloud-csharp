@@ -213,6 +213,8 @@ namespace BrainCloud.Internal
         private FailureCallback _globalErrorCallback;
 
         private NetworkErrorCallback _networkErrorCallback;
+        
+        private LongSessionCallback _longSessionCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
@@ -537,6 +539,16 @@ namespace BrainCloud.Internal
         public void DeregisterNetworkErrorCallback()
         {
             _networkErrorCallback = null;
+        }
+        
+        public void RegisterLongSessionCallback(LongSessionCallback callback)
+        {
+            _longSessionCallback = callback;
+        }
+        
+        public void DeregisterLongSessionCallback()
+        {
+            _longSessionCallback = null;
         }
 
         /// <summary>
@@ -1296,6 +1308,11 @@ namespace BrainCloud.Internal
                                 // ...and any other calls in the bundle as they will fail too
                                 _serviceCallsWaiting.AddRange(otherServiceCallsInProgress);
                             }
+                            
+                            if(_longSessionCallback != null)
+                            {
+                                _longSessionCallback(response2);
+                            }
 
                             // Next Update loop will handle the re-authenticate request/response
                             return;
@@ -1306,6 +1323,11 @@ namespace BrainCloud.Internal
                             _clientRef.Log(string.Format("Long session re-authentication failed. | {0}  {1}  {2}", status, code, error));
 
                             LongSessionEnabled = false;
+                            
+                            if(_longSessionCallback != null)
+                            {
+                                _longSessionCallback(error);
+                            }
 
                             expiredServerCall?.GetCallback()?.OnErrorCallback(status, code, error);
                         };
