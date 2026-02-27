@@ -15,6 +15,7 @@ namespace BrainCloudTests
         private readonly string _divSetId = "testDivSetId";
         private readonly string _tournamentCode = "testTournament";
         private readonly string _leaderboardId = "testTournamentLeaderboard";
+        private string _divisionInstanceId;
         private readonly int _score = 10;
         private readonly int _beforeAndAfterCount = 10;
         private readonly int _initialScore = 0;
@@ -52,7 +53,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void GetDivisionInfo()
+        public void GetDivisionInfoExpectFail()
         {
             TestResult tr = new TestResult(_bc);
 
@@ -61,6 +62,18 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.RunExpectFail(400, ReasonCodes.DIVISION_SET_DOESNOT_EXIST);
+        }
+        
+        [Test]
+        public void GetDivisionInfo()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.GetDivisionInfo(
+                _divSetId,
+                tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
         }
 
         [Test]
@@ -90,7 +103,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void JoinDivision()
+        public void JoinDivisionExpectFail()
         {
             TestResult tr = new TestResult(_bc);
 
@@ -100,6 +113,22 @@ namespace BrainCloudTests
                 _rand.Next(1000),
                 tr.ApiSuccess, tr.ApiError);
             tr.RunExpectFail(400, ReasonCodes.DIVISION_SET_DOESNOT_EXIST);
+            
+        }
+        
+        [Test]
+        public void JoinDivision()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TournamentService.JoinDivision(
+                _divSetId,
+                _tournamentCode,
+                _rand.Next(1000),
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            Dictionary<string, object> data = tr.m_response["data"] as Dictionary<string, object>;
+            _divisionInstanceId = data["leaderboardId"] as string;
             
         }
 
@@ -112,7 +141,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void LeaveDivisionInstance()
+        public void LeaveDivisionInstanceExpectFail()
         {
             TestResult tr = new TestResult(_bc);
             _bc.TournamentService.LeaveDivisionInstance(
@@ -120,6 +149,17 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError
             );
             tr.RunExpectFail(500, ReasonCodes.NO_LEADERBOARD_FOUND);
+        }
+        
+        [Test]
+        public void LeaveDivisionInstance()
+        {
+            TestResult tr = new TestResult(_bc);
+            _bc.TournamentService.LeaveDivisionInstance(
+                _divisionInstanceId,
+                tr.ApiSuccess, tr.ApiError
+            );
+            tr.Run();
         }
 
         [Test]
@@ -194,7 +234,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ViewReward()
+        public void ViewRewardExpectFail()
         {
             JoinTestTournament();
 
