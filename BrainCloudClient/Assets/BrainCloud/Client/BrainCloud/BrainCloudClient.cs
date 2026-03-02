@@ -1042,17 +1042,17 @@ namespace BrainCloud
         /// <summary>
         /// Register a callback for when the long session re-authentication response is received
         /// </summary>
-        public void RegisterLongSessionCallback(LongSessionCallback callback)
+        public void RegisterAutoReconnectCallback(LongSessionCallback callback)
         {
-            _comms.RegisterLongSessionCallback(callback);
+            _comms.RegisterAutoReconnectCallback(callback);
         }
         
         /// <summary>
         /// De-registers the long session callback.
         /// </summary>
-        public void DeregisterLongSessionCallback()
+        public void DeregisterAutoReconnectCallback()
         {
-            _comms.DeregisterLongSessionCallback();
+            _comms.DeregisterAutoReconnectCallback();
         }
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>

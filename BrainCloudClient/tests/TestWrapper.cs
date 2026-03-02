@@ -13,7 +13,7 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestWrapper : TestFixtureNoAuth
     {
-        private int longSessionCallbackCount = 0;
+        private int autoReconnectCallbackCount = 0;
         
         [Test]
         public void TestAuthenticateAnonymous()
@@ -183,7 +183,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestLongSessionDisabled()
+        public void TestAutoReconnectDisabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
             userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
@@ -222,7 +222,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestLongSessionEnabled()
+        public void TestAutoReconnectEnabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
             userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
@@ -232,7 +232,7 @@ namespace BrainCloudTests
             userTr.Run();
 
             _bc.Client.EnableLogging(true);
-            _bc.EnableLongSession(true);
+            _bc.EnableAutoReconnect(true);
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -262,7 +262,7 @@ namespace BrainCloudTests
         }
                 
         [Test]
-        public void TestLongSessionEnabledWithCallback()
+        public void TestAutoReconnectWithCallback()
         {
             //Set up User B
             BrainCloudWrapper bc2 = new BrainCloudWrapper("userBWrapper");
@@ -281,8 +281,8 @@ namespace BrainCloudTests
             BrainCloudWrapper bc = new BrainCloudWrapper("userAWrapper");
             bc.Init(ServerUrl, Secret, AppId, Version);
             bc.Client.EnableLogging(true);
-            bc.EnableLongSession(true);
-            bc.Client.RegisterLongSessionCallback(LongSessionCallback);
+            bc.EnableAutoReconnect(true);
+            bc.Client.RegisterAutoReconnectCallback(LongSessionCallback);
             
             TestResult tr = new TestResult(bc);
             bc.Client.AuthenticationService.AuthenticateUniversal(
@@ -315,12 +315,12 @@ namespace BrainCloudTests
             //Verify UserA session retries via long session (if long session isn't enabled, this should fail)
             bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            Assert.That(longSessionCallbackCount == 1);
+            Assert.That(autoReconnectCallbackCount == 1);
         }
         
         private void LongSessionCallback(string jsonData)
         {
-            longSessionCallbackCount++;
+            autoReconnectCallbackCount++;
         } 
 
         [Test]
