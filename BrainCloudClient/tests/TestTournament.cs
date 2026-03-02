@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using BrainCloud.Common;
+using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -38,7 +39,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ClaimTournamentReward()
+        public void ClaimTournamentRewardExpectFail()
         {
             int version = JoinTestTournament();
 
@@ -50,6 +51,24 @@ namespace BrainCloudTests
                 tr.ApiSuccess, tr.ApiError);
 
             tr.RunExpectFail(400, ReasonCodes.VIEWING_REWARD_FOR_NON_PROCESSED_TOURNAMENTS);
+        }
+        
+        //[Test] //Disabled because you need a user to join the tournament from yesterday, not sure how to set that up..
+        public void ClaimTournamentReward()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            _bc.TournamentService.GetTournamentStatus(_leaderboardId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var responseData = tr.m_response[OperationParam.Data] as Dictionary<string, object>;
+            int tournamentVersion = (int)responseData[OperationParam.VersionId];
+            
+            _bc.TournamentService.ClaimTournamentReward(
+                _leaderboardId,
+                tournamentVersion - 1,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]
@@ -248,6 +267,24 @@ namespace BrainCloudTests
             tr.RunExpectFail(400, ReasonCodes.PLAYER_NOT_ENROLLED_IN_TOURNAMENT);
 
             LeaveTestTournament();
+        }
+        
+        //[Test] //Disabled because you need a user to join the tournament from yesterday, not sure how to set that up..
+        public void ViewReward()
+        {
+            TestResult tr = new TestResult(_bc);
+            
+            _bc.TournamentService.GetTournamentStatus(_leaderboardId, -1, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
+            var responseData = tr.m_response[OperationParam.Data] as Dictionary<string, object>;
+            int tournamentVersion = (int)responseData[OperationParam.VersionId];
+            
+            _bc.TournamentService.ViewReward(
+                _leaderboardId,
+                tournamentVersion - 1,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
         
         [Test]
