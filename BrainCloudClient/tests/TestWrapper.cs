@@ -13,6 +13,8 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestWrapper : TestFixtureNoAuth
     {
+        private int longSessionCallbackCount = 0;
+        
         [Test]
         public void TestAuthenticateAnonymous()
         {
@@ -262,64 +264,63 @@ namespace BrainCloudTests
         [Test]
         public void TestLongSessionEnabledWithCallback()
         {
-            _bc = new BrainCloudWrapper("userAWrapper");
-
-            _bc.Init(ServerUrl, Secret, AppId, Version);
-            _bc.Client.EnableLogging(true);
-            _bc.ResetStoredProfileId();
-            _bc.ResetStoredAnonymousId();
-            
-            TestResult tr = new TestResult(_bc);
-            _bc.Client.AuthenticationService.AuthenticateUniversal(
-                GetUser(Users.UserA).Id,
-                GetUser(Users.UserA).Password,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-            
-            Dictionary<string, object> data = tr.m_response["data"] as Dictionary<string, object>;
-            Dictionary<string, object> sessionData = new Dictionary<string, object>();
-            string userASessionToken = data["sessionId"] as string;
-            string userAProfileId = data["profileId"] as string;
-            sessionData["sessionId"] = userASessionToken;
-            sessionData["profileId"] = userAProfileId;
-            
-            _bc.EnableLongSession(true);
-            _bc.Client.RegisterLongSessionCallback(LongSessionCallback);
-            
             //Set up User B
             BrainCloudWrapper bc2 = new BrainCloudWrapper("userBWrapper");
             bc2.Init(ServerUrl, Secret, AppId, Version);
             bc2.Client.EnableLogging(true);
-            bc2.ResetStoredProfileId();
-            bc2.ResetStoredAnonymousId();
             
             TestResult tr2 = new TestResult(bc2);
-            
             bc2.AuthenticateUniversal(
-            GetUser(Users.UserB).Id, 
-                GetUser(Users.UserB).Password, 
-            true, 
+                "otherUser", 
+                "123456", 
+                true, 
                 tr2.ApiSuccess, 
                 tr2.ApiError);
             tr2.Run();
+        
+            BrainCloudWrapper bc = new BrainCloudWrapper("userAWrapper");
+            bc.Init(ServerUrl, Secret, AppId, Version);
+            bc.Client.EnableLogging(true);
+            bc.EnableLongSession(true);
+            bc.Client.RegisterLongSessionCallback(LongSessionCallback);
+            
+            TestResult tr = new TestResult(bc);
+            bc.Client.AuthenticationService.AuthenticateUniversal(
+                "braincloudTester", 
+                "12345",
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            // Save Profile and Session IDs so that the session can be ended with a Cloud Code Script
+            var responseData = tr.m_response["data"] as Dictionary<string, object>;
+            string profileId = responseData["profileId"] as string;
+            string sessionId = responseData["sessionId"] as string;
+            var data = new Dictionary<string, string>
+            {
+                { "sessionId", sessionId },
+                { "profileId", profileId }
+            };
+            string jsonData = JsonWriter.Serialize(data);
+            
             
             //Verify UserA session is active
-            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
             
             //End UserA session via script from UserB
-            bc2.ScriptService.RunScript("LogoutSession", JsonWriter.Serialize(sessionData), tr2.ApiSuccess, tr2.ApiError);
+            bc2.ScriptService.RunScript("LogoutSession", jsonData, tr2.ApiSuccess, tr2.ApiError);
             tr2.Run();
             
             //Verify UserA session retries via long session (if long session isn't enabled, this should fail)
-            _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
+            Assert.That(longSessionCallbackCount == 1);
         }
         
         private void LongSessionCallback(string jsonData)
         {
-            Console.WriteLine("LongSessionCallback: " + jsonData);
+            longSessionCallbackCount++;
         } 
 
         [Test]
