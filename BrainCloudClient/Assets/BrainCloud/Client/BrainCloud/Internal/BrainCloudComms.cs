@@ -52,11 +52,11 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Enables automatic re-authentication when the user's session expires
         /// </summary>
-        public bool LongSessionEnabled { get; private set; } = false;
+        public bool AutoReconnectEnabled { get; private set; } = false;
 
-        public void EnableLongSession(bool enabled)
+        public void EnableAutoReconnect(bool enabled)
         {
-            LongSessionEnabled = enabled;
+            AutoReconnectEnabled = enabled;
         }
 
         /// <summary>
@@ -213,6 +213,8 @@ namespace BrainCloud.Internal
         private FailureCallback _globalErrorCallback;
 
         private NetworkErrorCallback _networkErrorCallback;
+        
+        private LongSessionCallback _autoReconnectCallback;
 
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
@@ -537,6 +539,16 @@ namespace BrainCloud.Internal
         public void DeregisterNetworkErrorCallback()
         {
             _networkErrorCallback = null;
+        }
+        
+        public void RegisterAutoReconnectCallback(LongSessionCallback callback)
+        {
+            _autoReconnectCallback = callback;
+        }
+        
+        public void DeregisterAutoReconnectCallback()
+        {
+            _autoReconnectCallback = null;
         }
 
         /// <summary>
@@ -1274,7 +1286,7 @@ namespace BrainCloud.Internal
                     }
 
                     // If the authenticated session has expired, and long session is enabled, attempt to re-authenticate and retry lost call(s)
-                    if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED && LongSessionEnabled && operation != ServiceOperation.Authenticate && _isAuthenticated)
+                    if (reasonCode == ReasonCodes.PLAYER_SESSION_EXPIRED && AutoReconnectEnabled && operation != ServiceOperation.Authenticate && _isAuthenticated)
                     {
                         // Save the call that failed
                         ServerCall expiredServerCall = sc;
@@ -1296,6 +1308,11 @@ namespace BrainCloud.Internal
                                 // ...and any other calls in the bundle as they will fail too
                                 _serviceCallsWaiting.AddRange(otherServiceCallsInProgress);
                             }
+                            
+                            if(_autoReconnectCallback != null)
+                            {
+                                _autoReconnectCallback(response2);
+                            }
 
                             // Next Update loop will handle the re-authenticate request/response
                             return;
@@ -1305,7 +1322,12 @@ namespace BrainCloud.Internal
                         {
                             _clientRef.Log(string.Format("Long session re-authentication failed. | {0}  {1}  {2}", status, code, error));
 
-                            LongSessionEnabled = false;
+                            AutoReconnectEnabled = false;
+                            
+                            if(_autoReconnectCallback != null)
+                            {
+                                _autoReconnectCallback(error);
+                            }
 
                             expiredServerCall?.GetCallback()?.OnErrorCallback(status, code, error);
                         };

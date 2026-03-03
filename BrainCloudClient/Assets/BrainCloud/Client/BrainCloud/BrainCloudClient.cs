@@ -107,6 +107,12 @@ namespace BrainCloud
     /// <param name="jsonResponse">The JSON response describing the failure. This uses the
     /// usual brainCloud error format similar to this:</param>
     public delegate void FileUploadFailedCallback(string fileUploadId, int statusCode, int reasonCode, string jsonResponse);
+    
+    /// <summary>
+    /// Register a callback for when the long session re-authentication response is received
+    /// </summary>
+    /// <param name="jsonResponse">The JSON response from the server</param>
+    public delegate void LongSessionCallback(string jsonResponse);
 
     public delegate void JsonSerializationSuccessCallback(string jsonResponse);
     public delegate void JsonSerializationFailureCallback(int statusCode, int reasonCode, string errorMessage);
@@ -1031,6 +1037,22 @@ namespace BrainCloud
         public void DeregisterNetworkErrorCallback()
         {
             _comms.DeregisterNetworkErrorCallback();
+        }
+        
+        /// <summary>
+        /// Register a callback for when the long session re-authentication response is received
+        /// </summary>
+        public void RegisterAutoReconnectCallback(LongSessionCallback callback)
+        {
+            _comms.RegisterAutoReconnectCallback(callback);
+        }
+        
+        /// <summary>
+        /// De-registers the long session callback.
+        /// </summary>
+        public void DeregisterAutoReconnectCallback()
+        {
+            _comms.DeregisterAutoReconnectCallback();
         }
 
         /// <summary> Enable logging of brainCloud transactions (comms etc)</summary>

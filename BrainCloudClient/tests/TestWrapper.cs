@@ -13,6 +13,8 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestWrapper : TestFixtureNoAuth
     {
+        private int autoReconnectCallbackCount = 0;
+        
         [Test]
         public void TestAuthenticateAnonymous()
         {
@@ -181,7 +183,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestLongSessionDisabled()
+        public void TestAutoReconnectDisabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
             userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
@@ -220,7 +222,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestLongSessionEnabled()
+        public void TestAutoReconnectEnabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
             userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
@@ -230,7 +232,7 @@ namespace BrainCloudTests
             userTr.Run();
 
             _bc.Client.EnableLogging(true);
-            _bc.EnableLongSession(true);
+            _bc.EnableAutoReconnect(true);
             TestResult tr = new TestResult(_bc);
             _bc.AuthenticateUniversal("braincloudTester", "12345", true, tr.ApiSuccess, tr.ApiError);
             tr.Run();
@@ -258,6 +260,68 @@ namespace BrainCloudTests
             _bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
             tr.Run();
         }
+                
+        [Test]
+        public void TestAutoReconnectWithCallback()
+        {
+            //Set up User B
+            BrainCloudWrapper bc2 = new BrainCloudWrapper("userBWrapper");
+            bc2.Init(ServerUrl, Secret, AppId, Version);
+            bc2.Client.EnableLogging(true);
+            
+            TestResult tr2 = new TestResult(bc2);
+            bc2.AuthenticateUniversal(
+                "otherUser", 
+                "123456", 
+                true, 
+                tr2.ApiSuccess, 
+                tr2.ApiError);
+            tr2.Run();
+        
+            BrainCloudWrapper bc = new BrainCloudWrapper("userAWrapper");
+            bc.Init(ServerUrl, Secret, AppId, Version);
+            bc.Client.EnableLogging(true);
+            bc.EnableAutoReconnect(true);
+            bc.Client.RegisterAutoReconnectCallback(LongSessionCallback);
+            
+            TestResult tr = new TestResult(bc);
+            bc.Client.AuthenticationService.AuthenticateUniversal(
+                "braincloudTester", 
+                "12345",
+                true,
+                tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            // Save Profile and Session IDs so that the session can be ended with a Cloud Code Script
+            var responseData = tr.m_response["data"] as Dictionary<string, object>;
+            string profileId = responseData["profileId"] as string;
+            string sessionId = responseData["sessionId"] as string;
+            var data = new Dictionary<string, string>
+            {
+                { "sessionId", sessionId },
+                { "profileId", profileId }
+            };
+            string jsonData = JsonWriter.Serialize(data);
+            
+            
+            //Verify UserA session is active
+            bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            
+            //End UserA session via script from UserB
+            bc2.ScriptService.RunScript("LogoutSession", jsonData, tr2.ApiSuccess, tr2.ApiError);
+            tr2.Run();
+            
+            //Verify UserA session retries via long session (if long session isn't enabled, this should fail)
+            bc.IdentityService.GetIdentities(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            Assert.That(autoReconnectCallbackCount == 1);
+        }
+        
+        private void LongSessionCallback(string jsonData)
+        {
+            autoReconnectCallbackCount++;
+        } 
 
         [Test]
         public void TestWrapperResetEmailPasswordAdvanced()
