@@ -426,6 +426,15 @@ namespace BrainCloud
         public static readonly ServiceOperation ViewCurrentReward = new("VIEW_CURRENT_REWARD");
         public static readonly ServiceOperation ViewReward = new("VIEW_REWARD");
         public static readonly ServiceOperation ClaimTournamentReward = new("CLAIM_TOURNAMENT_REWARD");
+        public static readonly ServiceOperation PostGroupTournamentScoreWithResults = new("POST_GROUP_TOURNAMENT_SCORE_WITH_RESULTS");
+        public static readonly ServiceOperation GetGroupDivisionInfo = new("GET_GROUP_DIVISION_INFO");
+        public static readonly ServiceOperation GetGroupDivisions = new("GET_GROUP_DIVISIONS");
+        public static readonly ServiceOperation GetGroupTournamentStatus = new("GET_GROUP_TOURNAMENT_STATUS");
+        public static readonly ServiceOperation JoinGroupDivision = new("JOIN_GROUP_DIVISION");
+        public static readonly ServiceOperation JoinGroupTournament = new("JOIN_GROUP_TOURNAMENT");
+        public static readonly ServiceOperation LeaveGroupTournament = new("LEAVE_GROUP_TOURNAMENT");
+        public static readonly ServiceOperation LeaveGroupDivisionInstance = new("LEAVE_GROUP_DIVISION_INSTANCE");
+        public static readonly ServiceOperation PostGroupTournamentScore = new("POST_GROUP_TOURNAMENT_SCORE");
 
         // rtt
         public static readonly ServiceOperation RequestClientConnection = new("REQUEST_CLIENT_CONNECTION");
