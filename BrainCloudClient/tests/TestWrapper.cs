@@ -509,9 +509,10 @@ namespace BrainCloudTests
                 { "packetId",        packetId       },
                 { "newGlobalValue1", Guid.NewGuid() },
                 { "responses",       responses      },
-                { "events",          events         },
                 { "newGlobalValue2", responses[2]   },
-                { "newGlobalValue3", null           }
+                { "events",          events         },
+                { "newGlobalValue3", null           },
+                { "newGlobalValue4", Guid.NewGuid() },
             });
 
             // Set up some comparisons

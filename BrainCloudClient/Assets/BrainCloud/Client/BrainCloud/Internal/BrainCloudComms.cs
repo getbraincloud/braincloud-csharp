@@ -3,7 +3,7 @@
 // brainCloud client source code
 //----------------------------------------------------
 
-#if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
+#if (UNITY_5_3_OR_NEWER && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
 #define USE_WEB_REQUEST // Comment out to force use of old WWW class on Unity 5.3+
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
 using System.Collections.Generic;
@@ -18,7 +18,6 @@ namespace BrainCloud.Internal
     using System.IO;
     using System.IO.Compression;
     using System.Text;
-
 #if (DOT_NET || GODOT || DISABLE_SSL_CHECK)
     using System.Net;
 #endif
@@ -335,7 +334,14 @@ namespace BrainCloud.Internal
             }
             set
             {
-                _packetTimeouts = value;
+                if (value == null || value.Count == 0)
+                {
+                    _packetTimeouts.Clear();
+                }
+                else
+                {
+                    _packetTimeouts = value;
+                }
             }
         }
 
@@ -557,10 +563,10 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Update()
         {
-            // basic flow here is to:
-            // 1- process existing requests
-            // 2- send next request
-            // 3- handle heartbeat/timeouts
+            // Basic Flow:
+            // 1: Process existing Requests
+            // 2: Send next Request
+            // 3: Handle Heartbeat/Timeouts
 
             if (!_initialized)
             {
@@ -580,29 +586,30 @@ namespace BrainCloud.Internal
             RequestState.eWebRequestStatus status = RequestState.eWebRequestStatus.STATUS_PENDING;
             if (_activeRequest != null)
             {
-                status = GetWebRequestStatus(_activeRequest);
+                var activeRequest = _activeRequest; // Cache reference in-case _activeRequest gets set to null in another thread
+
+                status = GetWebRequestStatus(activeRequest);
                 if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                 {
                     // Force the timeout to be elapsed because we have completed the request with error
                     // or else, do nothing with the error right now - let the timeout code handle it
-                    bypassTimeout = (_activeRequest.Retries >= GetMaxRetriesForPacket(_activeRequest));
+                    bypassTimeout = activeRequest.Retries >= GetMaxRetriesForPacket(activeRequest);
                 }
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
-
 #if USE_WEB_REQUEST
                     // HttpStatusCode.OK
-                    if (_activeRequest.WebRequest.responseCode == 200)
+                    if (activeRequest.WebRequest.responseCode == 200)
                     {
                         ResetIdleTimer();
-                        HandleResponseBundle(GetWebRequestResponse(_activeRequest));
+                        HandleResponseBundle(GetWebRequestResponse(activeRequest));
                         DisposeUploadHandler();
                         _activeRequest = null;
                     }
                     // HttpStatusCode.ServiceUnavailable
-                    else if (_activeRequest.WebRequest.responseCode == 503 ||
-                             _activeRequest.WebRequest.responseCode == 502 ||
-                             _activeRequest.WebRequest.responseCode == 504)
+                    else if (activeRequest.WebRequest.responseCode == 503 ||
+                             activeRequest.WebRequest.responseCode == 502 ||
+                             activeRequest.WebRequest.responseCode == 504)
                     {
                         // Packet in progress
                         _clientRef.Log("Packet in progress");
@@ -612,39 +619,39 @@ namespace BrainCloud.Internal
                     else
                     {
                         // Error Callback
-                        var errorResponse = GetWebRequestResponse(_activeRequest);
+                        var errorResponse = GetWebRequestResponse(activeRequest);
                         if (_serviceCallsInProgress.Count > 0)
                         {
                             ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
-                            sc?.OnErrorCallback(404, (int)_activeRequest.WebRequest.responseCode, errorResponse);
+                            sc?.OnErrorCallback(404, (int)activeRequest.WebRequest.responseCode, errorResponse);
                         }
                     }
 #elif DOT_NET || GODOT
-                    //HttpStatusCode.OK
-                    if ((int)_activeRequest.WebRequest.Result.StatusCode == 200)
+                    // HttpStatusCode.OK
+                    if ((int)activeRequest.WebRequest.Result.StatusCode == 200)
                     {
                         ResetIdleTimer();
-                        HandleResponseBundle(GetWebRequestResponse(_activeRequest));
+                        HandleResponseBundle(GetWebRequestResponse(activeRequest));
                         _activeRequest = null;
                     }
-                    //HttpStatusCode.ServiceUnavailable
-                    else if ((int)_activeRequest.WebRequest.Result.StatusCode == 503 ||
-                             (int)_activeRequest.WebRequest.Result.StatusCode == 502 ||
-                             (int)_activeRequest.WebRequest.Result.StatusCode == 504)
+                    // HttpStatusCode.ServiceUnavailable
+                    else if ((int)activeRequest.WebRequest.Result.StatusCode == 503 ||
+                             (int)activeRequest.WebRequest.Result.StatusCode == 502 ||
+                             (int)activeRequest.WebRequest.Result.StatusCode == 504)
                     {
-                        //Packet in progress
+                        // Packet in progress
                         _clientRef.Log("Packet in progress");
                         RetryRequest(status, bypassTimeout);
                         return;
                     }
                     else
                     {
-                        //Error Callback
-                        var errorResponse = GetWebRequestResponse(_activeRequest);
+                        // Error Callback
+                        var errorResponse = GetWebRequestResponse(activeRequest);
                         if (_serviceCallsInProgress.Count > 0)
                         {
                             ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
-                            sc?.OnErrorCallback(404, (int)_activeRequest.WebRequest.Result.StatusCode, errorResponse);
+                            sc?.OnErrorCallback(404, (int)activeRequest.WebRequest.Result.StatusCode, errorResponse);
                         }
                     }
 #endif
@@ -1430,7 +1437,7 @@ namespace BrainCloud.Internal
             if (exceptions.Count > 0)
             {
                 DisposeUploadHandler();
-                _activeRequest = null; // to make sure we don't reprocess this message
+                _activeRequest = null; // Make sure we don't reprocess this message
 
                 throw new Exception("User callback handlers threw " + exceptions.Count + " exception(s)."
                                     + " See the Unity log for callstacks or inner exception for first exception thrown.",
@@ -1972,10 +1979,9 @@ namespace BrainCloud.Internal
         {
             RequestState.eWebRequestStatus status = RequestState.eWebRequestStatus.STATUS_PENDING;
 
-            // for testing packet loss, some packets are flagged to be lost
-            // and should always return status pending no matter what the real
-            // status is
-            if (_activeRequest.LoseThisPacket)
+            // For testing packet loss, some packets are flagged to be lost and
+            // should always return status pending no matter what the real status is
+            if (requestState.LoseThisPacket)
             {
                 return status;
             }
@@ -2006,37 +2012,42 @@ namespace BrainCloud.Internal
         /// <param name="requestState">request state.</param>
         private string GetWebRequestResponse(RequestState requestState)
         {
+            if (requestState == null)
+            {
+                return "There is no active request.";
+            }
+
             string response = "";
 #if USE_WEB_REQUEST
 #if UNITY_2018 || UNITY_2019
-            if (_activeRequest.WebRequest.isNetworkError)
+            if (requestState.WebRequest.isNetworkError)
             {
                 Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
             }
-            else if (_activeRequest.WebRequest.isHttpError)
+            else if (requestState.WebRequest.isHttpError)
             {
                 Debug.LogWarning("Something went wrong, received a isHttpError flag. Examples for this to happen are: failure to resolve a DNS entry, a socket error or a redirect limit being exceeded. When this property returns true, the error property will contain a human-readable string describing the error.");
             }
 #elif UNITY_2020_1_OR_NEWER
-            if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ConnectionError)
+            if (requestState.WebRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogWarning("Failed to communicate with the server. For example, the request couldn't connect or it could not establish a secure channel");
             }
-            else if (_activeRequest.WebRequest.result == UnityWebRequest.Result.ProtocolError)
+            else if (requestState.WebRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogWarning("The server returned an error response. The request succeeded in communicating with the server, but received an error as defined by the connection protocol.");
             }
-            else if (_activeRequest.WebRequest.result == UnityWebRequest.Result.DataProcessingError)
+            else if (requestState.WebRequest.result == UnityWebRequest.Result.DataProcessingError)
             {
                 Debug.LogWarning("Error processing data. The request succeeded in communicating with the server, but encountered an error when processing the received data. For example, the data was corrupted or not in the correct format.");
             }
 #endif
-            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(requestState.WebRequest.error))
             {
-                response = _activeRequest.WebRequest.error;
+                response = requestState.WebRequest.error;
             }
 
-            response = _activeRequest.WebRequest.downloadHandler.text;
+            response = requestState.WebRequest.downloadHandler.text;
 
             if (response.Contains("Security violation 47") ||
                 response.StartsWith("<"))
@@ -2045,7 +2056,7 @@ namespace BrainCloud.Internal
             }
 
 #elif DOT_NET || GODOT
-            response = _activeRequest.DotNetResponseString;
+            response = requestState.DotNetResponseString;
 #endif
             return response;
         }
@@ -2071,7 +2082,7 @@ namespace BrainCloud.Internal
         /// <param name="requestState">The active request.</param>
         private TimeSpan GetPacketTimeout(RequestState requestState)
         {
-            if (requestState.PacketNoRetry)
+            if (requestState != null && requestState.PacketNoRetry)
             {
                 if (DateTime.Now.Subtract(requestState.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
                 {
@@ -2090,7 +2101,7 @@ namespace BrainCloud.Internal
                 return TimeSpan.FromSeconds(_authPacketTimeoutSecs);
             }
 
-            int currentRetry = requestState.Retries;
+            int currentRetry = requestState == null ? 0 : requestState.Retries;
             TimeSpan ret;
 
             // if this is a delete player, or logout we change the timeout behaviour
@@ -2288,15 +2299,15 @@ namespace BrainCloud.Internal
         {
             if (_activeRequest != null)
             {
-                if (bypassTimeout || DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(_activeRequest))
+                var activeRequest = _activeRequest;
+                if (bypassTimeout || DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(activeRequest))
                 {
                     if (_clientRef.LoggingEnabled)
                     {
-                        string errorResponse = "";
                         // we've reached the retry limit - send timeout error to all client callbacks
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
-                            errorResponse = GetWebRequestResponse(_activeRequest);
+                            string errorResponse = GetWebRequestResponse(activeRequest);
                             if (!string.IsNullOrWhiteSpace(errorResponse))
                             {
                                 _clientRef.Log("Timeout with network error: " + errorResponse);
@@ -2311,10 +2322,9 @@ namespace BrainCloud.Internal
                             _clientRef.Log("Timeout no reply from server");
                         }
                     }
-                    if (!ResendMessage(_activeRequest))
+                    if (!ResendMessage(activeRequest))
                     {
                         DisposeUploadHandler();
-                        _activeRequest = null;
 
                         // if we're doing caching of messages on timeout, kick it in now!
                         if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
