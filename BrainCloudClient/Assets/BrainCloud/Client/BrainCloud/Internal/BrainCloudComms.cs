@@ -18,7 +18,7 @@ namespace BrainCloud.Internal
     using System.IO;
     using System.IO.Compression;
     using System.Text;
-#if (DOT_NET || GODOT || DISABLE_SSL_CHECK)
+#if DOT_NET || GODOT || DISABLE_SSL_CHECK
     using System.Net;
 #endif
 #if DOT_NET || GODOT
@@ -219,7 +219,7 @@ namespace BrainCloud.Internal
 
 #if DOT_NET || GODOT
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
-        private volatile HttpResult _result = null;
+        private volatile HttpResult _requestResult = null;
 #endif
 
         // For handling local session errors
@@ -595,6 +595,9 @@ namespace BrainCloud.Internal
                     // Force the timeout to be elapsed because we have completed the request with error
                     // or else, do nothing with the error right now - let the timeout code handle it
                     bypassTimeout = activeRequest.Retries >= GetMaxRetriesForPacket(activeRequest);
+#if DOT_NET || GODOT
+                    _requestResult = null;
+#endif
                 }
 #if USE_WEB_REQUEST
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
@@ -629,7 +632,7 @@ namespace BrainCloud.Internal
                     }
                 }
 #elif DOT_NET || GODOT
-                else if (_result != null)
+                else if (_requestResult != null)
                 {
                     // HttpStatusCode.OK
                     if ((int)activeRequest.WebRequest.StatusCode == 200)
@@ -643,7 +646,7 @@ namespace BrainCloud.Internal
                              (int)activeRequest.WebRequest.StatusCode == 502 ||
                              (int)activeRequest.WebRequest.StatusCode == 504)
                     {
-                        _result = null;
+                        _requestResult = null;
 
                         // Packet in progress
                         _clientRef.Log("Packet in progress");
@@ -661,7 +664,7 @@ namespace BrainCloud.Internal
                         }
                     }
 
-                    _result = null;
+                    _requestResult = null;
                 }
 #endif
             }
@@ -1029,7 +1032,7 @@ namespace BrainCloud.Internal
                 return;
             }
 
-            string[] responseBundle = bundleObj.responses;
+            string[] responseBundle = bundleObj.responses ?? new string[0];
             string response = string.Empty;
             long receivedPacketId = bundleObj.packetId;
             receivedPacketIdChecker = receivedPacketId;
@@ -1995,9 +1998,9 @@ namespace BrainCloud.Internal
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
 #elif DOT_NET || GODOT
-            if (_result != null)
+            if (_requestResult != null)
             {
-                ProcessHttpResult(_result, requestState);
+                ProcessHttpResult(_requestResult, requestState);
             }
 
             status = requestState.DotNetRequestStatus;
@@ -2104,10 +2107,10 @@ namespace BrainCloud.Internal
             int currentRetry = requestState == null ? 0 : requestState.Retries;
             TimeSpan ret;
 
-            // if this is a delete player, or logout we change the timeout behaviour
-            if (requestState.PacketRequiresLongTimeout)
+            // If this is a deleted player (or logout) we change the timeout behaviour
+            if (requestState != null && requestState.PacketRequiresLongTimeout)
             {
-                // unused as default timeouts are now quite long
+                // Unused as default timeouts are now quite long
             }
 
             if (currentRetry >= _packetTimeouts.Count)
@@ -2304,7 +2307,7 @@ namespace BrainCloud.Internal
                 {
                     if (_clientRef.LoggingEnabled)
                     {
-                        // we've reached the retry limit - send timeout error to all client callbacks
+                        // We've reached the retry limit - send timeout error to all client callbacks
                         if (status == RequestState.eWebRequestStatus.STATUS_ERROR)
                         {
                             string errorResponse = GetWebRequestResponse(activeRequest);
@@ -2325,6 +2328,10 @@ namespace BrainCloud.Internal
                     if (!ResendMessage(activeRequest))
                     {
                         DisposeUploadHandler();
+                        _activeRequest = null;
+#if DOT_NET || GODOT
+                        _requestResult = null;
+#endif
 
                         // if we're doing caching of messages on timeout, kick it in now!
                         if (_cacheMessagesOnNetworkError && _networkErrorCallback != null)
@@ -2459,7 +2466,7 @@ namespace BrainCloud.Internal
 
         private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
         {
-            _result = await SendAsync(req, requestState, timeout);
+            _requestResult = await SendAsync(req, requestState, timeout);
         }
 
         private void ProcessHttpResult(HttpResult result, RequestState requestState)
