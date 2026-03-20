@@ -14,7 +14,6 @@ namespace BrainCloud.Internal
 #if DOT_NET || GODOT
     using System.Net.Http;
     using System.Threading;
-    using System.Threading.Tasks;
 #else
 #if USE_WEB_REQUEST
 #if UNITY_5_3
@@ -57,22 +56,19 @@ namespace BrainCloud.Internal
 
         public byte[] ByteArray { get; set; } // We also process the byte array on the background thread
 
+        public string RequestString { get; set; }
+
 #if !(DOT_NET || GODOT)
 #if USE_WEB_REQUEST
         public UnityWebRequest WebRequest { get; set; }
 #else
         public WWW WebRequest { get; set; } // Unity uses WWW objects to make HTTP calls cross-platform
 #endif
-#else
-        public IAsyncResult AsyncResult { get; set; } // .NET projects can use the WebRequest object instead
-
-        public bool IsCancelled { get; private set; }
-        public Task<HttpResponseMessage> WebRequest { get; set; }
 #endif
 
-        public string RequestString { get; set; }
-
 #if DOT_NET || GODOT
+        public bool IsCancelled { get; private set; }
+        public HttpResponseMessage WebRequest { get; set; }
         public CancellationTokenSource CancelToken { get; set; }
 
         public string DotNetResponseString { get; set; }
@@ -108,21 +104,20 @@ namespace BrainCloud.Internal
                 {
                     CancelToken.Cancel();
                 }
-#else
-                CleanupRequest();
 #endif
             }
             catch (Exception) { }
+
+            CleanupRequest();
         }
 
         private void CleanupRequest()
         {
-#if USE_WEB_REQUEST
             if (WebRequest == null)
             {
                 return;
             }
-
+#if USE_WEB_REQUEST || DOT_NET || GODOT
             WebRequest.Dispose();
 #else
             /* Disposing of the www class causes unity editor to lock up

@@ -191,7 +191,7 @@ namespace BrainCloud.Internal
 #if (DOT_NET || GODOT)
         private async Task AsyncHttpTaskCallback(Task<HttpResponseMessage> asyncResult)
         {
-            if (asyncResult.IsCanceled) return;            
+            if (asyncResult.IsCanceled) return;
 
             bool isError = false;
             HttpResponseMessage message = null;

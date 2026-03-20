@@ -219,7 +219,7 @@ namespace BrainCloud.Internal
 
 #if DOT_NET || GODOT
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
-        private HttpResult _result = null;
+        private volatile HttpResult _result = null;
 #endif
 
         // For handling local session errors
@@ -596,9 +596,9 @@ namespace BrainCloud.Internal
                     // or else, do nothing with the error right now - let the timeout code handle it
                     bypassTimeout = activeRequest.Retries >= GetMaxRetriesForPacket(activeRequest);
                 }
+#if USE_WEB_REQUEST
                 else if (status == RequestState.eWebRequestStatus.STATUS_DONE)
                 {
-#if USE_WEB_REQUEST
                     // HttpStatusCode.OK
                     if (activeRequest.WebRequest.responseCode == 200)
                     {
@@ -627,19 +627,24 @@ namespace BrainCloud.Internal
                             sc?.OnErrorCallback(404, (int)activeRequest.WebRequest.responseCode, errorResponse);
                         }
                     }
+                }
 #elif DOT_NET || GODOT
+                else if (_result != null)
+                {
                     // HttpStatusCode.OK
-                    if ((int)activeRequest.WebRequest.Result.StatusCode == 200)
+                    if ((int)activeRequest.WebRequest.StatusCode == 200)
                     {
                         ResetIdleTimer();
                         HandleResponseBundle(GetWebRequestResponse(activeRequest));
                         _activeRequest = null;
                     }
                     // HttpStatusCode.ServiceUnavailable
-                    else if ((int)activeRequest.WebRequest.Result.StatusCode == 503 ||
-                             (int)activeRequest.WebRequest.Result.StatusCode == 502 ||
-                             (int)activeRequest.WebRequest.Result.StatusCode == 504)
+                    else if ((int)activeRequest.WebRequest.StatusCode == 503 ||
+                             (int)activeRequest.WebRequest.StatusCode == 502 ||
+                             (int)activeRequest.WebRequest.StatusCode == 504)
                     {
+                        _result = null;
+
                         // Packet in progress
                         _clientRef.Log("Packet in progress");
                         RetryRequest(status, bypassTimeout);
@@ -652,17 +657,19 @@ namespace BrainCloud.Internal
                         if (_serviceCallsInProgress.Count > 0)
                         {
                             ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
-                            sc?.OnErrorCallback(404, (int)activeRequest.WebRequest.Result.StatusCode, errorResponse);
+                            sc?.OnErrorCallback(404, (int)activeRequest.WebRequest.StatusCode, errorResponse);
                         }
                     }
-#endif
+
+                    _result = null;
                 }
+#endif
             }
 
-            // is it time for a retry?
+            // Is it time for a retry?
             RetryRequest(status, bypassTimeout);
 
-            // is it time for a heartbeat?
+            // Is it time for a heartbeat?
             if (_isAuthenticated && !_blockingQueue)
             {
                 if (DateTime.Now.Subtract(_lastTimePacketSent) >= _idleTimeout)
@@ -671,7 +678,7 @@ namespace BrainCloud.Internal
                 }
             }
 
-            // if the client is currently locked on authentication calls. 
+            // If the client is currently locked on authentication calls. 
             if (tooManyAuthenticationAttempts())
             {
                 if (_clientRef.LoggingEnabled)
@@ -679,14 +686,14 @@ namespace BrainCloud.Internal
                     _clientRef.Log("TIMER ON");
                     _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
                 }
-                // check the timeout, has enough time passed?
+                // Check the timeout, has enough time passed?
                 if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
                 {
                     if (_clientRef.LoggingEnabled)
                     {
                         _clientRef.Log("TIMER FINISHED");
                     }
-                    //if the wait time is up they're free to make authentication calls again
+                    // If the wait time is up they're free to make authentication calls again
                     _killSwitchEngaged = false;
                     ResetKillSwitch();
                 }
@@ -1988,11 +1995,10 @@ namespace BrainCloud.Internal
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
 #elif DOT_NET || GODOT
-            //if (_result != null)
-            //{
-            //    ProcessHttpResult(_result, requestState);
-            //    _result = null;
-            //}
+            if (_result != null)
+            {
+                ProcessHttpResult(_result, requestState);
+            }
 
             status = requestState.DotNetRequestStatus;
 #endif
@@ -2401,7 +2407,7 @@ namespace BrainCloud.Internal
         }
 
 #if DOT_NET || GODOT
-        private async Task<HttpResult> SendAsync(HttpRequestMessage request, TimeSpan timeout, CancellationToken externalToken = default)
+        private async Task<HttpResult> SendAsync(HttpRequestMessage request, RequestState requestState, TimeSpan timeout, CancellationToken externalToken = default)
         {
             using var timeoutCts = new CancellationTokenSource(timeout);
             using var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, externalToken);
@@ -2413,6 +2419,7 @@ namespace BrainCloud.Internal
                     HttpCompletionOption.ResponseContentRead,
                     linkedCts.Token).ConfigureAwait(false);
 
+                requestState.WebRequest = response;
                 HttpContent content = response.Content;
                 string responseString;
 
@@ -2450,70 +2457,64 @@ namespace BrainCloud.Internal
             }
         }
 
+        private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
+        {
+            _result = await SendAsync(req, requestState, timeout);
+        }
+
         private void ProcessHttpResult(HttpResult result, RequestState requestState)
         {
+            void logToClient(string log)
+            {
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log(log);
+                }
+            }
+
+            requestState.DotNetResponseString = result.Content;
+
             if (result.IsSuccess)
             {
-                ResetIdleTimer();
-                HandleResponseBundle(result.Content);
                 requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_DONE;
-                _activeRequest = null;
                 return;
             }
 
             switch (result.FailureType)
             {
                 case HttpFailureType.Timeout:
-                    if (_clientRef.LoggingEnabled)
-                        _clientRef.Log("Request timed out (client-side timeout).");
+                    logToClient("Request timed out (client-side timeout).");
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    break;
+                    return;
 
                 case HttpFailureType.Cancelled:
-                    if (_clientRef.LoggingEnabled)
-                        _clientRef.Log("Request was cancelled.");
+                    logToClient("Request was cancelled.");
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    break;
+                    return;
 
                 case HttpFailureType.NetworkError:
-                    if (_clientRef.LoggingEnabled)
-                        _clientRef.Log("Network error: " + result.ErrorMessage);
+                    logToClient("Network error: " + result.ErrorMessage);
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    break;
+                    return;
 
                 case HttpFailureType.HttpError:
                     int statusCode = result.StatusCode.HasValue ? (int)result.StatusCode.Value : 0;
 
                     if (statusCode == 503 || statusCode == 502 || statusCode == 504)
                     {
-                        if (_clientRef.LoggingEnabled)
-                            _clientRef.Log("Server temporarily unavailable, retrying...");
+                        logToClient("Server temporarily unavailable, retrying...");
                         requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
                         return;
                     }
-
-                    if (_serviceCallsInProgress.Count > 0)
-                    {
-                        ServerCallback sc = _serviceCallsInProgress[0].GetCallback();
-                        if (sc != null)
-                            sc.OnErrorCallback(404, statusCode, result.Content);
-                    }
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    break;
+                    return;
 
                 case HttpFailureType.Unknown:
                 default:
-                    if (_clientRef.LoggingEnabled)
-                        _clientRef.Log("Unknown error: " + result.ErrorMessage);
+                    logToClient("Unknown error: " + result.ErrorMessage);
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    break;
+                    return;
             }
-        }
-
-        private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
-        {
-            _result = await SendAsync(req, timeout);
-            ProcessHttpResult(_result, requestState);
         }
 #endif
     }
