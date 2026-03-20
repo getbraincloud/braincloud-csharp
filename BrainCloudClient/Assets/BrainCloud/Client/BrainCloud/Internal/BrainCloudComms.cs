@@ -219,6 +219,7 @@ namespace BrainCloud.Internal
 
 #if DOT_NET || GODOT
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
+        private HttpResult _result = null;
 #endif
 
         // For handling local session errors
@@ -581,7 +582,7 @@ namespace BrainCloud.Internal
                 return;
             }
 
-            // process current request
+            // Process current request
             bool bypassTimeout = false;
             RequestState.eWebRequestStatus status = RequestState.eWebRequestStatus.STATUS_PENDING;
             if (_activeRequest != null)
@@ -988,10 +989,15 @@ namespace BrainCloud.Internal
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
-            if (_clientRef.LoggingEnabled)
+            void logToClient(string log)
             {
-                _clientRef.Log(string.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
+                if (_clientRef.LoggingEnabled)
+                {
+                    _clientRef.Log(log);
+                }
             }
+
+            logToClient(string.Format("{0} - {1}\n{2}", "RESPONSE", DateTime.Now, jsonData));
 
             JsonResponseBundleV2 bundleObj = DeserializeJsonBundle(jsonData);
             if (bundleObj.IsEmpty || bundleObj.IsError)
@@ -1026,10 +1032,7 @@ namespace BrainCloud.Internal
             // json parsing error, missing packet id, app secret changed via the portal
             if (receivedPacketId != JsonResponseBundleV2.NO_PACKET_EXPECTED && (_expectedIncomingPacketId == JsonResponseBundleV2.NO_PACKET_EXPECTED || _expectedIncomingPacketId != receivedPacketId))
             {
-                if (_clientRef.LoggingEnabled)
-                {
-                    _clientRef.Log("Dropping duplicate packet");
-                }
+                logToClient("Dropping duplicate packet");
 
                 for (int j = 0; j < responseBundle.Length; ++j)
                 {
@@ -1089,6 +1092,12 @@ namespace BrainCloud.Internal
                 if (statusCode == 200) // A success response
                 {
                     ResetKillSwitch();
+
+                    if (sc == null)
+                    {
+                        continue;
+                    }
+
                     service = sc.GetService();
                     if (JsonParser.TryGetString(response, out responseData, OperationParam.ServiceMessageData))
                     {
@@ -1101,168 +1110,163 @@ namespace BrainCloud.Internal
                     }
 
                     // now try to execute the callback
-                    if (sc != null)
+                    callback = sc.GetCallback();
+                    operation = sc.GetOperation();
+                    string fileDetails = string.Empty;
+                    if (operation == ServiceOperation.RunPeerScript)
                     {
-                        callback = sc.GetCallback();
-                        operation = sc.GetOperation();
-                        string fileDetails = string.Empty;
-                        if (operation == ServiceOperation.RunPeerScript)
+                        JsonParser.TryGetString(responseData, out fileDetails, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
+                    }
+
+                    if (operation == ServiceOperation.FullReset ||
+                        operation == ServiceOperation.Logout)
+                    {
+                        // we reset the current player or logged out
+                        // we are no longer authenticated
+                        _isAuthenticated = false;
+                        SessionID = "";
+                        if (operation == ServiceOperation.FullReset)
                         {
-                            JsonParser.TryGetString(responseData, out fileDetails, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
+                            _clientRef.AuthenticationService.ClearSavedProfileID();
                         }
 
-                        if (operation == ServiceOperation.FullReset ||
-                            operation == ServiceOperation.Logout)
+                        ResetErrorCache();
+                    }
+                    // either off of authenticate or identity call, be sure to save the profileId and sessionId
+                    else if (operation == ServiceOperation.Authenticate)
+                    {
+                        ProcessAuthenticate(responseData);
+                    }
+                    // switch to child
+                    else if (operation.Equals(ServiceOperation.SwitchToChildProfile) ||
+                                operation.Equals(ServiceOperation.SwitchToParentProfile))
+                    {
+                        ProcessSwitchResponse(responseData);
+                    }
+                    else if (operation == ServiceOperation.PrepareUserUpload || !string.IsNullOrWhiteSpace(fileDetails))
+                    {
+                        string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
+                        fileDetails = string.IsNullOrWhiteSpace(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
+
+                        if (JsonParser.TryGetString(fileDetails, out string uploadId, "uploadId") &&
+                            JsonParser.TryGetString(fileDetails, out string guid, "localPath"))
                         {
-                            // we reset the current player or logged out
-                            // we are no longer authenticated
-                            _isAuthenticated = false;
-                            SessionID = "";
-                            if (operation == ServiceOperation.FullReset)
+                            string fileName = JsonParser.GetString(fileDetails, "cloudFilename");
+                            var uploader = new FileUploader(uploadId,
+                                                            guid,
+                                                            UploadURL,
+                                                            SessionID,
+                                                            _uploadLowTransferRateTimeout,
+                                                            _uploadLowTransferRateThreshold,
+                                                            _clientRef,
+                                                            peerCode)
                             {
-                                _clientRef.AuthenticationService.ClearSavedProfileID();
+                                FileName = fileName
+                            };
+
+                            if (_clientRef.FileService.FileStorage.ContainsKey(guid))
+                            {
+                                uploader.TotalBytesToTransfer = _clientRef.FileService.FileStorage[guid].Length;
                             }
-
-                            ResetErrorCache();
-                        }
-                        // either off of authenticate or identity call, be sure to save the profileId and sessionId
-                        else if (operation == ServiceOperation.Authenticate)
-                        {
-                            ProcessAuthenticate(responseData);
-                        }
-                        // switch to child
-                        else if (operation.Equals(ServiceOperation.SwitchToChildProfile) ||
-                                 operation.Equals(ServiceOperation.SwitchToParentProfile))
-                        {
-                            ProcessSwitchResponse(responseData);
-                        }
-                        else if (operation == ServiceOperation.PrepareUserUpload || !string.IsNullOrWhiteSpace(fileDetails))
-                        {
-                            string peerCode = !string.IsNullOrWhiteSpace(fileDetails) && sc.GetJsonData().Contains("peer") ? (string)sc.GetJsonData()["peer"] : string.Empty;
-                            fileDetails = string.IsNullOrWhiteSpace(peerCode) ? JsonParser.GetString(responseData, "fileDetails") : fileDetails;
-
-                            if (JsonParser.TryGetString(fileDetails, out string uploadId, "uploadId") &&
-                                JsonParser.TryGetString(fileDetails, out string guid, "localPath"))
-                            {
-                                string fileName = JsonParser.GetString(fileDetails, "cloudFilename");
-                                var uploader = new FileUploader(uploadId,
-                                                                guid,
-                                                                UploadURL,
-                                                                SessionID,
-                                                                _uploadLowTransferRateTimeout,
-                                                                _uploadLowTransferRateThreshold,
-                                                                _clientRef,
-                                                                peerCode)
-                                {
-                                    FileName = fileName
-                                };
-
-                                if (_clientRef.FileService.FileStorage.ContainsKey(guid))
-                                {
-                                    uploader.TotalBytesToTransfer = _clientRef.FileService.FileStorage[guid].Length;
-                                }
 #if DOT_NET || GODOT
-                                uploader.HttpClient = _httpClient;
+                            uploader.HttpClient = _httpClient;
 #endif
-                                _fileUploads.Add(uploader);
-                                uploader.Start();
-                            }
+                            _fileUploads.Add(uploader);
+                            uploader.Start();
                         }
+                    }
 
-                        // only process callbacks that are real
-                        if (callback != null)
+                    // only process callbacks that are real
+                    if (callback != null)
+                    {
+                        try
                         {
-                            try
-                            {
-                                callback.OnSuccessCallback(response);
-                            }
-                            catch (Exception e)
-                            {
-                                if (_clientRef.LoggingEnabled)
-                                {
-                                    _clientRef.Log(e.StackTrace);
-                                }
-                                exceptions.Add(e);
-                            }
+                            callback.OnSuccessCallback(response);
                         }
-
-                        _failedAuthenticationAttempts = 0;
-
-                        // now deal with rewards
-                        if (_rewardCallback != null && !string.IsNullOrWhiteSpace(responseData))
+                        catch (Exception e)
                         {
-                            try
-                            {
-                                Dictionary<string, object> rewards = null;
+                            logToClient(e.StackTrace);
+                        }
+                    }
 
-                                // it's an operation that return a reward
-                                if (operation == ServiceOperation.Authenticate)
+                    _failedAuthenticationAttempts = 0;
+
+                    // now deal with rewards
+                    if (_rewardCallback != null && !string.IsNullOrWhiteSpace(responseData))
+                    {
+                        try
+                        {
+                            Dictionary<string, object> rewards = null;
+
+                            // it's an operation that return a reward
+                            if (operation == ServiceOperation.Authenticate)
+                            {
+                                if (JsonParser.GetString(responseData, "rewards") is string outerRewards && !string.IsNullOrWhiteSpace(outerRewards))
                                 {
-                                    if (JsonParser.GetString(responseData, "rewards") is string outerRewards && !string.IsNullOrWhiteSpace(outerRewards))
-                                    {
-                                        if (JsonParser.GetString(outerRewards, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
-                                        {
-                                            if (innerRewards.Length > 5) // Minimum a Json string can be
-                                            {
-                                                // we found rewards
-                                                rewards = JsonReader.Deserialize<Dictionary<string, object>>(outerRewards);
-                                            }
-                                        }
-                                    }
-                                }
-                                else if (operation == ServiceOperation.Update ||
-                                         operation == ServiceOperation.Trigger ||
-                                         operation == ServiceOperation.TriggerMultiple)
-                                {
-                                    if (JsonParser.GetString(responseData, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
+                                    if (JsonParser.GetString(outerRewards, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
                                     {
                                         if (innerRewards.Length > 5) // Minimum a Json string can be
                                         {
                                             // we found rewards
-                                            rewards = JsonReader.Deserialize<Dictionary<string, object>>(responseData);
+                                            rewards = JsonReader.Deserialize<Dictionary<string, object>>(outerRewards);
                                         }
                                     }
                                 }
-
-                                if (rewards != null)
-                                {
-                                    var theReward = new Dictionary<string, object>
-                                    {
-                                        ["rewards"] = rewards,
-                                        ["service"] = service,
-                                        ["operation"] = operation
-                                    };
-
-                                    var apiRewards = new Dictionary<string, object>
-                                    {
-                                        ["apiRewards"] = new List<object> { theReward }
-                                    };
-
-                                    _rewardCallback(_clientRef.SerializeJson(apiRewards));
-                                }
                             }
-                            catch (Exception e)
+                            else if (operation == ServiceOperation.Update ||
+                                     operation == ServiceOperation.Trigger ||
+                                     operation == ServiceOperation.TriggerMultiple)
                             {
-                                if (_clientRef.LoggingEnabled)
+                                if (JsonParser.GetString(responseData, "rewards") is string innerRewards && !string.IsNullOrWhiteSpace(innerRewards))
                                 {
-                                    _clientRef.Log(e.StackTrace);
+                                    if (innerRewards.Length > 5) // Minimum a Json string can be
+                                    {
+                                        // we found rewards
+                                        rewards = JsonReader.Deserialize<Dictionary<string, object>>(responseData);
+                                    }
                                 }
-                                exceptions.Add(e);
                             }
+
+                            if (rewards != null)
+                            {
+                                var theReward = new Dictionary<string, object>
+                                {
+                                    ["rewards"] = rewards,
+                                    ["service"] = service,
+                                    ["operation"] = operation
+                                };
+
+                                var apiRewards = new Dictionary<string, object>
+                                {
+                                    ["apiRewards"] = new List<object> { theReward }
+                                };
+
+                                _rewardCallback(_clientRef.SerializeJson(apiRewards));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            logToClient(e.StackTrace);
+                            exceptions.Add(e);
                         }
                     }
                 }
-                else // If non-200
+                else // If non-200 Status Code
                 {
+                    if (sc == null)
+                    {
+                        continue;
+                    }
+
                     int reasonCode = 0;
                     string errorJson = "";
                     callback = sc.GetCallback();
                     operation = sc.GetOperation();
 
-                    //if it was an authentication call 
+                    // If it was an authentication call 
                     if (operation == ServiceOperation.Authenticate)
                     {
-                        //if we haven't already gone above the threshold and are waiting for the timer or a 200 response to reset things
+                        // If we haven't already gone above the threshold and are waiting for the timer or a 200 response to reset things
                         if (!tooManyAuthenticationAttempts())
                         {
                             _failedAuthenticationAttempts++;
@@ -1315,11 +1319,8 @@ namespace BrainCloud.Internal
                                 // ...and any other calls in the bundle as they will fail too
                                 _serviceCallsWaiting.AddRange(otherServiceCallsInProgress);
                             }
-                            
-                            if(_autoReconnectCallback != null)
-                            {
-                                _autoReconnectCallback(response2);
-                            }
+
+                            _autoReconnectCallback?.Invoke(response2);
 
                             // Next Update loop will handle the re-authenticate request/response
                             return;
@@ -1352,10 +1353,7 @@ namespace BrainCloud.Internal
                         _isAuthenticated = false;
                         SessionID = "";
 
-                        if (_clientRef.LoggingEnabled)
-                        {
-                            _clientRef.Log("Received session expired or not found, need to re-authenticate");
-                        }
+                        logToClient("Received session expired or not found, need to re-authenticate");
 
                         // cache error if session related
                         _cachedStatusCode = statusCode;
@@ -1373,10 +1371,7 @@ namespace BrainCloud.Internal
                         {
                             _isAuthenticated = false;
                             SessionID = "";
-                            if (_clientRef.LoggingEnabled)
-                            {
-                                _clientRef.Log("Could not communicate with the server on logout due to network timeout");
-                            }
+                            logToClient("Could not communicate with the server on logout due to network timeout");
                         }
                     }
 
@@ -1389,10 +1384,7 @@ namespace BrainCloud.Internal
                         }
                         catch (Exception e)
                         {
-                            if (_clientRef.LoggingEnabled)
-                            {
-                                _clientRef.Log(e.StackTrace);
-                            }
+                            logToClient(e.StackTrace);
                             exceptions.Add(e);
                         }
                     }
@@ -1426,10 +1418,7 @@ namespace BrainCloud.Internal
                 }
                 catch (Exception e)
                 {
-                    if (_clientRef.LoggingEnabled)
-                    {
-                        _clientRef.Log(e.StackTrace);
-                    }
+                    logToClient(e.StackTrace);
                     exceptions.Add(e);
                 }
             }
@@ -1910,8 +1899,8 @@ namespace BrainCloud.Internal
                 requestState.TimeSent = DateTime.Now;
                 ResetIdleTimer();
                 TimeSpan packetTimeout = GetPacketTimeout(requestState);
-                //_ is a discard feature for C# however the request will still await.
-                _ = InternalSendMessageAsync(req, requestState, packetTimeout);
+
+                _ = InternalSendMessageAsync(req, requestState, packetTimeout); // _ is a discard feature for C# however the request will still await
 #endif
                 requestState.RequestString = jsonRequestString;
                 requestState.TimeSent = DateTime.Now;
@@ -1961,11 +1950,11 @@ namespace BrainCloud.Internal
         /// <param name="requestState">Request state.</param>
         private bool ResendMessage(RequestState requestState)
         {
-            if (_activeRequest.Retries >= GetMaxRetriesForPacket(requestState))
+            if (requestState.Retries >= GetMaxRetriesForPacket(requestState))
             {
                 return false;
             }
-            ++_activeRequest.Retries;
+            ++requestState.Retries;
             InternalSendMessage(requestState);
             return true;
         }
@@ -1983,24 +1972,29 @@ namespace BrainCloud.Internal
             // should always return status pending no matter what the real status is
             if (requestState.LoseThisPacket)
             {
-                return status;
+                return status; // STATUS_PENDING
             }
 #if USE_WEB_REQUEST
-            if (!string.IsNullOrWhiteSpace(_activeRequest.WebRequest.error))
+            if (!string.IsNullOrWhiteSpace(requestState.WebRequest.error))
             {
                 status = RequestState.eWebRequestStatus.STATUS_ERROR;
             }
-
-            else if (_activeRequest.WebRequest.downloadHandler.isDone)
+            else if (requestState.WebRequest.downloadHandler.isDone)
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
-            else if (_activeRequest.WebRequest.isDone)
+            else if (requestState.WebRequest.isDone)
             {
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
 #elif DOT_NET || GODOT
-            status = _activeRequest.DotNetRequestStatus;
+            //if (_result != null)
+            //{
+            //    ProcessHttpResult(_result, requestState);
+            //    _result = null;
+            //}
+
+            status = requestState.DotNetRequestStatus;
 #endif
             return status;
         }
@@ -2300,7 +2294,7 @@ namespace BrainCloud.Internal
             if (_activeRequest != null)
             {
                 var activeRequest = _activeRequest;
-                if (bypassTimeout || DateTime.Now.Subtract(_activeRequest.TimeSent) >= GetPacketTimeout(activeRequest))
+                if (bypassTimeout || DateTime.Now.Subtract(activeRequest.TimeSent) >= GetPacketTimeout(activeRequest))
                 {
                     if (_clientRef.LoggingEnabled)
                     {
@@ -2405,13 +2399,12 @@ namespace BrainCloud.Internal
             }
             return inProgress;
         }
-    
-#if (DOT_NET || GODOT)
+
+#if DOT_NET || GODOT
         private async Task<HttpResult> SendAsync(HttpRequestMessage request, TimeSpan timeout, CancellationToken externalToken = default)
         {
             using var timeoutCts = new CancellationTokenSource(timeout);
-            using var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(
-                timeoutCts.Token, externalToken);
+            using var linkedCts  = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, externalToken);
 
             try
             {
@@ -2429,21 +2422,23 @@ namespace BrainCloud.Internal
                 }
                 else
                 {
-                    var byteArray           = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var byteArray = await content.ReadAsByteArrayAsync().ConfigureAwait(false);
                     var decompressedByteArray = IsGzip(byteArray) ? Decompress(byteArray) : byteArray;
-                    responseString          = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
+                    responseString = Encoding.UTF8.GetString(decompressedByteArray, 0, decompressedByteArray.Length);
                 }
 
                 if (!response.IsSuccessStatusCode)
+                {
                     return HttpResult.HttpError(response.StatusCode, responseString);
+                }
 
                 return HttpResult.Success(responseString, response.StatusCode);
             }
             catch (TaskCanceledException)
             {
                 return timeoutCts.IsCancellationRequested
-                    ? HttpResult.Timeout()
-                    : HttpResult.Cancelled();
+                     ? HttpResult.Timeout()
+                     : HttpResult.Cancelled();
             }
             catch (HttpRequestException ex)
             {
@@ -2461,6 +2456,7 @@ namespace BrainCloud.Internal
             {
                 ResetIdleTimer();
                 HandleResponseBundle(result.Content);
+                requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_DONE;
                 _activeRequest = null;
                 return;
             }
@@ -2516,8 +2512,8 @@ namespace BrainCloud.Internal
 
         private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
         {
-            HttpResult result = await SendAsync(req, timeout);
-            ProcessHttpResult(result, requestState);
+            _result = await SendAsync(req, timeout);
+            ProcessHttpResult(_result, requestState);
         }
 #endif
     }
