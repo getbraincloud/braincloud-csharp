@@ -79,6 +79,13 @@ namespace BrainCloud.Internal
             get { return m_dotNetRequestStatus; }
             set { m_dotNetRequestStatus = value; }
         }
+
+        private volatile HttpResult m_requestResult = null;
+        internal HttpResult RequestResult
+        {
+            get { return m_requestResult; }
+            set { m_requestResult = value; }
+        }
 #endif
         public List<object> MessageList { get; set; }
 

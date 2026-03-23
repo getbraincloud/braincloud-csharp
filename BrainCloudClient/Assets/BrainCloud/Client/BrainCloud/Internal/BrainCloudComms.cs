@@ -219,7 +219,6 @@ namespace BrainCloud.Internal
 
 #if DOT_NET || GODOT
         private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
-        private volatile HttpResult _requestResult = null;
 #endif
 
         // For handling local session errors
@@ -596,7 +595,7 @@ namespace BrainCloud.Internal
                     // or else, do nothing with the error right now - let the timeout code handle it
                     bypassTimeout = activeRequest.Retries >= GetMaxRetriesForPacket(activeRequest);
 #if DOT_NET || GODOT
-                    _requestResult = null;
+                    activeRequest.RequestResult = null;
 #endif
                 }
 #if USE_WEB_REQUEST
@@ -632,7 +631,7 @@ namespace BrainCloud.Internal
                     }
                 }
 #elif DOT_NET || GODOT
-                else if (_requestResult != null)
+                else if (activeRequest.RequestResult != null)
                 {
                     // HttpStatusCode.OK
                     if ((int)activeRequest.WebRequest.StatusCode == 200)
@@ -646,7 +645,7 @@ namespace BrainCloud.Internal
                              (int)activeRequest.WebRequest.StatusCode == 502 ||
                              (int)activeRequest.WebRequest.StatusCode == 504)
                     {
-                        _requestResult = null;
+                        activeRequest.RequestResult = null;
 
                         // Packet in progress
                         _clientRef.Log("Packet in progress");
@@ -664,7 +663,7 @@ namespace BrainCloud.Internal
                         }
                     }
 
-                    _requestResult = null;
+                    activeRequest.RequestResult = null;
                 }
 #endif
             }
@@ -1998,9 +1997,9 @@ namespace BrainCloud.Internal
                 status = RequestState.eWebRequestStatus.STATUS_DONE;
             }
 #elif DOT_NET || GODOT
-            if (_requestResult != null)
+            if (requestState.RequestResult != null)
             {
-                ProcessHttpResult(_requestResult, requestState);
+                ProcessHttpResult(requestState.RequestResult, requestState);
             }
 
             status = requestState.DotNetRequestStatus;
@@ -2330,7 +2329,7 @@ namespace BrainCloud.Internal
                         DisposeUploadHandler();
                         _activeRequest = null;
 #if DOT_NET || GODOT
-                        _requestResult = null;
+                        activeRequest.RequestResult = null;
 #endif
 
                         // if we're doing caching of messages on timeout, kick it in now!
@@ -2466,7 +2465,7 @@ namespace BrainCloud.Internal
 
         private async Task InternalSendMessageAsync(HttpRequestMessage req, RequestState requestState, TimeSpan timeout)
         {
-            _requestResult = await SendAsync(req, requestState, timeout);
+            requestState.RequestResult = await SendAsync(req, requestState, timeout);
         }
 
         private void ProcessHttpResult(HttpResult result, RequestState requestState)
@@ -2492,17 +2491,17 @@ namespace BrainCloud.Internal
                 case HttpFailureType.Timeout:
                     logToClient("Request timed out (client-side timeout).");
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    return;
+                    break;
 
                 case HttpFailureType.Cancelled:
                     logToClient("Request was cancelled.");
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    return;
+                    break;
 
                 case HttpFailureType.NetworkError:
                     logToClient("Network error: " + result.ErrorMessage);
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    return;
+                    break;
 
                 case HttpFailureType.HttpError:
                     int statusCode = result.StatusCode.HasValue ? (int)result.StatusCode.Value : 0;
@@ -2511,16 +2510,16 @@ namespace BrainCloud.Internal
                     {
                         logToClient("Server temporarily unavailable, retrying...");
                         requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_PENDING;
-                        return;
+                        break;
                     }
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    return;
+                    break;
 
                 case HttpFailureType.Unknown:
                 default:
                     logToClient("Unknown error: " + result.ErrorMessage);
                     requestState.DotNetRequestStatus = RequestState.eWebRequestStatus.STATUS_ERROR;
-                    return;
+                    break;
             }
         }
 #endif
@@ -2615,7 +2614,7 @@ namespace BrainCloud.Internal
         {
             packetId = id;
             events = string.Empty;
-            responses = null;
+            responses = new string[0];
         }
 
         internal JsonResponseBundleV2(string jsonData)
@@ -2629,7 +2628,7 @@ namespace BrainCloud.Internal
             }
 
             this.events = !string.IsNullOrWhiteSpace(events) ? $"{{\"events\":[{events}]}}" : string.Empty;
-            this.responses = responses != null && responses.Length > 0 ? responses : null;
+            this.responses = responses != null && responses.Length > 0 ? responses : new string[0];
         }
     }
 
