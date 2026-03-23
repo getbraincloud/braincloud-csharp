@@ -4,19 +4,16 @@
 //----------------------------------------------------
 
 #if ((UNITY_5_3_OR_NEWER) && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
-#define USE_WEB_REQUEST //Comment out to force use of old WWW class on Unity 5.3+
+#define USE_WEB_REQUEST // Comment out to force use of old WWW class on Unity 5.3+
 #endif
 
 namespace BrainCloud.Internal
 {
     using System;
     using System.Collections.Generic;
-
-#if (DOT_NET || GODOT)
-    using System.Net;
+#if DOT_NET || GODOT
     using System.Net.Http;
     using System.Threading;
-    using System.Threading.Tasks;
 #else
 #if USE_WEB_REQUEST
 #if UNITY_5_3
@@ -55,42 +52,41 @@ namespace BrainCloud.Internal
 
         public int Retries { get; set; }
 
-        // we process the signature on the background thread
-        public string Signature { get; set; }
+        public string Signature { get; set; } // We process the signature on the background thread
 
-        // we also process the byte array on the background thread
-        public byte[] ByteArray { get; set; }
+        public byte[] ByteArray { get; set; } // We also process the byte array on the background thread
+
+        public string RequestString { get; set; }
 
 #if !(DOT_NET || GODOT)
 #if USE_WEB_REQUEST
         public UnityWebRequest WebRequest { get; set; }
 #else
-        // unity uses WWW objects to make http calls cross platform
-        public WWW WebRequest { get; set; }
+        public WWW WebRequest { get; set; } // Unity uses WWW objects to make HTTP calls cross-platform
 #endif
-#else
-        // while .net projects can use the WebRequest Object
-        public IAsyncResult AsyncResult { get; set; }
-
-        public bool IsCancelled { get; private set; }
-        public Task<HttpResponseMessage> WebRequest { get; set; }
 #endif
-
-        public string RequestString { get; set; }
 
 #if DOT_NET || GODOT
+        public bool IsCancelled { get; private set; }
+        public HttpResponseMessage WebRequest { get; set; }
         public CancellationTokenSource CancelToken { get; set; }
 
         public string DotNetResponseString { get; set; }
 
-        private eWebRequestStatus m_dotNetRequestStatus = eWebRequestStatus.STATUS_PENDING;
+        private volatile eWebRequestStatus m_dotNetRequestStatus = eWebRequestStatus.STATUS_PENDING;
         internal eWebRequestStatus DotNetRequestStatus
         {
             get { return m_dotNetRequestStatus; }
             set { m_dotNetRequestStatus = value; }
         }
-#endif
 
+        private volatile HttpResult m_requestResult = null;
+        internal HttpResult RequestResult
+        {
+            get { return m_requestResult; }
+            set { m_requestResult = value; }
+        }
+#endif
         public List<object> MessageList { get; set; }
 
         public bool LoseThisPacket { get; set; }
@@ -109,35 +105,34 @@ namespace BrainCloud.Internal
             try
             {
 #if DOT_NET || GODOT
-                // kill the task - we've timed out
+                // Kill the task - we've timed out
                 IsCancelled = true;
                 if (WebRequest != null)
                 {
                     CancelToken.Cancel();
                 }
-#else
-                CleanupRequest();
 #endif
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
+
+            CleanupRequest();
         }
 
         private void CleanupRequest()
         {
-#if USE_WEB_REQUEST
-            if (WebRequest == null) return;
+            if (WebRequest == null)
+            {
+                return;
+            }
+#if USE_WEB_REQUEST || DOT_NET || GODOT
             WebRequest.Dispose();
 #else
-
-            /* disposing of the www class causes unity editor to lock up
+            /* Disposing of the www class causes unity editor to lock up
             if (WebRequest != null)
             {
-                WebRequest.Dispose();
+                WebRequest.Dispose(); // TODO: We should test to see how this fairs if we Dispose in the .exe instead of the Editor
             }*/
 #endif
-
             WebRequest = null;
         }
     }
