@@ -201,7 +201,7 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(ids.authenticationSubType))
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+                data[OperationParam.IdentityServiceExternalAuthName.Value] = ids.authenticationSubType;
             }
 
             if (extraJson != null)
@@ -250,7 +250,7 @@ namespace BrainCloud
 
             if (Util.IsOptionalParameterValid(ids.authenticationSubType))
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+                data[OperationParam.IdentityServiceExternalAuthName.Value] = ids.authenticationSubType;
             }
 
             if (extraJson != null)
@@ -303,7 +303,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
-            data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
+            data[OperationParam.IdentityServiceContinueAnon.Value] = continueAnon;
             
             if(extraJson != null)
             {
@@ -2400,7 +2400,7 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
-            data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
+            data[OperationParam.IdentityServiceContinueAnon.Value] = continueAnon;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);

@@ -505,5 +505,262 @@ namespace BrainCloud
             ServerCall sc = new ServerCall(ServiceName.Tournament, ServiceOperation.ViewReward, data, callback);
             _client.SendRequest(sc);
         }
+        
+        /// <summary>
+        /// Post the users score to the leaderboard and returns the results
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - POST_GROUP_TOURNAMENT_SCORE_WITH_RESULTS
+        /// </remarks>
+        /// <param name="leaderboardId">The leaderboard for the tournament</param>
+        /// <param name="score">The score to post</param>
+        /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+        /// <param name="roundStartTimeUTC">Uses UTC time in milliseconds since epoch</param>
+        /// <param name="sort">Sort key Sort order of page.</param>
+        /// <param name="beforeCount">The count of number of players before the current player to include.</param>
+        /// <param name="afterCount">The count of number of players after the current player to include.</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament.Usually 0, unless leaderboard is LOW_VALUE</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void PostGroupTournamentScoreWithResults(
+             string leaderboardId,
+             string groupId,
+             long score,
+             string jsonData,
+             ulong roundStartTimeUTC,
+             BrainCloudSocialLeaderboard.SortOrder sort,
+             int beforeCount,
+             int afterCount,
+             long initialScore,
+             SuccessCallback success = null,
+             FailureCallback failure = null,
+             object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.SocialLeaderboardServiceLeaderboardId.Value] = leaderboardId;
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.Score.Value] = score;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartTimeUTC;
+            data[OperationParam.InitialScore.Value] = initialScore;
+            data[OperationParam.SocialLeaderboardServiceSort.Value] = sort.ToString();
+            data[OperationParam.SocialLeaderboardServiceBeforeCount.Value] = beforeCount;
+            data[OperationParam.SocialLeaderboardServiceAfterCount.Value] = afterCount;
+            
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.Data.Value] = scoreData;
+            }
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.PostGroupTournamentScoreWithResults, data, callback));
+        }
+        
+        /// <summary>
+        /// Get the status of a group division
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_GROUP_DIVISION_INFO
+        /// </remarks>
+        /// <param name="divSetId">The id for the division</param>
+        /// <param name="groupId">The group id</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void GetGroupDivisionInfo(
+            string divSetId, 
+            string groupId, 
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.DivSetId.Value] = divSetId;
+            data[OperationParam.GroupId.Value] = groupId;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.GetGroupDivisionInfo, data, callback));
+        }
+        
+         /// <summary>
+         /// Returns list of groups recently active divisions
+         /// </summary>
+         /// <remarks>
+         /// Service Name - tournament
+         /// Service Operation - GET_GROUP_DIVISIONS
+         /// </remarks>
+         ///
+         /// <param name="groupId">The group id</param>
+         /// <param name="success">The success callback.</param>
+         /// <param name="failure">The failure callback.</param>
+         /// <param name="cbObject">The user object sent to the callback.</param>
+         public void GetGroupDivisions(string groupId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.GroupId.Value] = groupId;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.GetGroupDivisions, data, callback));
+        }
+
+        /// <summary>
+        /// Get group tournament status associated with a leaderboard
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - GET_GROUP_TOURNAMENT_STATUS
+        /// </remarks>
+        /// <param name="leaderboardId">The leaderboard associated with the tournament.</param>
+        /// <param name="groupId">The unique identifier of the group.</param>
+        /// <param name="versionId">The version of the tournament. Use -1 for the latest version.</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+        public void GetGroupTournamentStatus(string leaderboardId, string groupId, int versionId = -1, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.VersionId.Value] = versionId;
+
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.GetGroupTournamentStatus, data, callback));
+        }
+        
+        /// <summary>
+        /// Join the specified group division.
+        /// If joining requires a fee, it is possible to fail at joining the division
+        /// </summary>
+        /// <remarks>
+        /// Service Name - tournament
+        /// Service Operation - JOIN_GROUP_DIVISION
+        /// </remarks>
+        /// <param name="divSetId">The id for the division</param>
+        /// <param name="tournamentCode">Tournament to join</param>
+        /// <param name="groupId">The group id</param>
+        /// <param name="initialScore">The initial score for players first joining a tournament</param>
+        /// <param name="success">The success callback.</param>
+        /// <param name="failure">The failure callback.</param>
+        /// <param name="cbObject">The user object sent to the callback.</param>
+         
+        public void JoinGroupDivision(string divSetId, string tournamentCode, string groupId, long initialScore, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.DivSetId.Value] = divSetId;
+            data[OperationParam.TournamentCode.Value] = tournamentCode;
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.InitialScore.Value] = initialScore;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.JoinGroupDivision, data, callback));
+        }
+        
+         /// <summary>
+         /// Join the specified group tournament.
+         /// Any entry fees will be automatically collected.
+         /// </summary>
+         /// <remarks>
+         /// Service Name - tournament
+         /// Service Operation - JOIN_GROUP_TOURNAMENT
+         /// </remarks>
+         /// <param name="leaderboardId">The leaderboard for the tournament</param>
+         /// <param name="tournamentCode">Tournament to join</param>
+         /// <param name="groupId">The group Id</param>
+         /// <param name="initialScore">The initial score for players first joining a tournament, Usually 0, unless leaderboard is LOW_VALUE</param>
+         /// <param name="success">The success callback.</param>
+         /// <param name="failure">The failure callback.</param>
+         /// <param name="cbObject">The user object sent to the callback.</param>
+        public void JoinGroupTournament(string leaderboardId, string tournamentCode, string groupId, long initialScore, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.TournamentCode.Value] = tournamentCode;
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.InitialScore.Value] = initialScore;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.JoinGroupTournament, data, callback));
+        }
+         
+         /// <summary>
+         /// Removes player from group division instance
+         /// Also removes group division instance from player's division list
+         /// </summary>
+         /// <remarks>
+         /// Service Name - tournament
+         /// Service Operation - LEAVE_GROUP_DIVISION_INSTANCE
+         /// </remarks>
+         /// <param name="leaderboardId">The leaderboard for the tournament</param>
+         /// <param name="groupId">The group id</param>
+         /// <param name="success">The success callback.</param>
+         /// <param name="failure">The failure callback.</param>
+         /// <param name="cbObject">The user object sent to the callback.</param>
+        public void LeaveGroupDivisionInstance(string leaderboardId, string groupId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.GroupId.Value] = groupId;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.LeaveGroupDivisionInstance, data, callback));
+        }
+        
+        /**
+         * Removes player's score from group tournament leaderboard
+         *
+         * Service Name - tournament
+         * Service Operation - LEAVE_GROUP_TOURNAMENT
+         *
+         * <param name="leaderboardId">The leaderboard for the tournament</param>
+         * <param name="groupId">The group id</param>
+         * <param name="success">The success callback.</param>
+         * <param name="failure">The failure callback.</param>
+         * <param name="cbObject">The user object sent to the callback.</param>
+         */
+        public void LeaveGroupTournament(string leaderboardId, string groupId, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.GroupId.Value] = groupId;
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.LeaveGroupTournament, data, callback));
+        }
+         
+         /// <summary>
+         /// Post the users score to the group leaderboard - UTC time
+         /// </summary>
+         /// <remarks>
+         /// Service Name - tournament
+         /// Service Operation - POST_GROUP_TOURNAMENT_SCORE
+         /// </remarks>
+         ///
+         /// <param name="leaderboardId">The leaderboard for the tournament</param>
+         /// <param name="groupId">The group id</param>
+         /// <param name="score">The score to post</param>
+         /// <param name="jsonData">Optional data attached to the leaderboard entry</param>
+         /// <param name="roundStartedTimeUTC">Time the user started the match resulting in the score being posted in UTC. Use UTC time in milliseconds since epoch</param>
+         /// <param name="success">The success callback.</param>
+         /// <param name="failure">The failure callback.</param>
+         /// <param name="cbObject">The user object sent to the callback.</param> 
+        public void PostGroupTournamentScore(string leaderboardId, string groupId, long score, string jsonData, ulong roundStartedTimeUTC, SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            var data = new Dictionary<string, object>();
+            data[OperationParam.LeaderboardId.Value] = leaderboardId;
+            data[OperationParam.GroupId.Value] = groupId;
+            data[OperationParam.Score.Value] = score;
+            data[OperationParam.RoundStartedEpoch.Value] = roundStartedTimeUTC;
+            if (Util.IsOptionalParameterValid(jsonData))
+            {
+                Dictionary<string, object> scoreData = JsonReader.Deserialize<Dictionary<string, object>>(jsonData);
+                data[OperationParam.Data.Value] = scoreData;
+            }
+            
+            var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            _client.SendRequest(new ServerCall(ServiceName.Tournament, ServiceOperation.PostGroupTournamentScore, data, callback));
+        }
     }
 }
