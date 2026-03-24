@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*---------------------------------------------------------------------------------*\
 
@@ -31,10 +30,9 @@
 
 namespace BrainCloud
 {
-
-using System;
-using System.Reflection;
-using System.Xml.Serialization;
+    using System;
+    using System.Reflection;
+    using System.Xml.Serialization;
 
     namespace JsonFx.Json
     {

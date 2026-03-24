@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * IWebSocketSession.cs
@@ -29,10 +28,8 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server
 {
-
-    using System;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-
+  using System;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
 
   /// <summary>
   /// Exposes the access to the information in a WebSocket session.

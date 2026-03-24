@@ -1,21 +1,19 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BrainCloud.JsonFx.Json;
+    using BrainCloud.Internal;
 
 #if !(DOT_NET || GODOT)
-using UnityEngine.SocialPlatforms;
-using UnityEngine;
+    using UnityEngine.SocialPlatforms;
+    using UnityEngine;
 #endif
 
     public class BrainCloudGamification

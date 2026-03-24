@@ -1,17 +1,16 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.TestTools;
+
 using BrainCloud;
 using BrainCloud.JsonFx.Json;
-using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TestTools;
+
 namespace Tests.PlayMode
 {
     public class TestRelay : TestFixtureBase
     {
-
         private RelayConnectOptions connectOptions;
         private RelayConnectionType connectionType = RelayConnectionType.INVALID; // Change this to try different connection type
         private bool bSendWrongNetId;

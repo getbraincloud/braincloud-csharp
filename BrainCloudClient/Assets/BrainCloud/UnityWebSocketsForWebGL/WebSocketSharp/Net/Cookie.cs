@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * Cookie.cs
@@ -44,10 +43,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Globalization;
-using System.Text;
+  using System;
+  using System.Globalization;
+  using System.Text;
 
   /// <summary>
   /// Provides a set of methods and properties used to manage an HTTP cookie.

@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * AuthenticationResponse.cs
@@ -33,13 +32,11 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Collections.Specialized;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
-
+  using System;
+  using System.Collections.Specialized;
+  using System.Security.Cryptography;
+  using System.Security.Principal;
+  using System.Text;
 
   internal class AuthenticationResponse : AuthenticationBase
   {

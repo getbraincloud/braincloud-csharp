@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 using System;
@@ -2084,10 +2083,10 @@ public class BrainCloudWrapper
         return GetStoredProfileId() != String.Empty && GetStoredAnonymousId() != String.Empty;
     }
 
-    public void EnableLongSession(bool enabled)
+    public void EnableAutoReconnect(bool enabled)
     {
         InitializeIdentity(true);
-        Client.Comms.EnableLongSession(enabled);
+        Client.Comms.EnableAutoReconnect(enabled);
     }
 
     /// <summary>

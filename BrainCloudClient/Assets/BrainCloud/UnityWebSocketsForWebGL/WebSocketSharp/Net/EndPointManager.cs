@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * EndPointManager.cs
@@ -47,12 +46,10 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Net;
 
   internal sealed class EndPointManager
   {

@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 using System;
@@ -11,8 +10,7 @@ using System.Text;
 
 namespace BrainCloud.Entity.Internal
 {
-// Similar to ListWrapper but for a Dictionary.
-//
+    // Similar to ListWrapper but for a Dictionary.
     internal class DictionaryWrapper<TValue, SValue> : IDictionary<string, TValue>
     {
         IDictionary<string, SValue> m_sourceDictionary;

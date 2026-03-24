@@ -1,5 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
-using System;
 namespace BrainCloud
 {
     namespace ModernHttpClient

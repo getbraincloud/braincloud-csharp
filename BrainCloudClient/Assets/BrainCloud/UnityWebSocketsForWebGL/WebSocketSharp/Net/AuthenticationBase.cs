@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * AuthenticationBase.cs
@@ -29,11 +28,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Collections.Specialized;
-using System.Text;
-
+  using System;
+  using System.Collections.Specialized;
+  using System.Text;
 
   internal abstract class AuthenticationBase
   {

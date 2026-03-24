@@ -1,12 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud.JsonFx.Json;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BrainCloud.JsonFx.Json;
-using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace Tests.PlayMode
 {
@@ -107,7 +106,8 @@ namespace Tests.PlayMode
         /// </summary>
         private void LoadIds()
         {
-            pathToIds = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\ids.txt";
+            pathToIds = Path.Combine(Application.dataPath, "tests", "ids.txt");
+            pathToIds = pathToIds.Replace("/BrainCloudClient/Assets", "/BrainCloudClient");
             using (var reader = new StreamReader(pathToIds))
             {
                 string line;

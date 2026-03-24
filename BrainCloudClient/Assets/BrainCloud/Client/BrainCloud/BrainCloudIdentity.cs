@@ -1,16 +1,14 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
-
-using System.Collections.Generic;
-using BrainCloud.Internal;
-using BrainCloud.Common;
-using System;
+    using System.Collections.Generic;
+    using BrainCloud.Internal;
+    using BrainCloud.Common;
+    using System;
 
     public class BrainCloudIdentity
     {
@@ -203,7 +201,7 @@ using System;
 
             if (Util.IsOptionalParameterValid(ids.authenticationSubType))
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+                data[OperationParam.IdentityServiceExternalAuthName.Value] = ids.authenticationSubType;
             }
 
             if (extraJson != null)
@@ -252,7 +250,7 @@ using System;
 
             if (Util.IsOptionalParameterValid(ids.authenticationSubType))
             {
-                data[OperationParam.AuthenticateServiceAuthenticateExternalId.Value] = ids.authenticationSubType;
+                data[OperationParam.IdentityServiceExternalAuthName.Value] = ids.authenticationSubType;
             }
 
             if (extraJson != null)
@@ -305,7 +303,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
-            data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
+            data[OperationParam.IdentityServiceContinueAnon.Value] = continueAnon;
             
             if(extraJson != null)
             {
@@ -2402,7 +2400,7 @@ using System;
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.IdentityServiceExternalId.Value] = externalId;
             data[OperationParam.IdentityServiceAuthenticationType.Value] = authenticationType.ToString();
-            data[OperationParam.IdentityServiceConfirmAnonymous.Value] = continueAnon;
+            data[OperationParam.IdentityServiceContinueAnon.Value] = continueAnon;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.Identity, ServiceOperation.Detach, data, callback);

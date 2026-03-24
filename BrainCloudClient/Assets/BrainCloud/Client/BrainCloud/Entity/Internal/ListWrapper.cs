@@ -1,7 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 using System;
@@ -11,11 +10,11 @@ using System.Text;
 
 namespace BrainCloud.Entity.Internal
 {
-// T is type user expects
-// S is underlying list type
-// so for ListWrapper<int, object>...
-// the underyling list is a list of type object (S) and
-// all operations on the wrapper should return list items of type int (T)
+    // T is type user expects
+    // S is underlying list type
+    // so for ListWrapper<int, object>...
+    // the underyling list is a list of type object (S) and
+    // all operations on the wrapper should return list items of type int (T)
     internal class ListWrapper<T, S> : IList<T>
     {
         IList<S> m_sourceList;

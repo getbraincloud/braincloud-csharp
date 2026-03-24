@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpConnection.cs
@@ -49,15 +48,14 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Net;
+  using System.Net.Security;
+  using System.Net.Sockets;
+  using System.Text;
+  using System.Threading;
 
   internal sealed class HttpConnection
   {

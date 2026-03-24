@@ -1,16 +1,14 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
 
 namespace BrainCloud
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-              
     public static class TimeUtil
     {
         /// <summary>

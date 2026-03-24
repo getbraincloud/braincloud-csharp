@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * LogData.cs
@@ -29,11 +28,9 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Diagnostics;
-using System.Text;
-
+  using System;
+  using System.Diagnostics;
+  using System.Text;
 
   /// <summary>
   /// Represents a log data used by the <see cref="Logger"/> class.

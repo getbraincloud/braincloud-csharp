@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpListenerRequest.cs
@@ -41,14 +40,13 @@
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
 
-    using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Globalization;
+  using System.IO;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Text;
 
   /// <summary>
   /// Represents an incoming request to a <see cref="HttpListener"/> instance.

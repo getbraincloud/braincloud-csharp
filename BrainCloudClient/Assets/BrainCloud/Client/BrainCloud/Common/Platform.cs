@@ -4,8 +4,13 @@
 //----------------------------------------------------
 
 using System.Collections.Generic;
+
 #if XAMARIN
-    using Xamarin.Essentials;
+using Xamarin.Forms;
+#endif
+
+#if GODOT
+using Godot;
 #endif
 
 namespace BrainCloud.Common
@@ -164,6 +169,63 @@ namespace BrainCloud.Common
         }
 #endif
 
+#if GODOT
+	public static Platform GodotFromRuntime()
+	{
+		Platform platform = Platform.Unknown;
+		switch(OS.GetName())
+		{
+			case "Windows":
+				platform = Platform.Windows;
+				break;
+			case "macOS":
+				platform = Platform.Mac;
+				break;
+			case "Linux":
+				platform = Platform.Linux;
+				break;
+			case "Android":
+				platform = Platform.GooglePlayAndroid;
+				break;
+			case "iOS":
+				platform = Platform.iOS;
+				break;
+			case "Web":
+				platform = Platform.Web;
+				break;
+		}
+		return platform;
+	}
+#endif
+
+#if XAMARIN
+
+    public static Platform FromRuntime()
+    {
+        Platform platform = Platform.Unknown;
+        try
+        {
+            switch (Device.RuntimePlatform)
+            {
+                case Device.iOS:
+                    platform = Platform.iOS;
+                    break;
+                case Device.macOS:
+                    platform = Platform.Mac;
+                    break;
+                case Device.Android:
+                    platform = Platform.GooglePlayAndroid;
+                    break;
+                case Device.WPF:
+                    platform = Platform.Windows;
+                    break;
+            }
+        }
+        catch{}
+
+        return platform;
+    }
+#endif
         #region Overrides and Operators
 
         public readonly override bool Equals(object obj)

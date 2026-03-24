@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * HttpBasicIdentity.cs
@@ -40,10 +39,8 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
 {
-
-    using System;
-using System.Security.Principal;
-
+  using System;
+  using System.Security.Principal;
 
   /// <summary>
   /// Holds the username and password from an HTTP Basic authentication attempt.

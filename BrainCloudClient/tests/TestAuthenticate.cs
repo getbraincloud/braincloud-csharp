@@ -1,11 +1,11 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud;
+using BrainCloud.Common;
 using NUnit.Core;
 using NUnit.Framework;
-using BrainCloud;
-using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
-using BrainCloud.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BrainCloudTests
 {
@@ -26,19 +26,19 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateSpam()
         {
-            // //our problem is that users who find they can't log in, will retry over and over until they have success. They do not change their credentials while doing this.
-            // //This threatens our servers, because huge numbers of errors related to the profileId not matching the anonymousId show up, as the user continues to have this retry.
-            // //Our goal is to stop this by checking to see if the call being made was an authentication call, then seeing if the attempted parameters for the authenticate were the
-            // //same. If they were, we know they're simply retrying, and retrying, and we can send a client error saying that the credentials have already been retried.
+            // our problem is that users who find they can't log in, will retry over and over until they have success. They do not change their credentials while doing this.
+            // This threatens our servers, because huge numbers of errors related to the profileId not matching the anonymousId show up, as the user continues to have this retry.
+            // Our goal is to stop this by checking to see if the call being made was an authentication call, then seeing if the attempted parameters for the authenticate were the
+            // same. If they were, we know they're simply retrying, and retrying, and we can send a client error saying that the credentials have already been retried.
 
             //start test by initializing an anonymous Id and profileID
             string anonId = _bc.Client.AuthenticationService.GenerateAnonymousId();
             _bc.Client.AuthenticationService.Initialize("randomProfileId", anonId);
 
-            //in this test I purposefully fail 4 times so that 3 identical call will have been made after the first
-            //I then allow a fifth call to show that whenever a call is made it will simply hit the client with a fake response.
-            //Then I freeze the test in a while loop for 30 seconds to wait out the comms timer.
-            //then I call authenticate again and you will notice that a call will be made to the server and everything reset.
+            // in this test I purposefully fail 4 times so that 3 identical call will have been made after the first
+            // I then allow a fifth call to show that whenever a call is made it will simply hit the client with a fake response.
+            // Then I freeze the test in a while loop for 30 seconds to wait out the comms timer.
+            // then I call authenticate again and you will notice that a call will be made to the server and everything reset.
             TestResult tr = new TestResult(_bc);
             _bc.Client.AuthenticationService.AuthenticateAnonymous(
                 anonId,

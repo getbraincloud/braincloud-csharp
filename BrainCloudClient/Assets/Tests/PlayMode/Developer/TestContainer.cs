@@ -191,11 +191,6 @@ public class TestContainer : MonoBehaviour
     {
         Debug.Log("Response Received");
         m_response = bcWrapper.Client.DeserializeJson(json);
-        if (m_response == null)
-        {
-            Debug.Log("Attempting different deserialization....");
-            m_response = JsonReader.Deserialize<Dictionary<string, object>>(json);
-        }
         m_result = true;
         --m_apiCountExpected;
         successCount++;

@@ -1,13 +1,10 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
-
 //----------------------------------------------------
-
 
 // Silly class to fool unity into NOT stripping
 // conversion classes required by JsonFx
-
 
 #if !DOT_NET || GODOT
 namespace BrainCloud.Internal

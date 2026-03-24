@@ -1,4 +1,3 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 #region License
 /*
  * Ext.cs
@@ -48,19 +47,17 @@
 
 namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp
 {
-
-    using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.IO.Compression;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
-using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
-
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.IO;
+  using System.IO.Compression;
+  using System.Net.Sockets;
+  using System.Security.Cryptography.X509Certificates;
+  using System.Text;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net.WebSockets;
+  using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Server;
 
   /// <summary>
   /// Provides a set of static methods for websocket-sharp.

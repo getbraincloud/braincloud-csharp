@@ -1,9 +1,9 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud.JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
-using BrainCloud;
 using System.Collections.Generic;
-using BrainCloud.JsonFx.Json;
 
 namespace BrainCloudTests
 {
@@ -138,23 +138,23 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            _bc.PlayerStateService.UpdateName(
+            _bc.PlayerStateService.UpdateUserName(
                 "ABC",
                 tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
 
-        
+
         [Test]
         public void TestUpdateSummaryFriendData()
         {
             TestResult tr = new TestResult(_bc);
-            
+
             _bc.PlayerStateService.UpdateSummaryFriendData(
                 "{\"field\":\"value\"}",
                 tr.ApiSuccess, tr.ApiError);
-            
+
             tr.Run();
         }
 
