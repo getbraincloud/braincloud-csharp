@@ -81,8 +81,8 @@ namespace BrainCloud
         // Authenticate Service - Authenticate Params
         public static readonly OperationParam IdentityServiceExternalId = new("externalId");
         public static readonly OperationParam IdentityServiceAuthenticationType = new("authenticationType");
-        public static readonly OperationParam IdentityServiceConfirmAnonymous = new("confirmAnonymous");
-        
+        public static readonly OperationParam IdentityServiceExternalAuthName = new("externalAuthName");
+        public static readonly OperationParam IdentityServiceContinueAnon = new("continueAnon");
         public static readonly OperationParam IdentityServiceOldEmailAddress = new("oldEmailAddress");
         public static readonly OperationParam IdentityServiceNewEmailAddress = new("newEmailAddress");
         public static readonly OperationParam IdentityServiceUpdateContactEmail = new("updateContactEmail");
