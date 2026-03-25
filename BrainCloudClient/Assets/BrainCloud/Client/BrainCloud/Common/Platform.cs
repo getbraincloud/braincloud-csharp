@@ -94,7 +94,6 @@ namespace BrainCloud.Common
             return Unknown;
 #else
             // First deal with Platforms that have no defines
-
             // 5.0 and later
 #if !UNITY_4_6 && !UNITY_2018_3_OR_NEWER
             if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
@@ -105,18 +104,25 @@ namespace BrainCloud.Common
             // Otherwise we rely on the Unity compile flag to denote Platform
 #if UNITY_STANDALONE_WIN
             return Windows;
-#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS || UNITY_IPHONE || UNITY_TVOS || UNITY_VISIONOS
+            var platform = UnityEngine.Device.Application.platform;
+            if (platform == UnityEngine.RuntimePlatform.IPhonePlayer)
+            {
+                return iOS;
+            }
+            else if (platform == UnityEngine.RuntimePlatform.tvOS)
+            {
+                return AppleTVOS;
+            }
+            else if (platform == UnityEngine.RuntimePlatform.VisionOS)
+            {
+                return VisionOS;
+            }
             return Mac;
 #elif UNITY_STANDALONE_LINUX
             return Linux;
 #elif UNITY_WEBPLAYER || UNITY_WEBGL
             return Web;
-#elif UNITY_IOS || UNITY_IPHONE
-            return iOS;
-#elif UNITY_TVOS
-            return AppleTVOS;
-#elif UNITY_VISIONOS
-            return VisionOS;
 #elif UNITY_ANDROID
             string check = UnityEngine.SystemInfo.deviceModel.ToLower();
             if (check.Contains("amazon"))
