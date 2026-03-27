@@ -2622,7 +2622,7 @@ namespace BrainCloud.Internal
             JsonParser.GetJsonResponseBundleV2(jsonData, out string packetId, out string events, out string[] responses);
 
             this.packetId = long.TryParse(packetId, out long result) ? result : NO_PACKET_EXPECTED;
-            if (this.packetId < 0)
+            if (this.packetId < NO_PACKET_EXPECTED)
             {
                 throw new Exception($"packetId is not a valid value! packetId: {this.packetId}");
             }
