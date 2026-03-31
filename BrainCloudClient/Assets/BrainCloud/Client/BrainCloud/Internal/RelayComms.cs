@@ -293,7 +293,8 @@ namespace BrainCloud.Internal
 
         public string GetCxIdForNetId(short netId)
         {
-            return m_netIdToCxId[(int)netId];
+            m_netIdToCxId.TryGetValue((int)netId, out string cxId);
+            return cxId;
         }
 
         public short GetNetIdForCxId(string cxId)
