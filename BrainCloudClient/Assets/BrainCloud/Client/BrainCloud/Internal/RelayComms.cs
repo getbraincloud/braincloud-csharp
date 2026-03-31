@@ -101,7 +101,7 @@ namespace BrainCloud.Internal
                 // now connect
                 startReceivingRSConnectionAsync();
             }
-            else if(!m_clientRef.IsAuthenticated())
+            else if (!m_clientRef.IsAuthenticated())
             {
                 if (m_clientRef.LoggingEnabled)
                 {
@@ -130,7 +130,7 @@ namespace BrainCloud.Internal
                 m_queuedForDisconnect = true;
             }
         }
-        
+
         /// <summary>
         /// Terminate the match instance by the owner.
         /// </summary>
@@ -347,13 +347,13 @@ namespace BrainCloud.Internal
                     foreach (var kv in m_reliables)
                     {
                         UDPPacket packet = kv.Value;
-                        if ((packet.TimeSinceFirstSend - nowMS).Milliseconds > 10000)
+                        if ((nowMS - packet.TimeSinceFirstSend).TotalMilliseconds > 10000)
                         {
                             disconnect();
                             queueErrorEvent("Relay disconnected, too many packet lost");
                             break;
                         }
-                        if ((packet.LastTimeSent - nowMS).Milliseconds > packet.TimeInterval)
+                        if ((nowMS - packet.LastTimeSent).TotalMilliseconds > packet.TimeInterval)
                         {
                             packet.UpdateTimeIntervalSent();
                             send(packet.RawData);
@@ -364,7 +364,7 @@ namespace BrainCloud.Internal
 
             // Check if we timeout
             if (m_connectionType == RelayConnectionType.UDP &&
-                (nowMS - m_lastRecvTime).Milliseconds > 10000)
+                (nowMS - m_lastRecvTime).TotalMilliseconds > 10000)
             {
                 disconnect();
                 queueErrorEvent("Relay Socket Timeout");
@@ -379,7 +379,7 @@ namespace BrainCloud.Internal
                     eventsCopy = m_events;
                     m_events = new List<Event>();
                 }
-                
+
                 for (int j = 0; j < eventsCopy.Count; ++j)
                 {
                     Event evt = eventsCopy[j];
@@ -414,7 +414,7 @@ namespace BrainCloud.Internal
                             break;
                         case EventType.ConnectFailure:
                             //When End Match is requested, then the server will close the connection
-                            if (m_connectionFailureCallback != null && 
+                            if (m_connectionFailureCallback != null &&
                                 !m_endMatchRequested)
                             {
                                 eventsCopy.Clear();
@@ -521,28 +521,29 @@ namespace BrainCloud.Internal
 
             m_queuedForDisconnect = false;
 
-            if (!m_endMatchRequested)
+            if (m_webSocket != null)
             {
-                if (m_webSocket != null) m_webSocket.Close();
+                m_webSocket.OnClose -= WebSocket_OnClose;
+                m_webSocket.OnOpen -= Websocket_OnOpen;
+                m_webSocket.OnMessage -= WebSocket_OnMessage;
+                m_webSocket.OnError -= WebSocket_OnError;
+                m_webSocket.Close();
                 m_webSocket = null;
-
-                if (m_tcpStream != null)
-                {
-                    m_tcpStream.Dispose();
-                }
-                m_tcpStream = null;
-
-                if (m_tcpClient != null)
-                {
-                    m_tcpClient.Client.Close(0);
-                    m_tcpClient.Close();
-                    fToSend.Clear();
-                }
-                m_tcpClient = null;
-
-                if (m_udpClient != null) m_udpClient.Close();
-                m_udpClient = null;
             }
+
+            m_tcpStream?.Dispose();
+            m_tcpStream = null;
+
+            if (m_tcpClient != null)
+            {
+                m_tcpClient.Client.Close(0);
+                m_tcpClient.Close();
+                fToSend.Clear();
+            }
+            m_tcpClient = null;
+
+            m_udpClient?.Close();
+            m_udpClient = null;
 
             // cleanup UDP stuff
             m_sendPacketId.Clear();
@@ -687,9 +688,9 @@ namespace BrainCloud.Internal
                 }
                 else
                 {
-                    m_clientRef.Log("Relay: Connection closed: " + reason);    
+                    m_clientRef.Log("Relay: Connection closed: " + reason);
                 }
-                
+
             }
             queueErrorEvent(reason);
         }
@@ -860,11 +861,11 @@ namespace BrainCloud.Internal
                         break;
                     }
                 case "END_MATCH":
-                {
-                    m_endMatchRequested = true;
-                    disconnect();
-                    break;
-                }
+                    {
+                        m_endMatchRequested = true;
+                        disconnect();
+                        break;
+                    }
             }
 
             queueSystemEvent(jsonMessage);
@@ -1139,7 +1140,7 @@ namespace BrainCloud.Internal
                     string host = m_connectOptions.host;
                     int port = m_connectOptions.port;
                     IPEndPoint source = new IPEndPoint(IPAddress.Parse(host), port);
-                    
+
                     if (udpClient != null)
                     {
                         // get the actual message and fill out the source:
@@ -1152,6 +1153,8 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
+                // Suppress errors from a socket we intentionally closed (disconnect/end-match).
+                if (!m_bIsConnected) return;
                 queueErrorEvent(e.ToString());
             }
         }
@@ -1187,7 +1190,7 @@ namespace BrainCloud.Internal
             {
                 if (m_tcpStream != null)
                 {
-                    m_tcpStream.EndWrite(result);    
+                    m_tcpStream.EndWrite(result);
                 }
                 lock (fLock)
                 {
@@ -1200,13 +1203,15 @@ namespace BrainCloud.Internal
                         if (fToSend.Count > 0)
                         {
                             byte[] final = fToSend.Peek();
-                            m_tcpStream.BeginWrite(final, 0, final.Length, tcpFinishWrite, null);    
+                            m_tcpStream.BeginWrite(final, 0, final.Length, tcpFinishWrite, null);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
+                // Suppress errors from a socket we intentionally closed (disconnect/end-match).
+                if (!m_bIsConnected) return;
                 queueErrorEvent(e.ToString());
             }
         }
@@ -1222,6 +1227,8 @@ namespace BrainCloud.Internal
                 }
                 if (read == 0)
                 {
+                    // Suppress "server closed" if we already disconnected (end-match / voluntary close).
+                    if (!m_bIsConnected) return;
                     queueErrorEvent("Server Closed Connection");
                     return;
                 }
@@ -1232,7 +1239,7 @@ namespace BrainCloud.Internal
                     if (BitConverter.IsLittleEndian)
                         Array.Reverse(m_tcpHeaderReadBuffer);
 
-                    // from the header that was read, how much should we read after this until the next message ? 
+                    // from the header that was read, how much should we read after this until the next message ?
                     m_tcpBytesToRead = BitConverter.ToInt16(m_tcpHeaderReadBuffer, 0);
                     m_tcpBytesToRead -= SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY;
 
@@ -1241,6 +1248,8 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
+                // Suppress errors from a socket we intentionally closed (disconnect/end-match).
+                if (!m_bIsConnected) return;
                 queueErrorEvent(e.ToString());
             }
         }
@@ -1253,6 +1262,8 @@ namespace BrainCloud.Internal
                 int read = m_tcpStream.EndRead(result);
                 if (read == 0)
                 {
+                    // Suppress "server closed" if we already disconnected (end-match / voluntary close).
+                    if (!m_bIsConnected) return;
                     queueErrorEvent("Server Closed Connection");
                     return;
                 }
@@ -1263,7 +1274,7 @@ namespace BrainCloud.Internal
                 {
                     //if (m_clientRef.LoggingEnabled)
                     //{
-                        //m_clientRef.Log("m_tcpBytesRead < m_tcpBuffer.Length " + m_tcpBytesRead + " " + m_tcpBytesToRead);
+                    //m_clientRef.Log("m_tcpBytesRead < m_tcpBuffer.Length " + m_tcpBytesRead + " " + m_tcpBytesToRead);
                     //}
                     m_tcpStream.BeginRead(m_tcpReadBuffer, m_tcpBytesRead, m_tcpBytesToRead - m_tcpBytesRead, onTCPFinishRead, null);
                     return;
@@ -1625,13 +1636,13 @@ namespace BrainCloud.Internal
             public int Id { get; private set; }
             public byte NetId { get; private set; }
         }
-#endregion
+        #endregion
     }
 }
 
 namespace BrainCloud
 {
-#region public enums
+    #region public enums
     public enum RelayConnectionType
     {
         INVALID,
@@ -1641,6 +1652,6 @@ namespace BrainCloud
 
         MAX
     }
-#endregion
+    #endregion
 
 }
