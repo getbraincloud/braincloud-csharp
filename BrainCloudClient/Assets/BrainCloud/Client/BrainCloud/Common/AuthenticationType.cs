@@ -84,9 +84,6 @@ namespace BrainCloud.Common
             if (GetType() != other.GetType())
                 return false;
 
-            if (ReferenceEquals(this, other))
-                return true;
-
             return value == other.value;
         }
 
@@ -94,9 +91,6 @@ namespace BrainCloud.Common
         {
             if (GetType() != other.GetType())
                 return 1;
-
-            if (ReferenceEquals(this, other))
-                return 0;
 
             return value.CompareTo(other.value);
         }
