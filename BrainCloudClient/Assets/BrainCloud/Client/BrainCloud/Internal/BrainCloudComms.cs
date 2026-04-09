@@ -325,7 +325,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// A list of packet timeouts. Index represents the packet attempt number.
         /// </summary>
-        private List<int> _packetTimeouts = new() { 15, 20, 35, 50 };
+        private List<int> _packetTimeouts = new List<int>() { 15, 20, 35, 50 };
         public List<int> PacketTimeouts
         {
             get
@@ -384,7 +384,7 @@ namespace BrainCloud.Internal
         }
 
         // Json Serialization
-        private JsonWriterSettings _writerSettings = new(); // Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
+        private JsonWriterSettings _writerSettings = new JsonWriterSettings(); // Used to adjust settings such as maxdepth while serializing. A new JsonWriterSettings does not need to be created everytime we serialize.
         private StringBuilder _stringBuilderOutput;         // String builder necessary for writing serialized json to a string. Unity complains when this is instantiated at compilation.
         private readonly string JSON_ERROR_MESSAGE = "You have exceeded the max json depth, increase the MaxDepth using the MaxDepth variable in BrainCloudClient.cs";
 
@@ -1073,8 +1073,8 @@ namespace BrainCloud.Internal
                 operation = string.Empty;
                 responseData = string.Empty;
 
-                int statusCode = JsonParser.GetValue<int>(response, "status") is int code && code > 0 ? code
-                                                                                                      : StatusCodes.BAD_REQUEST;
+                int statusCode = JsonParser.GetValue<int>(response, "status") is int sCode && sCode > 0 ? sCode
+                                                                                                        : StatusCodes.BAD_REQUEST;
 
                 /*
                  * It's important to note here that a user error callback *might* call
@@ -1593,7 +1593,7 @@ namespace BrainCloud.Internal
                     requestState = new RequestState();
 
                     // prepare json data for server
-                    List<object> messageList = new();
+                    List<object> messageList = new List<object>();
                     bool isAuth = false;
 
                     ServerCall scIndex;
@@ -2246,7 +2246,7 @@ namespace BrainCloud.Internal
             byte[] hash = md5.ComputeHash(inputBytes);
 #endif
 
-            StringBuilder sb = new();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hash.Length; i++)
             {
                 sb.Append(hash[i].ToString("X2"));
@@ -2605,7 +2605,7 @@ namespace BrainCloud.Internal
 
         public bool IsEmpty => packetId == EMPTY_RESPONSE_BUNDLE;
 
-        public static JsonResponseBundleV2 CreateEmpty() => new(EMPTY_RESPONSE_BUNDLE);
+        public static JsonResponseBundleV2 CreateEmpty() => new JsonResponseBundleV2(EMPTY_RESPONSE_BUNDLE);
 
         public static string GetErrorJson(int status, int reason_code, string status_message)
             => JsonParser.GetJsonErrorMessage(status, reason_code, status_message);
@@ -2657,7 +2657,7 @@ namespace BrainCloud.Common
             bool splitToResponses = false;
             bool skipValue = false;
 
-            sbHelper.Clear();
+            SBHelper.Clear();
 
             for (int i = 1; i < jsonData.Length; i++)
             {
@@ -2668,14 +2668,14 @@ namespace BrainCloud.Common
                     insideProperty = !insideProperty;
                     if (insideProperty)
                     {
-                        sbHelper.Clear();
+                        SBHelper.Clear();
                     }
                 }
                 else if (insideProperty)
                 {
-                    sbHelper.Append(current);
+                    SBHelper.Append(current);
                 }
-                else if (!insideProperty && sbHelper.Length > 0)
+                else if (!insideProperty && SBHelper.Length > 0)
                 {
                     if (skipValue)
                     {
@@ -2683,20 +2683,20 @@ namespace BrainCloud.Common
                     }
                     else
                     {
-                        switch (sbHelper.ToString())
+                        switch (SBHelper.ToString())
                         {
                             case "packetId":
-                                sbHelper.Clear();
+                                SBHelper.Clear();
                                 while (jsonData[i + 1] != ',')
                                 {
                                     current = jsonData[++i];
-                                    sbHelper.Append(current);
+                                    SBHelper.Append(current);
                                 }
-                                packetId = sbHelper.ToString().Trim();
+                                packetId = SBHelper.ToString().Trim();
                                 break;
                             case "responses":
                                 splitToResponses = true;
-                                splitArrays.Clear();
+                                SplitArrays.Clear();
                                 break;
                             case "events":
                                 splitToResponses = false;
@@ -2719,7 +2719,7 @@ namespace BrainCloud.Common
                         }
                     }
 
-                    sbHelper.Clear();
+                    SBHelper.Clear();
                 }
                 else if (current == '{' || current == '[')
                 {
@@ -2743,7 +2743,7 @@ namespace BrainCloud.Common
                                     int len = i - start;
                                     if (len > 0)
                                     {
-                                        splitArrays.Add(jsonData.Substring(start, len).Trim());
+                                        SplitArrays.Add(jsonData.Substring(start, len).Trim());
                                     }
                                 }
                                 goto default;
@@ -2751,7 +2751,7 @@ namespace BrainCloud.Common
                                 if (level == 1 && splitToResponses)
                                 {
                                     int len = i - start;
-                                    splitArrays.Add(jsonData.Substring(start, len).Trim());
+                                    SplitArrays.Add(jsonData.Substring(start, len).Trim());
                                     start = i + 1;
                                     continue;
                                 }
@@ -2762,7 +2762,7 @@ namespace BrainCloud.Common
                                     while (i < jsonData.Length)
                                     {
                                         current = jsonData[i];
-                                        sbHelper.Append(current);
+                                        SBHelper.Append(current);
 
                                         if (jsonData[++i] == '"' && current != '\\')
                                         {
@@ -2777,7 +2777,7 @@ namespace BrainCloud.Common
                             default:
                                 if (level != 0)
                                 {
-                                    sbHelper.Append(current);
+                                    SBHelper.Append(current);
                                 }
                                 continue;
                         }
@@ -2789,32 +2789,32 @@ namespace BrainCloud.Common
                     }
                     else if (splitToResponses)
                     {
-                        responses = splitArrays.Count > 0 ? splitArrays.ToArray() : null;
+                        responses = SplitArrays.Count > 0 ? SplitArrays.ToArray() : null;
                     }
                     else
                     {
-                        events = sbHelper.ToString();
+                        events = SBHelper.ToString();
                     }
 
-                    sbHelper.Clear();
+                    SBHelper.Clear();
                 }
             }
         }
 
         internal static string GetJsonResponseErrorBundleV2(long packetId, string[] responses)
         {
-            sbHelper.Clear();
+            SBHelper.Clear();
 
             for (int i = 0; i < responses.Length;)
             {
-                sbHelper.Append(responses[i]);
+                SBHelper.Append(responses[i]);
                 if (++i < responses.Length)
                 {
-                    sbHelper.Append(',');
+                    SBHelper.Append(',');
                 }
             }
 
-            return $"{{\"packetId\":{packetId},\"responses\":[{sbHelper}]}}";
+            return $"{{\"packetId\":{packetId},\"responses\":[{SBHelper}]}}";
         }
 
         internal static string GetJsonErrorMessage(int status, int reason_code, string status_message)

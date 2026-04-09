@@ -15,36 +15,36 @@ using Godot;
 
 namespace BrainCloud.Common
 {
-    public readonly struct Platform : System.IEquatable<Platform>, System.IComparable<Platform>
+    public readonly struct Platform : System.IEquatable<Platform>, System.IComparable, System.IComparable<Platform>
     {
         #region brainCloud Platforms
 
-        public static readonly Platform Unknown           = new("UNKNOWN");
-        public static readonly Platform Amazon            = new("AMAZON");
-        public static readonly Platform AppleTVOS         = new("APPLE_TV_OS");
-        public static readonly Platform BlackBerry        = new("BB");
-        public static readonly Platform Facebook          = new("FB");
-        public static readonly Platform GooglePlayAndroid = new("ANG");
-        public static readonly Platform iOS               = new("IOS");
-        public static readonly Platform Linux             = new("LINUX");
-        public static readonly Platform Mac               = new("MAC");
-        public static readonly Platform Nintendo          = new("NINTENDO");
-        public static readonly Platform Oculus            = new("OCULUS");
-        public static readonly Platform PS3               = new("PS3");
-        public static readonly Platform PS4               = new("PS4");
-        public static readonly Platform PSVita            = new("PS_VITA");
-        public static readonly Platform Roku              = new("ROKU");
-        public static readonly Platform Tizen             = new("TIZEN");
-        public static readonly Platform VisionOS          = new("VISION_OS");
-        public static readonly Platform WatchOS           = new("WATCH_OS");
-        public static readonly Platform Web               = new("WEB");
-        public static readonly Platform Wii               = new("WII");
-        public static readonly Platform Windows           = new("WINDOWS");
-        public static readonly Platform WindowsPhone      = new("WINP");
-        public static readonly Platform Xbox360           = new("XBOX_360");
-        public static readonly Platform XboxOne           = new("XBOX_ONE");
+        public static readonly Platform Unknown           = new Platform("UNKNOWN");
+        public static readonly Platform Amazon            = new Platform("AMAZON");
+        public static readonly Platform AppleTVOS         = new Platform("APPLE_TV_OS");
+        public static readonly Platform BlackBerry        = new Platform("BB");
+        public static readonly Platform Facebook          = new Platform("FB");
+        public static readonly Platform GooglePlayAndroid = new Platform("ANG");
+        public static readonly Platform iOS               = new Platform("IOS");
+        public static readonly Platform Linux             = new Platform("LINUX");
+        public static readonly Platform Mac               = new Platform("MAC");
+        public static readonly Platform Nintendo          = new Platform("NINTENDO");
+        public static readonly Platform Oculus            = new Platform("OCULUS");
+        public static readonly Platform PS3               = new Platform("PS3");
+        public static readonly Platform PS4               = new Platform("PS4");
+        public static readonly Platform PSVita            = new Platform("PS_VITA");
+        public static readonly Platform Roku              = new Platform("ROKU");
+        public static readonly Platform Tizen             = new Platform("TIZEN");
+        public static readonly Platform VisionOS          = new Platform("VISION_OS");
+        public static readonly Platform WatchOS           = new Platform("WATCH_OS");
+        public static readonly Platform Web               = new Platform("WEB");
+        public static readonly Platform Wii               = new Platform("WII");
+        public static readonly Platform Windows           = new Platform("WINDOWS");
+        public static readonly Platform WindowsPhone      = new Platform("WINP");
+        public static readonly Platform Xbox360           = new Platform("XBOX_360");
+        public static readonly Platform XboxOne           = new Platform("XBOX_ONE");
 
-        private static readonly Dictionary<string, Platform> _platformsForString = new()
+        private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>()
         {
             { Unknown.value,           Unknown           },
             { Amazon.value,            Amazon            },
@@ -165,7 +165,7 @@ namespace BrainCloud.Common
 #endif
 
 #if GODOT
-        public static Platform GodotFromRuntime()
+	public static Platform GodotFromRuntime()
         {
             Platform platform = Unknown;
             switch(OS.GetName())
@@ -228,33 +228,34 @@ namespace BrainCloud.Common
 
         #region Overrides and Operators
 
-        public readonly override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is not Platform s)
-                return false;
-
-            return Equals(s);
+            return obj is Platform other && Equals(other);
         }
 
-        public readonly bool Equals(Platform other)
+        public bool Equals(Platform other)
         {
-            if (GetType() != other.GetType())
-                return false;
-
             return value == other.value;
         }
 
-        public readonly int CompareTo(Platform other)
+        public int CompareTo(object obj)
         {
-            if (GetType() != other.GetType())
-                return 1;
+            if (obj is Platform other)
+            {
+                return CompareTo(other);
+            }
 
+            return 1;
+        }
+
+        public int CompareTo(Platform other)
+        {
             return value.CompareTo(other.value);
         }
 
-        public readonly override int GetHashCode() => value.GetHashCode();
+        public override int GetHashCode() => value.GetHashCode();
 
-        public readonly override string ToString() => value;
+        public override string ToString() => value;
 
         public static implicit operator string(Platform v) => v.value;
 
