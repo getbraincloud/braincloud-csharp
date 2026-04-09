@@ -165,7 +165,7 @@ namespace BrainCloud.Common
 #endif
 
 #if GODOT
-	    public static Platform GodotFromRuntime()
+        public static Platform GodotFromRuntime()
         {
             Platform platform = Unknown;
             switch(OS.GetName())
