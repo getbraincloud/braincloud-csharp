@@ -3,6 +3,8 @@
 // brainCloud client source code
 //----------------------------------------------------
 
+//#define JSON_COMPATIBILITY_FLAG // Uncomment this if you're using a Json serializer that is having trouble with stripping out trailing .0s for number values
+
 #if (UNITY_5_3_OR_NEWER && !UNITY_WEBPLAYER && (!UNITY_IOS || ENABLE_IL2CPP)) || UNITY_2018_3_OR_NEWER
 #define USE_WEB_REQUEST // Comment out to force use of old WWW class on Unity 5.3+
 using BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp;
@@ -998,6 +1000,14 @@ namespace BrainCloud.Internal
         /// <param name="jsonData">The received message bundle.</param>
         private void HandleResponseBundle(string jsonData)
         {
+#if JSON_COMPATIBILITY_FLAG
+            jsonData = jsonData.Trim();
+            if ((jsonData.StartsWith("{") && jsonData.EndsWith("}")) ||
+                (jsonData.StartsWith("[") && jsonData.EndsWith("]")))
+            {
+                jsonData = SerializeJson(JsonReader.Deserialize(jsonData)); // This will strip any leading .0 for int values, replicating the behaviour from 5.9.2 and older
+            }
+#endif
             void logToClient(string log)
             {
                 if (_clientRef.LoggingEnabled)
@@ -1721,7 +1731,7 @@ namespace BrainCloud.Internal
 
         internal string SerializeJson(object payload)
         {
-            //Unity doesn't like when we create a new StringBuilder outside of this method.
+            // Unity doesn't like when we create a new StringBuilder outside of this method.
             _stringBuilderOutput = new StringBuilder();
             using (JsonWriter writer = new JsonWriter(_stringBuilderOutput, _writerSettings))
             {
