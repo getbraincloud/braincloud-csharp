@@ -436,8 +436,8 @@ namespace BrainCloud
             /// <param name="property">The name of the property you want within the Json string's highest hierarchy layer.</param>
             /// <returns>
             /// The value for the property name if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note�</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
-            /// <br><b>Note�</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            /// <br><b>Note1</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note2</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
             ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, string property) where T : struct, IConvertible
@@ -477,8 +477,8 @@ namespace BrainCloud
             /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The value for the property name at the end of the hierarchy if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note�</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
-            /// <br><b>Note�</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            /// <br><b>Note1</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note2</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
             ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, params string[] hierarchy) where T : struct, IConvertible
