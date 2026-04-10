@@ -49,10 +49,7 @@ namespace BrainCloudTests
                     tr.ApiSuccess, tr.ApiError);
                 if (RunSilent(tr))
                 {
-                    var response = tr.m_response["data"] as Dictionary<string, object>;
-                    var props = response != null && response.ContainsKey("response")
-                        ? response["response"] as Dictionary<string, object>
-                        : null;
+                    var props = tr.m_response["data"] as Dictionary<string, object>;
                     foreach (string name in new[] { "prop1", "prop2", "prop3" })
                     {
                         if (props == null || !props.ContainsKey(name))
@@ -142,8 +139,8 @@ namespace BrainCloudTests
                 if (RunSilent(tr))
                 {
                     var data = tr.m_response["data"] as Dictionary<string, object>;
-                    var currency = data != null && data.ContainsKey("currency")
-                        ? data["currency"] as Dictionary<string, object>
+                    var currency = data != null && data.ContainsKey("currencyMap")
+                        ? data["currencyMap"] as Dictionary<string, object>
                         : null;
                     if (currency == null || !currency.ContainsKey("credits"))
                         missing.Add("virtual currency type: credits");
