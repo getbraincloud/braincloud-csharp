@@ -47,13 +47,36 @@ namespace BrainCloudTests
 
             if (ShouldAuthenticate())
             {
-                TestResult tr = new TestResult(_bc);
-                _bc.Client.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id,
-                    GetUser(Users.UserA).Password,
-                    true,
-                    tr.ApiSuccess, tr.ApiError);
-                tr.Run();
+                // Retry up to 3 times. The SDK's auth timeout starts at 15 s and advances to
+                // 30 s then 60 s on each failure (_listAuthPacketTimeouts), so subsequent
+                // attempts automatically get more time. Total ceiling: 15+30+60 = 105 s.
+                // This handles occasional CI server slowness that exceeds the 15 s first attempt.
+                Exception lastException = null;
+                bool authenticated = false;
+                for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
+                {
+                    TestResult tr = new TestResult(_bc);
+                    _bc.Client.AuthenticationService.AuthenticateUniversal(
+                        GetUser(Users.UserA).Id,
+                        GetUser(Users.UserA).Password,
+                        true,
+                        tr.ApiSuccess, tr.ApiError);
+                    try
+                    {
+                        tr.Run();
+                        authenticated = true;
+                    }
+                    catch (Exception e)
+                    {
+                        lastException = e;
+                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
+                                          (attempt < 2 ? "retrying..." : "giving up."));
+                    }
+                }
+                if (!authenticated)
+                {
+                    throw lastException;
+                }
             }
         }
 
