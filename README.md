@@ -28,7 +28,10 @@ Here are a few handy links to get you started:
 
 ## Unity Installation Guide
 
-**Coming from our Unity BootCamp?** The video originally showed you a table that linked to the Releases page to download the library's `.unitypackage` file. You can still do so by clicking [Releases](https://github.com/getbraincloud/braincloud-csharp/releases) here or on the sidebar, but you can also install the brainCloud Client Library using Unity's Package Manager. Continue reading along to find out how!
+> [!IMPORTANT]
+> **Coming from our Unity BootCamp?**
+> 
+> The video originally showed you a table that linked to the Releases page to download the library's `.unitypackage` file. You can still do so by clicking [Releases](https://github.com/getbraincloud/braincloud-csharp/releases) here or on the sidebar, but you now also install the brainCloud Client Library even more easily by using Unity's Package Manager. Continue reading along to find out how!
 
 There are two methods to install the brainCloud library for your Unity project:
 
@@ -175,9 +178,9 @@ OR
 2. Edit `BrainCloudComms` directly (`BrainCloud > Client > BrainCloud > Internal > BrainCloudComms.cs`) to uncomment the commented out define for `JSON_COMPATIBILITY_FLAG` on line 6.
     - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overritten. Changes like this also won't be able to be committed to Git.
 
-Doing this will remove some of the memory and CPU improvements due to introducing old behaviour where Json values were consequently being normalized. The tradeoff is that your Json strings should now be coming through `SuccessCallback` and `FailureCallback` and being processed by your custom deserializers as expected before version 5.9.3.
+Doing this will remove some of the memory and CPU improvements due to reintroducing old behaviour where Json values were consequently being normalized. The tradeoff is that your Json strings should now be coming through `SuccessCallback` and `FailureCallback` and being processed by your custom deserializers as expected before version 5.9.3.
 
-**If you're still having issues then log into the brainCloud Portal and either ask brainBot for help or give us a shout through our internal help system (The blue "Ask Support" button on the top-right, next to your profile icon)!**
+**If you're still having issues then log into the brainCloud Portal and give us a shout through our internal help system (The blue "Ask Support" button on the top-right, next to your profile icon)!**
 
 ---
 
