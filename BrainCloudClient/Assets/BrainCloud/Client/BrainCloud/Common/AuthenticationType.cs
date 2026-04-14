@@ -7,33 +7,33 @@ using System.Collections.Generic;
 
 namespace BrainCloud.Common
 {
-    public readonly struct AuthenticationType : System.IEquatable<AuthenticationType>, System.IComparable<AuthenticationType>
+    public readonly struct AuthenticationType : System.IEquatable<AuthenticationType>, System.IComparable, System.IComparable<AuthenticationType>
     {
         #region brainCloud Authentication Types
 
-        public static readonly AuthenticationType Anonymous           = new("Anonymous");
-        public static readonly AuthenticationType Universal           = new("Universal");
-        public static readonly AuthenticationType Email               = new("Email");
-        public static readonly AuthenticationType Facebook            = new("Facebook");
-        public static readonly AuthenticationType FacebookLimited     = new("FacebookLimited");
-        public static readonly AuthenticationType Oculus              = new("Oculus");
-        public static readonly AuthenticationType PlaystationNetwork  = new("PlaystationNetwork");
-        public static readonly AuthenticationType PlaystationNetwork5 = new("PlaystationNetwork5");
-        public static readonly AuthenticationType GameCenter          = new("GameCenter");
-        public static readonly AuthenticationType Steam               = new("Steam");
-        public static readonly AuthenticationType Apple               = new("Apple");
-        public static readonly AuthenticationType Google              = new("Google");
-        public static readonly AuthenticationType GoogleOpenId        = new("GoogleOpenId");
-        public static readonly AuthenticationType Twitter             = new("Twitter");
-        public static readonly AuthenticationType Parse               = new("Parse");
-        public static readonly AuthenticationType External            = new("External");
-        public static readonly AuthenticationType Handoff             = new("Handoff");
-        public static readonly AuthenticationType SettopHandoff       = new("SettopHandoff");
-        public static readonly AuthenticationType Ultra               = new("Ultra");
-        public static readonly AuthenticationType Nintendo            = new("Nintendo");
-        public static readonly AuthenticationType Unknown             = new("UNKNOWN");
+        public static readonly AuthenticationType Anonymous           = new AuthenticationType("Anonymous");
+        public static readonly AuthenticationType Universal           = new AuthenticationType("Universal");
+        public static readonly AuthenticationType Email               = new AuthenticationType("Email");
+        public static readonly AuthenticationType Facebook            = new AuthenticationType("Facebook");
+        public static readonly AuthenticationType FacebookLimited     = new AuthenticationType("FacebookLimited");
+        public static readonly AuthenticationType Oculus              = new AuthenticationType("Oculus");
+        public static readonly AuthenticationType PlaystationNetwork  = new AuthenticationType("PlaystationNetwork");
+        public static readonly AuthenticationType PlaystationNetwork5 = new AuthenticationType("PlaystationNetwork5");
+        public static readonly AuthenticationType GameCenter          = new AuthenticationType("GameCenter");
+        public static readonly AuthenticationType Steam               = new AuthenticationType("Steam");
+        public static readonly AuthenticationType Apple               = new AuthenticationType("Apple");
+        public static readonly AuthenticationType Google              = new AuthenticationType("Google");
+        public static readonly AuthenticationType GoogleOpenId        = new AuthenticationType("GoogleOpenId");
+        public static readonly AuthenticationType Twitter             = new AuthenticationType("Twitter");
+        public static readonly AuthenticationType Parse               = new AuthenticationType("Parse");
+        public static readonly AuthenticationType External            = new AuthenticationType("External");
+        public static readonly AuthenticationType Handoff             = new AuthenticationType("Handoff");
+        public static readonly AuthenticationType SettopHandoff       = new AuthenticationType("SettopHandoff");
+        public static readonly AuthenticationType Ultra               = new AuthenticationType("Ultra");
+        public static readonly AuthenticationType Nintendo            = new AuthenticationType("Nintendo");
+        public static readonly AuthenticationType Unknown             = new AuthenticationType("UNKNOWN");
 
-        private static readonly Dictionary<string, AuthenticationType> _typesForString = new()
+        private static readonly Dictionary<string, AuthenticationType> _typesForString = new Dictionary<string, AuthenticationType>()
         {
             { Anonymous.value,          Anonymous          },
             { Universal.value,          Universal          },
@@ -71,39 +71,34 @@ namespace BrainCloud.Common
 
         #region Overrides and Operators
 
-        public readonly override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is not AuthenticationType s)
-                return false;
-
-            return Equals(s);
+            return obj is AuthenticationType other && Equals(other);
         }
 
-        public readonly bool Equals(AuthenticationType other)
+        public bool Equals(AuthenticationType other)
         {
-            if (GetType() != other.GetType())
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
             return value == other.value;
         }
 
-        public readonly int CompareTo(AuthenticationType other)
+        public int CompareTo(object obj)
         {
-            if (GetType() != other.GetType())
-                return 1;
+            if (obj is AuthenticationType other)
+            {
+                return CompareTo(other);
+            }
 
-            if (ReferenceEquals(this, other))
-                return 0;
+            return 1;
+        }
 
+        public int CompareTo(AuthenticationType other)
+        {
             return value.CompareTo(other.value);
         }
 
-        public readonly override int GetHashCode() => value.GetHashCode();
+        public override int GetHashCode() => value.GetHashCode();
 
-        public readonly override string ToString() => value;
+        public override string ToString() => value;
 
         public static implicit operator string(AuthenticationType v) => v.value;
 

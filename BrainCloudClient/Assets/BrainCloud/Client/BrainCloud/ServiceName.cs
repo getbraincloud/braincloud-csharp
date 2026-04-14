@@ -5,57 +5,57 @@
 
 namespace BrainCloud
 {
-    public readonly struct ServiceName : System.IEquatable<ServiceName>, System.IComparable<ServiceName>
+    public readonly struct ServiceName : System.IEquatable<ServiceName>, System.IComparable, System.IComparable<ServiceName>
     {
         #region brainCloud Service Names
 
         // Services
-        public static readonly ServiceName AsyncMatch            = new("asyncMatch");
-        public static readonly ServiceName Authenticate          = new("authenticationV2");
-        public static readonly ServiceName DataStream            = new("dataStream");
-        public static readonly ServiceName Entity                = new("entity");
-        public static readonly ServiceName Event                 = new("event");
-        public static readonly ServiceName File                  = new("file");
-        public static readonly ServiceName Friend                = new("friend");
-        public static readonly ServiceName Gamification          = new("gamification");
-        public static readonly ServiceName GlobalApp             = new("globalApp");
-        public static readonly ServiceName GlobalEntity          = new("globalEntity");
-        public static readonly ServiceName GlobalStatistics      = new("globalGameStatistics");
-        public static readonly ServiceName Group                 = new("group");
-        public static readonly ServiceName HeartBeat             = new("heartbeat");
-        public static readonly ServiceName Identity              = new("identity");
-        public static readonly ServiceName ItemCatalog           = new("itemCatalog");
-        public static readonly ServiceName UserItems             = new("userItems");
-        public static readonly ServiceName Mail                  = new("mail");
-        public static readonly ServiceName MatchMaking           = new("matchMaking");
-        public static readonly ServiceName OneWayMatch           = new("onewayMatch");
-        public static readonly ServiceName PlaybackStream        = new("playbackStream");
-        public static readonly ServiceName PlayerState           = new("playerState");
-        public static readonly ServiceName PlayerStatistics      = new("playerStatistics");
-        public static readonly ServiceName PlayerStatisticsEvent = new("playerStatisticsEvent");
-        public static readonly ServiceName Presence              = new("presence");
-        public static readonly ServiceName Profanity             = new("profanity");
-        public static readonly ServiceName PushNotification      = new("pushNotification");
-        public static readonly ServiceName RedemptionCode        = new("redemptionCode");
-        public static readonly ServiceName S3Handling            = new("s3Handling");
-        public static readonly ServiceName Script                = new("script");
-        public static readonly ServiceName ServerTime            = new("time");
-        public static readonly ServiceName Leaderboard           = new("leaderboard");
-        public static readonly ServiceName Twitter               = new("twitter");
-        public static readonly ServiceName Time                  = new("time");
-        public static readonly ServiceName Tournament            = new("tournament");
-        public static readonly ServiceName GlobalFile            = new("globalFileV3");
-        public static readonly ServiceName CustomEntity          = new("customEntity");
-        public static readonly ServiceName RTTRegistration       = new("rttRegistration");
-        public static readonly ServiceName RTT                   = new("rtt");
-        public static readonly ServiceName Relay                 = new("relay");
-        public static readonly ServiceName Chat                  = new("chat");
-        public static readonly ServiceName Messaging             = new("messaging");
-        public static readonly ServiceName Lobby                 = new("lobby");
-        public static readonly ServiceName VirtualCurrency       = new("virtualCurrency");
-        public static readonly ServiceName AppStore              = new("appStore");
-        public static readonly ServiceName BlockChain            = new("blockchain");
-        public static readonly ServiceName GroupFile             = new("groupFile");
+        public static readonly ServiceName AsyncMatch            = new ServiceName("asyncMatch");
+        public static readonly ServiceName Authenticate          = new ServiceName("authenticationV2");
+        public static readonly ServiceName DataStream            = new ServiceName("dataStream");
+        public static readonly ServiceName Entity                = new ServiceName("entity");
+        public static readonly ServiceName Event                 = new ServiceName("event");
+        public static readonly ServiceName File                  = new ServiceName("file");
+        public static readonly ServiceName Friend                = new ServiceName("friend");
+        public static readonly ServiceName Gamification          = new ServiceName("gamification");
+        public static readonly ServiceName GlobalApp             = new ServiceName("globalApp");
+        public static readonly ServiceName GlobalEntity          = new ServiceName("globalEntity");
+        public static readonly ServiceName GlobalStatistics      = new ServiceName("globalGameStatistics");
+        public static readonly ServiceName Group                 = new ServiceName("group");
+        public static readonly ServiceName HeartBeat             = new ServiceName("heartbeat");
+        public static readonly ServiceName Identity              = new ServiceName("identity");
+        public static readonly ServiceName ItemCatalog           = new ServiceName("itemCatalog");
+        public static readonly ServiceName UserItems             = new ServiceName("userItems");
+        public static readonly ServiceName Mail                  = new ServiceName("mail");
+        public static readonly ServiceName MatchMaking           = new ServiceName("matchMaking");
+        public static readonly ServiceName OneWayMatch           = new ServiceName("onewayMatch");
+        public static readonly ServiceName PlaybackStream        = new ServiceName("playbackStream");
+        public static readonly ServiceName PlayerState           = new ServiceName("playerState");
+        public static readonly ServiceName PlayerStatistics      = new ServiceName("playerStatistics");
+        public static readonly ServiceName PlayerStatisticsEvent = new ServiceName("playerStatisticsEvent");
+        public static readonly ServiceName Presence              = new ServiceName("presence");
+        public static readonly ServiceName Profanity             = new ServiceName("profanity");
+        public static readonly ServiceName PushNotification      = new ServiceName("pushNotification");
+        public static readonly ServiceName RedemptionCode        = new ServiceName("redemptionCode");
+        public static readonly ServiceName S3Handling            = new ServiceName("s3Handling");
+        public static readonly ServiceName Script                = new ServiceName("script");
+        public static readonly ServiceName ServerTime            = new ServiceName("time");
+        public static readonly ServiceName Leaderboard           = new ServiceName("leaderboard");
+        public static readonly ServiceName Twitter               = new ServiceName("twitter");
+        public static readonly ServiceName Time                  = new ServiceName("time");
+        public static readonly ServiceName Tournament            = new ServiceName("tournament");
+        public static readonly ServiceName GlobalFile            = new ServiceName("globalFileV3");
+        public static readonly ServiceName CustomEntity          = new ServiceName("customEntity");
+        public static readonly ServiceName RTTRegistration       = new ServiceName("rttRegistration");
+        public static readonly ServiceName RTT                   = new ServiceName("rtt");
+        public static readonly ServiceName Relay                 = new ServiceName("relay");
+        public static readonly ServiceName Chat                  = new ServiceName("chat");
+        public static readonly ServiceName Messaging             = new ServiceName("messaging");
+        public static readonly ServiceName Lobby                 = new ServiceName("lobby");
+        public static readonly ServiceName VirtualCurrency       = new ServiceName("virtualCurrency");
+        public static readonly ServiceName AppStore              = new ServiceName("appStore");
+        public static readonly ServiceName BlockChain            = new ServiceName("blockchain");
+        public static readonly ServiceName GroupFile             = new ServiceName("groupFile");
 
         #endregion
 
@@ -68,39 +68,34 @@ namespace BrainCloud
 
         #region Overrides and Operators
 
-        public readonly override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is not ServiceName s)
-                return false;
-
-            return Equals(s);
+            return obj is ServiceName other && Equals(other);
         }
 
-        public readonly bool Equals(ServiceName other)
+        public bool Equals(ServiceName other)
         {
-            if (GetType() != other.GetType())
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
             return Value == other.Value;
         }
 
-        public readonly int CompareTo(ServiceName other)
+        public int CompareTo(object obj)
         {
-            if (GetType() != other.GetType())
-                return 1;
+            if (obj is ServiceName other)
+            {
+                return CompareTo(other);
+            }
 
-            if (ReferenceEquals(this, other))
-                return 0;
+            return 1;
+        }
 
+        public int CompareTo(ServiceName other)
+        {
             return Value.CompareTo(other.Value);
         }
 
-        public readonly override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => Value.GetHashCode();
 
-        public readonly override string ToString() => Value;
+        public override string ToString() => Value;
 
         public static implicit operator string(ServiceName v) => v.Value;
 

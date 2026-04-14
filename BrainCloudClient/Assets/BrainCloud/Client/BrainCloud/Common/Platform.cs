@@ -15,59 +15,61 @@ using Godot;
 
 namespace BrainCloud.Common
 {
-    public readonly struct Platform : System.IEquatable<Platform>, System.IComparable<Platform>
+    public readonly struct Platform : System.IEquatable<Platform>, System.IComparable, System.IComparable<Platform>
     {
         #region brainCloud Platforms
 
-        public static readonly Platform Unknown           = new("UNKNOWN");
-        public static readonly Platform AppleTVOS         = new("APPLE_TV_OS");
-        public static readonly Platform BlackBerry        = new("BB");
-        public static readonly Platform Facebook          = new("FB");
-        public static readonly Platform Oculus            = new("OCULUS");
-        public static readonly Platform GooglePlayAndroid = new("ANG");
-        public static readonly Platform iOS               = new("IOS");
-        public static readonly Platform Linux             = new("LINUX");
-        public static readonly Platform Mac               = new("MAC");
-        public static readonly Platform PS3               = new("PS3");
-        public static readonly Platform PS4               = new("PS4");
-        public static readonly Platform PSVita            = new("PS_VITA");
-        public static readonly Platform Roku              = new("ROKU");
-        public static readonly Platform Tizen             = new("TIZEN");
-        public static readonly Platform WatchOS           = new("WATCH_OS");
-        public static readonly Platform Web               = new("WEB");
-        public static readonly Platform Wii               = new("WII");
-        public static readonly Platform WindowsPhone      = new("WINP");
-        public static readonly Platform Windows           = new("WINDOWS");
-        public static readonly Platform Xbox360           = new("XBOX_360");
-        public static readonly Platform XboxOne           = new("XBOX_ONE");
-        public static readonly Platform Amazon            = new("AMAZON");
-        public static readonly Platform Nintendo          = new("NINTENDO");
+        public static readonly Platform Unknown           = new Platform("UNKNOWN");
+        public static readonly Platform Amazon            = new Platform("AMAZON");
+        public static readonly Platform AppleTVOS         = new Platform("APPLE_TV_OS");
+        public static readonly Platform BlackBerry        = new Platform("BB");
+        public static readonly Platform Facebook          = new Platform("FB");
+        public static readonly Platform GooglePlayAndroid = new Platform("ANG");
+        public static readonly Platform iOS               = new Platform("IOS");
+        public static readonly Platform Linux             = new Platform("LINUX");
+        public static readonly Platform Mac               = new Platform("MAC");
+        public static readonly Platform Nintendo          = new Platform("NINTENDO");
+        public static readonly Platform Oculus            = new Platform("OCULUS");
+        public static readonly Platform PS3               = new Platform("PS3");
+        public static readonly Platform PS4               = new Platform("PS4");
+        public static readonly Platform PSVita            = new Platform("PS_VITA");
+        public static readonly Platform Roku              = new Platform("ROKU");
+        public static readonly Platform Tizen             = new Platform("TIZEN");
+        public static readonly Platform VisionOS          = new Platform("VISION_OS");
+        public static readonly Platform WatchOS           = new Platform("WATCH_OS");
+        public static readonly Platform Web               = new Platform("WEB");
+        public static readonly Platform Wii               = new Platform("WII");
+        public static readonly Platform Windows           = new Platform("WINDOWS");
+        public static readonly Platform WindowsPhone      = new Platform("WINP");
+        public static readonly Platform Xbox360           = new Platform("XBOX_360");
+        public static readonly Platform XboxOne           = new Platform("XBOX_ONE");
 
-        private static readonly Dictionary<string, Platform> _platformsForString = new()
+        private static readonly Dictionary<string, Platform> _platformsForString = new Dictionary<string, Platform>()
         {
             { Unknown.value,           Unknown           },
-            { AppleTVOS.value,         AppleTVOS         },
             { Amazon.value,            Amazon            },
+            { AppleTVOS.value,         AppleTVOS         },
             { BlackBerry.value,        BlackBerry        },
             { Facebook.value,          Facebook          },
-            { Oculus.value,            Oculus            },
             { GooglePlayAndroid.value, GooglePlayAndroid },
             { iOS.value,               iOS               },
             { Linux.value,             Linux             },
             { Mac.value,               Mac               },
+            { Nintendo.value,          Nintendo          },
+            { Oculus.value,            Oculus            },
             { PS3.value,               PS3               },
             { PS4.value,               PS4               },
             { PSVita.value,            PSVita            },
             { Roku.value,              Roku              },
             { Tizen.value,             Tizen             },
+            { VisionOS.value,          VisionOS          },
             { WatchOS.value,           WatchOS           },
             { Web.value,               Web               },
             { Wii.value,               Wii               },
-            { WindowsPhone.value,      WindowsPhone      },
             { Windows.value,           Windows           },
+            { WindowsPhone.value,      WindowsPhone      },
             { Xbox360.value,           Xbox360           },
-            { XboxOne.value,           XboxOne           },
-            { Nintendo.value,          Nintendo          }
+            { XboxOne.value,           XboxOne           }
         };
 
         #endregion
@@ -92,7 +94,6 @@ namespace BrainCloud.Common
             return Unknown;
 #else
             // First deal with Platforms that have no defines
-
             // 5.0 and later
 #if !UNITY_4_6 && !UNITY_2018_3_OR_NEWER
             if (UnityEngine.Application.platform == UnityEngine.RuntimePlatform.PSP2)
@@ -103,31 +104,40 @@ namespace BrainCloud.Common
             // Otherwise we rely on the Unity compile flag to denote Platform
 #if UNITY_STANDALONE_WIN
             return Windows;
-#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS || UNITY_IPHONE || UNITY_TVOS || UNITY_VISIONOS
+            var platform = UnityEngine.Device.Application.platform;
+            if (platform == UnityEngine.RuntimePlatform.IPhonePlayer)
+            {
+                return iOS;
+            }
+            else if (platform == UnityEngine.RuntimePlatform.tvOS)
+            {
+                return AppleTVOS;
+            }
+            else if (platform == UnityEngine.RuntimePlatform.VisionOS)
+            {
+                return VisionOS;
+            }
             return Mac;
 #elif UNITY_STANDALONE_LINUX
             return Linux;
 #elif UNITY_WEBPLAYER || UNITY_WEBGL
             return Web;
-#elif UNITY_IOS || UNITY_IPHONE
-            return iOS;
-#elif UNITY_TVOS
-            return AppleTVOS;
 #elif UNITY_ANDROID
             string check = UnityEngine.SystemInfo.deviceModel.ToLower();
-            if (check.Contains("amazon"))
-            {
-                return Amazon;
-            }
+            if (check.Contains("amazon"))
+            {
+                return Amazon;
+            }
             else if (check.Contains("oculus") ||
                      check.Contains("quest"))
             {
                 return Oculus;
             }
-            else
-            {
-                return GooglePlayAndroid;
-            }
+            else
+            {
+                return GooglePlayAndroid;
+            }
 #elif UNITY_WP8 || UNITY_WP8_1
             return WindowsPhone;
 #elif UNITY_WSA
@@ -144,21 +154,6 @@ namespace BrainCloud.Common
             return XboxOne;
 #elif UNITY_TIZEN
             return Tizen;
-#elif XAMARIN
-            string check = DeviceInfo.Manufacturer.ToLower();
-            if (check.Contains("amazon"))
-            {
-                return Amazon;
-            }
-            else if (check.Contains("oculus") ||
-                     check.Contains("quest"))
-            {
-                return Oculus;
-            }
-            else
-            {
-                return GooglePlayAndroid;
-            }
 #elif UNITY_SWITCH
             return Nintendo;
 #else
@@ -170,97 +165,97 @@ namespace BrainCloud.Common
 #endif
 
 #if GODOT
-	public static Platform GodotFromRuntime()
-	{
-		Platform platform = Platform.Unknown;
-		switch(OS.GetName())
-		{
-			case "Windows":
-				platform = Platform.Windows;
-				break;
-			case "macOS":
-				platform = Platform.Mac;
-				break;
-			case "Linux":
-				platform = Platform.Linux;
-				break;
-			case "Android":
-				platform = Platform.GooglePlayAndroid;
-				break;
-			case "iOS":
-				platform = Platform.iOS;
-				break;
-			case "Web":
-				platform = Platform.Web;
-				break;
-		}
-		return platform;
-	}
+        public static Platform GodotFromRuntime()
+        {
+            Platform platform = Unknown;
+            switch(OS.GetName())
+            {
+                case "Windows":
+                    platform = Windows;
+                    break;
+                case "macOS":
+                    platform = Mac;
+                    break;
+                case "Linux":
+                case "FreeBSD":
+                case "NetBSD":
+                case "OpenBSD":
+                case "BSD":
+                    platform = Linux;
+                    break;
+                case "Android":
+                    platform = GooglePlayAndroid;
+                    break;
+                case "iOS":
+                    platform = iOS;
+                    break;
+                case "Web":
+                    platform = Web;
+                    break;
+            }
+
+            return platform;
+        }
 #endif
 
 #if XAMARIN
-
-    public static Platform FromRuntime()
-    {
-        Platform platform = Platform.Unknown;
-        try
+        public static Platform FromRuntime()
         {
-            switch (Device.RuntimePlatform)
+            Platform platform = Unknown;
+            try
             {
-                case Device.iOS:
-                    platform = Platform.iOS;
-                    break;
-                case Device.macOS:
-                    platform = Platform.Mac;
-                    break;
-                case Device.Android:
-                    platform = Platform.GooglePlayAndroid;
-                    break;
-                case Device.WPF:
-                    platform = Platform.Windows;
-                    break;
+                switch (Device.RuntimePlatform)
+                {
+                    case Device.iOS:
+                        platform = iOS;
+                        break;
+                    case Device.macOS:
+                        platform = Mac;
+                        break;
+                    case Device.Android:
+                        platform = GooglePlayAndroid;
+                        break;
+                    case Device.WPF:
+                        platform = Windows;
+                        break;
+                }
             }
-        }
-        catch{}
+            catch{}
 
-        return platform;
-    }
+            return platform;
+        }
 #endif
+
         #region Overrides and Operators
 
-        public readonly override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is not Platform s)
-                return false;
-
-            return Equals(s);
+            return obj is Platform other && Equals(other);
         }
 
-        public readonly bool Equals(Platform other)
+        public bool Equals(Platform other)
         {
-            if (GetType() != other.GetType())
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
             return value == other.value;
         }
 
-        public readonly int CompareTo(Platform other)
+        public int CompareTo(object obj)
         {
-            if (GetType() != other.GetType())
-                return 1;
+            if (obj is Platform other)
+            {
+                return CompareTo(other);
+            }
 
-            if (ReferenceEquals(this, other))
-                return 0;
+            return 1;
+        }
 
+        public int CompareTo(Platform other)
+        {
             return value.CompareTo(other.value);
         }
 
-        public readonly override int GetHashCode() => value.GetHashCode();
+        public override int GetHashCode() => value.GetHashCode();
 
-        public readonly override string ToString() => value;
+        public override string ToString() => value;
 
         public static implicit operator string(Platform v) => v.value;
 
