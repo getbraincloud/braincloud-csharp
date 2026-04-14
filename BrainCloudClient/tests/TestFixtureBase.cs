@@ -45,12 +45,19 @@ namespace BrainCloudTests
             if (SupportsCompression != "")
                 _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
 
+            // Start auth timeout at 30 s instead of the 15 s default.
+            // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
+            // at send-time, so the _listAuthPacketTimeouts progression (15→30→60 s) only
+            // kicks in for the *next* attempt (fixed in BrainCloudComms).  Beginning at 30 s
+            // covers typical CI latency spikes and, for NoAuth test classes, also applies to
+            // any AuthenticateUniversal calls made directly inside the test body.
+            _bc.Client.SetAuthenticationPacketTimeout(30);
+
             if (ShouldAuthenticate())
             {
-                // Retry up to 3 times. The SDK's auth timeout starts at 15 s and advances to
-                // 30 s then 60 s on each failure (_listAuthPacketTimeouts), so subsequent
-                // attempts automatically get more time. Total ceiling: 15+30+60 = 105 s.
-                // This handles occasional CI server slowness that exceeds the 15 s first attempt.
+                // Retry up to 3 times.  With the SDK progression fix each failure advances
+                // _authPacketTimeoutSecs (30→60→60 s), so later attempts get more time.
+                // Total ceiling: 30+60+60 = 150 s – enough for even a heavily loaded CI box.
                 Exception lastException = null;
                 bool authenticated = false;
                 for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
