@@ -103,8 +103,15 @@ namespace BrainCloudTests
             m_rewardCallbackHitCount = 0;
 
             TestResult tr = new TestResult(_bc);
-            _bc.Client.Wrapper.Logout(false, tr.ApiSuccess, tr.ApiError);
+
+            // Reset the user first so the subsequent auth triggers fresh rewards.
+            // The Setup auth already ran and consumed the rewards for this session;
+            // ResetUser restores the reward-eligible state on the server.
+            // After ResetUser the server session is invalid, so clear the client
+            // state with ResetCommunication instead of a Logout call.
+            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
             tr.Run();
+            _bc.Client.ResetCommunication();
 
             _bc.Client.RegisterRewardCallback(rewardCallback);
 
