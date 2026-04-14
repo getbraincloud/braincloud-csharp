@@ -173,7 +173,7 @@ For these situations we have added the `JSON_COMPATIBILITY_FLAG` that should nor
 OR
 
 2. Edit `BrainCloudComms` directly (`BrainCloud > Client > BrainCloud > Internal > BrainCloudComms.cs`) to uncomment the commented out define for `JSON_COMPATIBILITY_FLAG` on line 6.
-    - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overritten.
+    - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overritten. Changes like this also won't be able to be committed to Git.
 
 Doing this will remove some of the memory and CPU improvements due to introducing old behaviour where Json values were consequently being normalized. The tradeoff is that your Json strings should now be coming through `SuccessCallback` and `FailureCallback` and being processed by your custom deserializers as expected before version 5.9.3.
 
