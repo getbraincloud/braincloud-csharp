@@ -28,6 +28,8 @@ Here are a few handy links to get you started:
 
 ## Unity Installation Guide
 
+**Coming from our Unity BootCamp?** The video originally showed you a table that linked to the Releases page to download the library's `.unitypackage` file. You can still do so by clicking [Releases](https://github.com/getbraincloud/braincloud-csharp/releases) here or on the sidebar, but you can also install the brainCloud Client Library using Unity's Package Manager. Continue reading along to find out how!
+
 There are two methods to install the brainCloud library for your Unity project:
 
 ### Package Manager
@@ -46,17 +48,30 @@ When a new update gets pushed, you can simply hit the **Update** button in the b
 
 With your Unity Project open, open the **brainCloudClient_unity_X.X.X.unitypackage** file and click the import prompt.
 
-**Note** that the plugin has gone through major updates since BrainCloud 4.7 release, please refer to the appropriate plugin guide. 
+**Note**: The plugin has gone through major updates since the brainCloud 4.7 release, please refer to the appropriate plugin guide. 
 
 ### Updating
 
-Whether you update with the .unitypackage or via the Package Manager, make sure to delete your old brainCloud settings first: `BrainCloud > Resources > BrainCloudEditorSettings_X_X_X` and `BrainCloud > Resources > BrainCloudSettings_X_X_X`.
+Whether you update with the .unitypackage or via the Package Manager, make sure to delete your old brainCloud settings files first.
 
-If you plan on swapping to the brainCloud custom package, you must delete the old root BrainCloud library files folder `Assets > BrainCloud` in your Unity project, as well as the brainCloud plugin files `Plugins > Android > brainCloudUnity` and `Plugins > iOS > RegionLocaleNative`. If you do not have any additional Plugins, then it is safe to delete the root Plugins folder.
+If you're using an older version of the library then the settings will be located in the `Assets > BrainCloud > Resources` folder:
+- `Assets > BrainCloud > Resources > BrainCloudSettings_X_X_X`
+- `Assets > BrainCloud > Resources > BrainCloudEditorSettings_X_X_X`
+
+Newer versions of the library going forward will have the settings files under the `BrainCloud > Unity` folder:
+- `Assets > BrainCloud > Unity > Resources > BrainCloudSettings_X_X_X`
+- `Assets > BrainCloud > Unity > Editor > Resources > BrainCloudEditorSettings_X_X_X`
+
+If you plan on installing brainCloud via the Package Manager you must delete the old root brainCloud library files folder under `Assets > BrainCloud` in your Unity project. You must also delete the the brainCloud plugin files. Here are all of the brainCloud library files & folders to delete:
+- `Assets > BrainCloud`
+- `Assets > Plugins > Android > brainCloudUnity`
+- `Assets > Plugins > iOS > RegionLocaleNative`
+
+If you do not have any additional Plugins then it is safe to delete the root `Assets > Plugins` folder.
 
 ### brainCloud Unity Plugin 4.6 and Older
 
-Once you install with the .unitypackage file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
+Once you install with the `.unitypackage` file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
 1. Open brainCloud and select Settings
 
@@ -76,7 +91,7 @@ Once you install with the .unitypackage file, you will need to configure a few s
 
 #### Upgrading to 4.7 and Newer
 
-1. If you used or called upon the **BrainCloudSettingsDLL** or the **BrainCloudEditorSettingsDLL** before, these have been replaced with **BrainCloudPlugin** and **BrainCloudPluginEditor** respectively. You may have some new errors where you hadn't before. You will need to delete your current BrainCloud plugin scripts and make adjustments for the new plugin.
+1. If you used or called upon the **BrainCloudSettingsDLL** or the **BrainCloudEditorSettingsDLL** before, these have been replaced with **BrainCloudPlugin** and **BrainCloudPluginEditor** respectively. You may have some new errors where you hadn't before. You will need to delete your current brainCloud plugin scripts and make adjustments for the new plugin.
 
 2. BrainCloudPlugin and BrainCloudPluginEditor now only have readable values for security purposes. They do not have writeable values, so you may need to change some of your logic. The readable values are:
     - DispatcherURL 
@@ -137,13 +152,32 @@ The newly created script should be ready to act like a singleton/global variable
 
 ## Troubleshooting
 
-Here are a few common errors that you may see on your first attempt to connect to brainCloud:
+#### App ID not set
 
-- **App ID not set** — Verify you've set up the app ID and app secret correctly when initializing the BrainCloudWrapper or Client
-- **Platform not enabled** — Verify you've enabled your platform on the brainCloud portal
-    - If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS** to run in the editor
+Verify you've set up the app ID and app secret correctly when initializing the BrainCloudWrapper or BrainCloudClient.
 
-If you're still having issues then log into the portal and give us a shout through the help system (bottom right icon with the question mark and chat bubble)!
+#### Platform not enabled
+
+Verify you've enabled your platform on the brainCloud portal. If you're running from the Unity editor, you'll need to enable either **Windows** or **Mac OS** to be able to run in the editor.
+
+#### I'm having an issue with Json deserialization
+
+Starting in version 5.9.3 we've added the `JsonParser` class to the brainCloud C# client library in order to improve on memory management and CPU cycles. As part of this change, `SuccessCallback` and `FailureCallback` from your API calls now receive the raw Json string values that brainCloud sends. If you are using `JsonFx` included with the C# client library or Unity's `JsonUtility` class, you shouldn't have issues with deserializing your Jsons strings during `SuccessCallback` or `FailureCallback`.
+
+However, if you're using a Json deserializier that is more strict than `JsonFx` or `JsonUtility` with deserializing values, it can lead to situations where the deserialization can fail due to Json number values are no longer being normalized (i.e., converting `1.0` to `1`).
+
+For these situations we have added the `JSON_COMPATIBILITY_FLAG` that should normalize the values again for your `SuccessCallback` and `FailureCallback`. You can enable this by:
+
+1. Including `JSON_COMPATIBILITY_FLAG` as a conditional compilation symbol or as a Scripting Define symbol in Unity (`Player Settings > Other Settings > Scripting Define Symbols`).
+
+OR
+
+2. Edit `BrainCloudComms` directly (`BrainCloud > Client > BrainCloud > Internal > BrainCloudComms.cs`) to uncomment the commented out define for `JSON_COMPATIBILITY_FLAG` on line 6.
+    - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overritten.
+
+Doing this will remove some of the memory and CPU improvements due to introducing old behaviour where Json values were consequently being normalized. The tradeoff is that your Json strings should now be coming through `SuccessCallback` and `FailureCallback` and being processed by your custom deserializers as expected before version 5.9.3.
+
+**If you're still having issues then log into the brainCloud Portal and either ask brainBot for help or give us a shout through our internal help system (The blue "Ask Support" button on the top-right, next to your profile icon)!**
 
 ---
 
@@ -208,7 +242,7 @@ private void Start()
 
 Since it is a MonoBehaviour the Update function will be called automatically by Unity.
 
-If you're initializing the Wrapper manually then your app's information can be found on the brainCloud portal in your app's dashboard under `App > Design > Core App Info > Application IDs`.
+If you're initializing the Wrapper manually then your app's information can be found on the brainCloud Portal in your app's dashboard under `App > Design > Core App Info > Application IDs`.
 
 ![wrapper](/screenshots/bc-ids.png?raw=true)
 
