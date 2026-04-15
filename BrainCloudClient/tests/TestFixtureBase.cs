@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace BrainCloudTests
 {
@@ -101,6 +102,7 @@ namespace BrainCloudTests
             _bc.Client.ResetCommunication();
             _bc.Client.DeregisterEventCallback();
             _bc.Client.DeregisterRewardCallback();
+            Thread.Sleep(1000);
         }
 
         /// <summary>
