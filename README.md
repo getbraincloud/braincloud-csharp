@@ -72,25 +72,9 @@ If you plan on installing brainCloud via the Package Manager you must delete the
 
 If you do not have any additional Plugins then it is safe to delete the root `Assets > Plugins` folder.
 
-### brainCloud Unity Plugin 4.6 and Older
+#### Upgrading to 5.9.3 and Newer
 
-Once you install with the `.unitypackage` file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
-
-1. Open brainCloud and select Settings
-
-![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
-
-2. Signup or Login to brainCloud
-
-![screenshot](/screenshots/2_Login.png)
-
-3. Select your team and your app
-
-![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
-
-4. With your app selected, debug information will now appear in the debug tab when the game is running
-
-![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
+If you're using a custom Json deserializer (as in, you're not using the included **JsonFx** library or Unity's **JsonUtility**) and are coming across issues with deserializing Json number values, then please refer to [I'm having an issue with Json deserialization](#im-having-an-issue-with-json-deserialization) under [Troubleshooting](#troubleshooting).
 
 #### Upgrading to 4.7 and Newer
 
@@ -110,6 +94,26 @@ Once you install with the `.unitypackage` file, you will need to configure a few
 4. To sign into other apps you will need to sign out and sign in to the new app for security purposes.
 
 5. The plugin now has a Version number we will update when future changes are made.
+
+#### For 4.6 and Older
+
+Once you install with the `.unitypackage` file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
+
+1. Open brainCloud and select Settings
+
+![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
+
+2. Signup or Login to brainCloud
+
+![screenshot](/screenshots/2_Login.png)
+
+3. Select your team and your app
+
+![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
+
+4. With your app selected, debug information will now appear in the debug tab when the game is running
+
+![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
 
 ---
 
@@ -165,9 +169,9 @@ Verify you've enabled your platform on the brainCloud portal. If you're running 
 
 #### I'm having an issue with Json deserialization
 
-Starting in version 5.9.3 we've added the `JsonParser` class to the brainCloud C# client library in order to improve on memory management and CPU cycles. As part of this change, `SuccessCallback` and `FailureCallback` from your API calls now receive the raw Json string values that brainCloud sends. If you are using `JsonFx` included with the C# client library or Unity's `JsonUtility` class, you shouldn't have issues with deserializing your Jsons strings during `SuccessCallback` or `FailureCallback`.
+Starting with version 5.9.3 we've added the `JsonParser` class to the brainCloud C# client library in order to improve on memory management and CPU cycles. As part of this change, `SuccessCallback` and `FailureCallback` from your API calls now receive the raw Json string values that brainCloud sends. If you are using **JsonFx** included with the C# client library or Unity's **JsonUtility** class, you shouldn't have issues with deserializing your Jsons strings during `SuccessCallback` or `FailureCallback`.
 
-However, if you're using a Json deserializier that is more strict than `JsonFx` or `JsonUtility` with deserializing values, it can lead to situations where the deserialization can fail due to Json number values are no longer being normalized (i.e., converting `1.0` to `1`).
+However, if you're using a Json deserializier that is more strict than JsonFx or JsonUtility with deserializing values, it can lead to situations where the deserialization can fail due to Json number values are no longer being normalized (i.e., converting `1.0` to `1`).
 
 For these situations we have added the `JSON_COMPATIBILITY_FLAG` that should normalize the values again for your `SuccessCallback` and `FailureCallback`. You can enable this by:
 
