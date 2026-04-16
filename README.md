@@ -95,7 +95,7 @@ If you're using a custom Json deserializer (as in, you're not using the included
 
 5. The plugin now has a Version number we will update when future changes are made.
 
-#### For 4.6 and Older
+#### Upgrading to 4.6 and Newer
 
 Once you install with the `.unitypackage` file, you will need to configure a few settings from the brainCloud menu. If you don't see a brainCloud menu, click any menu bar entry to get Unity to refresh the list of menus.
 
