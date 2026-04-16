@@ -173,16 +173,18 @@ Starting with version 5.9.3 we've added the `JsonParser` class to the brainCloud
 
 However, if you're using a Json deserializier that is more strict than JsonFx or JsonUtility with deserializing values, it can lead to situations where the deserialization can fail due to Json number values are no longer being normalized (i.e., converting `1.0` to `1`).
 
-For these situations we have added the `JSON_COMPATIBILITY_FLAG` that should normalize the values again for your `SuccessCallback` and `FailureCallback`. You can enable this by:
+For these situations we have added the `JSON_COMPATIBILITY_FLAG` that should normalize the values again for your callbacks. You can enable this by:
 
 1. Including `JSON_COMPATIBILITY_FLAG` as a conditional compilation symbol or as a Scripting Define symbol in Unity (`Player Settings > Other Settings > Scripting Define Symbols`).
 
 OR
 
 2. Edit `BrainCloudComms` directly (`BrainCloud > Client > BrainCloud > Internal > BrainCloudComms.cs`) to uncomment the commented out define for `JSON_COMPATIBILITY_FLAG` on line 6.
-    - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overritten. Changes like this also won't be able to be committed to Git.
+    - Note: If you have the brainCloud C# client library installed in the Package Manager in Unity, you will receive warnings for doing this. It should still compile in your builds but if you go to update the package in the Package Manager this change will be overwritten. Changes like this also won't be able to be committed to Git.
 
 Doing this will remove some of the memory and CPU improvements due to reintroducing old behaviour where Json values were consequently being normalized. The tradeoff is that your Json strings should now be coming through `SuccessCallback` and `FailureCallback` and being processed by your custom deserializers as expected before version 5.9.3.
+
+If you would like to read more about JsonParser and possible solutions for handling your Json deserialization, you can do so [here](https://help.getbraincloud.com/en/articles/14627974-jsonparser-json-serialization-issues).
 
 **If you're still having issues then log into the brainCloud Portal and give us a shout through our internal help system (The blue "Ask Support" button on the top-right, next to your profile icon)!**
 
