@@ -53,6 +53,13 @@ namespace BrainCloudTests
             _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                    GetUser(Users.UserA).Id,
+                    GetUser(Users.UserA).Password,
+                    true,
+                    tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1 };
 
@@ -75,7 +82,14 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
             _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
             tr.Run();
-            
+
+            _bc.Client.AuthenticationService.AuthenticateUniversal(
+                    GetUser(Users.UserA).Id,
+                    GetUser(Users.UserA).Password,
+                    true,
+                    tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData1 = new Dictionary<string, object>[] { event1 };
             Dictionary<string, object> event2 = new Dictionary<string, object> { { "eventName", "incQuest2Stat" }, { "eventMultiplier", 1 } };

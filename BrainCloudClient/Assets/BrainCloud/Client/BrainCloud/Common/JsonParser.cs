@@ -21,11 +21,27 @@ namespace BrainCloud
 
             [ThreadStatic]
             private static StringBuilder _sbHelper;
-            private static StringBuilder sbHelper => _sbHelper ??= new(2048);
+            private static StringBuilder SBHelper
+            {
+                get
+                {
+                    if (_sbHelper == null)
+                        _sbHelper = new StringBuilder(2048);
+                    return _sbHelper;
+                }
+            }
 
             [ThreadStatic]
             private static List<string> _splitArrays;
-            private static List<string> splitArrays => _splitArrays ??= new(4);
+            private static List<string> SplitArrays
+            {
+                get
+                {
+                    if (_splitArrays == null)
+                        _splitArrays = new List<string>(4);
+                    return _splitArrays;
+                }
+            }
 
             // This is a helper function for the hierarchy functions to get the hierarchy minus the last value.
             private static string[] GetHierarchyMinusOne(string[] hierarchy)
@@ -75,17 +91,17 @@ namespace BrainCloud
                         insideProperty = !insideProperty;
                         if (insideProperty)
                         {
-                            sbHelper.Clear();
+                            SBHelper.Clear();
                         }
                     }
                     else if (!insideProperty && current == ':')
                     {
                         next = jsonData[i + 1];
-                        if (sbHelper.ToString() == property)
+                        if (SBHelper.ToString() == property)
                         {
                             if (next == '{' || next == '[')
                             {
-                                sbHelper.Clear();
+                                SBHelper.Clear();
 
                                 int level = 0;
 
@@ -110,7 +126,7 @@ namespace BrainCloud
                                                 {
                                                     current = jsonData[i - 1];
                                                     next = jsonData[i];
-                                                    sbHelper.Append(current);
+                                                    SBHelper.Append(current);
 
                                                     if (next == '"' && current != '\\')
                                                     {
@@ -123,18 +139,18 @@ namespace BrainCloud
                                             }
                                             goto default;
                                         default:
-                                            sbHelper.Append(current);
+                                            SBHelper.Append(current);
                                             continue;
                                     }
                                 }
                                 while (level > 0);
 
-                                return sbHelper.ToString();
+                                return SBHelper.ToString();
                             }
                             else // Not an array or object
                             {
                                 i++;
-                                sbHelper.Clear();
+                                SBHelper.Clear();
                                 if (next == '"') // String value
                                 {
                                     i++;
@@ -142,7 +158,7 @@ namespace BrainCloud
                                     {
                                         current = jsonData[i - 1];
                                         next = jsonData[i];
-                                        sbHelper.Append(current);
+                                        SBHelper.Append(current);
 
                                         if (next == '"' && current != '\\')
                                         {
@@ -150,9 +166,9 @@ namespace BrainCloud
                                         }
                                     }
 
-                                    if (sbHelper.ToString() == "\"" || sbHelper.ToString() == "\",") // We must have grabbed an empty string
+                                    if (SBHelper.ToString() == "\"" || SBHelper.ToString() == "\",") // We must have grabbed an empty string
                                     {
-                                        sbHelper.Clear();
+                                        SBHelper.Clear();
                                     }
                                     else if (i >= jsonData.Length)
                                     {
@@ -165,11 +181,11 @@ namespace BrainCloud
                                     {
                                         current = jsonData[i];
                                         next = jsonData[++i];
-                                        sbHelper.Append(current);
+                                        SBHelper.Append(current);
                                     }
                                 }
 
-                                return sbHelper.ToString();
+                                return SBHelper.ToString();
                             }
                         }
                         else if (next == '{' || next == '[')
@@ -216,7 +232,7 @@ namespace BrainCloud
                     }
                     else if (insideProperty)
                     {
-                        sbHelper.Append(current);
+                        SBHelper.Append(current);
                     }
                 }
 
@@ -299,7 +315,7 @@ namespace BrainCloud
 
                 char current;
                 int i = 0, level = 1, start = 1; // start after '['
-                splitArrays.Clear();
+                SplitArrays.Clear();
 
                 while (level > 0 && ++i < jsonData.Length)
                 {
@@ -325,7 +341,7 @@ namespace BrainCloud
                                         array = array.Substring(1, array.Length - 2);
                                     }
 
-                                    splitArrays.Add(array);
+                                    SplitArrays.Add(array);
                                 }
                             }
                             break;
@@ -338,7 +354,7 @@ namespace BrainCloud
                                     array = array.Substring(1, array.Length - 2);
                                 }
 
-                                splitArrays.Add(array);
+                                SplitArrays.Add(array);
                                 start = i + 1;
                             }
                             break;
@@ -357,7 +373,7 @@ namespace BrainCloud
                     }
                 }
 
-                return splitArrays.Count > 0 ? splitArrays.ToArray() : null;
+                return SplitArrays.Count > 0 ? SplitArrays.ToArray() : null;
             }
 
             /// <summary>
@@ -420,8 +436,8 @@ namespace BrainCloud
             /// <param name="property">The name of the property you want within the Json string's highest hierarchy layer.</param>
             /// <returns>
             /// The value for the property name if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note¹</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
-            /// <br><b>Note²</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            /// <br><b>Note1</b>: If the property isn't valid or not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note2</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
             ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, string property) where T : struct, IConvertible
@@ -461,8 +477,8 @@ namespace BrainCloud
             /// <param name="hierarchy">The list of properties, in progressive order, to parse through the Json string's object hierarchy.</param>
             /// <returns>
             /// The value for the property name at the end of the hierarchy if it is a valid non-nullable <b>struct</b> and <see cref="IConvertible"/> value type.
-            /// <br><b>Note¹</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
-            /// <br><b>Note²</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
+            /// <br><b>Note1</b>: If the hierarchy isn't valid or the property is not found it will return a <see cref="default"/> value.</br>
+            /// <br><b>Note2</b>: If you are trying to get a <see cref="bool"/> value then this will return <b>true</b> if the property contains <b>any</b> kind of value.
             ///                   Exceptions are if the value is a number that is <b>0</b>, if the value is <b>false</b>, if the value is <b>null</b>, or if the value is an empty <b>object</b> or <b>array</b>.</br>
             /// </returns>
             public static T GetValue<T>(string jsonData, params string[] hierarchy) where T : struct, IConvertible
