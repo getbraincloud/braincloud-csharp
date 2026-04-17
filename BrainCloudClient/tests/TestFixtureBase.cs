@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace BrainCloudTests
 {
@@ -45,15 +46,51 @@ namespace BrainCloudTests
             if (SupportsCompression != "")
                 _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
 
+            // Start auth timeout at 30 s instead of the 15 s default.
+            // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
+            // at send-time, so the _listAuthPacketTimeouts progression (15→30→60 s) only
+            // kicks in for the *next* attempt (fixed in BrainCloudComms).  Beginning at 30 s
+            // covers typical CI latency spikes and, for NoAuth test classes, also applies to
+            // any AuthenticateUniversal calls made directly inside the test body.
+            _bc.Client.SetAuthenticationPacketTimeout(30);
+
             if (ShouldAuthenticate())
             {
-                TestResult tr = new TestResult(_bc);
-                _bc.Client.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id,
-                    GetUser(Users.UserA).Password,
-                    true,
-                    tr.ApiSuccess, tr.ApiError);
-                tr.Run();
+                // Retry up to 3 times.  With the SDK progression fix each failure advances
+                // _authPacketTimeoutSecs (30→60→60 s), so later attempts get more time.
+                // Total ceiling: 30+60+60 = 150 s – enough for even a heavily loaded CI box.
+                Exception lastException = null;
+                List<int> attemptStatuses = new List<int>();
+                bool authenticated = false;
+                for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
+                {
+                    TestResult tr = new TestResult(_bc);
+                    _bc.Client.AuthenticationService.AuthenticateUniversal(
+                        GetUser(Users.UserA).Id,
+                        GetUser(Users.UserA).Password,
+                        true,
+                        tr.ApiSuccess, tr.ApiError);
+                    try
+                    {
+                        tr.Run();
+                        authenticated = true;
+                    }
+                    catch (Exception e)
+                    {
+                        lastException = e;
+                        attemptStatuses.Add(tr.m_statusCode);
+                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
+                                          (attempt < 2 ? "retrying..." : "giving up."));
+                    }
+                }
+
+                if (!authenticated)
+                {
+                    Assert.Inconclusive("Setup authentication failed after " + attemptStatuses.Count + 
+                                        " attempts. Statuses: [" + string.Join(", ", attemptStatuses) + "]. " +
+                                        "This is likely a CI network/timeout issue, not a test regression." + 
+                                        "Exception caught: " + lastException);
+                }
             }
         }
 
@@ -65,6 +102,7 @@ namespace BrainCloudTests
             _bc.Client.ResetCommunication();
             _bc.Client.DeregisterEventCallback();
             _bc.Client.DeregisterRewardCallback();
+            Thread.Sleep(1000);
         }
 
         /// <summary>

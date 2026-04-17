@@ -90,6 +90,8 @@ namespace BrainCloud.Internal
             Ping = 999;
             if (!IsConnected() && m_clientRef.IsAuthenticated())
             {
+                m_lastRecvTime = DateTime.Now;
+                m_lastNowMS = DateTime.Now;
                 m_endMatchRequested = false;
                 // the callback
                 m_connectOptions = in_options;
@@ -1352,10 +1354,6 @@ namespace BrainCloud.Internal
 
         private void initUDPConnection()
         {
-#if !DOT_NET || GODOT
-            m_udpClient = new UdpClient();
-#endif
-
             // init packet id list
             m_sendPacketId.Clear();
             m_recvPacketId.Clear();
@@ -1366,34 +1364,29 @@ namespace BrainCloud.Internal
 
         private void connectUDPAsync(string host, int port)
         {
-            try
-            {
-#if DOT_NET || GODOT
-                m_udpClient = new UdpClient(host, port);
-                initUDPConnection();
-                OnUDPConnected(null, null);
-#else
-                SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-                args.Completed += new EventHandler<SocketAsyncEventArgs>(OnUDPConnected);
-                args.RemoteEndPoint = new DnsEndPoint(host, port);
-                initUDPConnection();
-                bool value = m_udpClient.Client.ConnectAsync(args);
-                if (!value)
-                {
-                    OnUDPConnected(null, args);
-                }
-#endif
-            }
-            catch (Exception e)
-            {
-                queueErrorEvent(e.ToString());
-            }
-        }
+            initUDPConnection();
 
-        private void OnUDPConnected(object sender, SocketAsyncEventArgs args)
-        {
-            queueSocketConnectedEvent();
-            m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
+            Task.Run(() =>
+            {
+                try
+                {
+                    m_udpClient = new UdpClient();
+                    m_udpClient.Client.Connect(host, port);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    queueErrorEvent(e.ToString());
+                    return false;
+                }
+            }).ContinueWith(task =>
+            {
+                if (task.Result)
+                {
+                    m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
+                    queueSocketConnectedEvent();
+                }
+            });
         }
 
         private void queueConnectSuccessEvent(string jsonString)

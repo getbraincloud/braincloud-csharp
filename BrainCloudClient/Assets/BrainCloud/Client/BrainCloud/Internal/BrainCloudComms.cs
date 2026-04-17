@@ -597,6 +597,22 @@ namespace BrainCloud.Internal
                     // or else, do nothing with the error right now - let the timeout code handle it
                     bypassTimeout = activeRequest.Retries >= GetMaxRetriesForPacket(activeRequest);
 #if DOT_NET || GODOT
+                    // In the DOT_NET/GODOT path the request is cancelled via CancellationToken,
+                    // so RetryRequest short-circuits on bypassTimeout=true and never calls
+                    // GetPacketTimeout – which is the only place _authPacketTimeoutSecs
+                    // normally advances (15→30→60 s).  Advance it here instead so that the
+                    // next auth attempt gets a progressively longer CancellationToken window.
+                    if (bypassTimeout && activeRequest.PacketNoRetry)
+                    {
+                        for (int i = 0; i < _listAuthPacketTimeouts.Length - 1; i++)
+                        {
+                            if (_listAuthPacketTimeouts[i] == _authPacketTimeoutSecs)
+                            {
+                                _authPacketTimeoutSecs = _listAuthPacketTimeouts[i + 1];
+                                break;
+                            }
+                        }
+                    }
                     activeRequest.RequestResult = null;
 #endif
                 }
