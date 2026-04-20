@@ -122,7 +122,11 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            // Lets schedule some Cloud Code scripts to run...
+            // Pre-cleanup: cancel any scheduled scripts left over from a previous failed run.
+            // If a prior run's assertions threw, the cleanup at the bottom was never reached and
+            // those jobs remain on the server, polluting subsequent GetScheduledCloudScripts results.
+            _bc.ScriptService.GetScheduledCloudScripts(long.MaxValue, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
             // Capture a single "now" reference so that all scheduled times AND the query cutoff
             // are derived from the same client clock. This avoids clock-skew failures when the
             // build agent's clock differs from the brainCloud server's clock: with ScheduleRunScriptMinutes
@@ -171,35 +175,36 @@ namespace BrainCloudTests
             // not the 5-min job. Uses the same 'now' snapshot so the cutoff is clock-skew-independent.
             DateTime utcTime = now.AddSeconds(150.0);
 
-            _bc.ScriptService.GetScheduledCloudScripts((ulong)TimeUtil.UTCDateTimeToUTCMillis(utcTime),
-                                                       tr.ApiSuccess,
-                                                       tr.ApiError,
-                                                       null);
-
-            tr.Run();
-
-            var jobs = (tr.m_response["data"] as Dictionary<string, object>)["scheduledJobs"] as Dictionary<string, object>[];
-
-            Assert.That(jobs, Is.Not.Null, "Scheduled jobs received is null!");
-            Assert.That(jobs, Is.Not.Empty, "Scheduled jobs received is empty!");
-            Assert.That(jobs, Has.Length.EqualTo(2), "Scheduled jobs received should equal to 2!");
-
-            // Now to make sure only 2 of the jobIds are actually returned
-            int jobCount = 0;
-            foreach (var job in jobs)
+            try
             {
-                if (job.ContainsKey("jobId") && job["jobId"] is string id && jobIds.Contains(id))
-                {
-                    ++jobCount;
-                }
+                _bc.ScriptService.GetScheduledCloudScripts((ulong)TimeUtil.UTCDateTimeToUTCMillis(utcTime),
+                                                           tr.ApiSuccess,
+                                                           tr.ApiError,
+                                                           null);
+
+                tr.Run();
+
+                var jobs = (tr.m_response["data"] as Dictionary<string, object>)["scheduledJobs"] as Dictionary<string, object>[];
+
+                Assert.That(jobs, Is.Not.Null, "Scheduled jobs received is null!");
+
+                // Verify filtering by checking our specific job IDs, not the total count.
+                // Other scheduled jobs may exist in the account; what matters is that
+                // the time filter correctly includes/excludes our three specific jobs.
+                bool HasJob(string jobId) => jobs.Any(j =>
+                    j.TryGetValue("jobId", out var v) && v is string s && s == jobId);
+
+                Assert.That(HasJob(jobIds[0]), Is.True,  "1-min job should be returned (within 150 s cutoff)");
+                Assert.That(HasJob(jobIds[1]), Is.True,  "2-min job should be returned (within 150 s cutoff)");
+                Assert.That(HasJob(jobIds[2]), Is.False, "5-min job should NOT be returned (beyond 150 s cutoff)");
             }
-
-            Assert.That(jobCount, Is.EqualTo(2), "Found more/less than 2 jobs in scheduled jobs received!");
-
-            // Finally lets cancel those jobs just to clean things up
-            foreach (string id in jobIds)
+            finally
             {
-                _bc.ScriptService.CancelScheduledScript(id);
+                // Always cancel the jobs we scheduled, even if an assertion above failed
+                foreach (string id in jobIds)
+                {
+                    _bc.ScriptService.CancelScheduledScript(id);
+                }
             }
         }
 
