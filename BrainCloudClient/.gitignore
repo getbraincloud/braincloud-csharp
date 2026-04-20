@@ -99,11 +99,12 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 # Project Specific
-/[Bb]rain[Cc]loud[Cc]lient/[Aa]ssets/[Bb]rain[Cc]loud/[Rr]esources*
-/[Bb]rain[Cc]loud[Cc]lient/[Aa]ssets/[Bb]rain[Cc]loud/[Uu]nity/[Rr]esources*
-/[Bb]rain[Cc]loud[Cc]lient/[Aa]ssets/[Bb]rain[Cc]loud/[Uu]nity/[Ee]ditor/[Rr]esources*
-/[Bb]rain[Cc]loud[Cc]lient/solution/mono/UnitTests/test-results/
-/[Bb]rain[Cc]loud[Cc]lient/solution/vstudio/UnitTests/test-results/
-/[Bb]rain[Cc]loud[Cc]lient/tests/ids.txt
-/[Bb]rain[Cc]loud[Cc]lient/tests/NUnit/TestResult.xml
-/[Bb]rain[Cc]loud[Cc]lient/tests/NUnit/UnitTests.VisualState.xml
+.vsconfig
+/[Aa]ssets/[Bb]rain[Cc]loud/[Rr]esources*
+/[Aa]ssets/[Bb]rain[Cc]loud/[Uu]nity/[Rr]esources*
+/[Aa]ssets/[Bb]rain[Cc]loud/[Uu]nity/[Ee]ditor/[Rr]esources*
+/solution/mono/UnitTests/test-results/
+/solution/vstudio/UnitTests/test-results/
+/tests/ids.txt
+/tests/NUnit/TestResult.xml
+/tests/NUnit/UnitTests.VisualState.xml
