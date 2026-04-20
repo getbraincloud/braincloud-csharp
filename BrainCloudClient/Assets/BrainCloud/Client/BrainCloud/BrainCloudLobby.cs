@@ -10,6 +10,7 @@
 namespace BrainCloud
 {
 #if DOT_NET || GODOT
+    using System.Linq;
     using System.Net.Http;
     using System.Net.NetworkInformation;
     using System.Threading.Tasks;
@@ -618,11 +619,12 @@ namespace BrainCloud
             {
                 if (task.IsCompleted && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
                 {
-                    handlePingTimeResponse((long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds, in_region);
+                    long ms = (long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds;
+                    handlePingTimeResponse(ms, in_region);
                 }
                 else
                 {
-                    pingNextItemToProcess();
+                    handlePingTimeResponse(9999, in_region);
                 }
 
                 client.Dispose();
@@ -631,28 +633,31 @@ namespace BrainCloud
 
         private void HandlePingReponse(string in_region, string in_target)
         {
-            Ping pinger = new Ping();
-            try
+            Task.Run(async () =>
             {
-                pinger.PingCompleted += (o, response) =>
+                try
                 {
-                    if (response.Error == null && response.Reply.Status == IPStatus.Success)
+                    using (Ping pinger = new Ping())
                     {
-                        handlePingTimeResponse(response.Reply.RoundtripTime, in_region);
+                        Task<PingReply> pingTask = pinger.SendPingAsync(in_target, 5000);
+                        Task timeoutTask = Task.Delay(5000);
+                        Task winner = await Task.WhenAny(pingTask, timeoutTask);
+                        if (winner == pingTask && pingTask.IsCompletedSuccessfully && pingTask.Result.Status == IPStatus.Success)
+                        {
+                            handlePingTimeResponse(pingTask.Result.RoundtripTime, in_region);
+                        }
+                        else
+                        {
+                            string reason = winner != pingTask ? "timeout" : $"status={pingTask.Result?.Status}";
+                            handlePingTimeResponse(9999, in_region);
+                        }
                     }
-                    else
-                    {
-                        pingNextItemToProcess();
-                    }
-                };
-
-                pinger.SendPingAsync(in_target, 10000);
-            }
-            catch (Exception) { }
-            finally
-            {
-                pinger?.Dispose();
-            }
+                }
+                catch (Exception e)
+                {
+                    handlePingTimeResponse(9999, in_region);
+                }
+            });
         }
 #else
         private IEnumerator HandleHTTPResponse(string in_region, string in_target)
