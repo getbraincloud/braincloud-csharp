@@ -642,7 +642,7 @@ namespace BrainCloud
                         Task<PingReply> pingTask = pinger.SendPingAsync(in_target, 5000);
                         Task timeoutTask = Task.Delay(5000);
                         Task winner = await Task.WhenAny(pingTask, timeoutTask);
-                        if (winner == pingTask && pingTask.IsCompletedSuccessfully && pingTask.Result.Status == IPStatus.Success)
+                        if (winner == pingTask && pingTask.Status == TaskStatus.RanToCompletion && pingTask.Result.Status == IPStatus.Success)
                         {
                             handlePingTimeResponse(pingTask.Result.RoundtripTime, in_region);
                         }
