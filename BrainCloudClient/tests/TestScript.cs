@@ -123,6 +123,14 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             // Lets schedule some Cloud Code scripts to run...
+            // Capture a single "now" reference so that all scheduled times AND the query cutoff
+            // are derived from the same client clock. This avoids clock-skew failures when the
+            // build agent's clock differs from the brainCloud server's clock: with ScheduleRunScriptMinutes
+            // the server anchors scheduled times to its own clock, but the query uses the client clock,
+            // so any skew shifts Job 3 (5 min) inside the 150 s window. Using ScheduleRunScriptMillisUTC
+            // sends absolute client timestamps, so the relative ordering is always consistent.
+            DateTime now = DateTime.UtcNow;
+
             List<string> jobIds = new List<string>();
             void apiSuccess(string jsonResponse, object _)
             {
@@ -134,22 +142,22 @@ namespace BrainCloudTests
                 jobIds.Add(jobId);
             }
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                1,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(1)),
                 apiSuccess, tr.ApiError, null);
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                2,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(2)),
                 apiSuccess, tr.ApiError, null);
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                5,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(5)),
                 apiSuccess, tr.ApiError, null);
 
             tr.RunExpectCount(3);
@@ -159,8 +167,9 @@ namespace BrainCloudTests
             Assert.That(jobIds, Is.Not.Empty, "JobIDs retrieved after calls is empty!");
             Assert.That(jobIds, Has.Count.EqualTo(3), "Did not retrieve all 3 JobIDs after calls!");
 
-            // We're only going to try to get the first two scripts
-            DateTime utcTime = DateTime.UtcNow.AddSeconds(150.0);
+            // Query for scripts scheduled before now + 150 s — captures only the 1-min and 2-min jobs,
+            // not the 5-min job. Uses the same 'now' snapshot so the cutoff is clock-skew-independent.
+            DateTime utcTime = now.AddSeconds(150.0);
 
             _bc.ScriptService.GetScheduledCloudScripts((ulong)TimeUtil.UTCDateTimeToUTCMillis(utcTime),
                                                        tr.ApiSuccess,
