@@ -191,8 +191,13 @@ namespace BrainCloudTests
                 // Verify filtering by checking our specific job IDs, not the total count.
                 // Other scheduled jobs may exist in the account; what matters is that
                 // the time filter correctly includes/excludes our three specific jobs.
-                bool HasJob(string jobId) => jobs.Any(j =>
-                    j.TryGetValue("jobId", out var v) && v is string s && s == jobId);
+                bool HasJob(string jobId)
+                {
+                    foreach (var j in jobs)
+                        if (j.TryGetValue("jobId", out var v) && v?.ToString() == jobId)
+                            return true;
+                    return false;
+                }
 
                 Assert.That(HasJob(jobIds[0]), Is.True,  "1-min job should be returned (within 150 s cutoff)");
                 Assert.That(HasJob(jobIds[1]), Is.True,  "2-min job should be returned (within 150 s cutoff)");
