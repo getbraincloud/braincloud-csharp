@@ -42,9 +42,14 @@ namespace BrainCloudTests
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
 
-            //set to enable compression
-            if (SupportsCompression != "")
-                _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
+            // USE_COMPRESSION env var is set by the Jenkins pipeline parameter (booleanParam).
+            // It takes priority over the supportsCompression field in ids.txt, which acts as the
+            // local/manual fallback when the env var is absent.
+            string useCompressionEnv = Environment.GetEnvironmentVariable("USE_COMPRESSION");
+            if (useCompressionEnv != null)
+                _bc.Client.EnableCompressedRequests(bool.Parse(useCompressionEnv));
+            else if (SupportsCompression != "")
+                _bc.Client.EnableCompressedRequests(bool.Parse(SupportsCompression));
 
             // Start auth timeout at 30 s instead of the 15 s default.
             // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
