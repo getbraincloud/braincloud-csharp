@@ -865,16 +865,16 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticatePlaystation5(
             accountId, authToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
-    
+
     /// <summary>
-    /// Authenticate the user using their Game Center id
+    /// Authenticate the user using their Game Center ID (legacy support)
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
     /// <param name="gameCenterId">
-    /// The user's game center id  (use the playerID property from the local GKPlayer object)
+    /// The user's Game Center ID (use the GamePlayerId property from the GKLocalPlayer object)
     /// </param>
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
@@ -896,9 +896,60 @@ public class BrainCloudWrapper
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
-        
+
         Client.AuthenticationService.AuthenticateGameCenter(
-            gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            gameCenterId, forceCreate, success: AuthSuccessCallback, failure: AuthFailureCallback, cbObject: aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using their Game Center ID and identity verification signature
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="gameCenterId">
+    /// The user's Game Center ID (use the GamePlayerId property from the GKLocalPlayer object)
+    /// </param>
+    /// <param name="timestamp">
+    /// The Timestamp value after fetching the user's identity verification signature
+    /// </param>
+    /// <param name="publicKeyUrl">
+    /// The PublicKeyUrl value after fetching the user's identity verification signature
+    /// </param>
+    /// <param name="signature">
+    /// Using GetSignature() after fetching the user's identity verification signature
+    /// </param>
+    /// <param name="salt">
+    /// Using GetSalt() after fetching the user's identity verification signature
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateGameCenter(
+        string gameCenterId,
+        ulong timestamp,
+        string publicKeyUrl,
+        byte[] signature,
+        byte[] salt,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
+
+        Client.AuthenticationService.AuthenticateGameCenter(
+            gameCenterId, forceCreate, timestamp, publicKeyUrl, signature, salt, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>

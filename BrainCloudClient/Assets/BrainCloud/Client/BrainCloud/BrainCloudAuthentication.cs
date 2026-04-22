@@ -5,11 +5,12 @@
 
 namespace BrainCloud
 {
+    using BrainCloud.Common;
+    using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
     using System;
     using System.Collections.Generic;
-    using BrainCloud.Internal;
-    using BrainCloud.Common;
-    using BrainCloud.JsonFx.Json;
+    using System.Text;
 
     public class BrainCloudAuthentication
     {
@@ -407,17 +408,29 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using their Game Center id
+        /// Authenticate the user using their Game Center ID and identity verification signature
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The user's game center id  (use the profileID property from the local GKPlayer object)
+        /// The user's Game Center ID (use the GamePlayerId property from the GKLocalPlayer object)
         /// </param>
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="timestamp">
+        /// The Timestamp value after fetching the user's identity verification signature
+        /// </param>
+        /// <param name="publicKeyUrl">
+        /// The PublicKeyUrl value after fetching the user's identity verification signature
+        /// </param>
+        /// <param name="signature">
+        /// Using GetSignature() after fetching the user's identity verification signature
+        /// </param>
+        /// <param name="salt">
+        /// Using GetSalt() after fetching the user's identity verification signature
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -431,11 +444,26 @@ namespace BrainCloud
         public void AuthenticateGameCenter(
             string gameCenterId,
             bool forceCreate,
+            ulong timestamp = 0,
+            string publicKeyUrl = "",
+            byte[] signature = null,
+            byte[] salt = null,
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            Authenticate(gameCenterId, "", Common.AuthenticationType.GameCenter,
+            string authenticationToken = string.Empty;
+            if (salt != null && salt.Length > 0 &&
+                signature != null && signature.Length > 0 &&
+                !string.IsNullOrWhiteSpace(publicKeyUrl) &&
+                timestamp > 0)
+            {
+                authenticationToken = $"{{\"timestamp\":{timestamp},\"publicKeyUrl\":\"{publicKeyUrl}\",\"signature\":\"{Convert.ToBase64String(signature)}\",\"salt\":\"{Convert.ToBase64String(salt)}\"}}";
+                var bytes = Encoding.UTF8.GetBytes(authenticationToken);
+                authenticationToken = Convert.ToBase64String(bytes);
+            }
+
+            Authenticate(gameCenterId, authenticationToken, Common.AuthenticationType.GameCenter,
                               null, forceCreate, null, success, failure, cbObject);
         }
 
