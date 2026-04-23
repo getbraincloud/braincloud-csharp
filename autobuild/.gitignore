@@ -1,2 +1,4 @@
 staging/BrainCloud
+*.log
+*.unitypackage
 *.zip

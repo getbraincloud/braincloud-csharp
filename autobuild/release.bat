@@ -1,7 +1,8 @@
 @echo off
 :: =====================================================================
 :: Copies the appropriate folders from the brainCloud source to create
-:: the C# Release .zip file.
+:: the C# Release .zip file. It will then Export our .unitypackage file
+:: as well using the UNITY_EXE path set below.
 ::
 :: - Wipes autobuild\staging\BrainCloud\ before copying so removed or
 ::   renamed files don't linger as stale content.
@@ -16,6 +17,11 @@
 :: =====================================================================
 
 setlocal EnableDelayedExpansion
+
+:: =====================================================================
+::  CONFIG - update these when the Unity version changes
+:: =====================================================================
+set "UNITY_EXE=C:\Program Files\Unity\Hub\Editor\6000.0.68f1\Editor\Unity.exe"
 
 set "SCRIPT_DIR=%~dp0"
 
@@ -110,6 +116,37 @@ if errorlevel 1 (
   echo [ERROR] Zip creation failed
   endlocal & exit /b 1
 )
+
+:: ─── Export .unitypackage via Unity CLI ───
+if defined VERSION (
+  set "UPKG_PATH=!SCRIPT_DIR!brainCloudClient_unity_!VERSION!.unitypackage"
+) else (
+  set "UPKG_PATH=!SCRIPT_DIR!brainCloudClient_unity.unitypackage"
+)
+set "UNITY_PROJECT=!CSHARP_ROOT!\BrainCloudClient"
+set "UNITY_LOG=!SCRIPT_DIR!unity-export.log"
+
+echo [UPKG]  !UPKG_PATH!
+echo         Running Unity in batch mode, this may take a minute...
+
+if not exist "!UNITY_EXE!" goto :UnityMissing
+
+"!UNITY_EXE!" -batchmode -nographics -quit ^
+  -projectPath "!UNITY_PROJECT!" ^
+  -exportPackage "Assets/BrainCloud" "Assets/Plugins" "!UPKG_PATH!" ^
+  -logFile "!UNITY_LOG!"
+
+if errorlevel 1 (
+  echo [WARN] Unity export failed, see log: !UNITY_LOG!
+)
+goto :UnityDone
+
+:UnityMissing
+echo [WARN] Unity.exe not found at:
+echo        !UNITY_EXE!
+echo        Edit UNITY_EXE at the top of the script. Skipping .unitypackage export.
+
+:UnityDone
 
 echo.
 echo Done.
