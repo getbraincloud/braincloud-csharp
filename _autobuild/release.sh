@@ -110,20 +110,35 @@ else
   ZIP_PATH="$SCRIPT_DIR/brainCloudClient_csharp.zip"
 fi
 README="$STAGING/README.txt"
+SLN="$STAGING/BrainCloudClient.sln"
+CSPROJ="$STAGING/BrainCloudClient.csproj"
 
 echo "[ZIP]   $ZIP_PATH"
 
 # Remove any existing zip so we don't accidentally append to it.
 rm -f "$ZIP_PATH"
 
-# zip works from cwd - cd into staging so BrainCloud/ and README.txt land
-# at the archive root rather than carrying their absolute paths.
+# Build the list of items to zip, relative to $STAGING so they land at the
+# archive root rather than carrying their absolute paths. BrainCloud/ is
+# always included; README / .sln / .csproj are optional but expected.
+ZIP_ITEMS=( "BrainCloud" )
 if [[ -f "$README" ]]; then
-  ( cd "$STAGING" && zip -r -q "$ZIP_PATH" "BrainCloud" "README.txt" )
+  ZIP_ITEMS+=( "README.txt" )
 else
-  echo "[WARN] README.txt missing from staging, zipping BrainCloud only"
-  ( cd "$STAGING" && zip -r -q "$ZIP_PATH" "BrainCloud" )
+  echo "[WARN] README.txt missing from staging"
 fi
+if [[ -f "$SLN" ]]; then
+  ZIP_ITEMS+=( "BrainCloudClient.sln" )
+else
+  echo "[WARN] BrainCloudClient.sln missing from staging"
+fi
+if [[ -f "$CSPROJ" ]]; then
+  ZIP_ITEMS+=( "BrainCloudClient.csproj" )
+else
+  echo "[WARN] BrainCloudClient.csproj missing from staging"
+fi
+
+( cd "$STAGING" && zip -r -q "$ZIP_PATH" "${ZIP_ITEMS[@]}" )
 ZIP_RC=$?
 
 if [[ $ZIP_RC -ne 0 ]]; then

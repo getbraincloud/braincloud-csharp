@@ -1,6 +1,6 @@
 brainCloud C# Client Library
 
-This package includes the brainCloud C# Client source code. For non-Unity versions of your client apps, you can include this source in Visual Studio, VS Code, or Godot to make use of our APIs.
+This package includes the brainCloud C# Client source code. For non-Unity versions of your client apps, you can include this source in Visual Studio, VS Code, or Godot to make use of our APIs. You can add the project via the BrainCloud.sln Solution or just add the source files under the BrainCloud folder directly.
 
 The GitHub's README.md contains much useful information! If this is your first time using this library then we strongly recommend you giving it a read:
 

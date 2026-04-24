@@ -103,15 +103,32 @@ if defined VERSION (
   set "ZIP_PATH=!SCRIPT_DIR!brainCloudClient_csharp.zip"
 )
 set "_README=!STAGING!\README.txt"
+set "_SLN=!STAGING!\BrainCloud.sln"
+set "_CSPROJ=!STAGING!\BrainCloud.csproj"
 
 echo [ZIP]   !ZIP_PATH!
 
+:: ─── Build comma-separated -Path list for Compress-Archive. ───
+:: BrainCloud/ is always included; README / .sln / .csproj are
+:: optional but expected.
+set "_ZIP_PATHS='!DST_BASE!'"
 if exist "!_README!" (
-  powershell -NoProfile -NoLogo -Command "Compress-Archive -Path '!DST_BASE!', '!_README!' -DestinationPath '!ZIP_PATH!' -Force"
+  set "_ZIP_PATHS=!_ZIP_PATHS!, '!_README!'"
 ) else (
-  echo [WARN] README.txt missing from staging, zipping BrainCloud only
-  powershell -NoProfile -NoLogo -Command "Compress-Archive -Path '!DST_BASE!' -DestinationPath '!ZIP_PATH!' -Force"
+  echo [WARN] README.txt missing from staging
 )
+if exist "!_SLN!" (
+  set "_ZIP_PATHS=!_ZIP_PATHS!, '!_SLN!'"
+) else (
+  echo [WARN]  BrainCloud.sln missing from staging
+)
+if exist "!_CSPROJ!" (
+  set "_ZIP_PATHS=!_ZIP_PATHS!, '!_CSPROJ!'"
+) else (
+  echo [WARN]  BrainCloud.csproj missing from staging
+)
+
+powershell -NoProfile -NoLogo -Command "Compress-Archive -Path !_ZIP_PATHS! -DestinationPath '!ZIP_PATH!' -Force"
 if errorlevel 1 (
   echo [ERROR] Zip creation failed
   endlocal & exit /b 1
