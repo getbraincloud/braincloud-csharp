@@ -101,19 +101,19 @@ Once you install with the `.unitypackage` file, you will need to configure a few
 
 1. Open brainCloud and select Settings
 
-![screenshot](/screenshots/1_EditorSelectSettings.png?raw=true)
+![screenshot](/_screenshots/1_EditorSelectSettings.png?raw=true)
 
 2. Signup or Login to brainCloud
 
-![screenshot](/screenshots/2_Login.png)
+![screenshot](/_screenshots/2_Login.png)
 
 3. Select your team and your app
 
-![screenshot](/screenshots/3_SelectTeamAndApp.png?raw=true)
+![screenshot](/_screenshots/3_SelectTeamAndApp.png?raw=true)
 
 4. With your app selected, debug information will now appear in the debug tab when the game is running
 
-![screenshot](/screenshots/4_ViewDebugContent.png?raw=true)
+![screenshot](/_screenshots/4_ViewDebugContent.png?raw=true)
 
 ---
 
@@ -123,7 +123,7 @@ Initial support has been implemented to make this library compatible for those d
 
 1. Download the release package **brainCloudClient_csharp_X.X.X.zip** and extract the **BrainCloud** folder into the Godot project directory. The client library should be visible in **FileSystem** window within the Godot Editor.
 
-![screenshot](/screenshots/GodotProjectFileSystem.png)
+![screenshot](/_screenshots/GodotProjectFileSystem.png)
 
 2. Create a new script to act as the brainCloud manager; in the `_Ready()` function of this script, create a new `BrainCloudWrapper` and initialize the app with the appropriate app ID and secret by calling `BrainCloudWrapper.Init(url, secretKey, appId, version)`.
 
@@ -151,7 +151,7 @@ public override void _Process(double delta)
 
 5. To make the script accessible from any scene, use Godot's **Autoload** feature. Go to `Project > Project Settings` from the Godot editor, then switch to the **Autoload** tab. From here, find the script by typing in its path, or clicking the directory icon to browse project files. Give the Autoload node a name (we used BCManager), then add it to the list.
 
-![screenshot](/screenshots/GodotAutoloadSingleton.png)
+![screenshot](/_screenshots/GodotAutoloadSingleton.png)
 
 The newly created script should be ready to act like a singleton/global variable! Any node/script/scene in the project can access this via `GetNode<BCManager>("/root/BCManager")` to make calls/references to this script, for example: `GetNode<BCManager>("/root/BCManager").RequestAnonymousAuthentication()`
 
@@ -200,13 +200,13 @@ brainCloud consists of:
 - Design Portal – a portal that allows you to design and debug your apps
 - The brainCloud Architecture:
 
-![architecture](/screenshots/bc-architecture.png?raw=true)
+![architecture](/_screenshots/bc-architecture.png?raw=true)
 
 #### What's the difference between the BrainCloudWrapper and the BrainCloudClient?
 
 **BrainCloudWrapper** contains quality of life improvements and handles the initialization and update for **BrainCloudClient**. It will act as a bridge between your app's front-end and the brainCloud APIs. It also helps with some platform specific functionality such as serializing the user's login ID on an Android or iOS device.
 
-![wrapper](/screenshots/bc-wrapper.png?raw=true)
+![wrapper](/_screenshots/bc-wrapper.png?raw=true)
 
 It is recommended to use the Wrapper by default!
 
@@ -253,7 +253,7 @@ Since it is a MonoBehaviour the Update function will be called automatically by 
 
 If you're initializing the Wrapper manually then your app's information can be found on the brainCloud Portal in your app's dashboard under `App > Design > Core App Info > Application IDs`.
 
-![wrapper](/screenshots/bc-ids.png?raw=true)
+![wrapper](/_screenshots/bc-ids.png?raw=true)
 
 `BrainCloudWrapper.WrapperName` prefixes serialized operations that the Wrapper calls. You should set the wrapper name if you plan on having multiple instances of brainCloud running.
 
@@ -265,7 +265,7 @@ If your app is already live, you should **NOT** specify the wrapper name otherwi
 
 Make sure you set the app version properly. Using a version less than your minimum app version on brainCloud will prevent the user from accessing the service until they update their app to the lastest version you have provided them.
 
-![wrapper](/screenshots/bc-minVersions.png?raw=true)
+![wrapper](/_screenshots/bc-minVersions.png?raw=true)
 
 #### How do I authenticate a user with brainCloud?
 
