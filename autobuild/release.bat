@@ -131,9 +131,21 @@ echo         Running Unity in batch mode, this may take a minute...
 
 if not exist "!UNITY_EXE!" goto :UnityMissing
 
+:: Reason why we have a specific list like this is to avoid including the Resources folders
+:: We will need to keep this updated if we add folders or files to the BrainCloud folder
 "!UNITY_EXE!" -batchmode -nographics -quit ^
   -projectPath "!UNITY_PROJECT!" ^
-  -exportPackage "Assets/BrainCloud" "Assets/Plugins" "!UPKG_PATH!" ^
+  -exportPackage "Assets/BrainCloud/brainCloud.asmdef" ^
+                 "Assets/BrainCloud/Client" ^
+                 "Assets/BrainCloud/JsonFx" ^
+                 "Assets/BrainCloud/ModernHttpClient" ^
+                 "Assets/BrainCloud/Nintendo" ^
+                 "Assets/BrainCloud/Unity/BrainCloudPlugin.dll" ^
+                 "Assets/BrainCloud/Unity/Editor/BCResources" ^
+                 "Assets/BrainCloud/Unity/Editor/BrainCloudPluginEditor.dll" ^
+                 "Assets/BrainCloud/UnityWebSocketsForWebGL" ^
+                 "Assets/Plugins" ^
+                 "!UPKG_PATH!" ^
   -logFile "!UNITY_LOG!"
 
 if errorlevel 1 (

@@ -148,9 +148,21 @@ if [[ ! -x "$UNITY_EXE" ]]; then
   echo "       $UNITY_EXE"
   echo "       Edit UNITY_EXE at the top of the script. Skipping .unitypackage export."
 else
+# Reason why we have a specific list like this is to avoid including the Resources folders
+# We will need to keep this updated if we add folders or files to the BrainCloud folder
   "$UNITY_EXE" -batchmode -nographics -quit \
     -projectPath "$UNITY_PROJECT" \
-    -exportPackage "Assets/BrainCloud" "Assets/Plugins" "$UPKG_PATH" \
+    -exportPackage "Assets/BrainCloud/brainCloud.asmdef" \
+                   "Assets/BrainCloud/Client" \
+                   "Assets/BrainCloud/JsonFx" \
+                   "Assets/BrainCloud/ModernHttpClient" \
+                   "Assets/BrainCloud/Nintendo" \
+                   "Assets/BrainCloud/Unity/BrainCloudPlugin.dll" \
+                   "Assets/BrainCloud/BCResources" \
+                   "Assets/BrainCloud/Unity/Editor/BrainCloudPluginEditor.dll" \
+                   "Assets/BrainCloud/UnityWebSocketsForWebGL" \
+                   "Assets/Plugins" \
+                   "$UPKG_PATH" \
     -logFile "$UNITY_LOG" \
     || echo "[WARN] Unity export failed, see log: $UNITY_LOG"
 fi
