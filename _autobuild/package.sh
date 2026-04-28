@@ -11,7 +11,7 @@
 # - Reports orphaned files (exist in the package but have no matching
 #   source) at the end. Nothing is deleted automatically.
 #
-# USAGE:
+# Usage:
 #   ./package.sh <path-to-braincloud-unity-package>
 #   ./package.sh <path-to-braincloud-unity-package> --dry-run
 #   ./package.sh --help

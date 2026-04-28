@@ -1,4 +1,6 @@
 @echo off
+setlocal EnableDelayedExpansion
+
 :: =====================================================================
 :: Copies the appropriate folders from the brainCloud source to create
 :: the C# Release .zip file. It will then Export our .unitypackage file
@@ -9,18 +11,15 @@
 :: - Preserves README.txt (or anything else) sitting directly in
 ::   autobuild\staging\ - only the BrainCloud subfolder is touched.
 ::
-:: USAGE:
+:: Usage:
 ::   release.bat
 ::
 :: This script must live at:
 ::   <braincloud-csharp-repo>\autobuild\release.bat
 :: =====================================================================
 
-setlocal EnableDelayedExpansion
 
-:: =====================================================================
-::  CONFIG - update these when the Unity version changes
-:: =====================================================================
+:: Update this when the Unity version changes
 set "UNITY_EXE=C:\Program Files\Unity\Hub\Editor\6000.0.68f1\Editor\Unity.exe"
 
 set "SCRIPT_DIR=%~dp0"

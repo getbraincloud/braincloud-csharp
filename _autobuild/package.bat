@@ -1,4 +1,6 @@
 @echo off
+setlocal EnableDelayedExpansion
+
 :: =====================================================================
 :: Syncs source scripts and resource files from the base brainCloud
 :: C#/Unity Client Library to the Unity Package Manager version.
@@ -11,7 +13,7 @@
 :: - Reports orphaned files (exist in the package but have no matching
 ::   source) at the end. Nothing is deleted automatically.
 ::
-:: USAGE:
+:: Usage:
 ::   package.bat <path-to-braincloud-unity-package>
 ::   package.bat <path-to-braincloud-unity-package> --dry-run
 ::   package.bat --help
@@ -23,7 +25,6 @@
 :: and may be absolute or relative to the current working directory.
 :: =====================================================================
 
-setlocal EnableDelayedExpansion
 
 :: ─── Capture the script's own path BEFORE any shift ───
 :: `shift` in the arg-parsing loop rewrites %0, so %~dp0 / %~f0 no longer

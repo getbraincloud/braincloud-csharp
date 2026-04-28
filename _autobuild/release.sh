@@ -9,16 +9,14 @@
 # - Preserves README.txt (or anything else) sitting directly in
 #   autobuild/staging/ - only the BrainCloud subfolder is touched.
 #
-# USAGE:
+# Usage:
 #   ./release.sh
 #
 # This script must live at:
 #   <braincloud-csharp-repo>/autobuild/release.sh
 # =====================================================================
 
-# =====================================================================
-#  CONFIG - update this when the Unity version changes
-# =====================================================================
+# Update this when the Unity version changes
 UNITY_EXE="/Applications/Unity/Hub/Editor/6000.0.68f1/Unity.app/Contents/MacOS/Unity"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
