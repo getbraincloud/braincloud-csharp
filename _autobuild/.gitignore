@@ -1,0 +1,7 @@
+staging/.vs
+staging/bin
+staging/BrainCloud
+staging/obj
+*.log
+*.unitypackage
+*.zip
