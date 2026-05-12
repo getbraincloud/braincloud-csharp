@@ -408,29 +408,64 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Authenticate the user using their Game Center ID and identity verification signature
+        /// Creates and returns a Base64String-ified JSON for the Game Center authenticationToken
+        /// </summary>
+        internal static string CreateGameCenterAuthenticationToken(
+            ulong timestamp = 0,
+            string publicKeyUrl = "",
+            byte[] signature = null,
+            byte[] salt = null,
+            string teamPlayerId = "")
+        {
+            string authenticationToken = string.Empty;
+            if (salt != null && salt.Length > 0 &&
+                signature != null && signature.Length > 0 &&
+                !string.IsNullOrWhiteSpace(publicKeyUrl) &&
+                timestamp > 0)
+            {
+                teamPlayerId = !string.IsNullOrWhiteSpace(teamPlayerId) ? $"\"{teamPlayerId}\"" : "null";
+                authenticationToken = $"{{\"playerId\":{teamPlayerId},\"timestamp\":{timestamp},\"publicKeyUrl\":\"{publicKeyUrl}\",\"signature\":\"{Convert.ToBase64String(signature)}\",\"salt\":\"{Convert.ToBase64String(salt)}\"}}";
+                authenticationToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationToken));
+            }
+
+            return authenticationToken;
+        }
+
+        /// <summary>
+        /// Authenticate the user using their Game Center Id and identity verification signature
+        /// <para>Note: If the Game Center legacy authentication compatibility flag is enabled,
+        /// only <paramref name="gameCenterId"/> is required and all verification signature parameters are ignored</para>
         /// </summary>
         /// <remarks>
         /// Service Name - Authenticate
         /// Service Operation - Authenticate
         /// </remarks>
         /// <param name="gameCenterId">
-        /// The user's Game Center ID (use the GamePlayerId property from the GKLocalPlayer object)
+        /// The user's Game Center Id which can be the PlayerId, GamePlayerId, or TeamPlayerId from the GKLocalPlayer object
         /// </param>
         /// <param name="forceCreate">
         /// Should a new profile be created for this user if the account does not exist?
         /// </param>
         /// <param name="timestamp">
-        /// The Timestamp value after fetching the user's identity verification signature
+        /// The Timestamp value returned as part of the identity verification signature fetch from Game Center
+        /// <para>Required for modern Game Center verification</para>
         /// </param>
         /// <param name="publicKeyUrl">
-        /// The PublicKeyUrl value after fetching the user's identity verification signature
+        /// The PublicKeyUrl value returned as part of the identity verification signature fetch from Game Center
+        /// <para>Required for modern Game Center verification</para>
         /// </param>
         /// <param name="signature">
-        /// Using GetSignature() after fetching the user's identity verification signature
+        /// The raw signature bytes returned as part of the identity verification signature fetch from Game Center (via GetSignature())
+        /// <para>Required for modern Game Center verification</para>
         /// </param>
         /// <param name="salt">
-        /// Using GetSalt() after fetching the user's identity verification signature
+        /// The raw salt bytes returned as part of the identity verification signature fetch from Game Center (via GetSalt())
+        /// <para>Required for modern Game Center verification</para>
+        /// </param>
+        /// <param name="teamPlayerId">
+        /// Optional for Game Center verification; only required when <paramref name="gameCenterId"/>
+        /// is set to a value other than TeamPlayerId (e.g. GamePlayerId), so that brainCloud can still associate
+        /// the user with their team-scoped identity
         /// </param>
         /// <param name="success">
         /// The method to call in event of successful login
@@ -448,23 +483,15 @@ namespace BrainCloud
             string publicKeyUrl = "",
             byte[] signature = null,
             byte[] salt = null,
+            string teamPlayerId = "",
             SuccessCallback success = null,
             FailureCallback failure = null,
             object cbObject = null)
         {
-            string authenticationToken = string.Empty;
-            if (salt != null && salt.Length > 0 &&
-                signature != null && signature.Length > 0 &&
-                !string.IsNullOrWhiteSpace(publicKeyUrl) &&
-                timestamp > 0)
-            {
-                authenticationToken = $"{{\"timestamp\":{timestamp},\"publicKeyUrl\":\"{publicKeyUrl}\",\"signature\":\"{Convert.ToBase64String(signature)}\",\"salt\":\"{Convert.ToBase64String(salt)}\"}}";
-                var bytes = Encoding.UTF8.GetBytes(authenticationToken);
-                authenticationToken = Convert.ToBase64String(bytes);
-            }
+            string authenticationToken = CreateGameCenterAuthenticationToken(timestamp, publicKeyUrl, signature, salt, teamPlayerId);
 
             Authenticate(gameCenterId, authenticationToken, Common.AuthenticationType.GameCenter,
-                              null, forceCreate, null, success, failure, cbObject);
+                         null, forceCreate, null, success, failure, cbObject);
         }
 
         /// <summary>
