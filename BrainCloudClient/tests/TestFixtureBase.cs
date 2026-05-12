@@ -60,36 +60,31 @@ namespace BrainCloudTests
                 // _authPacketTimeoutSecs (30→60→60 s), so later attempts get more time.
                 // Total ceiling: 30+60+60 = 150 s – enough for even a heavily loaded CI box.
                 Exception lastException = null;
-                List<int> attemptStatuses = new List<int>();
                 bool authenticated = false;
                 for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
                 {
-                    TestResult tr = new TestResult(_bc);
-                    _bc.Client.AuthenticationService.AuthenticateUniversal(
-                        GetUser(Users.UserA).Id,
-                        GetUser(Users.UserA).Password,
-                        true,
-                        tr.ApiSuccess, tr.ApiError);
                     try
                     {
+                        TestResult tr = new TestResult(_bc);
+                        _bc.Client.AuthenticationService.AuthenticateUniversal(
+                            GetUser(Users.UserA).Id,
+                            GetUser(Users.UserA).Password,
+                            true,
+                            tr.ApiSuccess, tr.ApiError);
                         tr.Run();
                         authenticated = true;
                     }
                     catch (Exception e)
                     {
                         lastException = e;
-                        attemptStatuses.Add(tr.m_statusCode);
-                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
-                                          (attempt < 2 ? "retrying..." : "giving up."));
+                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed: " + e.Message +
+                                          (attempt < 2 ? " — retrying..." : " — giving up."));
                     }
                 }
 
                 if (!authenticated)
                 {
-                    Assert.Inconclusive("Setup authentication failed after " + attemptStatuses.Count + 
-                                        " attempts. Statuses: [" + string.Join(", ", attemptStatuses) + "]. " +
-                                        "This is likely a CI network/timeout issue, not a test regression." + 
-                                        "Exception caught: " + lastException);
+                    Assert.Inconclusive("Setup authentication failed after 3 attempts — likely a CI network/timeout issue, not a code regression. Last error: " + lastException?.Message);
                 }
             }
         }
