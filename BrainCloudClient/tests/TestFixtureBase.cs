@@ -71,8 +71,16 @@ namespace BrainCloudTests
                             GetUser(Users.UserA).Password,
                             true,
                             tr.ApiSuccess, tr.ApiError);
-                        tr.Run();
-                        authenticated = true;
+                        if (tr.RunRetry())
+                        {
+                            authenticated = true;
+                        }
+                        else
+                        {
+                            lastException = new Exception("Authentication returned error (status " + tr.m_statusCode + ", reason " + tr.m_reasonCode + ")");
+                            Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed: " + lastException.Message +
+                                              (attempt < 2 ? " — retrying..." : " — giving up."));
+                        }
                     }
                     catch (Exception e)
                     {

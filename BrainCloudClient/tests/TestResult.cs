@@ -51,6 +51,16 @@ namespace BrainCloudTests
             return RunExpectCount(1);
         }
 
+        // Like Run() but returns bool without calling Assert.That — safe to call inside a retry loop
+        // where a failure should be caught and retried rather than recorded as a test failure.
+        public bool RunRetry()
+        {
+            Reset();
+            m_apiCountExpected = 1;
+            Spin();
+            return m_result;
+        }
+
         public bool RunExpectCount(int in_apiCount)
         {
             Reset();
