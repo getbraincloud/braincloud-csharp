@@ -888,6 +888,9 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
+    [Obsolete("This version of the method requires a compatibility flag on brainCloud to be enabled and is only included for legacy support. " +
+              "Use the overloaded method which includes proper Game Center account verification. " +
+              "We will be removing this method in a future client release of our brainCloud libraries.")]
     public void AuthenticateGameCenter(
         string gameCenterId,
         bool forceCreate,
@@ -1683,6 +1686,9 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
+    [Obsolete("This version of the method requires a compatibility flag on brainCloud to be enabled and is only included for legacy support. " +
+              "Use the overloaded method which includes proper Game Center account verification. " +
+              "We will be removing this method in a future client release of our brainCloud libraries.")]
     public virtual void SmartSwitchAuthenticateGameCenter(
         string gameCenterId,
         bool forceCreate,
