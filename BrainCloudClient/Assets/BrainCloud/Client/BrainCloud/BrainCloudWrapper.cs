@@ -320,10 +320,21 @@ public class BrainCloudWrapper
         get { return Client.RelayService; }
     }
 
+    public BrainCloudBlockchain Blockchain
+    {
+        get { return Client.Blockchain; }
+    }
+
     public BrainCloudGroupFile GroupFileService
     {
         get { return Client.GroupFileService; }
     }
+
+    public BrainCloudCampaign Campaign
+    {
+        get { return Client.Campaign; }
+    }
+
     #endregion
 
     /// <summary>

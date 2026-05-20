@@ -180,6 +180,7 @@ namespace BrainCloud
         private BrainCloudMail _mailService;
         private BrainCloudMessaging _messagingService;
         private BrainCloudBlockchain _blockchain;
+        private BrainCloudCampaign _campaign;
         private BrainCloudGroupFile _groupFileService;
         
         // RTT service
@@ -270,13 +271,14 @@ namespace BrainCloud
             _messagingService = new BrainCloudMessaging(this);
             _groupFileService = new BrainCloudGroupFile(this);
 
+            _blockchain = new BrainCloudBlockchain(this);
+            _campaign = new BrainCloudCampaign(this);
+
             // RTT 
             _lobbyService = new BrainCloudLobby(this);
             _chatService = new BrainCloudChat(this);
             _rttService = new BrainCloudRTT(_rttComms, this);
             _rsService = new BrainCloudRelay(_rsComms, this);
-
-            _blockchain = new BrainCloudBlockchain(this);
         }
         //---------------------------------------------------------------
 
@@ -597,6 +599,12 @@ namespace BrainCloud
         {
             get { return _groupFileService; }
         }
+
+        public BrainCloudCampaign Campaign
+        {
+            get { return _campaign; }
+        }
+
         #endregion
 
         #region Service Getters
