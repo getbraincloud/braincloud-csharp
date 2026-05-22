@@ -6,7 +6,6 @@
 namespace BrainCloud
 {
     using BrainCloud.Internal;
-    using BrainCloud.JsonFx.Json;
     using System.Collections.Generic;
 
     public class BrainCloudCampaign
