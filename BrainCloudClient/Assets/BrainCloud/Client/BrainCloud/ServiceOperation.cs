@@ -536,6 +536,9 @@ namespace BrainCloud
         public static readonly ServiceOperation MoveUserToGroupFile = new ServiceOperation("MOVE_USER_TO_GROUP_FILE");
         public static readonly ServiceOperation UpdateFileInfo = new ServiceOperation("UPDATE_FILE_INFO");
 
+        // Campaign Services
+        public static readonly ServiceOperation GetMyCampaigns = new ServiceOperation("GET_MY_CAMPAIGNS");
+
         #endregion
 
         private ServiceOperation(string value)

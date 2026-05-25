@@ -226,7 +226,12 @@
     <Compile Include="..\..\..\tests\TestWrapper.cs">
       <Link>TestWrapper.cs</Link>
     </Compile>
-    <Compile Include="TestCompression.cs" />
+    <Compile Include="..\..\..\tests\TestCompression.cs">
+      <Link>TestCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestCampaign.cs">
+      <Link>TestCampaign.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
