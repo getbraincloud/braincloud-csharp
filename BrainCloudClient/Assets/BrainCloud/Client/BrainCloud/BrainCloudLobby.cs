@@ -71,8 +71,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Finds a lobby matching the specified parameters WITH PING DATA.<br/>
+        /// GetRegionsForLobbies and PingRegions must be successfully responded to prior to calling.
         /// </summary>
         /// 
         public void FindLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
@@ -98,7 +98,7 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Like findLobby, but explicitely geared toward creating new lobbies
+        /// Like FindLobby, but explicitely geared toward creating new lobbies
         /// </summary>
         /// 
         public void CreateLobby(string in_roomType, int in_rating,
@@ -124,8 +124,37 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Like findLobby, but explicitely geared toward creating new lobbies WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// The same as CreateLobby but also allows you to add additional config to override certain lobby
+        /// configurations. Currently only supports a teams list entry (see the API explorer for the format).
+        /// </summary>
+        /// 
+        public void CreateLobbyWithConfig(string in_roomType, int in_rating,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings, Dictionary<string, object> in_configOverrides,
+            string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbySettings.Value] = in_settings;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+            data[OperationParam.LobbyConfigOverrides.Value] = in_configOverrides;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.Lobby, ServiceOperation.CreateLobbyWithConfig, data, callback);
+            m_clientRef.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Like FindLobby, but explicitely geared toward creating new lobbies WITH PING DATA.<br/>
+        /// GetRegionsForLobbies and PingRegions must be successfully responded to prior to calling.
         /// </summary>
         /// 
         public void CreateLobbyWithPingData(string in_roomType, int in_rating,
@@ -144,7 +173,36 @@ namespace BrainCloud
             }
             data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
             data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+
             attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithPingData, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// The same as CreateLobbyWithPingData but also allows you to add additional config to override certain lobby
+        /// configurations. Currently only supports a teams list entry (see the API explorer for the format).<br/>
+        /// GetRegionsForLobbies and PingRegions must be successfully responded to prior to calling.
+        /// </summary>
+        /// 
+        public void CreateLobbyWithConfigAndPingData(string in_roomType, int in_rating,
+            bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode,
+            Dictionary<string, object> in_settings, Dictionary<string, object> in_configOverrides,
+            string[] in_otherUserCxIds = null,
+            SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.LobbyRoomType.Value] = in_roomType;
+            data[OperationParam.LobbyRating.Value] = in_rating;
+            data[OperationParam.LobbySettings.Value] = in_settings;
+            data[OperationParam.LobbyIsReady.Value] = in_isReady;
+            if (in_otherUserCxIds != null)
+            {
+                data[OperationParam.LobbyOtherUserCxIds.Value] = in_otherUserCxIds;
+            }
+            data[OperationParam.LobbyExtraJson.Value] = in_extraJson;
+            data[OperationParam.LobbyTeamCode.Value] = in_teamCode;
+            data[OperationParam.LobbyConfigOverrides.Value] = in_configOverrides;
+
+            attachPingDataAndSend(data, ServiceOperation.CreateLobbyWithConfigAndPingData, success, failure, cbObject);
         }
 
         /// <summary>
@@ -180,8 +238,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Finds a lobby matching the specified parameters, or creates one WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// Finds a lobby matching the specified parameters, or creates one WITH PING DATA.<br/>
+        /// GetRegionsForLobbies and PingRegions must be successfully responded to prior to calling.
         /// </summary>
         /// 
         public void FindOrCreateLobbyWithPingData(string in_roomType, int in_rating, int in_maxSteps,
@@ -309,8 +367,8 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// User joins the specified lobby WITH PING DATA.  GetRegionsForLobbies and PingRegions must be successfully responded to
-        /// prior to calling.
+        /// User joins the specified lobby WITH PING DATA.<br/>
+        /// GetRegionsForLobbies and PingRegions must be successfully responded to prior to calling.
         /// </summary>
         public void JoinLobbyWithPingData(string in_lobbyID,
                             bool in_isReady, Dictionary<string, object> in_extraJson, string in_teamCode, string[] in_otherUserCxIds = null,
@@ -519,7 +577,7 @@ namespace BrainCloud
         }
 
         private void attachPingDataAndSend(Dictionary<string, object> in_data, ServiceOperation in_operation,
-                                SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
+                                           SuccessCallback success = null, FailureCallback failure = null, object cbObject = null)
         {
             bool hasPingData = PingData != null && PingData.Count > 0;
             if (hasPingData)

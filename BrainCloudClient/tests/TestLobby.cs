@@ -15,6 +15,12 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestLobby : TestFixtureBase
     {
+        private Dictionary<string, object>[] createTeamsOverride() => new Dictionary<string, object>[2]
+        {
+            new Dictionary<string, object>() { { "code", "reserved" }, { "minUsers", 0 }, { "maxUsers", 1 }, { "autoAssign", false } },
+            new Dictionary<string, object>() { { "code", "all" }, { "minUsers", 6 }, { "maxUsers", 6 }, { "autoAssign", true } }
+        };
+
         [Test]
         public void TestFindLobbyDeprecated()
         {
@@ -55,6 +61,22 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.LobbyService.CreateLobby("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
+
+            tr.Run();
+        }
+
+        [Test]
+        public void TestCreateLobbyWithConfig()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            var configOverrides = new Dictionary<string, object>()
+            {
+                { "teams", createTeamsOverride() }
+            };
+
+            _bc.LobbyService.CreateLobbyWithConfig("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all",
+                                                   new Dictionary<string, object>(), configOverrides, null, tr.ApiSuccess, tr.ApiError);
 
             tr.Run();
         }
@@ -335,6 +357,18 @@ namespace BrainCloudTests
                 _bc.LobbyService.CreateLobbyWithPingData("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all", new Dictionary<string, object>(), null, tr.ApiSuccess, tr.ApiError);
                 tr.Run();
             }
+
+            {
+                var configOverrides = new Dictionary<string, object>()
+                {
+                    { "teams", createTeamsOverride() }
+                };
+
+                _bc.LobbyService.CreateLobbyWithConfigAndPingData("MATCH_UNRANKED", 0, true, new Dictionary<string, object>(), "all",
+                                                                  new Dictionary<string, object>(), configOverrides, null, tr.ApiSuccess, tr.ApiError);
+                tr.Run();
+            }
+
             {
                 Dictionary<string, object> algo = new Dictionary<string, object>();
                 algo["strategy"] = "ranged-absolute";
