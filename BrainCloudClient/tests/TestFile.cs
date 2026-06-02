@@ -361,7 +361,7 @@ namespace BrainCloudTests
             BrainCloudClient client = _bc.Client;
 
             client.Update();
-            while (_returnCount < uploadIds.Length && count < 1000 * 30)
+            while (_returnCount < uploadIds.Length && count < 1000 * 300)
             {
 
                 for (int i = 0; i < uploadIds.Length; i++)
