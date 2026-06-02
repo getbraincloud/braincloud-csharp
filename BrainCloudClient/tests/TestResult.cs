@@ -51,7 +51,7 @@ namespace BrainCloudTests
             return RunExpectCount(1);
         }
 
-        // Like Run() but returns bool without calling Assert.That — safe to call inside a retry loop
+        // Like Run() but returns a bool without calling Assert, safe to call inside a retry loop
         // where a failure should be caught and retried rather than recorded as a test failure.
         public bool RunRetry()
         {
