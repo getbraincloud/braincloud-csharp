@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>BrainCloud</AssemblyName>
+    <RootNamespace>BrainCloud</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <DefineConstants>$(DefineConstants);DOT_NET</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\BrainCloud\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="README.txt" />
+  </ItemGroup>
+</Project>

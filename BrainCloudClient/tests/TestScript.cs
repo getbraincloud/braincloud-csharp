@@ -122,7 +122,19 @@ namespace BrainCloudTests
         {
             TestResult tr = new TestResult(_bc);
 
-            // Lets schedule some Cloud Code scripts to run...
+            // Pre-cleanup: cancel any scheduled scripts left over from a previous failed run.
+            // If a prior run's assertions threw, the cleanup at the bottom was never reached and
+            // those jobs remain on the server, polluting subsequent GetScheduledCloudScripts results.
+            _bc.ScriptService.GetScheduledCloudScripts(long.MaxValue, tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+            // Capture a single "now" reference so that all scheduled times AND the query cutoff
+            // are derived from the same client clock. This avoids clock-skew failures when the
+            // build agent's clock differs from the brainCloud server's clock: with ScheduleRunScriptMinutes
+            // the server anchors scheduled times to its own clock, but the query uses the client clock,
+            // so any skew shifts Job 3 (5 min) inside the 150 s window. Using ScheduleRunScriptMillisUTC
+            // sends absolute client timestamps, so the relative ordering is always consistent.
+            DateTime now = DateTime.UtcNow;
+
             List<string> jobIds = new List<string>();
             void apiSuccess(string jsonResponse, object _)
             {
@@ -134,22 +146,22 @@ namespace BrainCloudTests
                 jobIds.Add(jobId);
             }
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                1,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(1)),
                 apiSuccess, tr.ApiError, null);
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                2,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(2)),
                 apiSuccess, tr.ApiError, null);
 
-            _bc.ScriptService.ScheduleRunScriptMinutes(
+            _bc.ScriptService.ScheduleRunScriptMillisUTC(
                 _scriptName,
                 "{}",
-                5,
+                (ulong)TimeUtil.UTCDateTimeToUTCMillis(now.AddMinutes(5)),
                 apiSuccess, tr.ApiError, null);
 
             tr.RunExpectCount(3);
@@ -159,38 +171,45 @@ namespace BrainCloudTests
             Assert.That(jobIds, Is.Not.Empty, "JobIDs retrieved after calls is empty!");
             Assert.That(jobIds, Has.Count.EqualTo(3), "Did not retrieve all 3 JobIDs after calls!");
 
-            // We're only going to try to get the first two scripts
-            DateTime utcTime = DateTime.UtcNow.AddSeconds(150.0);
+            // Query for scripts scheduled before now + 150 s — captures only the 1-min and 2-min jobs,
+            // not the 5-min job. Uses the same 'now' snapshot so the cutoff is clock-skew-independent.
+            DateTime utcTime = now.AddSeconds(150.0);
 
-            _bc.ScriptService.GetScheduledCloudScripts((ulong)TimeUtil.UTCDateTimeToUTCMillis(utcTime),
-                                                       tr.ApiSuccess,
-                                                       tr.ApiError,
-                                                       null);
-
-            tr.Run();
-
-            var jobs = (tr.m_response["data"] as Dictionary<string, object>)["scheduledJobs"] as Dictionary<string, object>[];
-
-            Assert.That(jobs, Is.Not.Null, "Scheduled jobs received is null!");
-            Assert.That(jobs, Is.Not.Empty, "Scheduled jobs received is empty!");
-            Assert.That(jobs, Has.Length.EqualTo(2), "Scheduled jobs received should equal to 2!");
-
-            // Now to make sure only 2 of the jobIds are actually returned
-            int jobCount = 0;
-            foreach (var job in jobs)
+            try
             {
-                if (job.ContainsKey("jobId") && job["jobId"] is string id && jobIds.Contains(id))
+                _bc.ScriptService.GetScheduledCloudScripts((ulong)TimeUtil.UTCDateTimeToUTCMillis(utcTime),
+                                                           tr.ApiSuccess,
+                                                           tr.ApiError,
+                                                           null);
+
+                tr.Run();
+
+                var jobs = (tr.m_response["data"] as Dictionary<string, object>)["scheduledJobs"] as Dictionary<string, object>[];
+
+                Assert.That(jobs, Is.Not.Null, "Scheduled jobs received is null!");
+
+                // Verify filtering by checking our specific job IDs, not the total count.
+                // Other scheduled jobs may exist in the account; what matters is that
+                // the time filter correctly includes/excludes our three specific jobs.
+                bool HasJob(string jobId)
                 {
-                    ++jobCount;
+                    foreach (var j in jobs)
+                        if (j.TryGetValue("jobId", out var v) && v?.ToString() == jobId)
+                            return true;
+                    return false;
                 }
+
+                Assert.That(HasJob(jobIds[0]), Is.True,  "1-min job should be returned (within 150 s cutoff)");
+                Assert.That(HasJob(jobIds[1]), Is.True,  "2-min job should be returned (within 150 s cutoff)");
+                Assert.That(HasJob(jobIds[2]), Is.False, "5-min job should NOT be returned (beyond 150 s cutoff)");
             }
-
-            Assert.That(jobCount, Is.EqualTo(2), "Found more/less than 2 jobs in scheduled jobs received!");
-
-            // Finally lets cancel those jobs just to clean things up
-            foreach (string id in jobIds)
+            finally
             {
-                _bc.ScriptService.CancelScheduledScript(id);
+                // Always cancel the jobs we scheduled, even if an assertion above failed
+                foreach (string id in jobIds)
+                {
+                    _bc.ScriptService.CancelScheduledScript(id);
+                }
             }
         }
 

@@ -42,9 +42,22 @@ namespace BrainCloudTests
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
 
-            //set to enable compression
-            if (SupportsCompression != "")
-                _bc.Client.EnableCompressedRequests(Boolean.Parse(SupportsCompression));
+            // USE_COMPRESSION env var is set by the Jenkins pipeline parameter (booleanParam).
+            // It takes priority over the supportsCompression field in ids.txt, which acts as the
+            // local/manual fallback when the env var is absent.
+            string useCompressionEnv = Environment.GetEnvironmentVariable("USE_COMPRESSION");
+            if (useCompressionEnv != null)
+                _bc.Client.EnableCompressedRequests(bool.Parse(useCompressionEnv));
+            else if (SupportsCompression != "")
+                _bc.Client.EnableCompressedRequests(bool.Parse(SupportsCompression));
+
+            // Start auth timeout at 30 s instead of the 15 s default.
+            // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
+            // at send-time, so the _listAuthPacketTimeouts progression (15→30→60 s) only
+            // kicks in for the *next* attempt (fixed in BrainCloudComms).  Beginning at 30 s
+            // covers typical CI latency spikes and, for NoAuth test classes, also applies to
+            // any AuthenticateUniversal calls made directly inside the test body.
+            _bc.Client.SetAuthenticationPacketTimeout(30);
 
             // Start auth timeout at 30 s instead of the 15 s default.
             // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
@@ -60,39 +73,36 @@ namespace BrainCloudTests
                 // _authPacketTimeoutSecs (30→60→60 s), so later attempts get more time.
                 // Total ceiling: 30+60+60 = 150 s – enough for even a heavily loaded CI box.
                 Exception lastException = null;
+                List<int> attemptStatuses = new List<int>();
                 bool authenticated = false;
                 for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
                 {
+                    TestResult tr = new TestResult(_bc);
+                    _bc.Client.AuthenticationService.AuthenticateUniversal(
+                        GetUser(Users.UserA).Id,
+                        GetUser(Users.UserA).Password,
+                        true,
+                        tr.ApiSuccess, tr.ApiError);
                     try
                     {
-                        TestResult tr = new TestResult(_bc);
-                        _bc.Client.AuthenticationService.AuthenticateUniversal(
-                            GetUser(Users.UserA).Id,
-                            GetUser(Users.UserA).Password,
-                            true,
-                            tr.ApiSuccess, tr.ApiError);
-                        if (tr.RunRetry())
-                        {
-                            authenticated = true;
-                        }
-                        else
-                        {
-                            lastException = new Exception("Authentication returned error (status " + tr.m_statusCode + ", reason " + tr.m_reasonCode + ")");
-                            Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed: " + lastException.Message +
-                                              (attempt < 2 ? " — retrying..." : " — giving up."));
-                        }
+                        tr.Run();
+                        authenticated = true;
                     }
                     catch (Exception e)
                     {
                         lastException = e;
-                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed: " + e.Message +
-                                          (attempt < 2 ? " — retrying..." : " — giving up."));
+                        attemptStatuses.Add(tr.m_statusCode);
+                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
+                                          (attempt < 2 ? "retrying..." : "giving up."));
                     }
                 }
 
                 if (!authenticated)
                 {
-                    Assert.Inconclusive("Setup authentication failed after 3 attempts — likely a CI network/timeout issue, not a code regression. Last error: " + lastException?.Message);
+                    Assert.Inconclusive("Setup authentication failed after " + attemptStatuses.Count + 
+                                        " attempts. Statuses: [" + string.Join(", ", attemptStatuses) + "]. " +
+                                        "This is likely a CI network/timeout issue, not a test regression." + 
+                                        "Exception caught: " + lastException);
                 }
             }
         }

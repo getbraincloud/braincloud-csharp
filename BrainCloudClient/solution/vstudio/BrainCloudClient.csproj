@@ -92,6 +92,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAuthentication.cs">
       <Link>BrainCloud\BrainCloudAuthentication.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudCampaign.cs">
+      <Link>BrainCloud\BrainCloudCampaign.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudClient.cs">
       <Link>BrainCloud\BrainCloudClient.cs</Link>
     </Compile>

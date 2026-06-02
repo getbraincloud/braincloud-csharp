@@ -320,10 +320,21 @@ public class BrainCloudWrapper
         get { return Client.RelayService; }
     }
 
+    public BrainCloudBlockchain Blockchain
+    {
+        get { return Client.Blockchain; }
+    }
+
     public BrainCloudGroupFile GroupFileService
     {
         get { return Client.GroupFileService; }
     }
+
+    public BrainCloudCampaign Campaign
+    {
+        get { return Client.Campaign; }
+    }
+
     #endregion
 
     /// <summary>
@@ -865,16 +876,16 @@ public class BrainCloudWrapper
         Client.AuthenticationService.AuthenticatePlaystation5(
             accountId, authToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
-    
+
     /// <summary>
-    /// Authenticate the user using their Game Center id
+    /// Authenticate the user using their Game Center Id (legacy support only, not recommended)
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
     /// <param name="gameCenterId">
-    /// The user's game center id  (use the playerID property from the local GKPlayer object)
+    /// The user's Game Center Id which can be the PlayerId, GamePlayerId, or TeamPlayerId from the GKLocalPlayer object
     /// </param>
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
@@ -888,6 +899,9 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
+    [Obsolete("This version of the method requires a compatibility flag on brainCloud to be enabled and is only included for legacy support. " +
+              "Use the overloaded method which includes proper Game Center account verification. " +
+              "We will be removing this method in a future client release of our brainCloud libraries.")]
     public void AuthenticateGameCenter(
         string gameCenterId,
         bool forceCreate,
@@ -896,9 +910,66 @@ public class BrainCloudWrapper
         object cbObject = null)
     {
         WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
-        
+
         Client.AuthenticationService.AuthenticateGameCenter(
-            gameCenterId, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+            gameCenterId, forceCreate, success: AuthSuccessCallback, failure: AuthFailureCallback, cbObject: aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using their Game Center Id and identity verification signature
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="gameCenterId">
+    /// The user's Game Center Id which can be the PlayerId, GamePlayerId, or TeamPlayerId from the GKLocalPlayer object
+    /// </param>
+    /// <param name="timestamp">
+    /// The Timestamp value returned as part of the identity verification signature fetch from Game Center
+    /// </param>
+    /// <param name="publicKeyUrl">
+    /// The PublicKeyUrl value returned as part of the identity verification signature fetch from Game Center
+    /// </param>
+    /// <param name="signature">
+    /// The raw signature bytes returned as part of the identity verification signature fetch from Game Center (via GetSignature())
+    /// </param>
+    /// <param name="salt">
+    /// The raw salt bytes returned as part of the identity verification signature fetch from Game Center (via GetSalt())
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="teamPlayerId">
+    /// Optional for Game Center verification; only required when <paramref name="gameCenterId"/>
+    /// is set to a value other than TeamPlayerId (e.g. GamePlayerId), so that brainCloud can still associate
+    /// the user with their team-scoped identity
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateGameCenter(
+        string gameCenterId,
+        ulong timestamp,
+        string publicKeyUrl,
+        byte[] signature,
+        byte[] salt,
+        bool forceCreate,
+        string teamPlayerId = "",
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
+
+        Client.AuthenticationService.AuthenticateGameCenter(
+            gameCenterId, forceCreate, timestamp, publicKeyUrl, signature, salt, teamPlayerId, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -1271,12 +1342,14 @@ public class BrainCloudWrapper
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
-    /// 
-    /// Authenticate the user with a custom Email and Password.  Note that the client app
+    ///
+    /// <para>
+    /// Authenticate the user with a custom Email and Password. Note that the client app
     /// is responsible for collecting (and storing) the e-mail and potentially password
     /// (for convenience) in the client data.  For the greatest security,
     /// force the user to re-enter their password at each login.
     /// (Or at least give them that option).
+    /// </para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1320,9 +1393,11 @@ public class BrainCloudWrapper
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
-    /// 
+    ///
+    /// <para>
     /// Authenticate the user via cloud code (which in turn validates the supplied credentials against an external system).
     /// This allows the developer to extend brainCloud authentication to support other backend authentication systems.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1371,7 +1446,7 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their Facebook Credentials
+    /// <para>Authenticate the user with brainCloud using their Facebook Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1412,12 +1487,12 @@ public class BrainCloudWrapper
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
 
-        /// <summary>
+    /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their FacebookLimited Credentials
+    /// <para>Authenticate the user with brainCloud using their FacebookLimited Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1463,7 +1538,7 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their Oculus Credentials
+    /// <para>Authenticate the user with brainCloud using their Oculus Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1509,7 +1584,7 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their PSN Credentials
+    /// <para>Authenticate the user with brainCloud using their PSN Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1550,12 +1625,12 @@ public class BrainCloudWrapper
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
 
-        /// <summary>
+    /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their Apple Credentials
+    /// <para>Authenticate the user with brainCloud using their Apple Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1601,14 +1676,14 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user using their Game Center id
+    /// <para>Authenticate the user using their Game Center Id (legacy support only, not recommended)</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
     /// <param name="gameCenterId">
-    /// The user's game center id  (use the playerID property from the local GKPlayer object)
+    /// The user's Game Center Id which can be the PlayerId, GamePlayerId, or TeamPlayerId from the GKLocalPlayer object
     /// </param>
     /// <param name="forceCreate">
     /// Should a new profile be created for this user if the account does not exist?
@@ -1622,6 +1697,9 @@ public class BrainCloudWrapper
     /// <param name="cbObject">
     /// The user supplied callback object
     /// </param>
+    [Obsolete("This version of the method requires a compatibility flag on brainCloud to be enabled and is only included for legacy support. " +
+              "Use the overloaded method which includes proper Game Center account verification. " +
+              "We will be removing this method in a future client release of our brainCloud libraries.")]
     public virtual void SmartSwitchAuthenticateGameCenter(
         string gameCenterId,
         bool forceCreate,
@@ -1642,7 +1720,70 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user using a google userid(email address) and google authentication token.
+    /// <para>Authenticate the user using their Game Center Id and identity verification signature</para>
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="gameCenterId">
+    /// The user's Game Center Id which can be the PlayerId, GamePlayerId, or TeamPlayerId from the GKLocalPlayer object
+    /// </param>
+    /// <param name="timestamp">
+    /// The Timestamp value returned as part of the identity verification signature fetch from Game Center
+    /// </param>
+    /// <param name="publicKeyUrl">
+    /// The PublicKeyUrl value returned as part of the identity verification signature fetch from Game Center
+    /// </param>
+    /// <param name="signature">
+    /// The raw signature bytes returned as part of the identity verification signature fetch from Game Center (via GetSignature())
+    /// </param>
+    /// <param name="salt">
+    /// The raw salt bytes returned as part of the identity verification signature fetch from Game Center (via GetSalt())
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="teamPlayerId">
+    /// Optional for Game Center verification; only required when <paramref name="gameCenterId"/>
+    /// is set to a value other than TeamPlayerId (e.g. GamePlayerId), so that brainCloud can still associate
+    /// the user with their team-scoped identity
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateGameCenter(
+        string gameCenterId,
+        ulong timestamp,
+        string publicKeyUrl,
+        byte[] signature,
+        byte[] salt,
+        bool forceCreate,
+        string teamPlayerId = "",
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateGameCenter(gameCenterId, timestamp, publicKeyUrl, signature, salt, forceCreate, teamPlayerId, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// <para>Authenticate the user using a google userid(email address) and google authentication token.</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1682,12 +1823,12 @@ public class BrainCloudWrapper
         SmartSwitchAuthentication(authenticateCallback, failure);
     }
 
-        /// <summary>
+    /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user using a google userid(email address) and google authentication token.
+    /// <para>Authenticate the user using a google userid(email address) and google authentication token.</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1732,7 +1873,7 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user using a steam userid and session ticket (without any validation on the userid).
+    /// <para>Authenticate the user using a steam userid and session ticket (without any validation on the userid).</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1777,7 +1918,7 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user using a Twitter userid, authentication token, and secret from twitter.
+    /// <para>Authenticate the user using a Twitter userid, authentication token, and secret from twitter.</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1825,10 +1966,12 @@ public class BrainCloudWrapper
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
-    /// 
+    ///
+    /// <para>
     /// Authenticate the user using a userid and password (without any validation on the userid).
     /// Similar to AuthenticateEmailPassword - except that that method has additional features to
     /// allow for e-mail validation, password resets, etc.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1873,8 +2016,10 @@ public class BrainCloudWrapper
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean design flow from anonymous to signed profiles
     ///
+    /// <para>
     /// A generic Authenticate method that translates to the same as calling a specific one, except it takes an extraJson
     /// that will be passed along to pre- or post- hooks.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1917,14 +2062,13 @@ public class BrainCloudWrapper
         
         SmartSwitchAuthentication(authenticateCallback,failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user for Ultra.
-    /// 
+    /// <para>Authenticate the user for Ultra.</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
@@ -1963,13 +2107,13 @@ public class BrainCloudWrapper
         
         SmartSwitchAuthentication(authenticateCallback,failure);
     }
-    
+
     /// <summary>
     /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
     /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
     /// Use this function to keep a clean designflow from anonymous to signed profiles
     /// 
-    /// Authenticate the user with brainCloud using their Nintendo Credentials
+    /// <para>Authenticate the user with brainCloud using their Nintendo Credentials</para>
     /// </summary>
     /// <remarks>
     /// Service Name - Authenticate
