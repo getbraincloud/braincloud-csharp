@@ -59,14 +59,6 @@ namespace BrainCloudTests
             // any AuthenticateUniversal calls made directly inside the test body.
             _bc.Client.SetAuthenticationPacketTimeout(30);
 
-            // Start auth timeout at 30 s instead of the 15 s default.
-            // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
-            // at send-time, so the _listAuthPacketTimeouts progression (15→30→60 s) only
-            // kicks in for the *next* attempt (fixed in BrainCloudComms).  Beginning at 30 s
-            // covers typical CI latency spikes and, for NoAuth test classes, also applies to
-            // any AuthenticateUniversal calls made directly inside the test body.
-            _bc.Client.SetAuthenticationPacketTimeout(30);
-
             if (ShouldAuthenticate())
             {
                 // Retry up to 3 times.  With the SDK progression fix each failure advances
