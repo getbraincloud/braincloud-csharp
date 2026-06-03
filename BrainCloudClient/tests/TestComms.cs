@@ -77,7 +77,7 @@ namespace BrainCloudTests
             _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
             _bc.Client.EnableLogging(true);
             // Init() recreates the comms layer, resetting _authPacketTimeoutSecs to the
-            // default 15 s.  Re-apply 30 s so the request waits long enough for the server
+            // default 15 s.  Re-apply 30s so the request waits long enough for the server
             // to return a parseable (but invalid) response rather than timing out first.
             _bc.Client.SetAuthenticationPacketTimeout(30);
 
