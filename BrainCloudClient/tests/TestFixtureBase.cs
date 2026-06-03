@@ -69,31 +69,53 @@ namespace BrainCloudTests
                 bool authenticated = false;
                 for (int attempt = 0; attempt < 3 && !authenticated; attempt++)
                 {
-                    TestResult tr = new TestResult(_bc);
-                    _bc.Client.AuthenticationService.AuthenticateUniversal(
-                        GetUser(Users.UserA).Id,
-                        GetUser(Users.UserA).Password,
-                        true,
-                        tr.ApiSuccess, tr.ApiError);
+                    if (attempt > 0)
+                    {
+                        // Clean up the timed-out request state before retrying.
+                        _bc.Client.ResetCommunication();
+                    }
+
                     try
                     {
-                        tr.Run();
-                        authenticated = true;
+                        // Re-apply the 30 s timeout here because a successful TestUser
+                        // authentication inside GetUser() triggers the SDK's on-success
+                        // reset, which sets _authPacketTimeoutSecs back to the list default
+                        // (15 s), silently undoing the value we set above.
+                        _bc.Client.SetAuthenticationPacketTimeout(30);
+
+                        TestResult tr = new TestResult(_bc);
+                        _bc.Client.AuthenticationService.AuthenticateUniversal(
+                            GetUser(Users.UserA).Id,
+                            GetUser(Users.UserA).Password,
+                            true,
+                            tr.ApiSuccess, tr.ApiError);
+
+                        if (tr.RunRetry())
+                        {
+                            authenticated = true;
+                        }
+                        else
+                        {
+                            lastException = new Exception("Authentication returned error (status " + tr.m_statusCode + ", reason " + tr.m_reasonCode + ")");
+                            attemptStatuses.Add(tr.m_statusCode);
+                            Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
+                                              (attempt < 2 ? "retrying..." : "giving up."));
+                        }
                     }
                     catch (Exception e)
                     {
                         lastException = e;
-                        attemptStatuses.Add(tr.m_statusCode);
-                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed (status " + tr.m_statusCode + "), " +
-                                          (attempt < 2 ? "retrying..." : "giving up."));
+                        attemptStatuses.Add(0);
+                        Console.WriteLine("Setup auth attempt " + (attempt + 1) + " failed: " + e.Message +
+                                          (attempt < 2 ? " — retrying..." : " — giving up."));
                     }
                 }
 
                 if (!authenticated)
                 {
-                    Assert.Inconclusive("Setup authentication failed after " + attemptStatuses.Count + 
+                    Assert.Inconclusive("Setup authentication failed after " + attemptStatuses.Count +
                                         " attempts. Statuses: [" + string.Join(", ", attemptStatuses) + "]. " +
-                                        "This is likely a CI network/timeout issue, not a test regression." + 
+                                        "This is likely a CI network/timeout issue, not a test regression. " +
                                         "Exception caught: " + lastException);
                 }
             }
