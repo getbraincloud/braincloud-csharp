@@ -116,7 +116,7 @@ namespace BrainCloud.Common
             }
             else if (platform == UnityEngine.RuntimePlatform.VisionOS)
             {
-                return Unknown;
+                return VisionOS;
             }
             return Mac;
 #elif UNITY_STANDALONE_LINUX

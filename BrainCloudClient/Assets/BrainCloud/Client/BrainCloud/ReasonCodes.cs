@@ -1,6 +1,6 @@
-// Copyright 2026 bitHeads, Inc. All Rights Reserved.
 //----------------------------------------------------
 // brainCloud client source code
+// Copyright 2026 bitHeads, inc.
 //----------------------------------------------------
 
 namespace BrainCloud
@@ -31,6 +31,7 @@ namespace BrainCloud
         public const int MISSING_APP_EMAIL_ACCOUNT = 40219;
         public const int DATABASE_DUP_KEY_ERROR = 40220;
         public const int EMAIL_NOT_VALID = 40221;
+        public const int MISSING_ANONYMOUS_CREDENTIAL = 40222;
         public const int UNABLE_TO_GET_FRIENDS_FROM_FACEBOOK = 40300;
         public const int BAD_SIGNATURE = 40301;
         public const int UNABLE_TO_VALIDATE_PLAYER = 40302;
@@ -234,6 +235,7 @@ namespace BrainCloud
         public const int PLAYER_EARLY_FOR_JOINING_TOURNAMENT = 40498;
         public const int NO_LEADERBOARD_FOUND = 40499;
         public const int PLAYER_NOT_IN_TIME_RANGE_FOR_POSTSCORE_TOURNAMENT = 40500;
+        public const int NOT_IN_TIME_RANGE_FOR_POSTSCORE_TOURNAMENT = 40500;
         public const int LEADERBOARD_ID_BAD = 40501;
         public const int SCORE_INPUT_BAD = 40502;
         public const int ROUND_STARTED_EPOCH_INPUT_BAD = 40503;
@@ -553,11 +555,16 @@ namespace BrainCloud
         public const int QUEST_REORDER_MILESTONES_ERROR = 40816;
         public const int MILESTONE_HAS_DEPENDENCIES = 40817;
         public const int ACHIEVEMENT_HAS_DEPENDENCIES = 40818;
+        public const int INVALID_LOBBY_CONFIG_OVERRIDES = 40819;
         public const int PROMOTION_NOT_FOUND = 40820;
         public const int VERSION_MISMATCH = 40821;
         public const int UNSUPPORTED_CRITERIA_FOR_SHARDED_COLLECTIONS = 40822;
         public const int USER_RATE_LIMIT_EXCEEDED = 40823;
         public const int PROMOTION_CONFIG_INCOMPLETE = 40824;
+        public const int PROMOTION_UNARCHIVE_ERROR = 40825;
+        public const int PRODUCT_HAS_DEPENDENCIES = 40826;
+        public const int PRODUCT_UNARCHIVE_ERROR = 40827;
+        public const int PRODUCT_ARCHIVED = 40828;
         public const int STEAM_ERROR = 40830;
         public const int AZURE_AD_NOT_CONFIGURED = 40831;
         public const int INVALID_LEADERBOARD_TOURNAMENT_SETTING = 40840;
@@ -572,6 +579,22 @@ namespace BrainCloud
         public const int LEADERBOARD_ROTATION_EXIT_PROCESSING_ERROR = 40849;
         public const int LEADERBOARD_ENTRY_COUNTS_PROCESSING_ERROR = 40850;
         public const int LEADERBOARD_ENTRIES_COUNT_ALL_ERROR = 40851;
+        public const int INVALID_TOURNAMENT_ENTRY_TYPE = 40852;
+        public const int INVALID_DIVISION_SET_ENTRY_TYPE = 40853;
+        public const int CANNOT_CHANGE_TOURNAMENT_ENTRY_TYPE = 40854;
+        public const int CANNOT_CHANGE_DIVISION_SET_ENTRY_TYPE = 40855;
+        public const int GROUP_TOURNAMENT_ENTRY_FEE_NOT_SUPPORTED = 40856;
+        public const int GROUP_TOURNAMENT_PAYOUT_RULES_NOT_SUPPORTED = 40857;
+        public const int GROUP_TOURNAMENT_NOTIFICATIONS_NOT_SUPPORTED = 40858;
+        public const int LEADERBOARD_AND_TOURNAMENT_CONFIG_ENTRY_TYPE_MISMATCH = 40859;
+        public const int DIVISION_SET_AND_LEADERBOARD_TEMPLATE_ENTRY_TYPE_MISMATCH = 40860;
+        public const int CANNOT_CHANGE_LEADERBOARD_ENTRY_TYPE = 40861;
+        public const int GROUP_ALREADY_IN_ACTIVE_TOURNAMENT = 40862;
+        public const int GROUP_ALREADY_IN_ACTIVE_DIVISION_SET_TOURNAMENT = 40863;
+        public const int GROUP_NOT_ENROLLED_IN_TOURNAMENT = 40864;
+        public const int GROUP_TOURNAMENTS_REQUIRE_OPTIMIZED_GROUP_SCORES_RECORDING = 40865;
+        public const int INVALID_UNIVERSAL_ID = 40870;
+        public const int DUPLICATE_REFERENCE_PRICE = 40871;
         public const int MISSING_CONFIG = 40900;
         public const int INVALID_SAML_RESP = 40901;
         public const int MISSING_PAGE_NAME = 40902;
@@ -595,6 +618,20 @@ namespace BrainCloud
         public const int ROOM_SERVER_LAUNCH_FAILURE = 41001;
         public const int ROOM_SERVER_UPDATE_LOCK_TIMEOUT = 41002;
         public const int ROOM_SERVER_CREATE_LOCK_TIMEOUT = 41003;
+        public const int ROOM_SERVER_MISSING_PUBLIC_IP = 41004;
+        public const int INVALID_XP_POINTS_RESET_TO_HIGHER_VALUE = 41020;
+        public const int INVALID_XP_LEVEL_RESET_TO_HIGHER_VALUE = 41021;
+        public const int CAMPAIGN_INVALID_GLOBAL_PROPERTY_OVERRIDE = 41050;
+        public const int CAMPAIGN_INVALID_PRODUCT_OVERRIDE = 41051;
+        public const int CAMPAIGN_INVALID_CATEGORY_ITEM_OVERRIDE = 41052;
+        public const int CAMPAIGN_CREATE_ERROR = 41053;
+        public const int CAMPAIGN_UPDATE_ERROR = 41054;
+        public const int INVALID_CAMPAIGN_CONFIGURATION = 41055;
+        public const int INVALID_SEGMENT_CODE_LIST = 41056;
+        public const int INVALID_SEGMENT_CODE = 41057;
+        public const int INVALID_CAMPAIGN_SCENARIO_FOR_USER = 41058;
+        public const int INVALID_CAMPAIGN_SCENARIO_FOR_PRODUCT = 41059;
+        public const int CAMPAIGN_SYS_TRIGGER_CAMPAIGN_FOR_USER_ERROR = 41060;
         public const int NO_TWITTER_CONSUMER_KEY = 500001;
         public const int NO_TWITTER_CONSUMER_SECRET = 500002;
         public const int INVALID_CONFIGURATION = 500003;
@@ -664,6 +701,7 @@ namespace BrainCloud
         public const int DEPLOY_FAILED = 600011;
         public const int IMPORT_EXPORT_TASK_IN_PROGRESS = 600012;
         public const int BACKUP_REFERENCE_DATA_FAILED = 600013;
+        public const int DESERIALIZATION_FAILED = 600014;
         public const int BUILDER_API_KEY_NOT_FOUND = 60100;
         public const int BUILDER_API_INVALID_KEY_SCOPE = 60101;
         public const int BUILDER_API_UPDATED_AT_MISMATCH = 60102;
@@ -676,6 +714,8 @@ namespace BrainCloud
         public const int BUILDER_API_APP_IS_LIVE = 60109;
         public const int BUILDER_API_APP_SUSPENDED = 60110;
         public const int BUILDER_API_CREATED_AT_MISMATCH = 60111;
+        public const int BUILDER_API_META_DEPLOY_MISSING_SCRIPTS = 60112;
+        public const int BUILDER_API_ITEM_DEPLOY_SEG_REFS = 60113;
         public const int PLAYSTATION_NETWORK_ERROR = 60200;
         public const int EMAIL_CC_MAX_SIZE_EXCEEDED = 60201;
         public const int EMAIL_BCC_MAX_SIZE_EXCEEDED = 60202;

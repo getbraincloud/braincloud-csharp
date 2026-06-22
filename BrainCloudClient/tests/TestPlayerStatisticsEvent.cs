@@ -50,15 +50,6 @@ namespace BrainCloudTests
             m_rewardCallbackHitCount = 0;
 
             TestResult tr = new TestResult(_bc);
-            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-
-            _bc.Client.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id,
-                    GetUser(Users.UserA).Password,
-                    true,
-                    tr.ApiSuccess, tr.ApiError);
-            tr.Run();
 
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData = new Dictionary<string, object>[] { event1 };
@@ -72,23 +63,17 @@ namespace BrainCloudTests
             _bc.Client.DeregisterRewardCallback();
 
             Assert.That(m_rewardCallbackHitCount == 1);
+
+            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]
         public void TestRewardHandlerMultipleApiCallsInBundle()
         {
             m_rewardCallbackHitCount = 0;
-            
-            TestResult tr = new TestResult(_bc);
-            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
-            tr.Run();
 
-            _bc.Client.AuthenticationService.AuthenticateUniversal(
-                    GetUser(Users.UserA).Id,
-                    GetUser(Users.UserA).Password,
-                    true,
-                    tr.ApiSuccess, tr.ApiError);
-            tr.Run();
+            TestResult tr = new TestResult(_bc);
 
             Dictionary<string, object> event1 = new Dictionary<string, object> { { "eventName", "incQuest1Stat" }, { "eventMultiplier", 1 } };
             Dictionary<string, object>[] jsonData1 = new Dictionary<string, object>[] { event1 };
@@ -105,8 +90,11 @@ namespace BrainCloudTests
             tr.RunExpectCount(2);
 
             _bc.Client.DeregisterRewardCallback();
-            
+
             Assert.That(m_rewardCallbackHitCount == 2);
+
+            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         [Test]
@@ -115,9 +103,15 @@ namespace BrainCloudTests
             m_rewardCallbackHitCount = 0;
 
             TestResult tr = new TestResult(_bc);
+
+            // Reset the user first so the subsequent auth triggers fresh rewards.
+            // The Setup auth already ran and consumed the rewards for this session;
+            // ResetUser restores the reward-eligible state on the server.
+            // After ResetUser the server session is invalid, so clear the client
+            // state with ResetCommunication instead of a Logout call.
             _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
-            _bc.Client.Wrapper.Logout(false, tr.ApiSuccess, tr.ApiError);
-            tr.RunExpectCount(2);
+            tr.Run();
+            _bc.Client.ResetCommunication();
 
             _bc.Client.RegisterRewardCallback(rewardCallback);
 
@@ -131,6 +125,9 @@ namespace BrainCloudTests
             _bc.Client.DeregisterRewardCallback();
 
             Assert.That(m_rewardCallbackHitCount == 1);
+
+            _bc.PlayerStateService.ResetUser(tr.ApiSuccess, tr.ApiError);
+            tr.Run();
         }
 
         public void rewardCallback(string jsonData)

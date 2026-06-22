@@ -467,7 +467,9 @@ namespace BrainCloud
         public static readonly ServiceOperation FindLobby = new ServiceOperation("FIND_LOBBY");
         public static readonly ServiceOperation FindLobbyWithPingData = new ServiceOperation("FIND_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation CreateLobby = new ServiceOperation("CREATE_LOBBY");
+        public static readonly ServiceOperation CreateLobbyWithConfig = new ServiceOperation("CREATE_LOBBY_WITH_CONFIG");
         public static readonly ServiceOperation CreateLobbyWithPingData = new ServiceOperation("CREATE_LOBBY_WITH_PING_DATA");
+        public static readonly ServiceOperation CreateLobbyWithConfigAndPingData = new ServiceOperation("CREATE_LOBBY_WITH_CONFIG_AND_PING_DATA");
         public static readonly ServiceOperation FindOrCreateLobby = new ServiceOperation("FIND_OR_CREATE_LOBBY");
         public static readonly ServiceOperation FindOrCreateLobbyWithPingData = new ServiceOperation("FIND_OR_CREATE_LOBBY_WITH_PING_DATA");
         public static readonly ServiceOperation GetLobbyData = new ServiceOperation("GET_LOBBY_DATA");
@@ -535,6 +537,9 @@ namespace BrainCloud
         public static readonly ServiceOperation MoveFile = new ServiceOperation("MOVE_FILE");
         public static readonly ServiceOperation MoveUserToGroupFile = new ServiceOperation("MOVE_USER_TO_GROUP_FILE");
         public static readonly ServiceOperation UpdateFileInfo = new ServiceOperation("UPDATE_FILE_INFO");
+
+        // Campaign Services
+        public static readonly ServiceOperation GetMyCampaigns = new ServiceOperation("GET_MY_CAMPAIGNS");
 
         #endregion
 
