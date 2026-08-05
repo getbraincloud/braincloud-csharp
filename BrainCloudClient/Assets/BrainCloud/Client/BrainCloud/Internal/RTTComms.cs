@@ -580,7 +580,7 @@ namespace BrainCloud.Internal
                 if (m_endpoint == null)
                 {
                     rttConnectionServerError(400, ReasonCodes.RTT_CLIENT_ERROR,
-                        "No TCP endpoint available", cbObject);
+                        buildRTTRequestError("No TCP endpoint available"), cbObject);
                     return;
                 }
 
