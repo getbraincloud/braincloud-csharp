@@ -245,6 +245,8 @@ namespace BrainCloud.Internal
         {
             if (m_rttConnectionStatus != RTTConnectionStatus.DISCONNECTED) return;
 
+            m_tcpIsDisconnecting = false;
+
             string host = m_endpoint["host"] as string;
             int port = (int)m_endpoint["port"];
 
@@ -284,15 +286,21 @@ namespace BrainCloud.Internal
                 }
                 catch (Exception e)
                 {
-                    if (m_clientRef.LoggingEnabled)
+                    // Suppress the IOException/SocketException (WSACancelBlockingCall / WSAEINTR)
+                    // that fires when disconnect() closes the socket from the main thread while
+                    // we are blocking in NetworkStream.Read() — that is expected clean shutdown.
+                    if (!m_tcpIsDisconnecting && m_clientRef.LoggingEnabled)
                         m_clientRef.Log("RTT TCP error: " + e);
                 }
 
-                // Socket closed or errored — signal Update() to tear down via m_tcpDisconnected,
-                // mirroring how WebsocketStatus.CLOSED triggers cleanup for WebSocket.
-                m_tcpDisconnected = true;
-                addRTTCommandResponse(new RTTCommandResponse(
-                    ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "RTT TCP connection closed"));
+                // Only signal Update() when the socket closed unexpectedly; disconnect() already
+                // handles intentional teardown and resets m_tcpDisconnected itself.
+                if (!m_tcpIsDisconnecting)
+                {
+                    m_tcpDisconnected = true;
+                    addRTTCommandResponse(new RTTCommandResponse(
+                        ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "RTT TCP connection closed"));
+                }
             });
             m_tcpReceiveThread.IsBackground = true;
             m_tcpReceiveThread.Start();
@@ -319,7 +327,9 @@ namespace BrainCloud.Internal
         {
             if (m_webSocket != null) m_webSocket.Close();
 
-            // TCP cleanup — close the stream first so the receive thread unblocks.
+            // TCP cleanup — set the flag first so the receive thread's catch block knows
+            // that the IOException is intentional and should not be logged as an error.
+            m_tcpIsDisconnecting = true;
             m_tcpStream?.Dispose();
             m_tcpStream = null;
             if (m_tcpClient != null)
@@ -328,6 +338,9 @@ namespace BrainCloud.Internal
                 m_tcpClient = null;
             }
             m_tcpDisconnected = false;
+            // m_tcpIsDisconnecting is NOT reset here — the background receive thread may
+            // still be in its catch block. It is reset at the top of connectTCP() instead,
+            // before any new connection is started.
 
             RTTConnectionID = "";
             RTTEventServer = "";
@@ -663,6 +676,7 @@ namespace BrainCloud.Internal
         private NetworkStream m_tcpStream = null;
         private Thread m_tcpReceiveThread = null;
         private volatile bool m_tcpDisconnected = false;
+        private volatile bool m_tcpIsDisconnecting = false;
         private readonly object m_tcpSendLock = new object();
 
         private TimeSpan m_sinceLastHeartbeat;
