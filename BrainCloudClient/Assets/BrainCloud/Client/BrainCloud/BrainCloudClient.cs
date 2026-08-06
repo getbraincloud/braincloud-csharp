@@ -54,6 +54,19 @@ namespace BrainCloud
     public delegate void FailureCallback(int status, int reasonCode, string jsonError, object cbObject);
 
     /// <summary>
+    /// Global error callback, invoked for every failed API call when registered.
+    /// Unlike <see cref="FailureCallback"/>, this callback is not tied to a single
+    /// API call, so it also identifies which service/operation generated the error.
+    /// </summary>
+    /// <param name="serviceName">The service name that generated the error</param>
+    /// <param name="serviceOperation">The service operation that generated the error</param>
+    /// <param name="status">The HTTP status code</param>
+    /// <param name="reasonCode">The error reason code</param>
+    /// <param name="jsonError">The error JSON string</param>
+    /// <param name="cbObject">The user supplied callback object from the originating API call, if any</param>
+    public delegate void FailureGlobalCallback(string serviceName, string serviceOperation, int status, int reasonCode, string jsonError, object cbObject);
+
+    /// <summary>
     /// Network error callback.
     /// </summary>
     public delegate void NetworkErrorCallback();
@@ -1014,15 +1027,26 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Failure callback invoked for all errors generated
+        /// Failure callback invoked for all errors generated. Also identifies the
+        /// service/operation that generated the error.
         /// </summary>
+        public void RegisterGlobalErrorCallback(FailureGlobalCallback callback)
+        {
+            _comms.RegisterGlobalErrorCallback(callback);
+        }
+
+        /// <summary>
+        /// Failure callback invoked for all errors generated.
+        /// </summary>
+        [Obsolete("This overload does not identify the service/operation that generated the " +
+            "error and will be removed after August 2027. Use RegisterGlobalErrorCallback(FailureGlobalCallback) instead.")]
         public void RegisterGlobalErrorCallback(FailureCallback callback)
         {
             _comms.RegisterGlobalErrorCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the global error callback.
+        /// De-registers the global error callback(s).
         /// </summary>
         public void DeregisterGlobalErrorCallback()
         {

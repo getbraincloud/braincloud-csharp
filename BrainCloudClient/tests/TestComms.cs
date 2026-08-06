@@ -279,6 +279,38 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGlobalErrorCallbackLegacyOverload()
+        {
+            // Clients that haven't migrated to the FailureGlobalCallback overload yet should
+            // keep receiving errors via the legacy FailureCallback signature.
+#pragma warning disable CS0618
+            _bc.Client.RegisterGlobalErrorCallback(new FailureCallback(LegacyGlobalErrorHandler));
+#pragma warning restore CS0618
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+
+            Assert.That(_globalErrorCount == 1);
+        }
+
+        [Test]
+        public void TestGlobalErrorCallbackBothOverloadsRegistered()
+        {
+            // Both overloads can be registered at once (e.g. mid-migration) and should both fire.
+            _bc.Client.RegisterGlobalErrorCallback(GlobalErrorHandler);
+#pragma warning disable CS0618
+            _bc.Client.RegisterGlobalErrorCallback(new FailureCallback(LegacyGlobalErrorHandler));
+#pragma warning restore CS0618
+            TestResult tr = new TestResult(_bc);
+
+            _bc.TimeService.ReadServerTime(tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+
+            Assert.That(_globalErrorCount == 2);
+        }
+
+        [Test]
         public void TestMessageBundleMarker()
         {
             TestResult tr = new TestResult(_bc);
@@ -334,7 +366,7 @@ namespace BrainCloudTests
         //     tr.Run();
         // }
 
-        private void GlobalErrorHandler(int status, int reasonCode, string jsonError, object cbObject)
+        private void GlobalErrorHandler(string serviceName, string serviceOperation, int status, int reasonCode, string jsonError, object cbObject)
         {
             if (cbObject != null)
             {
@@ -345,8 +377,18 @@ namespace BrainCloudTests
                 }
             }
 
+            Assert.That(string.IsNullOrEmpty(serviceName), Is.False, "Global error callback should include the service name");
+            Assert.That(string.IsNullOrEmpty(serviceOperation), Is.False, "Global error callback should include the service operation");
+
             _globalErrorCount++;
-            Console.Out.WriteLine("Global error: " + jsonError);
+            Console.Out.WriteLine("Global error: " + serviceName + "." + serviceOperation + " - " + jsonError);
+            Console.Out.WriteLine("Callback object: " + cbObject);
+        }
+
+        private void LegacyGlobalErrorHandler(int status, int reasonCode, string jsonError, object cbObject)
+        {
+            _globalErrorCount++;
+            Console.Out.WriteLine("Global error (legacy overload): " + jsonError);
             Console.Out.WriteLine("Callback object: " + cbObject);
         }
     }

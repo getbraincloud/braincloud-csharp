@@ -62,7 +62,10 @@ namespace BrainCloud
             Dictionary<string, object> data = new Dictionary<string, object>();
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
             data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
-            data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
+            if (Util.IsOptionalParameterValid(acl))
+            {
+                data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl);
+            }
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
             data[OperationParam.CustomEntityServiceIsOwned.Value] = isOwned;
 
@@ -289,7 +292,10 @@ namespace BrainCloud
             data[OperationParam.CustomEntityServiceEntityId.Value] = entityId;
             data[OperationParam.CustomEntityServiceVersion.Value] = version;
             data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
-            data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl);
+            if (Util.IsOptionalParameterValid(acl))
+            {
+                data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl);
+            }
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
@@ -678,7 +684,10 @@ namespace BrainCloud
             data[OperationParam.CustomEntityServiceEntityType.Value] = entityType;
             data[OperationParam.CustomEntityServiceVersion.Value] = version;
             data[OperationParam.CustomEntityServiceDataJson.Value] = JsonReader.Deserialize<Dictionary<string, object>>(dataJson);
-            data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl); 
+            if (Util.IsOptionalParameterValid(acl))
+            {
+                data[OperationParam.CustomEntityServiceAcl.Value] = JsonReader.Deserialize<Dictionary<string, object>>(acl);
+            }
             data[OperationParam.CustomEntityServiceTimeToLive.Value] = timeToLive;
 
             ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);

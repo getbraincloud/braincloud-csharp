@@ -211,7 +211,11 @@ namespace BrainCloud.Internal
 
         private FileUploadFailedCallback _fileUploadFailedCallback;
 
-        private FailureCallback _globalErrorCallback;
+        private FailureGlobalCallback _globalErrorCallback;
+
+        // Legacy overload retained for clients registered via RegisterGlobalErrorCallback(FailureCallback).
+        // See the [Obsolete] callout on that overload for the removal timeline.
+        private FailureCallback _globalErrorCallbackLegacy;
 
         private NetworkErrorCallback _networkErrorCallback;
         
@@ -529,14 +533,20 @@ namespace BrainCloud.Internal
             _fileUploadFailedCallback = null;
         }
 
-        public void RegisterGlobalErrorCallback(FailureCallback callback)
+        public void RegisterGlobalErrorCallback(FailureGlobalCallback callback)
         {
             _globalErrorCallback = callback;
+        }
+
+        public void RegisterGlobalErrorCallback(FailureCallback callback)
+        {
+            _globalErrorCallbackLegacy = callback;
         }
 
         public void DeregisterGlobalErrorCallback()
         {
             _globalErrorCallback = null;
+            _globalErrorCallbackLegacy = null;
         }
 
         public void RegisterNetworkErrorCallback(NetworkErrorCallback callback)
@@ -1296,6 +1306,7 @@ namespace BrainCloud.Internal
                     int reasonCode = 0;
                     string errorJson = "";
                     callback = sc.GetCallback();
+                    service = sc.GetService();
                     operation = sc.GetOperation();
 
                     // If it was an authentication call 
@@ -1424,7 +1435,7 @@ namespace BrainCloud.Internal
                         }
                     }
 
-                    if (_globalErrorCallback != null)
+                    if (_globalErrorCallback != null || _globalErrorCallbackLegacy != null)
                     {
                         object cbObject = null;
                         if (callback != null)
@@ -1438,7 +1449,15 @@ namespace BrainCloud.Internal
                             }
                         }
 
-                        _globalErrorCallback(statusCode, reasonCode, errorJson, cbObject);
+                        if (_globalErrorCallback != null)
+                        {
+                            _globalErrorCallback(service, operation, statusCode, reasonCode, errorJson, cbObject);
+                        }
+
+                        if (_globalErrorCallbackLegacy != null)
+                        {
+                            _globalErrorCallbackLegacy(statusCode, reasonCode, errorJson, cbObject);
+                        }
                     }
 
                     UpdateKillSwitch(sc.Service, sc.Operation, statusCode);
