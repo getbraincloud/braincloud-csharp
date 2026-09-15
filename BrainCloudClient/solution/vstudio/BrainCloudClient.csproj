@@ -71,6 +71,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\AssemblyInfo.cs">
+      <Link>BrainCloud\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudAsyncMatch.cs">
       <Link>BrainCloud\BrainCloudAsyncMatch.cs</Link>
     </Compile>

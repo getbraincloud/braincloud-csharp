@@ -270,29 +270,17 @@ namespace BrainCloud.Internal
             _isAuthenticated = true;
         }
 
-        public Dictionary<string, string> AppIdSecretMap
-        {
-            get; private set;
-        }
+        // Internal only -- no public accessor besides RefreshDispatcherUrl() below.
+        private Dictionary<string, string> _appIdSecretMap = new Dictionary<string, string>();
 
         public string AppId
         {
             get; private set;
         }
 
-        public string SecretKey
+        internal string RefreshDispatcherUrl()
         {
-            get
-            {
-                if (AppIdSecretMap.ContainsKey(AppId))
-                {
-                    return AppIdSecretMap[AppId];
-                }
-                else
-                {
-                    return "NO SECRET DEFINED FOR '" + AppId + "'";
-                }
-            }
+            return _appIdSecretMap.TryGetValue(AppId, out var secretKey) ? secretKey : "";
         }
 
         public string SessionID
@@ -420,7 +408,6 @@ namespace BrainCloud.Internal
 #if DISABLE_SSL_CHECK
             ServicePointManager.ServerCertificateValidationCallback = AcceptAllCertifications;
 #endif
-            AppIdSecretMap = new Dictionary<string, string>();
             _clientRef = client;
             ResetErrorCache();
         }
@@ -454,7 +441,7 @@ namespace BrainCloud.Internal
             UploadURL = formatURL;
             UploadURL += @"/uploader";
 
-            AppIdSecretMap[appId] = secretKey;
+            _appIdSecretMap[appId] = secretKey;
             AppId = appId;
 
             _blockingQueue = false;
@@ -469,10 +456,11 @@ namespace BrainCloud.Internal
         /// <param name="appIdSecretMap">map of appId -> secrets, to allow the client to safely switch between apps with secret being secure</param>
         public void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, string> appIdSecretMap)
         {
-            AppIdSecretMap.Clear();
-            AppIdSecretMap = appIdSecretMap;
+            // Copy rather than alias the caller's dictionary — otherwise mutating it after
+            // this call silently changes the client's secrets out from under it.
+            _appIdSecretMap = new Dictionary<string, string>(appIdSecretMap);
 
-            Initialize(serverURL, defaultAppId, AppIdSecretMap[defaultAppId]);
+            Initialize(serverURL, defaultAppId, _appIdSecretMap[defaultAppId]);
         }
 
         private Uri ValidateURL(string value)
@@ -1854,7 +1842,7 @@ namespace BrainCloud.Internal
             packet[OperationParam.ServiceMessageMessages] = requestState.MessageList;
 
             string jsonRequestString = SerializeJson(packet);
-            string sig = CalculateMD5Hash(jsonRequestString + SecretKey);
+            string sig = SignRequest(jsonRequestString);
 
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonRequestString);
 
@@ -2275,21 +2263,40 @@ namespace BrainCloud.Internal
             }
         }
 
-        private string CalculateMD5Hash(string input)
+        internal string SignRequest(string jsonRequestString)
         {
+            string secretKey = _appIdSecretMap.TryGetValue(AppId, out var s) ? s : ("NO SECRET DEFINED FOR '" + AppId + "'");
+
+            byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(jsonRequestString);
+            byte[] secretBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
+            return ComputeSignatureHash(payloadBytes, secretBytes);
+        }
+
+        internal static string ComputeSignatureHash(byte[] payloadBytes, byte[] secretBytes)
+        {
+            byte[] hash;
+
 #if !(DOT_NET || GODOT)
-            MD5Unity.MD5 md5 = MD5Unity.MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input); // UTF8, not ASCII
-            byte[] hash = md5.ComputeHash(inputBytes);
+            using (MD5Unity.MD5 md5 = MD5Unity.MD5.Create())
+            {
+                md5.TransformBlock(payloadBytes, 0, payloadBytes.Length, payloadBytes, 0);
+                md5.TransformFinalBlock(secretBytes, 0, secretBytes.Length);
+                hash = md5.Hash;
+            }
 #else
 #if UWP
-            Windows.Security.Cryptography.MD5 md5 = Windows.Security.Cryptography.MD5.Create();
+            using (Windows.Security.Cryptography.MD5 md5 = Windows.Security.Cryptography.MD5.Create())
 #else
-            System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
 #endif
-            byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input); // UTF8, not ASCII
-            byte[] hash = md5.ComputeHash(inputBytes);
+            {
+                md5.TransformBlock(payloadBytes, 0, payloadBytes.Length, payloadBytes, 0);
+                md5.TransformFinalBlock(secretBytes, 0, secretBytes.Length);
+                hash = md5.Hash;
+            }
 #endif
+
+            Array.Clear(secretBytes, 0, secretBytes.Length);
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hash.Length; i++)

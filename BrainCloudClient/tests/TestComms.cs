@@ -1,10 +1,12 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 
 using BrainCloud;
+using BrainCloud.Internal;
 using NUnit.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 
 namespace BrainCloudTests
@@ -421,4 +423,5 @@ namespace BrainCloudTests
             tr.Run();
         }
     }
+
 }
