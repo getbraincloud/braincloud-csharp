@@ -879,6 +879,21 @@ namespace BrainCloud
             _initialized = true;
         }
 
+        /// <summary>Initializes the BrainCloudClient with a signing profile instead of a secret.</summary>
+        /// <param name="serverURL">The URL to the brainCloud server</param>
+        /// <param name="appProfile">Signs a given payload</param>
+        /// <param name="appId">The app id</param>
+        /// <param name="appVersion">The app version</param>
+        public void Initialize(string serverURL, Func<byte[], string> appProfile, string appId, string appVersion)
+        {
+            initializeHelper(serverURL, appProfile, appId, appVersion);
+
+            // set up braincloud which does the message handling
+            _comms.Initialize(serverURL, appId, appProfile);
+
+            _initialized = true;
+        }
+
         /// <summary>Initialize the identity aspects of brainCloud.</summary>
         /// <param name="profileId">The profile id</param>
         /// <param name="anonymousId">The anonymous id</param>
@@ -1396,11 +1411,21 @@ namespace BrainCloud
 
         private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)
         {
+            initializeHelperCommon(serverURL, string.IsNullOrEmpty(secretKey) ? "secretKey was null or empty" : null, appId, appVersion);
+        }
+
+        private void initializeHelper(string serverURL, Func<byte[], string> appProfile, string appId, string appVersion)
+        {
+            initializeHelperCommon(serverURL, appProfile == null ? "appProfile was null" : null, appId, appVersion);
+        }
+
+        private void initializeHelperCommon(string serverURL, string secretError, string appId, string appVersion)
+        {
             string error = null;
             if (string.IsNullOrEmpty(serverURL))
                 error = "serverURL was null or empty";
-            else if (string.IsNullOrEmpty(secretKey))
-                error = "secretKey was null or empty";
+            else if (secretError != null)
+                error = secretError;
             else if (string.IsNullOrEmpty(appId))
                 error = "appId was null or empty";
             else if (string.IsNullOrEmpty(appVersion))

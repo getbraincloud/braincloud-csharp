@@ -270,17 +270,17 @@ namespace BrainCloud.Internal
             _isAuthenticated = true;
         }
 
-        // Internal only -- no public accessor besides RefreshDispatcherUrl() below.
-        private Dictionary<string, string> _appIdSecretMap = new Dictionary<string, string>();
+        // Per-appId signing profile: signs a payload without exposing the secret itself.
+        private Dictionary<string, Func<byte[], string>> _appProfiles = new Dictionary<string, Func<byte[], string>>();
 
         public string AppId
         {
             get; private set;
         }
 
-        internal string RefreshDispatcherUrl()
+        internal Func<byte[], string> GetAppProfile()
         {
-            return _appIdSecretMap.TryGetValue(AppId, out var secretKey) ? secretKey : "";
+            return _appProfiles.TryGetValue(AppId, out var profile) ? profile : null;
         }
 
         public string SessionID
@@ -421,6 +421,15 @@ namespace BrainCloud.Internal
         /// <param name="secretKey">Secret key.</param>
         public void Initialize(string serverURL, string appId, string secretKey)
         {
+            Initialize(serverURL, appId, payloadBytes => ComputeSignatureHash(payloadBytes, System.Text.Encoding.UTF8.GetBytes(secretKey)));
+        }
+
+        /// <summary>Initialize the communications library with a signing profile instead of a secret.</summary>
+        /// <param name="serverURL">Server URL.</param>
+        /// <param name="appId">AppId</param>
+        /// <param name="appProfile">Signs a given payload.</param>
+        public void Initialize(string serverURL, string appId, Func<byte[], string> appProfile)
+        {
             ResetCommunication(); //resets comms, packetId and SessionId
             _expectedIncomingPacketId = JsonResponseBundleV2.NO_PACKET_EXPECTED;
 
@@ -441,7 +450,7 @@ namespace BrainCloud.Internal
             UploadURL = formatURL;
             UploadURL += @"/uploader";
 
-            _appIdSecretMap[appId] = secretKey;
+            _appProfiles[appId] = appProfile;
             AppId = appId;
 
             _blockingQueue = false;
@@ -458,9 +467,13 @@ namespace BrainCloud.Internal
         {
             // Copy rather than alias the caller's dictionary — otherwise mutating it after
             // this call silently changes the client's secrets out from under it.
-            _appIdSecretMap = new Dictionary<string, string>(appIdSecretMap);
+            foreach (var kv in appIdSecretMap)
+            {
+                string secretKey = kv.Value;
+                _appProfiles[kv.Key] = payloadBytes => ComputeSignatureHash(payloadBytes, System.Text.Encoding.UTF8.GetBytes(secretKey));
+            }
 
-            Initialize(serverURL, defaultAppId, _appIdSecretMap[defaultAppId]);
+            Initialize(serverURL, defaultAppId, _appProfiles[defaultAppId]);
         }
 
         private Uri ValidateURL(string value)
@@ -2265,11 +2278,10 @@ namespace BrainCloud.Internal
 
         internal string SignRequest(string jsonRequestString)
         {
-            string secretKey = _appIdSecretMap.TryGetValue(AppId, out var s) ? s : ("NO SECRET DEFINED FOR '" + AppId + "'");
-
             byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(jsonRequestString);
-            byte[] secretBytes = System.Text.Encoding.UTF8.GetBytes(secretKey);
-            return ComputeSignatureHash(payloadBytes, secretBytes);
+            if (_appProfiles.TryGetValue(AppId, out var profile))
+                return profile(payloadBytes);
+            return ComputeSignatureHash(payloadBytes, System.Text.Encoding.UTF8.GetBytes("NO SECRET DEFINED FOR '" + AppId + "'"));
         }
 
         internal static string ComputeSignatureHash(byte[] payloadBytes, byte[] secretBytes)
