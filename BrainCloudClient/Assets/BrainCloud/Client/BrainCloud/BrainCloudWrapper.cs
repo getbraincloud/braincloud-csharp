@@ -389,10 +389,10 @@ public class BrainCloudWrapper
     public void Init()
     {
         resetWrapper();
-        BrainCloud.Plugin.Interface.ApplyProfile(secret =>
+        BrainCloud.Plugin.Interface.ApplySigningProfile(profile =>
             Init(
                 BrainCloud.Plugin.Interface.DispatcherURL,
-                secret,
+                profile,
                 BrainCloud.Plugin.Interface.AppId,
                 BrainCloud.Plugin.Interface.AppVersion));
 
@@ -433,13 +433,13 @@ public class BrainCloudWrapper
         // `new BrainCloudNative()` -- there is no such compile-time type.
         var native = Godot.ClassDB.Instantiate("BrainCloudNative").AsGodotObject();
         native.Call("resolve_config", "res://addons/braincloud/braincloud.cfg",
-            Godot.Callable.From((string appId, string appSecret) =>
+            Godot.Callable.From((string appId, Godot.Callable sign) =>
             {
                 string appVersion = Godot.ProjectSettings.GetSetting("braincloud/config/app_version", "1.0.0").AsString();
                 string serverUrl = Godot.ProjectSettings.GetSetting(
                     "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
 
-                Init(serverUrl, appSecret, appId, appVersion);
+                Init(serverUrl, payloadBytes => sign.Call(payloadBytes).AsString(), appId, appVersion);
 
                 Client.EnableLogging(Godot.ProjectSettings.GetSetting("braincloud/debug/enable_logging", false).AsBool());
                 Client.EnableCompressedRequests(
