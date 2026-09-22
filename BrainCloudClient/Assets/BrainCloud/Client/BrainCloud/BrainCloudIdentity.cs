@@ -1442,7 +1442,7 @@ namespace BrainCloud
             DetachIdentity(googleUserAccountEmail, AuthenticationType.GoogleOpenId, continueAnon, success, failure, cbObject);
         }
 
-               /// <summary>
+        /// <summary>
         /// Attach the user's Apple credentials to the current profile.
         /// </summary>
         /// <remarks>
@@ -1537,6 +1537,103 @@ namespace BrainCloud
             object cbObject = null)
         {
             DetachIdentity(appleUserId, AuthenticationType.Apple, continueAnon, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Attach the user's EpicGames credentials to the current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Attach
+        /// </remarks>
+        /// <param name="epicAccountId">
+        /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+        /// </param>
+        /// <param name="authIdToken">
+        /// IdToken.Value.JsonWebToken string from the EOS AuthInterface's CopyIdToken method.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void AttachEpicGamesIdentity(
+            string epicAccountId,
+            string authIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            AttachIdentity(epicAccountId, authIdToken, AuthenticationType.EpicGames, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Merge the profile associated with the provided EpicGames credentials with the
+        /// current profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Merge
+        /// </remarks>
+        /// <param name="epicAccountId">
+        /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+        /// </param>
+        /// <param name="authIdToken">
+        /// IdToken.Value.JsonWebToken string from the EOS AuthInterface's CopyIdToken method.
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void MergeEpicGamesIdentity(
+            string epicAccountId,
+            string authIdToken,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            MergeIdentity(epicAccountId, authIdToken, AuthenticationType.EpicGames, success, failure, cbObject);
+        }
+
+        /// <summary>
+        /// Detach the EpicGames identity from this profile.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - identity
+        /// Service Operation - Detach
+        /// </remarks>
+        /// <param name="epicAccountId">
+        /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+        /// </param>
+        /// <param name="continueAnon">
+        /// Proceed even if the profile will revert to anonymous?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void DetachEpicGamesIdentity(
+            string epicAccountId,
+            bool continueAnon,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            DetachIdentity(epicAccountId, AuthenticationType.EpicGames, continueAnon, success, failure, cbObject);
         }
 
         /// <summary>
