@@ -167,6 +167,7 @@ namespace BrainCloud
         /// - windows
         /// - windowsPhone
         /// - googlePlay
+        /// - epicGames
         /// </param>
         /// <param name="iapId">
         /// The IAP product Id as configured for the product on brainCloud.
