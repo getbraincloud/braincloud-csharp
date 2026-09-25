@@ -670,10 +670,7 @@ namespace BrainCloud
 
             DateTime RoundtripTime = DateTime.UtcNow;
 
-            HttpClient client = new HttpClient();
-            client.Timeout = new TimeSpan(100000000); // 10 seconds
-
-            client.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
+            s_pingClient.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
             {
                 if (task.IsCompleted && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
                 {
@@ -855,6 +852,23 @@ namespace BrainCloud
             public object cbObject;
         }
         private List<Failure> m_failureQueue = new List<Failure>();
+
+#if DOT_NET || GODOT
+        /// <summary>
+        /// One client for every region ping. Guarded because System.Net.Http is only
+        /// imported on these targets - Unity uses the UnityWebRequest path instead.
+        /// </summary>
+        /// <remarks>
+        /// This used to be a <c>new HttpClient()</c> per ping, never disposed. Each
+        /// instance carries its own connection pool, so sockets are never reused and
+        /// linger in TIME_WAIT - and pinging runs across every region, repeatedly. One
+        /// static client is the documented way to use HttpClient and pools for free.
+        /// </remarks>
+        private static readonly HttpClient s_pingClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+#endif
 
         /// <summary>
         /// Reference to the brainCloud client object
