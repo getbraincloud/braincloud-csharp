@@ -224,7 +224,16 @@ namespace BrainCloud.Internal
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
 #if DOT_NET || GODOT
-        private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
+        /// <summary>
+        /// Shared across every client instance, by design.
+        /// </summary>
+        /// <remarks>
+        /// One static client is the documented way to use HttpClient. It is safe to share
+        /// here because nothing is configured per-instance on it: headers ride on each
+        /// HttpRequestMessage, and the per-request timeout is a linked
+        /// CancellationTokenSource in SendAsync rather than HttpClient.Timeout.
+        /// </remarks>
+        private static readonly HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
         // For handling local session errors

@@ -32,6 +32,8 @@ namespace BrainCloudTests
         [SetUp]
         public void Setup()
         {
+            LogTestBanner("BEGIN");
+
             LoadIds();
 
             _bc = new BrainCloudWrapper();
@@ -130,6 +132,15 @@ namespace BrainCloudTests
             _bc.Client.DeregisterEventCallback();
             _bc.Client.DeregisterRewardCallback();
             Thread.Sleep(1000);
+
+            LogTestBanner("END");
+        }
+
+        private static void LogTestBanner(string phase)
+        {
+            Console.WriteLine();
+            Console.WriteLine("========== " + phase + ": " +
+                              TestContext.CurrentContext.Test.FullName + " ==========");
         }
 
         /// <summary>
