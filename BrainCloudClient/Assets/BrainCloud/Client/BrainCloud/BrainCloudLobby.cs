@@ -672,7 +672,13 @@ namespace BrainCloud
 
             s_pingClient.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
             {
-                if (task.IsCompleted && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
+                // Only touch Result once the task actually ran to completion. Reading it on
+                // a faulted or cancelled task throws inside the continuation, which would
+                // skip handlePingTimeResponse entirely and leave this region with no ping.
+                HttpResponseMessage response =
+                    task.Status == TaskStatus.RanToCompletion ? task.Result : null;
+
+                if (response != null && response.IsSuccessStatusCode)
                 {
                     long ms = (long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds;
                     handlePingTimeResponse(ms, in_region);
@@ -682,7 +688,10 @@ namespace BrainCloud
                     handlePingTimeResponse(9999, in_region);
                 }
 
-                client.Dispose();
+                // Dispose the RESPONSE, never the client. s_pingClient is shared, so
+                // disposing it would break every ping after this one; releasing the
+                // response frees its content stream and returns the connection to the pool.
+                response?.Dispose();
             });
         }
 
