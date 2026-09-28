@@ -49,7 +49,15 @@ namespace Tests.PlayMode
             _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             
-            string channelId = "20001:gl:valid";
+            // Ask the server for the channel id instead of hardcoding it. The literal here
+            // was "20001:gl:valid" - a channel id carries the appId as its first segment,
+            // so it only resolved on the one app it was copied from and returned 40603
+            // "Unrecognized channel" everywhere else. GetChannelId builds it from whatever
+            // app the client is actually authenticated against.
+            _tc.bcWrapper.ChatService.GetChannelId("gl", "valid", _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string channelId = (string)((Dictionary<string, object>)_tc.m_response["data"])["channelId"];
 
             //Connect to channel
             _tc.bcWrapper.ChatService.ChannelConnect(channelId, 50, _tc.ApiSuccess, _tc.ApiError);
