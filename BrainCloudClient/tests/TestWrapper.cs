@@ -14,6 +14,21 @@ namespace BrainCloudTests
     public class TestWrapper : TestFixtureNoAuth
     {
         private int autoReconnectCallbackCount = 0;
+
+        /// <summary>
+        /// Target identity for the SmartSwitchAuthenticateEmail tests.
+        /// </summary>
+        /// <remarks>
+        /// This was the bare string "testAuth", which is not an email address. The server
+        /// validates the format now and rejects it with 40221 "Email address fails
+        /// validation", so all three SmartSwitch tests failed before they reached the thing
+        /// they are actually testing. The domain matches what TestFixtureBase builds for its
+        /// generated users (Id + "@bctestuser.com"). It is deliberately NOT UserA's address:
+        /// SmartSwitch needs to land on an identity distinct from whatever the test
+        /// authenticated as first, or the switch has nothing to switch to.
+        /// </remarks>
+        private const string SmartSwitchEmail = "testAuth@bctestuser.com";
+        private const string SmartSwitchPassword = "testPass";
         
         [Test]
         public void TestAuthenticateAnonymous()
@@ -74,8 +89,8 @@ namespace BrainCloudTests
 
 
             _bc.SmartSwitchAuthenticateEmail(
-               "testAuth",
-               "testPass",
+               SmartSwitchEmail,
+               SmartSwitchPassword,
                true,
                tr.ApiSuccess, tr.ApiError);
 
@@ -100,8 +115,8 @@ namespace BrainCloudTests
             tr.Run();
 
             _bc.SmartSwitchAuthenticateEmail(
-               "testAuth",
-               "testPass",
+               SmartSwitchEmail,
+               SmartSwitchPassword,
                true,
                tr.ApiSuccess, tr.ApiError);
 
@@ -118,8 +133,8 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.SmartSwitchAuthenticateEmail(
-                "testAuth",
-                "testPass",
+                SmartSwitchEmail,
+                SmartSwitchPassword,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
