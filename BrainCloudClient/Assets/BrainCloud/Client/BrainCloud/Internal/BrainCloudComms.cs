@@ -224,7 +224,7 @@ namespace BrainCloud.Internal
         private List<FileUploader> _fileUploads = new List<FileUploader>();
 
 #if DOT_NET || GODOT
-        private HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
+        private static readonly HttpClient _httpClient = new HttpClient(new NativeMessageHandler());
 #endif
 
         // For handling local session errors

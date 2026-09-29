@@ -14,6 +14,8 @@ namespace BrainCloudTests
     public class TestWrapper : TestFixtureNoAuth
     {
         private int autoReconnectCallbackCount = 0;
+        private const string SmartSwitchEmail = "testAuth@bctestuser.com";
+        private const string SmartSwitchPassword = "testPass";
         
         [Test]
         public void TestAuthenticateAnonymous()
@@ -74,8 +76,8 @@ namespace BrainCloudTests
 
 
             _bc.SmartSwitchAuthenticateEmail(
-               "testAuth",
-               "testPass",
+               SmartSwitchEmail,
+               SmartSwitchPassword,
                true,
                tr.ApiSuccess, tr.ApiError);
 
@@ -100,8 +102,8 @@ namespace BrainCloudTests
             tr.Run();
 
             _bc.SmartSwitchAuthenticateEmail(
-               "testAuth",
-               "testPass",
+               SmartSwitchEmail,
+               SmartSwitchPassword,
                true,
                tr.ApiSuccess, tr.ApiError);
 
@@ -118,8 +120,8 @@ namespace BrainCloudTests
             TestResult tr = new TestResult(_bc);
 
             _bc.SmartSwitchAuthenticateEmail(
-                "testAuth",
-                "testPass",
+                SmartSwitchEmail,
+                SmartSwitchPassword,
                 true,
                 tr.ApiSuccess, tr.ApiError);
 
