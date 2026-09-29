@@ -672,9 +672,6 @@ namespace BrainCloud
 
             s_pingClient.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
             {
-                // Only touch Result once the task actually ran to completion. Reading it on
-                // a faulted or cancelled task throws inside the continuation, which would
-                // skip handlePingTimeResponse entirely and leave this region with no ping.
                 HttpResponseMessage response =
                     task.Status == TaskStatus.RanToCompletion ? task.Result : null;
 
@@ -688,9 +685,6 @@ namespace BrainCloud
                     handlePingTimeResponse(9999, in_region);
                 }
 
-                // Dispose the RESPONSE, never the client. s_pingClient is shared, so
-                // disposing it would break every ping after this one; releasing the
-                // response frees its content stream and returns the connection to the pool.
                 response?.Dispose();
             });
         }
@@ -863,16 +857,6 @@ namespace BrainCloud
         private List<Failure> m_failureQueue = new List<Failure>();
 
 #if DOT_NET || GODOT
-        /// <summary>
-        /// One client for every region ping. Guarded because System.Net.Http is only
-        /// imported on these targets - Unity uses the UnityWebRequest path instead.
-        /// </summary>
-        /// <remarks>
-        /// This used to be a <c>new HttpClient()</c> per ping, never disposed. Each
-        /// instance carries its own connection pool, so sockets are never reused and
-        /// linger in TIME_WAIT - and pinging runs across every region, repeatedly. One
-        /// static client is the documented way to use HttpClient and pools for free.
-        /// </remarks>
         private static readonly HttpClient s_pingClient = new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(10)

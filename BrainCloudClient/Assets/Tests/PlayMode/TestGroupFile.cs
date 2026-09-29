@@ -14,12 +14,6 @@ namespace Tests.PlayMode
     {
         private string _folderPath = "";
         private string _groupFileId;
-        // Created by TestA, not hardcoded. This used to be a literal group id copied off
-        // the internal environment ("grabbed from internal servers -> Unit Test Master"),
-        // which meant the whole fixture only worked on that one app. Anywhere else the
-        // JoinGroup in TestA returned 40345 "Group not found" and every later test
-        // cascaded off it: the file never moved into a group, so _groupFileId stayed null
-        // and the tests either sent fileId:null (40358) or dereferenced a null response.
         private string _groupID = "";
         private bool _recurse = true;
         //Making version a negative value to tell the server to use the latest version
@@ -128,14 +122,6 @@ namespace Tests.PlayMode
             yield return _tc.StartCoroutine(_tc.Run());
 
             //Delete the group TestA created rather than leaving it behind.
-            //
-            //This runs as the group's owner, which is what makes the delete legal: the
-            //fixture's [OneTimeTearDown] is deliberately empty so TestContainer.CleanUp()
-            //never runs between tests, TestContainer._init therefore stays true, and every
-            //SetUpNewUser call after TestA short-circuits. All of these tests - TestZ
-            //included - share the one session TestA authenticated.
-            //
-            //Version -1 tells the server to use the latest version.
             _tc.bcWrapper.GroupService.DeleteGroup(_groupID, -1, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             base.TearDown();
