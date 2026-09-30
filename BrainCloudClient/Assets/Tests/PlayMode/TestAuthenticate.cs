@@ -700,8 +700,20 @@ namespace Tests.PlayMode
                 var data = _tc.m_response["data"] as Dictionary<string, object>;
                 var response = data["response"] as Dictionary<string, object>;
                 var data2 = response["data"] as Dictionary<string, object>;
+
+                if (data2 == null || !data2.ContainsKey("json"))
+                {
+                    object statusCode = data2 != null && data2.ContainsKey("statusCode")
+                                      ? data2["statusCode"] : "unknown";
+                    Assert.Fail("getUltraToken returned no token (statusCode: " + statusCode +
+                                ") - Ultra's identity service is not responding.");
+                }
+
                 var json = data2["json"] as Dictionary<string, object>;
+                Assert.That(json, Is.Not.Null, "getUltraToken 'json' was not an object");
+
                 string idToken = json["id_token"] as string;
+                Assert.That(idToken, Is.Not.Null.And.Not.Empty, "getUltraToken returned no id_token");
 
                 _tc.bcWrapper.PlayerStateService.Logout();
                 yield return _tc.StartCoroutine(_tc.Spin());
