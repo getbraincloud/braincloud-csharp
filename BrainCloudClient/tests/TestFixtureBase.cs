@@ -35,6 +35,7 @@ namespace BrainCloudTests
             LogTestBanner("BEGIN");
 
             LoadIds();
+            Console.WriteLine($">> BrainCloud test server: {ServerUrl}  appId={AppId}");
 
             _bc = new BrainCloudWrapper();
             Dictionary<string, string> secretMap = new Dictionary<string, string>();
