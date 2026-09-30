@@ -515,11 +515,30 @@ namespace BrainCloudTests
             _bc.ScriptService.RunScript("getUltraToken", "{}", tr.ApiSuccess, tr.ApiError);
             tr.Run();
             
+            // getUltraToken is a cloud script that fetches an id_token from an external
+            // identity provider. When that upstream is unreachable the script still returns
+            // 200, with an error body in place of the token - on prod it is currently
+            // answering {"statusCode":404,"error":"<html>...404 Not Found...nginx..."}.
+            // The chain below used to walk straight into that, so the failure surfaced as a
+            // KeyNotFoundException on "json" with nothing pointing at the script.
             var data = tr.m_response["data"] as Dictionary<string, object>;
             var response = data["response"] as Dictionary<string, object>;
             var data2 = response["data"] as Dictionary<string, object>;
+
+            if (data2 == null || !data2.ContainsKey("json"))
+            {
+                object statusCode = data2 != null && data2.ContainsKey("statusCode")
+                                  ? data2["statusCode"] : "unknown";
+                Assert.Ignore("getUltraToken returned no token (statusCode: " + statusCode +
+                              ") - its identity provider is unreachable, so Ultra " +
+                              "authentication cannot be exercised here.");
+            }
+
             var json = data2["json"] as Dictionary<string, object>;
+            Assert.That(json, Is.Not.Null, "getUltraToken 'json' was not an object");
+
             string idToken = json["id_token"] as string;
+            Assert.That(idToken, Is.Not.Null.And.Not.Empty, "getUltraToken returned no id_token");
             
             _bc.PlayerStateService.Logout();
 
@@ -530,10 +549,17 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticateSwitch()
         {
+            // internala/internalg do not offer this auth type at all. Prod does, but it
+            // validates the platform token as a real JWT, so the placeholder "acceptThis"
+            // below comes back 403/40307 ("Invalid JWT serialization: Missing dot
+            // delimiter(s)") and CI has no genuine Switch token to substitute. That
+            // leaves internal, which accepts the token as-is. Anchored on "//api." so
+            // it cannot also match api.internal.braincloudservers.com.
             if (ServerUrl.Contains("api.internala.braincloudservers.com") ||
-                ServerUrl.Contains("api.internalg.braincloudservers.com"))
+                ServerUrl.Contains("api.internalg.braincloudservers.com") ||
+                ServerUrl.Contains("//api.braincloudservers.com"))
             {
-                Console.WriteLine("This env doesn't support Switch authentication type");
+                Console.WriteLine("This env doesn't accept a placeholder Switch authentication token");
                 Assert.That(true);
                 return;
             }
@@ -554,10 +580,17 @@ namespace BrainCloudTests
         [Test]
         public void TestAuthenticatePlaystation()
         {
+            // internala/internalg do not offer this auth type at all. Prod does, but it
+            // validates the platform token as a real JWT, so the placeholder "acceptThis"
+            // below comes back 403/40307 ("An error occurred while attempting to decode
+            // the Jwt: Malformed token") and CI has no genuine Playstation token to
+            // substitute. That leaves internal, which accepts the token as-is. Anchored
+            // on "//api." so it cannot also match api.internal.braincloudservers.com.
             if (ServerUrl.Contains("api.internala.braincloudservers.com") ||
-                ServerUrl.Contains("api.internalg.braincloudservers.com"))
+                ServerUrl.Contains("api.internalg.braincloudservers.com") ||
+                ServerUrl.Contains("//api.braincloudservers.com"))
             {
-                Console.WriteLine("This env doesn't support Playstation authentication type");
+                Console.WriteLine("This env doesn't accept a placeholder Playstation authentication token");
                 Assert.That(true);
                 return;
             }

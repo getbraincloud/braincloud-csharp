@@ -125,7 +125,29 @@ namespace BrainCloudTests
 
             // Get data needed to do CachePurchasePayloadContext and VerifyPurchase (mock)
             var data = tr.m_response;
-            var products = ((data["data"] as Dictionary<string, object>)["productInventory"] as Dictionary<string, object>[])[0];
+
+            // Read the array as object[] rather than Dictionary<string, object>[].
+            //
+            // JsonFx only infers a specific element type when the array has elements (see
+            // JsonReader.ReadArray: arrayItemType stays null for an empty array and it falls
+            // through to ToArray(), giving object[0]). So on an app with no googlePlay
+            // products the server returns a healthy 200 with "productInventory": [], the
+            // original "as Dictionary<string, object>[]" cast yielded null, and indexing it
+            // threw a bare NullReferenceException that said nothing about the real problem.
+            // object[] is correct either way, since Dictionary<string, object>[] is one.
+            var inventory = (data["data"] as Dictionary<string, object>)["productInventory"] as object[];
+
+            // This test needs a googlePlay product that carries a payload to be configured
+            // on the app - see the GetSalesInventory call above. Skip rather than fail where
+            // that is missing: the SDK did its job, the app just is not set up for this.
+            if (inventory == null || inventory.Length == 0)
+            {
+                Assert.Ignore("No googlePlay sales inventory on this app - this test needs a " +
+                              "googlePlay product configured with a payload.");
+            }
+
+            var products = inventory[0] as Dictionary<string, object>;
+            Assert.That(products, Is.Not.Null, "productInventory entry was not an object");
 
             string itemId = products["itemId"].ToString();
             string payload = products["payload"].ToString();
