@@ -36,6 +36,7 @@ namespace BrainCloud
         /// - windows
         /// - windowsPhone
         /// - googlePlay
+        /// - metaHorizon
         /// - epicGames
         /// - xsolla
         /// </param>
@@ -79,6 +80,7 @@ namespace BrainCloud
         /// - windows
         /// - windowsPhone
         /// - googlePlay
+        /// - metaHorizon
         /// - epicGames
         /// - xsolla
         /// </param>
@@ -171,6 +173,7 @@ namespace BrainCloud
         /// - windows
         /// - windowsPhone
         /// - googlePlay
+        /// - metaHorizon
         /// - epicGames
         /// - xsolla
         /// </param>
@@ -223,6 +226,7 @@ namespace BrainCloud
         /// - windows
         /// - windowsPhone
         /// - googlePlay
+        /// - metaHorizon
         /// - epicGames
         /// - xsolla
         /// </param>
@@ -275,7 +279,7 @@ namespace BrainCloud
         /// Service Operation - START_PURCHASE
         /// </remarks>
         /// <param name="storeId">
-        /// The store id. Currently only accepts "steam."
+        /// The store id. Currently only accepts "steam".
         /// </param>
         /// <param name="purchaseJson">
         /// The specific store data required
@@ -315,7 +319,7 @@ namespace BrainCloud
         /// Service Operation - FINALIZE_PURCHASE
         /// </remarks>
         /// <param name="storeId">
-        /// The store id. Currently only accepts "steam."
+        /// The store id. Currently only accepts "steam".
         /// </param>
         /// /// <param name="transactionId">
         /// The Transaction Id returned in Start Transaction
