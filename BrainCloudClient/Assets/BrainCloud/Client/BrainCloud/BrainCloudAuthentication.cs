@@ -14,6 +14,113 @@ namespace BrainCloud
 
     public class BrainCloudAuthentication
     {
+        /// <summary>Completes a token fetch. Supply a token or an error message.
+        /// May be called from any thread; only the first completion is accepted.</summary>
+        public delegate void AppCheckTokenCompletion(string token, string error);
+
+        /// <summary>Fetches a fresh opaque App Check token for authentication.</summary>
+        public delegate void AppCheckTokenProvider(AppCheckTokenCompletion completion);
+
+        private string _appCheckToken;
+        private AppCheckTokenProvider _appCheckTokenProvider;
+        private readonly List<PendingAppCheck> _pendingAppCheck = new List<PendingAppCheck>();
+
+        private sealed class PendingAppCheck
+        {
+            internal readonly object Sync = new object();
+            internal readonly System.Diagnostics.Stopwatch Timer = System.Diagnostics.Stopwatch.StartNew();
+            internal bool Completed;
+            internal string Token, Error;
+            internal Dictionary<string, object> Data;
+            internal ServerCallback Callback;
+        }
+
+        /// <summary>Sets the token included in subsequent authenticate requests.
+        /// Null or empty clears it. Configure on the SDK thread; no Firebase dependency is required.</summary>
+        public void SetAppCheckToken(string token)
+        {
+            _appCheckToken = token;
+        }
+
+        /// <summary>Sets a provider invoked on the authentication thread for each new authentication.
+        /// It takes precedence over the stored token; null restores stored-token behavior.
+        /// Keep calling RunCallbacks (REST or ALL) to process completions and the 30-second timeout.
+        /// Errors and empty tokens fail locally with status 400 and CLIENT_APP_CHECK_TOKEN_ERROR.
+        /// Replacement affects new requests only. Configure on the SDK thread.</summary>
+        public void SetAppCheckTokenProvider(AppCheckTokenProvider provider)
+        {
+            _appCheckTokenProvider = provider;
+        }
+
+        internal void CancelPendingAppCheckRequests()
+        {
+            foreach (var pending in _pendingAppCheck)
+            {
+                lock (pending.Sync) pending.Completed = true;
+            }
+            _pendingAppCheck.Clear();
+        }
+
+        internal void RunAppCheckCallbacks()
+        {
+            for (int i = 0; i < _pendingAppCheck.Count;)
+            {
+                var pending = _pendingAppCheck[i];
+                string token, error;
+                lock (pending.Sync)
+                {
+                    if (!pending.Completed)
+                    {
+                        if (pending.Timer.Elapsed.TotalSeconds < 30) { ++i; continue; }
+                        pending.Completed = true;
+                        pending.Error = "App Check token provider timed out";
+                    }
+                    token = pending.Token;
+                    error = pending.Error;
+                }
+                // Remove before invoking callbacks, which may reset the client.
+                _pendingAppCheck.RemoveAt(i);
+                if (!string.IsNullOrEmpty(error) || string.IsNullOrEmpty(token))
+                {
+                    var response = new Dictionary<string, object>();
+                    response["status"] = 400;
+                    response["reason_code"] = ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR;
+                    response["status_message"] = string.IsNullOrEmpty(error)
+                        ? "App Check token provider returned an empty token" : error;
+                    if (pending.Callback != null)
+                        pending.Callback.OnErrorCallback(400, ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR, JsonWriter.Serialize(response));
+                }
+                else
+                {
+                    pending.Data[OperationParam.AuthenticateServiceAuthenticateAppCheckToken.Value] = token;
+                    _client.SendRequest(new ServerCall(ServiceName.Authenticate, ServiceOperation.Authenticate, pending.Data, pending.Callback));
+                }
+                i = 0;
+            }
+        }
+
+        private void FetchAppCheckToken(Dictionary<string, object> data, ServerCallback callback)
+        {
+            var pending = new PendingAppCheck { Data = data, Callback = callback };
+            _pendingAppCheck.Add(pending);
+            // Retained completions must not keep the client or application callbacks alive.
+            var weakPending = new WeakReference(pending);
+            AppCheckTokenCompletion completion = (token, error) =>
+            {
+                var result = weakPending.Target as PendingAppCheck;
+                if (result == null) return;
+                lock (result.Sync)
+                {
+                    if (result.Completed) return;
+                    result.Token = token;
+                    result.Error = error;
+                    result.Completed = true;
+                }
+            };
+            try { _appCheckTokenProvider(completion); }
+            catch (Exception) { completion(null, "App Check token provider threw an exception"); }
+        }
+
         private BrainCloudClient _client;
         public bool CompressResponses { get; set; } = true;
         public string AnonymousId { get; set; }
@@ -1377,7 +1484,14 @@ namespace BrainCloud
                 _client.Comms.AddCallbackToAuthenticateRequest(callback);
                 return;
             }
-           _client.SendRequest(sc);
+            if (_appCheckTokenProvider != null)
+            {
+                FetchAppCheckToken(data, callback);
+                return;
+            }
+            if (!string.IsNullOrEmpty(_appCheckToken))
+                data[OperationParam.AuthenticateServiceAuthenticateAppCheckToken.Value] = _appCheckToken;
+            _client.SendRequest(sc);
         }
     }
 }

@@ -322,3 +322,53 @@ _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPai
 ---
 
 For more information on brainCloud and its services, please check out [brainCloud Learn](https://docs.braincloudservers.com/learn/introduction/) and [API Reference](https://docs.braincloudservers.com/api/introduction).
+
+### App Check tokens (C# / Unity)
+
+Set an opaque token on the authentication service before authenticating:
+
+```csharp
+client.AuthenticationService.SetAppCheckToken(token);
+```
+
+The SDK includes it as `appCheckToken` in authenticate request data only. Pass
+`null` or `""` to clear it. Refresh it before expiry and reconnecting. Already
+queued requests retain their original token. No Firebase dependency is added.
+
+For asynchronous refresh on each new authentication (including authentication
+retries and wrapper reconnects), register a provider:
+
+```csharp
+client.AuthenticationService.SetAppCheckTokenProvider(completion =>
+{
+    // Fetch through your app's token service, then call:
+    // completion(token, null);       // success
+    // completion(null, errorText);   // failure
+});
+
+// Restore the manually supplied token:
+client.AuthenticationService.SetAppCheckTokenProvider(null);
+```
+
+Configure these APIs on the SDK thread. The provider runs on the authentication
+thread and may complete on any thread. Keep calling `RunCallbacks` or `Update`
+with `REST` or `ALL`; they process results and a 30-second timeout on the SDK
+thread. Only the first completion is accepted. Provider errors, exceptions,
+empty tokens, and timeouts fail locally through the authentication failure
+callback with status 400 and `ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR` (90300),
+without sending authentication or falling back to the stored token.
+
+Provider replacement affects new requests; pending fetches retain their original
+provider. `ResetCommunication` and `ShutDown` silently discard pending fetches;
+late completions are ignored. Stored tokens and provider configuration survive
+reset. Avoid capturing the client strongly in long-lived provider callbacks.
+Calls already coalesced into an authentication in progress keep the existing
+C# SDK behavior and do not start a separate fetch. Transport retransmissions
+reuse the queued request, while a new authentication fetches a new token.
+
+An offline regression harness is available in `BrainCloudClient/tests/TestAppCheck.cs`.
+Compile it against the built SDK assembly and run it with Mono or your .NET
+runtime. It requires no credentials or server and includes a real 30-second
+timeout check (for example, `mcs -r:/path/to/BrainCloud.dll -out:TestAppCheck.exe
+BrainCloudClient/tests/TestAppCheck.cs`, followed by `mono TestAppCheck.exe` with
+the SDK assembly alongside the executable).

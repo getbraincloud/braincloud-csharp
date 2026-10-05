@@ -740,6 +740,7 @@ namespace BrainCloud
         public const int CLIENT_UPLOAD_FILE_UNKNOWN = 90102;
         public const int CLIENT_DISABLED = 90200;
         public const int CLIENT_DISABLED_FAILED_AUTH = 90201;
+        public const int CLIENT_APP_CHECK_TOKEN_ERROR = 90300;
         public const int RS_CLIENT_ERROR = 90300;
         public const int JSON_REQUEST_MAXDEPTH_EXCEEDS_LIMIT = 90400;
         public const int JSON_RESPONSE_MAXDEPTH_EXCEEDS_LIMIT = 90401;
