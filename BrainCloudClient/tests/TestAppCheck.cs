@@ -1,128 +1,229 @@
-// Offline regression harness. Compile against the SDK and run TestAppCheck.exe.
-// No credentials, Firebase, Unity runtime, or server connection required.
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
+using BrainCloud;
+using BrainCloud.JsonFx.Json;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Reflection;
 using System.Threading;
-using BrainCloud;
-using BrainCloud.JsonFx.Json;
 
-public static class TestAppCheck
+namespace BrainCloudTests
 {
-    static object Field(object obj, string name)
+    [TestFixture]
+    public class TestAppCheck
     {
-        return obj.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj);
-    }
-    static IList Queue(BrainCloudClient client) { return (IList)Field(Field(client, "_comms"), "_serviceCallsWaiting"); }
-    static IDictionary Data(BrainCloudClient client, int index = 0) { return (IDictionary)Field(Queue(client)[index], "m_jsonData"); }
-    static void Check(bool condition, string message) { if (!condition) throw new Exception(message); }
-    static void Pump(BrainCloudClient client)
-    {
-        // Process provider results without allowing the transport to send requests.
-        typeof(BrainCloudAuthentication).GetMethod("RunAppCheckCallbacks", BindingFlags.Instance | BindingFlags.NonPublic)
-            .Invoke(client.AuthenticationService, null);
-    }
-    static void Auth(BrainCloudClient client, FailureCallback failure = null, object context = null)
-    {
-        client.AuthenticationService.AuthenticateUniversal("user", "password", true, null, failure, context);
-    }
-    public static void Main()
-    {
-        var client = new BrainCloudClient();
-        var auth = client.AuthenticationService;
-        Auth(client);
-        string baseline = JsonWriter.Serialize(Data(client));
-        Check(!Data(client).Contains("appCheckToken"), "unset token");
-        Queue(client).Clear();
-        auth.SetAppCheckToken("manual");
-        Auth(client);
-        Check((string)Data(client)["appCheckToken"] == "manual", "manual token");
-        Data(client).Remove("appCheckToken");
-        Check(JsonWriter.Serialize(Data(client)) == baseline, "other auth fields unchanged");
-        Queue(client).Clear();
-        Auth(client);
-        auth.SetAppCheckToken("fresh");
-        Check((string)Data(client)["appCheckToken"] == "manual", "queued token snapshot");
-        Queue(client).Clear();
-        Auth(client);
-        Check((string)Data(client)["appCheckToken"] == "fresh", "manual refresh");
-        foreach (var clear in new[] { "", null })
-        {
-            Queue(client).Clear();
-            auth.SetAppCheckToken(clear);
-            Auth(client);
-            Check(!Data(client).Contains("appCheckToken"), "clear token");
-        }
-        Queue(client).Clear();
-        auth.SetAppCheckToken("manual");
-        auth.getServerVersion();
-        Check(!Data(client).Contains("appCheckToken"), "non-auth request unchanged");
-        Queue(client).Clear();
-        var other = new BrainCloudClient();
-        Auth(other);
-        Check(!Data(other).Contains("appCheckToken"), "client isolation");
+        // These SDK-only tests inspect queued requests without sending them to a server.
+        // Do not inherit TestFixtureBase: it loads credentials and authenticates in Setup.
+        private BrainCloudClient client;
+        private BrainCloudAuthentication auth;
+        private int _failures;
+        private object _context;
+        private int _sdkThread;
 
-        BrainCloudAuthentication.AppCheckTokenCompletion done = null;
-        auth.SetAppCheckTokenProvider(completion => done = completion);
-        Auth(client);
-        Check(Queue(client).Count == 0, "wait for provider");
-        var worker = new Thread(() => { done("async", null); done("duplicate", null); });
-        worker.Start(); worker.Join();
-        Check(Queue(client).Count == 0, "worker cannot queue request");
-        Pump(client);
-        Check(Queue(client).Count == 1 && (string)Data(client)["appCheckToken"] == "async", "first completion wins");
-        Queue(client).Clear();
-        Auth(client);
-        auth.SetAppCheckTokenProvider(completion => completion("replacement", null));
-        done("original", null);
-        Pump(client);
-        Check((string)Data(client)["appCheckToken"] == "original", "pending provider preserved");
-        Queue(client).Clear();
-        Auth(client); Pump(client);
-        Check((string)Data(client)["appCheckToken"] == "replacement", "replacement applies to new auth");
-        Queue(client).Clear();
-        auth.SetAppCheckTokenProvider(null);
-        Auth(client);
-        Check((string)Data(client)["appCheckToken"] == "manual", "stored token restored");
-        Queue(client).Clear();
-
-        int failures = 0;
-        object context = new object();
-        int sdkThread = Thread.CurrentThread.ManagedThreadId;
-        FailureCallback failure = (status, reason, json, obj) => {
-            Check(status == 400 && reason == ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR, "failure codes");
-            Check(ReferenceEquals(obj, context), "callback context");
-            Check(Thread.CurrentThread.ManagedThreadId == sdkThread, "failure thread");
-            Check(json.Contains("status_message"), "error response JSON");
-            ++failures;
-        };
-        foreach (var provider in new BrainCloudAuthentication.AppCheckTokenProvider[] {
-            completion => completion("ignored", "failed"),
-            completion => completion(null, null),
-            completion => { throw new Exception("private detail"); }
-        })
+        [SetUp]
+        public void Setup()
         {
-            auth.SetAppCheckTokenProvider(provider);
-            Auth(client, failure, context);
-            Pump(client);
-            Check(Queue(client).Count == 0, "failure must not send stored token");
+            client = new BrainCloudClient();
+            auth = client.AuthenticationService;
+            _failures = 0;
+            _context = new object();
+            _sdkThread = Thread.CurrentThread.ManagedThreadId;
         }
-        Check(failures == 3, "all local failures delivered");
-        auth.SetAppCheckTokenProvider(completion => done = completion);
-        Auth(client, failure, context);
-        client.ResetCommunication(); done("late", null); Pump(client);
-        Check(Queue(client).Count == 0 && failures == 3, "reset discards pending");
-        Auth(client, failure, context);
-        client.ShutDown(); done("late", null); Pump(client);
-        Check(Queue(client).Count == 0 && failures == 3, "shutdown discards pending");
-        Auth(client, failure, context);
-        Console.WriteLine("Waiting for the real 30-second provider timeout...");
-        Thread.Sleep(30100);
-        client.RunCallbacks(eBrainCloudUpdateType.RTT);
-        Check(failures == 3, "RTT does not process provider results");
-        client.RunCallbacks(eBrainCloudUpdateType.REST);
-        done("too late", null); Pump(client);
-        Check(failures == 4 && Queue(client).Count == 0, "timeout fails once without sending");
-        Console.WriteLine("All App Check regression checks passed.");
+
+        [TearDown]
+        public void TearDown()
+        {
+            client.ShutDown();
+        }
+
+        [Test]
+        public void TestAppCheckStoredToken()
+        {
+            Authenticate(client);
+            string baseline = JsonWriter.Serialize(GetRequestData(client));
+            Assert.That(!GetRequestData(client).Contains("appCheckToken"), "unset token");
+            GetQueuedRequests(client).Clear();
+            auth.SetAppCheckToken("manual");
+            Authenticate(client);
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "manual", "manual token");
+            GetRequestData(client).Remove("appCheckToken");
+            Assert.That(JsonWriter.Serialize(GetRequestData(client)) == baseline, "other auth fields unchanged");
+        }
+
+        [Test]
+        public void TestAppCheckStoredTokenRefresh()
+        {
+            auth.SetAppCheckToken("manual");
+            GetQueuedRequests(client).Clear();
+            Authenticate(client);
+            auth.SetAppCheckToken("fresh");
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "manual", "queued token snapshot");
+            GetQueuedRequests(client).Clear();
+            Authenticate(client);
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "fresh", "manual refresh");
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestAppCheckClearStoredToken(string token)
+        {
+            auth.SetAppCheckToken("manual");
+            auth.SetAppCheckToken(token);
+            Authenticate(client);
+            Assert.That(GetRequestData(client).Contains("appCheckToken"), Is.False);
+        }
+
+        [Test]
+        public void TestAppCheckNonAuthenticationRequest()
+        {
+            GetQueuedRequests(client).Clear();
+            auth.SetAppCheckToken("manual");
+            auth.getServerVersion();
+            Assert.That(!GetRequestData(client).Contains("appCheckToken"), "non-auth request unchanged");
+            GetQueuedRequests(client).Clear();
+        }
+
+        [Test]
+        public void TestAppCheckClientIsolation()
+        {
+            auth.SetAppCheckToken("manual");
+            var other = new BrainCloudClient();
+            try
+            {
+                Authenticate(other);
+                Assert.That(!GetRequestData(other).Contains("appCheckToken"), "client isolation");
+            }
+            finally
+            {
+                other.ShutDown();
+            }
+        }
+
+        [Test]
+        public void TestAppCheckAsyncProviderFirstCompletionWins()
+        {
+            BrainCloudAuthentication.AppCheckTokenCompletion done = null;
+            auth.SetAppCheckTokenProvider(completion => done = completion);
+            Authenticate(client);
+            Assert.That(GetQueuedRequests(client).Count == 0, "wait for provider");
+            var worker = new Thread(() => { done("async", null); done("duplicate", null); });
+            worker.Start();
+            worker.Join();
+            Assert.That(GetQueuedRequests(client).Count == 0, "worker cannot queue request");
+            RunAppCheckCallbacks(client);
+            Assert.That(GetQueuedRequests(client).Count == 1 && (string)GetRequestData(client)["appCheckToken"] == "async", "first completion wins");
+        }
+
+        [Test]
+        public void TestAppCheckReplaceAndClearProvider()
+        {
+            auth.SetAppCheckToken("manual");
+            BrainCloudAuthentication.AppCheckTokenCompletion done = null;
+            auth.SetAppCheckTokenProvider(completion => done = completion);
+            GetQueuedRequests(client).Clear();
+            Authenticate(client);
+            auth.SetAppCheckTokenProvider(completion => completion("replacement", null));
+            done("original", null);
+            RunAppCheckCallbacks(client);
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "original", "pending provider preserved");
+            GetQueuedRequests(client).Clear();
+            Authenticate(client);
+            RunAppCheckCallbacks(client);
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "replacement", "replacement applies to new auth");
+            GetQueuedRequests(client).Clear();
+            auth.SetAppCheckTokenProvider(null);
+            Authenticate(client);
+            Assert.That((string)GetRequestData(client)["appCheckToken"] == "manual", "stored token restored");
+            GetQueuedRequests(client).Clear();
+        }
+
+        [Test]
+        public void TestAppCheckProviderErrors()
+        {
+            auth.SetAppCheckToken("manual");
+            foreach (var provider in new BrainCloudAuthentication.AppCheckTokenProvider[] {
+                completion => completion("ignored", "failed"),
+                completion => completion(null, null),
+                completion => { throw new Exception("private detail"); }
+            })
+            {
+                auth.SetAppCheckTokenProvider(provider);
+                Authenticate(client, Failure, _context);
+                RunAppCheckCallbacks(client);
+                Assert.That(GetQueuedRequests(client).Count == 0, "failure must not send stored token");
+            }
+            Assert.That(_failures == 3, "all local failures delivered");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TestAppCheckCancelPendingProvider(bool shutdown)
+        {
+            BrainCloudAuthentication.AppCheckTokenCompletion done = null;
+            auth.SetAppCheckTokenProvider(completion => done = completion);
+            Authenticate(client, Failure, _context);
+            if (shutdown)
+                client.ShutDown();
+            else
+                client.ResetCommunication();
+            done("late", null);
+            RunAppCheckCallbacks(client);
+            Assert.That(GetQueuedRequests(client).Count, Is.EqualTo(0));
+            Assert.That(_failures, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TestAppCheckProviderTimeout()
+        {
+            BrainCloudAuthentication.AppCheckTokenCompletion done = null;
+            auth.SetAppCheckTokenProvider(completion => done = completion);
+            Authenticate(client, Failure, _context);
+            // Exercise the real provider deadline; RTT updates must not process REST callbacks.
+            Thread.Sleep(30100);
+            client.RunCallbacks(eBrainCloudUpdateType.RTT);
+            Assert.That(_failures, Is.EqualTo(0));
+            client.RunCallbacks(eBrainCloudUpdateType.REST);
+            done("too late", null);
+            RunAppCheckCallbacks(client);
+            Assert.That(_failures, Is.EqualTo(1));
+            Assert.That(GetQueuedRequests(client).Count, Is.EqualTo(0));
+        }
+
+        private void Failure(int status, int reason, string json, object context)
+        {
+            Assert.That(status, Is.EqualTo(400));
+            Assert.That(reason, Is.EqualTo(ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR));
+            Assert.That(context, Is.SameAs(_context));
+            Assert.That(Thread.CurrentThread.ManagedThreadId, Is.EqualTo(_sdkThread));
+            Assert.That(json.Contains("status_message"));
+            ++_failures;
+        }
+
+        private static object GetPrivateField(object obj, string name)
+        {
+            return obj.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj);
+        }
+
+        private static IList GetQueuedRequests(BrainCloudClient client)
+        {
+            return (IList)GetPrivateField(GetPrivateField(client, "_comms"), "_serviceCallsWaiting");
+        }
+
+        private static IDictionary GetRequestData(BrainCloudClient client, int index = 0)
+        {
+            return (IDictionary)GetPrivateField(GetQueuedRequests(client)[index], "m_jsonData");
+        }
+
+        private static void RunAppCheckCallbacks(BrainCloudClient client)
+        {
+            // Process provider results without allowing the transport to send requests.
+            typeof(BrainCloudAuthentication).GetMethod("RunAppCheckCallbacks", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(client.AuthenticationService, null);
+        }
+        private static void Authenticate(BrainCloudClient client, FailureCallback failure = null, object context = null)
+        {
+            client.AuthenticationService.AuthenticateUniversal("user", "password", true, null, failure, context);
+        }
     }
 }
