@@ -28,7 +28,7 @@ namespace BrainCloud
         private sealed class PendingAppCheck
         {
             internal readonly object Sync = new object();
-            internal readonly System.Diagnostics.Stopwatch Timer = System.Diagnostics.Stopwatch.StartNew();
+            internal readonly DateTime StartedAt = DateTime.UtcNow;
             internal bool Completed;
             internal string Token, Error;
             internal Dictionary<string, object> Data;
@@ -71,7 +71,7 @@ namespace BrainCloud
                 {
                     if (!pending.Completed)
                     {
-                        if (pending.Timer.Elapsed.TotalSeconds < 30) { ++i; continue; }
+                        if ((DateTime.UtcNow - pending.StartedAt).TotalSeconds < 30) { ++i; continue; }
                         pending.Completed = true;
                         pending.Error = "App Check token provider timed out";
                     }
