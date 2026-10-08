@@ -389,6 +389,21 @@ public class BrainCloudWrapper
     public void Init()
     {
         resetWrapper();
+
+        // Child apps configured: load them too so SwitchToChildProfile can sign.
+        if (BrainCloud.Plugin.Interface.HasAdditionalApps)
+        {
+            BrainCloud.Plugin.Interface.ApplySigningProfiles(appProfiles =>
+                InitWithAppProfiles(
+                    BrainCloud.Plugin.Interface.DispatcherURL,
+                    BrainCloud.Plugin.Interface.AppId,
+                    appProfiles,
+                    BrainCloud.Plugin.Interface.AppVersion));
+
+            Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
+            return;
+        }
+
         BrainCloud.Plugin.Interface.ApplySigningProfile(profile =>
             Init(
                 BrainCloud.Plugin.Interface.DispatcherURL,
@@ -400,20 +415,12 @@ public class BrainCloudWrapper
     }
 
     /// <summary>
-    /// Initializes the brainCloud client. This method uses the parameters as configured
-    /// in the Unity brainCloud Settings window.
+    /// Same as Init(); child apps from the brainCloud Settings window are loaded automatically.
     /// </summary>
+    [Obsolete("Use Init(); child apps from the brainCloud Settings are loaded automatically.")]
     public void InitWithApps()
     {
-        resetWrapper();
-        BrainCloud.Plugin.Interface.ApplyProfiles(appIdSecrets =>
-            InitWithApps(
-                BrainCloud.Plugin.Interface.DispatcherURL,
-                BrainCloud.Plugin.Interface.AppId,
-                appIdSecrets,
-                BrainCloud.Plugin.Interface.AppVersion));
-
-        Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
+        Init();
     }
 #endif
 
@@ -431,20 +438,50 @@ public class BrainCloudWrapper
         // Godot doesn't generate a strongly-typed C# binding for a GDExtension class like it
         // does for its own built-in API, so this is called dynamically rather than via
         // `new BrainCloudNative()` -- there is no such compile-time type.
-        var native = Godot.ClassDB.Instantiate("BrainCloudNative").AsGodotObject();
-        native.Call("resolve_config", "res://addons/braincloud/braincloud.cfg",
-            Godot.Callable.From((string appId, Godot.Callable sign) =>
+        _godotNative = Godot.ClassDB.Instantiate("BrainCloudNative").AsGodotObject();
+        string appVersion = Godot.ProjectSettings.GetSetting("braincloud/config/app_version", "1.0.0").AsString();
+        string serverUrl = Godot.ProjectSettings.GetSetting(
+            "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
+
+        // Older native builds have no child app support.
+        if (!_godotNative.HasMethod("resolve_configs"))
+        {
+            _godotNative.Call("resolve_config", "res://addons/braincloud/braincloud.cfg",
+                Godot.Callable.From((string appId, Godot.Callable sign) =>
+                {
+                    Init(serverUrl, payloadBytes => sign.Call(payloadBytes).AsString(), appId, appVersion);
+                    ApplyGodotSettings();
+                }));
+            return;
+        }
+
+        _godotNative.Call("resolve_configs", "res://addons/braincloud/braincloud.cfg",
+            Godot.Callable.From((string appId, Godot.Collections.Dictionary profiles) =>
             {
-                string appVersion = Godot.ProjectSettings.GetSetting("braincloud/config/app_version", "1.0.0").AsString();
-                string serverUrl = Godot.ProjectSettings.GetSetting(
-                    "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
+                var appProfiles = new Dictionary<string, Func<byte[], string>>();
+                foreach (var entry in profiles)
+                {
+                    var sign = entry.Value.AsCallable();
+                    appProfiles[entry.Key.AsString()] = payloadBytes => sign.Call(payloadBytes).AsString();
+                }
 
-                Init(serverUrl, payloadBytes => sign.Call(payloadBytes).AsString(), appId, appVersion);
-
-                Client.EnableLogging(Godot.ProjectSettings.GetSetting("braincloud/debug/enable_logging", false).AsBool());
-                Client.EnableCompressedRequests(
-                    Godot.ProjectSettings.GetSetting("braincloud/config/enable_compression", true).AsBool());
+                // Child apps configured: load them too so SwitchToChildProfile can sign.
+                if (appProfiles.Count > 1)
+                    InitWithAppProfiles(serverUrl, appId, appProfiles, appVersion);
+                else
+                    Init(serverUrl, appProfiles[appId], appId, appVersion);
+                ApplyGodotSettings();
             }));
+    }
+
+    // Kept alive for the session; the profile Callables are bound to it.
+    private Godot.GodotObject _godotNative;
+
+    private void ApplyGodotSettings()
+    {
+        Client.EnableLogging(Godot.ProjectSettings.GetSetting("braincloud/debug/enable_logging", false).AsBool());
+        Client.EnableCompressedRequests(
+            Godot.ProjectSettings.GetSetting("braincloud/config/enable_compression", true).AsBool());
     }
 #endif
 
@@ -513,6 +550,18 @@ public class BrainCloudWrapper
         _lastAppId = defaultAppId;
         _lastAppVersion = version;
         Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
+
+        LoadData();
+    }
+
+    // Used by Init() when the config has child apps.
+    private void InitWithAppProfiles(string url, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string version)
+    {
+        resetWrapper();
+        _lastUrl = url;
+        _lastAppId = defaultAppId;
+        _lastAppVersion = version;
+        Client.InitializeWithApps(url, defaultAppId, appProfiles, version);
 
         LoadData();
     }

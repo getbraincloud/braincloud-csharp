@@ -864,6 +864,21 @@ namespace BrainCloud
             _initialized = true;
         }
 
+        /// <summary>Initializes the BrainCloudClient with a signing profile per app.</summary>
+        /// <param name="serverURL">The URL to the brainCloud server</param>
+        /// <param name="defaultAppId">The app id to start with</param>
+        /// <param name="appProfiles">The map of app id to signing profile</param>
+        /// <param name="appVersion">The app version</param>
+        internal void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string appVersion)
+        {
+            initializeHelper(serverURL, appProfiles[defaultAppId], defaultAppId, appVersion);
+
+            // set up braincloud which does the message handling
+            _comms.InitializeWithApps(serverURL, defaultAppId, appProfiles);
+
+            _initialized = true;
+        }
+
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The URL to the brainCloud server</param>
         /// <param name="secretKey">The secret key for your app</param>

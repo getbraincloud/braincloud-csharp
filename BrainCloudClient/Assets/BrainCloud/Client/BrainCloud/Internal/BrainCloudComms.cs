@@ -476,6 +476,22 @@ namespace BrainCloud.Internal
             Initialize(serverURL, defaultAppId, _appProfiles[defaultAppId]);
         }
 
+        /// <summary>
+        /// Initialize the communications library with a signing profile per app.
+        /// </summary>
+        /// <param name="serverURL">Server URL.</param>
+        /// <param name="defaultAppId">default appId </param>
+        /// <param name="appProfiles">map of appId -> signing profile, used when switching between apps</param>
+        public void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles)
+        {
+            foreach (var kv in appProfiles)
+            {
+                _appProfiles[kv.Key] = kv.Value;
+            }
+
+            Initialize(serverURL, defaultAppId, _appProfiles[defaultAppId]);
+        }
+
         private Uri ValidateURL(string value)
         {
             try
