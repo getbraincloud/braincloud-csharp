@@ -394,7 +394,7 @@ public class BrainCloudWrapper
         if (BrainCloud.Plugin.Interface.HasAdditionalApps)
         {
             BrainCloud.Plugin.Interface.ApplySigningProfiles(appProfiles =>
-                InitWithAppProfiles(
+                InitWithApps(
                     BrainCloud.Plugin.Interface.DispatcherURL,
                     BrainCloud.Plugin.Interface.AppId,
                     appProfiles,
@@ -417,7 +417,6 @@ public class BrainCloudWrapper
     /// <summary>
     /// Same as Init(); child apps from the brainCloud Settings window are loaded automatically.
     /// </summary>
-    [Obsolete("Use Init(); child apps from the brainCloud Settings are loaded automatically.")]
     public void InitWithApps()
     {
         Init();
@@ -467,7 +466,7 @@ public class BrainCloudWrapper
 
                 // Child apps configured: load them too so SwitchToChildProfile can sign.
                 if (appProfiles.Count > 1)
-                    InitWithAppProfiles(serverUrl, appId, appProfiles, appVersion);
+                    InitWithApps(serverUrl, appId, appProfiles, appVersion);
                 else
                     Init(serverUrl, appProfiles[appId], appId, appVersion);
                 ApplyGodotSettings();
@@ -555,7 +554,7 @@ public class BrainCloudWrapper
     }
 
     // Used by Init() when the config has child apps.
-    private void InitWithAppProfiles(string url, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string version)
+    private void InitWithApps(string url, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string version)
     {
         resetWrapper();
         _lastUrl = url;
