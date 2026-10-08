@@ -454,14 +454,17 @@ public class BrainCloudWrapper
             return;
         }
 
+        string[] childIds = _godotNative.Call("resolve_child_ids", "res://addons/braincloud/braincloud.cfg").AsStringArray();
         _godotNative.Call("resolve_configs", "res://addons/braincloud/braincloud.cfg",
             Godot.Callable.From((string appId, Godot.Collections.Dictionary profiles) =>
             {
+                // Main app first, then children in config order, for GetChildAppIdList().
                 var appProfiles = new Dictionary<string, Func<byte[], string>>();
-                foreach (var entry in profiles)
+                appProfiles[appId] = SignerFor(profiles[appId].AsCallable());
+                foreach (var childId in childIds)
                 {
-                    var sign = entry.Value.AsCallable();
-                    appProfiles[entry.Key.AsString()] = payloadBytes => sign.Call(payloadBytes).AsString();
+                    if (childId != appId && profiles.ContainsKey(childId))
+                        appProfiles[childId] = SignerFor(profiles[childId].AsCallable());
                 }
 
                 // Child apps configured: load them too so SwitchToChildProfile can sign.
@@ -471,6 +474,11 @@ public class BrainCloudWrapper
                     Init(serverUrl, appProfiles[appId], appId, appVersion);
                 ApplyGodotSettings();
             }));
+    }
+
+    private static Func<byte[], string> SignerFor(Godot.Callable sign)
+    {
+        return payloadBytes => sign.Call(payloadBytes).AsString();
     }
 
     // Kept alive for the session; the profile Callables are bound to it.
@@ -549,6 +557,7 @@ public class BrainCloudWrapper
         _lastAppId = defaultAppId;
         _lastAppVersion = version;
         Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
+        SetChildAppIds(appIdSecretMap.Keys, defaultAppId);
 
         LoadData();
     }
@@ -561,8 +570,31 @@ public class BrainCloudWrapper
         _lastAppId = defaultAppId;
         _lastAppVersion = version;
         Client.InitializeWithApps(url, defaultAppId, appProfiles, version);
+        SetChildAppIds(appProfiles.Keys, defaultAppId);
 
         LoadData();
+    }
+
+    private List<string> _childAppIds = new List<string>();
+
+    /// <summary>
+    /// Child app ids from the last init, in the order shown in the brainCloud plugin (index 0 = first child).
+    /// Pass one to IdentityService.SwitchToChildProfile. Empty when no child apps are configured.
+    /// </summary>
+    public List<string> GetChildAppIdList()
+    {
+        return new List<string>(_childAppIds);
+    }
+
+    // Map order is the config order; the default app is the parent.
+    private void SetChildAppIds(IEnumerable<string> appIds, string defaultAppId)
+    {
+        _childAppIds.Clear();
+        foreach (var appId in appIds)
+        {
+            if (appId != defaultAppId)
+                _childAppIds.Add(appId);
+        }
     }
 
     
@@ -578,6 +610,7 @@ public class BrainCloudWrapper
         Client = null; 
         Client = new BrainCloudClient(this);
         Client.Wrapper = this;
+        _childAppIds.Clear();
 
         if(resetWrapperName)
             WrapperName = "";
