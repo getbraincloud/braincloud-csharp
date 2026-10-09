@@ -360,7 +360,7 @@ namespace BrainCloud
         /// Returns up-to-date eligible 'promotions' for the user and a 'promotionsRefreshed' flag indicating whether the user's promotion info required refreshing
         /// Service Name - appStore
         /// Service Operation - RefreshPromotions
-        /// /// <param name="success">
+        /// <param name="success">
         /// The success callback.
         /// </param>
         /// <param name="failure">
@@ -379,6 +379,72 @@ namespace BrainCloud
             
             ServerCallback callback = new ServerCallback(success, failure, cbObject);
             ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.RefreshPromotions, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns the store's client-side configuration for the given store.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - appStore
+        /// Service Operation - GET_STORE_INFO
+        /// </remarks>
+        /// <param name="storeId">
+        /// The store to query. Currently only returns info for "xsolla", all other storeIds will return empty data.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetStoreInfo(
+            string storeId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AppStoreServiceStoreId.Value] = storeId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.GetStoreInfo, data, callback);
+            _client.SendRequest(sc);
+        }
+
+        /// <summary>
+        /// Returns a store user token (JWT) for the current user, generated server-side.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - appStore
+        /// Service Operation - GET_USER_TOKEN
+        /// </remarks>
+        /// <param name="storeId">
+        /// The store to get the token. Currently only returns info for "xsolla", all other storeIds will return empty data.
+        /// </param>
+        /// <param name="success">
+        /// The success callback.
+        /// </param>
+        /// <param name="failure">
+        /// The failure callback.
+        /// </param>
+        /// <param name="cbObject">
+        /// The user object sent to the callback.
+        /// </param>
+        public void GetUserToken(
+            string storeId,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data[OperationParam.AppStoreServiceStoreId.Value] = storeId;
+
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
+            ServerCall sc = new ServerCall(ServiceName.AppStore, ServiceOperation.GetUserToken, data, callback);
             _client.SendRequest(sc);
         }
     }
