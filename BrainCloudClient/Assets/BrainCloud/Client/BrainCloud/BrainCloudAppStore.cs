@@ -28,17 +28,17 @@ namespace BrainCloud
         /// Service Operation - GetInventory
         /// </remarks>
         /// <param name="platform">
-        /// The store platform. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// - metaHorizon
-        /// - epicGames
-        /// - xsolla
+        /// The store platform. Valid stores are:<br/>
+        /// • <c>itunes</c><br/>
+        /// • <c>facebook</c><br/>
+        /// • <c>appworld</c><br/>
+        /// • <c>steam</c><br/>
+        /// • <c>windows</c><br/>
+        /// • <c>windowsPhone</c><br/>
+        /// • <c>googlePlay</c><br/>
+        /// • <c>metaHorizon</c><br/>
+        /// • <c>epicGames</c><br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="userCurrency">
         /// The currency to retrieve the sales
@@ -72,17 +72,17 @@ namespace BrainCloud
         /// Service Operation - GetInventory
         /// </remarks>
         /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// - metaHorizon
-        /// - epicGames
-        /// - xsolla
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>itunes</c><br/>
+        /// • <c>facebook</c><br/>
+        /// • <c>appworld</c><br/>
+        /// • <c>steam</c><br/>
+        /// • <c>windows</c><br/>
+        /// • <c>windowsPhone</c><br/>
+        /// • <c>googlePlay</c><br/>
+        /// • <c>metaHorizon</c><br/>
+        /// • <c>epicGames</c><br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="userCurrency">
         /// The currency to retrieve the sales
@@ -165,17 +165,17 @@ namespace BrainCloud
         /// Service Operation - CACHE_PURCHASE_PAYLOAD_CONTEXT
         /// </remarks>
         /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// - metaHorizon
-        /// - epicGames
-        /// - xsolla
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>itunes</c><br/>
+        /// • <c>facebook</c><br/>
+        /// • <c>appworld</c><br/>
+        /// • <c>steam</c><br/>
+        /// • <c>windows</c><br/>
+        /// • <c>windowsPhone</c><br/>
+        /// • <c>googlePlay</c><br/>
+        /// • <c>metaHorizon</c><br/>
+        /// • <c>epicGames</c><br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="iapId">
         /// The IAP product Id as configured for the product on brainCloud.
@@ -218,17 +218,17 @@ namespace BrainCloud
         /// Service Operation - VERIFY_PURCHASE
         /// </remarks>
         /// <param name="storeId">
-        /// The store storeId. Valid stores are:
-        /// - itunes
-        /// - facebook
-        /// - appworld
-        /// - steam
-        /// - windows
-        /// - windowsPhone
-        /// - googlePlay
-        /// - metaHorizon
-        /// - epicGames
-        /// - xsolla
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>itunes</c><br/>
+        /// • <c>facebook</c><br/>
+        /// • <c>appworld</c><br/>
+        /// • <c>steam</c><br/>
+        /// • <c>windows</c><br/>
+        /// • <c>windowsPhone</c><br/>
+        /// • <c>googlePlay</c><br/>
+        /// • <c>metaHorizon</c><br/>
+        /// • <c>epicGames</c><br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="receiptJson">
         /// The specific store data required
@@ -279,7 +279,8 @@ namespace BrainCloud
         /// Service Operation - START_PURCHASE
         /// </remarks>
         /// <param name="storeId">
-        /// The store id. Currently only accepts "steam".
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>steam</c><br/>
         /// </param>
         /// <param name="purchaseJson">
         /// The specific store data required
@@ -319,7 +320,8 @@ namespace BrainCloud
         /// Service Operation - FINALIZE_PURCHASE
         /// </remarks>
         /// <param name="storeId">
-        /// The store id. Currently only accepts "steam".
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>steam</c><br/>
         /// </param>
         /// /// <param name="transactionId">
         /// The Transaction Id returned in Start Transaction
@@ -390,7 +392,8 @@ namespace BrainCloud
         /// Service Operation - GET_STORE_INFO
         /// </remarks>
         /// <param name="storeId">
-        /// The store to query. Currently only returns info for "xsolla", all other storeIds will return empty data.
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="success">
         /// The success callback.
@@ -423,7 +426,8 @@ namespace BrainCloud
         /// Service Operation - GET_USER_TOKEN
         /// </remarks>
         /// <param name="storeId">
-        /// The store to get the token. Currently only returns info for "xsolla", all other storeIds will return empty data.
+        /// The platform's storeId. Valid stores are:<br/>
+        /// • <c>xsolla</c><br/>
         /// </param>
         /// <param name="success">
         /// The success callback.
