@@ -322,3 +322,33 @@ _bc.ScriptService.ScheduleRunScriptMillisUTC("scriptName", Helpers.CreateJsonPai
 ---
 
 For more information on brainCloud and its services, please check out [brainCloud Learn](https://docs.braincloudservers.com/learn/introduction/) and [API Reference](https://docs.braincloudservers.com/api/introduction).
+
+### App Check tokens (C# / Unity)
+
+Set your App Check token before authenticating. Refresh it before it expires, or pass `null` to clear it.
+The SDK doesn't include Firebase; your app supplies the token.
+
+```csharp
+client.AuthenticationService.SetAppCheckToken(token);
+```
+
+To fetch a fresh token for each authentication, register a provider:
+
+```csharp
+client.AuthenticationService.SetAppCheckTokenProvider(completion =>
+{
+    // Fetch a token through your app's token service, then call:
+    // completion(token, null);      // success
+    // completion(null, errorText);  // failure
+});
+```
+
+The provider takes priority over the stored token. 
+
+Pass `null` to `SetAppCheckTokenProvider` to go back to using the stored token.
+
+```csharp
+client.AuthenticationService.SetAppCheckTokenProvider(null);
+```
+
+Configure these settings on the SDK thread. The provider can complete on any thread, but keep calling `RunCallbacks` or `Update` with `REST` or `ALL` processing enabled. If the provider fails or takes longer than 30 seconds, authentication fails with `ReasonCodes.CLIENT_APP_CHECK_TOKEN_ERROR`; it won't fall back to the stored token.
