@@ -50,6 +50,8 @@ namespace BrainCloud.Internal
 
         public DateTime TimeSent { get; set; }
 
+        internal long SentMs { get; set; } // client clock, for timeouts
+
         public int Retries { get; set; }
 
         public string Signature { get; set; } // We process the signature on the background thread

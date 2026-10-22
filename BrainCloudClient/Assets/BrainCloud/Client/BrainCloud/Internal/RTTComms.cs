@@ -163,7 +163,7 @@ namespace BrainCloud.Internal
                     // are we actually connected? only pump this back, when the server says we've connected
                     else if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTING && m_connectedSuccessCallback != null && toProcessResponse.Operation == "connect")
                     {
-                        m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
+                        m_lastHeartbeatMs = m_clientRef.NowMs;
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
@@ -221,9 +221,9 @@ namespace BrainCloud.Internal
 
             if (m_rttConnectionStatus == RTTConnectionStatus.CONNECTED)
             {
-                if ((DateTime.Now.TimeOfDay - m_sinceLastHeartbeat) >= m_heartBeatTime)
+                if (m_clientRef.NowMs - m_lastHeartbeatMs >= m_heartBeatTime.TotalMilliseconds)
                 {
-                    m_sinceLastHeartbeat = DateTime.Now.TimeOfDay;
+                    m_lastHeartbeatMs = m_clientRef.NowMs;
                     send(buildHeartbeatRequest(), true);
                 }
             }
@@ -530,7 +530,7 @@ namespace BrainCloud.Internal
                 data = (Dictionary<string, object>)response["data"];
             if (operation == "CONNECT")
             {
-                int heartBeat = m_heartBeatTime.Milliseconds / 1000;
+                int heartBeat = (int)m_heartBeatTime.TotalSeconds;
                 try
                 {
                     heartBeat = (int)data["heartbeatSeconds"];
@@ -679,7 +679,7 @@ namespace BrainCloud.Internal
         private volatile bool m_tcpIsDisconnecting = false;
         private readonly object m_tcpSendLock = new object();
 
-        private TimeSpan m_sinceLastHeartbeat;
+        private long m_lastHeartbeatMs;
         private const int MAX_PACKETSIZE = 1024;
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 

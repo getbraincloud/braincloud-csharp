@@ -156,6 +156,11 @@ namespace BrainCloud
         private RTTComms _rttComms;
         private RelayComms _rsComms;
 
+        // SDK clock: advanced only by monotonic ticks, so midnight/DST/clock changes can't move it
+        private long _clockMs;
+        private int _clockLastTick = Environment.TickCount;
+        private long _serverTimeOffsetMs = Util.DateTimeToUnixTimestamp(DateTime.UtcNow); // server time = clock + offset
+
         private BrainCloudEntity _entityService;
         private BrainCloudGlobalEntity _globalEntityService;
         private BrainCloudGlobalApp _globalAppService;
@@ -389,6 +394,31 @@ namespace BrainCloud
         internal BrainCloudComms Comms
         {
             get { return _comms; }
+        }
+
+        internal long NowMs
+        {
+            get { return _clockMs + unchecked((uint)(Environment.TickCount - _clockLastTick)); }
+        }
+
+        internal long ServerTimeMs
+        {
+            get { return NowMs + _serverTimeOffsetMs; }
+        }
+
+        internal bool IsServerTimeSynced { get; private set; }
+
+        internal void SyncServerTime(long serverTimeMs)
+        {
+            _serverTimeOffsetMs = serverTimeMs - NowMs;
+            IsServerTimeSynced = true;
+        }
+
+        private void AdvanceClock()
+        {
+            int tick = Environment.TickCount;
+            _clockMs += unchecked((uint)(tick - _clockLastTick));
+            _clockLastTick = tick;
         }
 
         public BrainCloudEntity EntityService
@@ -941,6 +971,8 @@ namespace BrainCloud
         /// 
         public void Update(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
+            AdvanceClock();
+
             switch (in_updateType)
             {
                 case eBrainCloudUpdateType.REST:
