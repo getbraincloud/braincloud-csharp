@@ -134,7 +134,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// The last time a packet was sent
         /// </summary>
-        private DateTime _lastTimePacketSent;
+        private long _lastTimePacketSentMs;
 
         /// <summary>
         /// How long we wait to send a heartbeat if no packets have been sent or received.
@@ -187,7 +187,7 @@ namespace BrainCloud.Internal
         /// <summary>
         /// When the authentication timer began 
         /// </summary>
-        private DateTime _authenticationTimeoutStart;
+        private long _authenticationTimeoutStartMs;
 
         /// a checker to see what the packet Id we are receiving is 
         private long receivedPacketIdChecker = 0;
@@ -719,7 +719,7 @@ namespace BrainCloud.Internal
             // Is it time for a heartbeat?
             if (_isAuthenticated && !_blockingQueue)
             {
-                if (DateTime.Now.Subtract(_lastTimePacketSent) >= _idleTimeout)
+                if (_clientRef.NowMs - _lastTimePacketSentMs >= _idleTimeout.TotalMilliseconds)
                 {
                     SendHeartbeat();
                 }
@@ -731,10 +731,10 @@ namespace BrainCloud.Internal
                 if (_clientRef.LoggingEnabled)
                 {
                     _clientRef.Log("TIMER ON");
-                    _clientRef.Log(DateTime.Now.Subtract(_authenticationTimeoutStart).ToString());
+                    _clientRef.Log(TimeSpan.FromMilliseconds(_clientRef.NowMs - _authenticationTimeoutStartMs).ToString());
                 }
                 // Check the timeout, has enough time passed?
-                if (DateTime.Now.Subtract(_authenticationTimeoutStart) >= _authenticationTimeoutDuration)
+                if (_clientRef.NowMs - _authenticationTimeoutStartMs >= _authenticationTimeoutDuration.TotalMilliseconds)
                 {
                     if (_clientRef.LoggingEnabled)
                     {
@@ -996,7 +996,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void ResetIdleTimer()
         {
-            _lastTimePacketSent = DateTime.Now;
+            _lastTimePacketSentMs = _clientRef.NowMs;
         }
 
         /// <summary>
@@ -1004,7 +1004,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void ResetAuthenticationTimer()
         {
-            _authenticationTimeoutStart = DateTime.Now;
+            _authenticationTimeoutStartMs = _clientRef.NowMs;
         }
 
         ///<summary>
@@ -1178,6 +1178,11 @@ namespace BrainCloud.Internal
                     if (operation == ServiceOperation.RunPeerScript)
                     {
                         JsonParser.TryGetString(responseData, out fileDetails, OperationParam.ServiceMessageData, "response", OperationParam.ServiceMessageData, "fileDetails");
+                    }
+
+                    if (service == ServiceName.Time && operation == ServiceOperation.Read)
+                    {
+                        SyncServerTime(responseData);
                     }
 
                     if (operation == ServiceOperation.FullReset ||
@@ -1968,6 +1973,7 @@ namespace BrainCloud.Internal
 
                 requestState.RequestString = jsonRequestString;
                 requestState.TimeSent = DateTime.Now;
+                requestState.SentMs = _clientRef.NowMs;
                 ResetIdleTimer();
                 TimeSpan packetTimeout = GetPacketTimeout(requestState);
 
@@ -1975,6 +1981,7 @@ namespace BrainCloud.Internal
 #endif
                 requestState.RequestString = jsonRequestString;
                 requestState.TimeSent = DateTime.Now;
+                requestState.SentMs = _clientRef.NowMs;
 
                 ResetIdleTimer();
 
@@ -2148,7 +2155,7 @@ namespace BrainCloud.Internal
         {
             if (requestState != null && requestState.PacketNoRetry)
             {
-                if (DateTime.Now.Subtract(requestState.TimeSent) > TimeSpan.FromSeconds(_authPacketTimeoutSecs))
+                if (_clientRef.NowMs - requestState.SentMs > _authPacketTimeoutSecs * 1000L)
                 {
                     for (int i = 0; i < _listAuthPacketTimeouts.Length; i++)
                     {
@@ -2334,11 +2341,21 @@ namespace BrainCloud.Internal
             return sb.ToString();
         }
 
+        private void SyncServerTime(string jsonData)
+        {
+            if (JsonParser.GetValue<long>(jsonData, "server_time") is long serverTime && serverTime > 0)
+            {
+                _clientRef.SyncServerTime(serverTime);
+            }
+        }
+
         /// <summary>
         /// Handles authenticate-specific data from successful request
         /// </summary>
         private void ProcessAuthenticate(string jsonData)
         {
+            SyncServerTime(jsonData);
+
             // We want to extract the compressIfLarger amount
             ClientSideCompressionThreshold = jsonData.Contains("compressIfLarger") ? JsonParser.GetValue<int>(jsonData, "compressIfLarger")
                                                                                    : ClientSideCompressionThreshold;
@@ -2382,7 +2399,7 @@ namespace BrainCloud.Internal
             if (_activeRequest != null)
             {
                 var activeRequest = _activeRequest;
-                if (bypassTimeout || DateTime.Now.Subtract(activeRequest.TimeSent) >= GetPacketTimeout(activeRequest))
+                if (bypassTimeout || _clientRef.NowMs - activeRequest.SentMs >= GetPacketTimeout(activeRequest).TotalMilliseconds)
                 {
                     if (_clientRef.LoggingEnabled)
                     {

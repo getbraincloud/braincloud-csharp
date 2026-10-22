@@ -90,7 +90,7 @@ namespace BrainCloud.Internal
         private long _transferRatePerSecond;
 
         //delta time
-        private DateTime _lastTime;
+        private long _lastTimeMs;
         private double _deltaTime;
 
         //timeout
@@ -184,7 +184,7 @@ namespace BrainCloud.Internal
             {
                 _client.Log($"Started upload of {_fileName}");
             }
-            _lastTime = DateTime.Now;
+            _lastTimeMs = _client.NowMs;
 #endif
         }
 
@@ -383,8 +383,8 @@ namespace BrainCloud.Internal
 
         private void UpdateDeltaTime()
         {
-            _deltaTime = DateTime.Now.Subtract(_lastTime).TotalSeconds;
-            _lastTime = DateTime.Now;
+            _deltaTime = (_client.NowMs - _lastTimeMs) / 1000.0;
+            _lastTimeMs = _client.NowMs;
         }
 
         private void ThrowError(int reasonCode, string message)
