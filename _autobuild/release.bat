@@ -20,7 +20,7 @@ setlocal EnableDelayedExpansion
 
 
 :: Update this when the Unity version changes
-set "UNITY_EXE=C:\Program Files\Unity\Hub\Editor\6000.0.68f1\Editor\Unity.exe"
+set "UNITY_EXE=C:\Program Files\Unity\Hub\Editor\6000.0.79f1\Editor\Unity.exe"
 
 set "SCRIPT_DIR=%~dp0"
 
