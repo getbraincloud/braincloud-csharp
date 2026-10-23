@@ -569,6 +569,43 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// Authenticate the user using an epicAccountId and their authIdToken.
+        /// </summary>
+        /// <remarks>
+        /// Service Name - Authenticate
+        /// Service Operation - Authenticate
+        /// </remarks>
+        /// <param name="epicAccountId">
+        /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+        /// </param>
+        /// <param name="authIdToken">
+        /// IdToken.Value.JsonWebToken string from the EOS AuthInterface's CopyIdToken method.
+        /// </param>
+        /// <param name="forceCreate">
+        /// Should a new profile be created for this user if the account does not exist?
+        /// </param>
+        /// <param name="success">
+        /// The method to call in event of successful login
+        /// </param>
+        /// <param name="failure">
+        /// The method to call in the event of an error during authentication
+        /// </param>
+        /// <param name="cbObject">
+        /// The user supplied callback object
+        /// </param>
+        public void AuthenticateEpicGames(
+            string epicAccountId,
+            string authIdToken,
+            bool forceCreate,
+            SuccessCallback success = null,
+            FailureCallback failure = null,
+            object cbObject = null)
+        {
+            Authenticate(epicAccountId, authIdToken, Common.AuthenticationType.EpicGames,
+                null, forceCreate, null, success, failure, cbObject);
+        }
+
+        /// <summary>
         /// Authenticate the user using a google userId and google server authentication code.
         /// </summary>
         /// <remarks>

@@ -63,7 +63,7 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
     /// </summary>
     public ServerSslConfiguration ()
     {
-      _enabledSslProtocols = SslProtocols.Default;
+      _enabledSslProtocols = SslProtocols.None;
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
     public ServerSslConfiguration (X509Certificate2 serverCertificate)
     {
       _serverCert = serverCertificate;
-      _enabledSslProtocols = SslProtocols.Default;
+      _enabledSslProtocols = SslProtocols.None;
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ namespace BrainCloud.UnityWebSocketsForWebGL.WebSocketSharp.Net
     ///   the protocols used for authentication.
     ///   </para>
     ///   <para>
-    ///   The default value is <see cref="SslProtocols.Default"/>.
+    ///   The default value is <see cref="SslProtocols.None"/> (OS default).
     ///   </para>
     /// </value>
     public SslProtocols EnabledSslProtocols {

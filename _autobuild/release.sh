@@ -17,7 +17,7 @@
 # =====================================================================
 
 # Update this when the Unity version changes
-UNITY_EXE="/Applications/Unity/Hub/Editor/6000.0.68f1/Unity.app/Contents/MacOS/Unity"
+UNITY_EXE="/Applications/Unity/Hub/Editor/6000.0.79f1/Unity.app/Contents/MacOS/Unity"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

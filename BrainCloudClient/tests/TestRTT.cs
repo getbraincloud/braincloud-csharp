@@ -1,5 +1,6 @@
 // Copyright 2026 bitHeads, Inc. All Rights Reserved.
 
+using BrainCloud;
 using BrainCloud.JsonFx.Json;
 using NUnit.Core;
 using NUnit.Framework;
@@ -19,6 +20,45 @@ namespace BrainCloudTests
             _bc.RTTService.DisableRTT(); // This shouldn't callback error
             _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
+        }
+
+        [Test]
+        public void TestEnableDisableRTTWithTCP()
+        {
+            // TCP RTT endpoints are not available on all server configurations.
+            // If the server returns "No TCP endpoint available" treat it as a skip
+            // so the test suite stays green on WS-only environments.
+            bool done = false;
+            bool success = false;
+            bool tcpUnavailable = false;
+            string failMsg = null;
+
+            _bc.RTTService.DisableRTT();
+            _bc.RTTService.EnableRTT(
+                (response, cbObject) => { success = true; done = true; },
+                (status, reasonCode, jsonError, cbObject) =>
+                {
+                    if (jsonError != null && jsonError.Contains("No TCP endpoint"))
+                        tcpUnavailable = true;
+                    else
+                        failMsg = $"[{status}/{reasonCode}] {jsonError}";
+                    done = true;
+                },
+                RTTConnectionType.TCP);
+
+            var deadline = DateTime.Now.AddSeconds(30);
+            while (!done && DateTime.Now < deadline)
+            {
+                _bc.Update();
+                Thread.Sleep(16);
+            }
+
+            if (!done)
+                Assert.Fail("TestEnableDisableRTTWithTCP timed out after 30s");
+            else if (tcpUnavailable)
+                Assert.Ignore("TCP RTT endpoint not available on this server — skipping.");
+            else if (!success)
+                Assert.Fail(failMsg ?? "EnableRTT(TCP) failed with unknown error");
         }
 
         [Test]

@@ -89,6 +89,42 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetStoreInfo()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AppStoreService.GetStoreInfo("xsolla", tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetStoreInfoFail()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AppStoreService.GetStoreInfo("_invalid_store_id_", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
+        }
+
+        [Test]
+        public void TestGetUserToken()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AppStoreService.GetUserToken("xsolla", tr.ApiSuccess, tr.ApiError);
+            tr.Run();
+        }
+
+        [Test]
+        public void TestGetUserTokenFail()
+        {
+            TestResult tr = new TestResult(_bc);
+
+            _bc.AppStoreService.GetUserToken("_invalid_store_id_", tr.ApiSuccess, tr.ApiError);
+            tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_STORE_ID);
+        }
+
+        [Test]
         public void TestRefreshPromotions()
         {
             TestResult tr = new TestResult(_bc);

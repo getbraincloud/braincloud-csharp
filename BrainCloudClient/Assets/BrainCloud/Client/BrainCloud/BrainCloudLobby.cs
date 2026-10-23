@@ -670,12 +670,12 @@ namespace BrainCloud
 
             DateTime RoundtripTime = DateTime.UtcNow;
 
-            HttpClient client = new HttpClient();
-            client.Timeout = new TimeSpan(100000000); // 10 seconds
-
-            client.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
+            s_pingClient.GetAsync(in_target).ContinueWith((Task<HttpResponseMessage> task) =>
             {
-                if (task.IsCompleted && task.Result is HttpResponseMessage response && response.IsSuccessStatusCode)
+                HttpResponseMessage response =
+                    task.Status == TaskStatus.RanToCompletion ? task.Result : null;
+
+                if (response != null && response.IsSuccessStatusCode)
                 {
                     long ms = (long)(DateTime.UtcNow - RoundtripTime).TotalMilliseconds;
                     handlePingTimeResponse(ms, in_region);
@@ -685,7 +685,7 @@ namespace BrainCloud
                     handlePingTimeResponse(9999, in_region);
                 }
 
-                client.Dispose();
+                response?.Dispose();
             });
         }
 
@@ -855,6 +855,13 @@ namespace BrainCloud
             public object cbObject;
         }
         private List<Failure> m_failureQueue = new List<Failure>();
+
+#if DOT_NET || GODOT
+        private static readonly HttpClient s_pingClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+#endif
 
         /// <summary>
         /// Reference to the brainCloud client object
