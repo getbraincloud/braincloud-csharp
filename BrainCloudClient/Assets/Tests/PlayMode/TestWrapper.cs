@@ -110,6 +110,32 @@ namespace Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator TestPostAuthSessionCacheObject()
+        {
+            _tc.bcWrapper.Client.AuthenticationService.ClearSavedProfileID();
+            _tc.bcWrapper.ResetStoredAnonymousId();
+            _tc.bcWrapper.ResetStoredProfileId();
+
+            _tc.bcWrapper.AuthenticateUniversal(username, password, forceCreate, _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string profileId = _tc.bcWrapper.Client.AuthenticationService.ProfileId;
+
+            // SleepPostAuth hook caches { profileId, setAt } under "postAuthCache"
+            _tc.bcWrapper.ScriptService.RunScript("GetSessionCacheObject", "{\"key\":\"postAuthCache\"}", _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            var data = _tc.m_response?["data"] as Dictionary<string, object>;
+            var response = data?["response"] as Dictionary<string, object>;
+            var cacheObject = response?["cacheObject"] as Dictionary<string, object>;
+            string cachedProfileId = cacheObject?["profileId"] as string;
+            Debug.Log($"Session cache object profileId: {cachedProfileId}");
+
+            LogResults("Post auth hook session cache object missing or profileId mismatch",
+                _tc.successCount == 2 && !string.IsNullOrEmpty(profileId) && cachedProfileId == profileId);
+        }
+
+        [UnityTest]
         public IEnumerator TestSmartSwitchAuthenticateEmailFromANonAuth()
         {
             _tc.bcWrapper.ResetStoredAnonymousId();
