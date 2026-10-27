@@ -160,6 +160,8 @@ namespace BrainCloud
         public static readonly ServiceOperation ConsumePlayerVC = new ServiceOperation("CONSUME_VC");
         public static readonly ServiceOperation GetPlayerVC = new ServiceOperation("GET_PLAYER_VC");
         public static readonly ServiceOperation ResetPlayerVC = new ServiceOperation("RESET_PLAYER_VC");
+        public static readonly ServiceOperation GetStoreInfo = new ServiceOperation("GET_STORE_INFO");
+        public static readonly ServiceOperation GetUserToken = new ServiceOperation("GET_USER_TOKEN");
 
         public static readonly ServiceOperation AwardParentCurrency = new ServiceOperation("AWARD_PARENT_VC");
         public static readonly ServiceOperation ConsumeParentCurrency = new ServiceOperation("CONSUME_PARENT_VC");

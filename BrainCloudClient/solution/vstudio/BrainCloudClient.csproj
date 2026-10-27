@@ -62,9 +62,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="netstandard">
+      <HintPath>$(FrameworkPathOverride)\Facades\netstandard.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="BrainCloudNative">
+      <HintPath>..\..\Assets\BrainCloud\Client\Lib\BrainCloudNative.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

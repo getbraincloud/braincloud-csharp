@@ -54,6 +54,19 @@ namespace BrainCloud
     public delegate void FailureCallback(int status, int reasonCode, string jsonError, object cbObject);
 
     /// <summary>
+    /// Global error callback, invoked for every failed API call when registered.
+    /// Unlike <see cref="FailureCallback"/>, this callback is not tied to a single
+    /// API call, so it also identifies which service/operation generated the error.
+    /// </summary>
+    /// <param name="serviceName">The service name that generated the error</param>
+    /// <param name="serviceOperation">The service operation that generated the error</param>
+    /// <param name="status">The HTTP status code</param>
+    /// <param name="reasonCode">The error reason code</param>
+    /// <param name="jsonError">The error JSON string</param>
+    /// <param name="cbObject">The user supplied callback object from the originating API call, if any</param>
+    public delegate void FailureGlobalCallback(string serviceName, string serviceOperation, int status, int reasonCode, string jsonError, object cbObject);
+
+    /// <summary>
     /// Network error callback.
     /// </summary>
     public delegate void NetworkErrorCallback();
@@ -142,6 +155,11 @@ namespace BrainCloud
         private BrainCloudComms _comms;
         private RTTComms _rttComms;
         private RelayComms _rsComms;
+
+        // SDK clock: advanced only by monotonic ticks, so midnight/DST/clock changes can't move it
+        private long _clockMs;
+        private int _clockLastTick = Environment.TickCount;
+        private long _serverTimeOffsetMs = Util.DateTimeToUnixTimestamp(DateTime.UtcNow); // server time = clock + offset
 
         private BrainCloudEntity _entityService;
         private BrainCloudGlobalEntity _globalEntityService;
@@ -376,6 +394,31 @@ namespace BrainCloud
         internal BrainCloudComms Comms
         {
             get { return _comms; }
+        }
+
+        internal long NowMs
+        {
+            get { return _clockMs + unchecked((uint)(Environment.TickCount - _clockLastTick)); }
+        }
+
+        internal long ServerTimeMs
+        {
+            get { return NowMs + _serverTimeOffsetMs; }
+        }
+
+        internal bool IsServerTimeSynced { get; private set; }
+
+        internal void SyncServerTime(long serverTimeMs)
+        {
+            _serverTimeOffsetMs = serverTimeMs - NowMs;
+            IsServerTimeSynced = true;
+        }
+
+        private void AdvanceClock()
+        {
+            int tick = Environment.TickCount;
+            _clockMs += unchecked((uint)(tick - _clockLastTick));
+            _clockLastTick = tick;
         }
 
         public BrainCloudEntity EntityService
@@ -851,6 +894,21 @@ namespace BrainCloud
             _initialized = true;
         }
 
+        /// <summary>Initializes the BrainCloudClient with a signing profile per app.</summary>
+        /// <param name="serverURL">The URL to the brainCloud server</param>
+        /// <param name="defaultAppId">The app id to start with</param>
+        /// <param name="appProfiles">The map of app id to signing profile</param>
+        /// <param name="appVersion">The app version</param>
+        internal void InitializeWithApps(string serverURL, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string appVersion)
+        {
+            initializeHelper(serverURL, appProfiles[defaultAppId], defaultAppId, appVersion);
+
+            // set up braincloud which does the message handling
+            _comms.InitializeWithApps(serverURL, defaultAppId, appProfiles);
+
+            _initialized = true;
+        }
+
         /// <summary>Method initializes the BrainCloudClient.</summary>
         /// <param name="serverURL">The URL to the brainCloud server</param>
         /// <param name="secretKey">The secret key for your app</param>
@@ -862,6 +920,21 @@ namespace BrainCloud
 
             // set up braincloud which does the message handling
             _comms.Initialize(serverURL, appId, secretKey);
+
+            _initialized = true;
+        }
+
+        /// <summary>Initializes the BrainCloudClient with a signing profile instead of a secret.</summary>
+        /// <param name="serverURL">The URL to the brainCloud server</param>
+        /// <param name="appProfile">Signs a given payload</param>
+        /// <param name="appId">The app id</param>
+        /// <param name="appVersion">The app version</param>
+        public void Initialize(string serverURL, Func<byte[], string> appProfile, string appId, string appVersion)
+        {
+            initializeHelper(serverURL, appProfile, appId, appVersion);
+
+            // set up braincloud which does the message handling
+            _comms.Initialize(serverURL, appId, appProfile);
 
             _initialized = true;
         }
@@ -898,6 +971,8 @@ namespace BrainCloud
         /// 
         public void Update(eBrainCloudUpdateType in_updateType = eBrainCloudUpdateType.ALL)
         {
+            AdvanceClock();
+
             switch (in_updateType)
             {
                 case eBrainCloudUpdateType.REST:
@@ -1014,15 +1089,26 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Failure callback invoked for all errors generated
+        /// Failure callback invoked for all errors generated. Also identifies the
+        /// service/operation that generated the error.
         /// </summary>
+        public void RegisterGlobalErrorCallback(FailureGlobalCallback callback)
+        {
+            _comms.RegisterGlobalErrorCallback(callback);
+        }
+
+        /// <summary>
+        /// Failure callback invoked for all errors generated.
+        /// </summary>
+        [Obsolete("This overload does not identify the service/operation that generated the " +
+            "error and will be removed after August 2027. Use RegisterGlobalErrorCallback(FailureGlobalCallback) instead.")]
         public void RegisterGlobalErrorCallback(FailureCallback callback)
         {
             _comms.RegisterGlobalErrorCallback(callback);
         }
 
         /// <summary>
-        /// De-registers the global error callback.
+        /// De-registers the global error callback(s).
         /// </summary>
         public void DeregisterGlobalErrorCallback()
         {
@@ -1372,11 +1458,21 @@ namespace BrainCloud
 
         private void initializeHelper(string serverURL, string secretKey, string appId, string appVersion)
         {
+            initializeHelperCommon(serverURL, string.IsNullOrEmpty(secretKey) ? "secretKey was null or empty" : null, appId, appVersion);
+        }
+
+        private void initializeHelper(string serverURL, Func<byte[], string> appProfile, string appId, string appVersion)
+        {
+            initializeHelperCommon(serverURL, appProfile == null ? "appProfile was null" : null, appId, appVersion);
+        }
+
+        private void initializeHelperCommon(string serverURL, string secretError, string appId, string appVersion)
+        {
             string error = null;
             if (string.IsNullOrEmpty(serverURL))
                 error = "serverURL was null or empty";
-            else if (string.IsNullOrEmpty(secretKey))
-                error = "secretKey was null or empty";
+            else if (secretError != null)
+                error = secretError;
             else if (string.IsNullOrEmpty(appId))
                 error = "appId was null or empty";
             else if (string.IsNullOrEmpty(appVersion))

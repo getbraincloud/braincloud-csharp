@@ -22,6 +22,7 @@ namespace BrainCloud.Common
         public static readonly AuthenticationType GameCenter          = new AuthenticationType("GameCenter");
         public static readonly AuthenticationType Steam               = new AuthenticationType("Steam");
         public static readonly AuthenticationType Apple               = new AuthenticationType("Apple");
+        public static readonly AuthenticationType EpicGames           = new AuthenticationType("EpicGames");
         public static readonly AuthenticationType Google              = new AuthenticationType("Google");
         public static readonly AuthenticationType GoogleOpenId        = new AuthenticationType("GoogleOpenId");
         public static readonly AuthenticationType Twitter             = new AuthenticationType("Twitter");
@@ -45,6 +46,7 @@ namespace BrainCloud.Common
             { GameCenter.value,         GameCenter         },
             { Steam.value,              Steam              },
             { Apple.value,              Apple              },
+            { EpicGames.value,          EpicGames          },
             { Google.value,             Google             },
             { GoogleOpenId.value,       GoogleOpenId       },
             { Twitter.value,            Twitter            },

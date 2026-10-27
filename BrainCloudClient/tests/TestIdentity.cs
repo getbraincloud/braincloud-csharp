@@ -28,6 +28,16 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TestGetChildAppIdList()
+        {
+            // Fixture inits with the parent and one child.
+            Assert.That(_bc.GetChildAppIdList(), Is.EqualTo(new[] { ChildAppId }));
+
+            _bc.Init(ServerUrl, Secret, AppId, Version);
+            Assert.That(_bc.GetChildAppIdList(), Is.Empty);
+        }
+
+        [Test]
         public void TestSwitchToSingletonChildProfile()
         {
             TestResult tr = new TestResult(_bc);
@@ -309,10 +319,13 @@ namespace BrainCloudTests
         [Test]
         public void TestAttachBlockChain()
         {
+            // The public key must be unique per run, not a fixed literal.
+            string publicKey = "csharpPublicKey" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
             TestResult tr = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChainIdentity(
                 "config",
-                "ehhhwwwhhhhh2",
+                publicKey,
                 tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
@@ -326,10 +339,13 @@ namespace BrainCloudTests
         [Test]
         public void TestDetachBlockChain()
         {
+            // Unique per run, same reasoning as TestAttachBlockChain above.
+            string publicKey = "csharpDetachKey" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
             TestResult tr1 = new TestResult(_bc);
             _bc.IdentityService.AttachBlockChainIdentity(
                 "config",
-                "ew2",                
+                publicKey,
                 tr1.ApiSuccess, tr1.ApiError);
             tr1.Run();
 

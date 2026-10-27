@@ -78,7 +78,6 @@ public class BrainCloudWrapper
     private static BrainCloudWrapper _instance = null;
 
     private string _lastUrl = "";
-    private string _lastSecretKey = "";
     private string _lastAppId = "";
     private string _lastAppVersion = "";
 
@@ -390,29 +389,121 @@ public class BrainCloudWrapper
     public void Init()
     {
         resetWrapper();
-        Init(
-            BrainCloud.Plugin.Interface.DispatcherURL,
-            BrainCloud.Plugin.Interface.AppSecret,
-            BrainCloud.Plugin.Interface.AppId,
-            BrainCloud.Plugin.Interface.AppVersion);
+
+        // Child apps configured: load them too so SwitchToChildProfile can sign.
+        if (BrainCloud.Plugin.Interface.HasAdditionalApps)
+        {
+            BrainCloud.Plugin.Interface.ApplySigningProfiles(appProfiles =>
+                InitWithApps(
+                    BrainCloud.Plugin.Interface.DispatcherURL,
+                    BrainCloud.Plugin.Interface.AppId,
+                    appProfiles,
+                    BrainCloud.Plugin.Interface.AppVersion));
+
+            Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
+            return;
+        }
+
+        BrainCloud.Plugin.Interface.ApplySigningProfile(profile =>
+            Init(
+                BrainCloud.Plugin.Interface.DispatcherURL,
+                profile,
+                BrainCloud.Plugin.Interface.AppId,
+                BrainCloud.Plugin.Interface.AppVersion));
 
         Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
     }
 
     /// <summary>
-    /// Initializes the brainCloud client. This method uses the parameters as configured
-    /// in the Unity brainCloud Settings window.
+    /// Same as Init(); child apps from the brainCloud Settings window are loaded automatically.
     /// </summary>
     public void InitWithApps()
     {
-        resetWrapper();
-        InitWithApps(
-            BrainCloud.Plugin.Interface.DispatcherURL,
-            BrainCloud.Plugin.Interface.AppId,
-            BrainCloud.Plugin.Interface.AppIdSecrets,
-            BrainCloud.Plugin.Interface.AppVersion);
+        Init();
+    }
+#endif
 
-        Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
+#if GODOT
+    /// <summary>
+    /// Initializes brainCloud using credentials saved by the brainCloud editor plugin's login
+    /// flow (addons/braincloud/braincloud.cfg), falling back to ProjectSettings for projects
+    /// that haven't logged into the plugin dock yet. Mirrors the Unity SDK's parameterless
+    /// Init() above. If no source has credentials this does nothing (Client.Initialized stays
+    /// false) — callers should fall back to Init(url, secretKey, appId, version) with their
+    /// own parameters in that case.
+    /// </summary>
+    public void Init()
+    {
+        // Godot doesn't generate a strongly-typed C# binding for a GDExtension class like it
+        // does for its own built-in API, so this is called dynamically rather than via
+        // `new BrainCloudNative()` -- there is no such compile-time type.
+        _godotNative = Godot.ClassDB.Instantiate("BrainCloudNative").AsGodotObject();
+        string appVersion = Godot.ProjectSettings.GetSetting("braincloud/config/app_version", "1.0.0").AsString();
+        string serverUrl = Godot.ProjectSettings.GetSetting(
+            "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
+
+        // Older native builds have no child app support.
+        if (!_godotNative.HasMethod("resolve_configs"))
+        {
+            _godotNative.Call("resolve_config", "res://addons/braincloud/braincloud.cfg",
+                Godot.Callable.From((string appId, Godot.Callable sign) =>
+                {
+                    Init(serverUrl, payloadBytes => sign.Call(payloadBytes).AsString(), appId, appVersion);
+                    ApplyGodotSettings();
+                }));
+            return;
+        }
+
+        string[] childIds = _godotNative.Call("resolve_child_ids", "res://addons/braincloud/braincloud.cfg").AsStringArray();
+        _godotNative.Call("resolve_configs", "res://addons/braincloud/braincloud.cfg",
+            Godot.Callable.From((string appId, Godot.Collections.Dictionary profiles) =>
+            {
+                // Main app first, then children in config order, for GetChildAppIdList().
+                var appProfiles = new Dictionary<string, Func<byte[], string>>();
+                appProfiles[appId] = SignerFor(profiles[appId].AsCallable());
+                foreach (var childId in childIds)
+                {
+                    if (childId != appId && profiles.ContainsKey(childId))
+                        appProfiles[childId] = SignerFor(profiles[childId].AsCallable());
+                }
+
+                // Child apps configured: load them too so SwitchToChildProfile can sign.
+                if (appProfiles.Count > 1)
+                    InitWithApps(serverUrl, appId, appProfiles, appVersion);
+                else
+                    Init(serverUrl, appProfiles[appId], appId, appVersion);
+                ApplyGodotSettings();
+            }));
+    }
+
+    private static Func<byte[], string> SignerFor(Godot.Callable sign)
+    {
+        return payloadBytes => sign.Call(payloadBytes).AsString();
+    }
+
+    // Kept alive for the session; the profile Callables are bound to it.
+    private Godot.GodotObject _godotNative;
+
+    private void ApplyGodotSettings()
+    {
+        Client.EnableLogging(Godot.ProjectSettings.GetSetting("braincloud/debug/enable_logging", false).AsBool());
+        Client.EnableCompressedRequests(
+            Godot.ProjectSettings.GetSetting("braincloud/config/enable_compression", true).AsBool());
+    }
+#endif
+
+#if DOT_NET
+    /// <summary>
+    /// Initializes brainCloud using credentials from a local braincloud.cfg file next to the
+    /// executable (written by BrainCloudNative's local dev tool). Mirrors the Unity/Godot SDKs'
+    /// parameterless Init() above. If no config is found this does nothing (Client.Initialized
+    /// stays false) — callers should fall back to Init(url, secretKey, appId, version) with
+    /// their own parameters in that case.
+    /// </summary>
+    public void Init()
+    {
+        BrainCloud.Native.NativeConfig.UseConfig(BrainCloud.Native.NativeConfig.DefaultPath,
+            (appId, signRequest, serverUrl, version) => Init(serverUrl, signRequest, appId, version));
     }
 #endif
 
@@ -428,10 +519,25 @@ public class BrainCloudWrapper
     {
         resetWrapper();
         _lastUrl = url;
-        _lastSecretKey = secretKey;
         _lastAppId = appId;
         _lastAppVersion = version;
         Client.Initialize(url, secretKey, appId, version);
+
+        LoadData();
+    }
+
+    /// <summary>Initialize the brainCloud client with a signing profile instead of a secret.</summary>
+    /// <param name="url">The brainCloud server url</param>
+    /// <param name="appProfile">Signs a given payload</param>
+    /// <param name="appId">The app's id</param>
+    /// <param name="version">The app's version</param>
+    public void Init(string url, Func<byte[], string> appProfile, string appId, string version)
+    {
+        resetWrapper();
+        _lastUrl = url;
+        _lastAppId = appId;
+        _lastAppVersion = version;
+        Client.Initialize(url, appProfile, appId, version);
 
         LoadData();
     }
@@ -448,12 +554,47 @@ public class BrainCloudWrapper
     {
         resetWrapper();
         _lastUrl = url;
-        _lastSecretKey = appIdSecretMap[defaultAppId];
         _lastAppId = defaultAppId;
         _lastAppVersion = version;
         Client.InitializeWithApps(url, defaultAppId, appIdSecretMap, version);
+        SetChildAppIds(appIdSecretMap.Keys, defaultAppId);
 
         LoadData();
+    }
+
+    // Used by Init() when the config has child apps.
+    private void InitWithApps(string url, string defaultAppId, Dictionary<string, Func<byte[], string>> appProfiles, string version)
+    {
+        resetWrapper();
+        _lastUrl = url;
+        _lastAppId = defaultAppId;
+        _lastAppVersion = version;
+        Client.InitializeWithApps(url, defaultAppId, appProfiles, version);
+        SetChildAppIds(appProfiles.Keys, defaultAppId);
+
+        LoadData();
+    }
+
+    private List<string> _childAppIds = new List<string>();
+
+    /// <summary>
+    /// Child app ids from the last init, in the order shown in the brainCloud plugin (index 0 = first child).
+    /// Pass one to IdentityService.SwitchToChildProfile. Empty when no child apps are configured.
+    /// </summary>
+    public List<string> GetChildAppIdList()
+    {
+        return new List<string>(_childAppIds);
+    }
+
+    // Map order is the config order; the default app is the parent.
+    private void SetChildAppIds(IEnumerable<string> appIds, string defaultAppId)
+    {
+        _childAppIds.Clear();
+        foreach (var appId in appIds)
+        {
+            if (appId != defaultAppId)
+                _childAppIds.Add(appId);
+        }
     }
 
     
@@ -469,6 +610,7 @@ public class BrainCloudWrapper
         Client = null; 
         Client = new BrainCloudClient(this);
         Client.Wrapper = this;
+        _childAppIds.Clear();
 
         if(resetWrapperName)
             WrapperName = "";
@@ -1009,6 +1151,45 @@ public class BrainCloudWrapper
 
         Client.AuthenticationService.AuthenticateApple(
             appleUserId, identityToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
+    }
+
+    /// <summary>
+    /// Authenticate the user using an epicAccountId and their authIdToken.
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="epicAccountId">
+    /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+    /// </param>
+    /// <param name="authIdToken">
+    /// IdToken.Value.JsonWebToken string from the EOS AuthInterface's CopyIdToken method.
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public void AuthenticateEpicGames(
+        string epicAccountId,
+        string authIdToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        WrapperAuthCallbackObject aco = MakeWrapperAuthCallback(success, failure, cbObject);
+
+        Client.AuthenticationService.AuthenticateEpicGames(
+            epicAccountId, authIdToken, forceCreate, AuthSuccessCallback, AuthFailureCallback, aco);
     }
 
     /// <summary>
@@ -1636,10 +1817,10 @@ public class BrainCloudWrapper
     /// Service Name - Authenticate
     /// Service Operation - Authenticate
     /// </remarks>
-    /// <param name="externalId">
+    /// <param name="appleUserId">
     /// The apple id of the user
     /// </param>
-    /// <param name="authenticationToken">
+    /// <param name="appleAuthToken">
     /// The validated token from the Apple SDK (that will be further
     /// validated when sent to the bC service)
     /// </param>
@@ -1773,6 +1954,51 @@ public class BrainCloudWrapper
         SuccessCallback authenticateCallback = (response, o) =>
         {
             AuthenticateGameCenter(gameCenterId, timestamp, publicKeyUrl, signature, salt, forceCreate, teamPlayerId, success, failure, cbObject);
+        };
+
+        SmartSwitchAuthentication(authenticateCallback, failure);
+    }
+
+    /// <summary>
+    /// Smart Switch Authenticate will logout of the current profile, and switch to the new authentication type.
+    /// In event the current session was previously an anonymous account, the smart switch will delete that profile.
+    /// Use this function to keep a clean designflow from anonymous to signed profiles
+    /// 
+    /// <para>Authenticate the user with brainCloud using their EpicGames Credentials</para>
+    /// </summary>
+    /// <remarks>
+    /// Service Name - Authenticate
+    /// Service Operation - Authenticate
+    /// </remarks>
+    /// <param name="epicAccountId">
+    /// LocalUserId.ToString() retrieved from the EOS AuthInterface's Login method.
+    /// </param>
+    /// <param name="authIdToken">
+    /// IdToken.Value.JsonWebToken string from the EOS AuthInterface's CopyIdToken method.
+    /// </param>
+    /// <param name="forceCreate">
+    /// Should a new profile be created for this user if the account does not exist?
+    /// </param>
+    /// <param name="success">
+    /// The method to call in event of successful login
+    /// </param>
+    /// <param name="failure">
+    /// The method to call in the event of an error during authentication
+    /// </param>
+    /// <param name="cbObject">
+    /// The user supplied callback object
+    /// </param>
+    public virtual void SmartSwitchAuthenticateEpicGames(
+        string epicAccountId,
+        string authIdToken,
+        bool forceCreate,
+        SuccessCallback success = null,
+        FailureCallback failure = null,
+        object cbObject = null)
+    {
+        SuccessCallback authenticateCallback = (response, o) =>
+        {
+            AuthenticateEpicGames(epicAccountId, authIdToken, forceCreate, success, failure, cbObject);
         };
 
         SmartSwitchAuthentication(authenticateCallback, failure);
@@ -2695,7 +2921,8 @@ public class BrainCloudWrapper
     /// </summary>
     protected virtual void Reauthenticate()
     {
-        Init(_instance._lastUrl, _instance._lastSecretKey, _instance._lastAppId, _instance._lastAppVersion);
+        // Grab the profile before Init() rebuilds Client/Comms.
+        Init(_instance._lastUrl, _instance.Client.Comms.GetAppProfile(), _instance._lastAppId, _instance._lastAppVersion);
         string authType = GetStoredAuthenticationType();
         if (authType == AUTHENTICATION_ANONYMOUS)
         {

@@ -16,7 +16,6 @@ namespace BrainCloud.Internal
     using System.Net;
     using System.Net.Sockets;
     using System.Threading.Tasks;
-    using System.Diagnostics;
 
     internal sealed class RelayComms
     {
@@ -90,8 +89,8 @@ namespace BrainCloud.Internal
             Ping = 999;
             if (!IsConnected() && m_clientRef.IsAuthenticated())
             {
-                m_lastRecvTime = DateTime.Now;
-                m_lastNowMS = DateTime.Now;
+                m_lastRecvTime = m_clientRef.NowMs;
+                m_lastNowMS = m_clientRef.NowMs;
                 m_endMatchRequested = false;
                 // the callback
                 m_connectOptions = in_options;
@@ -242,7 +241,7 @@ namespace BrainCloud.Internal
             // UDP, store reliable in send map
             if (in_reliable && m_connectionType == RelayConnectionType.UDP)
             {
-                UDPPacket packet = new UDPPacket(packetData, in_channel, packetId, 0);
+                UDPPacket packet = new UDPPacket(packetData, in_channel, packetId, 0, m_clientRef.NowMs);
 
                 ulong ackId = BitConverter.ToUInt64(ackIdData, 0);
                 m_reliables[ackId] = packet;
@@ -319,15 +318,15 @@ namespace BrainCloud.Internal
             // Re-transmission doesn't need to be high frequency. A suitable interval could be 500ms.
             if (m_connectionType == RelayConnectionType.UDP && m_resendConnectRequest)
             {
-                if ((DateTime.Now - m_lastConnectResendTime).TotalSeconds > CONNECT_RESEND_INTERVAL_S)
+                if (m_clientRef.NowMs - m_lastConnectResendTime > CONNECT_RESEND_INTERVAL_S * 1000L)
                 {
                     send(buildConnectionRequest());
-                    m_lastConnectResendTime = DateTime.Now;
+                    m_lastConnectResendTime = m_clientRef.NowMs;
                 }
             }
 
             // Ping
-            DateTime nowMS = DateTime.Now;
+            long nowMS = m_clientRef.NowMs;
             if (IsConnected())
             {
                 if (m_queuedForDisconnect)
@@ -335,7 +334,7 @@ namespace BrainCloud.Internal
                     m_queuedForDisconnect = false;
                     disconnect();
                 }
-                m_timeSinceLastPingRequest += (nowMS - m_lastNowMS).Milliseconds;
+                m_timeSinceLastPingRequest += (int)(nowMS - m_lastNowMS);
                 m_lastNowMS = nowMS;
 
                 if (m_timeSinceLastPingRequest >= m_pingInterval)
@@ -350,15 +349,15 @@ namespace BrainCloud.Internal
                     foreach (var kv in m_reliables)
                     {
                         UDPPacket packet = kv.Value;
-                        if ((nowMS - packet.TimeSinceFirstSend).TotalMilliseconds > 10000)
+                        if (nowMS - packet.TimeSinceFirstSend > 10000)
                         {
                             disconnect();
                             queueErrorEvent("Relay disconnected, too many packet lost");
                             break;
                         }
-                        if ((nowMS - packet.LastTimeSent).TotalMilliseconds > packet.TimeInterval)
+                        if (nowMS - packet.LastTimeSent > packet.TimeInterval)
                         {
-                            packet.UpdateTimeIntervalSent();
+                            packet.UpdateTimeIntervalSent(nowMS);
                             send(packet.RawData);
                         }
                     }
@@ -367,7 +366,7 @@ namespace BrainCloud.Internal
 
             // Check if we timeout
             if (m_connectionType == RelayConnectionType.UDP &&
-                (nowMS - m_lastRecvTime).TotalMilliseconds > 10000)
+                nowMS - m_lastRecvTime > 10000)
             {
                 disconnect();
                 queueErrorEvent("Relay Socket Timeout");
@@ -389,7 +388,7 @@ namespace BrainCloud.Internal
                     switch (evt.type)
                     {
                         case EventType.SocketData:
-                            m_lastRecvTime = DateTime.Now;
+                            m_lastRecvTime = m_clientRef.NowMs;
                             onRecv(evt.data);
                             break;
                         case EventType.SocketError:
@@ -398,14 +397,14 @@ namespace BrainCloud.Internal
                             break;
                         case EventType.SocketConnected:
                             {
-                                m_lastNowMS = DateTime.Now;
-                                m_lastRecvTime = DateTime.Now;
+                                m_lastNowMS = m_clientRef.NowMs;
+                                m_lastRecvTime = m_clientRef.NowMs;
                                 send(buildConnectionRequest());
 
                                 if (m_connectionType == RelayConnectionType.UDP)
                                 {
                                     m_resendConnectRequest = true;
-                                    m_lastConnectResendTime = DateTime.Now;
+                                    m_lastConnectResendTime = m_clientRef.NowMs;
                                 }
                                 break;
                             }
@@ -458,7 +457,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void ping()
         {
-            m_sentPing = DateTime.Now.Ticks;
+            m_sentPingMs = m_clientRef.NowMs;
             short lastPingShort = Convert.ToInt16(Ping * 0.0001);
             byte data1, data2;
             fromShortBE(lastPingShort, out data1, out data2);
@@ -809,7 +808,7 @@ namespace BrainCloud.Internal
                             m_netId = netId;
                             m_ownerCxId = parsedDict["ownerCxId"] as string;
                             m_bIsConnected = true;
-                            m_lastNowMS = DateTime.Now;
+                            m_lastNowMS = m_clientRef.NowMs;
                             m_resendConnectRequest = false;
                             queueConnectSuccessEvent(jsonMessage);
                         }
@@ -876,7 +875,7 @@ namespace BrainCloud.Internal
 
         private void onPong()
         {
-            Ping = DateTime.Now.Ticks - m_sentPing;
+            Ping = (m_clientRef.NowMs - m_sentPingMs) * TimeSpan.TicksPerMillisecond;
 #if BC_DEBUG_RELAY_LOGS_ENABLED
             if (m_clientRef.LoggingEnabled)
             {
@@ -1067,7 +1066,7 @@ namespace BrainCloud.Internal
                                 }
                                 if (packetLE(packetId, packet.Id)) break;
                             }
-                            var newPacket = new UDPPacket(in_data, channel, packetId, netId);
+                            var newPacket = new UDPPacket(in_data, channel, packetId, netId, m_clientRef.NowMs);
                             orderedReliablePackets.Insert(insertIdx, newPacket);
 #if BC_DEBUG_RELAY_LOGS_ENABLED
                             if (m_clientRef.LoggingEnabled)
@@ -1500,10 +1499,10 @@ namespace BrainCloud.Internal
 
         private RelayConnectionType m_connectionType = RelayConnectionType.INVALID;
         private bool m_bIsConnected = false;
-        private DateTime m_lastNowMS;
+        private long m_lastNowMS;
         private int m_timeSinceLastPingRequest = 0;
         private int m_pingInterval = 1000; // one second
-        private DateTime m_lastRecvTime;
+        private long m_lastRecvTime;
 
         private const int MAX_PACKET_ID_HISTORY = 60 * 10; // So we last 10 seconds at 60 fps
         private const int MAX_RELIABLE_RESEND_INTERVAL = 500;
@@ -1563,7 +1562,7 @@ namespace BrainCloud.Internal
         private bool m_queuedForDisconnect = false;
         private bool m_resendConnectRequest = false;
         private bool m_endMatchRequested = false;
-        private DateTime m_lastConnectResendTime = DateTime.Now;
+        private long m_lastConnectResendTime;
 
         private const int CONTROL_BYTE_HEADER_LENGTH = 1;
         private const int SIZE_OF_RELIABLE_FLAGS = 2;
@@ -1572,7 +1571,7 @@ namespace BrainCloud.Internal
         public const ushort ORDERED_BIT = 0x4000;
 
         private BrainCloudClient m_clientRef;
-        private long m_sentPing = DateTime.Now.Ticks;
+        private long m_sentPingMs;
         private byte[] DISCONNECT_ARR = { CL2RS_DISCONNECT };
         private byte[] CONNECT_ARR = { CL2RS_CONNECT };
         private byte[] ENDMATCH_ARR = { CL2RS_ENDMATCH };
@@ -1608,23 +1607,23 @@ namespace BrainCloud.Internal
 
         private class UDPPacket
         {
-            public UDPPacket(byte[] in_data, int in_channel, int in_packetId, byte in_netId)
+            public UDPPacket(byte[] in_data, int in_channel, int in_packetId, byte in_netId, long in_nowMs)
             {
-                LastTimeSent = DateTime.Now;
-                TimeSinceFirstSend = DateTime.Now;
+                LastTimeSent = in_nowMs;
+                TimeSinceFirstSend = in_nowMs;
                 TimeInterval = in_channel <= 1 ? 50 : in_channel == 2 ? 150 : 250;// ms
                 RawData = in_data;
                 Id = in_packetId;
                 NetId = in_netId;
             }
 
-            public void UpdateTimeIntervalSent()
+            public void UpdateTimeIntervalSent(long in_nowMs)
             {
-                LastTimeSent = DateTime.Now;
+                LastTimeSent = in_nowMs;
                 TimeInterval = Math.Min((int)(TimeInterval * 1.25f), MAX_RELIABLE_RESEND_INTERVAL);
             }
-            public DateTime TimeSinceFirstSend { get; private set; }
-            public DateTime LastTimeSent { get; private set; }
+            public long TimeSinceFirstSend { get; private set; }
+            public long LastTimeSent { get; private set; }
             public int TimeInterval { get; private set; }
             public byte[] RawData { get; private set; }
             public int Id { get; private set; }

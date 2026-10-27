@@ -689,7 +689,10 @@ namespace BrainCloud
             data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
             data[OperationParam.GlobalEntityServiceVersion.Value] = version;
             data[OperationParam.OwnerId.Value] = ownerId;
-            data[OperationParam.GlobalEntityServiceAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+            if (acl != null)
+            {
+                data[OperationParam.GlobalEntityServiceAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+            }
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.UpdateEntityOwnerAndAcl, data, callback);
@@ -732,7 +735,10 @@ namespace BrainCloud
             var data = new Dictionary<string, object>();
             data[OperationParam.GlobalEntityServiceEntityId.Value] = entityId;
             data[OperationParam.GlobalEntityServiceVersion.Value] = version;
-            data[OperationParam.GlobalEntityServiceAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+            if (acl != null)
+            {
+                data[OperationParam.GlobalEntityServiceAcl.Value] = JsonReader.Deserialize(acl.ToJsonString());
+            }
 
             var callback = BrainCloudClient.CreateServerCallback(success, failure, cbObject);
             var serverCall = new ServerCall(ServiceName.GlobalEntity, ServiceOperation.MakeSystemEntity, data, callback);

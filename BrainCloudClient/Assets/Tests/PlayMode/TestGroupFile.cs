@@ -12,10 +12,9 @@ namespace Tests.PlayMode
 {
     public class TestGroupFile : TestFixtureBase
     {
-        //Information grabbed from internal servers -> Unit Test Master
         private string _folderPath = "";
         private string _groupFileId;
-        private string _groupID = "a7ff751c-3251-407a-b2fd-2bd1e9bca64a";
+        private string _groupID = "";
         private bool _recurse = true;
         //Making version a negative value to tell the server to use the latest version
         private int _version = -1;
@@ -50,9 +49,22 @@ namespace Tests.PlayMode
             //Create new User
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(_tc.bcWrapper));
             
-            //Add user to group
-            _tc.bcWrapper.GroupService.JoinGroup(_groupID, _tc.ApiSuccess, _tc.ApiError);
+            //Create the group this fixture operates on, so it exists on every environment.
+            //Group type "test" is the same one TestGroup.cs creates against.
+            _tc.bcWrapper.GroupService.CreateGroup
+            (
+                "GroupFileTestGroup",
+                "test",
+                true,
+                null,
+                null,
+                null,
+                null,
+                _tc.ApiSuccess,
+                _tc.ApiError
+            );
             yield return _tc.StartCoroutine(_tc.Run());
+            _groupID = (string)((Dictionary<string, object>)_tc.m_response["data"])["groupId"];
             
             //Upload new file
             _tc.bcWrapper.Client.RegisterFileUploadCallback(FileCallbackSuccess, FileCallbackFail);
@@ -108,7 +120,9 @@ namespace Tests.PlayMode
                 _tc.ApiError
             );
             yield return _tc.StartCoroutine(_tc.Run());
-            _tc.bcWrapper.GroupService.LeaveGroup(_groupID, _tc.ApiSuccess, _tc.ApiError);
+
+            //Delete the group TestA created rather than leaving it behind.
+            _tc.bcWrapper.GroupService.DeleteGroup(_groupID, -1, _tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
             base.TearDown();
         }

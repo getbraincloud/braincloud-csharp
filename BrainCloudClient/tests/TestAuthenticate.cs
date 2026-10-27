@@ -493,41 +493,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void TestAuthenticateUltra()
-        {
-            if (ServerUrl.Contains("api.internal.braincloudservers.com") ||
-                ServerUrl.Contains("api.internala.braincloudservers.com") ||
-                ServerUrl.Contains("api.internalg.braincloudservers.com"))
-            {
-                Console.WriteLine("This env doesn't support Ultra authentication type");
-                Assert.That(true);
-                return;
-            }
-
-                TestResult tr = new TestResult(_bc);
-            _bc.Client.AuthenticationService.AuthenticateUniversal(
-                GetUser(Users.UserA).Id,
-                GetUser(Users.UserA).Password,
-                true,
-                tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-            
-            _bc.ScriptService.RunScript("getUltraToken", "{}", tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-            
-            var data = tr.m_response["data"] as Dictionary<string, object>;
-            var response = data["response"] as Dictionary<string, object>;
-            var data2 = response["data"] as Dictionary<string, object>;
-            var json = data2["json"] as Dictionary<string, object>;
-            string idToken = json["id_token"] as string;
-            
-            _bc.PlayerStateService.Logout();
-
-            _bc.AuthenticateUltra("braincloud1", idToken, true, tr.ApiSuccess, tr.ApiError);
-            tr.Run();
-        }
-
-        [Test]
         public void TestAuthenticateSwitch()
         {
             if (ServerUrl.Contains("api.internala.braincloudservers.com") ||

@@ -48,8 +48,10 @@ namespace Tests.PlayMode
             //Enable RTT
             _tc.bcWrapper.RTTService.EnableRTT(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());
-            
-            string channelId = "20001:gl:valid";
+            _tc.bcWrapper.ChatService.GetChannelId("gl", "valid", _tc.ApiSuccess, _tc.ApiError);
+            yield return _tc.StartCoroutine(_tc.Run());
+
+            string channelId = (string)((Dictionary<string, object>)_tc.m_response["data"])["channelId"];
 
             //Connect to channel
             _tc.bcWrapper.ChatService.ChannelConnect(channelId, 50, _tc.ApiSuccess, _tc.ApiError);
