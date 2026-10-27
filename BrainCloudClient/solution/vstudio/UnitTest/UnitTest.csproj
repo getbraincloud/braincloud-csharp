@@ -88,6 +88,9 @@
     <Compile Include="..\..\..\tests\TestAsyncMatch.cs">
       <Link>TestAsyncMatch.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestAppCheck.cs">
+      <Link>TestAppCheck.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestAuthenticate.cs">
       <Link>TestAuthenticate.cs</Link>
     </Compile>

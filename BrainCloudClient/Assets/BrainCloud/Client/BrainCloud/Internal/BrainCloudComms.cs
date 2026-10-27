@@ -2284,6 +2284,7 @@ namespace BrainCloud.Internal
         /// </summary>
         internal void ResetCommunication()
         {
+            _clientRef.AuthenticationService.CancelPendingAppCheckRequests();
             lock (_serviceCallsWaiting)
             {
                 _isAuthenticated = false;
