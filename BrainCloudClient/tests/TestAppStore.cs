@@ -161,7 +161,12 @@ namespace BrainCloudTests
 
             // Get data needed to do CachePurchasePayloadContext and VerifyPurchase (mock)
             var data = tr.m_response;
-            var products = ((data["data"] as Dictionary<string, object>)["productInventory"] as Dictionary<string, object>[])[0];
+            var inventory = (data["data"] as Dictionary<string, object>)["productInventory"] as Dictionary<string, object>[];
+            if (inventory == null || inventory.Length == 0)
+            {
+                Assert.Fail("The app has no googlePlay product with a payload; add one to this environment's test app.");
+            }
+            var products = inventory[0];
 
             string itemId = products["itemId"].ToString();
             string payload = products["payload"].ToString();
