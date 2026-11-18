@@ -76,7 +76,7 @@ namespace BrainCloudTests
         [Test]
         public void TestBadUrl()
         {
-            _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
+            InitAt(_bc, ServerUrl + "unitTestFail");
             _bc.Client.EnableLogging(true);
             // Init() recreates the comms layer, resetting _authPacketTimeoutSecs to the
             // default 15 s.  Re-apply 30s so the request waits long enough for the server
@@ -94,7 +94,7 @@ namespace BrainCloudTests
         {
             try
             {
-                _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
+                InitAt(_bc, ServerUrl + "unitTestFail");
                 _bc.Client.EnableLogging(true);
                 _bc.Client.SetPacketTimeouts(new List<int> { 3, 3, 3 });
 
@@ -131,7 +131,7 @@ namespace BrainCloudTests
         {
             try
             {
-                _bc.Init(ServerUrl + "unitTestFail", Secret, AppId, Version);
+                InitAt(_bc, ServerUrl + "unitTestFail");
                 _bc.Client.EnableNetworkErrorMessageCaching(true);
                 _bc.Client.EnableLogging(true);
                 _bc.Client.SetPacketTimeouts(new List<int> { 1, 1, 1 });
@@ -198,7 +198,7 @@ namespace BrainCloudTests
         public void TestErrorCallback()
         {
 
-            _bc.Init(ServerUrl, Secret, AppId, Version);
+            InitAt(_bc, ServerUrl);
             _bc.Client.EnableLogging(true);
 
             TestResult tr = new TestResult(_bc);
@@ -216,7 +216,7 @@ namespace BrainCloudTests
             Assert.That(!tr.m_statusMessage.StartsWith("{"));
 
             // try now using 900 client timeout
-            _bc.Init("http://localhost:5432", Secret, AppId, Version);
+            InitAt(_bc, "http://localhost:5432");
 
             tr.Reset();
             _bc.Client.SetOldStyleStatusMessageErrorCallback(false);

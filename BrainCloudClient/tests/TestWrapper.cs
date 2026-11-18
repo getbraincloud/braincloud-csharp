@@ -188,7 +188,7 @@ namespace BrainCloudTests
         public void TestAutoReconnectDisabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
-            userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
+            userWrapper.Init();
             userWrapper.Client.EnableLogging(true);
             TestResult userTr = new TestResult(userWrapper);
             userWrapper.AuthenticateUniversal("altUser", "altUser", true, userTr.ApiSuccess, userTr.ApiError);
@@ -227,7 +227,7 @@ namespace BrainCloudTests
         public void TestAutoReconnectEnabled()
         {
             BrainCloudWrapper userWrapper = new BrainCloudWrapper();
-            userWrapper.Init(ServerUrl, Secret, AppId, "1.0.0.");
+            userWrapper.Init();
             userWrapper.Client.EnableLogging(true);
             TestResult userTr = new TestResult(userWrapper);
             userWrapper.AuthenticateUniversal("altUser", "altUser", true, userTr.ApiSuccess, userTr.ApiError);
@@ -268,7 +268,7 @@ namespace BrainCloudTests
         {
             //Set up User B
             BrainCloudWrapper bc2 = new BrainCloudWrapper("userBWrapper");
-            bc2.Init(ServerUrl, Secret, AppId, Version);
+            bc2.Init();
             bc2.Client.EnableLogging(true);
             
             TestResult tr2 = new TestResult(bc2);
@@ -305,7 +305,7 @@ namespace BrainCloudTests
             
         
             BrainCloudWrapper bc = new BrainCloudWrapper("userAWrapper");
-            bc.Init(ServerUrl, Secret, AppId, Version);
+            bc.Init();
             bc.Client.EnableLogging(true);
             bc.EnableAutoReconnect(true);
             bc.Client.RegisterAutoReconnectCallback(LongSessionCallback);
@@ -368,24 +368,20 @@ namespace BrainCloudTests
         [Test]
         public void TestReInit()
         {
-            Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            secretMap.Add(AppId, Secret);
-            secretMap.Add(ChildAppId, ChildSecret);
-
             //CASE 1
 
             //testing muliple attempts at Initializing in a row 
             int initCounter = 1;
             //try to init several times and see if everything works as intended
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _bc.Init();
             Debug.Assert(initCounter == 1); //init called once
             initCounter++;
 
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _bc.Init();
             Debug.Assert(initCounter == 2); //init called twice
             initCounter++;
 
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _bc.Init();
             Debug.Assert(initCounter == 3); //inti called a third time
 
             //CASE 2
@@ -428,7 +424,7 @@ namespace BrainCloudTests
             tr2.Run();
 
             //RE-INIT
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _bc.Init();
             TestResult tr3 = new TestResult(_bc);
 
             //Call WITHOUT AUTH - should fail because we have re-initialized and will need to authenticate again

@@ -390,26 +390,33 @@ public class BrainCloudWrapper
     {
         resetWrapper();
 
-        // Child apps configured: load them too so SwitchToChildProfile can sign.
-        if (BrainCloud.Plugin.Interface.HasAdditionalApps)
+        byte[] tuning = BrainCloudBootstrap.Read();
+        try
         {
-            BrainCloud.Plugin.Interface.ApplySigningProfiles(appProfiles =>
-                InitWithApps(
-                    BrainCloud.Plugin.Interface.DispatcherURL,
-                    BrainCloud.Plugin.Interface.AppId,
-                    appProfiles,
-                    BrainCloud.Plugin.Interface.AppVersion));
-
-            Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
-            return;
+            // Child apps configured: load them too so SwitchToChildProfile can sign.
+            if (BrainCloud.Plugin.Interface.HasAdditionalApps)
+            {
+                BrainCloud.Plugin.Interface.ApplySigningProfiles(tuning, appProfiles =>
+                    InitWithApps(
+                        BrainCloud.Plugin.Interface.DispatcherURL,
+                        BrainCloud.Plugin.Interface.AppId,
+                        appProfiles,
+                        BrainCloud.Plugin.Interface.AppVersion));
+            }
+            else
+            {
+                BrainCloud.Plugin.Interface.ApplySigningProfile(tuning, profile =>
+                    Init(
+                        BrainCloud.Plugin.Interface.DispatcherURL,
+                        profile,
+                        BrainCloud.Plugin.Interface.AppId,
+                        BrainCloud.Plugin.Interface.AppVersion));
+            }
         }
-
-        BrainCloud.Plugin.Interface.ApplySigningProfile(profile =>
-            Init(
-                BrainCloud.Plugin.Interface.DispatcherURL,
-                profile,
-                BrainCloud.Plugin.Interface.AppId,
-                BrainCloud.Plugin.Interface.AppVersion));
+        finally
+        {
+            BrainCloudBootstrap.Wipe(tuning);
+        }
 
         Client.EnableLogging(BrainCloud.Plugin.Interface.EnableLogging);
     }
@@ -425,10 +432,9 @@ public class BrainCloudWrapper
 
 #if GODOT
     /// <summary>
-    /// Initializes brainCloud using credentials saved by the brainCloud editor plugin's login
-    /// flow (addons/braincloud/braincloud.cfg), falling back to ProjectSettings for projects
-    /// that haven't logged into the plugin dock yet. Mirrors the Unity SDK's parameterless
-    /// Init() above. If no source has credentials this does nothing (Client.Initialized stays
+    /// Initializes brainCloud using the config saved by the brainCloud editor plugin's dock
+    /// (addons/braincloud/braincloud.cfg, read with the build value the dock saves).
+    /// Mirrors the Unity SDK's parameterless Init() above. If no source has credentials this does nothing (Client.Initialized stays
     /// false) — callers should fall back to Init(url, secretKey, appId, version) with their
     /// own parameters in that case.
     /// </summary>
@@ -439,25 +445,20 @@ public class BrainCloudWrapper
         // `new BrainCloudNative()` -- there is no such compile-time type.
         _godotNative = Godot.ClassDB.Instantiate("BrainCloudNative").AsGodotObject();
         string appVersion = Godot.ProjectSettings.GetSetting("braincloud/config/app_version", "1.0.0").AsString();
-        string serverUrl = Godot.ProjectSettings.GetSetting(
-            "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
-
-        // Older native builds have no child app support.
-        if (!_godotNative.HasMethod("resolve_configs"))
-        {
-            _godotNative.Call("resolve_config", "res://addons/braincloud/braincloud.cfg",
-                Godot.Callable.From((string appId, Godot.Callable sign) =>
-                {
-                    Init(serverUrl, payloadBytes => sign.Call(payloadBytes).AsString(), appId, appVersion);
-                    ApplyGodotSettings();
-                }));
-            return;
-        }
+        // The server saved with the app, else the project setting (configs saved before the dock wrote it).
+        var config = new Godot.ConfigFile();
+        string serverUrl = config.Load("res://addons/braincloud/braincloud.cfg") == Godot.Error.Ok
+            ? config.GetValue("credentials", "server_url", "").AsString() : "";
+        if (string.IsNullOrEmpty(serverUrl))
+            serverUrl = Godot.ProjectSettings.GetSetting(
+                "braincloud/config/server_url", "https://api.braincloudservers.com/dispatcherv2").AsString();
 
         string[] childIds = _godotNative.Call("resolve_child_ids", "res://addons/braincloud/braincloud.cfg").AsStringArray();
+        bool resolved = false;
         _godotNative.Call("resolve_configs", "res://addons/braincloud/braincloud.cfg",
             Godot.Callable.From((string appId, Godot.Collections.Dictionary profiles) =>
             {
+                resolved = true;
                 // Main app first, then children in config order, for GetChildAppIdList().
                 var appProfiles = new Dictionary<string, Func<byte[], string>>();
                 appProfiles[appId] = SignerFor(profiles[appId].AsCallable());
@@ -474,6 +475,9 @@ public class BrainCloudWrapper
                     Init(serverUrl, appProfiles[appId], appId, appVersion);
                 ApplyGodotSettings();
             }));
+
+        if (!resolved && Godot.FileAccess.FileExists("res://addons/braincloud/braincloud.cfg"))
+            Godot.GD.PushError("brainCloud: braincloud.cfg could not be read. Open the brainCloud dock and select the app again.");
     }
 
     private static Func<byte[], string> SignerFor(Godot.Callable sign)
@@ -494,16 +498,28 @@ public class BrainCloudWrapper
 
 #if DOT_NET
     /// <summary>
-    /// Initializes brainCloud using credentials from a local braincloud.cfg file next to the
-    /// executable (written by BrainCloudNative's local dev tool). Mirrors the Unity/Godot SDKs'
-    /// parameterless Init() above. If no config is found this does nothing (Client.Initialized
-    /// stays false) — callers should fall back to Init(url, secretKey, appId, version) with
-    /// their own parameters in that case.
+    /// Initializes brainCloud using the braincloud.cfg next to the executable and the
+    /// tuning file compiled into the app (both written by BrainCloudNative's local dev
+    /// tool). Mirrors the Unity/Godot SDKs' parameterless Init() above. If the config can't be
+    /// read this does nothing (Client.Initialized stays false) — callers should fall back to
+    /// Init(url, secretKey, appId, version) with their own parameters in that case.
     /// </summary>
     public void Init()
     {
-        BrainCloud.Native.NativeConfig.UseConfig(BrainCloud.Native.NativeConfig.DefaultPath,
-            (appId, signRequest, serverUrl, version) => Init(serverUrl, signRequest, appId, version));
+        byte[] tuning = BrainCloudBootstrap.Read();
+        bool used = BrainCloud.Native.NativeConfig.UseConfigWithApps(BrainCloud.Native.NativeConfig.DefaultPath, tuning,
+            (appId, appProfiles, serverUrl, version) =>
+            {
+                // Child apps configured: load them too so SwitchToChildProfile can sign.
+                if (appProfiles.Count > 1)
+                    InitWithApps(serverUrl, appId, appProfiles, version);
+                else
+                    Init(serverUrl, appProfiles[appId], appId, version);
+            });
+        BrainCloudBootstrap.Wipe(tuning);
+
+        if (!used && System.IO.File.Exists(BrainCloud.Native.NativeConfig.DefaultPath))
+            Console.Error.WriteLine("brainCloud: braincloud.cfg could not be read. Run the brainCloud setup again.");
     }
 #endif
 

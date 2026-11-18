@@ -237,6 +237,12 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Restored by bccm from data/; the config only reads with this build's tuning file. -->
+    <Compile Include="..\..\..\tests\BrainCloudTuning.cs" Condition="Exists('..\..\..\tests\BrainCloudTuning.cs')" />
+    <None Include="..\..\..\tests\braincloud.cfg" Condition="Exists('..\..\..\tests\braincloud.cfg')">
+      <Link>braincloud.cfg</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

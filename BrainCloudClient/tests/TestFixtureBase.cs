@@ -15,15 +15,13 @@ namespace BrainCloudTests
     [TestFixture]
     public class TestFixtureBase
     {
+        // From the setup tool's braincloud.cfg; the rest are fixed values the test app expects.
         public string ServerUrl = "";
         public string AppId = "";
-        public string Secret = "";
         public string Version = "1.0.0";
         public string ChildAppId = "";
-        public string ChildSecret = "";
-        public string ParentLevel = "";
-        public string PeerName = "";
-        public string SupportsCompression = "";
+        public string ParentLevel = "Master";
+        public string PeerName = "peerapp";
 
         private JsonWriterSettings _writerSettings = new JsonWriterSettings { PrettyPrint = true, Tab = "  " };
 
@@ -34,25 +32,23 @@ namespace BrainCloudTests
         {
             LogTestBanner("BEGIN");
 
-            LoadIds();
-            Console.WriteLine($">> BrainCloud test server: {ServerUrl}  appId={AppId}");
-
             _bc = new BrainCloudWrapper();
-            Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            secretMap.Add(AppId, Secret);
-            secretMap.Add(ChildAppId, ChildSecret);
-            _bc.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _bc.Init();
+            if (!_bc.Client.Initialized)
+                Assert.Fail("No readable braincloud.cfg beside the test assembly. Run `node bccm test csharp_win32` to restore it from data/.");
+            ServerUrl = _bc.Client.GetUrl();
+            AppId = _bc.Client.AppId;
+            Version = _bc.Client.AppVersion;
+            var children = _bc.GetChildAppIdList();
+            ChildAppId = children.Count > 0 ? children[0] : "";
+            Console.WriteLine($">> BrainCloud test server: {ServerUrl}  appId={AppId}");
             _bc.Client.EnableLogging(true);
             _bc.Client.RegisterLogDelegate(HandleLog);
 
-            // USE_COMPRESSION env var is set by the Jenkins pipeline parameter (booleanParam).
-            // It takes priority over the supportsCompression field in ids.txt, which acts as the
-            // local/manual fallback when the env var is absent.
+            // USE_COMPRESSION is set by the Jenkins pipeline parameter.
             string useCompressionEnv = Environment.GetEnvironmentVariable("USE_COMPRESSION");
             if (useCompressionEnv != null)
                 _bc.Client.EnableCompressedRequests(bool.Parse(useCompressionEnv));
-            else if (SupportsCompression != "")
-                _bc.Client.EnableCompressedRequests(bool.Parse(SupportsCompression));
 
             // Start auth timeout at 30 s instead of the 15 s default.
             // In the DOT_NET transport the timeout is a CancellationTokenSource seeded once
@@ -244,75 +240,18 @@ namespace BrainCloudTests
             return tr.Run();
         }
 
-        /// <summary>
-        /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
-        /// in a platform agnostic way.
-        /// </summary>
-        private void LoadIds()
+        // Re-inits a wrapper on another url with the config's main app, for the bad-url tests.
+        protected void InitAt(BrainCloudWrapper wrapper, string url)
         {
-            string exePath = AppDomain.CurrentDomain.BaseDirectory;
-            string absPath = exePath;
-            string search = "BrainCloudClient";
-            if (absPath.Contains(search))
-            {
-                absPath = absPath.Substring(0, absPath.LastIndexOf(search));
-                absPath += search + Path.DirectorySeparatorChar + "tests" + Path.DirectorySeparatorChar + "ids.txt";
-            }
-            //Console.Out.WriteLine(absPath);
-            //Console.Out.WriteLine(search);
+            wrapper.Init(url, AppProfile(), AppId, Version);
+        }
 
-            using (var reader = new StreamReader(absPath))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line.StartsWith("serverUrl="))
-                    {
-                        ServerUrl = line.Substring(("serverUrl=").Length);
-                        ServerUrl.Trim();
-                    }
-                    else if (line.StartsWith("appId="))
-                    {
-                        AppId = line.Substring(("appId=").Length);
-                        AppId.Trim();
-                    }
-                    else if (line.StartsWith("secret="))
-                    {
-                        Secret = line.Substring(("secret=").Length);
-                        Secret.Trim();
-                    }
-                    else if (line.StartsWith("version="))
-                    {
-                        Version = line.Substring(("version=").Length);
-                        Version.Trim();
-                    }
-                    else if (line.StartsWith("childAppId="))
-                    {
-                        ChildAppId = line.Substring(("childAppId=").Length);
-                        ChildAppId.Trim();
-                    }
-                    else if (line.StartsWith("childSecret="))
-                    {
-                        ChildSecret = line.Substring(("childSecret=").Length);
-                        ChildSecret.Trim();
-                    }
-                    else if (line.StartsWith("parentLevelName="))
-                    {
-                        ParentLevel = line.Substring(("parentLevelName=").Length);
-                        ParentLevel.Trim();
-                    }
-                    else if (line.StartsWith("peerName="))
-                    {
-                        PeerName = line.Substring(("peerName=").Length);
-                        PeerName.Trim();
-                    }
-                    else if (line.StartsWith("supportsCompression="))
-                    {
-                        SupportsCompression = line.Substring(("supportsCompression=").Length);
-                        SupportsCompression.Trim();
-                    }
-                }
-            }
+        // The config's signing profile, read back from the fixture's own client.
+        protected Func<byte[], string> AppProfile()
+        {
+            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var comms = _bc.Client.GetType().GetProperty("Comms", flags).GetValue(_bc.Client);
+            return (Func<byte[], string>)comms.GetType().GetMethod("GetAppProfile", flags).Invoke(comms, null);
         }
 
         public enum Users { UserA, UserB, UserC }

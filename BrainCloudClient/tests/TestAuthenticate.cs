@@ -547,18 +547,7 @@ namespace BrainCloudTests
             //This threatens our servers, because huge numbers of errors related to bad signature show up, and infinitely retry to get out of this error.
             //Instead of updating the signature via the portal, we will mimic a bad signature from the client.
 
-            Dictionary<string, string> originalAppSecretMap = new Dictionary<string, string>();
-            originalAppSecretMap.Add(AppId, Secret);
-            originalAppSecretMap.Add(ChildAppId, ChildSecret);
             int numRepeatBadSigFailures = 0;
-
-
-            // mess up the app
-            Dictionary<string, string> updatedAppSecretMap = new Dictionary<string,string>(originalAppSecretMap);
-            foreach (var kvPair in originalAppSecretMap)
-            {
-                updatedAppSecretMap[kvPair.Key] = kvPair.Value + "123";
-            }
 
 
             // authenticate
@@ -602,7 +591,7 @@ namespace BrainCloudTests
 
             //init with bad secret
             TestResult tr3 = new TestResult(_bc);
-            _bc.InitWithApps(ServerUrl, AppId, updatedAppSecretMap, Version);
+            _bc.Init(ServerUrl, payload => new string('0', 32), AppId, Version);
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,
@@ -659,7 +648,7 @@ namespace BrainCloudTests
             //Do a normal test.
             TestResult tr5 = new TestResult(_bc);
             // back to normal
-            _bc.InitWithApps(ServerUrl, AppId, originalAppSecretMap, _bc.Client.AppVersion);
+            _bc.Init();
             _bc.Client.AuthenticationService.AuthenticateUniversal(
                 GetUser(Users.UserA).Id,
                 GetUser(Users.UserA).Password,

@@ -15,24 +15,21 @@ namespace Tests.PlayMode
      *  - Set up UnityTests
      *  - Tear down UnityTests
      *  - Handle console logging
-     *  - Load Id's from file with a given path with "pathToIds" string variable
+     *  - Init from the brainCloud Settings window's config (restored by bccm from data/)
      */
     public class TestFixtureBase : MonoBehaviour
     {
+        // From the settings config; the rest are fixed values the test app expects.
         public string ServerUrl;
         public string AppId;
-        public string Secret;
         public string Version;
         public string ChildAppId;
-        public string ChildSecret;
-        public string ParentLevel;
-        public string PeerName;
-        public string SupportsCompression;
+        public string ParentLevel = "Master";
+        public string PeerName = "peerapp";
         
         protected GameObject _gameObject;
         protected TestContainer _tc;
         protected bool _isRunning;
-        private string pathToIds;
         
         protected string username = "UnityTestUser";
         protected string email = "UnityTestUser@fakedomain.com";
@@ -84,84 +81,38 @@ namespace Tests.PlayMode
             isInitialized = true;
             Debug.Log("Setting Up......");
             
-            LoadIds();
             _gameObject = Instantiate(new GameObject("TestingContainer"), Vector3.zero, Quaternion.identity);
             _tc = _gameObject.AddComponent<TestContainer>();
-            
-            Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            secretMap.Add(AppId, Secret);
-            secretMap.Add(ChildAppId, ChildSecret);
 
             _tc.bcWrapper = _gameObject.AddComponent<BrainCloudWrapper>();
-            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _tc.bcWrapper.Init();
+            Assert.That(_tc.bcWrapper.Client.Initialized, "No readable brainCloud settings. Run `node bccm test csharp_unity` to restore them from data/.");
+            ServerUrl = _tc.bcWrapper.Client.GetUrl();
+            AppId = _tc.bcWrapper.Client.AppId;
+            Version = _tc.bcWrapper.Client.AppVersion;
+            var children = _tc.bcWrapper.GetChildAppIdList();
+            ChildAppId = children.Count > 0 ? children[0] : "";
             _tc.bcWrapper.ResetStoredProfileId();
             _tc.bcWrapper.ResetStoredAnonymousId();
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
         }
 
-        /// <summary>
-        /// Routine loads up brainCloud configuration info from "tests/ids.txt" (hopefully)
-        /// in a platform agnostic way.
-        /// </summary>
-        private void LoadIds()
+        // Re-inits on another url or version with the settings' main app.
+        protected void InitAt(string url, string version)
         {
-            pathToIds = Path.Combine(Application.dataPath, "tests", "ids.txt");
-            pathToIds = pathToIds.Replace("/BrainCloudClient/Assets", "/BrainCloudClient");
-            using (var reader = new StreamReader(pathToIds))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line.StartsWith("serverUrl="))
-                    {
-                        ServerUrl = line.Substring(("serverUrl=").Length);
-                        ServerUrl.Trim();
-                    }
-                    else if (line.StartsWith("appId="))
-                    {
-                        AppId = line.Substring(("appId=").Length);
-                        AppId.Trim();
-                    }
-                    else if (line.StartsWith("secret="))
-                    {
-                        Secret = line.Substring(("secret=").Length);
-                        Secret.Trim();
-                    }
-                    else if (line.StartsWith("version="))
-                    {
-                        Version = line.Substring(("version=").Length);
-                        Version.Trim();
-                    }
-                    else if (line.StartsWith("childAppId="))
-                    {
-                        ChildAppId = line.Substring(("childAppId=").Length);
-                        ChildAppId.Trim();
-                    }
-                    else if (line.StartsWith("childSecret="))
-                    {
-                        ChildSecret = line.Substring(("childSecret=").Length);
-                        ChildSecret.Trim();
-                    }
-                    else if (line.StartsWith("parentLevelName="))
-                    {
-                        ParentLevel = line.Substring(("parentLevelName=").Length);
-                        ParentLevel.Trim();
-                    }
-                    else if (line.StartsWith("peerName="))
-                    {
-                        PeerName = line.Substring(("peerName=").Length);
-                        PeerName.Trim();
-                    }
-                    else if (line.StartsWith("supportsCompression="))
-                    {
-                        SupportsCompression = line.Substring(("supportsCompression=").Length);
-                        SupportsCompression.Trim();
-                    }
-                }
-            }
+            _tc.bcWrapper.Init(url, AppProfile(), AppId, version);
         }
-    
+
+        // The settings' signing profile, read back from the wrapper's own client.
+        private System.Func<byte[], string> AppProfile()
+        {
+            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var client = _tc.bcWrapper.Client;
+            var comms = client.GetType().GetProperty("Comms", flags).GetValue(client);
+            return (System.Func<byte[], string>)comms.GetType().GetMethod("GetAppProfile", flags).Invoke(comms, null);
+        }
+
         /// <summary>
         /// Pretty prints outgoing and incoming log messages
         /// </summary>

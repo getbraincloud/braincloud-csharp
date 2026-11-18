@@ -33,7 +33,7 @@ namespace BrainCloudTests
             // Fixture inits with the parent and one child.
             Assert.That(_bc.GetChildAppIdList(), Is.EqualTo(new[] { ChildAppId }));
 
-            _bc.Init(ServerUrl, Secret, AppId, Version);
+            InitAt(_bc, ServerUrl);
             Assert.That(_bc.GetChildAppIdList(), Is.Empty);
         }
 

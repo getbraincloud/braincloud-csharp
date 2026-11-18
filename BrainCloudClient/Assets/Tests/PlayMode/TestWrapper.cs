@@ -244,24 +244,21 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestReInit()
         {
-            Dictionary<string, string> secretMap = new Dictionary<string, string>();
-            secretMap.Add(AppId, Secret);
-            secretMap.Add(ChildAppId, ChildSecret);
             
             //CASE 1
 
             //testing muliple attempts at Initializing in a row 
             int initCounter = 1;
             //try to init several times and see if everything works as intended
-            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _tc.bcWrapper.Init();
             Debug.Assert(initCounter == 1); //init called once
             initCounter++;
 
-            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _tc.bcWrapper.Init();
             Debug.Assert(initCounter == 2); //init called twice
             initCounter++;
 
-            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _tc.bcWrapper.Init();
             Debug.Assert(initCounter == 3); //inti called a third time
 
             _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
@@ -280,7 +277,7 @@ namespace Tests.PlayMode
             _tc.Reset();
             
             //Re Init
-            _tc.bcWrapper.InitWithApps(ServerUrl, AppId, secretMap, Version);
+            _tc.bcWrapper.Init();
             yield return null;
             _tc.bcWrapper.AuthenticateAnonymous(_tc.ApiSuccess, _tc.ApiError);
             yield return _tc.StartCoroutine(_tc.Run());

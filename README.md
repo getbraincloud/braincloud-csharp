@@ -125,9 +125,11 @@ Initial support has been implemented to make this library compatible for those d
 
 ![screenshot](/_screenshots/GodotProjectFileSystem.png)
 
-2. Create a new script to act as the brainCloud manager; in the `_Ready()` function of this script, create a new `BrainCloudWrapper` and initialize the app with the appropriate app ID and secret by calling `BrainCloudWrapper.Init(url, secretKey, appId, version)`.
+2. Install the **brainCloud** addon from the Godot Asset Library and enable it. In its editor dock, log in, pick your team and app, and Save. It writes `addons/braincloud/braincloud.cfg` and `.braincloud/build_profile.gd`, both added to `.gitignore`.
 
-3. In order to receive responses, be sure to call `BrainCloudWrapper.Update()` from the `_Process(double delta)` function of this script.
+3. Create a new script to act as the brainCloud manager; in the `_Ready()` function of this script, create a new `BrainCloudWrapper` and call `Init()`, which reads the dock's config.
+
+4. In order to receive responses, be sure to call `BrainCloudWrapper.Update()` from the `_Process(double delta)` function of this script.
 
 ```csharp
 BrainCloudWrapper _bc = null;
@@ -135,7 +137,7 @@ BrainCloudWrapper _bc = null;
 public override void _Ready()
 {
     _bc = new BrainCloudWrapper();
-    _bc.Init(url, secretKey, appId, version);
+    _bc.Init(); // reads addons/braincloud/braincloud.cfg
     _bc.Client.EnableLogging(true);
 
     GD.Print("brainCloud client version: " + _bc.Client.BrainCloudClientVersion);
@@ -147,13 +149,33 @@ public override void _Process(double delta)
 }
 ```
 
-4. This script is now ready to handle brainCloud requests throughout the rest of the app. Functions for authentication and other brainCloud services can be defined here and called from other scripts/scenes in your Godot project.
+5. This script is now ready to handle brainCloud requests throughout the rest of the app. Functions for authentication and other brainCloud services can be defined here and called from other scripts/scenes in your Godot project.
 
-5. To make the script accessible from any scene, use Godot's **Autoload** feature. Go to `Project > Project Settings` from the Godot editor, then switch to the **Autoload** tab. From here, find the script by typing in its path, or clicking the directory icon to browse project files. Give the Autoload node a name (we used BCManager), then add it to the list.
+6. To make the script accessible from any scene, use Godot's **Autoload** feature. Go to `Project > Project Settings` from the Godot editor, then switch to the **Autoload** tab. From here, find the script by typing in its path, or clicking the directory icon to browse project files. Give the Autoload node a name (we used BCManager), then add it to the list.
 
 ![screenshot](/_screenshots/GodotAutoloadSingleton.png)
 
 The newly created script should be ready to act like a singleton/global variable! Any node/script/scene in the project can access this via `GetNode<BCManager>("/root/BCManager")` to make calls/references to this script, for example: `GetNode<BCManager>("/root/BCManager").RequestAnonymousAuthentication()`
+
+---
+
+## .NET Setup
+
+The SDK includes the setup panel in `tools/setup` (needs the .NET 8 runtime or newer). Run it with your project folder, where the `.csproj` is:
+
+```sh
+tools/setup/braincloud-setup path/to/MyGame        # macOS / Linux
+tools\setup\braincloud-setup.cmd path\to\MyGame    # Windows
+```
+
+Log in, pick your team and app (and any child apps), and close the panel. It writes `braincloud.cfg` and `BrainCloudTuning.cs` into the project, adds both to `.gitignore`, and copies the config to the build output (SDK-style projects; otherwise set `braincloud.cfg` to copy to the output yourself). Then:
+
+```csharp
+var bc = new BrainCloudWrapper();
+bc.Init();
+```
+
+Keep the two files together when sharing the project with a teammate or build machine. CI can rewrite the config with `braincloud-setup <project folder> --refresh`.
 
 ---
 
@@ -219,9 +241,11 @@ BrainCloudWrapper _bc = null; // You may want this to be a static instance
 public void InitializeBrainCloud()
 {
     _bc = new BrainCloudWrapper("YourWrapperName"); // You can optionally set a wrapper name
-    _bc.Init(url, secretKey, appId, version);
+    _bc.Init(); // reads the config brainCloud setup wrote (see .NET Setup)
 }
 ```
+
+Without a setup config you can pass the app values yourself: `_bc.Init(url, secretKey, appId, version)`.
 
 Then make sure in an Update loop you call `BrainCloudWrapper.Update()` so that brainCloud requests and responses are managed properly:
 

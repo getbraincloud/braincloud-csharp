@@ -106,5 +106,8 @@ InitTestScene*.unity*
 /solution/mono/UnitTests/test-results/
 /solution/vstudio/UnitTests/test-results/
 /tests/ids.txt
+# brainCloud test config (restored by bccm from data/)
+/tests/braincloud.cfg
+/tests/BrainCloudTuning.cs
 /tests/NUnit/TestResult.xml
 /tests/NUnit/UnitTests.VisualState.xml

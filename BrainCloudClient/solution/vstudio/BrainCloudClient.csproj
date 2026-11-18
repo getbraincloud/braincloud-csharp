@@ -210,6 +210,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudCustomEntity.cs">
       <Link>BrainCloud\BrainCloudCustomEntity.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudBootstrap.cs">
+      <Link>BrainCloud\BrainCloudBootstrap.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\BrainCloudWrapper.cs">
       <Link>BrainCloud\BrainCloudWrapper.cs</Link>
     </Compile>

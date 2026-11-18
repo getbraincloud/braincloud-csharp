@@ -109,7 +109,7 @@ namespace Tests.PlayMode
             //Using the version parameter for init as our sleep timer which will be caught with SleepPostAuth cloud code script
             //1000 = 1 second
             var timeoutDuration = 62000.ToString();
-            _tc.bcWrapper.Init(ServerUrl, Secret, AppId, timeoutDuration);
+            InitAt(ServerUrl, timeoutDuration);
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
             _tc.bcWrapper.Client.AuthenticationService.AuthenticateUniversal
@@ -270,7 +270,7 @@ namespace Tests.PlayMode
         {
             _tc.m_timeToWaitSecs = 99999999;
             var url = "https://portal-swap.internal.braincloudservers.com/";
-            _tc.bcWrapper.Init(url, Secret, AppId, Version);
+            InitAt(url, Version);
             _tc.bcWrapper.Client.EnableLogging(true);
             _tc.bcWrapper.Client.RegisterLogDelegate(HandleLog);
             _tc.bcWrapper.Client.AuthenticationService.AuthenticateUniversal

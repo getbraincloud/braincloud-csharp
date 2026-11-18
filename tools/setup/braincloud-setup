@@ -1,0 +1,3 @@
+#!/bin/sh
+# brainCloud setup panel. Pass your project folder (where the .csproj is).
+exec dotnet "$(cd "$(dirname "$0")" && pwd)/BrainCloudNative.Tool.dll" "$@"
