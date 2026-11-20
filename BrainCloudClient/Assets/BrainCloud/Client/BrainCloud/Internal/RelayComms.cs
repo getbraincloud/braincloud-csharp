@@ -1305,7 +1305,8 @@ namespace BrainCloud.Internal
 
         private void connectWebSocket(string in_host, int in_port, bool in_sslEnabled)
         {
-            string url = (in_sslEnabled ? "wss://" : "ws://") + in_host + ":" + in_port;
+            // A full URL (connectData.secureUrl) is used as given; port is ignored.
+            string url = in_host.Contains("://") ? in_host : (in_sslEnabled ? "wss://" : "ws://") + in_host + ":" + in_port;
             m_webSocket = new BrainCloudWebSocket(url);
             m_webSocket.OnClose += WebSocket_OnClose;
             m_webSocket.OnOpen += Websocket_OnOpen;

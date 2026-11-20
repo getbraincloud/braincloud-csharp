@@ -17,12 +17,14 @@ namespace BrainCloudTests
         private int successCount = 0;
         private RelayConnectOptions connectOptions = new RelayConnectOptions();
         private RelayConnectionType connectionType = RelayConnectionType.UDP; // Change this to try different connection type
+        private bool secure = false;
 
-        void FullFlow(RelayConnectionType in_connectionType)
+        void FullFlow(RelayConnectionType in_connectionType, bool in_secure = false)
         {
             successCount = 0;
             isRunning = true;
             connectionType = in_connectionType;
+            secure = in_secure;
 
             _bc.Client.EnableLogging(true);
             _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
@@ -93,7 +95,19 @@ namespace BrainCloudTests
                     connectOptions.ssl = false;
                     connectOptions.host = connectData["address"] as string;
 
-                    if (connectionType == RelayConnectionType.WEBSOCKET)
+                    if (secure)
+                    {
+                        // wss uses the server-provided URL as-is; no port
+                        if (!connectData.ContainsKey("secureUrl"))
+                        {
+                            onFailed(0, 0, "connectData has no secureUrl", null);
+                            break;
+                        }
+                        connectOptions.ssl = true;
+                        connectOptions.host = connectData["secureUrl"] as string;
+                        connectOptions.port = 0;
+                    }
+                    else if (connectionType == RelayConnectionType.WEBSOCKET)
                         connectOptions.port = (int)ports["ws"];
                     else if (connectionType == RelayConnectionType.TCP)
                         connectOptions.port = (int)ports["tcp"];
@@ -163,6 +177,12 @@ namespace BrainCloudTests
         public void TestFullFlowWS()
         {
             FullFlow(RelayConnectionType.WEBSOCKET);
+        }
+
+        [Test]
+        public void TestFullFlowWSS()
+        {
+            FullFlow(RelayConnectionType.WEBSOCKET, true);
         }
 
         [Test]
