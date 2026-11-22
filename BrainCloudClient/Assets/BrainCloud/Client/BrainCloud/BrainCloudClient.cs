@@ -977,6 +977,7 @@ namespace BrainCloud
             {
                 case eBrainCloudUpdateType.REST:
                     {
+                        AuthenticationService.RunAppCheckCallbacks();
                         if (_comms != null) _comms.Update();
                     }
                     break;
@@ -1003,6 +1004,7 @@ namespace BrainCloud
                 case eBrainCloudUpdateType.ALL:
                     {
                         if (_rttComms != null) _rttComms.Update();
+                        AuthenticationService.RunAppCheckCallbacks();
                         if (_comms != null) _comms.Update();
                         if (_rsComms != null) _rsComms.Update();
                         if (_lobbyService != null) _lobbyService.Update();
