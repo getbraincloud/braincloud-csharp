@@ -17,7 +17,8 @@ namespace Tests.PlayMode
         private bool bSystemCallbackConnect;
         private bool bRelayMessageReceived;
         private bool bIncludeEndMatch;
-        
+        private bool bSecure;
+
         [UnityTest]
         public IEnumerator TestRelayNoAuthConnectRequest()
         {
@@ -35,6 +36,15 @@ namespace Tests.PlayMode
             LogResults($"Websocket Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
         
+        [UnityTest]
+        public IEnumerator TestRelayWebSocketSecure()
+        {
+            Debug.Log("Now running...TestRelayWebSocketSecure ");
+            yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET, true));
+
+            LogResults($"WSS Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
+        }
+
         [UnityTest]
         public IEnumerator TestRelayUDP()
         {
@@ -63,10 +73,11 @@ namespace Tests.PlayMode
             LogResults("Something went wrong..", _tc.successCount == 4);
         }
 
-        private IEnumerator FullFlow(RelayConnectionType in_connectionType)
+        private IEnumerator FullFlow(RelayConnectionType in_connectionType, bool in_secure = false)
         {
             _tc.m_timeToWaitSecs = 1000;
             connectionType = in_connectionType;
+            bSecure = in_secure;
 
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
@@ -173,10 +184,22 @@ namespace Tests.PlayMode
                     port = _tc.Server.WsPort;
                     break;
             }
+            var host = _tc.Server.Host;
+            if (bSecure)
+            {
+                // wss uses the server-provided URL as-is; no port
+                if (string.IsNullOrEmpty(_tc.Server.SecureUrl))
+                {
+                    OnFailed(0, 0, "connectData has no secureUrl", null);
+                    return;
+                }
+                host = _tc.Server.SecureUrl;
+                port = 0;
+            }
             connectOptions = new RelayConnectOptions
             (
-                false,
-                _tc.Server.Host,
+                bSecure,
+                host,
                 port,
                 _tc.Server.Passcode,
                 _tc.Server.LobbyId

@@ -247,6 +247,7 @@ public class TestContainer : MonoBehaviour
 public class Server
 {
     public string Host;
+    public string SecureUrl; // only sent when the app has relayServerSecureEnabled
     public int WsPort = -1;
     public int TcpPort = -1;
     public int UdpPort = -1;
@@ -259,6 +260,7 @@ public class Server
         var ports = connectData["ports"] as Dictionary<string, object>;
 
         Host = connectData["address"] as string;
+        SecureUrl = connectData.ContainsKey("secureUrl") ? connectData["secureUrl"] as string : null;
         WsPort = (int)ports["ws"];
         TcpPort = (int)ports["tcp"];
         UdpPort = (int)ports["udp"];
