@@ -4,7 +4,7 @@ using UnityEditor;
 static class JslibSelector
 {
     private const bool USE_MAKEDYNCALL
-#if UNITY_2021_2_OR_NEWER
+#if UNITY_2022_2_OR_NEWER
         = true;
 #else
         = false;
