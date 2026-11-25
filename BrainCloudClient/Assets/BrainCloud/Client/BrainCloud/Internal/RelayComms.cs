@@ -712,6 +712,7 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
+                        m_channel.PeerConnected(netId, cxId);
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
                         if (cxId == m_clientRef.RTTConnectionID && !m_bIsConnected)
@@ -729,6 +730,7 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
+                        m_channel.PeerConnected(netId, cxId);
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
 
@@ -770,12 +772,6 @@ namespace BrainCloud.Internal
                             disconnect();
                             queueErrorEvent("Disconnected by server");
                             return;
-                        }
-                        // Another player left. Their net id goes to the next player to join.
-                        int leftNetId;
-                        if (cxId != null && m_cxIdToNetId.TryGetValue(cxId, out leftNetId))
-                        {
-                            m_channel.ForgetPeer(leftNetId);
                         }
                         break;
                     }

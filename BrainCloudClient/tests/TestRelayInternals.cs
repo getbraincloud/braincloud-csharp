@@ -164,9 +164,10 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ReusedNetId_ANewPlayersPacketsAreDeliveredOnceTheOldOneIsForgotten()
+        public void ReusedNetId_ANewPlayersPacketsAreAllDelivered()
         {
-            // Player on net id 3 sends 50 packets of each kind, then leaves
+            // Player A on net id 3 sends 50 packets of each kind, then leaves
+            _channel.PeerConnected(3, "A");
             for (int id = 0; id < 50; ++id)
             {
                 Receive(Packet(true, false, 0, id, 3));
@@ -174,8 +175,8 @@ namespace BrainCloudTests
             }
             Assert.That(_delivered.Count, Is.EqualTo(100));
 
-            // The relay announces they left; the next player to join gets net id 3 and starts at 0
-            _channel.ForgetPeer(3);
+            // Later the relay gives net id 3 to player B, whose packet ids start again at 0
+            _channel.PeerConnected(3, "B");
             _delivered.Clear();
             for (int id = 0; id < 50; ++id)
             {
@@ -186,11 +187,57 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ForgetPeer_LeavesOtherPlayersAlone()
+        public void ReusedNetId_ALeaversLateResendIsStillADuplicate()
         {
+            // A sends 0..5 on net id 3 and leaves. The relay resends A's packet 5 before our
+            // acknowledgement reaches it, so the resend arrives after A has left.
+            _channel.PeerConnected(3, "A");
+            for (int id = 0; id <= 5; ++id)
+            {
+                Receive(Packet(true, false, 0, id, 3, "A"));
+                Receive(Packet(true, true, 1, id, 3, "A"));
+            }
+            Receive(Packet(true, false, 0, 5, 3, "A"));
+            Receive(Packet(true, true, 1, 5, 3, "A"));
+            Assert.That(_delivered.Count, Is.EqualTo(12), "the resends are dropped");
+
+            // Then B gets net id 3 and sends 0..6 on both streams
+            var payloads = new List<string>();
+            _channel.PeerConnected(3, "B");
+            for (int id = 0; id <= 6; ++id)
+            {
+                foreach (bool ordered in new[] { false, true })
+                {
+                    _channel.Receive(Packet(true, ordered, ordered ? 1 : 0, id, 3, "B"), (netId, packet) =>
+                        payloads.Add(System.Text.Encoding.ASCII.GetString(packet, 11, packet.Length - 11)));
+                }
+            }
+            Assert.That(payloads.Count, Is.EqualTo(14), "every packet from B");
+            Assert.That(payloads, Has.All.EqualTo("B"), "and nothing of A's");
+        }
+
+        [Test]
+        public void PeerConnected_ARepeatForTheSamePlayerForgetsNothing()
+        {
+            // The relay sends CONNECT again whenever a player repeats its connect request
+            _channel.PeerConnected(3, "A");
+            Receive(Packet(true, false, 0, 7, 3));
+            Receive(Packet(true, true, 0, 0, 3));
+            _channel.PeerConnected(3, "A");
+
+            Receive(Packet(true, false, 0, 7, 3));
+            Receive(Packet(true, true, 0, 0, 3));
+            Assert.That(_delivered, Is.EqualTo(new[] { 7, 0 }), "the repeats are still dropped");
+        }
+
+        [Test]
+        public void PeerConnected_LeavesOtherPlayersAlone()
+        {
+            _channel.PeerConnected(2, "X");
+            _channel.PeerConnected(3, "A");
             Receive(Packet(true, false, 0, 7, 2));
             Receive(Packet(true, true, 0, 0, 2));
-            _channel.ForgetPeer(3);
+            _channel.PeerConnected(3, "B");
 
             Receive(Packet(true, false, 0, 7, 2));
             Receive(Packet(true, true, 0, 0, 2));
@@ -329,6 +376,45 @@ namespace BrainCloudTests
                     byte[] received = listener.Data[0];
                     Assert.That(received.Length, Is.EqualTo(packet.Length));
                     Assert.That(received.Skip(2), Is.EqualTo(packet.Skip(2)), "the bytes after the length prefix");
+                }
+            }
+            finally
+            {
+                transport.Close();
+                server.Stop();
+            }
+        }
+
+        [Test]
+        public void Tcp_ReceivesALengthPrefixThatArrivesInPieces()
+        {
+            var server = new TcpListener(IPAddress.Loopback, 0);
+            server.Start();
+            var listener = new RecordingListener();
+            var transport = new RelayTcpTransport(listener);
+            try
+            {
+                transport.Connect("127.0.0.1", ((IPEndPoint)server.LocalEndpoint).Port, false);
+                using (TcpClient peer = server.AcceptTcpClient())
+                {
+                    WaitFor(() => listener.Connected, "the transport to connect");
+                    peer.NoDelay = true;
+                    NetworkStream stream = peer.GetStream();
+
+                    byte[] first = Framed(40, 0x31);
+                    byte[] second = Framed(50, 0x32);
+                    stream.Write(first, 0, 1);       // half of the length prefix
+                    stream.Flush();
+                    Thread.Sleep(300);
+                    stream.Write(first, 1, first.Length - 1);
+                    stream.Write(second, 0, second.Length);
+
+                    WaitFor(() => listener.Data.Count == 2 || listener.Errors.Count > 0, "both packets");
+                    Assert.That(listener.Errors, Is.Empty);
+                    Assert.That(listener.Data[0].Length, Is.EqualTo(40));
+                    Assert.That(listener.Data[0][2], Is.EqualTo(0x31));
+                    Assert.That(listener.Data[1].Length, Is.EqualTo(50));
+                    Assert.That(listener.Data[1][2], Is.EqualTo(0x32));
                 }
             }
             finally

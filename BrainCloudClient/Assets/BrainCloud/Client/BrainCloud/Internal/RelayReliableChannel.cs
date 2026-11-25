@@ -55,6 +55,8 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
         // Recent packet ids of each reliable, unordered stream, to drop resends already received
         private Dictionary<ulong, RecentPacketIds> m_recentUnordered = new Dictionary<ulong, RecentPacketIds>();
+        // Which player (connection id) each net id belongs to, as far as we have been told
+        private Dictionary<int, string> m_peerCxIds = new Dictionary<int, string>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -91,13 +93,34 @@ namespace BrainCloud.Internal
             m_reliables.Clear();
             m_orderedReliablePackets.Clear();
             m_recentUnordered.Clear();
+            m_peerCxIds.Clear();
             ClearTrackedPacketIds();
         }
 
         /// <summary>
-        /// Forgets what was received from a player who has left. The relay gives a leaver's net id
-        /// to the next player to join, whose packet ids start again at 0; kept, the old player's
-        /// ids would make the new player's packets look like duplicates and be dropped.
+        /// Records which player a net id belongs to. When the relay has given the net id to a
+        /// different player (it reuses the ids of players who left), what was received from the
+        /// old player is forgotten: the new player's packet ids start again at 0, and the old
+        /// player's would make them look like duplicates. A repeat for the same player changes
+        /// nothing. Call before any tracked packet id for this player is set.
+        /// </summary>
+        /// <remarks>
+        /// This is done when the net id is given out again, not when its player leaves: the relay
+        /// keeps resending a leaver's last reliable packets until they are acknowledged, and those
+        /// late resends must still be recognised as duplicates.
+        /// </remarks>
+        public void PeerConnected(int in_netId, string in_cxId)
+        {
+            string previous;
+            if (m_peerCxIds.TryGetValue(in_netId, out previous) && previous != in_cxId)
+            {
+                ForgetPeer(in_netId);
+            }
+            m_peerCxIds[in_netId] = in_cxId;
+        }
+
+        /// <summary>
+        /// Forgets what was received from a net id.
         /// </summary>
         public void ForgetPeer(int in_netId)
         {

@@ -148,6 +148,7 @@ namespace BrainCloud.Internal
         private int m_tcpBytesRead = 0; // the ones already processed
         private int m_tcpBytesToRead = 0; // the number to finish reading
         private byte[] m_tcpHeaderReadBuffer = new byte[SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY];
+        private int m_tcpHeaderBytesRead = 0;
 
         // ASync TCP Writes
         private object fLock = new object();
@@ -282,8 +283,17 @@ namespace BrainCloud.Internal
                     return;
                 }
 
-                if (m_tcpStream != null && read == SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY)
+                if (m_tcpStream != null && read > 0)
                 {
+                    // The length prefix can itself arrive in pieces
+                    m_tcpHeaderBytesRead += read;
+                    if (m_tcpHeaderBytesRead < SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY)
+                    {
+                        m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, m_tcpHeaderBytesRead, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY - m_tcpHeaderBytesRead, new AsyncCallback(onTCPReadHeader), null);
+                        return;
+                    }
+                    m_tcpHeaderBytesRead = 0;
+
                     m_tcpBytesRead = 0;
                     if (BitConverter.IsLittleEndian)
                         Array.Reverse(m_tcpHeaderReadBuffer);
@@ -338,6 +348,7 @@ namespace BrainCloud.Internal
 
                 // read the next header
                 m_tcpBytesToRead = 0;
+                m_tcpHeaderBytesRead = 0;
 
                 m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
             }
@@ -377,6 +388,7 @@ namespace BrainCloud.Internal
                 m_listener.OnTransportConnected();
                 // read the next header
                 m_tcpBytesToRead = 0;
+                m_tcpHeaderBytesRead = 0;
                 m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
 
                 if (client.LoggingEnabled)
