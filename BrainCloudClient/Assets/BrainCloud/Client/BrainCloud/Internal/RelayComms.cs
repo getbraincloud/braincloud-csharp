@@ -55,13 +55,10 @@ namespace BrainCloud.Internal
         public RelayComms(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
-            m_channel = new RelayReliableChannel(message =>
-            {
-                if (m_clientRef.LoggingEnabled)
-                {
-                    m_clientRef.Log(message);
-                }
-            });
+            m_channel = new RelayReliableChannel(() => m_clientRef.LoggingEnabled, message => m_clientRef.Log(message));
+            // Made once: a method group passed as a delegate allocates each time, and these run every frame
+            m_sendDelegate = send;
+            m_queueRelayEventDelegate = queueRelayEvent;
         }
 
         /// <summary>
@@ -346,7 +343,7 @@ namespace BrainCloud.Internal
                 // Process reliable resends
                 if (m_connectionType == RelayConnectionType.UDP)
                 {
-                    if (!m_channel.ProcessResends(nowMS, send))
+                    if (!m_channel.ProcessResends(nowMS, m_sendDelegate))
                     {
                         disconnect();
                         queueErrorEvent("Relay disconnected, too many packet lost");
@@ -774,6 +771,12 @@ namespace BrainCloud.Internal
                             queueErrorEvent("Disconnected by server");
                             return;
                         }
+                        // Another player left. Their net id goes to the next player to join.
+                        int leftNetId;
+                        if (cxId != null && m_cxIdToNetId.TryGetValue(cxId, out leftNetId))
+                        {
+                            m_channel.ForgetPeer(leftNetId);
+                        }
                         break;
                     }
                 case "END_MATCH":
@@ -877,7 +880,7 @@ namespace BrainCloud.Internal
                     sendAck(in_data);
                 }
 
-                if (m_channel.Receive(in_data, queueRelayEvent) == RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder)
+                if (m_channel.Receive(in_data, m_queueRelayEventDelegate) == RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder)
                 {
                     disconnect();
                     queueErrorEvent("Relay disconnected, too many queued out of order packets.");
@@ -1032,6 +1035,8 @@ namespace BrainCloud.Internal
         // The connection to the relay server, and the reliability layer over it
         private IRelayTransport m_transport = null;
         private RelayReliableChannel m_channel;
+        private Func<byte[], bool> m_sendDelegate;
+        private Action<short, byte[]> m_queueRelayEventDelegate;
 
         const int SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY = 2;
 

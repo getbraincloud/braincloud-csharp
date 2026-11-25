@@ -48,7 +48,7 @@ namespace BrainCloudTests
         [SetUp]
         public void CreateChannel()
         {
-            _channel = new RelayReliableChannel(null);
+            _channel = new RelayReliableChannel(null, null);
             _delivered = new List<int>();
         }
 
@@ -161,6 +161,40 @@ namespace BrainCloudTests
 
             Receive(Packet(true, true, 0, 7, 1));
             Assert.That(_delivered, Is.Empty, "a new connection starts at packet 0");
+        }
+
+        [Test]
+        public void ReusedNetId_ANewPlayersPacketsAreDeliveredOnceTheOldOneIsForgotten()
+        {
+            // Player on net id 3 sends 50 packets of each kind, then leaves
+            for (int id = 0; id < 50; ++id)
+            {
+                Receive(Packet(true, false, 0, id, 3));
+                Receive(Packet(true, true, 1, id, 3));
+            }
+            Assert.That(_delivered.Count, Is.EqualTo(100));
+
+            // The relay announces they left; the next player to join gets net id 3 and starts at 0
+            _channel.ForgetPeer(3);
+            _delivered.Clear();
+            for (int id = 0; id < 50; ++id)
+            {
+                Receive(Packet(true, false, 0, id, 3));
+                Receive(Packet(true, true, 1, id, 3));
+            }
+            Assert.That(_delivered.Count, Is.EqualTo(100), "every packet from the new player");
+        }
+
+        [Test]
+        public void ForgetPeer_LeavesOtherPlayersAlone()
+        {
+            Receive(Packet(true, false, 0, 7, 2));
+            Receive(Packet(true, true, 0, 0, 2));
+            _channel.ForgetPeer(3);
+
+            Receive(Packet(true, false, 0, 7, 2));
+            Receive(Packet(true, true, 0, 0, 2));
+            Assert.That(_delivered, Is.EqualTo(new[] { 7, 0 }), "net id 2's repeats are still dropped");
         }
 
         [Test]

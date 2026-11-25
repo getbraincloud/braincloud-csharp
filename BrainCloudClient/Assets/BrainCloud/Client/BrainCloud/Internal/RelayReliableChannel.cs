@@ -46,6 +46,7 @@ namespace BrainCloud.Internal
             TooManyOutOfOrder
         }
 
+        private readonly Func<bool> m_loggingEnabled;
         private readonly Action<string> m_log;
 
         private Dictionary<ulong, int> m_sendPacketId = new Dictionary<ulong, int>();
@@ -68,9 +69,11 @@ namespace BrainCloud.Internal
             new Dictionary<int, int>()
         };
 
-        /// <param name="in_log">Called with diagnostic messages; it decides whether to log them.</param>
-        public RelayReliableChannel(Action<string> in_log)
+        /// <param name="in_loggingEnabled">Whether to build and log diagnostic messages; checked each time.</param>
+        /// <param name="in_log">Logs a diagnostic message.</param>
+        public RelayReliableChannel(Func<bool> in_loggingEnabled, Action<string> in_log)
         {
+            m_loggingEnabled = in_loggingEnabled ?? (() => false);
             m_log = in_log ?? (message => { });
         }
 
@@ -89,6 +92,43 @@ namespace BrainCloud.Internal
             m_orderedReliablePackets.Clear();
             m_recentUnordered.Clear();
             ClearTrackedPacketIds();
+        }
+
+        /// <summary>
+        /// Forgets what was received from a player who has left. The relay gives a leaver's net id
+        /// to the next player to join, whose packet ids start again at 0; kept, the old player's
+        /// ids would make the new player's packets look like duplicates and be dropped.
+        /// </summary>
+        public void ForgetPeer(int in_netId)
+        {
+            removeStreamsFrom(m_recvPacketId, in_netId);
+            removeStreamsFrom(m_orderedReliablePackets, in_netId);
+            removeStreamsFrom(m_recentUnordered, in_netId);
+            foreach (var tracked in m_trackedPacketIds)
+            {
+                tracked.Remove(in_netId);
+            }
+        }
+
+        // A received stream's key ends with the sender's net id
+        private static void removeStreamsFrom<T>(Dictionary<ulong, T> in_streams, int in_netId)
+        {
+            List<ulong> keys = null;
+            foreach (ulong key in in_streams.Keys)
+            {
+                if ((int)(key & 0xFF) == in_netId)
+                {
+                    if (keys == null) keys = new List<ulong>();
+                    keys.Add(key);
+                }
+            }
+            if (keys != null)
+            {
+                foreach (ulong key in keys)
+                {
+                    in_streams.Remove(key);
+                }
+            }
         }
 
         public void ClearTrackedPacketIds()
@@ -212,7 +252,7 @@ namespace BrainCloud.Internal
                 {
                     prevPacketId = m_trackedPacketIds[channel][netId];
                     m_trackedPacketIds[channel].Remove(netId);
-                    m_log($"Found tracked packetId for channel: {channel} netId: {netId} which was {prevPacketId}");
+                    if (m_loggingEnabled()) m_log($"Found tracked packetId for channel: {channel} netId: {netId} which was {prevPacketId}");
                 }
 
                 if (reliable)
@@ -222,7 +262,7 @@ namespace BrainCloud.Internal
                         // We already received that packet if it's lower than the last confirmed
                         // packetId. This must be a duplicate
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                        m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                        if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
 #endif
                         return ReceiveOutcome.Accepted;
                     }
@@ -247,7 +287,7 @@ namespace BrainCloud.Internal
                             if (packet.Id == packetId)
                             {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                                m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                                if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
 #endif
                                 return ReceiveOutcome.Accepted;
                             }
@@ -256,7 +296,7 @@ namespace BrainCloud.Internal
                         var newPacket = new UDPPacket(in_data, channel, packetId, netId, 0);
                         orderedReliablePackets.Insert(insertIdx, newPacket);
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                        m_log("Queuing out of order reliable from " + netId.ToString() + ". got " + packetId.ToString());
+                        if (m_loggingEnabled()) m_log("Queuing out of order reliable from " + netId.ToString() + ". got " + packetId.ToString());
 #endif
                         return ReceiveOutcome.Accepted;
                     }
@@ -287,7 +327,7 @@ namespace BrainCloud.Internal
                     {
                         // Just drop out of order packets for unreliables
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                        m_log("Out of order packet from " + netId.ToString() + ". Expecting " + ((prevPacketId + 1) & MAX_PACKET_ID).ToString() + ", got " + packetId.ToString());
+                        if (m_loggingEnabled()) m_log("Out of order packet from " + netId.ToString() + ". Expecting " + ((prevPacketId + 1) & MAX_PACKET_ID).ToString() + ", got " + packetId.ToString());
 #endif
                         return ReceiveOutcome.Accepted;
                     }
@@ -306,7 +346,7 @@ namespace BrainCloud.Internal
                 if (!recent.Add(packetId))
                 {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
-                    m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+                    if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
 #endif
                     return ReceiveOutcome.Accepted;
                 }

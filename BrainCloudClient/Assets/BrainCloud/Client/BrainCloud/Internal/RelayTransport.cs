@@ -160,7 +160,7 @@ namespace BrainCloud.Internal
 
         public bool CanSend
         {
-            get { return m_tcpClient != null; }
+            get { return m_tcpStream != null; }
         }
 
         public void Connect(string in_host, int in_port, bool in_sslEnabled)
