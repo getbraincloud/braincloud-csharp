@@ -42,7 +42,7 @@ var NativeWebSocket = {
     	console.log(WebSocketInstances[id]);
     	WebSocketInstances[id].socket.onopen = function(){
     		console.log("[NativeWebSocket] Socket on open: " + id);
-    		Module['dynCall_vi'](action, id);
+    		{{{ makeDynCall('vi', 'action') }}}(id);
     	}
     },
 
@@ -55,13 +55,13 @@ var NativeWebSocket = {
 				reader.addEventListener("loadend", function() {
 					var array = new Uint8Array(reader.result);
 					WebSocketInstances[id].messages.push(array);
-					Module['dynCall_vi'](action, id);
+					{{{ makeDynCall('vi', 'action') }}}(id);
 				});
 				reader.readAsArrayBuffer(e.data);
 			} else if (e.data instanceof ArrayBuffer) {
 				var array = new Uint8Array(e.data);
 				WebSocketInstances[id].messages.push(array);
-				Module['dynCall_vi'](action, id);
+				{{{ makeDynCall('vi', 'action') }}}(id);
 			}
     	}
     },
@@ -70,8 +70,8 @@ var NativeWebSocket = {
 		console.log("[NativeWebSocket] Set socket on error: " + id);
     	WebSocketInstances[id].socket.onerror = function(e){
     		console.log("[NativeWebSocket] Socket on error: " + id);
-			WebSocketInstances[id].error = e.message;
-			Module['dynCall_vi'](action, id);
+			WebSocketInstances[id].error = "WebSocket error";
+			{{{ makeDynCall('vi', 'action') }}}(id);
     	}
     },
 
@@ -79,7 +79,7 @@ var NativeWebSocket = {
     	console.log("[NativeWebSocket] Set socket on close: " + id);
     	WebSocketInstances[id].socket.onclose = function(e){
     		console.log("[NativeWebSocket] Socket on close: " + id);
-			Module['dynCall_vii'](action, e.code, id); 
+			{{{ makeDynCall('vii', 'action') }}}(e.code, id); 
     	}
     },
 
@@ -100,8 +100,7 @@ var NativeWebSocket = {
 	BrainCloudSocketError: function(ptr, buffersize, id){
 		console.log("[NativeWebSocket] Socket error: " + id);
 	 	if (WebSocketInstances[id].error == null) return 0;
-	    var str = WebSocketInstances[id].error.slice(0, Math.max(0, buffersize - 1));
-	    writeStringToMemory(str, ptr, false);
+		stringToUTF8(WebSocketInstances[id].error, ptr, buffersize);
 		return 1;
 	}
 };
