@@ -142,7 +142,7 @@ namespace BrainCloud.Internal
         private readonly IRelayTransportListener m_listener;
         private TcpClient m_tcpClient = null;
         private NetworkStream m_tcpStream = null;
-        private byte[] m_tcpReadBuffer = new byte[RelayComms.MAX_PACKETSIZE];
+        private byte[] m_tcpReadBuffer = new byte[ushort.MaxValue + 1];
 
         // ASync TCP Reads
         private int m_tcpBytesRead = 0; // the ones already processed
@@ -188,21 +188,21 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Writes the specified message to the stream.
+        /// Writes the specified message to the stream. Messages are written one at a time, in order.
         /// </summary>
         /// <param name="message"></param>
         private void tcpWrite(byte[] message)
         {
-            // Add this message to the list of message to send. If it's the only one in the
-            // queue, fire up the async events to send it.
             try
             {
                 lock (fLock)
                 {
                     fToSend.Enqueue(message);
-                    if (fToSend.Count >= 1)
+                    // Start writing only if no write is in progress; otherwise the one in progress
+                    // carries on to this message when it finishes.
+                    if (fToSend.Count == 1)
                     {
-                        m_tcpStream.BeginWrite(message, 0, message.Length, tcpFinishWrite, null);
+                        writeQueued();
                     }
                 }
             }
@@ -212,28 +212,48 @@ namespace BrainCloud.Internal
             }
         }
 
+        /// <summary>
+        /// Writes the message at the head of the queue, and the ones after it for as long as writes
+        /// complete straight away. A message stays at the head until its write has finished.
+        /// Call with fLock held.
+        /// </summary>
+        private void writeQueued()
+        {
+            while (fToSend.Count > 0 && m_tcpStream != null)
+            {
+                byte[] next = fToSend.Peek();
+                IAsyncResult result = m_tcpStream.BeginWrite(next, 0, next.Length, tcpFinishWrite, null);
+                if (!result.CompletedSynchronously)
+                {
+                    // tcpFinishWrite carries on when it finishes
+                    return;
+                }
+                // Finished already. Carry on here rather than in tcpFinishWrite, which would go
+                // one call deeper for every message queued.
+                m_tcpStream.EndWrite(result);
+                fToSend.Dequeue();
+            }
+        }
+
         private void tcpFinishWrite(IAsyncResult result)
         {
+            if (result.CompletedSynchronously)
+            {
+                // writeQueued is handling it
+                return;
+            }
             try
             {
-                if (m_tcpStream != null)
-                {
-                    m_tcpStream.EndWrite(result);
-                }
+                if (m_tcpStream == null) return;
+                m_tcpStream.EndWrite(result);
                 lock (fLock)
                 {
-                    // See if there's anything else to send. Note, do not pop the message yet because
-                    // that would indicate its safe to start writing a new message when its not.
-                    if (fToSend.Count > 0 && m_tcpStream != null)
+                    // Pop the message just written, then write the next
+                    if (fToSend.Count > 0)
                     {
-                        // Pop the message we just sent out of the queue
                         fToSend.Dequeue();
-                        if (fToSend.Count > 0)
-                        {
-                            byte[] final = fToSend.Peek();
-                            m_tcpStream.BeginWrite(final, 0, final.Length, tcpFinishWrite, null);
-                        }
                     }
+                    writeQueued();
                 }
             }
             catch (Exception e)
@@ -269,7 +289,7 @@ namespace BrainCloud.Internal
                         Array.Reverse(m_tcpHeaderReadBuffer);
 
                     // from the header that was read, how much should we read after this until the next message ?
-                    m_tcpBytesToRead = BitConverter.ToInt16(m_tcpHeaderReadBuffer, 0);
+                    m_tcpBytesToRead = BitConverter.ToUInt16(m_tcpHeaderReadBuffer, 0);
                     m_tcpBytesToRead -= SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY;
 
                     m_tcpStream.BeginRead(m_tcpReadBuffer, 2, m_tcpBytesToRead, onTCPFinishRead, null);
@@ -302,7 +322,7 @@ namespace BrainCloud.Internal
                 m_tcpBytesRead += read;
                 if (m_tcpBytesRead < m_tcpBytesToRead)
                 {
-                    m_tcpStream.BeginRead(m_tcpReadBuffer, m_tcpBytesRead, m_tcpBytesToRead - m_tcpBytesRead, onTCPFinishRead, null);
+                    m_tcpStream.BeginRead(m_tcpReadBuffer, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY + m_tcpBytesRead, m_tcpBytesToRead - m_tcpBytesRead, onTCPFinishRead, null);
                     return;
                 }
 
@@ -371,8 +391,6 @@ namespace BrainCloud.Internal
     {
         private readonly IRelayTransportListener m_listener;
         private UdpClient m_udpClient = null;
-        private string m_host;
-        private int m_port;
 
         public RelayUdpTransport(IRelayTransportListener in_listener)
         {
@@ -386,9 +404,6 @@ namespace BrainCloud.Internal
 
         public void Connect(string host, int port, bool in_sslEnabled)
         {
-            m_host = host;
-            m_port = port;
-
             Task.Run(() =>
             {
                 try
@@ -431,7 +446,7 @@ namespace BrainCloud.Internal
                 if (result != null)
                 {
                     UdpClient udpClient = result.AsyncState as UdpClient;
-                    IPEndPoint source = new IPEndPoint(IPAddress.Parse(m_host), m_port);
+                    IPEndPoint source = new IPEndPoint(IPAddress.Any, 0);
 
                     if (udpClient != null)
                     {

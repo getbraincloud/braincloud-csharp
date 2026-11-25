@@ -52,6 +52,8 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
+        // Recent packet ids of each reliable, unordered stream, to drop resends already received
+        private Dictionary<ulong, RecentPacketIds> m_recentUnordered = new Dictionary<ulong, RecentPacketIds>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -85,6 +87,7 @@ namespace BrainCloud.Internal
             m_recvPacketId.Clear();
             m_reliables.Clear();
             m_orderedReliablePackets.Clear();
+            m_recentUnordered.Clear();
             ClearTrackedPacketIds();
         }
 
@@ -160,7 +163,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void SetTrackedPacketId(int in_channel, int in_netId, int in_packetId)
         {
-            m_trackedPacketIds[in_channel].Add(in_netId, in_packetId);
+            m_trackedPacketIds[in_channel][in_netId] = in_packetId;
         }
 
         /// <summary>
@@ -291,6 +294,23 @@ namespace BrainCloud.Internal
                     m_recvPacketId[ackIdWithoutPacketId] = packetId;
                 }
             }
+            else if (reliable)
+            {
+                // A resend whose acknowledgement was lost arrives again: deliver it once
+                RecentPacketIds recent;
+                if (!m_recentUnordered.TryGetValue(ackIdWithoutPacketId, out recent))
+                {
+                    recent = new RecentPacketIds(MAX_PACKET_ID_HISTORY);
+                    m_recentUnordered[ackIdWithoutPacketId] = recent;
+                }
+                if (!recent.Add(packetId))
+                {
+#if BC_DEBUG_RELAY_LOGS_ENABLED
+                    m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+#endif
+                    return ReceiveOutcome.Accepted;
+                }
+            }
 
             in_deliver(netId, in_data);
             return ReceiveOutcome.Accepted;
@@ -310,6 +330,34 @@ namespace BrainCloud.Internal
                 return false;
             }
             return a <= b;
+        }
+
+        /// The last few packet ids of a stream. Ids wrap at MAX_PACKET_ID, so only recent ones mean anything.
+        private class RecentPacketIds
+        {
+            private readonly int m_capacity;
+            private readonly HashSet<int> m_ids = new HashSet<int>();
+            private readonly Queue<int> m_order = new Queue<int>();
+
+            public RecentPacketIds(int in_capacity)
+            {
+                m_capacity = in_capacity;
+            }
+
+            /// False when the id is already among the recent ones.
+            public bool Add(int in_packetId)
+            {
+                if (!m_ids.Add(in_packetId))
+                {
+                    return false;
+                }
+                m_order.Enqueue(in_packetId);
+                if (m_order.Count > m_capacity)
+                {
+                    m_ids.Remove(m_order.Dequeue());
+                }
+                return true;
+            }
         }
 
         private class UDPPacket
