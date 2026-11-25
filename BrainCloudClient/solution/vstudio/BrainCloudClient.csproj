@@ -267,6 +267,12 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayComms.cs">
       <Link>BrainCloud\Internal\RelayComms.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayReliableChannel.cs">
+      <Link>BrainCloud\Internal\RelayReliableChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayTransport.cs">
+      <Link>BrainCloud\Internal\RelayTransport.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
     </Compile>
