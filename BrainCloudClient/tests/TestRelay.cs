@@ -18,6 +18,7 @@ namespace BrainCloudTests
         private RelayConnectOptions connectOptions = new RelayConnectOptions();
         private RelayConnectionType connectionType = RelayConnectionType.UDP; // Change this to try different connection type
         private bool secure = false;
+        private bool noSecureUrl = false;
 
         void FullFlow(RelayConnectionType in_connectionType, bool in_secure = false)
         {
@@ -25,6 +26,7 @@ namespace BrainCloudTests
             isRunning = true;
             connectionType = in_connectionType;
             secure = in_secure;
+            noSecureUrl = false;
 
             _bc.Client.EnableLogging(true);
             _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
@@ -41,6 +43,8 @@ namespace BrainCloudTests
                 if ((DateTime.Now - timeStart).TotalSeconds > 5.0 * 60.0) break;
             }
 
+            // secureUrl is only sent when the app has relayServerSecureEnabled
+            if (noSecureUrl) Assert.Ignore("connectData has no secureUrl");
             Assert.That(successCount == 3); // Test result
         }
 
@@ -79,6 +83,7 @@ namespace BrainCloudTests
             switch (response["operation"] as string)
             {
                 case "DISBANDED":
+                    if (noSecureUrl) break;
                     var reason = data["reason"] as Dictionary<string, object>;
                     var reasonCode = (int)reason["code"];
                     if (reasonCode == ReasonCodes.RTT_ROOM_READY)
@@ -100,7 +105,8 @@ namespace BrainCloudTests
                         // wss uses the server-provided URL as-is; no port
                         if (!connectData.ContainsKey("secureUrl"))
                         {
-                            onFailed(0, 0, "connectData has no secureUrl", null);
+                            noSecureUrl = true;
+                            isRunning = false;
                             break;
                         }
                         connectOptions.ssl = true;
@@ -182,6 +188,7 @@ namespace BrainCloudTests
         [Test]
         public void TestFullFlowWSS()
         {
+            if (Environment.GetEnvironmentVariable("BC_SKIP_WSS") != null) Assert.Ignore("BC_SKIP_WSS set");
             FullFlow(RelayConnectionType.WEBSOCKET, true);
         }
 

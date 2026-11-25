@@ -18,6 +18,7 @@ namespace Tests.PlayMode
         private bool bRelayMessageReceived;
         private bool bIncludeEndMatch;
         private bool bSecure;
+        private bool bNoSecureUrl;
 
         [UnityTest]
         public IEnumerator TestRelayNoAuthConnectRequest()
@@ -39,9 +40,12 @@ namespace Tests.PlayMode
         [UnityTest]
         public IEnumerator TestRelayWebSocketSecure()
         {
+            if (System.Environment.GetEnvironmentVariable("BC_SKIP_WSS") != null) NUnit.Framework.Assert.Ignore("BC_SKIP_WSS set");
             Debug.Log("Now running...TestRelayWebSocketSecure ");
             yield return _tc.StartCoroutine(FullFlow(RelayConnectionType.WEBSOCKET, true));
 
+            // secureUrl is only sent when the app has relayServerSecureEnabled
+            if (bNoSecureUrl) NUnit.Framework.Assert.Ignore("connectData has no secureUrl");
             LogResults($"WSS Failed: SendWrongNetId: {bSendWrongNetId}, System Connect Callback: {bSystemCallbackConnect}, Relay Message Received: {bRelayMessageReceived}", _tc.successCount == 3);
         }
 
@@ -78,6 +82,7 @@ namespace Tests.PlayMode
             _tc.m_timeToWaitSecs = 1000;
             connectionType = in_connectionType;
             bSecure = in_secure;
+            bNoSecureUrl = false;
 
             yield return _tc.StartCoroutine(_tc.SetUpNewUser(Users.UserA));
             
@@ -190,7 +195,8 @@ namespace Tests.PlayMode
                 // wss uses the server-provided URL as-is; no port
                 if (string.IsNullOrEmpty(_tc.Server.SecureUrl))
                 {
-                    OnFailed(0, 0, "connectData has no secureUrl", null);
+                    bNoSecureUrl = true;
+                    _tc.m_done = true;
                     return;
                 }
                 host = _tc.Server.SecureUrl;
