@@ -267,6 +267,21 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayComms.cs">
       <Link>BrainCloud\Internal\RelayComms.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayReliableChannel.cs">
+      <Link>BrainCloud\Internal\RelayReliableChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\IRelayTransport.cs">
+      <Link>BrainCloud\Internal\IRelayTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayTcpTransport.cs">
+      <Link>BrainCloud\Internal\RelayTcpTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayUdpTransport.cs">
+      <Link>BrainCloud\Internal\RelayUdpTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayWebSocketTransport.cs">
+      <Link>BrainCloud\Internal\RelayWebSocketTransport.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
     </Compile>
@@ -290,6 +305,12 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RTTComms.cs">
       <Link>BrainCloud\Internal\RTTComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\NatProbe.cs">
+      <Link>BrainCloud\Internal\NatProbe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\StunClient.cs">
+      <Link>BrainCloud\Internal\StunClient.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
       <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>

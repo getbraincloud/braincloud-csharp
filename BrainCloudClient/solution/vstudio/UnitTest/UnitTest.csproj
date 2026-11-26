@@ -202,8 +202,14 @@
     <Compile Include="..\..\..\tests\TestRTT.cs">
       <Link>TestRTT.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestStunClient.cs">
+      <Link>TestStunClient.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestRelay.cs">
       <Link>TestRelay.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestRelayInternals.cs">
+      <Link>TestRelayInternals.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestRelayRoomReady.cs">
       <Link>TestRelayRoomReady.cs</Link>
