@@ -165,7 +165,8 @@ namespace BrainCloudTests
             lossy.DropFirst = 1;
             List<StunResult> results = Probe(lossy);
             Assert.That(results[0].Mapped, Is.Not.Null, results[0].Error);
-            Assert.That(lossy.Requests, Is.EqualTo(2));
+            // At least one resend; a slow machine may send another before the answer arrives
+            Assert.That(lossy.Requests, Is.GreaterThanOrEqualTo(2));
         }
 
         [Test]
@@ -276,15 +277,14 @@ namespace BrainCloudTests
             // Disconnected before the result: nothing is sent
             probe.OnRttConnected();
             probe.OnRttDisconnected();
-            Pump(probe, () => false, 500);
+            Assert.That(Pump(probe, () => probe.ResultsHandled == 1), Is.True, "the test did not finish");
             Assert.That(sent, Is.Empty);
 
             // Reconnected while the first test runs: only the new connection's result is sent
             probe.OnRttConnected();
             probe.OnRttDisconnected();
             probe.OnRttConnected();
-            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
-            Pump(probe, () => false, 500);
+            Assert.That(Pump(probe, () => probe.ResultsHandled == 3), Is.True, "the tests did not finish");
             Assert.That(sent.Count, Is.EqualTo(1));
         }
 
@@ -296,7 +296,7 @@ namespace BrainCloudTests
             probe.Enabled = true;
             probe.OnRttConnected();
             probe.Enabled = false;
-            Pump(probe, () => false, 500);
+            Assert.That(Pump(probe, () => probe.ResultsHandled == 1), Is.True, "the test did not finish");
             Assert.That(sent, Is.Empty, "nothing was reported, so there is nothing to withdraw");
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.None));
         }
@@ -319,6 +319,8 @@ namespace BrainCloudTests
 
             probe.Enabled = true;
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing));
+            sent[1].GetCallback().OnSuccessCallback("{}");
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing), "the withdrawal's answer does not settle the new test");
             Assert.That(Pump(probe, () => sent.Count == 3), Is.True, "no new report after turning it back on");
             Assert.That(NatInfo(sent[2])["udp"], Is.EqualTo(true));
         }
@@ -339,7 +341,7 @@ namespace BrainCloudTests
             // On and off again before the new test reports: the server still holds the withdrawal
             probe.Enabled = true;
             probe.Enabled = false;
-            Pump(probe, () => false, 500);
+            Assert.That(Pump(probe, () => probe.ResultsHandled == 2), Is.True, "the second test did not finish");
             Assert.That(sent.Count, Is.EqualTo(2));
         }
 

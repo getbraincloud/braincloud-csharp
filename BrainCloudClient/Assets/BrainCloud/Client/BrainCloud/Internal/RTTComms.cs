@@ -152,6 +152,7 @@ namespace BrainCloud.Internal
                     if (m_webSocketStatus == WebsocketStatus.CLOSED || m_tcpDisconnected)
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        m_natProbe.OnRttDisconnected();
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                         disconnect();
@@ -332,6 +333,10 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
+            // Before the game's failure callback, which may turn direct connect off: the server has
+            // dropped this connection's report, so there is nothing left to withdraw
+            m_natProbe.OnRttDisconnected();
+
             if (m_webSocket != null) m_webSocket.Close();
 
             // TCP cleanup — set the flag first so the receive thread's catch block knows
@@ -365,7 +370,6 @@ namespace BrainCloud.Internal
                     m_connectionFailureCallback(400, (int)m_disconnectJson["reason_code"], (string)m_disconnectJson["reason"], m_connectedObj);
                 }
             }
-            m_natProbe.OnRttDisconnected();
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
         }
 

@@ -74,6 +74,8 @@ namespace BrainCloud.Internal
         private readonly Action<ServerCall> m_send;
         private bool m_enabled = false;
         private bool m_rttConnected = false;
+        // On WebGL start() compiles empty, so some of these are set but never read (CS0414)
+#pragma warning disable 0414
         private bool m_testedThisConnection = false;
         // A test's report is on the server for this connection; only then does turning off withdraw anything
         private bool m_testReported = false;
@@ -82,6 +84,7 @@ namespace BrainCloud.Internal
         private string m_stunHost = null;
         private int m_stunPort = 0;
         private byte[] m_stunToken = null;
+#pragma warning restore 0414
 
         // Finished tests waiting for Update, added by the test threads. A list rather than a single
         // slot: a test from an earlier connection can finish next to the current one, and must not
@@ -120,6 +123,8 @@ namespace BrainCloud.Internal
                 m_enabled = value;
                 if (m_enabled)
                 {
+                    // Answers to anything sent before, such as a withdrawal, no longer change State
+                    ++m_generation;
                     start();
                     return;
                 }
@@ -142,6 +147,9 @@ namespace BrainCloud.Internal
         public NatReport LastReport { get; private set; }
 
         public ReportState State { get; private set; }
+
+        /// For the unit tests: how many finished tests Update has taken, sent or dropped.
+        internal int ResultsHandled { get; private set; }
 
         /// True when the last connection request's response had a stun section, usable or not.
         internal bool StunSectionReceived { get; private set; }
@@ -206,6 +214,7 @@ namespace BrainCloud.Internal
             lock (m_finishedLock)
             {
                 if (m_finished.Count == 0) return;
+                ResultsHandled += m_finished.Count;
                 foreach (NatReport finished in m_finished)
                 {
                     if (finished.Generation == m_generation) current = finished;
