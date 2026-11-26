@@ -21,6 +21,7 @@ namespace BrainCloudTests
         private bool noSecureUrl = false;
         private bool useHelper = false;
         private Dictionary<string, object> roomReadyData = null;
+        private string roomReadyJson = null;
 
         void FullFlow(RelayConnectionType in_connectionType, bool in_secure = false, bool in_useHelper = false)
         {
@@ -31,6 +32,7 @@ namespace BrainCloudTests
             noSecureUrl = false;
             useHelper = in_useHelper;
             roomReadyData = null;
+            roomReadyJson = null;
 
             _bc.Client.EnableLogging(true);
             _bc.RTTService.RegisterRTTLobbyCallback(onLobbyEvent);
@@ -99,6 +101,7 @@ namespace BrainCloudTests
                 // ROOM_READY contains information on how to connect to the relay server.
                 case "ROOM_READY":
                     roomReadyData = data;
+                    roomReadyJson = json;
                     var connectData = data["connectData"] as Dictionary<string, object>;
                     var ports = connectData["ports"] as Dictionary<string, object>;
 
@@ -137,7 +140,11 @@ namespace BrainCloudTests
             _bc.RelayService.RegisterRelayCallback(relayCallback);
             if (useHelper)
             {
-                _bc.RelayService.ConnectFromRoomReady(connectionType, secure, roomReadyData, onRelayConnected, onFailed);
+                // One run passes the event's JSON as the lobby callback received it, the other the parsed data
+                if (secure)
+                    _bc.RelayService.ConnectFromRoomReady(connectionType, secure, roomReadyData, onRelayConnected, onFailed);
+                else
+                    _bc.RelayService.ConnectFromRoomReady(connectionType, secure, roomReadyJson, onRelayConnected, onFailed);
             }
             else
             {

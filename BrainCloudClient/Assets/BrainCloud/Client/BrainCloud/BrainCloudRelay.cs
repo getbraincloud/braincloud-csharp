@@ -133,13 +133,19 @@ namespace BrainCloud
         /// game does not have to, and applies the rules for each kind of server:
         /// <list type="bullet">
         /// <item>brainCloud relay servers and Edgegap: the port for in_preferredType (WEBSOCKET, TCP
-        /// or UDP). With in_useSsl and WEBSOCKET, the secure WebSocket the server offers; if it
-        /// offers none, the connect fails rather than fall back to an insecure one.</item>
-        /// <item>GameLift and i3D: their one port, over WebSocket without SSL, whatever was preferred.</item>
+        /// or UDP). There is no fallback to another type: if the server does not offer that port, the
+        /// connect fails. With in_useSsl and WEBSOCKET, the secure WebSocket URL the server sent
+        /// (secureUrl).</item>
+        /// <item>GameLift and i3D: their one port, over WebSocket, whatever type was preferred.</item>
         /// </list>
-        /// in_useSsl only applies to WebSocket. Failures are reported to in_failure, like Connect's.
+        /// in_useSsl applies only to WebSocket. A server that offers no secure WebSocket (Edgegap,
+        /// GameLift, i3D, or a relay server without secure connections enabled) makes the connect
+        /// fail rather than fall back to an insecure one.
+        ///
+        /// Anything wrong with the event is reported to in_failure (status 403, reason
+        /// RS_CLIENT_ERROR) before this call returns, as Connect does for its own early failures.
         /// </summary>
-        /// <param name="in_preferredType">The transport to use where the server offers a choice.</param>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
         /// <param name="in_useSsl">Connect over a secure WebSocket (wss) when connecting over WebSocket.</param>
         /// <param name="in_roomReadyJson">The ROOM_READY event as the lobby callback received it.</param>
         /// <param name="in_success">As for Connect.</param>
@@ -161,8 +167,13 @@ namespace BrainCloud
 
         /// <summary>
         /// As ConnectFromRoomReady with the event's JSON, for a game that has already parsed it.
-        /// in_roomReady is the whole event or its "data" object.
         /// </summary>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
+        /// <param name="in_useSsl">Connect over a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_roomReady">The parsed ROOM_READY event, or its "data" object.</param>
+        /// <param name="in_success">As for Connect.</param>
+        /// <param name="in_failure">As for Connect, and also called when the event cannot be used.</param>
+        /// <param name="cb_object">As for Connect.</param>
         public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             RelayConnectionType connectionType;
@@ -176,12 +187,13 @@ namespace BrainCloud
                 }
                 if (in_failure != null)
                 {
+                    // The same status, reason and shape as the relay's own client-side errors
                     var json = new Dictionary<string, object>();
-                    json["status"] = StatusCodes.BAD_REQUEST;
+                    json["status"] = StatusCodes.FORBIDDEN;
                     json["reason_code"] = ReasonCodes.RS_CLIENT_ERROR;
                     json["status_message"] = "Relay: cannot connect from ROOM_READY: " + error;
                     json["severity"] = "ERROR";
-                    in_failure(StatusCodes.BAD_REQUEST, ReasonCodes.RS_CLIENT_ERROR, m_clientRef.SerializeJson(json), cb_object);
+                    in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RS_CLIENT_ERROR, m_clientRef.SerializeJson(json), cb_object);
                 }
                 return;
             }
@@ -214,32 +226,24 @@ namespace BrainCloud
             var ports = valueOf(connectData, "ports") as Dictionary<string, object>;
             if (string.IsNullOrEmpty(address) || ports == null) return "connectData has no address or ports";
 
+            const string NO_SECURE_WEBSOCKET = "a secure WebSocket was asked for, but this server offers none (secure relay connections are not enabled for this app, or not available from this host)";
             int port;
             if (tryPort(ports, "gamelift", out port) || tryPort(ports, "i3d", out port))
             {
                 // These hosts offer the relay on one port, over WebSocket without SSL
+                if (in_useSsl) return NO_SECURE_WEBSOCKET;
                 out_connectionType = RelayConnectionType.WEBSOCKET;
                 out_options.host = address;
                 out_options.port = port;
             }
             else if (in_useSsl && in_preferredType == RelayConnectionType.WEBSOCKET)
             {
-                // A brainCloud relay server offers a complete wss:// URL, used as given; Edgegap a wss port
+                // A complete wss:// URL, used as given. Only brainCloud relay servers send one; a wss
+                // port on a bare IP address (Edgegap) would not match its certificate, so is not used.
                 string secureUrl = valueOf(connectData, "secureUrl") as string;
-                if (!string.IsNullOrEmpty(secureUrl))
-                {
-                    out_options.host = secureUrl;
-                    out_options.port = 0;
-                }
-                else if (tryPort(ports, "wss", out port))
-                {
-                    out_options.host = address;
-                    out_options.port = port;
-                }
-                else
-                {
-                    return "a secure WebSocket was asked for, but the server offers none (secure relay connections are not enabled for this app, or not available on this server)";
-                }
+                if (string.IsNullOrEmpty(secureUrl)) return NO_SECURE_WEBSOCKET;
+                out_options.host = secureUrl;
+                out_options.port = 0;
                 out_options.ssl = true;
             }
             else
@@ -262,6 +266,9 @@ namespace BrainCloud
 
             out_options.passcode = valueOf(data, "passcode") as string;
             out_options.lobbyId = valueOf(data, "lobbyId") as string;
+            // The relay checks both when it accepts the connection
+            if (string.IsNullOrEmpty(out_options.passcode)) return "the event has no passcode";
+            if (string.IsNullOrEmpty(out_options.lobbyId)) return "the event has no lobbyId";
             return null;
         }
 

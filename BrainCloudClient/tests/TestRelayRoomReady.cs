@@ -20,6 +20,11 @@ namespace BrainCloudTests
             ""connectData"":{""address"":""16.55.84.249"",""ports"":{""ws"":9001,""tcp"":9000,""udp"":9002},
                 ""secureUrl"":""wss://node-1.hosted.example.com/9001""}}}";
 
+        // The same server without secure relay connections enabled for the app
+        private const string RELAY_NO_SECURE = @"{""operation"":""ROOM_READY"",""data"":{
+            ""lobbyId"":""23823:relayLobby:7"",""passcode"":""pc1"",
+            ""connectData"":{""address"":""16.55.84.249"",""ports"":{""ws"":9001,""tcp"":9000,""udp"":9002}}}}";
+
         // Edgegap: one port per protocol, keyed by the protocol
         private const string EDGEGAP = @"{""operation"":""ROOM_READY"",""data"":{
             ""lobbyId"":""l2"",""passcode"":""pc2"",
@@ -89,27 +94,28 @@ namespace BrainCloudTests
         [Test]
         public void SecureWebSocketAskedFor_ButNoneOffered_FailsRatherThanFallBack()
         {
-            string relayWithoutSecure = RELAY.Replace(@",
-                ""secureUrl"":""wss://node-1.hosted.example.com/9001""", "");
-            Assert.That(relayWithoutSecure, Does.Not.Contain("secureUrl"));
             RelayConnectionType type;
             RelayConnectOptions options;
-            Assert.That(Resolve(relayWithoutSecure, RelayConnectionType.WEBSOCKET, true, out type, out options), Does.Contain("secure WebSocket"));
+            Assert.That(Resolve(RELAY_NO_SECURE, RelayConnectionType.WEBSOCKET, true, out type, out options), Does.Contain("secure WebSocket"));
         }
 
         [Test]
-        public void Edgegap_UsesThePortForThePreferredType_AndItsWssPort()
+        public void Edgegap_UsesThePortForThePreferredType()
         {
             RelayConnectionType type;
             RelayConnectOptions options;
             Assert.That(Resolve(EDGEGAP, RelayConnectionType.UDP, false, out type, out options), Is.Null);
             Assert.That(options.host, Is.EqualTo("203.0.113.5"));
             Assert.That(options.port, Is.EqualTo(31001));
+        }
 
-            Assert.That(Resolve(EDGEGAP, RelayConnectionType.WEBSOCKET, true, out type, out options), Is.Null);
-            Assert.That(options.ssl, Is.True);
-            Assert.That(options.host, Is.EqualTo("203.0.113.5"));
-            Assert.That(options.port, Is.EqualTo(31003));
+        [Test]
+        public void Edgegap_OffersNoSecureWebSocket_EvenWithAWssPort()
+        {
+            // Its wss port is on a bare IP address, which its certificate would not match
+            RelayConnectionType type;
+            RelayConnectOptions options;
+            Assert.That(Resolve(EDGEGAP, RelayConnectionType.WEBSOCKET, true, out type, out options), Does.Contain("secure WebSocket"));
         }
 
         [Test]
@@ -128,12 +134,15 @@ namespace BrainCloudTests
         {
             RelayConnectionType type;
             RelayConnectOptions options;
-            Assert.That(Resolve(in_json, RelayConnectionType.UDP, true, out type, out options), Is.Null);
+            Assert.That(Resolve(in_json, RelayConnectionType.UDP, false, out type, out options), Is.Null);
             Assert.That(type, Is.EqualTo(RelayConnectionType.WEBSOCKET));
             Assert.That(options.ssl, Is.False);
             Assert.That(options.host, Is.EqualTo(in_host));
             Assert.That(options.port, Is.EqualTo(in_port));
             Assert.That(options.passcode, Is.EqualTo(in_passcode));
+
+            // They have no secure WebSocket, so asking for one fails rather than connect insecurely
+            Assert.That(Resolve(in_json, RelayConnectionType.WEBSOCKET, true, out type, out options), Does.Contain("secure WebSocket"));
         }
 
         [Test]
@@ -153,6 +162,47 @@ namespace BrainCloudTests
             Assert.That(BrainCloudRelay.ResolveRoomReady(RelayConnectionType.UDP, false, data, out type, out options), Is.Null);
             Assert.That(options.port, Is.EqualTo(9002));
             Assert.That(options.passcode, Is.EqualTo("pc1"));
+        }
+
+        [Test]
+        public void AMissingPasscodeOrLobbyId_IsRefused()
+        {
+            RelayConnectionType type;
+            RelayConnectOptions options;
+            Assert.That(Resolve(RELAY.Replace(@"""passcode"":""pc1"",", ""), RelayConnectionType.UDP, false, out type, out options), Does.Contain("no passcode"));
+            Assert.That(Resolve(RELAY.Replace(@"""lobbyId"":""23823:relayLobby:7"",", ""), RelayConnectionType.UDP, false, out type, out options), Does.Contain("no lobbyId"));
+        }
+
+        [Test]
+        public void ConnectFromRoomReady_ReportsAnUnusableEventToTheFailureCallback()
+        {
+            var client = new BrainCloudClient();
+            foreach (string json in new[] { "not json", "[1, 2]", null, DIRECT })
+            {
+                int status = 0, reason = 0;
+                string error = null;
+                object cbObject = null;
+                client.RelayService.ConnectFromRoomReady(RelayConnectionType.UDP, false, json, null,
+                    (s, r, e, o) => { status = s; reason = r; error = e; cbObject = o; }, "cb");
+                Assert.That(status, Is.EqualTo(StatusCodes.FORBIDDEN), "for " + json);
+                Assert.That(reason, Is.EqualTo(ReasonCodes.RS_CLIENT_ERROR), "for " + json);
+                Assert.That(error, Does.Contain("cannot connect from ROOM_READY"), "for " + json);
+                Assert.That(cbObject, Is.EqualTo("cb"));
+            }
+
+            // No failure callback: nothing to report to, and nothing thrown
+            Assert.That(() => client.RelayService.ConnectFromRoomReady(RelayConnectionType.UDP, false, "not json"), Throws.Nothing);
+        }
+
+        [Test]
+        public void ConnectFromRoomReady_HandsAUsableEventToConnect()
+        {
+            // Connect refuses a client that is not authenticated, which shows the event got that far
+            var client = new BrainCloudClient();
+            int reason = 0;
+            client.RelayService.ConnectFromRoomReady(RelayConnectionType.UDP, false, RELAY, null,
+                (s, r, e, o) => { reason = r; });
+            Assert.That(reason, Is.EqualTo(ReasonCodes.RS_NO_API_SESSION_ERROR));
         }
 
         [Test]
