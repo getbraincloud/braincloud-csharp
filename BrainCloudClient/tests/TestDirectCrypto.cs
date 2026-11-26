@@ -201,86 +201,181 @@ namespace BrainCloudTests
         // Fixed values every client library's implementation must reproduce. The keys were computed
         // independently (Python's hmac and hashlib) and the datagram with .NET's own ChaCha20-Poly1305.
         private static readonly byte[] TOKEN = Sequence(0, 16);
-        private const string KEY_0_TO_1 = "246699f49576f5e494f9ee0f8d158a2fdb9cfd24f9bb381b94f5528356ae7093";
-        private const string KEY_1_TO_0 = "07f331df147f3bffaaf8f102917be5d903abd7ce332bbeec31ee6dcf85e7e0a8";
-        private const string KEY_3_TO_7 = "0ebc8dd6b6c74b9fc1d7f4ab820f5cee6706149b8e5efc876cd34cba67f84c1b";
-        // A PUNCH (type 16) with punch id 1, from net id 0 to net id 1, sequence 5
-        private const string PUNCH_DATAGRAM = "b100010000000000000005ec1aeb2e7f00db64c4cba904dcb3a6a18ab10085a9";
+        private static readonly byte[] EPOCH = Sequence(0x10, 8);
+        private const string KEY_0_TO_1 = "2204a6dd79af04b43d319cab844520fd9406438526448b81e075b7198e9e45c1";
+        private const string KEY_1_TO_0 = "4ffdc8cbd25c2fd112b06daae019d3871bab182bbd2d35562ed4304483feb29f";
+        private const string KEY_3_TO_7 = "2ccba3754420ea1da0c41b9b6bf6525dc83c3852878cfc6f0f8e9ff8ff791773";
+        private const string KEY_0_TO_1_OTHER_EPOCH = "c13baac947ab539a2a24c90ab1522c86f9112d6e40e35310d193df201d7fff75";
+        // A PUNCH (type 16) with punch id 1, from net id 0 to net id 1, in EPOCH, sequence 5
+        private const string PUNCH_DATAGRAM = "b100011011121314151617000000000000000519918d80a24f673f459f5f353173c9685a6e6e2e40";
+        private static readonly byte[] PUNCH = { 16, 0, 0, 0, 1 };
 
         [Test]
-        public void DeriveKey_OneKeyPerDirection_FixedValues()
+        public void DeriveKey_OneKeyPerDirectionAndEpoch_FixedValues()
         {
-            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1)), Is.EqualTo(KEY_0_TO_1));
-            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 1, 0)), Is.EqualTo(KEY_1_TO_0));
-            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 3, 7)), Is.EqualTo(KEY_3_TO_7));
+            string cipher = DirectPacket.CIPHER_CHACHA20_POLY1305;
+            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, cipher, 0, 1, EPOCH)), Is.EqualTo(KEY_0_TO_1));
+            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, cipher, 1, 0, EPOCH)), Is.EqualTo(KEY_1_TO_0));
+            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, cipher, 3, 7, EPOCH)), Is.EqualTo(KEY_3_TO_7));
+            Assert.That(Hex(DirectPacket.DeriveKey(TOKEN, cipher, 0, 1, Sequence(0x20, 8))), Is.EqualTo(KEY_0_TO_1_OTHER_EPOCH));
         }
 
         [Test]
         public void DeriveKey_RefusesAnUnknownCipherOrBadInput()
         {
-            Assert.That(() => DirectPacket.DeriveKey(TOKEN, "aes-128-gcm", 0, 1), Throws.ArgumentException);
-            Assert.That(() => DirectPacket.DeriveKey(new byte[0], DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1), Throws.ArgumentException);
-            Assert.That(() => DirectPacket.DeriveKey(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 256), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            string cipher = DirectPacket.CIPHER_CHACHA20_POLY1305;
+            Assert.That(() => DirectPacket.DeriveKey(TOKEN, "aes-128-gcm", 0, 1, EPOCH), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 4), cipher, 0, 1, EPOCH), Throws.ArgumentException, "a short token could be guessed");
+            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 17), cipher, 0, 1, EPOCH), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(TOKEN, cipher, 0, 1, Sequence(0, 7)), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(TOKEN, cipher, 0, 256, EPOCH), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Seal_FixedDatagram()
         {
-            byte[] punch = { 16, 0, 0, 0, 1 };
-            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, 5, punch, 0, punch.Length);
+            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
             Assert.That(Hex(datagram), Is.EqualTo(PUNCH_DATAGRAM));
-            Assert.That(datagram.Length, Is.EqualTo(punch.Length + DirectPacket.OVERHEAD));
+            Assert.That(datagram.Length, Is.EqualTo(PUNCH.Length + DirectPacket.OVERHEAD));
+            Assert.That(DirectPacket.OVERHEAD, Is.EqualTo(35));
         }
 
         [Test]
-        public void Open_ReadsTheHeaderAndThePacket()
+        public void Seal_FromAnOffset()
+        {
+            byte[] buffer = new byte[20];
+            Buffer.BlockCopy(PUNCH, 0, buffer, 9, PUNCH.Length);
+            Assert.That(Hex(DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, buffer, 9, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
+        }
+
+        [Test]
+        public void Open_ReadsTheHeaderAndThePacket_FromABiggerReceiveBuffer()
         {
             byte[] datagram = H(PUNCH_DATAGRAM);
+            byte[] buffer = new byte[1500];
+            Buffer.BlockCopy(datagram, 0, buffer, 0, datagram.Length);
+
             int sender, receiver;
+            byte[] epoch;
             ulong sequence;
-            Assert.That(DirectPacket.TryReadHeader(datagram, datagram.Length, out sender, out receiver, out sequence), Is.True);
+            Assert.That(DirectPacket.TryReadHeader(buffer, datagram.Length, out sender, out receiver, out epoch, out sequence), Is.True);
             Assert.That(sender, Is.EqualTo(0));
             Assert.That(receiver, Is.EqualTo(1));
+            Assert.That(epoch, Is.EqualTo(EPOCH));
             Assert.That(sequence, Is.EqualTo(5UL));
-            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), datagram, datagram.Length), Is.EqualTo(new byte[] { 16, 0, 0, 0, 1 }));
+            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
         }
 
         [Test]
-        public void Open_RefusesTheOtherDirectionsKeyAndAnyChange()
+        public void Open_RefusesOtherIdsTheOtherDirectionsKeyAndAnyChange()
         {
             byte[] datagram = H(PUNCH_DATAGRAM);
+            // The ids the key belongs to are checked against the header before any decrypting
+            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 2, datagram, datagram.Length), Is.Null, "addressed to someone else");
+            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 3, 1, datagram, datagram.Length), Is.Null, "from someone else");
             // A packet cannot be bounced back to its sender: the other direction has another key
-            Assert.That(DirectPacket.Open(H(KEY_1_TO_0), datagram, datagram.Length), Is.Null);
+            Assert.That(DirectPacket.Open(H(KEY_1_TO_0), 0, 1, datagram, datagram.Length), Is.Null);
             for (int i = 1; i < datagram.Length; ++i)
             {
                 byte[] changed = (byte[])datagram.Clone();
                 changed[i] ^= 0x01;
-                Assert.That(DirectPacket.Open(H(KEY_0_TO_1), changed, changed.Length), Is.Null, "byte " + i);
+                Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
             }
         }
 
         [Test]
-        public void TryReadHeader_RefusesOtherDatagrams()
+        public void TryReadHeader_RefusesOtherDatagramsAndBadLengths()
         {
             int sender, receiver;
+            byte[] epoch;
             ulong sequence;
             byte[] datagram = H(PUNCH_DATAGRAM);
             byte[] stun = (byte[])datagram.Clone();
             stun[0] = 0x01;   // a STUN Binding response starts 0x01 0x01
-            Assert.That(DirectPacket.TryReadHeader(stun, stun.Length, out sender, out receiver, out sequence), Is.False, "another format");
-            Assert.That(DirectPacket.TryReadHeader(datagram, DirectPacket.OVERHEAD - 1, out sender, out receiver, out sequence), Is.False, "too short");
-            Assert.That(DirectPacket.TryReadHeader(null, 0, out sender, out receiver, out sequence), Is.False);
+            Assert.That(DirectPacket.TryReadHeader(stun, stun.Length, out sender, out receiver, out epoch, out sequence), Is.False, "another format");
+            Assert.That(DirectPacket.TryReadHeader(datagram, DirectPacket.OVERHEAD - 1, out sender, out receiver, out epoch, out sequence), Is.False, "too short");
+            Assert.That(DirectPacket.TryReadHeader(datagram, datagram.Length + 1, out sender, out receiver, out epoch, out sequence), Is.False, "longer than the buffer");
+            Assert.That(DirectPacket.TryReadHeader(null, 0, out sender, out receiver, out epoch, out sequence), Is.False);
+            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, datagram, datagram.Length + 1), Is.Null, "longer than the buffer");
         }
 
         [Test]
         public void Seal_SequenceIsBigEndianInTheHeader()
         {
-            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, 0x0102030405060708UL, new byte[0], 0, 0);
-            Assert.That(Hex(datagram.Take(DirectPacket.HEADER_LENGTH).ToArray()), Is.EqualTo("b100010102030405060708"));
-            int sender, receiver;
-            ulong sequence;
-            DirectPacket.TryReadHeader(datagram, datagram.Length, out sender, out receiver, out sequence);
-            Assert.That(sequence, Is.EqualTo(0x0102030405060708UL));
+            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 0x0102030405060708UL, new byte[0], 0, 0);
+            Assert.That(Hex(datagram.Take(DirectPacket.HEADER_LENGTH).ToArray()), Is.EqualTo("b10001" + "1011121314151617" + "0102030405060708"));
+        }
+
+        #endregion
+
+        #region Sender and receiver
+
+        [Test]
+        public void Sender_CountsUpFromZero_AndTheReceiverTakesEachOnce()
+        {
+            var sender = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1, EPOCH);
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+
+            byte[] first = sender.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(Hex(first), Is.Not.EqualTo(PUNCH_DATAGRAM), "sequence 0, not 5");
+            byte[] second = sender.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(sender.NextSequence, Is.EqualTo(2UL));
+
+            Assert.That(receiver.Open(second, second.Length), Is.EqualTo(PUNCH), "out of order is fine");
+            Assert.That(receiver.Open(first, first.Length), Is.EqualTo(PUNCH));
+            Assert.That(receiver.Open(first, first.Length), Is.Null, "a repeat");
+            Assert.That(receiver.Open(second, second.Length), Is.Null, "a repeat");
+        }
+
+        [Test]
+        public void Sender_EachNewOneHasItsOwnEpoch()
+        {
+            var a = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            var b = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            byte[] fromA = a.Seal(PUNCH, 0, PUNCH.Length), fromB = b.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(Hex(fromA.Skip(3).Take(8).ToArray()), Is.Not.EqualTo(Hex(fromB.Skip(3).Take(8).ToArray())));
+            // Same sequence number, different key: the same nonce is never used twice with one key
+            Assert.That(Hex(fromA.Skip(DirectPacket.HEADER_LENGTH).ToArray()), Is.Not.EqualTo(Hex(fromB.Skip(DirectPacket.HEADER_LENGTH).ToArray())));
+        }
+
+        [Test]
+        public void Receiver_FollowsANewEpoch_AndNeverGoesBack()
+        {
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            var before = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1, Sequence(0x30, 8));
+            byte[] old1 = before.Seal(PUNCH, 0, PUNCH.Length), old2 = before.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(old1, old1.Length), Is.EqualTo(PUNCH));
+
+            // The peer started sending again: a new epoch, from sequence 0
+            var after = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1, Sequence(0x40, 8));
+            byte[] new1 = after.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(new1, new1.Length), Is.EqualTo(PUNCH));
+
+            // The old epoch is retired: neither a replay nor an unseen datagram of it is taken now
+            Assert.That(receiver.Open(old1, old1.Length), Is.Null);
+            Assert.That(receiver.Open(old2, old2.Length), Is.Null);
+            Assert.That(receiver.Open(new1, new1.Length), Is.Null, "a repeat in the new epoch");
+        }
+
+        [Test]
+        public void Receiver_RefusesOtherPeersAndForgeries()
+        {
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            byte[] toSomeoneElse = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 2).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(toSomeoneElse, toSomeoneElse.Length), Is.Null);
+            byte[] ownPacket = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 1, 0).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(ownPacket, ownPacket.Length), Is.Null, "this player's own packet reflected back");
+            byte[] otherToken = new DirectSender(Sequence(1, 16), DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(otherToken, otherToken.Length), Is.Null, "another attempt's token");
+
+            // A forged datagram in a new epoch must not move the receiver off the real one
+            var real = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1, EPOCH);
+            byte[] r1 = real.Seal(PUNCH, 0, PUNCH.Length), r2 = real.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(r1, r1.Length), Is.EqualTo(PUNCH));
+            byte[] forged = (byte[])r2.Clone();
+            forged[3] ^= 0xFF;   // a different epoch, with a tag that cannot match
+            Assert.That(receiver.Open(forged, forged.Length), Is.Null);
+            Assert.That(receiver.Open(r2, r2.Length), Is.EqualTo(PUNCH), "still on the real epoch");
         }
 
         #endregion
@@ -308,8 +403,28 @@ namespace BrainCloudTests
             Assert.That(window.IsNew(10), Is.False, "fell out of the window");
         }
 
+        [TestCase(63UL)]
+        [TestCase(64UL)]
+        [TestCase(65UL)]
+        [TestCase(128UL)]
+        public void ReplayWindow_JumpsAhead(ulong in_jump)
+        {
+            // A shift by 64 or more must clear the history rather than wrap
+            var window = new ReplayWindow();
+            window.Accept(0);
+            window.Accept(5);
+            window.Accept(5 + in_jump);
+            for (ulong s = 6; s < 5 + in_jump; ++s)
+            {
+                bool inWindow = (5 + in_jump) - s < ReplayWindow.SIZE;
+                Assert.That(window.IsNew(s), Is.EqualTo(inWindow), "sequence " + s + " after a jump of " + in_jump);
+            }
+            Assert.That(window.IsNew(5), Is.False);
+            Assert.That(window.IsNew(5 + in_jump), Is.False);
+        }
+
         [Test]
-        public void ReplayWindow_StartsAnywhere_AndJumpsAhead()
+        public void ReplayWindow_StartsAnywhere_EvenNearTheTop()
         {
             var window = new ReplayWindow();
             window.Accept(1000);
@@ -317,10 +432,48 @@ namespace BrainCloudTests
             window.Accept(999);
             Assert.That(window.IsNew(999), Is.False);
 
-            window.Accept(1000 + 1000);
-            Assert.That(window.IsNew(1000), Is.False, "now too old");
-            Assert.That(window.IsNew(1999), Is.True);
-            Assert.That(window.IsNew(2000), Is.False);
+            var top = new ReplayWindow();
+            top.Accept(ulong.MaxValue - 1);
+            Assert.That(top.IsNew(ulong.MaxValue), Is.True);
+            top.Accept(ulong.MaxValue);
+            Assert.That(top.IsNew(ulong.MaxValue - 1), Is.False);
+            Assert.That(top.IsNew(ulong.MaxValue - 63), Is.True);
+        }
+
+        #endregion
+
+        #region Guards
+
+        [Test]
+        public void FinishingTwice_IsRefused()
+        {
+            var mac = new Poly1305(Sequence(0, 32), 0);
+            mac.Finish();
+            Assert.That(() => mac.Finish(), Throws.InvalidOperationException);
+            Assert.That(() => mac.Update(new byte[1], 0, 1), Throws.InvalidOperationException);
+            var sha = new Sha256();
+            sha.Finish();
+            Assert.That(() => sha.Finish(), Throws.InvalidOperationException);
+            Assert.That(() => sha.Update(new byte[1], 0, 1), Throws.InvalidOperationException);
+        }
+
+        [Test]
+        public void ChaCha20_RefusesToWrapTheBlockCounter()
+        {
+            byte[] data = new byte[128];
+            Assert.That(() => ChaCha20.Xor(Sequence(0, 32), new byte[12], uint.MaxValue, data, 0, data, 0, 128), Throws.ArgumentException);
+            Assert.That(() => ChaCha20.Xor(Sequence(0, 32), new byte[12], uint.MaxValue, data, 0, data, 0, 64), Throws.Nothing, "the last block is fine");
+        }
+
+        [Test]
+        public void Aead_SealFromAnOffset()
+        {
+            byte[] key = Sequence(1, 32), nonce = Sequence(100, 12), plaintext = Sequence(50, 40);
+            byte[] buffer = new byte[60];
+            Buffer.BlockCopy(plaintext, 0, buffer, 13, 40);
+            Assert.That(BrainCloud.Internal.ChaCha20Poly1305.Seal(key, nonce, null, buffer, 13, 40),
+                Is.EqualTo(BrainCloud.Internal.ChaCha20Poly1305.Seal(key, nonce, null, plaintext, 0, 40)));
+            Assert.That(() => BrainCloud.Internal.ChaCha20Poly1305.Seal(key, nonce, null, buffer, 30, 40), Throws.ArgumentException, "past the end");
         }
 
         #endregion

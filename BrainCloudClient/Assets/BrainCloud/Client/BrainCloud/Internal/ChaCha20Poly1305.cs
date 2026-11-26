@@ -31,6 +31,7 @@ namespace BrainCloud.Internal
         public static byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
         {
             checkKeyAndNonce(in_key, in_nonce);
+            checkRange(in_plaintext, in_offset, in_length);
             byte[] output = new byte[in_length + TAG_LENGTH];
             ChaCha20.Xor(in_key, in_nonce, 1, in_plaintext, in_offset, output, 0, in_length);
             byte[] tag = computeTag(in_key, in_nonce, in_aad, output, 0, in_length);
@@ -46,7 +47,7 @@ namespace BrainCloud.Internal
         public static byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
         {
             checkKeyAndNonce(in_key, in_nonce);
-            if (in_length < TAG_LENGTH) return null;
+            if (in_sealed == null || in_offset < 0 || in_length < TAG_LENGTH || in_offset + in_length > in_sealed.Length) return null;
             int cipherLength = in_length - TAG_LENGTH;
             byte[] expected = computeTag(in_key, in_nonce, in_aad, in_sealed, in_offset, cipherLength);
 
@@ -88,6 +89,11 @@ namespace BrainCloud.Internal
             if (in_nonce == null || in_nonce.Length != NONCE_LENGTH) throw new ArgumentException("the nonce must be 12 bytes");
         }
 
+        private static void checkRange(byte[] in_data, int in_offset, int in_length)
+        {
+            if (in_data == null || in_offset < 0 || in_length < 0 || in_offset + in_length > in_data.Length) throw new ArgumentException("offset and length must lie within the data");
+        }
+
         private static void writeU64LE(byte[] b, int o, ulong v)
         {
             for (int i = 0; i < 8; ++i) b[o + i] = (byte)(v >> (8 * i));
@@ -111,6 +117,8 @@ namespace BrainCloud.Internal
         /// </summary>
         public static void Xor(byte[] in_key, byte[] in_nonce, uint in_counter, byte[] in_input, int in_inOffset, byte[] out_output, int in_outOffset, int in_length)
         {
+            // The 32-bit block counter must not wrap: block 0 is where the Poly1305 key comes from
+            if ((ulong)in_counter + ((ulong)in_length + 63) / 64 > (ulong)uint.MaxValue + 1) throw new ArgumentException("too long for the block counter");
             uint[] state = initialState(in_key, in_nonce, in_counter);
             uint[] working = new uint[16];
             byte[] block = new byte[64];
@@ -195,6 +203,7 @@ namespace BrainCloud.Internal
         private uint h0, h1, h2, h3, h4;
         private readonly byte[] m_buffer = new byte[16];
         private int m_buffered = 0;
+        private bool m_finished = false;
 
         /// in_key holds the 32-byte one-time key from in_offset: r, then s.
         public Poly1305(byte[] in_key, int in_offset)
@@ -214,6 +223,7 @@ namespace BrainCloud.Internal
 
         public void Update(byte[] in_data, int in_offset, int in_length)
         {
+            if (m_finished) throw new InvalidOperationException("Poly1305 already finished");
             int i = 0;
             if (m_buffered > 0)
             {
@@ -236,6 +246,8 @@ namespace BrainCloud.Internal
         /// The 16-byte tag. The object cannot be used after this.
         public byte[] Finish()
         {
+            if (m_finished) throw new InvalidOperationException("Poly1305 already finished");
+            m_finished = true;
             if (m_buffered > 0)
             {
                 // A short last block gets a 1 byte after it, and no high bit

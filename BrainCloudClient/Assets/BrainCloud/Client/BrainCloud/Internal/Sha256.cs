@@ -34,6 +34,7 @@ namespace BrainCloud.Internal
         private readonly byte[] m_buffer = new byte[BLOCK_LENGTH];
         private int m_buffered = 0;
         private ulong m_length = 0;
+        private bool m_finished = false;
 
         public static byte[] Hash(byte[] in_data)
         {
@@ -43,6 +44,12 @@ namespace BrainCloud.Internal
         }
 
         public void Update(byte[] in_data, int in_offset, int in_length)
+        {
+            if (m_finished) throw new InvalidOperationException("SHA-256 already finished");
+            update(in_data, in_offset, in_length);
+        }
+
+        private void update(byte[] in_data, int in_offset, int in_length)
         {
             m_length += (ulong)in_length;
             int i = 0;
@@ -67,12 +74,14 @@ namespace BrainCloud.Internal
         /// The 32-byte hash. The object cannot be used after this.
         public byte[] Finish()
         {
+            if (m_finished) throw new InvalidOperationException("SHA-256 already finished");
+            m_finished = true;
             ulong bits = m_length * 8;
             // A 1 bit, zeros up to 56 bytes into a block, then the length in bits
             byte[] padding = new byte[(m_buffered < 56 ? 56 : 120) - m_buffered + 8];
             padding[0] = 0x80;
             for (int i = 0; i < 8; ++i) padding[padding.Length - 1 - i] = (byte)(bits >> (8 * i));
-            Update(padding, 0, padding.Length);
+            update(padding, 0, padding.Length);
 
             byte[] hash = new byte[HASH_LENGTH];
             for (int i = 0; i < 8; ++i)
