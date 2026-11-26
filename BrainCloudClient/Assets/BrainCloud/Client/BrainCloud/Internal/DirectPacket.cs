@@ -25,6 +25,8 @@ namespace BrainCloud.Internal
     ///   19+n    16  authentication tag
     /// </code>
     ///
+    /// Each pair of players in an attempt has its own secret, from brainCloud, which only those two
+    /// players have: so no member of an attempt can make or read a datagram between two others.
     /// Each epoch of each direction between two players has its own key (DeriveKey). The nonce is
     /// 4 zero bytes then the sequence number, and the header is the associated data. A key is never
     /// used with the same nonce twice: the sequence only goes up within an epoch, and a sender that
@@ -46,7 +48,8 @@ namespace BrainCloud.Internal
         /// larger is dropped before any decrypting, so it cannot be used to make a receiver work harder.
         /// </summary>
         public const int MAX_DATAGRAM_LENGTH = 1232;
-        public const int SESSION_TOKEN_LENGTH = 16;
+        /// The length of the secret brainCloud gives each pair of players (DIRECT_CONNECT's peers[].pairKey).
+        public const int PAIR_KEY_LENGTH = 16;
 
         /// The cipher names this library supports, most preferred first, as reported to brainCloud.
         public const string CIPHER_CHACHA20_POLY1305 = "chacha20-poly1305";
@@ -72,20 +75,20 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// The key for packets from in_sender to in_receiver in the sender's epoch in_epoch:
-        /// HKDF-SHA256 with the attempt's 16-byte session token as the input key material,
+        /// HKDF-SHA256 with the pair's 16-byte pair key as the input key material,
         /// "brainCloud direct connect" as the salt, and as the info the cipher name, a 0 byte, the
         /// sender's net id, the receiver's net id and the 8 epoch bytes.
         /// </summary>
-        public static byte[] DeriveKey(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
+        public static byte[] DeriveKey(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
-            return DeriveKeyFromExtracted(ExtractKey(in_sessionToken), in_cipher, in_sender, in_receiver, in_epoch);
+            return DeriveKeyFromExtracted(ExtractKey(in_pairKey), in_cipher, in_sender, in_receiver, in_epoch);
         }
 
         /// The first, epoch-independent step of DeriveKey, which a receiver can do once.
-        public static byte[] ExtractKey(byte[] in_sessionToken)
+        public static byte[] ExtractKey(byte[] in_pairKey)
         {
-            if (in_sessionToken == null || in_sessionToken.Length != SESSION_TOKEN_LENGTH) throw new ArgumentException("the session token must be 16 bytes");
-            return HmacSha256.HkdfExtract(KEY_SALT, in_sessionToken);
+            if (in_pairKey == null || in_pairKey.Length != PAIR_KEY_LENGTH) throw new ArgumentException("a pair key must be 16 bytes");
+            return HmacSha256.HkdfExtract(KEY_SALT, in_pairKey);
         }
 
         /// DeriveKey from the result of ExtractKey.
@@ -307,14 +310,14 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// Made by DirectSession, or by the tests with a chosen epoch. Reusing an epoch with the
-        /// same token reuses nonces, so nothing else may call this.
+        /// same pair key reuses nonces, so nothing else may call this.
         /// </summary>
-        internal DirectSender(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
+        internal DirectSender(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
             m_sender = in_sender;
             m_receiver = in_receiver;
             m_epoch = (byte[])in_epoch.Clone();
-            m_key = DirectPacket.DeriveKey(in_sessionToken, in_cipher, in_sender, in_receiver, m_epoch);
+            m_key = DirectPacket.DeriveKey(in_pairKey, in_cipher, in_sender, in_receiver, m_epoch);
         }
 
         public int Receiver { get { return m_receiver; } }
@@ -354,7 +357,7 @@ namespace BrainCloud.Internal
     /// <list type="bullet">
     /// <item>The first datagram that decrypts fixes the peer's epoch prefix. A peer keeps its
     /// prefix for the whole attempt, and a player cannot rejoin a running attempt (a new attempt
-    /// has a new token), so another prefix is never genuine and is dropped without deriving any
+    /// has new pair keys), so another prefix is never genuine and is dropped without deriving any
     /// key.</item>
     /// <item>A higher count than the current epoch's means the peer started sending again: the
     /// first datagram of it that decrypts moves this receiver to it. A lower or equal count is an
@@ -379,9 +382,9 @@ namespace BrainCloud.Internal
         private readonly object m_lock = new object();
 
         /// in_sender is the peer's net id, in_receiver this player's. Made by DirectSession, or by the tests.
-        internal DirectReceiver(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
+        internal DirectReceiver(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver)
         {
-            m_extracted = DirectPacket.ExtractKey(in_sessionToken);
+            m_extracted = DirectPacket.ExtractKey(in_pairKey);
             // Checks the cipher and ids now rather than on the first datagram
             DirectPacket.DeriveKeyFromExtracted(m_extracted, in_cipher, in_sender, in_receiver, new byte[DirectPacket.EPOCH_LENGTH]);
             m_cipher = in_cipher;
@@ -436,11 +439,14 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// This player's side of one direct connect attempt: what DIRECT_CONNECT gave it (the session
-    /// token, the cipher and its net id), one receiver for each peer for the whole attempt, and the
-    /// current sender to each. Create one when DIRECT_CONNECT arrives and drop it when the attempt
-    /// or the match ends. It keeps the rules the format depends on:
+    /// This player's side of one direct connect attempt: what DIRECT_CONNECT gave it (the cipher,
+    /// its net id, and each peer's net id with the key this player shares with that peer alone),
+    /// one receiver for each peer for the whole attempt, and the current sender to each. Create one
+    /// when DIRECT_CONNECT arrives and drop it when the attempt or the match ends. It keeps the rules
+    /// the format depends on:
     /// <list type="bullet">
+    /// <item>only the peers DIRECT_CONNECT named, each with its own pair key, so no member can make
+    /// or read a datagram between two others;</item>
     /// <item>exactly one receiver per peer, so nothing already received can be replayed to it;</item>
     /// <item>every sender gets a new epoch (this attempt's random prefix and a count that goes up),
     /// so no key ever reuses a nonce;</item>
@@ -451,28 +457,37 @@ namespace BrainCloud.Internal
     /// </summary>
     internal sealed class DirectSession
     {
-        private readonly byte[] m_sessionToken;
         private readonly string m_cipher;
         private readonly int m_netId;
         private readonly byte[] m_prefix;
         private uint m_count = 0;
+        private readonly System.Collections.Generic.Dictionary<int, byte[]> m_pairKeys = new System.Collections.Generic.Dictionary<int, byte[]>();
         private readonly System.Collections.Generic.Dictionary<int, DirectSender> m_senders = new System.Collections.Generic.Dictionary<int, DirectSender>();
         private readonly System.Collections.Generic.Dictionary<int, DirectReceiver> m_receivers = new System.Collections.Generic.Dictionary<int, DirectReceiver>();
         private readonly object m_lock = new object();
 
-        /// in_sessionToken is the 16 bytes of DIRECT_CONNECT's sessionToken; in_netId is this player's.
-        public DirectSession(byte[] in_sessionToken, string in_cipher, int in_netId)
-            : this(in_sessionToken, in_cipher, in_netId, DirectPacket.RandomPrefix())
+        /// <summary>
+        /// in_netId is this player's net id; in_pairKeys holds, for each peer's net id, the 16 bytes
+        /// of that peer's pairKey in DIRECT_CONNECT.
+        /// </summary>
+        public DirectSession(string in_cipher, int in_netId, System.Collections.Generic.IDictionary<int, byte[]> in_pairKeys)
+            : this(in_cipher, in_netId, in_pairKeys, DirectPacket.RandomPrefix())
         {
         }
 
         /// For the tests: a chosen prefix.
-        internal DirectSession(byte[] in_sessionToken, string in_cipher, int in_netId, byte[] in_prefix)
+        internal DirectSession(string in_cipher, int in_netId, System.Collections.Generic.IDictionary<int, byte[]> in_pairKeys, byte[] in_prefix)
         {
-            DirectPacket.ExtractKey(in_sessionToken);   // checks the token now
             if (!DirectPacket.IsSupported(in_cipher)) throw new ArgumentException("unsupported cipher: " + in_cipher);
             DirectPacket.checkNetId(in_netId);
-            m_sessionToken = (byte[])in_sessionToken.Clone();
+            if (in_pairKeys == null || in_pairKeys.Count == 0) throw new ArgumentException("an attempt needs at least one peer");
+            foreach (var peer in in_pairKeys)
+            {
+                DirectPacket.checkNetId(peer.Key);
+                if (peer.Key == in_netId) throw new ArgumentException("this player is not its own peer: net id " + in_netId);
+                DirectPacket.ExtractKey(peer.Value);   // checks the key now
+                m_pairKeys[peer.Key] = (byte[])peer.Value.Clone();
+            }
             m_cipher = in_cipher;
             m_netId = in_netId;
             m_prefix = (byte[])in_prefix.Clone();
@@ -480,7 +495,13 @@ namespace BrainCloud.Internal
 
         public int NetId { get { return m_netId; } }
 
-        /// The receiver for packets from in_peerNetId: always the same one for this attempt.
+        /// Whether in_netId is one of this attempt's peers.
+        public bool IsPeer(int in_netId)
+        {
+            return m_pairKeys.ContainsKey(in_netId);
+        }
+
+        /// The receiver for packets from in_peerNetId, always the same one for this attempt. Throws for a net id that is not a peer.
         public DirectReceiver ReceiverFor(int in_peerNetId)
         {
             lock (m_lock)
@@ -488,21 +509,25 @@ namespace BrainCloud.Internal
                 DirectReceiver receiver;
                 if (!m_receivers.TryGetValue(in_peerNetId, out receiver))
                 {
-                    receiver = new DirectReceiver(m_sessionToken, m_cipher, in_peerNetId, m_netId);
+                    receiver = new DirectReceiver(pairKey(in_peerNetId), m_cipher, in_peerNetId, m_netId);
                     m_receivers[in_peerNetId] = receiver;
                 }
                 return receiver;
             }
         }
 
-        /// The current sender to in_peerNetId, made on first use.
+        /// The current sender to in_peerNetId, made on first use. Throws for a net id that is not a peer.
         public DirectSender SenderFor(int in_peerNetId)
         {
             lock (m_lock)
             {
                 DirectSender sender;
-                if (m_senders.TryGetValue(in_peerNetId, out sender)) return sender;
-                return newSender(in_peerNetId);
+                if (!m_senders.TryGetValue(in_peerNetId, out sender))
+                {
+                    sender = newSender(in_peerNetId);
+                    m_senders[in_peerNetId] = sender;
+                }
+                return sender;
             }
         }
 
@@ -514,19 +539,28 @@ namespace BrainCloud.Internal
         {
             lock (m_lock)
             {
+                DirectSender replacement = newSender(in_peerNetId);
                 DirectSender old;
                 if (m_senders.TryGetValue(in_peerNetId, out old)) old.Retire();
-                return newSender(in_peerNetId);
+                m_senders[in_peerNetId] = replacement;
+                return replacement;
             }
         }
 
+        // A sender in the next epoch; the caller records it. Call with m_lock held.
         private DirectSender newSender(int in_peerNetId)
         {
+            byte[] key = pairKey(in_peerNetId);
             if (m_count == uint.MaxValue) throw new InvalidOperationException("epochs used up for this attempt");
             ++m_count;
-            var sender = new DirectSender(m_sessionToken, m_cipher, m_netId, in_peerNetId, DirectPacket.MakeEpoch(m_prefix, m_count));
-            m_senders[in_peerNetId] = sender;
-            return sender;
+            return new DirectSender(key, m_cipher, m_netId, in_peerNetId, DirectPacket.MakeEpoch(m_prefix, m_count));
+        }
+
+        private byte[] pairKey(int in_peerNetId)
+        {
+            byte[] key;
+            if (!m_pairKeys.TryGetValue(in_peerNetId, out key)) throw new ArgumentException("net id " + in_peerNetId + " is not a peer in this attempt");
+            return key;
         }
     }
 
