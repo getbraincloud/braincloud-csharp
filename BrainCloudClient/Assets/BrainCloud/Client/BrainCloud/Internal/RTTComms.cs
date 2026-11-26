@@ -21,6 +21,7 @@ namespace BrainCloud.Internal
         {
             m_clientRef = in_client;
             m_natProbe = new NatProbe(in_client);
+            m_directConnector = new DirectConnector(in_client, m_natProbe);
         }
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace BrainCloud.Internal
             // The disconnect happens on the next Update; the server drops the report with the connection,
             // so turning direct connect off in the meantime must not try to withdraw it
             m_natProbe.OnRttDisconnected();
+            m_directConnector.OnRttDisconnected();
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
         }
 
@@ -135,6 +137,9 @@ namespace BrainCloud.Internal
         /// <summary>The direct connect network test, run once per RTT connection.</summary>
         public NatProbe DirectConnectProbe { get { return m_natProbe; } }
 
+        /// <summary>This player's part in a lobby's direct connect attempt.</summary>
+        public DirectConnector DirectConnector { get { return m_directConnector; } }
+
         public string RTTConnectionID { get; private set; }
         public string RTTEventServer { get; private set; }
 
@@ -156,10 +161,28 @@ namespace BrainCloud.Internal
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
                         m_natProbe.OnRttDisconnected();
+                        m_directConnector.OnRttDisconnected();
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                         disconnect();
                         break;
+                    }
+
+                    // The direct connect attempt's lobby events are the library's first; a peer's
+                    // addresses never reach the game
+                    if (toProcessResponse.Service == ServiceName.Lobby.Value.ToLower() && toProcessResponse.Operation != null &&
+                        toProcessResponse.Operation.StartsWith("direct_connect"))
+                    {
+                        if (m_directConnector.OnLobbyEvent(toProcessResponse.Operation.ToUpper(), DirectConnector.DataOf(toProcessResponse.JsonMessage)))
+                        {
+                            continue;
+                        }
+                        // The game is told the attempt started, but not the pair keys, unless it is a
+                        // tool playing the attempt itself
+                        if (toProcessResponse.Operation == "direct_connect" && !m_directConnector.StandAside)
+                        {
+                            toProcessResponse.JsonMessage = DirectConnector.WithoutPairKeys(toProcessResponse.JsonMessage);
+                        }
                     }
 
                     // does this go to one of our registered service listeners? 
@@ -238,6 +261,7 @@ namespace BrainCloud.Internal
             }
 
             m_natProbe.Update();
+            m_directConnector.Update();
         }
 
         #region private
@@ -339,6 +363,7 @@ namespace BrainCloud.Internal
             // Before the game's failure callback, which may turn direct connect off: the server has
             // dropped this connection's report, so there is nothing left to withdraw
             m_natProbe.OnRttDisconnected();
+            m_directConnector.OnRttDisconnected();
 
             if (m_webSocket != null) m_webSocket.Close();
 
@@ -532,7 +557,8 @@ namespace BrainCloud.Internal
         {
             if (m_clientRef.LoggingEnabled)
             {
-                m_clientRef.Log("RTT RECV: " + in_message);
+                // A direct connect pair key is a secret between two players; it has no place in a log
+                m_clientRef.Log("RTT RECV: " + (in_message.Contains("\"pairKey\"") ? PAIR_KEY_IN_LOG.Replace(in_message, "\"pairKey\":\"(redacted)\"") : in_message));
             }
 
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
@@ -565,7 +591,9 @@ namespace BrainCloud.Internal
                 m_disconnectJson["severity"] = "ERROR";
             }
 
-            if (data != null)
+            // Only the connection's own CONNECT names this player's connection: other messages carry a
+            // cxId too, such as a peer's in DIRECT_CONNECT_CANDIDATES
+            if (data != null && operation == "CONNECT")
             {
                 if (data.ContainsKey("cxId")) RTTConnectionID = (string)data["cxId"];
                 if (data.ContainsKey("evs")) RTTEventServer = (string)data["evs"];
@@ -702,6 +730,8 @@ namespace BrainCloud.Internal
 
         private BrainCloudClient m_clientRef;
         private readonly NatProbe m_natProbe;
+        private readonly DirectConnector m_directConnector;
+        private static readonly System.Text.RegularExpressions.Regex PAIR_KEY_IN_LOG = new System.Text.RegularExpressions.Regex("\"pairKey\"\\s*:\\s*\"[^\"]*\"");
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;

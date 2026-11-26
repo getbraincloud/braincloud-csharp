@@ -45,6 +45,9 @@ namespace BrainCloud.Internal
             natInfo["v"] = VERSION;
             natInfo["mapping"] = Mapping;
             natInfo["udp"] = Udp;
+            // The ciphers this build can use with its peers, most preferred first; brainCloud picks one every member lists
+            var crypto = new List<string>(DirectPacket.SupportedCiphers);
+            natInfo["crypto"] = crypto.ToArray();
             return natInfo;
         }
     }
@@ -161,6 +164,11 @@ namespace BrainCloud.Internal
 
         /// True when the last connection request's response had a stun section, usable or not.
         internal bool StunSectionReceived { get; private set; }
+
+        /// The STUN service from the last connection request: for a direct connect attempt to ask again from its own socket.
+        internal string StunHost { get { return m_stunHost; } }
+        internal int StunPort { get { return m_stunPort; } }
+        internal byte[] StunToken { get { return m_stunToken; } }
 
         /// <summary>
         /// Takes the stun section of an rttRegistration.REQUEST_CLIENT_CONNECTION response, or null
@@ -314,7 +322,7 @@ namespace BrainCloud.Internal
                 try
                 {
                     bool ipv6Only;
-                    List<IPEndPoint> servers = resolve(host, port, out ipv6Only);
+                    List<IPEndPoint> servers = Resolve(host, port, out ipv6Only);
                     report = ipv6Only
                         ? new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "the STUN host resolves to IPv6 addresses only, so this network looks IPv6-only; direct connect needs IPv4, so this player's lobbies will use the relay")
                         : Measure(servers, token);
@@ -338,7 +346,7 @@ namespace BrainCloud.Internal
         /// for now. out_ipv6Only is true when the name gave IPv6 addresses and no IPv4 one, as on
         /// an IPv6-only network.
         /// </summary>
-        private static List<IPEndPoint> resolve(string in_host, int in_port, out bool out_ipv6Only)
+        internal static List<IPEndPoint> Resolve(string in_host, int in_port, out bool out_ipv6Only)
         {
             var servers = new List<IPEndPoint>();
             var addresses = new List<IPAddress>();

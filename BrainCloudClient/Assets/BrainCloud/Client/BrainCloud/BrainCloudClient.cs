@@ -1161,6 +1161,8 @@ namespace BrainCloud
 
         internal NatProbe DirectConnectProbe { get { return _rttComms.DirectConnectProbe; } }
 
+        internal DirectConnector DirectConnector { get { return _rttComms.DirectConnector; } }
+
         /// <summary>Allow developers to register their own log handling routine</summary>
         /// <param name="logDelegate">The log delegate</param>
         public void RegisterLogDelegate(LogCallback logDelegate)
