@@ -175,18 +175,11 @@ namespace BrainCloud.Internal
         /// <param name="in_deliver">Called for each packet ready for the game, with the sender's net id.</param>
         public ReceiveOutcome Receive(byte[] in_data, Action<short, byte[]> in_deliver)
         {
-            ushort rh = BitConverter.ToUInt16(new byte[2]{
-                BitConverter.IsLittleEndian ? in_data[4] : in_data[3],
-                BitConverter.IsLittleEndian ? in_data[3] : in_data[4]}, 0);
-            ushort playerMask0 = BitConverter.ToUInt16(new byte[2]{
-                BitConverter.IsLittleEndian ? in_data[6] : in_data[5],
-                BitConverter.IsLittleEndian ? in_data[5] : in_data[6]}, 0);
-            ushort playerMask1 = BitConverter.ToUInt16(new byte[2]{
-                BitConverter.IsLittleEndian ? in_data[8] : in_data[7],
-                BitConverter.IsLittleEndian ? in_data[7] : in_data[8]}, 0);
-            ushort playerMask2 = BitConverter.ToUInt16(new byte[2]{
-                BitConverter.IsLittleEndian ? in_data[10] : in_data[9],
-                BitConverter.IsLittleEndian ? in_data[9] : in_data[10]}, 0);
+            // Big-endian on the wire
+            ushort rh = (ushort)((in_data[3] << 8) | in_data[4]);
+            ushort playerMask0 = (ushort)((in_data[5] << 8) | in_data[6]);
+            ushort playerMask1 = (ushort)((in_data[7] << 8) | in_data[8]);
+            ushort playerMask2 = (ushort)((in_data[9] << 8) | in_data[10]);
 
             ulong ackId =
                 (((ulong)rh << 48) & 0xFFFF000000000000) |

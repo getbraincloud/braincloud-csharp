@@ -582,6 +582,9 @@ namespace BrainCloud.Internal
             bool sslEnabled = m_connectOptions.ssl;
             string host = m_connectOptions.host;
             int port = m_connectOptions.port;
+            // Connect() again before the relay accepted us replaces the earlier attempt
+            m_transport?.Close();
+            m_transport = null;
             switch (m_connectionType)
             {
                 case RelayConnectionType.WEBSOCKET:
@@ -655,9 +658,8 @@ namespace BrainCloud.Internal
 
         private void onRSMG(byte[] in_data, int in_lengthOfData)
         {
-            int rsmgPacketId = BitConverter.ToUInt16(new byte[2]{
-                                                        BitConverter.IsLittleEndian ? in_data[4] : in_data[3],
-                                                        BitConverter.IsLittleEndian ? in_data[3] : in_data[4]}, 0);
+            // Big-endian on the wire
+            int rsmgPacketId = (in_data[3] << 8) | in_data[4];
 
             if (m_connectionType == RelayConnectionType.UDP)
             {
@@ -1005,11 +1007,7 @@ namespace BrainCloud.Internal
         private ushort toShortBE(byte[] byteArr)
         {
             var offset = SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY + CONTROL_BYTE_HEADER_LENGTH;
-            bool isLittleEndian = BitConverter.IsLittleEndian;
-            ushort toReturn = BitConverter.ToUInt16(new byte[2] {
-                                                        isLittleEndian ? byteArr[offset + 1] : byteArr[offset + 0],
-                                                        isLittleEndian ? byteArr[offset + 0] : byteArr[offset + 1] }, 0);
-            return toReturn;
+            return (ushort)((byteArr[offset] << 8) | byteArr[offset + 1]);
         }
 
         private RelayConnectOptions m_connectOptions;

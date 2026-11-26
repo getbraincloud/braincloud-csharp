@@ -383,6 +383,34 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void Tcp_ALengthWithNoPacketIsAnError()
+        {
+            var server = new TcpListener(IPAddress.Loopback, 0);
+            server.Start();
+            var listener = new RecordingListener();
+            var transport = new RelayTcpTransport(listener);
+            try
+            {
+                transport.Connect("127.0.0.1", ((IPEndPoint)server.LocalEndpoint).Port, false);
+                using (TcpClient peer = server.AcceptTcpClient())
+                {
+                    WaitFor(() => listener.Connected, "the transport to connect");
+                    // A length of 2 covers only the length prefix itself: no control byte follows
+                    peer.GetStream().Write(new byte[] { 0, 2 }, 0, 2);
+
+                    WaitFor(() => listener.Errors.Count > 0, "an error");
+                    Assert.That(listener.Errors[0], Does.Contain("Bad packet length 2"));
+                    Assert.That(listener.Data, Is.Empty);
+                }
+            }
+            finally
+            {
+                transport.Close();
+                server.Stop();
+            }
+        }
+
+        [Test]
         public void Udp_ReceivesFromARelayGivenByName()
         {
             using (var server = new UdpClient(new IPEndPoint(IPAddress.Loopback, 0)))

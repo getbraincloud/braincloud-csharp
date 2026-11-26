@@ -7,133 +7,8 @@ namespace BrainCloud.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Net.Sockets;
     using System.Threading.Tasks;
-
-    /// <summary>
-    /// What a relay transport reports back to RelayComms. Calls can come from any thread;
-    /// RelayComms queues them and handles them on the main thread in Update().
-    /// </summary>
-    internal interface IRelayTransportListener
-    {
-        BrainCloudClient Client { get; }
-
-        /// True once the relay has accepted this client. Socket errors are not reported before then.
-        bool IsRelayConnected { get; }
-
-        bool EndMatchRequested { get; }
-
-        void OnTransportConnected();
-
-        /// The data includes the 2-byte length prefix the relay protocol puts on every packet.
-        void OnTransportData(byte[] data, int length);
-
-        void OnTransportError(string message);
-    }
-
-    /// <summary>
-    /// Where the bytes of a relay connection go: a WebSocket, TCP or UDP connection to a relay server.
-    /// </summary>
-    internal interface IRelayTransport
-    {
-        void Connect(string host, int port, bool sslEnabled);
-
-        /// False until the socket exists.
-        bool CanSend { get; }
-
-        /// Sends one packet, already length-prefixed. May throw.
-        void Send(byte[] data);
-
-        void Close();
-    }
-
-    internal sealed class RelayWebSocketTransport : IRelayTransport
-    {
-        private readonly IRelayTransportListener m_listener;
-        private BrainCloudWebSocket m_webSocket = null;
-
-        public RelayWebSocketTransport(IRelayTransportListener in_listener)
-        {
-            m_listener = in_listener;
-        }
-
-        public bool CanSend
-        {
-            get { return m_webSocket != null; }
-        }
-
-        public void Connect(string in_host, int in_port, bool in_sslEnabled)
-        {
-            // A full URL (connectData.secureUrl) is used as given; port is ignored.
-            string url = in_host.Contains("://") ? in_host : (in_sslEnabled ? "wss://" : "ws://") + in_host + ":" + in_port;
-            m_webSocket = new BrainCloudWebSocket(url);
-            m_webSocket.OnClose += WebSocket_OnClose;
-            m_webSocket.OnOpen += Websocket_OnOpen;
-            m_webSocket.OnMessage += WebSocket_OnMessage;
-            m_webSocket.OnError += WebSocket_OnError;
-        }
-
-        public void Send(byte[] in_data)
-        {
-            m_webSocket.SendAsync(in_data);
-        }
-
-        public void Close()
-        {
-            if (m_webSocket != null)
-            {
-                m_webSocket.OnClose -= WebSocket_OnClose;
-                m_webSocket.OnOpen -= Websocket_OnOpen;
-                m_webSocket.OnMessage -= WebSocket_OnMessage;
-                m_webSocket.OnError -= WebSocket_OnError;
-                m_webSocket.Close();
-                m_webSocket = null;
-            }
-        }
-
-        private void WebSocket_OnClose(BrainCloudWebSocket sender, int code, string reason)
-        {
-            BrainCloudClient client = m_listener.Client;
-            if (client.LoggingEnabled)
-            {
-                if (m_listener.EndMatchRequested)
-                {
-                    client.Log("Relay: Connection closed by end match");
-                }
-                else
-                {
-                    client.Log("Relay: Connection closed: " + reason);
-                }
-
-            }
-            m_listener.OnTransportError(reason);
-        }
-
-        private void Websocket_OnOpen(BrainCloudWebSocket accepted)
-        {
-            if (m_listener.Client.LoggingEnabled)
-            {
-                m_listener.Client.Log("Relay: Connection established.");
-            }
-            // initial connect call, sets connection requests if not connected
-            m_listener.OnTransportConnected();
-        }
-
-        private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
-        {
-            m_listener.OnTransportData(data, data.Length);
-        }
-
-        private void WebSocket_OnError(BrainCloudWebSocket sender, string message)
-        {
-            if (m_listener.Client.LoggingEnabled)
-            {
-                m_listener.Client.Log("Relay Error: " + message);
-            }
-            m_listener.OnTransportError(message);
-        }
-    }
 
     internal sealed class RelayTcpTransport : IRelayTransport
     {
@@ -150,9 +25,13 @@ namespace BrainCloud.Internal
         private byte[] m_tcpHeaderReadBuffer = new byte[SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY];
         private int m_tcpHeaderBytesRead = 0;
 
-        // ASync TCP Writes
+        // ASync TCP Writes. fLock also guards m_tcpStream against Close() on another thread.
         private object fLock = new object();
         private Queue<byte[]> fToSend = new Queue<byte[]>();
+
+        // Set by Close(). A connect or read still in flight on this socket then reports nothing,
+        // because RelayComms may already have a new transport connecting.
+        private volatile bool m_closed = false;
 
         public RelayTcpTransport(IRelayTransportListener in_listener)
         {
@@ -176,16 +55,25 @@ namespace BrainCloud.Internal
 
         public void Close()
         {
-            m_tcpStream?.Dispose();
-            m_tcpStream = null;
+            m_closed = true;
+            lock (fLock)
+            {
+                m_tcpStream?.Dispose();
+                m_tcpStream = null;
+                fToSend.Clear();
+            }
 
             if (m_tcpClient != null)
             {
                 m_tcpClient.Client.Close(0);
                 m_tcpClient.Close();
-                fToSend.Clear();
             }
             m_tcpClient = null;
+        }
+
+        private void reportError(string in_message)
+        {
+            if (!m_closed) m_listener.OnTransportError(in_message);
         }
 
         /// <summary>
@@ -209,7 +97,7 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
-                m_listener.OnTransportError(e.ToString());
+                reportError(e.ToString());
             }
         }
 
@@ -245,10 +133,10 @@ namespace BrainCloud.Internal
             }
             try
             {
-                if (m_tcpStream == null) return;
-                m_tcpStream.EndWrite(result);
                 lock (fLock)
                 {
+                    if (m_tcpStream == null) return;
+                    m_tcpStream.EndWrite(result);
                     // Pop the message just written, then write the next
                     if (fToSend.Count > 0)
                     {
@@ -261,7 +149,7 @@ namespace BrainCloud.Internal
             {
                 // Suppress errors from a socket we intentionally closed (disconnect/end-match).
                 if (!m_listener.IsRelayConnected) return;
-                m_listener.OnTransportError(e.ToString());
+                reportError(e.ToString());
             }
         }
 
@@ -279,7 +167,7 @@ namespace BrainCloud.Internal
                 {
                     // Suppress "server closed" if we already disconnected (end-match / voluntary close).
                     if (!m_listener.IsRelayConnected) return;
-                    m_listener.OnTransportError("Server Closed Connection");
+                    reportError("Server Closed Connection");
                     return;
                 }
 
@@ -301,6 +189,14 @@ namespace BrainCloud.Internal
                     // from the header that was read, how much should we read after this until the next message ?
                     m_tcpBytesToRead = BitConverter.ToUInt16(m_tcpHeaderReadBuffer, 0);
                     m_tcpBytesToRead -= SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY;
+                    if (m_tcpBytesToRead <= 0)
+                    {
+                        // Every relay packet has at least its control byte after the length. A
+                        // shorter length means the stream is out of step: a read of 0 bytes would
+                        // look like the server closing, and a negative one throws.
+                        reportError("Bad packet length " + (m_tcpBytesToRead + SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY));
+                        return;
+                    }
 
                     m_tcpStream.BeginRead(m_tcpReadBuffer, 2, m_tcpBytesToRead, onTCPFinishRead, null);
                 }
@@ -309,7 +205,7 @@ namespace BrainCloud.Internal
             {
                 // Suppress errors from a socket we intentionally closed (disconnect/end-match).
                 if (!m_listener.IsRelayConnected) return;
-                m_listener.OnTransportError(e.ToString());
+                reportError(e.ToString());
             }
         }
 
@@ -324,7 +220,7 @@ namespace BrainCloud.Internal
                 {
                     // Suppress "server closed" if we already disconnected (end-match / voluntary close).
                     if (!m_listener.IsRelayConnected) return;
-                    m_listener.OnTransportError("Server Closed Connection");
+                    reportError("Server Closed Connection");
                     return;
                 }
 
@@ -339,11 +235,12 @@ namespace BrainCloud.Internal
                 // Should be exactly the right number read now.
                 if (m_tcpBytesRead != m_tcpBytesToRead)
                 {
-                    m_listener.OnTransportError("Incorrect Bytes Read " + m_tcpBytesRead + " " + m_tcpBytesToRead);
+                    reportError("Incorrect Bytes Read " + m_tcpBytesRead + " " + m_tcpBytesToRead);
                     return;
                 }
 
                 // Handle the message
+                if (m_closed) return;
                 m_listener.OnTransportData(m_tcpReadBuffer, m_tcpBytesToRead + SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY);
 
                 // read the next header
@@ -354,29 +251,31 @@ namespace BrainCloud.Internal
             }
             catch (Exception e)
             {
-                m_listener.OnTransportError(e.ToString());
+                reportError(e.ToString());
             }
         }
 
         private async void connectTCPAsync(string host, int port)
         {
             BrainCloudClient client = m_listener.Client;
+            // Set here, not on the worker thread, so a Close() from now on closes this socket
+            TcpClient tcpClient = new TcpClient();
+            m_tcpClient = tcpClient;
             bool success = await Task.Run(async () =>
             {
                 try
                 {
-                    m_tcpClient = new TcpClient();
-                    m_tcpClient.NoDelay = true;
-                    m_tcpClient.Client.NoDelay = true;
+                    tcpClient.NoDelay = true;
+                    tcpClient.Client.NoDelay = true;
                     if (client.LoggingEnabled)
                     {
-                        client.Log("Starting TCP connect ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
+                        client.Log("Starting TCP connect ASYNC " + tcpClient.Connected + " s:" + tcpClient.Client.Connected);
                     }
-                    await m_tcpClient.ConnectAsync(host, port);
+                    await tcpClient.ConnectAsync(host, port);
                 }
                 catch (Exception e)
                 {
-                    m_listener.OnTransportError(e.ToString());
+                    reportError(e.ToString());
                     return false;
                 }
                 return true;
@@ -384,97 +283,29 @@ namespace BrainCloud.Internal
 
             if (success)
             {
-                m_tcpStream = m_tcpClient.GetStream();
-                m_listener.OnTransportConnected();
-                // read the next header
-                m_tcpBytesToRead = 0;
-                m_tcpHeaderBytesRead = 0;
-                m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
-
-                if (client.LoggingEnabled)
-                {
-                    client.Log("Connected! ASYNC " + m_tcpClient.Connected + " s:" + m_tcpClient.Client.Connected);
-                }
-            }
-        }
-    }
-
-    internal sealed class RelayUdpTransport : IRelayTransport
-    {
-        private readonly IRelayTransportListener m_listener;
-        private UdpClient m_udpClient = null;
-
-        public RelayUdpTransport(IRelayTransportListener in_listener)
-        {
-            m_listener = in_listener;
-        }
-
-        public bool CanSend
-        {
-            get { return m_udpClient != null; }
-        }
-
-        public void Connect(string host, int port, bool in_sslEnabled)
-        {
-            Task.Run(() =>
-            {
                 try
                 {
-                    m_udpClient = new UdpClient();
-                    m_udpClient.Client.Connect(host, port);
-                    return true;
+                    lock (fLock)
+                    {
+                        if (m_closed) return;
+                        m_tcpStream = tcpClient.GetStream();
+                    }
+                    m_listener.OnTransportConnected();
+                    // read the next header
+                    m_tcpBytesToRead = 0;
+                    m_tcpHeaderBytesRead = 0;
+                    m_tcpStream.BeginRead(m_tcpHeaderReadBuffer, 0, SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY, new AsyncCallback(onTCPReadHeader), null);
+
+                    if (client.LoggingEnabled)
+                    {
+                        client.Log("Connected! ASYNC " + tcpClient.Connected + " s:" + tcpClient.Client.Connected);
+                    }
                 }
                 catch (Exception e)
                 {
-                    m_listener.OnTransportError(e.ToString());
-                    return false;
+                    // Closed between connecting and here
+                    reportError(e.ToString());
                 }
-            }).ContinueWith(task =>
-            {
-                if (task.Result)
-                {
-                    m_udpClient.BeginReceive(new AsyncCallback(onUDPRecv), m_udpClient);
-                    m_listener.OnTransportConnected();
-                }
-            });
-        }
-
-        public void Send(byte[] in_data)
-        {
-            m_udpClient.SendAsync(in_data, in_data.Length);
-        }
-
-        public void Close()
-        {
-            m_udpClient?.Close();
-            m_udpClient = null;
-        }
-
-        private void onUDPRecv(IAsyncResult result)
-        {
-            // this is what had been passed into BeginReceive as the second parameter:
-            try
-            {
-                if (result != null)
-                {
-                    UdpClient udpClient = result.AsyncState as UdpClient;
-                    IPEndPoint source = new IPEndPoint(IPAddress.Any, 0);
-
-                    if (udpClient != null)
-                    {
-                        // get the actual message and fill out the source:
-                        byte[] data = udpClient.EndReceive(result, ref source);
-                        m_listener.OnTransportData(data, data.Length);
-                        // schedule the next receive operation once reading is done:
-                        udpClient.BeginReceive(new AsyncCallback(onUDPRecv), udpClient);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                // Suppress errors from a socket we intentionally closed (disconnect/end-match).
-                if (!m_listener.IsRelayConnected) return;
-                m_listener.OnTransportError(e.ToString());
             }
         }
     }
