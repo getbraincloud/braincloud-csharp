@@ -210,6 +210,9 @@ namespace BrainCloudTests
         // A PUNCH (type 16) with punch id 1, from net id 0 to net id 1, in EPOCH, sequence 5
         private const string PUNCH_DATAGRAM = "b100011011121314151617000000000000000519918d80a24f673f459f5f353173c9685a6e6e2e40";
         private static readonly byte[] PUNCH = { 16, 0, 0, 0, 1 };
+        // hmac-sha256: the key from 0 to 1, and the same PUNCH datagram, authenticated only
+        private const string KEY_HMAC_0_TO_1 = "0c3cf0a6686f46f4848d36128969a1bc1ca024809751e8ba972b2d4f42552732";
+        private const string PUNCH_DATAGRAM_HMAC = "b100011011121314151617000000000000000510000000018b81b3f2d111c7a9e48463375ac28c13";
 
         [Test]
         public void DeriveKey_OneKeyPerDirectionAndEpoch_FixedValues()
@@ -235,7 +238,7 @@ namespace BrainCloudTests
         [Test]
         public void Seal_FixedDatagram()
         {
-            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
+            byte[] datagram = DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
             Assert.That(Hex(datagram), Is.EqualTo(PUNCH_DATAGRAM));
             Assert.That(datagram.Length, Is.EqualTo(PUNCH.Length + DirectPacket.OVERHEAD));
             Assert.That(DirectPacket.OVERHEAD, Is.EqualTo(35));
@@ -246,7 +249,7 @@ namespace BrainCloudTests
         {
             byte[] buffer = new byte[20];
             Buffer.BlockCopy(PUNCH, 0, buffer, 9, PUNCH.Length);
-            Assert.That(Hex(DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, buffer, 9, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
+            Assert.That(Hex(DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, buffer, 9, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
         }
 
         [Test]
@@ -264,7 +267,7 @@ namespace BrainCloudTests
             Assert.That(receiver, Is.EqualTo(1));
             Assert.That(epoch, Is.EqualTo(EPOCH));
             Assert.That(sequence, Is.EqualTo(5UL));
-            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
         }
 
         [Test]
@@ -272,15 +275,15 @@ namespace BrainCloudTests
         {
             byte[] datagram = H(PUNCH_DATAGRAM);
             // The ids the key belongs to are checked against the header before any decrypting
-            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 2, datagram, datagram.Length), Is.Null, "addressed to someone else");
-            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 3, 1, datagram, datagram.Length), Is.Null, "from someone else");
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 2, datagram, datagram.Length), Is.Null, "addressed to someone else");
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 3, 1, datagram, datagram.Length), Is.Null, "from someone else");
             // A packet cannot be bounced back to its sender: the other direction has another key
-            Assert.That(DirectPacket.Open(H(KEY_1_TO_0), 0, 1, datagram, datagram.Length), Is.Null);
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_1_TO_0), 0, 1, datagram, datagram.Length), Is.Null);
             for (int i = 1; i < datagram.Length; ++i)
             {
                 byte[] changed = (byte[])datagram.Clone();
                 changed[i] ^= 0x01;
-                Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
+                Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
             }
         }
 
@@ -297,13 +300,13 @@ namespace BrainCloudTests
             Assert.That(DirectPacket.TryReadHeader(datagram, DirectPacket.OVERHEAD - 1, out sender, out receiver, out epoch, out sequence), Is.False, "too short");
             Assert.That(DirectPacket.TryReadHeader(datagram, datagram.Length + 1, out sender, out receiver, out epoch, out sequence), Is.False, "longer than the buffer");
             Assert.That(DirectPacket.TryReadHeader(null, 0, out sender, out receiver, out epoch, out sequence), Is.False);
-            Assert.That(DirectPacket.Open(H(KEY_0_TO_1), 0, 1, datagram, datagram.Length + 1), Is.Null, "longer than the buffer");
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length + 1), Is.Null, "longer than the buffer");
         }
 
         [Test]
         public void Seal_SequenceIsBigEndianInTheHeader()
         {
-            byte[] datagram = DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 0x0102030405060708UL, new byte[0], 0, 0);
+            byte[] datagram = DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 0x0102030405060708UL, new byte[0], 0, 0);
             Assert.That(Hex(datagram.Take(DirectPacket.HEADER_LENGTH).ToArray()), Is.EqualTo("b10001" + "1011121314151617" + "0102030405060708"));
         }
 
@@ -335,10 +338,18 @@ namespace BrainCloudTests
             return new DirectSession(DirectPacket.CIPHER_CHACHA20_POLY1305, in_sender, keys).SenderFor(in_receiver);
         }
 
-        /// A session for net id in_me, sharing PAIR_KEY with each of in_peers.
+        /// The key net ids in_a and in_b share in these tests: PAIR_KEY for 0 and 1, and a different one for every other pair.
+        private static byte[] PairKeyFor(int in_a, int in_b)
+        {
+            byte[] key = (byte[])PAIR_KEY.Clone();
+            key[15] ^= (byte)(16 * Math.Min(in_a, in_b) + Math.Max(in_a, in_b) - 1);
+            return key;
+        }
+
+        /// A session for net id in_me with each of in_peers, each pair with its own key.
         private static DirectSession Session(int in_me, params int[] in_peers)
         {
-            return new DirectSession(DirectPacket.CIPHER_CHACHA20_POLY1305, in_me, in_peers.ToDictionary(peer => peer, peer => PAIR_KEY));
+            return new DirectSession(DirectPacket.CIPHER_CHACHA20_POLY1305, in_me, in_peers.ToDictionary(peer => peer, peer => PairKeyFor(in_me, peer)));
         }
 
         private static byte[] EpochOf(byte[] in_datagram)
@@ -395,11 +406,11 @@ namespace BrainCloudTests
             Assert.That(session.ReceiverFor(0).Open(first, first.Length), Is.Null);
         }
 
-        [Test]
-        public void Session_NoMemberCanPassItselfOffAsAnother()
+        [TestCase(DirectPacket.CIPHER_CHACHA20_POLY1305)]
+        [TestCase(DirectPacket.CIPHER_HMAC_SHA256)]
+        public void Session_NoMemberCanPassItselfOffAsAnother(string cipher)
         {
             // Three players, each pair with its own key, as DIRECT_CONNECT gives them
-            string cipher = DirectPacket.CIPHER_CHACHA20_POLY1305;
             byte[] ab = Sequence(0x40, 16), ac = Sequence(0x50, 16), bc = Sequence(0x60, 16);
             var a = new DirectSession(cipher, 0, new Dictionary<int, byte[]> { { 1, ab }, { 2, ac } });
             var b = new DirectSession(cipher, 1, new Dictionary<int, byte[]> { { 0, ab }, { 2, bc } });
@@ -410,16 +421,23 @@ namespace BrainCloudTests
             byte[] cToB = c.SenderFor(1).Seal(PUNCH, 0, PUNCH.Length);
             Assert.That(b.ReceiverFor(2).Open(cToB, cToB.Length), Is.EqualTo(PUNCH));
 
-            // C has a key with each of them, but not theirs: nothing it makes as "A to B" is taken,
-            // with either of its keys, and it cannot read what A sends B
+            // C has a key with each of them, but not theirs. It forges "A to B" as well as it can: A's
+            // own epoch prefix, read off the wire, and a higher count, which B would take from A.
+            // Neither of its keys makes one B accepts, and neither opens what A sends B.
+            byte[] aPrefix = EpochOf(aToB).Take(4).ToArray();
+            byte[] forgedEpoch = DirectPacket.MakeEpoch(aPrefix, DirectPacket.EpochCount(EpochOf(aToB)) + 1000);
             foreach (byte[] key in new[] { ac, bc })
             {
-                byte[] forged = new DirectSender(key, cipher, 0, 1, DirectPacket.MakeEpoch(PREFIX, 9)).Seal(PUNCH, 0, PUNCH.Length);
+                byte[] forged = new DirectSender(key, cipher, 0, 1, forgedEpoch).Seal(PUNCH, 0, PUNCH.Length);
                 Assert.That(b.ReceiverFor(0).Open(forged, forged.Length), Is.Null);
                 Assert.That(new DirectReceiver(key, cipher, 0, 1).Open(aToB, aToB.Length), Is.Null);
             }
             byte[] next = a.SenderFor(1).Seal(PUNCH, 0, PUNCH.Length);
             Assert.That(b.ReceiverFor(0).Open(next, next.Length), Is.EqualTo(PUNCH), "B still takes A's packets");
+
+            // The check above is a real one: the same forgery made with A and B's own key is taken
+            byte[] withTheirKey = new DirectSender(ab, cipher, 0, 1, forgedEpoch).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(b.ReceiverFor(0).Open(withTheirKey, withTheirKey.Length), Is.EqualTo(PUNCH));
         }
 
         [Test]
@@ -443,6 +461,8 @@ namespace BrainCloudTests
             Assert.That(() => new DirectSession(cipher, 0, new Dictionary<int, byte[]>()), Throws.ArgumentException, "no peers");
             Assert.That(() => new DirectSession(cipher, 0, null), Throws.ArgumentException);
             Assert.That(() => new DirectSession(cipher, 0, new Dictionary<int, byte[]> { { 0, PAIR_KEY } }), Throws.ArgumentException, "itself as a peer");
+            Assert.That(() => new DirectSession(cipher, 0, new Dictionary<int, byte[]> { { 1, PAIR_KEY }, { 2, (byte[])PAIR_KEY.Clone() } }), Throws.ArgumentException,
+                "the same key for two peers: a secret shared beyond a pair");
 
             // Only the peers it was given
             var session = Session(0, 1, 3);
@@ -452,8 +472,9 @@ namespace BrainCloudTests
             Assert.That(() => session.SenderFor(2), Throws.ArgumentException);
             Assert.That(() => session.RestartSender(2), Throws.ArgumentException);
             Assert.That(() => session.ReceiverFor(0), Throws.ArgumentException, "not from itself either");
-            Assert.That(DirectPacket.SupportedCiphers, Is.EqualTo(new[] { DirectPacket.CIPHER_CHACHA20_POLY1305 }));
+            Assert.That(DirectPacket.SupportedCiphers, Is.EqualTo(new[] { DirectPacket.CIPHER_CHACHA20_POLY1305, DirectPacket.CIPHER_HMAC_SHA256 }), "most preferred first");
             Assert.That(DirectPacket.IsSupported(DirectPacket.CIPHER_CHACHA20_POLY1305), Is.True);
+            Assert.That(DirectPacket.IsSupported(DirectPacket.CIPHER_HMAC_SHA256), Is.True);
             Assert.That(DirectPacket.IsSupported("aes-256-gcm"), Is.False);
             Assert.That(DirectPacket.IsSupported(null), Is.False);
         }
@@ -588,10 +609,10 @@ namespace BrainCloudTests
         {
             int most = DirectPacket.MAX_DATAGRAM_LENGTH - DirectPacket.OVERHEAD;
             byte[] key = H(KEY_0_TO_1);
-            byte[] longest = DirectPacket.Seal(key, 0, 1, EPOCH, 0, new byte[most], 0, most);
+            byte[] longest = DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, key, 0, 1, EPOCH, 0, new byte[most], 0, most);
             Assert.That(longest.Length, Is.EqualTo(DirectPacket.MAX_DATAGRAM_LENGTH));
-            Assert.That(DirectPacket.Open(key, 0, 1, longest, longest.Length), Is.EqualTo(new byte[most]));
-            Assert.That(() => DirectPacket.Seal(key, 0, 1, EPOCH, 0, new byte[most + 1], 0, most + 1), Throws.ArgumentException);
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, key, 0, 1, longest, longest.Length), Is.EqualTo(new byte[most]));
+            Assert.That(() => DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, key, 0, 1, EPOCH, 0, new byte[most + 1], 0, most + 1), Throws.ArgumentException);
 
             byte[] tooLong = new byte[DirectPacket.MAX_DATAGRAM_LENGTH + 1];
             Buffer.BlockCopy(longest, 0, tooLong, 0, longest.Length);
@@ -679,7 +700,7 @@ namespace BrainCloudTests
                 Assert.That(counting.Opens, Is.EqualTo(1));
 
                 // And it is the same cipher: the fixed datagram is unchanged
-                Assert.That(Hex(DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
+                Assert.That(Hex(DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
             }
             finally
             {
@@ -688,23 +709,84 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void Cipher_WithNoImplementation_NothingIsSupportedAndNothingEncrypts()
+        public void Cipher_WithNoEncryption_OnlyAuthenticationIsSupportedAndNothingEncrypts()
         {
-            // As on an Apple player build before an implementation backed by the operating system is installed
+            // As in a game that does not define BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
             IDirectAead original = DirectCipher.ChaCha20Poly1305Implementation;
             try
             {
                 DirectCipher.ChaCha20Poly1305Implementation = null;
-                Assert.That(DirectPacket.SupportedCiphers, Is.Empty);
+                Assert.That(DirectPacket.SupportedCiphers, Is.EqualTo(new[] { DirectPacket.CIPHER_HMAC_SHA256 }));
                 Assert.That(DirectPacket.IsSupported(DirectPacket.CIPHER_CHACHA20_POLY1305), Is.False);
                 Assert.That(() => Session(0, 1), Throws.ArgumentException);
-                Assert.That(() => DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length), Throws.ArgumentException);
-                Assert.That(() => DirectPacket.Open(H(KEY_0_TO_1), 0, 1, H(PUNCH_DATAGRAM), PUNCH_DATAGRAM.Length / 2), Throws.ArgumentException);
+                Assert.That(() => DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length), Throws.ArgumentException);
+                Assert.That(() => DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, H(PUNCH_DATAGRAM), PUNCH_DATAGRAM.Length / 2), Throws.ArgumentException);
+
+                // Authenticated direct connect still works
+                var a = new DirectSession(DirectPacket.CIPHER_HMAC_SHA256, 0, new Dictionary<int, byte[]> { { 1, PAIR_KEY } });
+                var b = new DirectSession(DirectPacket.CIPHER_HMAC_SHA256, 1, new Dictionary<int, byte[]> { { 0, PAIR_KEY } });
+                byte[] datagram = a.SenderFor(1).Seal(PUNCH, 0, PUNCH.Length);
+                Assert.That(b.ReceiverFor(0).Open(datagram, datagram.Length), Is.EqualTo(PUNCH));
             }
             finally
             {
                 DirectCipher.ChaCha20Poly1305Implementation = original;
             }
+        }
+
+        #endregion
+
+        #region Authentication only (hmac-sha256)
+
+        [Test]
+        public void Hmac_KeyAndDatagram_MatchTheFixedValues()
+        {
+            Assert.That(Hex(DirectPacket.DeriveKey(PAIR_KEY, DirectPacket.CIPHER_HMAC_SHA256, 0, 1, EPOCH)), Is.EqualTo(KEY_HMAC_0_TO_1));
+            Assert.That(KEY_HMAC_0_TO_1, Is.Not.EqualTo(KEY_0_TO_1), "the cipher's name is part of the key");
+            byte[] datagram = DirectPacket.Seal(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
+            Assert.That(Hex(datagram), Is.EqualTo(PUNCH_DATAGRAM_HMAC));
+            Assert.That(datagram.Skip(DirectPacket.HEADER_LENGTH).Take(PUNCH.Length).ToArray(), Is.EqualTo(PUNCH), "the packet travels readable");
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, datagram, datagram.Length), Is.EqualTo(PUNCH));
+        }
+
+        [Test]
+        public void Hmac_EveryChangedByteIsRefused()
+        {
+            byte[] datagram = H(PUNCH_DATAGRAM_HMAC);
+            for (int i = 0; i < datagram.Length; ++i)
+            {
+                byte[] changed = (byte[])datagram.Clone();
+                changed[i] ^= 0x01;
+                Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
+            }
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length), Is.Null, "another key");
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_HMAC_0_TO_1), 0, 1, datagram, datagram.Length), Is.Null, "the other cipher");
+        }
+
+        [Test]
+        public void Hmac_RepeatsAndOldEpochsAreRefused_AsWithEncryption()
+        {
+            var receiver = new DirectReceiver(PAIR_KEY, DirectPacket.CIPHER_HMAC_SHA256, 0, 1);
+            var first = new DirectSender(PAIR_KEY, DirectPacket.CIPHER_HMAC_SHA256, 0, 1, DirectPacket.MakeEpoch(PREFIX, 1));
+            byte[] d1 = first.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(d1, d1.Length), Is.EqualTo(PUNCH));
+            Assert.That(receiver.Open(d1, d1.Length), Is.Null, "a repeat");
+            var second = new DirectSender(PAIR_KEY, DirectPacket.CIPHER_HMAC_SHA256, 0, 1, DirectPacket.MakeEpoch(PREFIX, 2));
+            byte[] d2 = second.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(d2, d2.Length), Is.EqualTo(PUNCH));
+            byte[] old = first.Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(receiver.Open(old, old.Length), Is.Null, "an earlier epoch");
+        }
+
+        [Test]
+        public void Hmac_LongestDatagramIsTheMaximum()
+        {
+            int most = DirectPacket.MAX_DATAGRAM_LENGTH - DirectPacket.OVERHEAD;
+            byte[] key = H(KEY_HMAC_0_TO_1);
+            byte[] longest = DirectPacket.Seal(DirectPacket.CIPHER_HMAC_SHA256, key, 0, 1, EPOCH, 0, new byte[most], 0, most);
+            Assert.That(longest.Length, Is.EqualTo(DirectPacket.MAX_DATAGRAM_LENGTH));
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, key, 0, 1, longest, longest.Length), Is.EqualTo(new byte[most]));
+            Assert.That(() => DirectPacket.Seal(DirectPacket.CIPHER_HMAC_SHA256, key, 0, 1, EPOCH, 0, new byte[most + 1], 0, most + 1), Throws.ArgumentException);
         }
 
         #endregion

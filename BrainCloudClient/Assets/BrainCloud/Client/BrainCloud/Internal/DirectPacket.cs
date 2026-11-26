@@ -10,8 +10,10 @@ namespace BrainCloud.Internal
 
     /// <summary>
     /// The datagram players send each other when connected directly: a short header, then the
-    /// packet encrypted and authenticated with the header. Every client library must produce these
-    /// byte for byte; the format is section 7 of the client design (Confluence BCSD 4389666817).
+    /// packet and a tag authenticating it with the header. With chacha20-poly1305 the packet is
+    /// encrypted; with hmac-sha256 it is only authenticated, and travels readable, as it does
+    /// through a relay server. Every client library must produce these byte for byte; the format is
+    /// section 7 of the client design (Confluence BCSD 4389666817).
     ///
     /// <code>
     /// offset  size  field
@@ -21,14 +23,16 @@ namespace BrainCloud.Internal
     ///      3     8  the sender's epoch: 4 random bytes, the same for every sender in this
     ///               attempt, then a 4-byte big-endian count that goes up with every new sender
     ///     11     8  sequence number, big-endian, from 0 within the epoch
-    ///     19     n  the packet, encrypted
+    ///     19     n  the packet: encrypted with chacha20-poly1305, unchanged with hmac-sha256
     ///   19+n    16  authentication tag
     /// </code>
     ///
     /// Each pair of players in an attempt has its own secret, from brainCloud, which only those two
     /// players have: so no member of an attempt can make or read a datagram between two others.
-    /// Each epoch of each direction between two players has its own key (DeriveKey). The nonce is
-    /// 4 zero bytes then the sequence number, and the header is the associated data. A key is never
+    /// Each epoch of each direction between two players has its own key (DeriveKey), and the
+    /// cipher's name is part of it. With chacha20-poly1305 the nonce is 4 zero bytes then the
+    /// sequence number, and the header is the associated data; with hmac-sha256 the tag is the
+    /// first 16 bytes of HMAC-SHA256 of the header and the packet. A key is never
     /// used with the same nonce twice: the sequence only goes up within an epoch, and a sender that
     /// starts again, for whatever reason, starts a new epoch and so gets a new key. Epochs are
     /// ordered, so a receiver only ever moves forward (see DirectReceiver).
@@ -41,7 +45,10 @@ namespace BrainCloud.Internal
         public const byte FORMAT = 0xB1;
         public const int EPOCH_LENGTH = 8;
         public const int HEADER_LENGTH = 19;
-        public const int OVERHEAD = HEADER_LENGTH + ChaCha20Poly1305.TAG_LENGTH;
+        public const int KEY_LENGTH = 32;
+        public const int NONCE_LENGTH = 12;
+        public const int TAG_LENGTH = 16;
+        public const int OVERHEAD = HEADER_LENGTH + TAG_LENGTH;
         /// <summary>
         /// The largest datagram sent or accepted: the most UDP payload that fits the 1,280 bytes
         /// every IPv6 link carries without fragmenting. A full game packet is 1,068 bytes. Anything
@@ -51,17 +58,25 @@ namespace BrainCloud.Internal
         /// The length of the secret brainCloud gives each pair of players (DIRECT_CONNECT's peers[].pairKey).
         public const int PAIR_KEY_LENGTH = 16;
 
-        /// The cipher names this library supports, most preferred first, as reported to brainCloud.
+        /// Encrypts and authenticates. Only when an implementation is included: see DirectCipher.
         public const string CIPHER_CHACHA20_POLY1305 = "chacha20-poly1305";
+        /// Authenticates only: no one can make, change or replay a packet, but anyone on the path can read it.
+        public const string CIPHER_HMAC_SHA256 = "hmac-sha256";
+
         /// <summary>
-        /// The ciphers this player can use, to report with its network test. Empty on a platform
-        /// whose operating system's cipher is not available to the library: see DirectCipher.
+        /// The ciphers this player can use, most preferred first, to report with its network test.
+        /// hmac-sha256 is always there; chacha20-poly1305 only when an implementation is included.
         /// </summary>
         public static System.Collections.ObjectModel.ReadOnlyCollection<string> SupportedCiphers
         {
             get
             {
-                return Array.AsReadOnly(IsSupported(CIPHER_CHACHA20_POLY1305) ? new[] { CIPHER_CHACHA20_POLY1305 } : new string[0]);
+                var names = new System.Collections.Generic.List<string>();
+                foreach (string name in new[] { CIPHER_CHACHA20_POLY1305, CIPHER_HMAC_SHA256 })
+                {
+                    if (IsSupported(name)) names.Add(name);
+                }
+                return names.AsReadOnly();
             }
         }
 
@@ -105,11 +120,11 @@ namespace BrainCloud.Internal
             info[name.Length + 1] = (byte)in_sender;
             info[name.Length + 2] = (byte)in_receiver;
             Buffer.BlockCopy(in_epoch, 0, info, name.Length + 3, EPOCH_LENGTH);
-            return HmacSha256.HkdfExpand(in_extracted, info, ChaCha20Poly1305.KEY_LENGTH);
+            return HmacSha256.HkdfExpand(in_extracted, info, KEY_LENGTH);
         }
 
-        /// <summary>The datagram carrying in_length bytes of in_packet from in_offset.</summary>
-        public static byte[] Seal(byte[] in_key, int in_sender, int in_receiver, byte[] in_epoch, ulong in_sequence, byte[] in_packet, int in_offset, int in_length)
+        /// <summary>The datagram carrying in_length bytes of in_packet from in_offset, with in_cipher and in_key.</summary>
+        public static byte[] Seal(string in_cipher, byte[] in_key, int in_sender, int in_receiver, byte[] in_epoch, ulong in_sequence, byte[] in_packet, int in_offset, int in_length)
         {
             checkNetId(in_sender);
             checkNetId(in_receiver);
@@ -122,7 +137,7 @@ namespace BrainCloud.Internal
             Buffer.BlockCopy(in_epoch, 0, header, 3, EPOCH_LENGTH);
             for (int i = 0; i < 8; ++i) header[11 + i] = (byte)(in_sequence >> (56 - 8 * i));
 
-            byte[] sealedPacket = aead().Seal(in_key, nonceFor(header), header, in_packet, in_offset, in_length);
+            byte[] sealedPacket = implementation(in_cipher).Seal(in_key, nonceFor(header), header, in_packet, in_offset, in_length);
             byte[] datagram = new byte[HEADER_LENGTH + sealedPacket.Length];
             Buffer.BlockCopy(header, 0, datagram, 0, HEADER_LENGTH);
             Buffer.BlockCopy(sealedPacket, 0, datagram, HEADER_LENGTH, sealedPacket.Length);
@@ -149,11 +164,11 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// The packet in the first in_length bytes of a received datagram, or null when it is not
-        /// from in_expectedSender to in_expectedReceiver or does not decrypt with in_key. The
+        /// from in_expectedSender to in_expectedReceiver or does not open with in_cipher and in_key. The
         /// expected ids are the ones the key belongs to; never take them from the header, or a
         /// datagram could be bounced back to its sender or passed on to another player.
         /// </summary>
-        public static byte[] Open(byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram, int in_length)
+        public static byte[] Open(string in_cipher, byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram, int in_length)
         {
             int sender, receiver;
             byte[] epoch;
@@ -162,15 +177,14 @@ namespace BrainCloud.Internal
             if (sender != in_expectedSender || receiver != in_expectedReceiver) return null;
             byte[] header = new byte[HEADER_LENGTH];
             Buffer.BlockCopy(in_datagram, 0, header, 0, HEADER_LENGTH);
-            return aead().Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
+            return implementation(in_cipher).Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
         }
 
-        // The one cipher there is so far. A second would add the cipher to Seal and Open; the
-        // datagram does not carry it, as every member of an attempt uses the one the server chose.
-        private static IDirectAead aead()
+        // The datagram does not name its cipher: every member of an attempt uses the one the server chose.
+        private static IDirectAead implementation(string in_cipher)
         {
-            IDirectAead aead = DirectCipher.For(CIPHER_CHACHA20_POLY1305);
-            if (aead == null) throw new ArgumentException("unsupported cipher: " + CIPHER_CHACHA20_POLY1305);
+            IDirectAead aead = DirectCipher.For(in_cipher);
+            if (aead == null) throw new ArgumentException("unsupported cipher: " + in_cipher);
             return aead;
         }
 
@@ -210,7 +224,7 @@ namespace BrainCloud.Internal
 
         private static byte[] nonceFor(byte[] in_header)
         {
-            byte[] nonce = new byte[ChaCha20Poly1305.NONCE_LENGTH];
+            byte[] nonce = new byte[NONCE_LENGTH];
             Buffer.BlockCopy(in_header, 11, nonce, 4, 8);
             return nonce;
         }
@@ -222,18 +236,60 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// An AEAD as direct connect uses it: a 32-byte key, a 12-byte nonce and a 16-byte tag. Its
-    /// implementation can come from the operating system or from this library (DirectCipher).
+    /// How one cipher protects a packet as direct connect uses it: a 32-byte key, a 12-byte nonce,
+    /// the header as associated data, and a 16-byte tag after the packet. Its implementation can come
+    /// from this library, or from the operating system (DirectCipher).
     /// </summary>
     internal interface IDirectAead
     {
-        /// The ciphertext of in_length bytes of in_plaintext from in_offset, followed by the tag.
+        /// The protected form of in_length bytes of in_plaintext from in_offset, followed by the tag.
         byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length);
 
-        /// The plaintext of in_length bytes of in_sealed from in_offset (ciphertext and tag), or null when the tag does not match.
+        /// The packet in in_length bytes of in_sealed from in_offset (protected packet and tag), or null when the tag does not match.
         byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length);
     }
 
+    /// <summary>
+    /// hmac-sha256: the packet is sent as it is, followed by the first 16 bytes of HMAC-SHA256 of the
+    /// header and the packet. Nothing is encrypted, so this needs no encryption implementation and
+    /// is always available. The header carries the sequence number, so the nonce adds nothing.
+    /// </summary>
+    internal sealed class HmacSha256Authentication : IDirectAead
+    {
+        public byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
+        {
+            if (in_plaintext == null || in_offset < 0 || in_length < 0 || in_length > in_plaintext.Length - in_offset) throw new ArgumentException("bad packet range");
+            byte[] result = new byte[in_length + DirectPacket.TAG_LENGTH];
+            Buffer.BlockCopy(in_plaintext, in_offset, result, 0, in_length);
+            Buffer.BlockCopy(tag(in_key, in_aad, in_plaintext, in_offset, in_length), 0, result, in_length, DirectPacket.TAG_LENGTH);
+            return result;
+        }
+
+        public byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
+        {
+            if (in_sealed == null || in_offset < 0 || in_length < DirectPacket.TAG_LENGTH || in_length > in_sealed.Length - in_offset) return null;
+            int packetLength = in_length - DirectPacket.TAG_LENGTH;
+            byte[] expected = tag(in_key, in_aad, in_sealed, in_offset, packetLength);
+            // Every byte is compared, whatever the first difference, so the time taken says nothing about the tag
+            int difference = 0;
+            for (int i = 0; i < DirectPacket.TAG_LENGTH; ++i) difference |= expected[i] ^ in_sealed[in_offset + packetLength + i];
+            if (difference != 0) return null;
+            byte[] packet = new byte[packetLength];
+            Buffer.BlockCopy(in_sealed, in_offset, packet, 0, packetLength);
+            return packet;
+        }
+
+        private static byte[] tag(byte[] in_key, byte[] in_aad, byte[] in_packet, int in_offset, int in_length)
+        {
+            if (in_key == null || in_key.Length != DirectPacket.KEY_LENGTH) throw new ArgumentException("the key must be 32 bytes");
+            byte[] message = new byte[in_aad.Length + in_length];
+            Buffer.BlockCopy(in_aad, 0, message, 0, in_aad.Length);
+            Buffer.BlockCopy(in_packet, in_offset, message, in_aad.Length, in_length);
+            return HmacSha256.Compute(in_key, message);   // the first TAG_LENGTH bytes are the tag
+        }
+    }
+
+#if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
     /// ChaCha20-Poly1305 as implemented in this library.
     internal sealed class ManagedChaCha20Poly1305 : IDirectAead
     {
@@ -247,49 +303,51 @@ namespace BrainCloud.Internal
             return ChaCha20Poly1305.Open(in_key, in_nonce, in_aad, in_sealed, in_offset, in_length);
         }
     }
+#endif
 
     /// <summary>
-    /// Which implementation encrypts direct-connect traffic on this platform.
+    /// Which implementation protects direct-connect traffic with each cipher.
     ///
-    /// On Apple platforms only the operating system's encryption is used. Apple asks every app
-    /// whether it implements standard encryption "instead of, or in addition to" the operating
-    /// system's, and an app that does has export-compliance documentation to provide; one that
-    /// only uses the operating system's does not. So an Apple player build has no implementation
-    /// here until one backed by the operating system (CryptoKit) is installed, reports no cipher,
-    /// and its lobbies use the relay server. Elsewhere this library's own implementation is used.
-    /// The Unity Editor uses it everywhere, as the Editor is never shipped.
+    /// hmac-sha256 authenticates without encrypting, and is always available.
     ///
-    /// Key derivation (HKDF-SHA256) stays in this library on every platform: it hashes and
-    /// authenticates, and does not encrypt.
+    /// chacha20-poly1305 encrypts, and is available only when a game includes an implementation
+    /// of it. This library's own is compiled in only when the game defines the scripting symbol
+    /// BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION; without it, the library contains no encryption code
+    /// at all. That is deliberate: an app store may ask whether a game implements encryption of
+    /// its own (Apple asks every app whether it uses standard encryption "instead of, or in
+    /// addition to" the operating system's), and a game should only have to answer yes when it
+    /// chose to. A game that wants direct connect encrypted, and lobby types that require it,
+    /// defines the symbol for each platform it builds.
+    ///
+    /// Key derivation (HKDF-SHA256) is always in this library: it hashes and authenticates, and
+    /// does not encrypt.
     /// </summary>
     internal static class DirectCipher
     {
-        private static volatile IDirectAead s_chaCha20Poly1305 = platformChaCha20Poly1305();
+        private static readonly IDirectAead s_hmacSha256 = new HmacSha256Authentication();
+#if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
+        private static volatile IDirectAead s_chaCha20Poly1305 = new ManagedChaCha20Poly1305();
+#else
+        private static volatile IDirectAead s_chaCha20Poly1305 = null;
+#endif
 
-        /// The implementation of in_cipher on this platform, or null when there is none.
+        /// The implementation of in_cipher, or null when there is none.
         public static IDirectAead For(string in_cipher)
         {
-            return in_cipher == DirectPacket.CIPHER_CHACHA20_POLY1305 ? s_chaCha20Poly1305 : null;
+            if (in_cipher == DirectPacket.CIPHER_CHACHA20_POLY1305) return s_chaCha20Poly1305;
+            if (in_cipher == DirectPacket.CIPHER_HMAC_SHA256) return s_hmacSha256;
+            return null;
         }
 
         /// <summary>
-        /// Replaces the ChaCha20-Poly1305 implementation, or with null removes it: for an
-        /// implementation backed by the operating system, and for the tests. Install it at startup,
-        /// before any attempt. Every implementation is the same cipher, so datagrams are the same either way.
+        /// Replaces the ChaCha20-Poly1305 implementation, or with null removes it: for one backed
+        /// by the operating system, and for the tests. Install it at startup, before any attempt.
+        /// Every implementation is the same cipher, so datagrams are the same either way.
         /// </summary>
         internal static IDirectAead ChaCha20Poly1305Implementation
         {
             get { return s_chaCha20Poly1305; }
             set { s_chaCha20Poly1305 = value; }
-        }
-
-        private static IDirectAead platformChaCha20Poly1305()
-        {
-#if !UNITY_EDITOR && (UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS || UNITY_STANDALONE_OSX)
-            return null;
-#else
-            return new ManagedChaCha20Poly1305();
-#endif
         }
     }
 
@@ -300,6 +358,7 @@ namespace BrainCloud.Internal
     /// </summary>
     internal sealed class DirectSender
     {
+        private readonly string m_cipher;
         private readonly int m_sender;
         private readonly int m_receiver;
         private readonly byte[] m_epoch;
@@ -314,6 +373,7 @@ namespace BrainCloud.Internal
         /// </summary>
         internal DirectSender(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
+            m_cipher = in_cipher;
             m_sender = in_sender;
             m_receiver = in_receiver;
             m_epoch = (byte[])in_epoch.Clone();
@@ -342,7 +402,7 @@ namespace BrainCloud.Internal
                 if (m_next == ulong.MaxValue) throw new InvalidOperationException("sequence numbers used up; start a new sender");
                 sequence = m_next++;
             }
-            return DirectPacket.Seal(m_key, m_sender, m_receiver, m_epoch, sequence, in_packet, in_offset, in_length);
+            return DirectPacket.Seal(m_cipher, m_key, m_sender, m_receiver, m_epoch, sequence, in_packet, in_offset, in_length);
         }
 
         internal void Retire()
@@ -420,7 +480,7 @@ namespace BrainCloud.Internal
                 if (count == current)
                 {
                     if (!m_window.IsNew(sequence)) return null;
-                    byte[] packet = DirectPacket.Open(m_key, m_sender, m_receiver, in_datagram, in_length);
+                    byte[] packet = DirectPacket.Open(m_cipher, m_key, m_sender, m_receiver, in_datagram, in_length);
                     if (packet != null) m_window.Accept(sequence);
                     return packet;
                 }
@@ -428,7 +488,7 @@ namespace BrainCloud.Internal
 
             // The first epoch, or a later one: only a datagram that decrypts with its key moves this receiver to it
             byte[] key = DirectPacket.DeriveKeyFromExtracted(m_extracted, m_cipher, m_sender, m_receiver, epoch);
-            byte[] opened = DirectPacket.Open(key, m_sender, m_receiver, in_datagram, in_length);
+            byte[] opened = DirectPacket.Open(m_cipher, key, m_sender, m_receiver, in_datagram, in_length);
             if (opened == null) return null;
             m_epoch = epoch;
             m_key = key;
@@ -486,6 +546,11 @@ namespace BrainCloud.Internal
                 DirectPacket.checkNetId(peer.Key);
                 if (peer.Key == in_netId) throw new ArgumentException("this player is not its own peer: net id " + in_netId);
                 DirectPacket.ExtractKey(peer.Value);   // checks the key now
+                foreach (byte[] other in m_pairKeys.Values)
+                {
+                    // Each pair's key is its own; the same one for two peers means one secret is shared beyond a pair
+                    if (sameBytes(other, peer.Value)) throw new ArgumentException("two peers were given the same pair key");
+                }
                 m_pairKeys[peer.Key] = (byte[])peer.Value.Clone();
             }
             m_cipher = in_cipher;
@@ -554,6 +619,16 @@ namespace BrainCloud.Internal
             if (m_count == uint.MaxValue) throw new InvalidOperationException("epochs used up for this attempt");
             ++m_count;
             return new DirectSender(key, m_cipher, m_netId, in_peerNetId, DirectPacket.MakeEpoch(m_prefix, m_count));
+        }
+
+        private static bool sameBytes(byte[] a, byte[] b)
+        {
+            if (a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; ++i)
+            {
+                if (a[i] != b[i]) return false;
+            }
+            return true;
         }
 
         private byte[] pairKey(int in_peerNetId)

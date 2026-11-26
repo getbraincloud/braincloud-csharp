@@ -3,10 +3,9 @@
 // brainCloud client source code
 //----------------------------------------------------
 
-using System.Runtime.CompilerServices;
-
-// The unit tests check the cipher against the RFC test vectors.
-[assembly: InternalsVisibleTo("UnitTest")]
+// Compiled only when the game defines BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION: without it the library
+// contains no encryption code at all (see DirectCipher).
+#if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
 
 namespace BrainCloud.Internal
 {
@@ -335,3 +334,5 @@ namespace BrainCloud.Internal
         }
     }
 }
+
+#endif
