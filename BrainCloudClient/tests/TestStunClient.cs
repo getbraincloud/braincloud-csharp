@@ -407,8 +407,8 @@ namespace BrainCloudTests
         public void TestReportAfterRttConnectsAndWithdrawWhenTurnedOff()
         {
             NatProbe probe = _bc.Client.DirectConnectProbe;
-            _bc.Client.EnableDirectConnect(true);
-            Assert.That(_bc.Client.DirectConnectEnabled, Is.True);
+            _bc.RelayService.EnableDirectConnect(true);
+            Assert.That(_bc.RelayService.IsDirectConnectEnabled(), Is.True);
 
             TestResult tr = new TestResult(_bc);
             _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
@@ -425,8 +425,8 @@ namespace BrainCloudTests
             Assert.That(probe.LastReport, Is.Not.Null);
             Console.WriteLine("Network test: " + probe.LastReport.Mapping + ", UDP " + probe.LastReport.Udp + " (" + probe.LastReport.Detail + ")");
 
-            _bc.Client.EnableDirectConnect(false);
-            Assert.That(_bc.Client.DirectConnectEnabled, Is.False);
+            _bc.RelayService.EnableDirectConnect(false);
+            Assert.That(_bc.RelayService.IsDirectConnectEnabled(), Is.False);
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Sent), "turning it off sends a withdrawal");
             Assert.That(probe.LastReport.Mapping, Is.EqualTo(StunClient.MAPPING_UNKNOWN));
             Assert.That(probe.LastReport.Udp, Is.False);
