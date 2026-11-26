@@ -455,6 +455,46 @@ namespace BrainCloudTests
             Assert.That(transport.CanSend, Is.False);
         }
 
+        // BrainCloudWebSocket itself, which RTT uses too: Close() must not throw in any state
+
+        [Test]
+        public void WebSocketWrapper_ClosesWhileStillConnecting()
+        {
+            // Accepts the TCP connection but never answers the WebSocket handshake
+            var server = new TcpListener(IPAddress.Loopback, 0);
+            server.Start();
+            try
+            {
+                var webSocket = new BrainCloudWebSocket("ws://127.0.0.1:" + ((IPEndPoint)server.LocalEndpoint).Port);
+                using (TcpClient peer = server.AcceptTcpClient())
+                {
+                    Assert.That(() => webSocket.Close(), Throws.Nothing);
+                    Assert.That(() => webSocket.Close(), Throws.Nothing, "a second Close()");
+                }
+            }
+            finally
+            {
+                server.Stop();
+            }
+        }
+
+        [Test]
+        public void WebSocketWrapper_ClosesAfterItsConnectFailed()
+        {
+            // A port with nothing listening on it
+            var probe = new TcpListener(IPAddress.Loopback, 0);
+            probe.Start();
+            int port = ((IPEndPoint)probe.LocalEndpoint).Port;
+            probe.Stop();
+
+            var webSocket = new BrainCloudWebSocket("ws://127.0.0.1:" + port);
+            bool failed = false;
+            webSocket.OnError += (sender, message) => failed = true;
+            // The refusal can come before the handler is added, so wait for it either way
+            Thread.Sleep(500);
+            Assert.That(() => webSocket.Close(), Throws.Nothing, "after the connect " + (failed ? "failed" : "had time to fail"));
+        }
+
         [Test]
         public void Udp_ReceivesFromARelayGivenByName()
         {
