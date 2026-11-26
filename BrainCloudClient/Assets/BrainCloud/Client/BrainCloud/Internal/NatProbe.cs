@@ -139,15 +139,20 @@ namespace BrainCloud.Internal
                 // Not after logout: the server is dropping the connection, and the report with it
                 if (m_rttConnected && reported && (m_clientRef == null || m_clientRef.Authenticated))
                 {
-                    send(new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "direct connect was turned off"));
+                    withdraw();
                 }
             }
         }
 
-        /// The last report sent for the current connection, or null.
+        /// The last report sent for the current connection while direct connect was on, or null.
         public NatReport LastReport { get; private set; }
 
+        /// What became of LastReport. Turning direct connect off sets it back to None.
         public ReportState State { get; private set; }
+
+        /// For the tests: what became of the last withdrawal. Kept apart from State, which only
+        /// describes reports sent while direct connect is on.
+        internal ReportState WithdrawalState { get; private set; }
 
         /// For the unit tests: how many finished tests Update has taken, sent or dropped.
         internal int ResultsHandled { get; private set; }
@@ -228,6 +233,7 @@ namespace BrainCloud.Internal
             send(current);
         }
 
+        /// Sends a finished test's report, while direct connect is on.
         private void send(NatReport in_report)
         {
             if (loggingEnabled)
@@ -239,20 +245,42 @@ namespace BrainCloud.Internal
             LastReport = in_report;
             State = ReportState.Sent;
             int generation = m_generation;
+            post(in_report, "Direct connect network report failed: ", accepted =>
+            {
+                // An answer for an earlier connection, or from before direct connect was turned off, changes nothing
+                if (generation == m_generation) State = accepted ? ReportState.Accepted : ReportState.Failed;
+            });
+        }
 
+        /// <summary>
+        /// Replaces the report on the server with one that never qualifies, once direct connect is
+        /// turned off. It leaves LastReport and State alone: they describe reports made while on.
+        /// </summary>
+        private void withdraw()
+        {
+            if (loggingEnabled)
+            {
+                m_clientRef.Log("Direct connect turned off: withdrawing the network report");
+            }
+
+            WithdrawalState = ReportState.Sent;
+            post(new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "direct connect was turned off"),
+                "Direct connect network report withdrawal failed: ",
+                accepted => WithdrawalState = accepted ? ReportState.Accepted : ReportState.Failed);
+        }
+
+        private void post(NatReport in_report, string in_failureLog, Action<bool> in_answered)
+        {
             var data = new Dictionary<string, object>();
             data[OperationParam.RTTNatInfo.Value] = in_report.ToNatInfo();
             ServerCallback callback = BrainCloudClient.CreateServerCallback(
-                (response, cbObject) =>
-                {
-                    if (generation == m_generation) State = ReportState.Accepted;
-                },
+                (response, cbObject) => in_answered(true),
                 (status, reasonCode, error, cbObject) =>
                 {
-                    if (generation == m_generation) State = ReportState.Failed;
+                    in_answered(false);
                     if (loggingEnabled)
                     {
-                        m_clientRef.Log("Direct connect network report failed: " + status + " " + reasonCode + " " + error);
+                        m_clientRef.Log(in_failureLog + status + " " + reasonCode + " " + error);
                     }
                 });
             m_send(new ServerCall(ServiceName.RTTRegistration, ServiceOperation.SetNatInfo, data, callback));
@@ -276,7 +304,11 @@ namespace BrainCloud.Internal
                 NatReport report;
                 try
                 {
-                    report = Measure(resolve(host, port), token);
+                    bool ipv6Only;
+                    List<IPEndPoint> servers = resolve(host, port, out ipv6Only);
+                    report = ipv6Only
+                        ? new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "the STUN host resolves to IPv6 addresses only, so this network looks IPv6-only; direct connect needs IPv4, so this player's lobbies will use the relay")
+                        : Measure(servers, token);
                 }
                 catch (Exception e)
                 {
@@ -293,21 +325,28 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// Up to two IPv4 addresses for the STUN host: classifying the NAT takes two, and the
-        /// STUN service publishes one per zone under the same name.
+        /// STUN service publishes one per zone under the same name. Direct connect is IPv4 only
+        /// for now. out_ipv6Only is true when the name gave IPv6 addresses and no IPv4 one, as on
+        /// an IPv6-only network.
         /// </summary>
-        private static List<IPEndPoint> resolve(string in_host, int in_port)
+        private static List<IPEndPoint> resolve(string in_host, int in_port, out bool out_ipv6Only)
         {
             var servers = new List<IPEndPoint>();
             var addresses = new List<IPAddress>();
+            bool anyIPv6 = false;
             foreach (IPAddress address in Dns.GetHostAddresses(in_host))
             {
-                if (address.AddressFamily == AddressFamily.InterNetwork && !addresses.Contains(address))
+                if (address.AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    anyIPv6 = true;
+                }
+                else if (address.AddressFamily == AddressFamily.InterNetwork && servers.Count < 2 && !addresses.Contains(address))
                 {
                     addresses.Add(address);
                     servers.Add(new IPEndPoint(address, in_port));
-                    if (servers.Count == 2) break;
                 }
             }
+            out_ipv6Only = servers.Count == 0 && anyIPv6;
             return servers;
         }
 

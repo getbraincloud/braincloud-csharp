@@ -12,7 +12,6 @@ namespace BrainCloud.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Net;
     using System.Net.Sockets;
 
@@ -145,7 +144,7 @@ namespace BrainCloud.Internal
         {
             var pending = new Dictionary<string, Pending>();
             var results = new Dictionary<IPEndPoint, StunResult>();
-            Stopwatch clock = Stopwatch.StartNew();
+            int start = Environment.TickCount;
             byte[] buffer = new byte[1500];
             int timeout = in_firstTimeoutMs;
 
@@ -170,10 +169,10 @@ namespace BrainCloud.Internal
                     }
                 }
 
-                long deadline = clock.ElapsedMilliseconds + timeout;
+                long deadline = elapsedMs(start) + timeout;
                 while (results.Count < in_servers.Count)
                 {
-                    int wait = (int)(deadline - clock.ElapsedMilliseconds);
+                    int wait = (int)(deadline - elapsedMs(start));
                     if (wait <= 0 || !in_socket.Poll(wait * 1000, SelectMode.SelectRead)) break;
                     EndPoint from = new IPEndPoint(in_socket.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, 0);
                     int n;
@@ -235,6 +234,16 @@ namespace BrainCloud.Internal
 
             public IPEndPoint Server { get; private set; }
             public byte[] TransactionId { get; private set; }
+        }
+
+        /// <summary>
+        /// Milliseconds since in_start, an Environment.TickCount. The same monotonic tick the
+        /// client's clock (BrainCloudClient.NowMs) is built on, read directly because this runs
+        /// off the main thread; the unsigned difference survives the tick count wrapping.
+        /// </summary>
+        private static long elapsedMs(int in_start)
+        {
+            return unchecked((uint)(Environment.TickCount - in_start));
         }
 
         private static int readU16(byte[] b, int o) { return (b[o] << 8) | b[o + 1]; }

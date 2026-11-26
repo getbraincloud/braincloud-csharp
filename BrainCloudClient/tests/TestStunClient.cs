@@ -327,11 +327,15 @@ namespace BrainCloudTests
             Assert.That(sent.Count, Is.EqualTo(2), "the withdrawal is sent at once");
             Assert.That(NatInfo(sent[1])["mapping"], Is.EqualTo("unknown"));
             Assert.That(NatInfo(sent[1])["udp"], Is.EqualTo(false));
-            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Sent));
+            // The withdrawal is not a report of the player's network: off means no report
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.None));
+            Assert.That(probe.LastReport, Is.Null);
+            Assert.That(probe.WithdrawalState, Is.EqualTo(NatProbe.ReportState.Sent));
 
             probe.Enabled = true;
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing));
             sent[1].GetCallback().OnSuccessCallback("{}");
+            Assert.That(probe.WithdrawalState, Is.EqualTo(NatProbe.ReportState.Accepted));
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing), "the withdrawal's answer does not settle the new test");
             Assert.That(Pump(probe, () => sent.Count == 3), Is.True, "no new report after turning it back on");
             Assert.That(NatInfo(sent[2])["udp"], Is.EqualTo(true));
@@ -627,29 +631,30 @@ namespace BrainCloudTests
             // A stun section starts the test as RTT connects; if not, the client failed to read it
             Assert.That(probe.State, Is.Not.EqualTo(NatProbe.ReportState.None), "the server sent a stun section but no test started");
 
-            Assert.That(pumpUntilSettled(probe, 10000), Is.True, "the report was not settled; state " + probe.State);
+            Assert.That(pumpUntilSettled(() => probe.State, 10000), Is.True, "the report was not settled; state " + probe.State);
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Accepted));
             Assert.That(probe.LastReport, Is.Not.Null);
             Console.WriteLine("Network test: " + probe.LastReport.Mapping + ", UDP " + probe.LastReport.Udp + " (" + probe.LastReport.Detail + ")");
 
             _bc.RelayService.EnableDirectConnect(false);
             Assert.That(_bc.RelayService.IsDirectConnectEnabled(), Is.False);
-            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Sent), "turning it off sends a withdrawal");
-            Assert.That(probe.LastReport.Mapping, Is.EqualTo(StunClient.MAPPING_UNKNOWN));
-            Assert.That(probe.LastReport.Udp, Is.False);
-            Assert.That(pumpUntilSettled(probe, 5000), Is.True);
-            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Accepted));
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.None));
+            Assert.That(probe.LastReport, Is.Null);
+            Assert.That(probe.WithdrawalState, Is.EqualTo(NatProbe.ReportState.Sent), "turning it off sends a withdrawal");
+            Assert.That(pumpUntilSettled(() => probe.WithdrawalState, 5000), Is.True);
+            Assert.That(probe.WithdrawalState, Is.EqualTo(NatProbe.ReportState.Accepted));
 
             _bc.RTTService.DisableRTT();
         }
 
-        private bool pumpUntilSettled(NatProbe in_probe, int in_timeoutMs)
+        private bool pumpUntilSettled(Func<NatProbe.ReportState> in_state, int in_timeoutMs)
         {
             DateTime until = DateTime.UtcNow.AddMilliseconds(in_timeoutMs);
             while (DateTime.UtcNow < until)
             {
                 _bc.Update();
-                if (in_probe.State == NatProbe.ReportState.Accepted || in_probe.State == NatProbe.ReportState.Failed) return true;
+                NatProbe.ReportState state = in_state();
+                if (state == NatProbe.ReportState.Accepted || state == NatProbe.ReportState.Failed) return true;
                 Thread.Sleep(20);
             }
             return false;
