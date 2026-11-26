@@ -58,10 +58,13 @@ namespace BrainCloud.Internal
 
         private static readonly Random s_random = new Random();
 
-        /// <summary>A Binding request; with a token, the token attribute comes first and is the only one.</summary>
+        /// <summary>
+        /// A Binding request; with a token, the token attribute comes first and is the only one. The
+        /// attribute is padded to a multiple of 4 bytes, as STUN requires; its length field is the token's.
+        /// </summary>
         public static byte[] BuildRequest(byte[] in_transactionId, byte[] in_token)
         {
-            int body = in_token == null ? 0 : 4 + in_token.Length;
+            int body = in_token == null ? 0 : 4 + ((in_token.Length + 3) & ~3);
             byte[] msg = new byte[HEADER_LENGTH + body];
             writeU16(msg, 0, BINDING_REQUEST);
             writeU16(msg, 2, body);

@@ -136,7 +136,8 @@ namespace BrainCloud.Internal
                 m_testReported = false;
                 LastReport = null;
                 State = ReportState.None;
-                if (m_rttConnected && reported)
+                // Not after logout: the server is dropping the connection, and the report with it
+                if (m_rttConnected && reported && (m_clientRef == null || m_clientRef.Authenticated))
                 {
                     send(new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "direct connect was turned off"));
                 }

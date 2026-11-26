@@ -116,6 +116,18 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void BuildRequest_PadsATokenThatIsNotAMultipleOf4()
+        {
+            byte[] token = { 1, 2, 3, 4, 5 };
+            byte[] msg = StunClient.BuildRequest(TX, token);
+
+            Assert.That(msg.Length, Is.EqualTo(20 + 4 + 8));
+            Assert.That(msg.Skip(2).Take(2).ToArray(), Is.EqualTo(Hex("00 0c")), "the message length counts the padding");
+            Assert.That(msg.Skip(20).Take(4).ToArray(), Is.EqualTo(Hex("bc 01 00 05")), "the attribute length does not");
+            Assert.That(msg.Skip(24).ToArray(), Is.EqualTo(Hex("01 02 03 04 05 00 00 00")));
+        }
+
+        [Test]
         public void BuildRequest_WithoutTokenIsABareHeader()
         {
             byte[] msg = StunClient.BuildRequest(TX, null);

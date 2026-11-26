@@ -74,6 +74,9 @@ namespace BrainCloud.Internal
             {
                 return;
             }
+            // The disconnect happens on the next Update; the server drops the report with the connection,
+            // so turning direct connect off in the meantime must not try to withdraw it
+            m_natProbe.OnRttDisconnected();
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
         }
 
