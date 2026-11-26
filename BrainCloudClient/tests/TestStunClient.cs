@@ -324,6 +324,26 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void NatProbe_TurnedOffAgainBeforeANewReport_SendsNoSecondWithdrawal()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+            sent[0].GetCallback().OnSuccessCallback("{}");
+
+            probe.Enabled = false;
+            Assert.That(sent.Count, Is.EqualTo(2), "the withdrawal");
+
+            // On and off again before the new test reports: the server still holds the withdrawal
+            probe.Enabled = true;
+            probe.Enabled = false;
+            Pump(probe, () => false, 500);
+            Assert.That(sent.Count, Is.EqualTo(2));
+        }
+
+        [Test]
         public void NatProbe_TurnedOffWhileDisconnected_SendsNothing()
         {
             var sent = new List<ServerCall>();
@@ -399,13 +419,13 @@ namespace BrainCloudTests
             return ProbeWithToken(null, in_servers);
         }
 
-        /// Short timeouts, so a server that stays silent costs 300 ms rather than seconds
+        /// Shorter timeouts than the library's (a silent server costs 1.4 s rather than 2.8 s), with room for a slow machine
         private static List<StunResult> ProbeWithToken(byte[] in_token, params FakeStun[] in_servers)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
             {
                 socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
-                return StunClient.Probe(socket, in_servers.Select(s => s.EndPoint).ToList(), in_token, 2, 100);
+                return StunClient.Probe(socket, in_servers.Select(s => s.EndPoint).ToList(), in_token, 3, 200);
             }
         }
 
@@ -586,11 +606,12 @@ namespace BrainCloudTests
             _bc.RTTService.EnableRTT(tr.ApiSuccess, tr.ApiError);
             tr.Run();
 
-            // A stun section starts the test as RTT connects
-            if (probe.State == NatProbe.ReportState.None)
+            if (!probe.StunSectionReceived)
             {
                 Assert.Ignore("The server sent no stun section: no STUN service here, or the app's plan has no direct connect");
             }
+            // A stun section starts the test as RTT connects; if not, the client failed to read it
+            Assert.That(probe.State, Is.Not.EqualTo(NatProbe.ReportState.None), "the server sent a stun section but no test started");
 
             Assert.That(pumpUntilSettled(probe, 10000), Is.True, "the report was not settled; state " + probe.State);
             Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Accepted));

@@ -75,6 +75,8 @@ namespace BrainCloud.Internal
         private bool m_enabled = false;
         private bool m_rttConnected = false;
         private bool m_testedThisConnection = false;
+        // A test's report is on the server for this connection; only then does turning off withdraw anything
+        private bool m_testReported = false;
         private int m_generation = 0;
 
         private string m_stunHost = null;
@@ -125,7 +127,8 @@ namespace BrainCloud.Internal
                 // Forget any test still running, and let a later switch back on test again
                 ++m_generation;
                 m_testedThisConnection = false;
-                bool reported = LastReport != null;
+                bool reported = m_testReported;
+                m_testReported = false;
                 LastReport = null;
                 State = ReportState.None;
                 if (m_rttConnected && reported)
@@ -140,6 +143,9 @@ namespace BrainCloud.Internal
 
         public ReportState State { get; private set; }
 
+        /// True when the last connection request's response had a stun section, usable or not.
+        internal bool StunSectionReceived { get; private set; }
+
         /// <summary>
         /// Takes the stun section of an rttRegistration.REQUEST_CLIENT_CONNECTION response, or null
         /// when the response had none. Called for every connection request; replaces what was there.
@@ -149,6 +155,7 @@ namespace BrainCloud.Internal
             m_stunHost = null;
             m_stunPort = 0;
             m_stunToken = null;
+            StunSectionReceived = in_stun != null;
             if (in_stun == null) return;
 
             object host, port, token;
@@ -176,6 +183,7 @@ namespace BrainCloud.Internal
             ++m_generation;
             m_rttConnected = true;
             m_testedThisConnection = false;
+            m_testReported = false;
             LastReport = null;
             State = ReportState.None;
             start();
@@ -186,6 +194,8 @@ namespace BrainCloud.Internal
             ++m_generation;
             m_rttConnected = false;
             m_testedThisConnection = false;
+            // The server drops the report with the connection
+            m_testReported = false;
         }
 
         /// <summary>Sends a finished test's report. Call on the main thread.</summary>
@@ -204,6 +214,7 @@ namespace BrainCloud.Internal
             }
             if (current == null || !m_rttConnected || !m_enabled) return;
 
+            m_testReported = true;
             send(current);
         }
 
