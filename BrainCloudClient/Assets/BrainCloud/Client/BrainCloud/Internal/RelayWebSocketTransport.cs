@@ -5,6 +5,8 @@
 
 namespace BrainCloud.Internal
 {
+    using System;
+
     internal sealed class RelayWebSocketTransport : IRelayTransport
     {
         private readonly IRelayTransportListener m_listener;
@@ -38,14 +40,27 @@ namespace BrainCloud.Internal
 
         public void Close()
         {
-            if (m_webSocket != null)
+            BrainCloudWebSocket webSocket = m_webSocket;
+            if (webSocket != null)
             {
-                m_webSocket.OnClose -= WebSocket_OnClose;
-                m_webSocket.OnOpen -= Websocket_OnOpen;
-                m_webSocket.OnMessage -= WebSocket_OnMessage;
-                m_webSocket.OnError -= WebSocket_OnError;
-                m_webSocket.Close();
+                // Forget it first: Close() can be called on a socket still connecting, or one whose
+                // connect failed, and nothing that goes wrong closing it may leave it in place
                 m_webSocket = null;
+                webSocket.OnClose -= WebSocket_OnClose;
+                webSocket.OnOpen -= Websocket_OnOpen;
+                webSocket.OnMessage -= WebSocket_OnMessage;
+                webSocket.OnError -= WebSocket_OnError;
+                try
+                {
+                    webSocket.Close();
+                }
+                catch (Exception e)
+                {
+                    if (m_listener.Client.LoggingEnabled)
+                    {
+                        m_listener.Client.Log("Relay: closing the WebSocket failed: " + e.Message);
+                    }
+                }
             }
         }
 

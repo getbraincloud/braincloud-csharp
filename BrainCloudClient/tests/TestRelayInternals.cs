@@ -382,8 +382,10 @@ namespace BrainCloudTests
             }
         }
 
-        [Test]
-        public void Tcp_ALengthWithNoPacketIsAnError()
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Tcp_ALengthWithNoPacketIsAnError(int length)
         {
             var server = new TcpListener(IPAddress.Loopback, 0);
             server.Start();
@@ -395,11 +397,11 @@ namespace BrainCloudTests
                 using (TcpClient peer = server.AcceptTcpClient())
                 {
                     WaitFor(() => listener.Connected, "the transport to connect");
-                    // A length of 2 covers only the length prefix itself: no control byte follows
-                    peer.GetStream().Write(new byte[] { 0, 2 }, 0, 2);
+                    // The length counts the 2-byte prefix itself, so 2 or less leaves no room for a control byte
+                    peer.GetStream().Write(new byte[] { 0, (byte)length }, 0, 2);
 
                     WaitFor(() => listener.Errors.Count > 0, "an error");
-                    Assert.That(listener.Errors[0], Does.Contain("Bad packet length 2"));
+                    Assert.That(listener.Errors[0], Does.Contain("Bad packet length " + length));
                     Assert.That(listener.Data, Is.Empty);
                 }
             }
@@ -408,6 +410,49 @@ namespace BrainCloudTests
                 transport.Close();
                 server.Stop();
             }
+        }
+
+        [Test]
+        public void WebSocket_ClosesWhileStillConnecting()
+        {
+            // Accepts the TCP connection but never answers the WebSocket handshake
+            var server = new TcpListener(IPAddress.Loopback, 0);
+            server.Start();
+            var listener = new RecordingListener();
+            var transport = new RelayWebSocketTransport(listener);
+            try
+            {
+                transport.Connect("127.0.0.1", ((IPEndPoint)server.LocalEndpoint).Port, false);
+                using (TcpClient peer = server.AcceptTcpClient())
+                {
+                    // What RelayComms does when Connect() is called again before the relay answers
+                    Assert.That(() => transport.Close(), Throws.Nothing);
+                    Assert.That(transport.CanSend, Is.False);
+                }
+            }
+            finally
+            {
+                server.Stop();
+            }
+        }
+
+        [Test]
+        public void WebSocket_ClosesAfterItsConnectFailed()
+        {
+            // A port with nothing listening on it
+            var probe = new TcpListener(IPAddress.Loopback, 0);
+            probe.Start();
+            int port = ((IPEndPoint)probe.LocalEndpoint).Port;
+            probe.Stop();
+
+            var listener = new RecordingListener();
+            var transport = new RelayWebSocketTransport(listener);
+            transport.Connect("127.0.0.1", port, false);
+            WaitFor(() => listener.Errors.Count > 0, "the connect to fail");
+
+            // What RelayComms does when the game calls Connect() again to retry
+            Assert.That(() => transport.Close(), Throws.Nothing);
+            Assert.That(transport.CanSend, Is.False);
         }
 
         [Test]

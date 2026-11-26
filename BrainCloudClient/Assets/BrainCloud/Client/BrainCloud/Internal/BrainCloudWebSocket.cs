@@ -120,10 +120,27 @@ namespace BrainCloud.Internal
         public void Close()
         {
 #if DOT_NET || GODOT
-            if (ClientWebSocket == null)
+            ClientWebSocket socket = ClientWebSocket;
+            if (socket == null)
                 return;
-            ClientWebSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
             ClientWebSocket = null;
+            try
+            {
+                // CloseAsync throws unless the socket is open. One still connecting, or whose
+                // connect failed, is aborted instead, which also stops a connect in progress.
+                if (socket.State == WebSocketState.Open || socket.State == WebSocketState.CloseReceived)
+                {
+                    socket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+                }
+                else
+                {
+                    socket.Abort();
+                }
+            }
+            catch (Exception)
+            {
+                // It is being closed either way; there is no one left to tell
+            }
 #elif UNITY_WEBGL && !UNITY_EDITOR
             if (NativeWebSocket == null)
                 return;

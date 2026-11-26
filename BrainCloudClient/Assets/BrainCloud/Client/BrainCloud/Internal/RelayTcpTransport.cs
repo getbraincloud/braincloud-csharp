@@ -183,11 +183,9 @@ namespace BrainCloud.Internal
                     m_tcpHeaderBytesRead = 0;
 
                     m_tcpBytesRead = 0;
-                    if (BitConverter.IsLittleEndian)
-                        Array.Reverse(m_tcpHeaderReadBuffer);
 
-                    // from the header that was read, how much should we read after this until the next message ?
-                    m_tcpBytesToRead = BitConverter.ToUInt16(m_tcpHeaderReadBuffer, 0);
+                    // from the header that was read (big-endian), how much should we read after this until the next message ?
+                    m_tcpBytesToRead = (m_tcpHeaderReadBuffer[0] << 8) | m_tcpHeaderReadBuffer[1];
                     m_tcpBytesToRead -= SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY;
                     if (m_tcpBytesToRead <= 0)
                     {
@@ -259,7 +257,16 @@ namespace BrainCloud.Internal
         {
             BrainCloudClient client = m_listener.Client;
             // Set here, not on the worker thread, so a Close() from now on closes this socket
-            TcpClient tcpClient = new TcpClient();
+            TcpClient tcpClient;
+            try
+            {
+                tcpClient = new TcpClient();
+            }
+            catch (Exception e)
+            {
+                reportError(e.ToString());
+                return;
+            }
             m_tcpClient = tcpClient;
             bool success = await Task.Run(async () =>
             {
@@ -290,6 +297,7 @@ namespace BrainCloud.Internal
                         if (m_closed) return;
                         m_tcpStream = tcpClient.GetStream();
                     }
+                    if (m_closed) return;
                     m_listener.OnTransportConnected();
                     // read the next header
                     m_tcpBytesToRead = 0;

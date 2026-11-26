@@ -13,9 +13,6 @@ namespace BrainCloud.Internal
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Threading.Tasks;
 
     internal sealed class RelayComms : IRelayTransportListener
     {
@@ -582,9 +579,17 @@ namespace BrainCloud.Internal
             bool sslEnabled = m_connectOptions.ssl;
             string host = m_connectOptions.host;
             int port = m_connectOptions.port;
-            // Connect() again before the relay accepted us replaces the earlier attempt
-            m_transport?.Close();
-            m_transport = null;
+            // Connect() again before the relay accepted us replaces the earlier attempt. What its
+            // transport has already queued belongs to that attempt, not this one.
+            if (m_transport != null)
+            {
+                m_transport.Close();
+                m_transport = null;
+                lock (m_events)
+                {
+                    m_events.Clear();
+                }
+            }
             switch (m_connectionType)
             {
                 case RelayConnectionType.WEBSOCKET:
