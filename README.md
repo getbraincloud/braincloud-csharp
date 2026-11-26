@@ -6,6 +6,7 @@ Navigate to:
 - [Latest Release](#latest-release)
 - [Unity Installation Guide](#unity-installation-guide)
 - [Godot Installation Guide (C# Only)](#godot-installation-guide-c-only)
+- [Direct Connect: Encryption and Export Compliance](#direct-connect-encryption-and-export-compliance)
 - [Troubleshooting](#troubleshooting)
 - [brainCloud Client Q&A](#braincloud-client-qa)
 
@@ -178,6 +179,37 @@ bc.Init();
 Keep the two files together when sharing the project with a teammate or build machine. CI can rewrite the config with `braincloud-setup <project folder> --refresh`.
 
 ---
+
+## Direct Connect: Encryption and Export Compliance
+
+With lobby **direct connect**, the players in a small lobby connect to each other peer to peer instead of through a relay server. Their traffic is always protected, in one of two ways:
+
+| Mode | What it protects against | Included in the library |
+| --- | --- | --- |
+| **Authenticated** (`hmac-sha256`) | No one can forge, change or replay a player's packets, but anyone on the network path can read them, as they can with relay traffic sent over plain UDP | Always |
+| **Encrypted** (`chacha20-poly1305`) | The same, and the packets cannot be read | Only if you turn it on (below) |
+
+brainCloud uses encryption when every member of the lobby can, and authentication otherwise. A lobby type can require encryption: under **Design > Multiplayer > Lobbies**, open the lobby type, go to its **Direct Connect** tab and tick **Require encryption**. A lobby of that type whose members cannot all encrypt then uses its relay server instead of connecting directly.
+
+### Turning encryption on
+
+The library's encryption is compiled only when your project defines the scripting symbol `BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION`. Without it, the library contains no encryption code at all.
+
+- **Unity:** in **Project Settings > Player > Other Settings**, add `BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION` to **Scripting Define Symbols** (under **Script Compilation** in recent versions of Unity, **Configuration** in older ones). Define symbols are set **per platform**, so add it for every platform you build (for example Android, iOS and Standalone). It works the same whether you installed brainCloud with the Package Manager or the `.unitypackage`.
+- **Godot (C#) and .NET:** add it to your project's `DefineConstants`, for example `<DefineConstants>$(DefineConstants);BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>`, and build the brainCloud library from source.
+
+If you define it for some platforms and not others, a lobby that mixes players from both uses authentication only, unless its lobby type requires encryption.
+
+### App store export compliance
+
+App stores ask whether your app uses encryption. Apple, for example, asks whether your app implements standard encryption algorithms "instead of, or in addition to" the operating system's own, and uses the answer to decide what export compliance documentation you must provide. Your answer depends on what your game includes, and whether the symbol above is defined is part of that:
+
+- **Without `BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION`**, direct connect uses cryptography only to authenticate packets and to derive the keys for that (HMAC-SHA256 and HKDF-SHA256). Under US and EU export rules, cryptography limited to authentication and data integrity is generally not treated as encryption, and Apple's questionnaire lists encryption "limited to authentication" among its exemptions.
+- **With `BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION`**, your game contains a standard encryption algorithm (ChaCha20-Poly1305, RFC 8439) implemented in the library rather than taken from the operating system. On Apple's questionnaire that is a standard algorithm used in addition to the operating system's; for an app distributed in France, Apple then asks for a French encryption declaration.
+
+The rest of your game matters too: other features, plugins and SDKs can each change the answer.
+
+**This is not legal advice.** You are responsible for your app's export compliance answers. Check Apple's [Complying with Encryption Export Regulations](https://developer.apple.com/documentation/security/complying-with-encryption-export-regulations) and [Overview of export compliance](https://developer.apple.com/help/app-store-connect/manage-app-information/overview-of-export-compliance), and other stores' requirements for the stores you publish in, and ask your own advisers if you are unsure.
 
 ## Troubleshooting
 

@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -36,7 +36,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug_Unity\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES, DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES, DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -308,6 +308,15 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\NatProbe.cs">
       <Link>BrainCloud\Internal\NatProbe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ChaCha20Poly1305.cs">
+      <Link>BrainCloud\Internal\ChaCha20Poly1305.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectPacket.cs">
+      <Link>BrainCloud\Internal\DirectPacket.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\Sha256.cs">
+      <Link>BrainCloud\Internal\Sha256.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\StunClient.cs">
       <Link>BrainCloud\Internal\StunClient.cs</Link>
