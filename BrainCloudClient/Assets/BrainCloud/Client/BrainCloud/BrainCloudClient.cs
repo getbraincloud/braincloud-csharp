@@ -1159,6 +1159,8 @@ namespace BrainCloud
         /// <summary> Check if logging of brainCloud transactions is enabled</summary>
         public bool LoggingEnabled { get { return _loggingEnabled; } }
 
+        internal NatProbe DirectConnectProbe { get { return _rttComms.DirectConnectProbe; } }
+
         /// <summary>Allow developers to register their own log handling routine</summary>
         /// <param name="logDelegate">The log delegate</param>
         public void RegisterLogDelegate(LogCallback logDelegate)

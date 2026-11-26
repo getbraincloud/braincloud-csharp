@@ -20,6 +20,7 @@ namespace BrainCloud.Internal
         public RTTComms(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
+            m_natProbe = new NatProbe(in_client);
         }
 
         /// <summary>
@@ -73,6 +74,9 @@ namespace BrainCloud.Internal
             {
                 return;
             }
+            // The disconnect happens on the next Update; the server drops the report with the connection,
+            // so turning direct connect off in the meantime must not try to withdraw it
+            m_natProbe.OnRttDisconnected();
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
         }
 
@@ -128,6 +132,9 @@ namespace BrainCloud.Internal
             m_heartBeatTime = TimeSpan.FromMilliseconds(in_value * 1000);
         }
 
+        /// <summary>The direct connect network test, run once per RTT connection.</summary>
+        public NatProbe DirectConnectProbe { get { return m_natProbe; } }
+
         public string RTTConnectionID { get; private set; }
         public string RTTEventServer { get; private set; }
 
@@ -148,6 +155,7 @@ namespace BrainCloud.Internal
                     if (m_webSocketStatus == WebsocketStatus.CLOSED || m_tcpDisconnected)
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        m_natProbe.OnRttDisconnected();
                         if (m_connectionFailureCallback != null)
                             m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
                         disconnect();
@@ -165,6 +173,7 @@ namespace BrainCloud.Internal
                     {
                         m_lastHeartbeatMs = m_clientRef.NowMs;
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
+                        m_natProbe.OnRttConnected();
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
 
@@ -227,6 +236,8 @@ namespace BrainCloud.Internal
                     send(buildHeartbeatRequest(), true);
                 }
             }
+
+            m_natProbe.Update();
         }
 
         #region private
@@ -325,6 +336,10 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
+            // Before the game's failure callback, which may turn direct connect off: the server has
+            // dropped this connection's report, so there is nothing left to withdraw
+            m_natProbe.OnRttDisconnected();
+
             if (m_webSocket != null) m_webSocket.Close();
 
             // TCP cleanup — set the flag first so the receive thread's catch block knows
@@ -571,6 +586,8 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
             m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
+            // Present only when direct connect is available to this app
+            m_natProbe.SetStunSection(jsonData.ContainsKey("stun") ? jsonData["stun"] as Dictionary<string, object> : null);
 
             if (m_currentConnectionType == RTTConnectionType.WEBSOCKET)
             {
@@ -684,6 +701,7 @@ namespace BrainCloud.Internal
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
         private BrainCloudClient m_clientRef;
+        private readonly NatProbe m_natProbe;
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;

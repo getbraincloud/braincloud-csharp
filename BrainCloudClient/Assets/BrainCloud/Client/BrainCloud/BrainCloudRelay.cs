@@ -127,6 +127,33 @@ namespace BrainCloud
         {
             m_commsLayer.Disconnect();
         }
+
+        /// <summary>
+        /// Opts this player in to direct connect, where the players of a small relay lobby connect to
+        /// each other peer to peer instead of through a relay server. Off by default.
+        ///
+        /// Call it once, after initializing brainCloud. It lasts for the life of the client, through RTT
+        /// reconnections and logins, including a different player logging in; a wrapper Init() starts
+        /// again with it off. While it is on, each time RTT connects the library tests the player's
+        /// network and reports the result to brainCloud; a lobby only tries direct connect when every
+        /// member has reported a network a peer can reach. Direct connect shares players' IP addresses
+        /// with the other players in their lobby, so a game can tie this to a player setting; if it does,
+        /// set it again after each login. Turning it off withdraws the report, and that player's lobbies
+        /// use the relay server. It has no effect on WebGL.
+        /// </summary>
+        /// <param name="in_enable">True to take part in direct connect</param>
+        public void EnableDirectConnect(bool in_enable)
+        {
+            m_clientRef.DirectConnectProbe.Enabled = in_enable;
+        }
+
+        /// <summary>
+        /// Returns true if this player takes part in direct connect
+        /// </summary>
+        public bool IsDirectConnectEnabled()
+        {
+            return m_clientRef.DirectConnectProbe.Enabled;
+        }
         
         /// <summary>
         /// Terminate the match instance by the owner.
