@@ -377,6 +377,51 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void NatProbe_StunHostWithOnlyIPv6Addresses_ReportsUnknownAndSaysWhy()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent, "::1");
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+            Assert.That(NatInfo(sent[0])["mapping"], Is.EqualTo("unknown"));
+            Assert.That(NatInfo(sent[0])["udp"], Is.EqualTo(false));
+            Assert.That(probe.LastReport.Detail, Does.Contain("IPv6-only"));
+        }
+
+        [Test]
+        public void Measure_AnAddressItCannotSendTo_IsReportedWithoutWaiting()
+        {
+            // The IPv4 test socket cannot send to an IPv6 address at all
+            var start = DateTime.UtcNow;
+            NatReport report = NatProbe.Measure(new List<IPEndPoint> { new IPEndPoint(IPAddress.IPv6Loopback, 3478) }, null);
+            Assert.That(report.Mapping, Is.EqualTo(StunClient.MAPPING_UNKNOWN));
+            Assert.That(report.Udp, Is.False);
+            Assert.That(report.Detail, Does.Contain("could not send"));
+            Assert.That((DateTime.UtcNow - start).TotalMilliseconds, Is.LessThan(1000), "nothing went out, so there was nothing to wait for");
+        }
+
+        [Test]
+        public void Summarize_NoRouteToEveryAddress_SaysTheNetworkLooksIPv6Only()
+        {
+            // As on an IPv6-only network whose DNS still gives IPv4 addresses
+            var a = new IPEndPoint(IPAddress.Parse("192.0.2.1"), 3478);
+            var b = new IPEndPoint(IPAddress.Parse("192.0.2.2"), 3478);
+            NatReport report = NatProbe.Summarize(new List<StunResult> {
+                new StunResult(a, null, "could not send to it: NetworkUnreachable", true),
+                new StunResult(b, null, "could not send to it: NetworkUnreachable", true) });
+            Assert.That(report.Mapping, Is.EqualTo(StunClient.MAPPING_UNKNOWN));
+            Assert.That(report.Udp, Is.False);
+            Assert.That(report.Detail, Does.Contain("IPv6-only"));
+
+            // One address simply not answering is not that
+            report = NatProbe.Summarize(new List<StunResult> {
+                new StunResult(a, null, "could not send to it: NetworkUnreachable", true),
+                new StunResult(b, null, "no reply after 3 attempts") });
+            Assert.That(report.Detail, Does.Not.Contain("IPv6-only"));
+        }
+
+        [Test]
         public void NatProbe_AnswerForAnEarlierConnection_DoesNotChangeTheState()
         {
             var sent = new List<ServerCall>();
@@ -397,11 +442,11 @@ namespace BrainCloudTests
         #region helpers
 
         /// A probe whose STUN host is a loopback responder, sending its reports to in_sent.
-        private NatProbe NewProbe(List<ServerCall> in_sent)
+        private NatProbe NewProbe(List<ServerCall> in_sent, string in_host = "127.0.0.1")
         {
             var probe = new NatProbe(null, call => in_sent.Add(call));
             var stun = new Dictionary<string, object>();
-            stun["host"] = "127.0.0.1";
+            stun["host"] = in_host;
             stun["port"] = Start().EndPoint.Port;
             probe.SetStunSection(stun);
             return probe;

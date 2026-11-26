@@ -80,6 +80,8 @@ namespace BrainCloud.Internal
         // A test's report is on the server for this connection; only then does turning off withdraw anything
         private bool m_testReported = false;
         private int m_generation = 0;
+        // Counts withdrawals, so only the latest one's answer sets WithdrawalState
+        private int m_withdrawals = 0;
 
         private string m_stunHost = null;
         private int m_stunPort = 0;
@@ -123,7 +125,7 @@ namespace BrainCloud.Internal
                 m_enabled = value;
                 if (m_enabled)
                 {
-                    // Answers to anything sent before, such as a withdrawal, no longer change State
+                    // A new test, so nothing from before it can change State
                     ++m_generation;
                     start();
                     return;
@@ -200,6 +202,8 @@ namespace BrainCloud.Internal
             m_testReported = false;
             LastReport = null;
             State = ReportState.None;
+            ++m_withdrawals;
+            WithdrawalState = ReportState.None;
             start();
         }
 
@@ -264,9 +268,14 @@ namespace BrainCloud.Internal
             }
 
             WithdrawalState = ReportState.Sent;
+            int withdrawal = ++m_withdrawals;
             post(new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "direct connect was turned off"),
                 "Direct connect network report withdrawal failed: ",
-                accepted => WithdrawalState = accepted ? ReportState.Accepted : ReportState.Failed);
+                accepted =>
+                {
+                    // Only the latest withdrawal on this connection
+                    if (withdrawal == m_withdrawals) WithdrawalState = accepted ? ReportState.Accepted : ReportState.Failed;
+                });
         }
 
         private void post(NatReport in_report, string in_failureLog, Action<bool> in_answered)
@@ -367,9 +376,15 @@ namespace BrainCloud.Internal
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
                 results = StunClient.Probe(socket, in_servers, in_token);
             }
+            return Summarize(results);
+        }
 
+        /// <summary>The report for a probe's results, with the reason for anything missing.</summary>
+        internal static NatReport Summarize(IList<StunResult> results)
+        {
             IPEndPoint publicAddress = null;
             int answered = 0;
+            int noRoute = 0;
             string firstError = null;
             foreach (StunResult result in results)
             {
@@ -382,10 +397,16 @@ namespace BrainCloud.Internal
                 {
                     firstError = result.Error;
                 }
+                if (result.NoRoute) ++noRoute;
             }
 
             string detail = answered + " of " + results.Count + " STUN addresses answered";
             if (answered < results.Count && firstError != null) detail += "; " + firstError;
+            if (noRoute == results.Count)
+            {
+                // Some IPv6-only networks still hand out IPv4 addresses for a name, then cannot reach them
+                detail += ". This network has no IPv4 route, so it looks IPv6-only; direct connect needs IPv4, so this player's lobbies will use the relay";
+            }
             return new NatReport(StunClient.ClassifyMapping(results), answered > 0, publicAddress, detail);
         }
     }

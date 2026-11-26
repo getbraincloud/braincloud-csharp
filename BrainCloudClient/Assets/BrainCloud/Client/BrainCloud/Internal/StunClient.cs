@@ -18,11 +18,12 @@ namespace BrainCloud.Internal
     /// <summary>What one STUN server address said about us, or why it said nothing.</summary>
     internal sealed class StunResult
     {
-        public StunResult(IPEndPoint in_server, IPEndPoint in_mapped, string in_error)
+        public StunResult(IPEndPoint in_server, IPEndPoint in_mapped, string in_error, bool in_noRoute = false)
         {
             Server = in_server;
             Mapped = in_mapped;
             Error = in_error;
+            NoRoute = in_noRoute;
         }
 
         public IPEndPoint Server { get; private set; }
@@ -31,6 +32,10 @@ namespace BrainCloud.Internal
         public IPEndPoint Mapped { get; private set; }
 
         public string Error { get; private set; }
+
+        /// True when the request could not even be sent, because this network has no route to the
+        /// address (as on an IPv6-only network for an IPv4 address).
+        public bool NoRoute { get; private set; }
     }
 
     /// <summary>
@@ -144,12 +149,15 @@ namespace BrainCloud.Internal
         {
             var pending = new Dictionary<string, Pending>();
             var results = new Dictionary<IPEndPoint, StunResult>();
+            // Why the last request to each address could not be sent, if it could not
+            var sendErrors = new Dictionary<IPEndPoint, SocketError>();
             int start = Environment.TickCount;
             byte[] buffer = new byte[1500];
             int timeout = in_firstTimeoutMs;
 
             for (int attempt = 0; attempt < in_attempts && results.Count < in_servers.Count; ++attempt)
             {
+                int sentThisAttempt = 0;
                 foreach (IPEndPoint server in in_servers)
                 {
                     if (results.ContainsKey(server)) continue;
@@ -162,18 +170,23 @@ namespace BrainCloud.Internal
                     try
                     {
                         in_socket.SendTo(BuildRequest(tx, in_token), server);
+                        sendErrors.Remove(server);
+                        ++sentThisAttempt;
                     }
-                    catch (SocketException)
+                    catch (SocketException e)
                     {
-                        // No route to this address; it simply will not answer
+                        // It simply will not answer; remember why, for the report
+                        sendErrors[server] = e.SocketErrorCode;
                     }
                 }
+                // Nothing went out, so there is nothing to wait for
+                if (sentThisAttempt == 0) continue;
 
                 long deadline = elapsedMs(start) + timeout;
                 while (results.Count < in_servers.Count)
                 {
                     int wait = (int)(deadline - elapsedMs(start));
-                    if (wait <= 0 || !in_socket.Poll(wait * 1000, SelectMode.SelectRead)) break;
+                    if (wait <= 0 || !in_socket.Poll(Math.Min(wait, int.MaxValue / 1000) * 1000, SelectMode.SelectRead)) break;
                     EndPoint from = new IPEndPoint(in_socket.AddressFamily == AddressFamily.InterNetworkV6 ? IPAddress.IPv6Any : IPAddress.Any, 0);
                     int n;
                     try
@@ -198,8 +211,21 @@ namespace BrainCloud.Internal
             foreach (IPEndPoint server in in_servers)
             {
                 StunResult result;
-                ordered.Add(results.TryGetValue(server, out result) ? result
-                    : new StunResult(server, null, "no reply after " + in_attempts + " attempts"));
+                SocketError sendError;
+                if (results.TryGetValue(server, out result))
+                {
+                    ordered.Add(result);
+                }
+                else if (sendErrors.TryGetValue(server, out sendError))
+                {
+                    bool noRoute = sendError == SocketError.NetworkUnreachable || sendError == SocketError.HostUnreachable ||
+                        sendError == SocketError.AddressFamilyNotSupported;
+                    ordered.Add(new StunResult(server, null, "could not send to it: " + sendError, noRoute));
+                }
+                else
+                {
+                    ordered.Add(new StunResult(server, null, "no reply after " + in_attempts + " attempts"));
+                }
             }
             return ordered;
         }
