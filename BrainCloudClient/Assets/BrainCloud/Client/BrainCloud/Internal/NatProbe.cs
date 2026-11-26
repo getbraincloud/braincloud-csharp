@@ -71,6 +71,7 @@ namespace BrainCloud.Internal
         }
 
         private readonly BrainCloudClient m_clientRef;
+        private readonly Action<ServerCall> m_send;
         private bool m_enabled = false;
         private bool m_rttConnected = false;
         private bool m_testedThisConnection = false;
@@ -80,12 +81,27 @@ namespace BrainCloud.Internal
         private int m_stunPort = 0;
         private byte[] m_stunToken = null;
 
-        // A finished test waiting to be reported; written by the test thread, taken in Update
-        private volatile NatReport m_finished = null;
+        // Finished tests waiting for Update, added by the test threads. A list rather than a single
+        // slot: a test from an earlier connection can finish next to the current one, and must not
+        // overwrite it.
+        private readonly object m_finishedLock = new object();
+        private readonly List<NatReport> m_finished = new List<NatReport>();
 
         public NatProbe(BrainCloudClient in_client)
+            : this(in_client, in_client.SendRequest)
+        {
+        }
+
+        /// For the unit tests: in_send receives each report instead of the client, and in_client may be null.
+        internal NatProbe(BrainCloudClient in_client, Action<ServerCall> in_send)
         {
             m_clientRef = in_client;
+            m_send = in_send;
+        }
+
+        private bool loggingEnabled
+        {
+            get { return m_clientRef != null && m_clientRef.LoggingEnabled; }
         }
 
         /// <summary>
@@ -108,7 +124,6 @@ namespace BrainCloud.Internal
 
                 // Forget any test still running, and let a later switch back on test again
                 ++m_generation;
-                m_finished = null;
                 m_testedThisConnection = false;
                 bool reported = LastReport != null;
                 LastReport = null;
@@ -176,19 +191,25 @@ namespace BrainCloud.Internal
         /// <summary>Sends a finished test's report. Call on the main thread.</summary>
         public void Update()
         {
-            NatReport finished = m_finished;
-            if (finished == null) return;
-            m_finished = null;
+            // Results from an earlier connection, or from before direct connect was turned off, are dropped
+            NatReport current = null;
+            lock (m_finishedLock)
+            {
+                if (m_finished.Count == 0) return;
+                foreach (NatReport finished in m_finished)
+                {
+                    if (finished.Generation == m_generation) current = finished;
+                }
+                m_finished.Clear();
+            }
+            if (current == null || !m_rttConnected || !m_enabled) return;
 
-            // From an earlier connection, or from before direct connect was turned off
-            if (finished.Generation != m_generation || !m_rttConnected || !m_enabled) return;
-
-            send(finished);
+            send(current);
         }
 
         private void send(NatReport in_report)
         {
-            if (m_clientRef.LoggingEnabled)
+            if (loggingEnabled)
             {
                 m_clientRef.Log("Direct connect network report: mapping " + in_report.Mapping + ", UDP " + (in_report.Udp ? "works" : "got no answer") +
                     (string.IsNullOrEmpty(in_report.Detail) ? "" : " (" + in_report.Detail + ")"));
@@ -208,12 +229,12 @@ namespace BrainCloud.Internal
                 (status, reasonCode, error, cbObject) =>
                 {
                     if (generation == m_generation) State = ReportState.Failed;
-                    if (m_clientRef.LoggingEnabled)
+                    if (loggingEnabled)
                     {
                         m_clientRef.Log("Direct connect network report failed: " + status + " " + reasonCode + " " + error);
                     }
                 });
-            m_clientRef.SendRequest(new ServerCall(ServiceName.RTTRegistration, ServiceOperation.SetNatInfo, data, callback));
+            m_send(new ServerCall(ServiceName.RTTRegistration, ServiceOperation.SetNatInfo, data, callback));
         }
 
         private void start()
@@ -241,7 +262,10 @@ namespace BrainCloud.Internal
                     report = new NatReport(StunClient.MAPPING_UNKNOWN, false, null, e.Message);
                 }
                 report.Generation = generation;
-                m_finished = report;
+                lock (m_finishedLock)
+                {
+                    m_finished.Add(report);
+                }
             });
 #endif
         }

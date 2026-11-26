@@ -5,6 +5,7 @@ using BrainCloud.Internal;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -213,7 +214,178 @@ namespace BrainCloudTests
 
         #endregion
 
+        #region network test and report
+
+        // Each test drives a NatProbe the way RTTComms does (stun section, connected, disconnected,
+        // Update every frame) and captures the SET_NAT_INFO calls instead of sending them. The STUN
+        // host is 127.0.0.1 alone, so the mapping is always "unknown"; what matters here is when,
+        // and whether, a report goes out.
+
+        [Test]
+        public void NatProbe_ReportsOncePerConnection_OnlyAfterConnected()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            Pump(probe, () => false, 300);
+            Assert.That(sent, Is.Empty, "nothing before RTT connects");
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.None));
+
+            probe.OnRttConnected();
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing));
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+            Assert.That(sent[0].GetService(), Is.EqualTo("rttRegistration"));
+            Assert.That(sent[0].GetOperation(), Is.EqualTo("SET_NAT_INFO"));
+            Assert.That(NatInfo(sent[0])["mapping"], Is.EqualTo("unknown"));
+            Assert.That(NatInfo(sent[0])["udp"], Is.EqualTo(true));
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Sent));
+
+            sent[0].GetCallback().OnSuccessCallback("{}");
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Accepted));
+
+            Pump(probe, () => false, 300);
+            Assert.That(sent.Count, Is.EqualTo(1), "one report per connection");
+        }
+
+        [Test]
+        public void NatProbe_NotEnabledOrNoStunSection_SendsNothing()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe off = NewProbe(sent);
+            off.OnRttConnected();
+            Pump(off, () => false, 500);
+            Assert.That(off.State, Is.EqualTo(NatProbe.ReportState.None));
+
+            NatProbe noStun = NewProbe(sent);
+            noStun.SetStunSection(null);
+            noStun.Enabled = true;
+            noStun.OnRttConnected();
+            Pump(noStun, () => false, 500);
+            Assert.That(noStun.State, Is.EqualTo(NatProbe.ReportState.None));
+
+            Assert.That(sent, Is.Empty);
+        }
+
+        [Test]
+        public void NatProbe_ResultFromAnEarlierConnection_IsDropped()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+
+            // Disconnected before the result: nothing is sent
+            probe.OnRttConnected();
+            probe.OnRttDisconnected();
+            Pump(probe, () => false, 500);
+            Assert.That(sent, Is.Empty);
+
+            // Reconnected while the first test runs: only the new connection's result is sent
+            probe.OnRttConnected();
+            probe.OnRttDisconnected();
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+            Pump(probe, () => false, 500);
+            Assert.That(sent.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void NatProbe_TurnedOffBeforeTheResult_SendsNothing()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            probe.Enabled = false;
+            Pump(probe, () => false, 500);
+            Assert.That(sent, Is.Empty, "nothing was reported, so there is nothing to withdraw");
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.None));
+        }
+
+        [Test]
+        public void NatProbe_TurnedOffAfterAReport_Withdraws_AndOnAgainTestsAgain()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+            sent[0].GetCallback().OnSuccessCallback("{}");
+
+            probe.Enabled = false;
+            Assert.That(sent.Count, Is.EqualTo(2), "the withdrawal is sent at once");
+            Assert.That(NatInfo(sent[1])["mapping"], Is.EqualTo("unknown"));
+            Assert.That(NatInfo(sent[1])["udp"], Is.EqualTo(false));
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Sent));
+
+            probe.Enabled = true;
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing));
+            Assert.That(Pump(probe, () => sent.Count == 3), Is.True, "no new report after turning it back on");
+            Assert.That(NatInfo(sent[2])["udp"], Is.EqualTo(true));
+        }
+
+        [Test]
+        public void NatProbe_TurnedOffWhileDisconnected_SendsNothing()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+
+            // The server dropped the report with the connection
+            probe.OnRttDisconnected();
+            probe.Enabled = false;
+            Assert.That(sent.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void NatProbe_AnswerForAnEarlierConnection_DoesNotChangeTheState()
+        {
+            var sent = new List<ServerCall>();
+            NatProbe probe = NewProbe(sent);
+            probe.Enabled = true;
+            probe.OnRttConnected();
+            Assert.That(Pump(probe, () => sent.Count == 1), Is.True, "the report was not sent");
+
+            probe.OnRttDisconnected();
+            probe.OnRttConnected();
+            Assert.That(probe.LastReport, Is.Null);
+            sent[0].GetCallback().OnSuccessCallback("{}");
+            Assert.That(probe.State, Is.EqualTo(NatProbe.ReportState.Testing));
+        }
+
+        #endregion
+
         #region helpers
+
+        /// A probe whose STUN host is a loopback responder, sending its reports to in_sent.
+        private NatProbe NewProbe(List<ServerCall> in_sent)
+        {
+            var probe = new NatProbe(null, call => in_sent.Add(call));
+            var stun = new Dictionary<string, object>();
+            stun["host"] = "127.0.0.1";
+            stun["port"] = Start().EndPoint.Port;
+            probe.SetStunSection(stun);
+            return probe;
+        }
+
+        /// Calls Update every 10 ms, as RTTComms does each frame, until in_done is true or the time is up.
+        private static bool Pump(NatProbe in_probe, Func<bool> in_done, int in_timeoutMs = 3000)
+        {
+            Stopwatch clock = Stopwatch.StartNew();
+            while (clock.ElapsedMilliseconds < in_timeoutMs)
+            {
+                in_probe.Update();
+                if (in_done()) return true;
+                Thread.Sleep(10);
+            }
+            return false;
+        }
+
+        private static Dictionary<string, object> NatInfo(ServerCall in_call)
+        {
+            return (Dictionary<string, object>)in_call.GetJsonData()["natInfo"];
+        }
 
         private FakeStun Start()
         {
