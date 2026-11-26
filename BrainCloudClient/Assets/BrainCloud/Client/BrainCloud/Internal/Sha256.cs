@@ -161,10 +161,22 @@ namespace BrainCloud.Internal
         /// </summary>
         public static byte[] Hkdf(byte[] in_salt, byte[] in_ikm, byte[] in_info, int in_length)
         {
-            if (in_length < 0 || in_length > 255 * Sha256.HASH_LENGTH) throw new ArgumentException("HKDF can give at most 8160 bytes");
+            return HkdfExpand(HkdfExtract(in_salt, in_ikm), in_info, in_length);
+        }
+
+        /// The first step of HKDF: a pseudorandom key from the input key material and salt.
+        public static byte[] HkdfExtract(byte[] in_salt, byte[] in_ikm)
+        {
             byte[] salt = (in_salt == null || in_salt.Length == 0) ? new byte[Sha256.HASH_LENGTH] : in_salt;
+            return Compute(salt, in_ikm);
+        }
+
+        /// The second step of HKDF: in_length bytes from the pseudorandom key and in_info.
+        public static byte[] HkdfExpand(byte[] in_prk, byte[] in_info, int in_length)
+        {
+            if (in_length < 0 || in_length > 255 * Sha256.HASH_LENGTH) throw new ArgumentException("HKDF can give at most 8160 bytes");
+            byte[] prk = in_prk;
             byte[] info = in_info ?? new byte[0];
-            byte[] prk = Compute(salt, in_ikm);
 
             byte[] okm = new byte[in_length];
             byte[] t = new byte[0];

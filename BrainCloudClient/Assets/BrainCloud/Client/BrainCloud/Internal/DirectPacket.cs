@@ -6,7 +6,6 @@
 namespace BrainCloud.Internal
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
 
     /// <summary>
@@ -19,7 +18,8 @@ namespace BrainCloud.Internal
     ///      0     1  FORMAT (0xB1): brainCloud direct connect, format 1
     ///      1     1  sender's net id
     ///      2     1  receiver's net id
-    ///      3     8  the sender's epoch: random, chosen whenever it starts sending to this peer
+    ///      3     8  the sender's epoch: 4 random bytes, the same for every sender in this
+    ///               process, then a 4-byte big-endian count that goes up with every new sender
     ///     11     8  sequence number, big-endian, from 0 within the epoch
     ///     19     n  the packet, encrypted
     ///   19+n    16  authentication tag
@@ -28,7 +28,8 @@ namespace BrainCloud.Internal
     /// Each epoch of each direction between two players has its own key (DeriveKey). The nonce is
     /// 4 zero bytes then the sequence number, and the header is the associated data. A key is never
     /// used with the same nonce twice: the sequence only goes up within an epoch, and a sender that
-    /// starts again, for whatever reason, starts a new epoch and so gets a new key.
+    /// starts again, for whatever reason, starts a new epoch and so gets a new key. Epochs are
+    /// ordered, so a receiver only ever moves forward (see DirectReceiver).
     ///
     /// Use DirectSender and DirectReceiver, which keep those rules; the static methods here are the
     /// format itself.
@@ -55,7 +56,19 @@ namespace BrainCloud.Internal
         /// </summary>
         public static byte[] DeriveKey(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
+            return DeriveKeyFromExtracted(ExtractKey(in_sessionToken), in_cipher, in_sender, in_receiver, in_epoch);
+        }
+
+        /// The first, epoch-independent step of DeriveKey, which a receiver can do once.
+        public static byte[] ExtractKey(byte[] in_sessionToken)
+        {
             if (in_sessionToken == null || in_sessionToken.Length != SESSION_TOKEN_LENGTH) throw new ArgumentException("the session token must be 16 bytes");
+            return HmacSha256.HkdfExtract(KEY_SALT, in_sessionToken);
+        }
+
+        /// DeriveKey from the result of ExtractKey.
+        public static byte[] DeriveKeyFromExtracted(byte[] in_extracted, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
+        {
             if (in_cipher != CIPHER_CHACHA20_POLY1305) throw new ArgumentException("unsupported cipher: " + in_cipher);
             if (in_epoch == null || in_epoch.Length != EPOCH_LENGTH) throw new ArgumentException("the epoch must be 8 bytes");
             checkNetId(in_sender);
@@ -67,7 +80,7 @@ namespace BrainCloud.Internal
             info[name.Length + 1] = (byte)in_sender;
             info[name.Length + 2] = (byte)in_receiver;
             Buffer.BlockCopy(in_epoch, 0, info, name.Length + 3, EPOCH_LENGTH);
-            return HmacSha256.Hkdf(KEY_SALT, in_sessionToken, info, ChaCha20Poly1305.KEY_LENGTH);
+            return HmacSha256.HkdfExpand(in_extracted, info, ChaCha20Poly1305.KEY_LENGTH);
         }
 
         /// <summary>The datagram carrying in_length bytes of in_packet from in_offset.</summary>
@@ -126,12 +139,49 @@ namespace BrainCloud.Internal
             return ChaCha20Poly1305.Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
         }
 
-        /// A new random epoch. It only has to differ from this sender's earlier ones, so a version 4 GUID's randomness is plenty.
+        // This process's epoch prefix, and how many senders it has made
+        private static readonly byte[] s_epochPrefix = newPrefix();
+        private static int s_epochCount = 0;
+
+        /// <summary>
+        /// The next epoch of this process: its random prefix, then a count that goes up every time.
+        /// The prefix only has to differ from other processes' and the count makes every epoch in
+        /// this one unique, whatever the platform's random source does.
+        /// </summary>
         public static byte[] NewEpoch()
         {
+            uint count = (uint)System.Threading.Interlocked.Increment(ref s_epochCount);
+            if (count == 0) throw new InvalidOperationException("epochs used up");
+            return MakeEpoch(s_epochPrefix, count);
+        }
+
+        /// An epoch from its two parts.
+        public static byte[] MakeEpoch(byte[] in_prefix, uint in_count)
+        {
             byte[] epoch = new byte[EPOCH_LENGTH];
-            Buffer.BlockCopy(Guid.NewGuid().ToByteArray(), 0, epoch, 0, EPOCH_LENGTH);
+            Buffer.BlockCopy(in_prefix, 0, epoch, 0, 4);
+            epoch[4] = (byte)(in_count >> 24);
+            epoch[5] = (byte)(in_count >> 16);
+            epoch[6] = (byte)(in_count >> 8);
+            epoch[7] = (byte)in_count;
             return epoch;
+        }
+
+        internal static bool SamePrefix(byte[] a, byte[] b)
+        {
+            return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
+        }
+
+        internal static uint EpochCount(byte[] in_epoch)
+        {
+            return ((uint)in_epoch[4] << 24) | ((uint)in_epoch[5] << 16) | ((uint)in_epoch[6] << 8) | in_epoch[7];
+        }
+
+        private static byte[] newPrefix()
+        {
+            byte[] prefix = new byte[4];
+            Buffer.BlockCopy(Guid.NewGuid().ToByteArray(), 0, prefix, 0, 4);
+            return prefix;
         }
 
         private static byte[] nonceFor(byte[] in_header)
@@ -148,8 +198,9 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// Everything this player sends to one peer: the key for a new random epoch, and the sequence
-    /// number, which only goes up. Create one per peer per connection; a new one is a new epoch.
+    /// Everything this player sends to one peer: the key for a new epoch, and the sequence number,
+    /// which only goes up. Create one per peer per connection; a new one is a new epoch. Safe to
+    /// use from more than one thread.
     /// </summary>
     internal sealed class DirectSender
     {
@@ -157,6 +208,7 @@ namespace BrainCloud.Internal
         private readonly int m_receiver;
         private readonly byte[] m_epoch;
         private readonly byte[] m_key;
+        private readonly object m_lock = new object();
         private ulong m_next = 0;
 
         public DirectSender(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
@@ -164,7 +216,10 @@ namespace BrainCloud.Internal
         {
         }
 
-        /// For the tests: a fixed epoch.
+        /// <summary>
+        /// For the tests only: a chosen epoch. Anything else must use the other constructor, since
+        /// reusing an epoch with the same token reuses nonces.
+        /// </summary>
         internal DirectSender(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
             m_sender = in_sender;
@@ -174,41 +229,55 @@ namespace BrainCloud.Internal
         }
 
         /// The sequence number the next datagram will carry.
-        public ulong NextSequence { get { return m_next; } }
+        public ulong NextSequence
+        {
+            get { lock (m_lock) return m_next; }
+        }
 
         /// The datagram carrying in_length bytes of in_packet from in_offset.
         public byte[] Seal(byte[] in_packet, int in_offset, int in_length)
         {
-            if (m_next == ulong.MaxValue) throw new InvalidOperationException("sequence numbers used up; start a new sender");
-            return DirectPacket.Seal(m_key, m_sender, m_receiver, m_epoch, m_next++, in_packet, in_offset, in_length);
+            ulong sequence;
+            lock (m_lock)
+            {
+                // Two threads must never get the same sequence number: that would be the same nonce
+                if (m_next == ulong.MaxValue) throw new InvalidOperationException("sequence numbers used up; start a new sender");
+                sequence = m_next++;
+            }
+            return DirectPacket.Seal(m_key, m_sender, m_receiver, m_epoch, sequence, in_packet, in_offset, in_length);
         }
     }
 
     /// <summary>
     /// Everything this player receives from one peer. It accepts only datagrams from that peer to
-    /// this player that decrypt, each sequence number once. When the peer starts a new epoch (it
-    /// started sending again), the first datagram of it that decrypts moves this receiver to it;
-    /// the old epoch is retired and never accepted again, so a recording of it cannot be replayed.
+    /// this player that decrypt, each sequence number once, and only ever moves forward:
+    /// <list type="bullet">
+    /// <item>The first datagram that decrypts fixes the peer's epoch prefix. A peer keeps its
+    /// prefix for the life of its process, and a process that starts again cannot rejoin the same
+    /// attempt (a new attempt has a new token), so another prefix is never genuine and is dropped
+    /// without deriving any key.</item>
+    /// <item>A higher count than the current epoch's means the peer started sending again: the
+    /// first datagram of it that decrypts moves this receiver to it. A lower or equal count is an
+    /// old epoch, and is dropped without deriving any key.</item>
+    /// </list>
+    /// Not thread-safe: one thread receives from a peer.
     /// </summary>
     internal sealed class DirectReceiver
     {
-        private const int MAX_RETIRED_EPOCHS = 32;
-
-        private readonly byte[] m_sessionToken;
+        private readonly byte[] m_extracted;
         private readonly string m_cipher;
         private readonly int m_sender;
         private readonly int m_receiver;
         private byte[] m_epoch = null;
         private byte[] m_key = null;
         private ReplayWindow m_window = null;
-        private readonly List<ulong> m_retired = new List<ulong>();
 
         /// in_sender is the peer's net id, in_receiver this player's.
         public DirectReceiver(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
         {
-            // Checks the token, cipher and ids now rather than on the first datagram
-            DirectPacket.DeriveKey(in_sessionToken, in_cipher, in_sender, in_receiver, new byte[DirectPacket.EPOCH_LENGTH]);
-            m_sessionToken = (byte[])in_sessionToken.Clone();
+            m_extracted = DirectPacket.ExtractKey(in_sessionToken);
+            // Checks the cipher and ids now rather than on the first datagram
+            DirectPacket.DeriveKeyFromExtracted(m_extracted, in_cipher, in_sender, in_receiver, new byte[DirectPacket.EPOCH_LENGTH]);
             m_cipher = in_cipher;
             m_sender = in_sender;
             m_receiver = in_receiver;
@@ -216,8 +285,8 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// The packet in the first in_length bytes of a received datagram, or null when it is to be
-        /// dropped: not from this peer to this player, a repeat, from a retired epoch, or not
-        /// decrypting.
+        /// dropped: not from this peer to this player, a repeat, from an earlier epoch or another
+        /// prefix, or not decrypting.
         /// </summary>
         public byte[] Open(byte[] in_datagram, int in_length)
         {
@@ -227,46 +296,29 @@ namespace BrainCloud.Internal
             if (!DirectPacket.TryReadHeader(in_datagram, in_length, out sender, out receiver, out epoch, out sequence)) return null;
             if (sender != m_sender || receiver != m_receiver) return null;
 
-            if (m_epoch != null && sameEpoch(epoch, m_epoch))
-            {
-                if (!m_window.IsNew(sequence)) return null;
-                byte[] packet = DirectPacket.Open(m_key, m_sender, m_receiver, in_datagram, in_length);
-                if (packet != null) m_window.Accept(sequence);
-                return packet;
-            }
-
-            if (m_retired.Contains(epochValue(epoch))) return null;
-
-            // A new epoch: only a datagram that decrypts with its key may move this receiver to it
-            byte[] key = DirectPacket.DeriveKey(m_sessionToken, m_cipher, m_sender, m_receiver, epoch);
-            byte[] opened = DirectPacket.Open(key, m_sender, m_receiver, in_datagram, in_length);
-            if (opened == null) return null;
             if (m_epoch != null)
             {
-                m_retired.Add(epochValue(m_epoch));
-                if (m_retired.Count > MAX_RETIRED_EPOCHS) m_retired.RemoveAt(0);
+                if (!DirectPacket.SamePrefix(epoch, m_epoch)) return null;
+                uint count = DirectPacket.EpochCount(epoch), current = DirectPacket.EpochCount(m_epoch);
+                if (count < current) return null;
+                if (count == current)
+                {
+                    if (!m_window.IsNew(sequence)) return null;
+                    byte[] packet = DirectPacket.Open(m_key, m_sender, m_receiver, in_datagram, in_length);
+                    if (packet != null) m_window.Accept(sequence);
+                    return packet;
+                }
             }
+
+            // The first epoch, or a later one: only a datagram that decrypts with its key moves this receiver to it
+            byte[] key = DirectPacket.DeriveKeyFromExtracted(m_extracted, m_cipher, m_sender, m_receiver, epoch);
+            byte[] opened = DirectPacket.Open(key, m_sender, m_receiver, in_datagram, in_length);
+            if (opened == null) return null;
             m_epoch = epoch;
             m_key = key;
             m_window = new ReplayWindow();
             m_window.Accept(sequence);
             return opened;
-        }
-
-        private static bool sameEpoch(byte[] a, byte[] b)
-        {
-            for (int i = 0; i < DirectPacket.EPOCH_LENGTH; ++i)
-            {
-                if (a[i] != b[i]) return false;
-            }
-            return true;
-        }
-
-        private static ulong epochValue(byte[] in_epoch)
-        {
-            ulong v = 0;
-            for (int i = 0; i < DirectPacket.EPOCH_LENGTH; ++i) v = (v << 8) | in_epoch[i];
-            return v;
         }
     }
 
@@ -275,7 +327,7 @@ namespace BrainCloud.Internal
     /// replayed datagram is dropped: the highest seen and a bit for each of the 63 before it, as
     /// DTLS does. Anything older than that is dropped too. Check before decrypting, and Accept only
     /// after a datagram has decrypted, so a forged one cannot move the window. DirectReceiver keeps
-    /// one per epoch, created with the epoch's key.
+    /// one, for its current epoch, and starts a new one when it moves to a later epoch.
     /// </summary>
     internal sealed class ReplayWindow
     {

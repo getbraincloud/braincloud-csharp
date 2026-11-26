@@ -47,7 +47,7 @@ namespace BrainCloud.Internal
         public static byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
         {
             checkKeyAndNonce(in_key, in_nonce);
-            if (in_sealed == null || in_offset < 0 || in_length < TAG_LENGTH || in_offset + in_length > in_sealed.Length) return null;
+            if (in_sealed == null || in_offset < 0 || in_length < TAG_LENGTH || in_length > in_sealed.Length - in_offset) return null;
             int cipherLength = in_length - TAG_LENGTH;
             byte[] expected = computeTag(in_key, in_nonce, in_aad, in_sealed, in_offset, cipherLength);
 
@@ -91,7 +91,7 @@ namespace BrainCloud.Internal
 
         private static void checkRange(byte[] in_data, int in_offset, int in_length)
         {
-            if (in_data == null || in_offset < 0 || in_length < 0 || in_offset + in_length > in_data.Length) throw new ArgumentException("offset and length must lie within the data");
+            if (in_data == null || in_offset < 0 || in_length < 0 || in_length > in_data.Length - in_offset) throw new ArgumentException("offset and length must lie within the data");
         }
 
         private static void writeU64LE(byte[] b, int o, ulong v)
