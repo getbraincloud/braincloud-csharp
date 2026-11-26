@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
+    <DefineConstants>TRACE;DOT_NET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -45,7 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_Unity|AnyCPU'">
     <OutputPath>bin\Release_Unity\</OutputPath>
-    <DefineConstants>TRACE;NO_UNITY_DEFINES;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
+    <DefineConstants>TRACE;NO_UNITY_DEFINES</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

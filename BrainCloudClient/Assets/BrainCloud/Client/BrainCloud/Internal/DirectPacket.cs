@@ -259,9 +259,10 @@ namespace BrainCloud.Internal
         public byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
         {
             if (in_plaintext == null || in_offset < 0 || in_length < 0 || in_length > in_plaintext.Length - in_offset) throw new ArgumentException("bad packet range");
+            byte[] message = macInput(in_aad, in_plaintext, in_offset, in_length);
             byte[] result = new byte[in_length + DirectPacket.TAG_LENGTH];
-            Buffer.BlockCopy(in_plaintext, in_offset, result, 0, in_length);
-            Buffer.BlockCopy(tag(in_key, in_aad, in_plaintext, in_offset, in_length), 0, result, in_length, DirectPacket.TAG_LENGTH);
+            Buffer.BlockCopy(message, in_aad.Length, result, 0, in_length);
+            Buffer.BlockCopy(mac(in_key, message), 0, result, in_length, DirectPacket.TAG_LENGTH);
             return result;
         }
 
@@ -269,23 +270,33 @@ namespace BrainCloud.Internal
         {
             if (in_sealed == null || in_offset < 0 || in_length < DirectPacket.TAG_LENGTH || in_length > in_sealed.Length - in_offset) return null;
             int packetLength = in_length - DirectPacket.TAG_LENGTH;
-            byte[] expected = tag(in_key, in_aad, in_sealed, in_offset, packetLength);
+            // The packet is copied once, and the copy is both checked and returned: bytes changed in
+            // the caller's buffer after the check can never be handed back as authenticated
+            byte[] message = macInput(in_aad, in_sealed, in_offset, packetLength);
+            byte[] expected = mac(in_key, message);
             // Every byte is compared, whatever the first difference, so the time taken says nothing about the tag
             int difference = 0;
             for (int i = 0; i < DirectPacket.TAG_LENGTH; ++i) difference |= expected[i] ^ in_sealed[in_offset + packetLength + i];
             if (difference != 0) return null;
             byte[] packet = new byte[packetLength];
-            Buffer.BlockCopy(in_sealed, in_offset, packet, 0, packetLength);
+            Buffer.BlockCopy(message, in_aad.Length, packet, 0, packetLength);
             return packet;
         }
 
-        private static byte[] tag(byte[] in_key, byte[] in_aad, byte[] in_packet, int in_offset, int in_length)
+        // The header followed by the packet: what the tag covers
+        private static byte[] macInput(byte[] in_aad, byte[] in_packet, int in_offset, int in_length)
         {
-            if (in_key == null || in_key.Length != DirectPacket.KEY_LENGTH) throw new ArgumentException("the key must be 32 bytes");
             byte[] message = new byte[in_aad.Length + in_length];
             Buffer.BlockCopy(in_aad, 0, message, 0, in_aad.Length);
             Buffer.BlockCopy(in_packet, in_offset, message, in_aad.Length, in_length);
-            return HmacSha256.Compute(in_key, message);   // the first TAG_LENGTH bytes are the tag
+            return message;
+        }
+
+        // HMAC-SHA256 of the message; its first TAG_LENGTH bytes are the tag
+        private static byte[] mac(byte[] in_key, byte[] in_message)
+        {
+            if (in_key == null || in_key.Length != DirectPacket.KEY_LENGTH) throw new ArgumentException("the key must be 32 bytes");
+            return HmacSha256.Compute(in_key, in_message);
         }
     }
 

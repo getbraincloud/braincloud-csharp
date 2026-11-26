@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
