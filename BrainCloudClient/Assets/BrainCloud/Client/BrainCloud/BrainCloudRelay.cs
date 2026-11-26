@@ -42,6 +42,19 @@ namespace BrainCloud
         public const int CHANNEL_NORMAL_PRIORITY = 2;
         public const int CHANNEL_LOW_PRIORITY = 3;
 
+        // Why ConnectFromRoomReady cannot use a ROOM_READY event, as reported to the failure callback
+        private const string ROOM_READY_ERROR_PREFIX = "Relay: cannot connect from ROOM_READY: ";
+        private const string ROOM_READY_NOT_AN_OBJECT = "no ROOM_READY event was given, or it is not a JSON object";
+        private const string ROOM_READY_WRONG_EVENT = "expected a ROOM_READY event, not ";
+        private const string ROOM_READY_NO_CONNECT_DATA = "the event has no connectData";
+        private const string ROOM_READY_DIRECT = "this room is connected directly between the players, which this version of the library does not support";
+        private const string ROOM_READY_NO_ADDRESS = "connectData has no address or ports";
+        private const string ROOM_READY_NO_SECURE_WEBSOCKET = "a secure WebSocket was asked for, but this server offers none (secure relay connections are not enabled for this app, or not available from this host)";
+        private const string ROOM_READY_BAD_TYPE = "the preferred connection type must be WEBSOCKET, TCP or UDP, not ";
+        private const string ROOM_READY_NO_PORT = "the server offers no {0} port (it offers {1})";
+        private const string ROOM_READY_NO_PASSCODE = "the event has no passcode";
+        private const string ROOM_READY_NO_LOBBY_ID = "the event has no lobbyId";
+
         /// <summary>
         /// 
         /// </summary>
@@ -174,7 +187,7 @@ namespace BrainCloud
             {
                 if (m_clientRef.LoggingEnabled)
                 {
-                    m_clientRef.Log("Relay: cannot connect from ROOM_READY: " + error);
+                    m_clientRef.Log(ROOM_READY_ERROR_PREFIX + error);
                 }
                 if (in_failure != null)
                 {
@@ -182,7 +195,7 @@ namespace BrainCloud
                     var json = new Dictionary<string, object>();
                     json["status"] = StatusCodes.FORBIDDEN;
                     json["reason_code"] = ReasonCodes.RS_CLIENT_ERROR;
-                    json["status_message"] = "Relay: cannot connect from ROOM_READY: " + error;
+                    json["status_message"] = ROOM_READY_ERROR_PREFIX + error;
                     json["severity"] = "ERROR";
                     in_failure(StatusCodes.FORBIDDEN, ReasonCodes.RS_CLIENT_ERROR, m_clientRef.SerializeJson(json), cb_object);
                 }
@@ -250,29 +263,28 @@ namespace BrainCloud
         {
             out_connectionType = in_preferredType;
             out_options = new RelayConnectOptions();
-            if (in_roomReady == null) return "no ROOM_READY event was given, or it is not a JSON object";
+            if (in_roomReady == null) return ROOM_READY_NOT_AN_OBJECT;
 
             string operation = valueOf(in_roomReady, "operation") as string;
-            if (operation != null && operation != "ROOM_READY") return "expected a ROOM_READY event, not " + operation;
+            if (operation != null && operation != "ROOM_READY") return ROOM_READY_WRONG_EVENT + operation;
             Dictionary<string, object> data = valueOf(in_roomReady, "data") as Dictionary<string, object> ?? in_roomReady;
 
             var connectData = valueOf(data, "connectData") as Dictionary<string, object>;
-            if (connectData == null) return "the event has no connectData";
+            if (connectData == null) return ROOM_READY_NO_CONNECT_DATA;
             if (valueOf(connectData, "type") as string == "direct")
             {
-                return "this room is connected directly between the players, which this version of the library does not support";
+                return ROOM_READY_DIRECT;
             }
 
             string address = valueOf(connectData, "address") as string;
             var ports = valueOf(connectData, "ports") as Dictionary<string, object>;
-            if (string.IsNullOrEmpty(address) || ports == null) return "connectData has no address or ports";
+            if (string.IsNullOrEmpty(address) || ports == null) return ROOM_READY_NO_ADDRESS;
 
-            const string NO_SECURE_WEBSOCKET = "a secure WebSocket was asked for, but this server offers none (secure relay connections are not enabled for this app, or not available from this host)";
             int port;
             if (tryPort(ports, "gamelift", out port) || tryPort(ports, "i3d", out port))
             {
                 // These hosts offer the relay on one port, over WebSocket without SSL
-                if (in_useSsl) return NO_SECURE_WEBSOCKET;
+                if (in_useSsl) return ROOM_READY_NO_SECURE_WEBSOCKET;
                 out_connectionType = RelayConnectionType.WEBSOCKET;
                 out_options.host = address;
                 out_options.port = port;
@@ -282,7 +294,7 @@ namespace BrainCloud
                 // A complete wss:// URL, used as given. Only brainCloud relay servers send one; a wss
                 // port on a bare IP address (Edgegap) would not match its certificate, so is not used.
                 string secureUrl = valueOf(connectData, "secureUrl") as string;
-                if (string.IsNullOrEmpty(secureUrl)) return NO_SECURE_WEBSOCKET;
+                if (string.IsNullOrEmpty(secureUrl)) return ROOM_READY_NO_SECURE_WEBSOCKET;
                 out_options.host = secureUrl;
                 out_options.port = 0;
                 out_options.ssl = true;
@@ -295,11 +307,11 @@ namespace BrainCloud
                     case RelayConnectionType.WEBSOCKET: key = "ws"; break;
                     case RelayConnectionType.TCP: key = "tcp"; break;
                     case RelayConnectionType.UDP: key = "udp"; break;
-                    default: return "the preferred connection type must be WEBSOCKET, TCP or UDP, not " + in_preferredType;
+                    default: return ROOM_READY_BAD_TYPE + in_preferredType;
                 }
                 if (!tryPort(ports, key, out port))
                 {
-                    return "the server offers no " + key + " port (it offers " + string.Join(", ", new List<string>(ports.Keys).ToArray()) + ")";
+                    return string.Format(ROOM_READY_NO_PORT, key, string.Join(", ", new List<string>(ports.Keys).ToArray()));
                 }
                 out_options.host = address;
                 out_options.port = port;
@@ -308,8 +320,8 @@ namespace BrainCloud
             out_options.passcode = valueOf(data, "passcode") as string;
             out_options.lobbyId = valueOf(data, "lobbyId") as string;
             // The relay checks both when it accepts the connection
-            if (string.IsNullOrEmpty(out_options.passcode)) return "the event has no passcode";
-            if (string.IsNullOrEmpty(out_options.lobbyId)) return "the event has no lobbyId";
+            if (string.IsNullOrEmpty(out_options.passcode)) return ROOM_READY_NO_PASSCODE;
+            if (string.IsNullOrEmpty(out_options.lobbyId)) return ROOM_READY_NO_LOBBY_ID;
             return null;
         }
 
