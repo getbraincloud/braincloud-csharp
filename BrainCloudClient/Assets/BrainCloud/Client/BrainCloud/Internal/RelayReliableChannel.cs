@@ -53,10 +53,6 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
-        // Recent packet ids of each reliable, unordered stream, to drop resends already received
-        private Dictionary<ulong, RecentPacketIds> m_recentUnordered = new Dictionary<ulong, RecentPacketIds>();
-        // Which player (connection id) each net id belongs to, as far as we have been told
-        private Dictionary<int, string> m_peerCxIds = new Dictionary<int, string>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -92,66 +88,7 @@ namespace BrainCloud.Internal
             m_recvPacketId.Clear();
             m_reliables.Clear();
             m_orderedReliablePackets.Clear();
-            m_recentUnordered.Clear();
-            m_peerCxIds.Clear();
             ClearTrackedPacketIds();
-        }
-
-        /// <summary>
-        /// Records which player a net id belongs to. When the relay has given the net id to a
-        /// different player (it reuses the ids of players who left), what was received from the
-        /// old player is forgotten: the new player's packet ids start again at 0, and the old
-        /// player's would make them look like duplicates. A repeat for the same player changes
-        /// nothing. Call before any tracked packet id for this player is set.
-        /// </summary>
-        /// <remarks>
-        /// This is done when the net id is given out again, not when its player leaves: the relay
-        /// keeps resending a leaver's last reliable packets until they are acknowledged, and those
-        /// late resends must still be recognised as duplicates.
-        /// </remarks>
-        public void PeerConnected(int in_netId, string in_cxId)
-        {
-            string previous;
-            if (m_peerCxIds.TryGetValue(in_netId, out previous) && previous != in_cxId)
-            {
-                ForgetPeer(in_netId);
-            }
-            m_peerCxIds[in_netId] = in_cxId;
-        }
-
-        /// <summary>
-        /// Forgets what was received from a net id.
-        /// </summary>
-        public void ForgetPeer(int in_netId)
-        {
-            removeStreamsFrom(m_recvPacketId, in_netId);
-            removeStreamsFrom(m_orderedReliablePackets, in_netId);
-            removeStreamsFrom(m_recentUnordered, in_netId);
-            foreach (var tracked in m_trackedPacketIds)
-            {
-                tracked.Remove(in_netId);
-            }
-        }
-
-        // A received stream's key ends with the sender's net id
-        private static void removeStreamsFrom<T>(Dictionary<ulong, T> in_streams, int in_netId)
-        {
-            List<ulong> keys = null;
-            foreach (ulong key in in_streams.Keys)
-            {
-                if ((int)(key & 0xFF) == in_netId)
-                {
-                    if (keys == null) keys = new List<ulong>();
-                    keys.Add(key);
-                }
-            }
-            if (keys != null)
-            {
-                foreach (ulong key in keys)
-                {
-                    in_streams.Remove(key);
-                }
-            }
         }
 
         public void ClearTrackedPacketIds()
@@ -357,23 +294,6 @@ namespace BrainCloud.Internal
                     m_recvPacketId[ackIdWithoutPacketId] = packetId;
                 }
             }
-            else if (reliable)
-            {
-                // A resend whose acknowledgement was lost arrives again: deliver it once
-                RecentPacketIds recent;
-                if (!m_recentUnordered.TryGetValue(ackIdWithoutPacketId, out recent))
-                {
-                    recent = new RecentPacketIds(MAX_PACKET_ID_HISTORY);
-                    m_recentUnordered[ackIdWithoutPacketId] = recent;
-                }
-                if (!recent.Add(packetId))
-                {
-#if BC_DEBUG_RELAY_LOGS_ENABLED
-                    if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
-#endif
-                    return ReceiveOutcome.Accepted;
-                }
-            }
 
             in_deliver(netId, in_data);
             return ReceiveOutcome.Accepted;
@@ -393,34 +313,6 @@ namespace BrainCloud.Internal
                 return false;
             }
             return a <= b;
-        }
-
-        /// The last few packet ids of a stream. Ids wrap at MAX_PACKET_ID, so only recent ones mean anything.
-        private class RecentPacketIds
-        {
-            private readonly int m_capacity;
-            private readonly HashSet<int> m_ids = new HashSet<int>();
-            private readonly Queue<int> m_order = new Queue<int>();
-
-            public RecentPacketIds(int in_capacity)
-            {
-                m_capacity = in_capacity;
-            }
-
-            /// False when the id is already among the recent ones.
-            public bool Add(int in_packetId)
-            {
-                if (!m_ids.Add(in_packetId))
-                {
-                    return false;
-                }
-                m_order.Enqueue(in_packetId);
-                if (m_order.Count > m_capacity)
-                {
-                    m_ids.Remove(m_order.Dequeue());
-                }
-                return true;
-            }
         }
 
         private class UDPPacket

@@ -712,7 +712,6 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
-                        m_channel.PeerConnected(netId, cxId);
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
                         if (cxId == m_clientRef.RTTConnectionID && !m_bIsConnected)
@@ -730,7 +729,6 @@ namespace BrainCloud.Internal
                     {
                         int netId = (int)parsedDict["netId"];
                         string cxId = parsedDict["cxId"] as string;
-                        m_channel.PeerConnected(netId, cxId);
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
 

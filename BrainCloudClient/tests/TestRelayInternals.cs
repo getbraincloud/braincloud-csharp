@@ -113,28 +113,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void ReliableUnordered_IsDeliveredOnceEvenWhenResent()
-        {
-            // The sender resends when our acknowledgement is lost
-            Receive(Packet(true, false, 0, 5, 1));
-            Receive(Packet(true, false, 0, 4, 1));
-            Receive(Packet(true, false, 0, 5, 1));
-            Receive(Packet(true, false, 0, 4, 1));
-            Assert.That(_delivered, Is.EqualTo(new[] { 5, 4 }), "in the order received, each once");
-        }
-
-        [Test]
-        public void ReliableUnordered_AnIdIsNewAgainOnceItHasWrappedRound()
-        {
-            for (int id = 0; id <= RelayReliableChannel.MAX_PACKET_ID; ++id)
-            {
-                Receive(Packet(true, false, 0, id, 1));
-            }
-            Receive(Packet(true, false, 0, 0, 1));
-            Assert.That(_delivered.Count, Is.EqualTo(RelayReliableChannel.MAX_PACKET_ID + 2));
-        }
-
-        [Test]
         public void UnreliableUnordered_IsAlwaysDelivered()
         {
             Receive(Packet(false, false, 0, 1, 1));
@@ -161,87 +139,6 @@ namespace BrainCloudTests
 
             Receive(Packet(true, true, 0, 7, 1));
             Assert.That(_delivered, Is.Empty, "a new connection starts at packet 0");
-        }
-
-        [Test]
-        public void ReusedNetId_ANewPlayersPacketsAreAllDelivered()
-        {
-            // Player A on net id 3 sends 50 packets of each kind, then leaves
-            _channel.PeerConnected(3, "A");
-            for (int id = 0; id < 50; ++id)
-            {
-                Receive(Packet(true, false, 0, id, 3));
-                Receive(Packet(true, true, 1, id, 3));
-            }
-            Assert.That(_delivered.Count, Is.EqualTo(100));
-
-            // Later the relay gives net id 3 to player B, whose packet ids start again at 0
-            _channel.PeerConnected(3, "B");
-            _delivered.Clear();
-            for (int id = 0; id < 50; ++id)
-            {
-                Receive(Packet(true, false, 0, id, 3));
-                Receive(Packet(true, true, 1, id, 3));
-            }
-            Assert.That(_delivered.Count, Is.EqualTo(100), "every packet from the new player");
-        }
-
-        [Test]
-        public void ReusedNetId_ALeaversLateResendIsStillADuplicate()
-        {
-            // A sends 0..5 on net id 3 and leaves. The relay resends A's packet 5 before our
-            // acknowledgement reaches it, so the resend arrives after A has left.
-            _channel.PeerConnected(3, "A");
-            for (int id = 0; id <= 5; ++id)
-            {
-                Receive(Packet(true, false, 0, id, 3, "A"));
-                Receive(Packet(true, true, 1, id, 3, "A"));
-            }
-            Receive(Packet(true, false, 0, 5, 3, "A"));
-            Receive(Packet(true, true, 1, 5, 3, "A"));
-            Assert.That(_delivered.Count, Is.EqualTo(12), "the resends are dropped");
-
-            // Then B gets net id 3 and sends 0..6 on both streams
-            var payloads = new List<string>();
-            _channel.PeerConnected(3, "B");
-            for (int id = 0; id <= 6; ++id)
-            {
-                foreach (bool ordered in new[] { false, true })
-                {
-                    _channel.Receive(Packet(true, ordered, ordered ? 1 : 0, id, 3, "B"), (netId, packet) =>
-                        payloads.Add(System.Text.Encoding.ASCII.GetString(packet, 11, packet.Length - 11)));
-                }
-            }
-            Assert.That(payloads.Count, Is.EqualTo(14), "every packet from B");
-            Assert.That(payloads, Has.All.EqualTo("B"), "and nothing of A's");
-        }
-
-        [Test]
-        public void PeerConnected_ARepeatForTheSamePlayerForgetsNothing()
-        {
-            // The relay sends CONNECT again whenever a player repeats its connect request
-            _channel.PeerConnected(3, "A");
-            Receive(Packet(true, false, 0, 7, 3));
-            Receive(Packet(true, true, 0, 0, 3));
-            _channel.PeerConnected(3, "A");
-
-            Receive(Packet(true, false, 0, 7, 3));
-            Receive(Packet(true, true, 0, 0, 3));
-            Assert.That(_delivered, Is.EqualTo(new[] { 7, 0 }), "the repeats are still dropped");
-        }
-
-        [Test]
-        public void PeerConnected_LeavesOtherPlayersAlone()
-        {
-            _channel.PeerConnected(2, "X");
-            _channel.PeerConnected(3, "A");
-            Receive(Packet(true, false, 0, 7, 2));
-            Receive(Packet(true, true, 0, 0, 2));
-            _channel.PeerConnected(3, "B");
-
-            Receive(Packet(true, false, 0, 7, 2));
-            Receive(Packet(true, true, 0, 0, 2));
-            Assert.That(_delivered, Is.EqualTo(new[] { 7, 0 }), "net id 2's repeats are still dropped");
         }
 
         [Test]
