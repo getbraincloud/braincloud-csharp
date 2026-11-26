@@ -195,6 +195,27 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TryGetConnectOptionsFromRoomReady_GivesTheChoiceWithoutConnecting()
+        {
+            var relay = new BrainCloudClient().RelayService;
+            RelayConnectionType type;
+            RelayConnectOptions options;
+            string error;
+
+            Assert.That(relay.TryGetConnectOptionsFromRoomReady(RelayConnectionType.UDP, true, GAMELIFT, out type, out options, out error), Is.False);
+            Assert.That(error, Does.Contain("secure WebSocket"));
+
+            Assert.That(relay.TryGetConnectOptionsFromRoomReady(RelayConnectionType.TCP, false, RELAY, out type, out options, out error), Is.True);
+            Assert.That(error, Is.Null);
+            Assert.That(type, Is.EqualTo(RelayConnectionType.TCP));
+            Assert.That(options.port, Is.EqualTo(9000));
+            Assert.That(relay.IsConnected(), Is.False, "it only works out the options");
+
+            Assert.That(relay.TryGetConnectOptionsFromRoomReady(RelayConnectionType.TCP, false, "not json", out type, out options, out error), Is.False);
+            Assert.That(error, Is.Not.Null);
+        }
+
+        [Test]
         public void ConnectFromRoomReady_HandsAUsableEventToConnect()
         {
             // Connect refuses a client that is not authenticated, which shows the event got that far

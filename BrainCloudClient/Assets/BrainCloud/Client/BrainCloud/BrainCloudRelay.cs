@@ -153,16 +153,7 @@ namespace BrainCloud
         /// <param name="cb_object">As for Connect.</param>
         public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, string in_roomReadyJson, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
-            Dictionary<string, object> roomReady = null;
-            try
-            {
-                roomReady = JsonReader.Deserialize(in_roomReadyJson) as Dictionary<string, object>;
-            }
-            catch (Exception)
-            {
-                // Reported below as an event that cannot be used
-            }
-            ConnectFromRoomReady(in_preferredType, in_useSsl, roomReady, in_success, in_failure, cb_object);
+            ConnectFromRoomReady(in_preferredType, in_useSsl, parseEvent(in_roomReadyJson), in_success, in_failure, cb_object);
         }
 
         /// <summary>
@@ -178,8 +169,8 @@ namespace BrainCloud
         {
             RelayConnectionType connectionType;
             RelayConnectOptions options;
-            string error = ResolveRoomReady(in_preferredType, in_useSsl, in_roomReady, out connectionType, out options);
-            if (error != null)
+            string error;
+            if (!TryGetConnectOptionsFromRoomReady(in_preferredType, in_useSsl, in_roomReady, out connectionType, out options, out error))
             {
                 if (m_clientRef.LoggingEnabled)
                 {
@@ -198,6 +189,56 @@ namespace BrainCloud
                 return;
             }
             Connect(connectionType, options, in_success, in_failure, cb_object);
+        }
+
+        /// <summary>
+        /// Works out what ConnectFromRoomReady would connect with, without connecting: for a game
+        /// that wants to log the choice, or adjust it before calling Connect itself. The rules are
+        /// the ones ConnectFromRoomReady describes.
+        /// </summary>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
+        /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_roomReadyJson">The ROOM_READY event as the lobby callback received it.</param>
+        /// <param name="out_connectionType">The transport to pass to Connect.</param>
+        /// <param name="out_options">The options to pass to Connect.</param>
+        /// <param name="out_error">Why the event cannot be used, when this returns false; otherwise null.</param>
+        /// <returns>True when the event can be used.</returns>
+        public bool TryGetConnectOptionsFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, string in_roomReadyJson,
+            out RelayConnectionType out_connectionType, out RelayConnectOptions out_options, out string out_error)
+        {
+            return TryGetConnectOptionsFromRoomReady(in_preferredType, in_useSsl, parseEvent(in_roomReadyJson),
+                out out_connectionType, out out_options, out out_error);
+        }
+
+        /// <summary>
+        /// As TryGetConnectOptionsFromRoomReady with the event's JSON, for a game that has already parsed it.
+        /// </summary>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
+        /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_roomReady">The parsed ROOM_READY event, or its "data" object.</param>
+        /// <param name="out_connectionType">The transport to pass to Connect.</param>
+        /// <param name="out_options">The options to pass to Connect.</param>
+        /// <param name="out_error">Why the event cannot be used, when this returns false; otherwise null.</param>
+        /// <returns>True when the event can be used.</returns>
+        public bool TryGetConnectOptionsFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady,
+            out RelayConnectionType out_connectionType, out RelayConnectOptions out_options, out string out_error)
+        {
+            out_error = ResolveRoomReady(in_preferredType, in_useSsl, in_roomReady, out out_connectionType, out out_options);
+            return out_error == null;
+        }
+
+        /// The event as a JSON object, or null when it is not one.
+        private static Dictionary<string, object> parseEvent(string in_json)
+        {
+            try
+            {
+                return JsonReader.Deserialize(in_json) as Dictionary<string, object>;
+            }
+            catch (Exception)
+            {
+                // Reported by the caller as an event that cannot be used
+                return null;
+            }
         }
 
         /// <summary>
