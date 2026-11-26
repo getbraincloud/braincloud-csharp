@@ -1159,6 +1159,27 @@ namespace BrainCloud
         /// <summary> Check if logging of brainCloud transactions is enabled</summary>
         public bool LoggingEnabled { get { return _loggingEnabled; } }
 
+        /// <summary>
+        /// Opts this player in to direct connect, where the players of a small relay lobby connect to
+        /// each other peer to peer instead of through a relay server. Off by default.
+        ///
+        /// While it is on, each time RTT connects the library tests the player's network and reports
+        /// the result to brainCloud; a lobby only tries direct connect when every member has reported a
+        /// network a peer can reach. Direct connect shares players' IP addresses with the other players
+        /// in their lobby, so a game can tie this to a player setting. Turning it off withdraws the
+        /// report, and that player's lobbies use the relay. It has no effect on WebGL.
+        /// </summary>
+        /// <param name="in_enable">True to take part in direct connect</param>
+        public void EnableDirectConnect(bool in_enable)
+        {
+            _rttComms.DirectConnectProbe.Enabled = in_enable;
+        }
+
+        /// <summary> Check if this player takes part in direct connect</summary>
+        public bool DirectConnectEnabled { get { return _rttComms.DirectConnectProbe.Enabled; } }
+
+        internal NatProbe DirectConnectProbe { get { return _rttComms.DirectConnectProbe; } }
+
         /// <summary>Allow developers to register their own log handling routine</summary>
         /// <param name="logDelegate">The log delegate</param>
         public void RegisterLogDelegate(LogCallback logDelegate)

@@ -596,6 +596,9 @@ namespace BrainCloud
         public static readonly OperationParam GlobalAppPropertyNames = new OperationParam("propertyNames");
         public static readonly OperationParam GlobalAppCategories = new OperationParam("categories");
 
+        //rtt
+        public static readonly OperationParam RTTNatInfo = new OperationParam("natInfo");
+
         //campaigns
         public static readonly OperationParam CampaignOptionsJson = new OperationParam("optionsJson");
 

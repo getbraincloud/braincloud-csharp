@@ -20,6 +20,7 @@ namespace BrainCloud.Internal
         public RTTComms(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
+            m_natProbe = new NatProbe(in_client);
         }
 
         /// <summary>
@@ -128,6 +129,9 @@ namespace BrainCloud.Internal
             m_heartBeatTime = TimeSpan.FromMilliseconds(in_value * 1000);
         }
 
+        /// <summary>The direct connect network test, run once per RTT connection.</summary>
+        public NatProbe DirectConnectProbe { get { return m_natProbe; } }
+
         public string RTTConnectionID { get; private set; }
         public string RTTEventServer { get; private set; }
 
@@ -165,6 +169,7 @@ namespace BrainCloud.Internal
                     {
                         m_lastHeartbeatMs = m_clientRef.NowMs;
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
+                        m_natProbe.OnRttConnected();
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
 
@@ -227,6 +232,8 @@ namespace BrainCloud.Internal
                     send(buildHeartbeatRequest(), true);
                 }
             }
+
+            m_natProbe.Update();
         }
 
         #region private
@@ -358,6 +365,7 @@ namespace BrainCloud.Internal
                     m_connectionFailureCallback(400, (int)m_disconnectJson["reason_code"], (string)m_disconnectJson["reason"], m_connectedObj);
                 }
             }
+            m_natProbe.OnRttDisconnected();
             m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTED;
         }
 
@@ -571,6 +579,8 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
             m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
+            // Present only when direct connect is available to this app
+            m_natProbe.SetStunSection(jsonData.ContainsKey("stun") ? jsonData["stun"] as Dictionary<string, object> : null);
 
             if (m_currentConnectionType == RTTConnectionType.WEBSOCKET)
             {
@@ -684,6 +694,7 @@ namespace BrainCloud.Internal
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
         private BrainCloudClient m_clientRef;
+        private readonly NatProbe m_natProbe;
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;

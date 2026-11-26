@@ -1,0 +1,308 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+//----------------------------------------------------
+// brainCloud client source code
+//----------------------------------------------------
+
+namespace BrainCloud.Internal
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Threading.Tasks;
+
+    /// <summary>What a network test found, in the form reported to brainCloud.</summary>
+    internal sealed class NatReport
+    {
+        public const int VERSION = 1;
+
+        public NatReport(string in_mapping, bool in_udp, IPEndPoint in_publicAddress, string in_detail)
+        {
+            Mapping = in_mapping;
+            Udp = in_udp;
+            PublicAddress = in_publicAddress;
+            Detail = in_detail;
+        }
+
+        /// StunClient.MAPPING_EIM, MAPPING_APDM or MAPPING_UNKNOWN.
+        public string Mapping { get; private set; }
+
+        /// True when at least one STUN address answered over UDP.
+        public bool Udp { get; private set; }
+
+        /// The public address STUN saw for the test socket, or null. Never sent to brainCloud.
+        public IPEndPoint PublicAddress { get; private set; }
+
+        /// Why the test found what it did, for the log.
+        public string Detail { get; private set; }
+
+        internal int Generation { get; set; }
+
+        /// The natInfo object for rttRegistration.SET_NAT_INFO. It holds no address.
+        public Dictionary<string, object> ToNatInfo()
+        {
+            var natInfo = new Dictionary<string, object>();
+            natInfo["v"] = VERSION;
+            natInfo["mapping"] = Mapping;
+            natInfo["udp"] = Udp;
+            return natInfo;
+        }
+    }
+
+    /// <summary>
+    /// Tests the player's network for direct connect and reports the result to brainCloud, once
+    /// per RTT connection. brainCloud only lets a lobby's members connect to each other directly
+    /// when every member has reported a network a peer can reach.
+    ///
+    /// The STUN address and token come with the RTT connection request. The test starts once
+    /// the RTT connection is up, because requesting a connection clears any earlier report. It
+    /// runs on a background thread with a socket of its own, and the result is sent from
+    /// Update(), on the main thread. Nothing happens unless direct connect is enabled.
+    /// </summary>
+    internal sealed class NatProbe
+    {
+        public enum ReportState
+        {
+            None,
+            Testing,
+            Sent,
+            Accepted,
+            Failed
+        }
+
+        private readonly BrainCloudClient m_clientRef;
+        private bool m_enabled = false;
+        private bool m_rttConnected = false;
+        private bool m_testedThisConnection = false;
+        private int m_generation = 0;
+
+        private string m_stunHost = null;
+        private int m_stunPort = 0;
+        private byte[] m_stunToken = null;
+
+        // A finished test waiting to be reported; written by the test thread, taken in Update
+        private volatile NatReport m_finished = null;
+
+        public NatProbe(BrainCloudClient in_client)
+        {
+            m_clientRef = in_client;
+        }
+
+        /// <summary>
+        /// Whether the player takes part in direct connect. Off by default. Switching it on while
+        /// RTT is connected tests now rather than on the next connection. Switching it off withdraws
+        /// a report already sent, so the player's lobbies stop qualifying straight away.
+        /// </summary>
+        public bool Enabled
+        {
+            get { return m_enabled; }
+            set
+            {
+                if (value == m_enabled) return;
+                m_enabled = value;
+                if (m_enabled)
+                {
+                    start();
+                    return;
+                }
+
+                // Forget any test still running, and let a later switch back on test again
+                ++m_generation;
+                m_finished = null;
+                m_testedThisConnection = false;
+                bool reported = LastReport != null;
+                LastReport = null;
+                State = ReportState.None;
+                if (m_rttConnected && reported)
+                {
+                    send(new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "direct connect was turned off"));
+                }
+            }
+        }
+
+        /// The last report sent for the current connection, or null.
+        public NatReport LastReport { get; private set; }
+
+        public ReportState State { get; private set; }
+
+        /// <summary>
+        /// Takes the stun section of an rttRegistration.REQUEST_CLIENT_CONNECTION response, or null
+        /// when the response had none. Called for every connection request; replaces what was there.
+        /// </summary>
+        public void SetStunSection(Dictionary<string, object> in_stun)
+        {
+            m_stunHost = null;
+            m_stunPort = 0;
+            m_stunToken = null;
+            if (in_stun == null) return;
+
+            object host, port, token;
+            if (in_stun.TryGetValue("host", out host) && host is string && in_stun.TryGetValue("port", out port) && port is int)
+            {
+                m_stunHost = (string)host;
+                m_stunPort = (int)port;
+            }
+            if (in_stun.TryGetValue("token", out token) && token is string)
+            {
+                try
+                {
+                    m_stunToken = Convert.FromBase64String((string)token);
+                }
+                catch (FormatException)
+                {
+                    // Without a usable token the service will not answer; the test reports that
+                    m_stunToken = null;
+                }
+            }
+        }
+
+        public void OnRttConnected()
+        {
+            ++m_generation;
+            m_rttConnected = true;
+            m_testedThisConnection = false;
+            LastReport = null;
+            State = ReportState.None;
+            start();
+        }
+
+        public void OnRttDisconnected()
+        {
+            ++m_generation;
+            m_rttConnected = false;
+            m_testedThisConnection = false;
+        }
+
+        /// <summary>Sends a finished test's report. Call on the main thread.</summary>
+        public void Update()
+        {
+            NatReport finished = m_finished;
+            if (finished == null) return;
+            m_finished = null;
+
+            // From an earlier connection, or from before direct connect was turned off
+            if (finished.Generation != m_generation || !m_rttConnected || !m_enabled) return;
+
+            send(finished);
+        }
+
+        private void send(NatReport in_report)
+        {
+            if (m_clientRef.LoggingEnabled)
+            {
+                m_clientRef.Log("Direct connect network report: mapping " + in_report.Mapping + ", UDP " + (in_report.Udp ? "works" : "got no answer") +
+                    (string.IsNullOrEmpty(in_report.Detail) ? "" : " (" + in_report.Detail + ")"));
+            }
+
+            LastReport = in_report;
+            State = ReportState.Sent;
+            int generation = m_generation;
+
+            var data = new Dictionary<string, object>();
+            data[OperationParam.RTTNatInfo.Value] = in_report.ToNatInfo();
+            ServerCallback callback = BrainCloudClient.CreateServerCallback(
+                (response, cbObject) =>
+                {
+                    if (generation == m_generation) State = ReportState.Accepted;
+                },
+                (status, reasonCode, error, cbObject) =>
+                {
+                    if (generation == m_generation) State = ReportState.Failed;
+                    if (m_clientRef.LoggingEnabled)
+                    {
+                        m_clientRef.Log("Direct connect network report failed: " + status + " " + reasonCode + " " + error);
+                    }
+                });
+            m_clientRef.SendRequest(new ServerCall(ServiceName.RTTRegistration, ServiceOperation.SetNatInfo, data, callback));
+        }
+
+        private void start()
+        {
+            // No UDP in a browser: a WebGL player never tests or reports, and always uses the relay
+#if !UNITY_WEBGL
+            if (!m_enabled || !m_rttConnected || m_testedThisConnection || string.IsNullOrEmpty(m_stunHost)) return;
+            m_testedThisConnection = true;
+            State = ReportState.Testing;
+
+            int generation = m_generation;
+            string host = m_stunHost;
+            int port = m_stunPort;
+            byte[] token = m_stunToken;
+
+            Task.Run(() =>
+            {
+                NatReport report;
+                try
+                {
+                    report = Measure(resolve(host, port), token);
+                }
+                catch (Exception e)
+                {
+                    report = new NatReport(StunClient.MAPPING_UNKNOWN, false, null, e.Message);
+                }
+                report.Generation = generation;
+                m_finished = report;
+            });
+#endif
+        }
+
+        /// <summary>
+        /// Up to two IPv4 addresses for the STUN host: classifying the NAT takes two, and the
+        /// STUN service publishes one per zone under the same name.
+        /// </summary>
+        private static List<IPEndPoint> resolve(string in_host, int in_port)
+        {
+            var servers = new List<IPEndPoint>();
+            var addresses = new List<IPAddress>();
+            foreach (IPAddress address in Dns.GetHostAddresses(in_host))
+            {
+                if (address.AddressFamily == AddressFamily.InterNetwork && !addresses.Contains(address))
+                {
+                    addresses.Add(address);
+                    servers.Add(new IPEndPoint(address, in_port));
+                    if (servers.Count == 2) break;
+                }
+            }
+            return servers;
+        }
+
+        /// <summary>
+        /// Asks each STUN address, from one throwaway socket, what public address it sees, and
+        /// classifies the NAT from the answers. Blocks for up to a few seconds.
+        /// </summary>
+        public static NatReport Measure(IList<IPEndPoint> in_servers, byte[] in_token)
+        {
+            if (in_servers.Count == 0)
+            {
+                return new NatReport(StunClient.MAPPING_UNKNOWN, false, null, "the STUN host has no IPv4 address");
+            }
+
+            List<StunResult> results;
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+                results = StunClient.Probe(socket, in_servers, in_token);
+            }
+
+            IPEndPoint publicAddress = null;
+            int answered = 0;
+            string firstError = null;
+            foreach (StunResult result in results)
+            {
+                if (result.Mapped != null)
+                {
+                    ++answered;
+                    if (publicAddress == null) publicAddress = result.Mapped;
+                }
+                else if (firstError == null)
+                {
+                    firstError = result.Error;
+                }
+            }
+
+            string detail = answered + " of " + results.Count + " STUN addresses answered";
+            if (answered < results.Count && firstError != null) detail += "; " + firstError;
+            return new NatReport(StunClient.ClassifyMapping(results), answered > 0, publicAddress, detail);
+        }
+    }
+}

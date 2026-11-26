@@ -291,6 +291,12 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RTTComms.cs">
       <Link>BrainCloud\Internal\RTTComms.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\NatProbe.cs">
+      <Link>BrainCloud\Internal\NatProbe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\StunClient.cs">
+      <Link>BrainCloud\Internal\StunClient.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
       <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>
     </Compile>

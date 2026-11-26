@@ -440,6 +440,7 @@ namespace BrainCloud
 
         // rtt
         public static readonly ServiceOperation RequestClientConnection = new ServiceOperation("REQUEST_CLIENT_CONNECTION");
+        public static readonly ServiceOperation SetNatInfo = new ServiceOperation("SET_NAT_INFO");
 
         // chat
         public static readonly ServiceOperation ChannelConnect = new ServiceOperation("CHANNEL_CONNECT");
