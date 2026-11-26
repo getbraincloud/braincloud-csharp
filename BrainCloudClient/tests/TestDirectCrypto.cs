@@ -403,7 +403,10 @@ namespace BrainCloudTests
             Assert.That(() => new DirectSession(new byte[15], DirectPacket.CIPHER_CHACHA20_POLY1305, 0), Throws.ArgumentException);
             Assert.That(() => new DirectSession(TOKEN, "aes-256-gcm", 0), Throws.ArgumentException);
             Assert.That(() => new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 256), Throws.InstanceOf<ArgumentOutOfRangeException>());
-            Assert.That(DirectPacket.SUPPORTED_CIPHERS, Does.Contain(DirectPacket.CIPHER_CHACHA20_POLY1305));
+            Assert.That(DirectPacket.SupportedCiphers, Is.EqualTo(new[] { DirectPacket.CIPHER_CHACHA20_POLY1305 }));
+            Assert.That(DirectPacket.IsSupported(DirectPacket.CIPHER_CHACHA20_POLY1305), Is.True);
+            Assert.That(DirectPacket.IsSupported("aes-256-gcm"), Is.False);
+            Assert.That(DirectPacket.IsSupported(null), Is.False);
         }
 
         [Test]
@@ -586,6 +589,73 @@ namespace BrainCloudTests
             forged[3] ^= 0xFF;   // a different epoch, with a tag that cannot match
             Assert.That(receiver.Open(forged, forged.Length), Is.Null);
             Assert.That(receiver.Open(r2, r2.Length), Is.EqualTo(PUNCH), "still on the real epoch");
+        }
+
+        #endregion
+
+        #region Cipher implementation
+
+        /// The library's own implementation, counting its use.
+        private sealed class CountingAead : IDirectAead
+        {
+            public int Seals, Opens;
+            private readonly ManagedChaCha20Poly1305 m_inner = new ManagedChaCha20Poly1305();
+
+            public byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
+            {
+                ++Seals;
+                return m_inner.Seal(in_key, in_nonce, in_aad, in_plaintext, in_offset, in_length);
+            }
+
+            public byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
+            {
+                ++Opens;
+                return m_inner.Open(in_key, in_nonce, in_aad, in_sealed, in_offset, in_length);
+            }
+        }
+
+        [Test]
+        public void Cipher_EverySealAndOpenUsesTheInstalledImplementation()
+        {
+            IDirectAead original = DirectCipher.ChaCha20Poly1305Implementation;
+            var counting = new CountingAead();
+            try
+            {
+                DirectCipher.ChaCha20Poly1305Implementation = counting;
+                var a = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0);
+                var b = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 1);
+                byte[] datagram = a.SenderFor(1).Seal(PUNCH, 0, PUNCH.Length);
+                Assert.That(b.ReceiverFor(0).Open(datagram, datagram.Length), Is.EqualTo(PUNCH));
+                Assert.That(counting.Seals, Is.EqualTo(1));
+                Assert.That(counting.Opens, Is.EqualTo(1));
+
+                // And it is the same cipher: the fixed datagram is unchanged
+                Assert.That(Hex(DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
+            }
+            finally
+            {
+                DirectCipher.ChaCha20Poly1305Implementation = original;
+            }
+        }
+
+        [Test]
+        public void Cipher_WithNoImplementation_NothingIsSupportedAndNothingEncrypts()
+        {
+            // As on an Apple player build before an implementation backed by the operating system is installed
+            IDirectAead original = DirectCipher.ChaCha20Poly1305Implementation;
+            try
+            {
+                DirectCipher.ChaCha20Poly1305Implementation = null;
+                Assert.That(DirectPacket.SupportedCiphers, Is.Empty);
+                Assert.That(DirectPacket.IsSupported(DirectPacket.CIPHER_CHACHA20_POLY1305), Is.False);
+                Assert.That(() => new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0), Throws.ArgumentException);
+                Assert.That(() => DirectPacket.Seal(H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length), Throws.ArgumentException);
+                Assert.That(() => DirectPacket.Open(H(KEY_0_TO_1), 0, 1, H(PUNCH_DATAGRAM), PUNCH_DATAGRAM.Length / 2), Throws.ArgumentException);
+            }
+            finally
+            {
+                DirectCipher.ChaCha20Poly1305Implementation = original;
+            }
         }
 
         #endregion

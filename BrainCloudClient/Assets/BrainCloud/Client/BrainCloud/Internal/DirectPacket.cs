@@ -50,8 +50,23 @@ namespace BrainCloud.Internal
 
         /// The cipher names this library supports, most preferred first, as reported to brainCloud.
         public const string CIPHER_CHACHA20_POLY1305 = "chacha20-poly1305";
-        public static readonly System.Collections.ObjectModel.ReadOnlyCollection<string> SUPPORTED_CIPHERS =
-            Array.AsReadOnly(new[] { CIPHER_CHACHA20_POLY1305 });
+        /// <summary>
+        /// The ciphers this player can use, to report with its network test. Empty on a platform
+        /// whose operating system's cipher is not available to the library: see DirectCipher.
+        /// </summary>
+        public static System.Collections.ObjectModel.ReadOnlyCollection<string> SupportedCiphers
+        {
+            get
+            {
+                return Array.AsReadOnly(IsSupported(CIPHER_CHACHA20_POLY1305) ? new[] { CIPHER_CHACHA20_POLY1305 } : new string[0]);
+            }
+        }
+
+        /// Whether this player can use in_cipher, which may be one DIRECT_CONNECT names. Never throws.
+        public static bool IsSupported(string in_cipher)
+        {
+            return DirectCipher.For(in_cipher) != null;
+        }
 
         private static readonly byte[] KEY_SALT = Encoding.ASCII.GetBytes("brainCloud direct connect");
 
@@ -76,7 +91,7 @@ namespace BrainCloud.Internal
         /// DeriveKey from the result of ExtractKey.
         public static byte[] DeriveKeyFromExtracted(byte[] in_extracted, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
-            if (in_cipher != CIPHER_CHACHA20_POLY1305) throw new ArgumentException("unsupported cipher: " + in_cipher);
+            if (!IsSupported(in_cipher)) throw new ArgumentException("unsupported cipher: " + in_cipher);
             if (in_epoch == null || in_epoch.Length != EPOCH_LENGTH) throw new ArgumentException("the epoch must be 8 bytes");
             checkNetId(in_sender);
             checkNetId(in_receiver);
@@ -104,7 +119,7 @@ namespace BrainCloud.Internal
             Buffer.BlockCopy(in_epoch, 0, header, 3, EPOCH_LENGTH);
             for (int i = 0; i < 8; ++i) header[11 + i] = (byte)(in_sequence >> (56 - 8 * i));
 
-            byte[] sealedPacket = ChaCha20Poly1305.Seal(in_key, nonceFor(header), header, in_packet, in_offset, in_length);
+            byte[] sealedPacket = aead().Seal(in_key, nonceFor(header), header, in_packet, in_offset, in_length);
             byte[] datagram = new byte[HEADER_LENGTH + sealedPacket.Length];
             Buffer.BlockCopy(header, 0, datagram, 0, HEADER_LENGTH);
             Buffer.BlockCopy(sealedPacket, 0, datagram, HEADER_LENGTH, sealedPacket.Length);
@@ -144,7 +159,16 @@ namespace BrainCloud.Internal
             if (sender != in_expectedSender || receiver != in_expectedReceiver) return null;
             byte[] header = new byte[HEADER_LENGTH];
             Buffer.BlockCopy(in_datagram, 0, header, 0, HEADER_LENGTH);
-            return ChaCha20Poly1305.Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
+            return aead().Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
+        }
+
+        // The one cipher there is so far. A second would add the cipher to Seal and Open; the
+        // datagram does not carry it, as every member of an attempt uses the one the server chose.
+        private static IDirectAead aead()
+        {
+            IDirectAead aead = DirectCipher.For(CIPHER_CHACHA20_POLY1305);
+            if (aead == null) throw new ArgumentException("unsupported cipher: " + CIPHER_CHACHA20_POLY1305);
+            return aead;
         }
 
         /// <summary>
@@ -191,6 +215,78 @@ namespace BrainCloud.Internal
         internal static void checkNetId(int in_netId)
         {
             if (in_netId < 0 || in_netId > 255) throw new ArgumentOutOfRangeException("net id " + in_netId);
+        }
+    }
+
+    /// <summary>
+    /// An AEAD as direct connect uses it: a 32-byte key, a 12-byte nonce and a 16-byte tag. Its
+    /// implementation can come from the operating system or from this library (DirectCipher).
+    /// </summary>
+    internal interface IDirectAead
+    {
+        /// The ciphertext of in_length bytes of in_plaintext from in_offset, followed by the tag.
+        byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length);
+
+        /// The plaintext of in_length bytes of in_sealed from in_offset (ciphertext and tag), or null when the tag does not match.
+        byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length);
+    }
+
+    /// ChaCha20-Poly1305 as implemented in this library.
+    internal sealed class ManagedChaCha20Poly1305 : IDirectAead
+    {
+        public byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
+        {
+            return ChaCha20Poly1305.Seal(in_key, in_nonce, in_aad, in_plaintext, in_offset, in_length);
+        }
+
+        public byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
+        {
+            return ChaCha20Poly1305.Open(in_key, in_nonce, in_aad, in_sealed, in_offset, in_length);
+        }
+    }
+
+    /// <summary>
+    /// Which implementation encrypts direct-connect traffic on this platform.
+    ///
+    /// On Apple platforms only the operating system's encryption is used. Apple asks every app
+    /// whether it implements standard encryption "instead of, or in addition to" the operating
+    /// system's, and an app that does has export-compliance documentation to provide; one that
+    /// only uses the operating system's does not. So an Apple player build has no implementation
+    /// here until one backed by the operating system (CryptoKit) is installed, reports no cipher,
+    /// and its lobbies use the relay server. Elsewhere this library's own implementation is used.
+    /// The Unity Editor uses it everywhere, as the Editor is never shipped.
+    ///
+    /// Key derivation (HKDF-SHA256) stays in this library on every platform: it hashes and
+    /// authenticates, and does not encrypt.
+    /// </summary>
+    internal static class DirectCipher
+    {
+        private static volatile IDirectAead s_chaCha20Poly1305 = platformChaCha20Poly1305();
+
+        /// The implementation of in_cipher on this platform, or null when there is none.
+        public static IDirectAead For(string in_cipher)
+        {
+            return in_cipher == DirectPacket.CIPHER_CHACHA20_POLY1305 ? s_chaCha20Poly1305 : null;
+        }
+
+        /// <summary>
+        /// Replaces the ChaCha20-Poly1305 implementation, or with null removes it: for an
+        /// implementation backed by the operating system, and for the tests. Install it at startup,
+        /// before any attempt. Every implementation is the same cipher, so datagrams are the same either way.
+        /// </summary>
+        internal static IDirectAead ChaCha20Poly1305Implementation
+        {
+            get { return s_chaCha20Poly1305; }
+            set { s_chaCha20Poly1305 = value; }
+        }
+
+        private static IDirectAead platformChaCha20Poly1305()
+        {
+#if !UNITY_EDITOR && (UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS || UNITY_STANDALONE_OSX)
+            return null;
+#else
+            return new ManagedChaCha20Poly1305();
+#endif
         }
     }
 
@@ -374,7 +470,7 @@ namespace BrainCloud.Internal
         internal DirectSession(byte[] in_sessionToken, string in_cipher, int in_netId, byte[] in_prefix)
         {
             DirectPacket.ExtractKey(in_sessionToken);   // checks the token now
-            if (in_cipher != DirectPacket.CIPHER_CHACHA20_POLY1305) throw new ArgumentException("unsupported cipher: " + in_cipher);
+            if (!DirectPacket.IsSupported(in_cipher)) throw new ArgumentException("unsupported cipher: " + in_cipher);
             DirectPacket.checkNetId(in_netId);
             m_sessionToken = (byte[])in_sessionToken.Clone();
             m_cipher = in_cipher;
