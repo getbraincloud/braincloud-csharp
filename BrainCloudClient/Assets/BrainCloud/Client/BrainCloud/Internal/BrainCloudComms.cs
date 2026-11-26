@@ -2009,7 +2009,6 @@ namespace BrainCloud.Internal
             using (var outputStream = new MemoryStream())
             {
                 gZipStream.CopyTo(outputStream);
-                outputStream.Read(compressedBytes, 0, compressedBytes.Length);
                 return outputStream.ToArray();
             }
         }
@@ -2117,8 +2116,19 @@ namespace BrainCloud.Internal
             {
                 response = requestState.WebRequest.error;
             }
-
-            response = requestState.WebRequest.downloadHandler.text;
+            else
+            {
+                byte[] data = requestState.WebRequest.downloadHandler.data;
+                if (data != null && IsGzip(data))
+                {
+                    data = Decompress(data);
+                    response = Encoding.UTF8.GetString(data, 0, data.Length);
+                }
+                else
+                {
+                    response = requestState.WebRequest.downloadHandler.text;
+                }
+            }
 
             if (response.Contains("Security violation 47") ||
                 response.StartsWith("<"))
