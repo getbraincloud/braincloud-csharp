@@ -170,14 +170,35 @@ namespace BrainCloud.Internal
         /// </summary>
         public static byte[] Open(string in_cipher, byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram, int in_length)
         {
+            byte[] datagram = CopyReceived(in_datagram, in_length);
+            return datagram == null ? null : OpenCopy(in_cipher, in_key, in_expectedSender, in_expectedReceiver, datagram);
+        }
+
+        /// <summary>
+        /// The first in_length bytes of a received datagram, copied, or null when they cannot be a
+        /// datagram of this format. Everything after is read from the copy alone, so a receive buffer
+        /// that changes while a datagram is being opened cannot make the bytes that were checked
+        /// differ from the bytes that are used.
+        /// </summary>
+        internal static byte[] CopyReceived(byte[] in_datagram, int in_length)
+        {
+            if (in_datagram == null || in_length < OVERHEAD || in_length > MAX_DATAGRAM_LENGTH || in_length > in_datagram.Length) return null;
+            byte[] datagram = new byte[in_length];
+            Buffer.BlockCopy(in_datagram, 0, datagram, 0, in_length);
+            return datagram;
+        }
+
+        /// Open, for a datagram already copied with CopyReceived: in_datagram is not shared with anyone.
+        internal static byte[] OpenCopy(string in_cipher, byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram)
+        {
             int sender, receiver;
             byte[] epoch;
             ulong sequence;
-            if (!TryReadHeader(in_datagram, in_length, out sender, out receiver, out epoch, out sequence)) return null;
+            if (!TryReadHeader(in_datagram, in_datagram.Length, out sender, out receiver, out epoch, out sequence)) return null;
             if (sender != in_expectedSender || receiver != in_expectedReceiver) return null;
             byte[] header = new byte[HEADER_LENGTH];
             Buffer.BlockCopy(in_datagram, 0, header, 0, HEADER_LENGTH);
-            return implementation(in_cipher).Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
+            return implementation(in_cipher).Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_datagram.Length - HEADER_LENGTH);
         }
 
         // The datagram does not name its cipher: every member of an attempt uses the one the server chose.
@@ -470,18 +491,22 @@ namespace BrainCloud.Internal
         /// </summary>
         public byte[] Open(byte[] in_datagram, int in_length)
         {
+            // One copy, made first: the epoch and sequence the replay window records are then always
+            // the ones the tag was checked over, whatever happens to the caller's buffer meanwhile
+            byte[] datagram = DirectPacket.CopyReceived(in_datagram, in_length);
+            if (datagram == null) return null;
             int sender, receiver;
             byte[] epoch;
             ulong sequence;
-            if (!DirectPacket.TryReadHeader(in_datagram, in_length, out sender, out receiver, out epoch, out sequence)) return null;
+            if (!DirectPacket.TryReadHeader(datagram, datagram.Length, out sender, out receiver, out epoch, out sequence)) return null;
             if (sender != m_sender || receiver != m_receiver) return null;
             lock (m_lock)
             {
-                return open(in_datagram, in_length, epoch, sequence);
+                return open(datagram, epoch, sequence);
             }
         }
 
-        private byte[] open(byte[] in_datagram, int in_length, byte[] epoch, ulong sequence)
+        private byte[] open(byte[] datagram, byte[] epoch, ulong sequence)
         {
             if (m_epoch != null)
             {
@@ -491,7 +516,7 @@ namespace BrainCloud.Internal
                 if (count == current)
                 {
                     if (!m_window.IsNew(sequence)) return null;
-                    byte[] packet = DirectPacket.Open(m_cipher, m_key, m_sender, m_receiver, in_datagram, in_length);
+                    byte[] packet = DirectPacket.OpenCopy(m_cipher, m_key, m_sender, m_receiver, datagram);
                     if (packet != null) m_window.Accept(sequence);
                     return packet;
                 }
@@ -499,7 +524,7 @@ namespace BrainCloud.Internal
 
             // The first epoch, or a later one: only a datagram that decrypts with its key moves this receiver to it
             byte[] key = DirectPacket.DeriveKeyFromExtracted(m_extracted, m_cipher, m_sender, m_receiver, epoch);
-            byte[] opened = DirectPacket.Open(m_cipher, key, m_sender, m_receiver, in_datagram, in_length);
+            byte[] opened = DirectPacket.OpenCopy(m_cipher, key, m_sender, m_receiver, datagram);
             if (opened == null) return null;
             m_epoch = epoch;
             m_key = key;

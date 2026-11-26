@@ -232,17 +232,6 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void DeriveKey_RefusesAnUnknownCipherOrBadInput()
-        {
-            string cipher = DirectPacket.CIPHER_CHACHA20_POLY1305;
-            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, "aes-128-gcm", 0, 1, EPOCH), Throws.ArgumentException);
-            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 4), cipher, 0, 1, EPOCH), Throws.ArgumentException, "a short key could be guessed");
-            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 17), cipher, 0, 1, EPOCH), Throws.ArgumentException);
-            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, cipher, 0, 1, Sequence(0, 7)), Throws.ArgumentException);
-            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, cipher, 0, 256, EPOCH), Throws.InstanceOf<ArgumentOutOfRangeException>());
-        }
-
-        [Test]
         public void Seal_FixedDatagram()
         {
             byte[] datagram = DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
@@ -258,12 +247,38 @@ namespace BrainCloudTests
             Buffer.BlockCopy(PUNCH, 0, buffer, 9, PUNCH.Length);
             Assert.That(Hex(DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 5, buffer, 9, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM));
         }
+#endif
+
+        // A key from 0 to 1, and a PUNCH sealed with it, in whichever cipher this build prefers
+        private static byte[] KeyFor(int in_sender, int in_receiver)
+        {
+            return DirectPacket.DeriveKey(PAIR_KEY, CIPHER, in_sender, in_receiver, EPOCH);
+        }
+
+        private static byte[] SealedPunch()
+        {
+            return DirectPacket.Seal(CIPHER, KeyFor(0, 1), 0, 1, EPOCH, 5, PUNCH, 0, PUNCH.Length);
+        }
+
+        [Test]
+        public void DeriveKey_RefusesAnUnknownCipherOrBadInput()
+        {
+            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, "aes-128-gcm", 0, 1, EPOCH), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 4), CIPHER, 0, 1, EPOCH), Throws.ArgumentException, "a short key could be guessed");
+            Assert.That(() => DirectPacket.DeriveKey(Sequence(0, 17), CIPHER, 0, 1, EPOCH), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, CIPHER, 0, 1, Sequence(0, 7)), Throws.ArgumentException);
+            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, CIPHER, 0, 256, EPOCH), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
 
         [Test]
         public void Open_ReadsTheHeaderAndThePacket_FromABiggerReceiveBuffer()
         {
-            byte[] datagram = H(PUNCH_DATAGRAM);
+            byte[] datagram = SealedPunch();
+            Assert.That(datagram.Length, Is.EqualTo(PUNCH.Length + DirectPacket.OVERHEAD));
+            Assert.That(DirectPacket.OVERHEAD, Is.EqualTo(35));
+            // A receive buffer is bigger than what arrived, and holds whatever was there before
             byte[] buffer = new byte[1500];
+            new Random(15734).NextBytes(buffer);
             Buffer.BlockCopy(datagram, 0, buffer, 0, datagram.Length);
 
             int sender, receiver;
@@ -274,23 +289,24 @@ namespace BrainCloudTests
             Assert.That(receiver, Is.EqualTo(1));
             Assert.That(epoch, Is.EqualTo(EPOCH));
             Assert.That(sequence, Is.EqualTo(5UL));
-            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
         }
 
         [Test]
         public void Open_RefusesOtherIdsTheOtherDirectionsKeyAndAnyChange()
         {
-            byte[] datagram = H(PUNCH_DATAGRAM);
-            // The ids the key belongs to are checked against the header before any decrypting
-            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 2, datagram, datagram.Length), Is.Null, "addressed to someone else");
-            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 3, 1, datagram, datagram.Length), Is.Null, "from someone else");
+            byte[] datagram = SealedPunch();
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, datagram, datagram.Length), Is.EqualTo(PUNCH));
+            // The ids the key belongs to are checked against the header before the tag
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 2, datagram, datagram.Length), Is.Null, "addressed to someone else");
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 3, 1, datagram, datagram.Length), Is.Null, "from someone else");
             // A packet cannot be bounced back to its sender: the other direction has another key
-            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_1_TO_0), 0, 1, datagram, datagram.Length), Is.Null);
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(1, 0), 0, 1, datagram, datagram.Length), Is.Null);
             for (int i = 1; i < datagram.Length; ++i)
             {
                 byte[] changed = (byte[])datagram.Clone();
                 changed[i] ^= 0x01;
-                Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
+                Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, changed, changed.Length), Is.Null, "byte " + i);
             }
         }
 
@@ -300,24 +316,26 @@ namespace BrainCloudTests
             int sender, receiver;
             byte[] epoch;
             ulong sequence;
-            byte[] datagram = H(PUNCH_DATAGRAM);
+            byte[] datagram = SealedPunch();
+            Assert.That(DirectPacket.TryReadHeader(datagram, datagram.Length, out sender, out receiver, out epoch, out sequence), Is.True);
             byte[] stun = (byte[])datagram.Clone();
             stun[0] = 0x01;   // a STUN Binding response starts 0x01 0x01
             Assert.That(DirectPacket.TryReadHeader(stun, stun.Length, out sender, out receiver, out epoch, out sequence), Is.False, "another format");
             Assert.That(DirectPacket.TryReadHeader(datagram, DirectPacket.OVERHEAD - 1, out sender, out receiver, out epoch, out sequence), Is.False, "too short");
             Assert.That(DirectPacket.TryReadHeader(datagram, datagram.Length + 1, out sender, out receiver, out epoch, out sequence), Is.False, "longer than the buffer");
             Assert.That(DirectPacket.TryReadHeader(null, 0, out sender, out receiver, out epoch, out sequence), Is.False);
-            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length + 1), Is.Null, "longer than the buffer");
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, datagram, datagram.Length + 1), Is.Null, "longer than the buffer");
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, stun, stun.Length), Is.Null, "another format");
+            Assert.That(DirectPacket.Open(CIPHER, KeyFor(0, 1), 0, 1, datagram, DirectPacket.OVERHEAD - 1), Is.Null, "too short");
         }
 
         [Test]
         public void Seal_SequenceIsBigEndianInTheHeader()
         {
-            byte[] datagram = DirectPacket.Seal(DirectPacket.CIPHER_CHACHA20_POLY1305, H(KEY_0_TO_1), 0, 1, EPOCH, 0x0102030405060708UL, new byte[0], 0, 0);
+            byte[] datagram = DirectPacket.Seal(CIPHER, KeyFor(0, 1), 0, 1, EPOCH, 0x0102030405060708UL, new byte[0], 0, 0);
             Assert.That(Hex(datagram.Take(DirectPacket.HEADER_LENGTH).ToArray()), Is.EqualTo("b10001" + "1011121314151617" + "0102030405060708"));
         }
 
-#endif
         #endregion
 
         #region Sender and receiver
@@ -789,6 +807,32 @@ namespace BrainCloudTests
             byte[] buffer = new byte[20];
             Buffer.BlockCopy(PUNCH, 0, buffer, 9, PUNCH.Length);
             Assert.That(Hex(DirectPacket.Seal(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, EPOCH, 5, buffer, 9, PUNCH.Length)), Is.EqualTo(PUNCH_DATAGRAM_HMAC));
+        }
+
+        [Test]
+        public void Hmac_OpenFromALargerReceiveBuffer()
+        {
+            // The tag is read from where the datagram ends, not from the end of the buffer
+            byte[] datagram = H(PUNCH_DATAGRAM_HMAC);
+            byte[] buffer = new byte[1500];
+            new Random(15734).NextBytes(buffer);
+            Buffer.BlockCopy(datagram, 0, buffer, 0, datagram.Length);
+            Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, buffer, datagram.Length), Is.EqualTo(PUNCH));
+        }
+
+        [Test]
+        public void Hmac_TheImplementationReadsOnlyItsRangeOfALargerBuffer()
+        {
+            // DirectPacket hands it an exact copy, but the implementation takes any range of any buffer
+            var hmac = new HmacSha256Authentication();
+            byte[] key = H(KEY_HMAC_0_TO_1), header = Sequence(0x30, DirectPacket.HEADER_LENGTH);
+            byte[] sealedPacket = hmac.Seal(key, null, header, PUNCH, 0, PUNCH.Length);
+            byte[] buffer = new byte[100];
+            new Random(15734).NextBytes(buffer);
+            Buffer.BlockCopy(sealedPacket, 0, buffer, 7, sealedPacket.Length);
+            Assert.That(hmac.Open(key, null, header, buffer, 7, sealedPacket.Length), Is.EqualTo(PUNCH));
+            Assert.That(hmac.Open(key, null, header, buffer, 7, sealedPacket.Length - 1), Is.Null, "a tag cut short");
+            Assert.That(hmac.Open(key, null, header, buffer, 95, sealedPacket.Length), Is.Null, "past the end");
         }
 
         [Test]
