@@ -19,7 +19,7 @@ namespace BrainCloud.Internal
     ///      1     1  sender's net id
     ///      2     1  receiver's net id
     ///      3     8  the sender's epoch: 4 random bytes, the same for every sender in this
-    ///               process, then a 4-byte big-endian count that goes up with every new sender
+    ///               attempt, then a 4-byte big-endian count that goes up with every new sender
     ///     11     8  sequence number, big-endian, from 0 within the epoch
     ///     19     n  the packet, encrypted
     ///   19+n    16  authentication tag
@@ -31,7 +31,7 @@ namespace BrainCloud.Internal
     /// starts again, for whatever reason, starts a new epoch and so gets a new key. Epochs are
     /// ordered, so a receiver only ever moves forward (see DirectReceiver).
     ///
-    /// Use DirectSender and DirectReceiver, which keep those rules; the static methods here are the
+    /// Use DirectSession, which keeps those rules for one attempt; the static methods here are the
     /// format itself.
     /// </summary>
     internal static class DirectPacket
@@ -40,11 +40,18 @@ namespace BrainCloud.Internal
         public const int EPOCH_LENGTH = 8;
         public const int HEADER_LENGTH = 19;
         public const int OVERHEAD = HEADER_LENGTH + ChaCha20Poly1305.TAG_LENGTH;
+        /// <summary>
+        /// The largest datagram sent or accepted: the most UDP payload that fits the 1,280 bytes
+        /// every IPv6 link carries without fragmenting. A full game packet is 1,068 bytes. Anything
+        /// larger is dropped before any decrypting, so it cannot be used to make a receiver work harder.
+        /// </summary>
+        public const int MAX_DATAGRAM_LENGTH = 1232;
         public const int SESSION_TOKEN_LENGTH = 16;
 
         /// The cipher names this library supports, most preferred first, as reported to brainCloud.
         public const string CIPHER_CHACHA20_POLY1305 = "chacha20-poly1305";
-        public static readonly string[] SUPPORTED_CIPHERS = { CIPHER_CHACHA20_POLY1305 };
+        public static readonly System.Collections.ObjectModel.ReadOnlyCollection<string> SUPPORTED_CIPHERS =
+            Array.AsReadOnly(new[] { CIPHER_CHACHA20_POLY1305 });
 
         private static readonly byte[] KEY_SALT = Encoding.ASCII.GetBytes("brainCloud direct connect");
 
@@ -89,6 +96,7 @@ namespace BrainCloud.Internal
             checkNetId(in_sender);
             checkNetId(in_receiver);
             if (in_epoch == null || in_epoch.Length != EPOCH_LENGTH) throw new ArgumentException("the epoch must be 8 bytes");
+            if (in_length > MAX_DATAGRAM_LENGTH - OVERHEAD) throw new ArgumentException("too long for one datagram: " + in_length + " bytes");
             byte[] header = new byte[HEADER_LENGTH];
             header[0] = FORMAT;
             header[1] = (byte)in_sender;
@@ -112,7 +120,7 @@ namespace BrainCloud.Internal
             out_sender = out_receiver = -1;
             out_epoch = null;
             out_sequence = 0;
-            if (in_datagram == null || in_length < OVERHEAD || in_length > in_datagram.Length || in_datagram[0] != FORMAT) return false;
+            if (in_datagram == null || in_length < OVERHEAD || in_length > MAX_DATAGRAM_LENGTH || in_length > in_datagram.Length || in_datagram[0] != FORMAT) return false;
             out_sender = in_datagram[1];
             out_receiver = in_datagram[2];
             out_epoch = new byte[EPOCH_LENGTH];
@@ -139,20 +147,16 @@ namespace BrainCloud.Internal
             return ChaCha20Poly1305.Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_length - HEADER_LENGTH);
         }
 
-        // This process's epoch prefix, and how many senders it has made
-        private static readonly byte[] s_epochPrefix = newPrefix();
-        private static int s_epochCount = 0;
-
         /// <summary>
-        /// The next epoch of this process: its random prefix, then a count that goes up every time.
-        /// The prefix only has to differ from other processes' and the count makes every epoch in
-        /// this one unique, whatever the platform's random source does.
+        /// A new random epoch prefix, for one attempt. It is random per attempt, not per process, so
+        /// it does not link a player's sessions together. A version 4 GUID's randomness is plenty:
+        /// it only has to differ from other players' in the same attempt.
         /// </summary>
-        public static byte[] NewEpoch()
+        public static byte[] RandomPrefix()
         {
-            uint count = (uint)System.Threading.Interlocked.Increment(ref s_epochCount);
-            if (count == 0) throw new InvalidOperationException("epochs used up");
-            return MakeEpoch(s_epochPrefix, count);
+            byte[] prefix = new byte[4];
+            Buffer.BlockCopy(Guid.NewGuid().ToByteArray(), 0, prefix, 0, 4);
+            return prefix;
         }
 
         /// An epoch from its two parts.
@@ -177,13 +181,6 @@ namespace BrainCloud.Internal
             return ((uint)in_epoch[4] << 24) | ((uint)in_epoch[5] << 16) | ((uint)in_epoch[6] << 8) | in_epoch[7];
         }
 
-        private static byte[] newPrefix()
-        {
-            byte[] prefix = new byte[4];
-            Buffer.BlockCopy(Guid.NewGuid().ToByteArray(), 0, prefix, 0, 4);
-            return prefix;
-        }
-
         private static byte[] nonceFor(byte[] in_header)
         {
             byte[] nonce = new byte[ChaCha20Poly1305.NONCE_LENGTH];
@@ -198,9 +195,9 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// Everything this player sends to one peer: the key for a new epoch, and the sequence number,
-    /// which only goes up. Create one per peer per connection; a new one is a new epoch. Safe to
-    /// use from more than one thread.
+    /// Everything this player sends to one peer in one epoch: the key, and the sequence number,
+    /// which only goes up. Get one from DirectSession, which gives each a new epoch and retires the
+    /// one it replaces. Safe to use from more than one thread.
     /// </summary>
     internal sealed class DirectSender
     {
@@ -210,15 +207,11 @@ namespace BrainCloud.Internal
         private readonly byte[] m_key;
         private readonly object m_lock = new object();
         private ulong m_next = 0;
-
-        public DirectSender(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
-            : this(in_sessionToken, in_cipher, in_sender, in_receiver, DirectPacket.NewEpoch())
-        {
-        }
+        private bool m_retired = false;
 
         /// <summary>
-        /// For the tests only: a chosen epoch. Anything else must use the other constructor, since
-        /// reusing an epoch with the same token reuses nonces.
+        /// Made by DirectSession, or by the tests with a chosen epoch. Reusing an epoch with the
+        /// same token reuses nonces, so nothing else may call this.
         /// </summary>
         internal DirectSender(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
@@ -228,23 +221,34 @@ namespace BrainCloud.Internal
             m_key = DirectPacket.DeriveKey(in_sessionToken, in_cipher, in_sender, in_receiver, m_epoch);
         }
 
+        public int Receiver { get { return m_receiver; } }
+
         /// The sequence number the next datagram will carry.
         public ulong NextSequence
         {
             get { lock (m_lock) return m_next; }
         }
 
-        /// The datagram carrying in_length bytes of in_packet from in_offset.
+        /// <summary>
+        /// The datagram carrying in_length bytes of in_packet from in_offset. Throws once this sender
+        /// has been replaced: the peer would drop its datagrams anyway, since it only moves forward.
+        /// </summary>
         public byte[] Seal(byte[] in_packet, int in_offset, int in_length)
         {
             ulong sequence;
             lock (m_lock)
             {
+                if (m_retired) throw new InvalidOperationException("this sender was replaced by a newer one");
                 // Two threads must never get the same sequence number: that would be the same nonce
                 if (m_next == ulong.MaxValue) throw new InvalidOperationException("sequence numbers used up; start a new sender");
                 sequence = m_next++;
             }
             return DirectPacket.Seal(m_key, m_sender, m_receiver, m_epoch, sequence, in_packet, in_offset, in_length);
+        }
+
+        internal void Retire()
+        {
+            lock (m_lock) m_retired = true;
         }
     }
 
@@ -253,14 +257,19 @@ namespace BrainCloud.Internal
     /// this player that decrypt, each sequence number once, and only ever moves forward:
     /// <list type="bullet">
     /// <item>The first datagram that decrypts fixes the peer's epoch prefix. A peer keeps its
-    /// prefix for the life of its process, and a process that starts again cannot rejoin the same
-    /// attempt (a new attempt has a new token), so another prefix is never genuine and is dropped
-    /// without deriving any key.</item>
+    /// prefix for the whole attempt, and a player cannot rejoin a running attempt (a new attempt
+    /// has a new token), so another prefix is never genuine and is dropped without deriving any
+    /// key.</item>
     /// <item>A higher count than the current epoch's means the peer started sending again: the
     /// first datagram of it that decrypts moves this receiver to it. A lower or equal count is an
     /// old epoch, and is dropped without deriving any key.</item>
     /// </list>
-    /// Not thread-safe: one thread receives from a peer.
+    /// There must be exactly one for each peer for the whole attempt, which DirectSession ensures: a
+    /// new one would accept a replay of everything the old one had received. Safe to use from more
+    /// than one thread.
+    ///
+    /// It does not say where a datagram came from. Never move a peer to a new address just because
+    /// a datagram from there decrypted: an attacker can resend a genuine one from anywhere.
     /// </summary>
     internal sealed class DirectReceiver
     {
@@ -271,9 +280,10 @@ namespace BrainCloud.Internal
         private byte[] m_epoch = null;
         private byte[] m_key = null;
         private ReplayWindow m_window = null;
+        private readonly object m_lock = new object();
 
-        /// in_sender is the peer's net id, in_receiver this player's.
-        public DirectReceiver(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
+        /// in_sender is the peer's net id, in_receiver this player's. Made by DirectSession, or by the tests.
+        internal DirectReceiver(byte[] in_sessionToken, string in_cipher, int in_sender, int in_receiver)
         {
             m_extracted = DirectPacket.ExtractKey(in_sessionToken);
             // Checks the cipher and ids now rather than on the first datagram
@@ -295,7 +305,14 @@ namespace BrainCloud.Internal
             ulong sequence;
             if (!DirectPacket.TryReadHeader(in_datagram, in_length, out sender, out receiver, out epoch, out sequence)) return null;
             if (sender != m_sender || receiver != m_receiver) return null;
+            lock (m_lock)
+            {
+                return open(in_datagram, in_length, epoch, sequence);
+            }
+        }
 
+        private byte[] open(byte[] in_datagram, int in_length, byte[] epoch, ulong sequence)
+        {
             if (m_epoch != null)
             {
                 if (!DirectPacket.SamePrefix(epoch, m_epoch)) return null;
@@ -319,6 +336,101 @@ namespace BrainCloud.Internal
             m_window = new ReplayWindow();
             m_window.Accept(sequence);
             return opened;
+        }
+    }
+
+    /// <summary>
+    /// This player's side of one direct connect attempt: what DIRECT_CONNECT gave it (the session
+    /// token, the cipher and its net id), one receiver for each peer for the whole attempt, and the
+    /// current sender to each. Create one when DIRECT_CONNECT arrives and drop it when the attempt
+    /// or the match ends. It keeps the rules the format depends on:
+    /// <list type="bullet">
+    /// <item>exactly one receiver per peer, so nothing already received can be replayed to it;</item>
+    /// <item>every sender gets a new epoch (this attempt's random prefix and a count that goes up),
+    /// so no key ever reuses a nonce;</item>
+    /// <item>a new sender to a peer retires the one it replaces, which the peer would no longer
+    /// accept anyway.</item>
+    /// </list>
+    /// Safe to use from more than one thread.
+    /// </summary>
+    internal sealed class DirectSession
+    {
+        private readonly byte[] m_sessionToken;
+        private readonly string m_cipher;
+        private readonly int m_netId;
+        private readonly byte[] m_prefix;
+        private uint m_count = 0;
+        private readonly System.Collections.Generic.Dictionary<int, DirectSender> m_senders = new System.Collections.Generic.Dictionary<int, DirectSender>();
+        private readonly System.Collections.Generic.Dictionary<int, DirectReceiver> m_receivers = new System.Collections.Generic.Dictionary<int, DirectReceiver>();
+        private readonly object m_lock = new object();
+
+        /// in_sessionToken is the 16 bytes of DIRECT_CONNECT's sessionToken; in_netId is this player's.
+        public DirectSession(byte[] in_sessionToken, string in_cipher, int in_netId)
+            : this(in_sessionToken, in_cipher, in_netId, DirectPacket.RandomPrefix())
+        {
+        }
+
+        /// For the tests: a chosen prefix.
+        internal DirectSession(byte[] in_sessionToken, string in_cipher, int in_netId, byte[] in_prefix)
+        {
+            DirectPacket.ExtractKey(in_sessionToken);   // checks the token now
+            if (in_cipher != DirectPacket.CIPHER_CHACHA20_POLY1305) throw new ArgumentException("unsupported cipher: " + in_cipher);
+            DirectPacket.checkNetId(in_netId);
+            m_sessionToken = (byte[])in_sessionToken.Clone();
+            m_cipher = in_cipher;
+            m_netId = in_netId;
+            m_prefix = (byte[])in_prefix.Clone();
+        }
+
+        public int NetId { get { return m_netId; } }
+
+        /// The receiver for packets from in_peerNetId: always the same one for this attempt.
+        public DirectReceiver ReceiverFor(int in_peerNetId)
+        {
+            lock (m_lock)
+            {
+                DirectReceiver receiver;
+                if (!m_receivers.TryGetValue(in_peerNetId, out receiver))
+                {
+                    receiver = new DirectReceiver(m_sessionToken, m_cipher, in_peerNetId, m_netId);
+                    m_receivers[in_peerNetId] = receiver;
+                }
+                return receiver;
+            }
+        }
+
+        /// The current sender to in_peerNetId, made on first use.
+        public DirectSender SenderFor(int in_peerNetId)
+        {
+            lock (m_lock)
+            {
+                DirectSender sender;
+                if (m_senders.TryGetValue(in_peerNetId, out sender)) return sender;
+                return newSender(in_peerNetId);
+            }
+        }
+
+        /// <summary>
+        /// A new sender to in_peerNetId, in a new epoch, for when this player starts sending to it
+        /// again (a rebuilt socket, say). The one it replaces is retired and refuses to seal.
+        /// </summary>
+        public DirectSender RestartSender(int in_peerNetId)
+        {
+            lock (m_lock)
+            {
+                DirectSender old;
+                if (m_senders.TryGetValue(in_peerNetId, out old)) old.Retire();
+                return newSender(in_peerNetId);
+            }
+        }
+
+        private DirectSender newSender(int in_peerNetId)
+        {
+            if (m_count == uint.MaxValue) throw new InvalidOperationException("epochs used up for this attempt");
+            ++m_count;
+            var sender = new DirectSender(m_sessionToken, m_cipher, m_netId, in_peerNetId, DirectPacket.MakeEpoch(m_prefix, m_count));
+            m_senders[in_peerNetId] = sender;
+            return sender;
         }
     }
 

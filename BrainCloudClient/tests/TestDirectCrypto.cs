@@ -327,15 +327,83 @@ namespace BrainCloudTests
             Assert.That(receiver.Open(second, second.Length), Is.Null, "a repeat");
         }
 
-        [Test]
-        public void Sender_EachNewOneHasItsOwnEpoch()
+        /// A sender from 0 to 1 in an attempt of its own.
+        private static DirectSender FreshSender(byte[] in_token, int in_sender, int in_receiver)
         {
-            var a = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
-            var b = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
-            byte[] fromA = a.Seal(PUNCH, 0, PUNCH.Length), fromB = b.Seal(PUNCH, 0, PUNCH.Length);
-            Assert.That(Hex(fromA.Skip(3).Take(8).ToArray()), Is.Not.EqualTo(Hex(fromB.Skip(3).Take(8).ToArray())));
+            return new DirectSession(in_token, DirectPacket.CIPHER_CHACHA20_POLY1305, in_sender).SenderFor(in_receiver);
+        }
+
+        private static byte[] EpochOf(byte[] in_datagram)
+        {
+            return in_datagram.Skip(3).Take(DirectPacket.EPOCH_LENGTH).ToArray();
+        }
+
+        [Test]
+        public void Session_EachNewSenderHasItsOwnEpoch()
+        {
+            var session = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0);
+            var a = session.SenderFor(1);
+            Assert.That(session.SenderFor(1), Is.SameAs(a), "the current sender until it is restarted");
+            var b = session.RestartSender(1);
+            byte[] fromB = b.Seal(PUNCH, 0, PUNCH.Length);
+            var toOther = session.SenderFor(2);
+            byte[] fromOther = toOther.Seal(PUNCH, 0, PUNCH.Length);
+            var c = session.RestartSender(1);
+            byte[] fromC = c.Seal(PUNCH, 0, PUNCH.Length);
+
+            Assert.That(DirectPacket.SamePrefix(EpochOf(fromB), EpochOf(fromC)), Is.True, "one prefix for the attempt");
+            Assert.That(DirectPacket.EpochCount(EpochOf(fromC)), Is.GreaterThan(DirectPacket.EpochCount(EpochOf(fromB))));
+            Assert.That(DirectPacket.EpochCount(EpochOf(fromOther)), Is.Not.EqualTo(DirectPacket.EpochCount(EpochOf(fromB))));
             // Same sequence number, different key: the same nonce is never used twice with one key
-            Assert.That(Hex(fromA.Skip(DirectPacket.HEADER_LENGTH).ToArray()), Is.Not.EqualTo(Hex(fromB.Skip(DirectPacket.HEADER_LENGTH).ToArray())));
+            Assert.That(Hex(fromB.Skip(DirectPacket.HEADER_LENGTH).ToArray()), Is.Not.EqualTo(Hex(fromC.Skip(DirectPacket.HEADER_LENGTH).ToArray())));
+        }
+
+        [Test]
+        public void Session_ARestartedSenderRefusesToSeal()
+        {
+            var session = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0);
+            var old = session.SenderFor(1);
+            old.Seal(PUNCH, 0, PUNCH.Length);
+            var replacement = session.RestartSender(1);
+            Assert.That(() => old.Seal(PUNCH, 0, PUNCH.Length), Throws.InvalidOperationException);
+            Assert.That(session.SenderFor(1), Is.SameAs(replacement));
+            Assert.That(() => replacement.Seal(PUNCH, 0, PUNCH.Length), Throws.Nothing);
+        }
+
+        [Test]
+        public void Session_HasOneReceiverPerPeer()
+        {
+            var session = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 1);
+            Assert.That(session.ReceiverFor(0), Is.SameAs(session.ReceiverFor(0)));
+            Assert.That(session.ReceiverFor(2), Is.Not.SameAs(session.ReceiverFor(0)));
+
+            // So a datagram already received cannot be replayed to it, even after a restart on either side
+            var peer = new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0);
+            byte[] first = peer.SenderFor(1).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(session.ReceiverFor(0).Open(first, first.Length), Is.EqualTo(PUNCH));
+            Assert.That(session.ReceiverFor(0).Open(first, first.Length), Is.Null);
+            byte[] restarted = peer.RestartSender(1).Seal(PUNCH, 0, PUNCH.Length);
+            Assert.That(session.ReceiverFor(0).Open(restarted, restarted.Length), Is.EqualTo(PUNCH));
+            Assert.That(session.ReceiverFor(0).Open(first, first.Length), Is.Null);
+        }
+
+        [Test]
+        public void Session_PrefixIsRandomPerAttempt()
+        {
+            byte[] a = EpochOf(FreshSender(TOKEN, 0, 1).Seal(PUNCH, 0, PUNCH.Length));
+            byte[] b = EpochOf(FreshSender(TOKEN, 0, 1).Seal(PUNCH, 0, PUNCH.Length));
+            Assert.That(DirectPacket.SamePrefix(a, b), Is.False, "a 1 in 2^32 chance of a false failure");
+            Assert.That(DirectPacket.EpochCount(a), Is.EqualTo(1u));
+            Assert.That(DirectPacket.MakeEpoch(PREFIX, 0x01020304), Is.EqualTo(new byte[] { 0xA1, 0xB2, 0xC3, 0xD4, 1, 2, 3, 4 }));
+        }
+
+        [Test]
+        public void Session_RefusesWhatIsNotAnAttempt()
+        {
+            Assert.That(() => new DirectSession(new byte[15], DirectPacket.CIPHER_CHACHA20_POLY1305, 0), Throws.ArgumentException);
+            Assert.That(() => new DirectSession(TOKEN, "aes-256-gcm", 0), Throws.ArgumentException);
+            Assert.That(() => new DirectSession(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 256), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(DirectPacket.SUPPORTED_CIPHERS, Does.Contain(DirectPacket.CIPHER_CHACHA20_POLY1305));
         }
 
         [Test]
@@ -414,18 +482,78 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void NewEpoch_SamePrefix_CountGoesUp()
+        public void Receiver_RefusesAForgedHigherCount()
         {
-            byte[] a = DirectPacket.NewEpoch(), b = DirectPacket.NewEpoch();
-            Assert.That(DirectPacket.SamePrefix(a, b), Is.True);
-            Assert.That(DirectPacket.EpochCount(b), Is.GreaterThan(DirectPacket.EpochCount(a)));
-            Assert.That(DirectPacket.MakeEpoch(PREFIX, 0x01020304), Is.EqualTo(new byte[] { 0xA1, 0xB2, 0xC3, 0xD4, 1, 2, 3, 4 }));
+            // The right prefix and a higher count is what a genuine restart looks like, so the receiver
+            // has to derive that epoch's key and try. A forgery must fail there and change nothing.
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            DirectSender sender;
+            byte[] first = SealIn(1, out sender);
+            Assert.That(receiver.Open(first, first.Length), Is.EqualTo(PUNCH));
+
+            byte[] genuine = sender.Seal(PUNCH, 0, PUNCH.Length);
+            byte[] forged = (byte[])genuine.Clone();
+            forged[3 + DirectPacket.EPOCH_LENGTH - 1] = 2;   // the count, 1 -> 2
+            Assert.That(receiver.Open(forged, forged.Length), Is.Null);
+            Assert.That(receiver.Open(genuine, genuine.Length), Is.EqualTo(PUNCH), "still on epoch 1");
+
+            DirectSender next;
+            byte[] restart = SealIn(2, out next);
+            Assert.That(receiver.Open(restart, restart.Length), Is.EqualTo(PUNCH), "the real epoch 2 is still taken");
+        }
+
+        [Test]
+        public void Receiver_ANewEpochStartsAFreshWindow()
+        {
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            DirectSender s1, s2;
+            byte[] a0 = SealIn(1, out s1), a1 = s1.Seal(PUNCH, 0, PUNCH.Length), a2 = s1.Seal(PUNCH, 0, PUNCH.Length);
+            foreach (var d in new[] { a0, a1, a2 }) Assert.That(receiver.Open(d, d.Length), Is.EqualTo(PUNCH));
+
+            // The same sequence numbers again, in the next epoch: new datagrams, not repeats
+            byte[] b0 = SealIn(2, out s2), b1 = s2.Seal(PUNCH, 0, PUNCH.Length), b2 = s2.Seal(PUNCH, 0, PUNCH.Length);
+            foreach (var d in new[] { b1, b0, b2 }) Assert.That(receiver.Open(d, d.Length), Is.EqualTo(PUNCH));
+            foreach (var d in new[] { b0, b1, b2 }) Assert.That(receiver.Open(d, d.Length), Is.Null, "now they are repeats");
+        }
+
+        [Test]
+        public void Receiver_FromManyThreads_TakesEachDatagramOnce()
+        {
+            var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            var sender = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1, EPOCH);
+            byte[][] datagrams = Enumerable.Range(0, 64).Select(i => sender.Seal(PUNCH, 0, PUNCH.Length)).ToArray();
+            int accepted = 0;
+            System.Threading.Tasks.Parallel.For(0, 64 * 8, i =>
+            {
+                byte[] d = datagrams[i % 64];
+                if (receiver.Open(d, d.Length) != null) System.Threading.Interlocked.Increment(ref accepted);
+            });
+            Assert.That(accepted, Is.EqualTo(64));
+        }
+
+        [Test]
+        public void Datagram_LongestIsTheMaximum()
+        {
+            int most = DirectPacket.MAX_DATAGRAM_LENGTH - DirectPacket.OVERHEAD;
+            byte[] key = H(KEY_0_TO_1);
+            byte[] longest = DirectPacket.Seal(key, 0, 1, EPOCH, 0, new byte[most], 0, most);
+            Assert.That(longest.Length, Is.EqualTo(DirectPacket.MAX_DATAGRAM_LENGTH));
+            Assert.That(DirectPacket.Open(key, 0, 1, longest, longest.Length), Is.EqualTo(new byte[most]));
+            Assert.That(() => DirectPacket.Seal(key, 0, 1, EPOCH, 0, new byte[most + 1], 0, most + 1), Throws.ArgumentException);
+
+            byte[] tooLong = new byte[DirectPacket.MAX_DATAGRAM_LENGTH + 1];
+            Buffer.BlockCopy(longest, 0, tooLong, 0, longest.Length);
+            int s, r;
+            byte[] epoch;
+            ulong sequence;
+            Assert.That(DirectPacket.TryReadHeader(tooLong, tooLong.Length, out s, out r, out epoch, out sequence), Is.False);
+            Assert.That(DirectPacket.TryReadHeader(tooLong, longest.Length, out s, out r, out epoch, out sequence), Is.True, "only the length received counts");
         }
 
         [Test]
         public void Sender_FromManyThreads_NeverRepeatsASequence()
         {
-            var sender = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
+            var sender = FreshSender(TOKEN, 0, 1);
             var seen = new System.Collections.Concurrent.ConcurrentDictionary<ulong, bool>();
             System.Threading.Tasks.Parallel.For(0, 2000, i =>
             {
@@ -443,11 +571,11 @@ namespace BrainCloudTests
         public void Receiver_RefusesOtherPeersAndForgeries()
         {
             var receiver = new DirectReceiver(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1);
-            byte[] toSomeoneElse = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 2).Seal(PUNCH, 0, PUNCH.Length);
+            byte[] toSomeoneElse = FreshSender(TOKEN, 0, 2).Seal(PUNCH, 0, PUNCH.Length);
             Assert.That(receiver.Open(toSomeoneElse, toSomeoneElse.Length), Is.Null);
-            byte[] ownPacket = new DirectSender(TOKEN, DirectPacket.CIPHER_CHACHA20_POLY1305, 1, 0).Seal(PUNCH, 0, PUNCH.Length);
+            byte[] ownPacket = FreshSender(TOKEN, 1, 0).Seal(PUNCH, 0, PUNCH.Length);
             Assert.That(receiver.Open(ownPacket, ownPacket.Length), Is.Null, "this player's own packet reflected back");
-            byte[] otherToken = new DirectSender(Sequence(1, 16), DirectPacket.CIPHER_CHACHA20_POLY1305, 0, 1).Seal(PUNCH, 0, PUNCH.Length);
+            byte[] otherToken = FreshSender(Sequence(1, 16), 0, 1).Seal(PUNCH, 0, PUNCH.Length);
             Assert.That(receiver.Open(otherToken, otherToken.Length), Is.Null, "another attempt's token");
 
             // A forged datagram in a new epoch must not move the receiver off the real one
