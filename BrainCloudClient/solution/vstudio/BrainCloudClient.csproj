@@ -309,6 +309,15 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\NatProbe.cs">
       <Link>BrainCloud\Internal\NatProbe.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ChaCha20Poly1305.cs">
+      <Link>BrainCloud\Internal\ChaCha20Poly1305.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectPacket.cs">
+      <Link>BrainCloud\Internal\DirectPacket.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\Sha256.cs">
+      <Link>BrainCloud\Internal\Sha256.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\StunClient.cs">
       <Link>BrainCloud\Internal\StunClient.cs</Link>
     </Compile>
