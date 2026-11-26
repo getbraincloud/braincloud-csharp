@@ -3,10 +3,17 @@
 // brainCloud client source code
 //----------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
+// The unit tests check how ROOM_READY is read without a server.
+[assembly: InternalsVisibleTo("UnitTest")]
+
 namespace BrainCloud
 {
+    using System;
     using System.Collections.Generic;
     using BrainCloud.Internal;
+    using BrainCloud.JsonFx.Json;
 
     public struct RelayConnectOptions
     {
@@ -118,6 +125,166 @@ namespace BrainCloud
         public void Connect(RelayConnectionType in_connectionType, RelayConnectOptions in_options, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
             m_commsLayer.Connect(in_connectionType, in_options, in_success, in_failure, cb_object);
+        }
+
+        /// <summary>
+        /// Connects to the lobby's server from its ROOM_READY event, whatever kind of server the
+        /// lobby launched. It reads the address, port, passcode and lobby id from the event, so the
+        /// game does not have to, and applies the rules for each kind of server:
+        /// <list type="bullet">
+        /// <item>brainCloud relay servers and Edgegap: the port for in_preferredType (WEBSOCKET, TCP
+        /// or UDP). With in_useSsl and WEBSOCKET, the secure WebSocket the server offers; if it
+        /// offers none, the connect fails rather than fall back to an insecure one.</item>
+        /// <item>GameLift and i3D: their one port, over WebSocket without SSL, whatever was preferred.</item>
+        /// </list>
+        /// in_useSsl only applies to WebSocket. Failures are reported to in_failure, like Connect's.
+        /// </summary>
+        /// <param name="in_preferredType">The transport to use where the server offers a choice.</param>
+        /// <param name="in_useSsl">Connect over a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_roomReadyJson">The ROOM_READY event as the lobby callback received it.</param>
+        /// <param name="in_success">As for Connect.</param>
+        /// <param name="in_failure">As for Connect, and also called when the event cannot be used.</param>
+        /// <param name="cb_object">As for Connect.</param>
+        public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, string in_roomReadyJson, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        {
+            Dictionary<string, object> roomReady = null;
+            try
+            {
+                roomReady = JsonReader.Deserialize(in_roomReadyJson) as Dictionary<string, object>;
+            }
+            catch (Exception)
+            {
+                // Reported below as an event that cannot be used
+            }
+            ConnectFromRoomReady(in_preferredType, in_useSsl, roomReady, in_success, in_failure, cb_object);
+        }
+
+        /// <summary>
+        /// As ConnectFromRoomReady with the event's JSON, for a game that has already parsed it.
+        /// in_roomReady is the whole event or its "data" object.
+        /// </summary>
+        public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
+        {
+            RelayConnectionType connectionType;
+            RelayConnectOptions options;
+            string error = ResolveRoomReady(in_preferredType, in_useSsl, in_roomReady, out connectionType, out options);
+            if (error != null)
+            {
+                if (m_clientRef.LoggingEnabled)
+                {
+                    m_clientRef.Log("Relay: cannot connect from ROOM_READY: " + error);
+                }
+                if (in_failure != null)
+                {
+                    var json = new Dictionary<string, object>();
+                    json["status"] = StatusCodes.BAD_REQUEST;
+                    json["reason_code"] = ReasonCodes.RS_CLIENT_ERROR;
+                    json["status_message"] = "Relay: cannot connect from ROOM_READY: " + error;
+                    json["severity"] = "ERROR";
+                    in_failure(StatusCodes.BAD_REQUEST, ReasonCodes.RS_CLIENT_ERROR, m_clientRef.SerializeJson(json), cb_object);
+                }
+                return;
+            }
+            Connect(connectionType, options, in_success, in_failure, cb_object);
+        }
+
+        /// <summary>
+        /// Works out how to connect from a ROOM_READY event (the whole event or its "data" object).
+        /// Returns null and sets the outs, or returns why the event cannot be used.
+        /// </summary>
+        internal static string ResolveRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady,
+            out RelayConnectionType out_connectionType, out RelayConnectOptions out_options)
+        {
+            out_connectionType = in_preferredType;
+            out_options = new RelayConnectOptions();
+            if (in_roomReady == null) return "no ROOM_READY event was given, or it is not a JSON object";
+
+            string operation = valueOf(in_roomReady, "operation") as string;
+            if (operation != null && operation != "ROOM_READY") return "expected a ROOM_READY event, not " + operation;
+            Dictionary<string, object> data = valueOf(in_roomReady, "data") as Dictionary<string, object> ?? in_roomReady;
+
+            var connectData = valueOf(data, "connectData") as Dictionary<string, object>;
+            if (connectData == null) return "the event has no connectData";
+            if (valueOf(connectData, "type") as string == "direct")
+            {
+                return "this room is connected directly between the players, which this version of the library does not support";
+            }
+
+            string address = valueOf(connectData, "address") as string;
+            var ports = valueOf(connectData, "ports") as Dictionary<string, object>;
+            if (string.IsNullOrEmpty(address) || ports == null) return "connectData has no address or ports";
+
+            int port;
+            if (tryPort(ports, "gamelift", out port) || tryPort(ports, "i3d", out port))
+            {
+                // These hosts offer the relay on one port, over WebSocket without SSL
+                out_connectionType = RelayConnectionType.WEBSOCKET;
+                out_options.host = address;
+                out_options.port = port;
+            }
+            else if (in_useSsl && in_preferredType == RelayConnectionType.WEBSOCKET)
+            {
+                // A brainCloud relay server offers a complete wss:// URL, used as given; Edgegap a wss port
+                string secureUrl = valueOf(connectData, "secureUrl") as string;
+                if (!string.IsNullOrEmpty(secureUrl))
+                {
+                    out_options.host = secureUrl;
+                    out_options.port = 0;
+                }
+                else if (tryPort(ports, "wss", out port))
+                {
+                    out_options.host = address;
+                    out_options.port = port;
+                }
+                else
+                {
+                    return "a secure WebSocket was asked for, but the server offers none (secure relay connections are not enabled for this app, or not available on this server)";
+                }
+                out_options.ssl = true;
+            }
+            else
+            {
+                string key;
+                switch (in_preferredType)
+                {
+                    case RelayConnectionType.WEBSOCKET: key = "ws"; break;
+                    case RelayConnectionType.TCP: key = "tcp"; break;
+                    case RelayConnectionType.UDP: key = "udp"; break;
+                    default: return "the preferred connection type must be WEBSOCKET, TCP or UDP, not " + in_preferredType;
+                }
+                if (!tryPort(ports, key, out port))
+                {
+                    return "the server offers no " + key + " port (it offers " + string.Join(", ", new List<string>(ports.Keys).ToArray()) + ")";
+                }
+                out_options.host = address;
+                out_options.port = port;
+            }
+
+            out_options.passcode = valueOf(data, "passcode") as string;
+            out_options.lobbyId = valueOf(data, "lobbyId") as string;
+            return null;
+        }
+
+        private static object valueOf(Dictionary<string, object> in_map, string in_key)
+        {
+            object value;
+            return in_map.TryGetValue(in_key, out value) ? value : null;
+        }
+
+        private static bool tryPort(Dictionary<string, object> in_ports, string in_key, out int out_port)
+        {
+            out_port = 0;
+            object value = valueOf(in_ports, in_key);
+            if (value == null) return false;
+            try
+            {
+                out_port = Convert.ToInt32(value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return out_port > 0 && out_port <= 65535;
         }
 
         /// <summary>
