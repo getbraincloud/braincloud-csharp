@@ -3,8 +3,7 @@
 // brainCloud client source code
 //----------------------------------------------------
 
-// Compiled only when the game defines BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION: without it the library
-// contains no encryption code at all (see DirectCipher).
+// Compiled only with BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION; otherwise the library has no encryption code (DirectCipher).
 #if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
 
 namespace BrainCloud.Internal
@@ -12,10 +11,8 @@ namespace BrainCloud.Internal
     using System;
 
     /// <summary>
-    /// AEAD_CHACHA20_POLY1305 (RFC 8439): encrypts and authenticates the packets players send each
-    /// other when they are connected directly. Written in plain C#, like the library's MD5, so that
-    /// it needs nothing from the platform: .NET Standard 2.0 (Unity 2019.1) has no ChaCha20-Poly1305
-    /// of its own, and it runs the same under Mono, IL2CPP and .NET.
+    /// AEAD_CHACHA20_POLY1305 (RFC 8439) for direct connect, in plain C#: .NET Standard 2.0 (Unity
+    /// 2019.1) has none, and this runs the same under Mono, IL2CPP and .NET.
     /// </summary>
     internal static class ChaCha20Poly1305
     {
@@ -24,8 +21,8 @@ namespace BrainCloud.Internal
         public const int TAG_LENGTH = 16;
 
         /// <summary>
-        /// Encrypts in_length bytes of in_plaintext from in_offset, and authenticates them together
-        /// with in_aad. Returns the ciphertext followed by the 16-byte tag.
+        /// Encrypts in_length bytes of in_plaintext from in_offset, authenticated with in_aad.
+        /// Returns the ciphertext then the 16-byte tag.
         /// </summary>
         public static byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length)
         {
@@ -39,9 +36,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Checks the tag at the end of in_length bytes of in_sealed from in_offset, and if it is
-        /// right, decrypts the rest. Returns the plaintext, or null when the tag does not match: the
-        /// data, the associated data, the key or the nonce is not what it was sealed with.
+        /// Checks the tag ending in_length bytes of in_sealed from in_offset, then decrypts the rest.
+        /// Null if the tag does not match (wrong data, AAD, key or nonce).
         /// </summary>
         public static byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length)
         {
@@ -50,7 +46,7 @@ namespace BrainCloud.Internal
             int cipherLength = in_length - TAG_LENGTH;
             byte[] expected = computeTag(in_key, in_nonce, in_aad, in_sealed, in_offset, cipherLength);
 
-            // Compare every byte whatever the result, so the time taken says nothing about the tag
+            // Constant-time compare: the timing reveals nothing about the tag
             int difference = 0;
             for (int i = 0; i < TAG_LENGTH; ++i) difference |= expected[i] ^ in_sealed[in_offset + cipherLength + i];
             if (difference != 0) return null;
@@ -60,10 +56,10 @@ namespace BrainCloud.Internal
             return plaintext;
         }
 
-        /// RFC 8439 section 2.8: Poly1305 over the AAD and ciphertext, each padded to 16 bytes, then both lengths
+        /// RFC 8439 2.8: Poly1305 over the AAD and ciphertext, each padded to 16 bytes, then both lengths
         private static byte[] computeTag(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_cipher, int in_offset, int in_length)
         {
-            // The one-time Poly1305 key is the first half of key stream block 0 (section 2.6)
+            // The one-time Poly1305 key is the first half of key stream block 0 (RFC 8439 2.6)
             byte[] block0 = new byte[64];
             ChaCha20.Block(in_key, in_nonce, 0, block0);
             var mac = new Poly1305(block0, 0);
@@ -99,10 +95,10 @@ namespace BrainCloud.Internal
         }
     }
 
-    /// <summary>The ChaCha20 stream cipher (RFC 8439 section 2.4), with a 96-bit nonce and 32-bit block counter.</summary>
+    /// <summary>The ChaCha20 stream cipher (RFC 8439 2.4), with a 96-bit nonce and 32-bit block counter.</summary>
     internal static class ChaCha20
     {
-        /// One 64-byte block of key stream (section 2.3).
+        /// One 64-byte block of key stream (RFC 8439 2.3).
         public static void Block(byte[] in_key, byte[] in_nonce, uint in_counter, byte[] out_block)
         {
             uint[] state = initialState(in_key, in_nonce, in_counter);
@@ -111,8 +107,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// XORs in_length bytes of in_input from in_inOffset with the key stream starting at block
-        /// in_counter, into out_output from in_outOffset. Encrypting and decrypting are the same.
+        /// XORs in_length bytes of in_input from in_inOffset with the key stream from block in_counter,
+        /// into out_output from in_outOffset. Encrypts and decrypts alike.
         /// </summary>
         public static void Xor(byte[] in_key, byte[] in_nonce, uint in_counter, byte[] in_input, int in_inOffset, byte[] out_output, int in_outOffset, int in_length)
         {
@@ -189,8 +185,8 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// The Poly1305 one-time authenticator (RFC 8439 section 2.5), fed in pieces. The accumulator is
-    /// kept in five 26-bit limbs so every product fits in 64 bits (the "donna" 32-bit method).
+    /// Incremental Poly1305 (RFC 8439 2.5). The accumulator is kept in five 26-bit limbs so every
+    /// product fits in 64 bits (the "donna" 32-bit method).
     /// </summary>
     internal sealed class Poly1305
     {
@@ -207,7 +203,7 @@ namespace BrainCloud.Internal
         /// in_key holds the 32-byte one-time key from in_offset: r, then s.
         public Poly1305(byte[] in_key, int in_offset)
         {
-            // r is clamped as section 2.5 requires, then split into 26-bit limbs
+            // Clamp r (RFC 8439 2.5), then split it into 26-bit limbs
             r0 = ChaCha20.readU32LE(in_key, in_offset + 0) & 0x3ffffff;
             r1 = (ChaCha20.readU32LE(in_key, in_offset + 3) >> 2) & 0x3ffff03;
             r2 = (ChaCha20.readU32LE(in_key, in_offset + 6) >> 4) & 0x3ffc0ff;

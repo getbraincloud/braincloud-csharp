@@ -14,9 +14,8 @@ using System.Threading;
 namespace BrainCloudTests
 {
     /// <summary>
-    /// The STUN client and the direct connect network test, with no brainCloud server: the codec
-    /// against the RFC 5769 test vectors (the server's STUN module uses the same ones), and the
-    /// probe against small STUN responders on loopback.
+    /// The STUN codec against the RFC 5769 test vectors, and the network test against STUN
+    /// responders on loopback; no brainCloud server.
     /// </summary>
     [TestFixture]
     public class TestStunClient
@@ -230,10 +229,8 @@ namespace BrainCloudTests
 
         #region network test and report
 
-        // Each test drives a NatProbe the way RTTComms does (stun section, connected, disconnected,
-        // Update every frame) and captures the SET_NAT_INFO calls instead of sending them. The STUN
-        // host is 127.0.0.1 alone, so the mapping is always "unknown"; what matters here is when,
-        // and whether, a report goes out.
+        // Each test drives a NatProbe as RTTComms does and captures SET_NAT_INFO instead of sending it.
+        // With 127.0.0.1 as the only STUN host the mapping is always "unknown"; only the reporting is tested.
 
         [Test]
         public void NatProbe_ReportsOncePerConnection_OnlyAfterConnected()
@@ -483,7 +480,7 @@ namespace BrainCloudTests
             return ProbeWithToken(null, in_servers);
         }
 
-        /// Shorter timeouts than the library's (a silent server costs 1.4 s rather than 2.8 s), with room for a slow machine
+        /// Shorter timeouts than the library's (1.4 s for a silent server, not 2.8 s), with room for a slow machine
         private static List<StunResult> ProbeWithToken(byte[] in_token, params FakeStun[] in_servers)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
@@ -652,9 +649,8 @@ namespace BrainCloudTests
     }
 
     /// <summary>
-    /// The network test against a brainCloud server. It needs a deployment with a STUN service and
-    /// an app whose plan offers direct connect; anywhere else the RTT connection request carries no
-    /// stun section, and the test is ignored.
+    /// The network test against a brainCloud server. Ignored unless the deployment has a STUN
+    /// service and the app's plan offers direct connect.
     /// </summary>
     [TestFixture]
     public class TestDirectConnectReport : TestFixtureBase

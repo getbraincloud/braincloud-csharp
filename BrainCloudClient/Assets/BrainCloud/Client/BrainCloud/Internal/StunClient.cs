@@ -5,7 +5,7 @@
 
 using System.Runtime.CompilerServices;
 
-// The unit tests use the STUN client and network test directly.
+// For the unit tests.
 [assembly: InternalsVisibleTo("UnitTest")]
 
 namespace BrainCloud.Internal
@@ -15,7 +15,7 @@ namespace BrainCloud.Internal
     using System.Net;
     using System.Net.Sockets;
 
-    /// <summary>What one STUN server address said about us, or why it said nothing.</summary>
+    /// <summary>One STUN server address's answer, or why there was none.</summary>
     internal sealed class StunResult
     {
         public StunResult(IPEndPoint in_server, IPEndPoint in_mapped, string in_error, bool in_noRoute = false)
@@ -33,15 +33,13 @@ namespace BrainCloud.Internal
 
         public string Error { get; private set; }
 
-        /// True when the request could not even be sent, because this network has no route to the
-        /// address (as on an IPv6-only network for an IPv4 address).
+        /// True when the request could not be sent: no route to the address (e.g. IPv4 on an IPv6-only network).
         public bool NoRoute { get; private set; }
     }
 
     /// <summary>
-    /// A minimal STUN (RFC 8489) Binding client: asks "what public address do you see for this
-    /// socket?". The brainCloud STUN token, when there is one, is sent as the first and only
-    /// attribute, which is where the STUN service looks for it.
+    /// A minimal STUN (RFC 8489) Binding client. The brainCloud STUN service expects its token, if
+    /// any, as the first and only attribute.
     /// </summary>
     internal static class StunClient
     {
@@ -53,9 +51,9 @@ namespace BrainCloud.Internal
         public const int ATTR_FINGERPRINT = 0x8028;
         public const int ATTR_TOKEN = 0xBC01;
 
-        /// Every address saw the same public port: a peer can reach us there.
+        /// Every address saw the same public port, so a peer can reach us there.
         public const string MAPPING_EIM = "eim";
-        /// The addresses saw different ports (a symmetric NAT): a peer cannot use what STUN reports.
+        /// Different ports per address (symmetric NAT): a peer cannot use what STUN reports.
         public const string MAPPING_APDM = "apdm";
         /// Fewer than two addresses answered, so there was nothing to compare.
         public const string MAPPING_UNKNOWN = "unknown";
@@ -63,8 +61,8 @@ namespace BrainCloud.Internal
         private static readonly Random s_random = new Random();
 
         /// <summary>
-        /// A Binding request; with a token, the token attribute comes first and is the only one. The
-        /// attribute is padded to a multiple of 4 bytes, as STUN requires; its length field is the token's.
+        /// A Binding request. The token attribute is padded to a multiple of 4 bytes; its length field
+        /// is the unpadded token length.
         /// </summary>
         public static byte[] BuildRequest(byte[] in_transactionId, byte[] in_token)
         {
@@ -84,8 +82,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// The address in a Binding success response, or null with the reason. Checks the type, the
-        /// cookie, the length, the transaction id and, when present, the FINGERPRINT.
+        /// The mapped address in a Binding success response, or null with out_error set. Checks type,
+        /// cookie, length, transaction id and, if present, FINGERPRINT.
         /// </summary>
         public static IPEndPoint ParseResponse(byte[] in_msg, int in_length, byte[] in_transactionId, out string out_error)
         {
@@ -114,7 +112,7 @@ namespace BrainCloud.Internal
                     int ipLen = family == 0x01 ? 4 : 16;
                     if (len < 4 + ipLen) { out_error = "XOR-MAPPED-ADDRESS is too short"; return null; }
                     byte[] ip = new byte[ipLen];
-                    // The address is XORed with the cookie and then the transaction id, which follow it in the header
+                    // XORed with the cookie then the transaction id, which follow it in the header
                     for (int i = 0; i < ipLen; ++i) ip[i] = (byte)(in_msg[value + 4 + i] ^ in_msg[4 + i]);
                     mapped = new IPEndPoint(new IPAddress(ip), port);
                 }
@@ -139,17 +137,15 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Sends a Binding request to each server address from the same socket and waits for the
-        /// answers, resending to those that have not answered. Using one socket is the point:
-        /// comparing the public port each address reports tells a punchable NAT from a symmetric one.
-        /// Blocks for at most about (in_attempts doublings of in_firstTimeoutMs).
+        /// Probes every server from one socket, so the ports they report tell a punchable NAT from a
+        /// symmetric one. Blocks for up to in_attempts doublings of in_firstTimeoutMs.
         /// </summary>
         public static List<StunResult> Probe(Socket in_socket, IList<IPEndPoint> in_servers, byte[] in_token,
             int in_attempts = 3, int in_firstTimeoutMs = 400)
         {
             var pending = new Dictionary<string, Pending>();
             var results = new Dictionary<IPEndPoint, StunResult>();
-            // Why the last request to each address could not be sent, if it could not
+            // Why the last send to each address failed
             var sendErrors = new Dictionary<IPEndPoint, SocketError>();
             int start = Environment.TickCount;
             byte[] buffer = new byte[1500];
@@ -175,11 +171,10 @@ namespace BrainCloud.Internal
                     }
                     catch (SocketException e)
                     {
-                        // It simply will not answer; remember why, for the report
+                        // Kept for the report
                         sendErrors[server] = e.SocketErrorCode;
                     }
                 }
-                // Nothing went out, so there is nothing to wait for
                 if (sentThisAttempt == 0) continue;
 
                 long deadline = elapsedMs(start) + timeout;
@@ -230,10 +225,7 @@ namespace BrainCloud.Internal
             return ordered;
         }
 
-        /// <summary>
-        /// What kind of NAT the results show: eim, apdm, or unknown when fewer than two addresses
-        /// gave us a public address.
-        /// </summary>
+        /// <summary>The NAT mapping the results show: eim, apdm, or unknown with fewer than two answers.</summary>
         public static string ClassifyMapping(IList<StunResult> in_results)
         {
             IPEndPoint first = null;
@@ -263,9 +255,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Milliseconds since in_start, an Environment.TickCount. The same monotonic tick the
-        /// client's clock (BrainCloudClient.NowMs) is built on, read directly because this runs
-        /// off the main thread; the unsigned difference survives the tick count wrapping.
+        /// Milliseconds since in_start, an Environment.TickCount; the unsigned difference survives wrap.
+        /// Not BrainCloudClient.NowMs, because this runs off the main thread.
         /// </summary>
         private static long elapsedMs(int in_start)
         {

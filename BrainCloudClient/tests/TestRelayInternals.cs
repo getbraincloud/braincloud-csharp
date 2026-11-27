@@ -580,7 +580,6 @@ namespace BrainCloudTests
                         transport.Send(packet);
                     }
 
-                    // Read the frames back off the stream
                     var seen = new List<int>();
                     NetworkStream stream = peer.GetStream();
                     stream.ReadTimeout = 5000;

@@ -13,9 +13,7 @@ namespace BrainCloud.Internal
     using System.Threading.Tasks;
     using BrainCloud.JsonFx.Json;
 
-    /// <summary>
-    /// One peer in a direct connect attempt, as this player sees it.
-    /// </summary>
+    /// <summary>One peer in a direct connect attempt.</summary>
     internal sealed class DirectPeer
     {
         public DirectPeer(string in_cxId, int in_netId)
@@ -31,20 +29,19 @@ namespace BrainCloud.Internal
         public readonly List<IPEndPoint> Candidates = new List<IPEndPoint>();
 
         /// <summary>
-        /// The address the latest datagram from the peer that opened came from: where to send to it.
-        /// Only ever set from an authenticated datagram, so nothing forged can redirect the traffic.
+        /// Where to send to the peer: the source of its latest authenticated datagram, so nothing
+        /// forged can redirect the traffic.
         /// </summary>
         public IPEndPoint Address { get; internal set; }
 
-        // The epoch count and sequence number of the datagram Address came from
+        // The epoch count and sequence of the datagram Address came from
         internal bool AddressFromDatagram;
         internal uint AddressEpochCount;
         internal ulong AddressSequence;
 
         /// <summary>
-        /// Moves the peer to in_from when the datagram that opened from there (in_epoch, in_sequence)
-        /// is later than the one Address came from: a datagram held up on the way, from where the
-        /// peer was before, must not move it back.
+        /// Moves Address to in_from only if this datagram is newer than the one Address came from, so
+        /// a delayed datagram from an old address cannot move it back.
         /// </summary>
         internal void MoveAddress(IPEndPoint in_from, byte[] in_epoch, ulong in_sequence)
         {
@@ -62,8 +59,7 @@ namespace BrainCloud.Internal
         /// The round trip of the punch that reached the peer, in milliseconds, or -1.
         public int RoundTripMs { get; internal set; }
 
-        // Addresses the peer's punches came from that are none of its candidates, and how many more
-        // punches each is owed (see DirectConnector.handle)
+        // Non-candidate addresses the peer's punches came from, and the punches each is still owed
         internal readonly Dictionary<IPEndPoint, int> Triggered = new Dictionary<IPEndPoint, int>();
 
         internal DirectPeer Clear()
@@ -78,10 +74,7 @@ namespace BrainCloud.Internal
         }
     }
 
-    /// <summary>
-    /// What a successful attempt hands over to the connection that carries the game's traffic: the
-    /// socket the peers reached, the keys, and each peer's address.
-    /// </summary>
+    /// <summary>A successful attempt's socket, keys and peers, for the connection that takes it over.</summary>
     internal sealed class DirectConnection
     {
         internal DirectConnection(string in_lobbyId, Socket in_socket, DirectSession in_session, string in_ownerCxId, List<DirectPeer> in_peers, int in_keepAliveRateSecs)
@@ -105,10 +98,9 @@ namespace BrainCloud.Internal
         public int KeepAliveRateSecs { get; private set; }
 
         /// <summary>
-        /// brainCloud's owner of the lobby, kept up to date from the lobby's events. It changes only
-        /// when the owner leaves the lobby, so it can differ from the players' own owner, who changes
-        /// when the owner leaves the match. It also keeps the lobby alive when it is not the players'
-        /// owner, and tells brainCloud the match stopped on the players' owner's END_MATCH.
+        /// brainCloud's lobby owner, tracked from lobby events. It changes only when the owner leaves the
+        /// lobby, so it can differ from the players' owner (who changes on leaving the match). It keeps
+        /// the lobby alive, and tells brainCloud the match stopped on the players' owner's END_MATCH.
         /// </summary>
         public string LobbyOwnerCxId
         {
@@ -116,7 +108,7 @@ namespace BrainCloud.Internal
             internal set { LobbyOwner.CxId = value; }
         }
 
-        /// The connector keeps this alone, to follow the lobby owner, not the socket or keys.
+        /// The connector keeps only this after handover, to follow the lobby owner.
         internal DirectLobbyOwner LobbyOwner { get; private set; }
     }
 
@@ -127,19 +119,8 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// This player's part in a lobby's direct connect attempt (client design, Confluence BCSD
-    /// 4389666817, sections 3 to 5 and 7.4).
-    ///
-    /// brainCloud sends DIRECT_CONNECT when a lobby whose members can all be reached directly
-    /// starts. This then opens the UDP socket the game's traffic will use, asks STUN for its
-    /// public address, sends this player's addresses to the other members, punches every address
-    /// of every peer until each answers, and reports which peers it reached. brainCloud runs the
-    /// lobby without a server when every member reached every other, and launches the server
-    /// otherwise. A successful attempt keeps its socket open, still answering punches, until the
-    /// connection takes it over.
-    ///
-    /// Driven from RTTComms on the main thread: the lobby events, then Update every frame. Only
-    /// DNS and the STUN request run on another thread, before any punching.
+    /// This player's part in a lobby's direct connect attempt: gather addresses, exchange them, punch
+    /// every peer, report which were reached. Main thread only, except DNS and STUN.
     /// </summary>
     internal sealed class DirectConnector
     {
@@ -164,7 +145,7 @@ namespace BrainCloud.Internal
 
         /// How often each address of a peer not yet reached is punched.
         public const int PUNCH_INTERVAL_MS = 100;
-        /// The result goes to brainCloud this long before its own timer, so the fallback starts on the report.
+        /// Report this long before brainCloud's own timeout, so the fallback starts on the report.
         public const int REPORT_MARGIN_MS = 1000;
         public const int MIN_PUNCH_BUDGET_MS = 1000;
         /// brainCloud takes at most this many candidates from a player.
@@ -174,22 +155,20 @@ namespace BrainCloud.Internal
         /// A PUNCH_ACK is only matched to a punch sent this recently; older records are dropped.
         public const int PUNCH_RECORD_MS = 5000;
         /// <summary>
-        /// How many punches an authenticated punch from an address that is none of the peer's
-        /// candidates earns that address, one per PUNCH_INTERVAL_MS, as ICE retransmits its
-        /// triggered checks: the peer may stop punching as soon as it has reached this player, so a
-        /// single punch back would make one lost packet cost the direct connection.
+        /// Punches earned by a non-candidate address a peer's punch came from, one per PUNCH_INTERVAL_MS
+        /// (like ICE triggered checks): the peer may stop punching once it reaches us, so one is too few.
         /// </summary>
         public const int TRIGGERED_PUNCHES = 5;
         /// <summary>
-        /// While waiting to be taken over, each peer is punched this often: the peers stop punching
-        /// once reached, and a router can forget an idle mapping in as little as 30 seconds.
+        /// Punch interval while awaiting takeover: peers stop punching once reached, and a router can
+        /// drop an idle mapping in 30 seconds.
         /// </summary>
         public const int KEEP_MAPPING_MS = 5000;
-        // The only datagram this exchanges: a 5-byte PUNCH or PUNCH_ACK, sealed
+        // The only datagram exchanged: a sealed 5-byte PUNCH or PUNCH_ACK
         private const int PUNCH_DATAGRAM_LENGTH = DirectPacket.OVERHEAD + 5;
-        // Candidates that arrive before DIRECT_CONNECT are kept, for this many peers at most
+        // Most peers whose candidates are kept when they arrive before DIRECT_CONNECT
         private const int MAX_EARLY_PEERS = 64;
-        // Datagrams read per Update at most, so a flood cannot stall a frame
+        // Most datagrams read per Update, so a flood cannot stall a frame
         private const int MAX_RECEIVES_PER_UPDATE = 256;
 
         private readonly BrainCloudClient m_clientRef;
@@ -204,7 +183,7 @@ namespace BrainCloud.Internal
         private Socket m_socket;
         private readonly Dictionary<string, DirectPeer> m_peers = new Dictionary<string, DirectPeer>();       // by cxId
         private readonly Dictionary<int, DirectPeer> m_peersByNetId = new Dictionary<int, DirectPeer>();
-        // Candidates that came before this player's own DIRECT_CONNECT, by sender: its lobby and addresses
+        // Candidates that came before this player's DIRECT_CONNECT, by sender: lobby and addresses
         private readonly Dictionary<string, KeyValuePair<string, List<IPEndPoint>>> m_early = new Dictionary<string, KeyValuePair<string, List<IPEndPoint>>>();
         private readonly Dictionary<uint, Punch> m_punches = new Dictionary<uint, Punch>();
         private uint m_nextPunchId = 0;
@@ -214,19 +193,18 @@ namespace BrainCloud.Internal
         private bool m_reported;
         private bool m_roomReady;
         private int m_keepAliveRateSecs;
-        // brainCloud's lobby owner, from the lobby's events during the attempt (null: as DIRECT_CONNECT named)
+        // brainCloud's lobby owner from events during the attempt (null: as DIRECT_CONNECT named)
         private string m_lobbyOwnerCxId;
-        // The lobby of the last connection taken over, and its owner, kept up to date; nothing else of it
-        // Peers DIRECT_CONNECT named with a net id that cannot be used; reported as not reached
+        // Peers DIRECT_CONNECT named with an unusable net id; reported as not reached
         private readonly List<string> m_unusablePeers = new List<string>();
+        // The last connection taken over: its lobby and owner, kept up to date
         private string m_handedOverLobbyId;
         private DirectLobbyOwner m_handedOverOwner;
         private int m_lastKeepMappingMs;
         private readonly byte[] m_buffer = new byte[DirectPacket.MAX_DATAGRAM_LENGTH];
 
-        // The gathering thread's job and result. The job owns the socket while it runs: closing a
-        // socket another thread is waiting on can block for as long as that wait, so an abandoned
-        // job closes its socket itself when it ends.
+        // The gathering thread's job and result. The job owns the socket while it runs: closing a socket
+        // another thread waits on can block for that wait, so an abandoned job closes it when it ends.
         private readonly object m_gatheredLock = new object();
         private GatherJob m_job;
         private Gathered m_gathered;
@@ -264,7 +242,7 @@ namespace BrainCloud.Internal
             m_probe = in_probe;
             m_send = in_send;
 #if UNITY_IOS && !UNITY_EDITOR
-            // Sending to another device's local address may make iOS ask for local network access
+            // Sending to a local address may trigger iOS's local network permission prompt
             IncludeLocalAddresses = false;
 #else
             IncludeLocalAddresses = true;
@@ -272,20 +250,16 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Whether this player's local-network addresses are offered to its peers, so that two
-        /// players behind the same router can reach each other. On by default, except on iOS,
-        /// where sending to them may make iOS ask the player for local network access; a game that
-        /// already has that permission can turn it on.
+        /// Offer local-network addresses, so players behind the same router can connect. On by default
+        /// except on iOS, where it may trigger the local network permission prompt.
         /// </summary>
         public bool IncludeLocalAddresses { get; set; }
 
         public AttemptState State { get { return m_state; } }
 
         /// <summary>
-        /// For tools that play the attempt themselves, such as stun-probe: the connector then takes
-        /// no part, and every event goes on to the game's lobby callback as before. Without it, a
-        /// tool that reports its own network while the library's direct connect is off would have
-        /// every attempt reported as failed by the library.
+        /// For tools that run the attempt themselves, such as stun-probe: the connector stays out and
+        /// passes every event to the game's lobby callback.
         /// </summary>
         internal bool StandAside { get; set; }
 
@@ -317,10 +291,8 @@ namespace BrainCloud.Internal
         private static int nowMs { get { return Environment.TickCount; } }
 
         /// <summary>
-        /// For RTTComms: takes an RTT event before the game's callbacks. Returns true when it is the
-        /// library's alone and must not be passed on. A DIRECT_CONNECT that is passed on has its
-        /// pair keys removed first. in_service and in_operation are the event's names, lowercased
-        /// without regard to the player's language (ToLowerInvariant).
+        /// Takes an RTT event before the game's callbacks; true means it is the library's alone. A
+        /// DIRECT_CONNECT passed on loses its pair keys. Names arrive lowercased (ToLowerInvariant).
         /// </summary>
         internal bool FilterEvent(string in_service, string in_operation, ref string io_json)
         {
@@ -333,13 +305,13 @@ namespace BrainCloud.Internal
             }
             if (!StandAside && (m_handedOverOwner != null || m_state == AttemptState.Connected) && !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
             {
-                // Who brainCloud has as the lobby's owner, for the connection taken over or about to be
+                // brainCloud's lobby owner, for the connection taken over or about to be
                 noteLobbyOwner(DataOf(io_json));
                 return false;
             }
             if (!in_operation.StartsWith("direct_connect", StringComparison.Ordinal)) return false;
             if (OnLobbyEvent(in_operation.ToUpperInvariant(), DataOf(io_json))) return true;
-            // The game is told the attempt started, but not the pair keys, unless it is a tool playing the attempt itself
+            // The game sees DIRECT_CONNECT without pair keys, unless a tool is playing the attempt
             if (string.Equals(in_operation, "direct_connect", StringComparison.Ordinal) && !StandAside)
             {
                 io_json = WithoutPairKeys(io_json);
@@ -348,9 +320,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Takes a lobby event of the direct connect attempt. Returns true when the event is the
-        /// library's alone and must not reach the game's lobby callback: DIRECT_CONNECT_CANDIDATES
-        /// carries other players' IP addresses.
+        /// Takes a direct connect lobby event; true means the game must not see it
+        /// (DIRECT_CONNECT_CANDIDATES carries other players' IP addresses).
         /// </summary>
         public bool OnLobbyEvent(string in_operation, Dictionary<string, object> in_data)
         {
@@ -388,9 +359,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Takes the lobby's ROOM_READY. A direct one for a successful attempt's lobby means every
-        /// member reached every other, so the connection may be taken over. One that names a server
-        /// means the lobby uses it after all, so the attempt's socket is closed.
+        /// A direct ROOM_READY for the connected attempt's lobby allows takeover; one naming a server
+        /// closes the attempt's socket.
         /// </summary>
         public void OnRoomReady(Dictionary<string, object> in_data)
         {
@@ -412,10 +382,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Takes over a successful attempt's socket, keys and peers, for the lobby in_lobbyId, or
-        /// returns null when there is none: no successful attempt for that lobby, or its direct
-        /// ROOM_READY has not arrived, so some member may not have reached every other yet. The
-        /// attempt is then over.
+        /// Hands over a successful attempt for in_lobbyId and ends it; null until its direct ROOM_READY
+        /// arrives, since a member may not yet have reached every other.
         /// </summary>
         public DirectConnection TakeConnection(string in_lobbyId)
         {
@@ -539,9 +507,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Asks STUN for the socket's public address, on another thread: the address found by the
-        /// network test belongs to another socket, and may be minutes old. Nothing else reads the
-        /// socket until this finishes.
+        /// Asks STUN for this socket's public address on another thread (the network test's was for
+        /// another socket). Nothing else reads the socket until this finishes.
         /// </summary>
         private void gather(int in_attempt)
         {
@@ -606,9 +573,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// This machine's IPv4 addresses that another device on its network could use: from its
-        /// network interfaces, or where those cannot be listed (some platforms), the address it
-        /// would use to reach the STUN service.
+        /// This machine's LAN-usable IPv4 addresses: from its interfaces or, where they cannot be
+        /// listed, the route to STUN.
         /// </summary>
         private static List<IPAddress> localAddresses(List<IPEndPoint> in_stunServers)
         {
@@ -741,8 +707,7 @@ namespace BrainCloud.Internal
             }
             else if (lobbyId != null && (m_early.Count < MAX_EARLY_PEERS || m_early.ContainsKey(from)))
             {
-                // Kept until this player's own addresses are sent: they can overtake its own
-                // DIRECT_CONNECT, or arrive while it is still gathering, and are sent only once
+                // Sent only once, and can overtake DIRECT_CONNECT or arrive while gathering: kept until ours are sent
                 m_early[from] = new KeyValuePair<string, List<IPEndPoint>>(lobbyId, addresses);
             }
         }
@@ -858,8 +823,7 @@ namespace BrainCloud.Internal
                 {
                     punchAt(peer, address, now);
                 }
-                // Addresses the peer's punches came from, while they are owed punches. One that is paid
-                // up, or has become a candidate, gives its slot back.
+                // Addresses still owed punches; paid-up ones, and ones now candidates, are dropped
                 if (peer.Triggered.Count == 0) continue;
                 foreach (IPEndPoint address in new List<IPEndPoint>(peer.Triggered.Keys))
                 {
@@ -950,19 +914,16 @@ namespace BrainCloud.Internal
             byte[] packet = m_session.ReceiverFor(sender).Open(in_datagram, in_length);
             if (packet == null || packet.Length != 5 || (packet[0] != PUNCH && packet[0] != PUNCH_ACK)) return;
 
-            // It opened, so it is from the peer: this is where to send to it now, unless it was overtaken
+            // Authenticated, so from the peer: send there from now on, unless a newer datagram moved it
             peer.MoveAddress(in_from, epoch, sequence);
             uint id = ((uint)packet[1] << 24) | ((uint)packet[2] << 16) | ((uint)packet[3] << 8) | packet[4];
             if (packet[0] == PUNCH)
             {
                 // Answered even once the peer is reached: its own punches may still be getting through
                 sendTo(peer, PUNCH_ACK, id, in_from);
-                // A punch from none of the peer's candidates (a router can map its socket to an address
-                // it could not know to offer) earns that address TRIGGERED_PUNCHES punches, the first now
-                // and the rest on the punch schedule. Only in answer to punches that arrive, never
-                // indefinitely: anyone on the path can resend a genuine punch from an address of their
-                // choosing, and must not get a stream sent there. Another punch from an address still
-                // owed punches only renews the count, with no extra punch now.
+                // A punch from a non-candidate address (a mapping the peer could not know) earns it
+                // TRIGGERED_PUNCHES punches, the first now. Bounded, since anyone on the path can replay a
+                // punch from any address; a repeat only renews the count.
                 if (!peer.Reached && !peer.Candidates.Contains(in_from))
                 {
                     if (peer.Triggered.ContainsKey(in_from))
@@ -1097,10 +1058,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        /// <summary>
-        /// A lobby message with every pairKey removed, for the game's lobby callback: the keys are
-        /// the library's alone, and a game that logs its lobby events would otherwise log them.
-        /// </summary>
+        /// <summary>A lobby message without its pairKeys, for the game's lobby callback.</summary>
         internal static string WithoutPairKeys(string in_json)
         {
             try
@@ -1126,10 +1084,7 @@ namespace BrainCloud.Internal
         private static readonly System.Text.RegularExpressions.Regex CANDIDATES_JSON =
             new System.Text.RegularExpressions.Regex("\"candidates\"\\s*:\\s*\\[[^\\]]*\\]");
 
-        /// <summary>
-        /// An RTT message as it may appear in a log: without pair keys, which are secrets between two
-        /// players, and without other players' addresses.
-        /// </summary>
+        /// <summary>An RTT message safe to log: pair keys and other players' addresses redacted.</summary>
         internal static string RedactForLog(string in_message)
         {
             if (in_message == null) return null;

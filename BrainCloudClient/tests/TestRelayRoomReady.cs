@@ -8,8 +8,7 @@ using System.Collections.Generic;
 namespace BrainCloudTests
 {
     /// <summary>
-    /// How RelayService.ConnectFromRoomReady reads a ROOM_READY event, for each kind of server,
-    /// without a server: the events here have the shapes brainCloud sends.
+    /// ConnectFromRoomReady with no server, against ROOM_READY events shaped as brainCloud sends them.
     /// </summary>
     [TestFixture]
     public class TestRelayRoomReady

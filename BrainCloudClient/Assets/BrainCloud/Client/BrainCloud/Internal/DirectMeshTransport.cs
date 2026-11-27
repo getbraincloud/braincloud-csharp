@@ -13,20 +13,18 @@ namespace BrainCloud.Internal
     using BrainCloud.JsonFx.Json;
 
     /// <summary>
-    /// What a direct mesh reports back to RelayComms, on the main thread, from inside its own
-    /// calls: RelayComms queues each one and handles it after the mesh has returned.
+    /// Mesh callbacks to RelayComms, on the main thread; RelayComms queues each until the mesh call returns.
     /// </summary>
     internal interface IDirectMeshListener
     {
         /// <summary>
-        /// A system message in the relay server's own form: CONNECT (this player first, then each
-        /// peer as it connects), DISCONNECT, MIGRATE_OWNER and END_MATCH.
+        /// A system message in the relay's format: CONNECT (this player first, then each peer),
+        /// DISCONNECT, MIGRATE_OWNER or END_MATCH.
         /// </summary>
         void OnMeshSystem(string in_json);
 
         /// <summary>
-        /// Game data from in_netId, in the layout RelayComms receives from a relay server: a 2-byte
-        /// length prefix, the RELAY byte, the 8-byte header, then the data.
+        /// Game data from in_netId, framed as from a relay: 2-byte length, RELAY byte, 8-byte header, data.
         /// </summary>
         void OnMeshRelay(short in_netId, byte[] in_packet);
 
@@ -35,25 +33,10 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// The connection that carries a direct-connected lobby's game traffic (client design,
-    /// Confluence BCSD 4389666817, sections 6 and 7): one UDP socket, the one the attempt reached
-    /// every peer on, shared by all of them. It takes the place of the relay server:
-    /// <list type="bullet">
-    /// <item>a send to several players writes one copy to each, and stamps this player's net id
-    /// in it, which the relay does otherwise;</item>
-    /// <item>reliable packets are resent, acknowledged and given up on for each peer separately,
-    /// with one RelayReliableChannel per peer, so the RELAY and ACK packets stay byte for byte the
-    /// relay's;</item>
-    /// <item>it raises the relay's system messages (CONNECT, DISCONNECT, MIGRATE_OWNER, END_MATCH)
-    /// itself, so the game's callbacks need no change;</item>
-    /// <item>for a lobby that outlives its match, the owner keeps the lobby alive with brainCloud
-    /// and tells it when the match ends, which the relay server does otherwise.</item>
-    /// </list>
-    /// Every datagram is sealed with the attempt's DirectSession, and one that does not open is
-    /// dropped. Packets go to the address of the latest datagram from the peer that opened, so a
-    /// datagram that does not open can never redirect the traffic.
-    ///
-    /// Driven from RelayComms on the main thread; the socket is read without blocking in Update.
+    /// Stands in for the relay server in a direct-connected lobby: one UDP socket shared by all peers,
+    /// one RelayReliableChannel per peer, and the relay's system messages raised locally.
+    /// Datagrams are sealed with the DirectSession; only one that opens can change a peer's address.
+    /// Main thread only; the socket is polled in Update.
     /// </summary>
     internal sealed class DirectMeshTransport
     {
@@ -66,34 +49,32 @@ namespace BrainCloud.Internal
         public const byte OWNER = 24;
         public const byte CONTROL_ACK = 25;
 
-        /// A connected peer not heard from for this long is lost, as with the relay.
+        /// A connected peer silent this long is lost.
         public const int PEER_TIMEOUT_MS = 10000;
-        /// <summary>
-        /// A peer that has not connected this long after this player did is given up on: as long as
-        /// its attempt's socket waits to be taken over, so a peer still able to connect never is.
-        /// </summary>
+        /// A peer not connected this long after Start is dropped. Matches the attempt's takeover
+        /// window, so a peer that can still connect never is.
         public const int CONNECT_TIMEOUT_MS = DirectConnector.CONNECTED_IDLE_MS;
-        /// END_MATCH and OWNER are resent this often until acknowledged...
+        /// Resend interval for unacknowledged END_MATCH and OWNER.
         public const int CONTROL_RESEND_MS = 200;
-        /// ...for this long at most.
+        /// Stop resending END_MATCH and OWNER after this long.
         public const int CONTROL_GIVE_UP_MS = 5000;
-        /// After leaving, peers leaving at the same moment are listened for this long, so one of them tells brainCloud the match stopped.
+        /// After leaving, listen this long for peers leaving at the same time, so one reports the match stopped.
         public const int LEAVE_LINGER_MS = 1000;
         /// After the match ends, repeats of END_MATCH are still acknowledged for this long.
         public const int END_MATCH_LINGER_MS = 1000;
         /// How many copies of DISCONNECT are sent; the first that arrives counts.
         public const int DISCONNECT_COPIES = 3;
-        /// How EndMatch's refusal of a payload too big for one datagram begins.
+        /// Prefix of EndMatch's error for a payload too big for one datagram.
         public const string END_MATCH_TOO_BIG = "the END_MATCH payload is too big: ";
         /// The most packet bytes one datagram can carry.
         public const int MAX_PACKET_LENGTH = DirectPacket.MAX_DATAGRAM_LENGTH - DirectPacket.OVERHEAD;
 
-        // RELAY byte, then the relay's 8-byte header
+        // RELAY byte + 8-byte header
         private const int RELAY_HEADER_LENGTH = 9;
-        // The relay's own layout puts a 2-byte length prefix before the RELAY byte
+        // Relay framing puts a 2-byte length before the RELAY byte
         private const int LENGTH_PREFIX = 2;
         private const int MAX_RECEIVES_PER_UPDATE = 256;
-        // Control ids remembered per peer, so a repeat is acknowledged but not acted on again
+        // Control ids remembered per peer, so a repeat is acknowledged but not re-applied
         private const int MAX_CONTROLS_SEEN = 32;
 
         private sealed class MeshPeer
@@ -101,18 +82,18 @@ namespace BrainCloud.Internal
             public string CxId;
             public int NetId;
             public IPEndPoint Address;
-            // The epoch count and sequence number of the datagram Address came from (see moveAddress)
+            // Epoch count and sequence of the datagram Address came from (see moveAddress)
             public bool AddressFromDatagram;
             public uint AddressEpochCount;
             public ulong AddressSequence;
             public bool Connected;
             public bool Lost;
-            // Said it was leaving after this player had said so too: the two left together
+            // Left at the same time as this player
             public bool LeftWithThisPlayer;
             public long LastHeardMs;
             public int RoundTripMs = -1;
             public RelayReliableChannel Channel;
-            // Seals a packet the channel keeps and sends it to this peer
+            // Seals and sends the channel's resends to this peer
             public Func<byte[], bool> Resend;
             public readonly List<ushort> ControlsSeen = new List<ushort>();
         }
@@ -153,32 +134,27 @@ namespace BrainCloud.Internal
         private bool m_stoppedSent;
         // The owner is one this player elected, not the one DIRECT_CONNECT named
         private bool m_ownerElected;
-        // This player ended the match, or the owner did: nothing more is sent, or taken in, but
-        // what finishes END_MATCH
+        // Once set, only traffic that completes END_MATCH is sent or accepted
         private bool m_endMatchSent;
         private bool m_matchEnded;
-        // This player said it is leaving (SendDisconnect)
+        // Set by SendDisconnect
         private bool m_leaving;
         // After Close, still listening for peers leaving at the same moment
         private bool m_lingerForLeavers;
-        // This player owns the match because it was given it, or its owner left: not because it
-        // stopped hearing from the owner, which may be its own path failing while the owner plays on
+        // Ownership was handed over or the owner left, not inferred from silence (which may be
+        // this player's own path failing)
         private bool m_ownershipConfirmed = true;
         // brainCloud refused a keep-alive: the lobby is no longer running this match
         private bool m_keepAliveRefused;
-        // Whether the last peer lost said it was leaving. When every peer is lost and the last one
-        // went quiet instead, this player may be the one cut off, while the others play on.
+        // Whether the last peer lost said it was leaving. If it went quiet, this player may be the one cut off.
         private bool m_lastLossGraceful;
-        // END_MATCH from the member this player's election will make owner once it loses the
-        // current one, which has not happened yet here: applied when it does
+        // END_MATCH from the expected successor, held until this player's own election makes it owner
         private string m_pendingEndMatchFrom;
         private object m_pendingEndMatch;
 
-        /// <param name="in_connection">What the attempt handed over (DirectConnector.TakeConnection).</param>
-        /// <param name="in_myCxId">This player's RTT connection id.</param>
-        /// <param name="in_listener">Where system messages, game data and errors go.</param>
-        /// <param name="in_client">For logging, the library's version and the lobby calls; may be null in the tests.</param>
-        /// <param name="in_send">Sends the lobby calls; null to send them through in_client.</param>
+        /// <param name="in_connection">From DirectConnector.TakeConnection.</param>
+        /// <param name="in_client">May be null in tests.</param>
+        /// <param name="in_send">Sends lobby calls; null uses in_client.</param>
         internal DirectMeshTransport(DirectConnection in_connection, string in_myCxId, IDirectMeshListener in_listener, BrainCloudClient in_client, Action<ServerCall> in_send = null)
         {
             m_clientRef = in_client;
@@ -202,7 +178,7 @@ namespace BrainCloud.Internal
                 {
                     CxId = source.CxId,
                     NetId = source.NetId,
-                    // With where it came from, so only a later datagram moves it, across the handover too
+                    // Keep the address's provenance across the handover, so only a later datagram moves it
                     Address = source.Address,
                     AddressFromDatagram = source.AddressFromDatagram,
                     AddressEpochCount = source.AddressEpochCount,
@@ -239,7 +215,7 @@ namespace BrainCloud.Internal
         /// True once Close has finished and the socket is closed.
         public bool IsClosed { get { return m_closed; } }
 
-        /// For the tests: drops a datagram this would send to a peer's net id when it returns true.
+        /// Test hook: drops a datagram to a net id when it returns true.
         internal Func<int, byte[], bool> DropForTests { get; set; }
 
         private bool isOwner { get { return string.Equals(m_ownerCxId, m_myCxId, StringComparison.Ordinal); } }
@@ -247,7 +223,6 @@ namespace BrainCloud.Internal
         // brainCloud's lobby owner, which changes only when a member leaves the lobby
         private bool isLobbyOwner { get { return string.Equals(m_lobbyOwner.CxId, m_myCxId, StringComparison.Ordinal); } }
 
-        /// The lobby this connects.
         public string LobbyId { get { return m_lobbyId; } }
 
         private bool loggingEnabled { get { return m_clientRef != null && m_clientRef.LoggingEnabled; } }
@@ -258,8 +233,7 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Starts the connection: raises this player's CONNECT, and pings every peer at once, so each
-        /// one connects as soon as it hears from this player.
+        /// Raises this player's CONNECT and pings every peer, so each connects as soon as it hears from this player.
         /// </summary>
         public void Start(long in_nowMs)
         {
@@ -286,10 +260,8 @@ namespace BrainCloud.Internal
         #region sending
 
         /// <summary>
-        /// Sends game data as the relay would: one copy to each connected peer whose bit is set in
-        /// in_playerMask, each with its own packet id, and to this player itself when its own bit is
-        /// set, as the relay echoes it. A peer that has not connected yet is skipped, as the relay
-        /// skips a member that has not connected.
+        /// Sends one copy, with its own packet id, to each connected peer in in_playerMask, and echoes
+        /// it to this player if its own bit is set, as the relay does. Unconnected peers are skipped.
         /// </summary>
         public void SendRelay(byte[] in_data, ulong in_playerMask, bool in_reliable, bool in_ordered, int in_channel, long in_nowMs)
         {
@@ -309,7 +281,7 @@ namespace BrainCloud.Internal
                 sendTo(peer, packet);
                 if (in_reliable)
                 {
-                    // The header as sent, net id stamped: what the peer's ACK echoes
+                    // Keyed by the header as sent (net id stamped), which the peer's ACK echoes
                     peer.Channel.TrackReliable(BitConverter.ToUInt64(packet, 1), packet, in_channel, packetId, in_nowMs);
                 }
             }
@@ -320,7 +292,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        // The RELAY byte, the 8-byte header with this player's net id in the low byte of the mask, then the data
+        // RELAY byte, 8-byte header with this player's net id in the mask's low byte, then the data
         private byte[] relayPacket(ushort in_flagsAndId, ulong in_mask, byte[] in_data)
         {
             byte[] packet = new byte[RELAY_HEADER_LENGTH + in_data.Length];
@@ -337,14 +309,12 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Ends the match, for the owner: sends END_MATCH to every connected peer until each
-        /// acknowledges it, tells brainCloud the match has stopped (for a lobby that outlives its
-        /// match), and raises END_MATCH for this player, as the relay does. Returns why it cannot,
-        /// or null: only the owner may end the match, as with the relay, which ignores anyone else.
+        /// Owner only: sends END_MATCH to every connected peer until acknowledged, tells brainCloud the
+        /// match stopped, and raises END_MATCH locally. Returns an error message, or null.
         /// </summary>
         public string EndMatch(Dictionary<string, object> in_payload, long in_nowMs)
         {
-            // After Disconnect, as with the relay, which takes no END_MATCH once its sender has left
+            // The relay ignores END_MATCH from a player that has left
             if (m_closing || m_leaving) return "the connection is closing";
             // Once: a second call in the same frame would raise END_MATCH again
             if (m_endMatchSent || m_matchEnded) return null;
@@ -357,17 +327,14 @@ namespace BrainCloud.Internal
             }
             sendControl(END_MATCH, json, in_nowMs);
             m_endMatchSent = true;
-            // Not when this player may be the one cut off, from everyone or from the owner it took
-            // over from: brainCloud would start the lobby's next round while the others play on
+            // Not if this player may be the one cut off: brainCloud would start the next round while others play on
             if (m_ownershipConfirmed && (!everyPeerLost() || m_lastLossGraceful)) roomStopped();
             raiseEndMatch(payload, in_nowMs, false);
             return null;
         }
 
         /// <summary>
-        /// Tells brainCloud the match stopped, for a lobby that outlives its match, so it returns to
-        /// setup: from the owner who ends it, or the last player to leave. brainCloud takes it from
-        /// any member, once; a repeat from another member is refused and changes nothing.
+        /// Returns a lobby that outlives its match to setup. brainCloud accepts it once, from any member.
         /// </summary>
         private void roomStopped()
         {
@@ -377,21 +344,20 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Tells every peer this player is leaving. Close follows. Sent three times: a peer that
-        /// misses it takes this player to have gone quiet, which it treats less kindly than leaving.
+        /// Tells every peer this player is leaving; Close follows. Sent several times, since a peer
+        /// that misses it treats this player as gone quiet, which is handled more harshly.
         /// </summary>
         public void SendDisconnect()
         {
-            // After END_MATCH, as the relay: the match is over for everyone, and a DISCONNECT that
-            // overtook a lost END_MATCH would have the others elect a new owner and drop the END_MATCH
+            // Not after END_MATCH: a DISCONNECT overtaking a lost END_MATCH would make peers elect a
+            // new owner and drop it
             if (m_closing || m_endMatchSent || m_matchEnded) return;
             m_leaving = true;
             foreach (MeshPeer peer in m_peers)
             {
                 if (!peer.Lost) sendDisconnect(peer);
             }
-            // Already the last one playing: told now, in the frame the game leaves, so the call goes
-            // to brainCloud ahead of a LeaveLobby the game makes next, after which it would be refused
+            // Already the last one playing: report now, ahead of any LeaveLobby, after which it would be refused
             if (m_started && everyPeerLost()) stopIfLastToLeave();
         }
 
@@ -406,8 +372,7 @@ namespace BrainCloud.Internal
             byte[] packet = { PING, (byte)(time >> 24), (byte)(time >> 16), (byte)(time >> 8), (byte)time };
             foreach (MeshPeer peer in m_peers)
             {
-                // Also a peer that has not connected yet: it is how it learns this player has, and
-                // keeps the path open meanwhile
+                // Unconnected peers too: it tells them this player has connected, and keeps the path open
                 if (!peer.Lost) sendTo(peer, packet);
             }
         }
@@ -476,9 +441,8 @@ namespace BrainCloud.Internal
             m_lastKeepAliveMs = in_nowMs;
             postLobby(ServiceOperation.RoomKeepAlive, "keeping the lobby alive failed: ", reasonCode =>
             {
-                // The lobby is no longer running this match (another member stopped it), is gone, or
-                // this player has left it: every further keep-alive would be refused, and each is a
-                // call the app pays for
+                // The match was stopped, the lobby is gone, or this player left: further keep-alives
+                // would all be refused, and each is billed
                 if (reasonCode == ReasonCodes.INVALID_REQUEST || reasonCode == ReasonCodes.LOBBY_NOT_FOUND ||
                     reasonCode == ReasonCodes.LOBBY_MEMBER_NOT_FOUND)
                 {
@@ -536,9 +500,8 @@ namespace BrainCloud.Internal
                 ping(in_nowMs);
             }
             processControls(in_nowMs);
-            // brainCloud's lobby owner too, when it is not the players' owner: brainCloud changes its owner
-            // only when the owner leaves the lobby, and takes keep-alives from any member
-            // None once this player has left or stopped the match: brainCloud would refuse it, billed
+            // brainCloud's lobby owner sends them too, as brainCloud takes keep-alives from any member.
+            // None after leaving or stopping the match: they would be refused, and billed.
             if (m_keepAliveMs > 0 && (isOwner || isLobbyOwner) && !m_matchEnded && !m_keepAliveRefused && !m_leaving && !m_stoppedSent &&
                 in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs)
             {
@@ -556,23 +519,20 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Stops the connection. Returns true when it must still be updated with UpdateClosing, to
-        /// finish delivering END_MATCH; otherwise the socket is closed already.
+        /// Returns true if UpdateClosing must still run to finish delivering END_MATCH; otherwise the socket is closed.
         /// </summary>
         public bool Close(long in_nowMs)
         {
             if (m_closed) return false;
-            // The last one playing, leaving without ending the match: the relay server tells brainCloud
-            // the room stopped when its last player goes, so the lobby returns to setup. Only when the
-            // last of the others said it was leaving: when it went quiet, this player may be the one
-            // cut off, and the others still playing. Then brainCloud's own timeout ends the lobby.
+            // The last player leaving reports the room stopped, as the relay does, but only if the last
+            // peer said it was leaving: if it went quiet, this player may be the one cut off, and
+            // brainCloud's own timeout ends the lobby.
             if (!m_closing && m_started)
             {
                 if (everyPeerLost()) stopIfLastToLeave();
                 else if (m_leaving && m_keepAliveMs > 0 && !m_stoppedSent)
                 {
-                    // Others may be leaving at this same moment, their DISCONNECT still on its way:
-                    // listened for a little while, so the last of them all tells brainCloud
+                    // Others may be leaving now, their DISCONNECT in flight: listen briefly so the last reports
                     m_lingerForLeavers = true;
                     if (in_nowMs + LEAVE_LINGER_MS - m_lingerUntilMs > 0) m_lingerUntilMs = in_nowMs + LEAVE_LINGER_MS;
                 }
@@ -587,8 +547,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// After Close returned true: resends END_MATCH until every peer has acknowledged it, and
-        /// acknowledges repeats of one received. Returns false once finished and closed.
+        /// After Close returns true: resends END_MATCH until acknowledged and acknowledges repeats.
+        /// Returns false once closed.
         /// </summary>
         public bool UpdateClosing(long in_nowMs)
         {
@@ -615,7 +575,6 @@ namespace BrainCloud.Internal
             if (m_closed) return;
             m_closed = true;
             m_controls.Clear();
-            // The keys are no use any more, and are not kept
             m_session.Clear();
             try
             {
@@ -657,7 +616,7 @@ namespace BrainCloud.Internal
 
         private void handle(byte[] in_datagram, int in_length, IPEndPoint in_from, long in_nowMs)
         {
-            // Bigger than any datagram a peer sends, or too small to carry a packet: dropped before any key is used
+            // Oversized or too short for a packet: dropped before any key is used
             if (in_length > DirectPacket.MAX_DATAGRAM_LENGTH || in_length <= DirectPacket.OVERHEAD) return;
             int sender, receiver;
             byte[] epoch;
@@ -673,8 +632,7 @@ namespace BrainCloud.Internal
             byte type = packet[0];
             if (!wellFormed(type, packet.Length)) return;
 
-            // It opened, and is not a repeat: it is from the peer, and this is where to send to it now,
-            // unless a later datagram from it came from elsewhere
+            // Authentic and not a repeat: send to this address from now on, unless a later datagram came from elsewhere
             moveAddress(peer, in_from, epoch, sequence);
             peer.LastHeardMs = in_nowMs;
 
@@ -690,7 +648,7 @@ namespace BrainCloud.Internal
             switch (type)
             {
                 case DirectConnector.PUNCH:
-                    // The peer's own punches may still be getting through: answered as the attempt did
+                    // The peer's punches may still be arriving: answer as the attempt did
                     if (packet.Length == 5)
                     {
                         packet[0] = DirectConnector.PUNCH_ACK;
@@ -700,7 +658,7 @@ namespace BrainCloud.Internal
                 case DirectConnector.PUNCH_ACK:
                     return;
                 case DISCONNECT:
-                    // No DISCONNECT event for a peer that never connected; lose() knows
+                    // lose() raises DISCONNECT only for a connected peer
                     lose(peer, peer.Connected ? "it left" : "it left before connecting", true, in_nowMs);
                     return;
                 case RELAY:
@@ -712,11 +670,11 @@ namespace BrainCloud.Internal
                 case CONTROL_ACK:
                     break;
                 default:
-                    // A later format's packet: not understood, so ignored
+                    // Unknown type, e.g. from a newer version: ignored
                     return;
             }
 
-            // Anything else from it means it has taken the connection over too
+            // Anything else means it has taken the connection over too
             if (!peer.Connected) connect(peer, in_nowMs);
 
             switch (type)
@@ -755,8 +713,7 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Whether a packet that opened is one this player understands, at the length its type has:
-        /// checked before anything about the peer changes.
+        /// Whether an opened packet has a known type and that type's length; checked before any peer state changes.
         /// </summary>
         private static bool wellFormed(byte in_type, int in_length)
         {
@@ -780,15 +737,14 @@ namespace BrainCloud.Internal
                 case CONTROL_ACK:
                     return in_length == 3;
                 default:
-                    // A later format's packet: not understood, so ignored
+                    // Unknown type, e.g. from a newer version: ignored
                     return false;
             }
         }
 
         /// <summary>
-        /// Moves a peer to where a datagram from it came from, only when that datagram is later (by
-        /// epoch, then sequence number) than the one the current address came from: one held up on
-        /// the way, from where the peer was before, must not move it back.
+        /// Moves a peer's address only for a datagram later (by epoch, then sequence) than the current
+        /// address's, so a delayed datagram from an old address cannot move it back.
         /// </summary>
         private static void moveAddress(MeshPeer in_peer, IPEndPoint in_from, byte[] in_epoch, ulong in_sequence)
         {
@@ -804,7 +760,7 @@ namespace BrainCloud.Internal
             in_peer.AddressSequence = in_sequence;
         }
 
-        /// For the tests: where this player sends to in_netId.
+        /// Test hook: where this player sends to in_netId.
         internal IPEndPoint PeerAddressForTests(int in_netId)
         {
             MeshPeer peer;
@@ -825,9 +781,8 @@ namespace BrainCloud.Internal
             addProfileId(connect, "ownerId", m_ownerCxId);
             m_listener.OnMeshSystem(JsonWriter.Serialize(connect));
 
-            // An elected owner is the lowest net id among the peers connected at the time. A peer
-            // connecting later with a lower one (slow to take its connection over) would be elected
-            // by players it reached first: elected again here, every player ends up with the same owner.
+            // The elected owner is the lowest connected net id. A slow peer with a lower one is elected
+            // by players it reaches first; re-electing here keeps every player on the same owner.
             if (m_ownerElected && !string.Equals(electedCxId(), m_ownerCxId, StringComparison.Ordinal)) electOwner(in_nowMs);
         }
 
@@ -836,7 +791,7 @@ namespace BrainCloud.Internal
             if (in_packet.Length < RELAY_HEADER_LENGTH) return;
             // The low byte of the mask names the sender, and must be the peer whose key opened it
             if (in_packet[8] != in_peer.NetId) return;
-            // Only what was addressed to this player, as the relay delivers
+            // Only what is addressed to this player, as the relay delivers
             ulong mask = 0;
             for (int i = 3; i < RELAY_HEADER_LENGTH; ++i) mask = (mask << 8) | in_packet[i];
             if (((mask >> (47 - m_myNetId)) & 1) == 0) return;
@@ -852,7 +807,7 @@ namespace BrainCloud.Internal
             }
             if (in_peer.Channel.Receive(withLengthPrefix(in_packet), m_deliver) == RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder)
             {
-                // Told, so it does not go on playing towards this player
+                // Tell it, so it stops sending to this player
                 sendDisconnect(in_peer);
                 lose(in_peer, "too many packets arrived out of order", false, in_nowMs);
             }
@@ -873,14 +828,13 @@ namespace BrainCloud.Internal
             }
             catch (Exception)
             {
-                // The relay passes the match on as ended whatever the data, without the data
+                // As the relay: a bad payload still ends the match, with empty data
                 payload = new Dictionary<string, object>();
             }
             if (!string.Equals(in_peer.CxId, m_ownerCxId, StringComparison.Ordinal))
             {
-                // As the relay does: only the owner may end the match. Except that the owner's
-                // successor may have lost the owner before this player has: its END_MATCH is held
-                // until this player's own election makes it owner too.
+                // Only the owner may end the match, as with the relay. But the successor may have lost
+                // the owner before this player did: hold its END_MATCH until this player elects it.
                 if (string.Equals(in_peer.CxId, successorCxId(), StringComparison.Ordinal))
                 {
                     log("holding END_MATCH from net id " + in_peer.NetId + " until it is the owner here too");
@@ -896,18 +850,18 @@ namespace BrainCloud.Internal
             raiseEndMatch(payload, in_peer.LastHeardMs, true);
         }
 
-        /// in_fromPeer: the owner's END_MATCH, received.
+        /// in_fromPeer: received from the owner, not raised by this player.
         private void raiseEndMatch(object in_payload, long in_nowMs, bool in_fromPeer)
         {
             // Nothing after it is taken in: RelayComms closes the connection on END_MATCH
             m_matchEnded = true;
-            // brainCloud's lobby owner, when that is not the owner who ended the match, tells it too,
-            // in case brainCloud no longer counts that owner a member (its RTT connection dropped)
+            // brainCloud's lobby owner reports it too, in case brainCloud no longer counts the ending
+            // owner a member (its RTT connection dropped)
             if (in_fromPeer && isLobbyOwner) roomStopped();
             var endMatch = new Dictionary<string, object>();
             endMatch["op"] = "END_MATCH";
             endMatch["data"] = in_payload;
-            // Repeats are still acknowledged for a while after the match ends, in case this one's acknowledgement was lost
+            // Keep acknowledging repeats for a while, in case an acknowledgement was lost
             m_lingerUntilMs = in_nowMs + END_MATCH_LINGER_MS;
             m_listener.OnMeshSystem(JsonWriter.Serialize(endMatch));
         }
@@ -915,9 +869,8 @@ namespace BrainCloud.Internal
         private void onOwner(MeshPeer in_peer, byte[] in_packet)
         {
             if (in_packet.Length != 4 || !acknowledge(in_peer, in_packet)) return;
-            // A peer can only name itself, and only as the member this player's own election would pick
-            // once the owner is gone: otherwise any member could make itself owner and end the match.
-            // A player that has not lost the owner yet runs the same election when it does.
+            // A peer may only name itself, and only as this player's own election would pick it once
+            // the owner is lost; otherwise any member could seize ownership and end the match.
             if (in_packet[3] != in_peer.NetId) return;
             MeshPeer owner = peerFor(m_ownerCxId);
             if (owner == null || !owner.Lost || !string.Equals(electedCxId(), in_peer.CxId, StringComparison.Ordinal))
@@ -953,9 +906,8 @@ namespace BrainCloud.Internal
         #region peers and owner
 
         /// <summary>
-        /// Tells brainCloud the match stopped when every peer is gone and the last of them said it
-        /// was leaving. When several left together, each having said so before hearing the others,
-        /// only the one with the lowest net id among them sends it, so brainCloud gets it once.
+        /// Reports the match stopped once every peer is gone and the last said it was leaving.
+        /// Of players leaving together, only the lowest net id reports it.
         /// </summary>
         private void stopIfLastToLeave()
         {
@@ -998,19 +950,16 @@ namespace BrainCloud.Internal
             }
             if (string.Equals(in_peer.CxId, m_ownerCxId, StringComparison.Ordinal))
             {
-                // Taking over from an owner that left is certain; from one gone quiet, it may be this
-                // player's own path that failed
+                // Certain if the owner left; if it went quiet, this player's own path may have failed
                 m_ownershipConfirmed = in_graceful;
                 electOwner(in_nowMs);
             }
         }
 
         /// <summary>
-        /// The owner was lost: the new one is the member connected and still here with the lowest net
-        /// id. Every player works it out alone, from the net ids brainCloud gave them all, and the new
-        /// owner also announces itself. brainCloud picks the lowest net id among the lobby's members
-        /// when the owner leaves the lobby; it cannot see who is connected, so the two can differ, and
-        /// keep-alives and ROOM_STOPPED are accepted from any member for that reason.
+        /// Elects the connected member with the lowest net id; every player computes the same result, and
+        /// the new owner announces itself. brainCloud's own pick can differ (it cannot see who is
+        /// connected), which is why it accepts keep-alives and ROOM_STOPPED from any member.
         /// </summary>
         private void electOwner(long in_nowMs)
         {
@@ -1018,7 +967,7 @@ namespace BrainCloud.Internal
             setOwner(electedCxId());
             if (m_pendingEndMatchFrom != null)
             {
-                // The successor ended the match before this player had lost the old owner
+                // The successor ended the match before this player lost the old owner
                 if (string.Equals(m_pendingEndMatchFrom, m_ownerCxId, StringComparison.Ordinal))
                 {
                     raiseEndMatch(m_pendingEndMatch, in_nowMs, true);
@@ -1032,7 +981,7 @@ namespace BrainCloud.Internal
             if (isOwner)
             {
                 sendControl(OWNER, new byte[] { (byte)m_myNetId }, in_nowMs);
-                // From the next Update, on the regular schedule
+                // Starts on the next Update
                 if (m_keepAliveMs > 0) m_lastKeepAliveMs = in_nowMs - m_keepAliveMs;
             }
         }
@@ -1055,8 +1004,7 @@ namespace BrainCloud.Internal
             string owner = lowest == int.MaxValue ? null : m_myCxId;
             foreach (MeshPeer peer in m_peers)
             {
-                // Only a peer that has connected and is still here: one that has not taken the
-                // connection over yet cannot act as owner
+                // A peer that has not taken the connection over yet cannot act as owner
                 if (peer.Connected && !peer.Lost && peer.NetId < lowest && !string.Equals(peer.CxId, in_except, StringComparison.Ordinal))
                 {
                     lowest = peer.NetId;
