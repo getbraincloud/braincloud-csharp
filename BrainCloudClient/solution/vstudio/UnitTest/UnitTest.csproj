@@ -211,6 +211,9 @@
     <Compile Include="..\..\..\tests\TestDirectConnector.cs">
       <Link>TestDirectConnector.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestDirectMesh.cs">
+      <Link>TestDirectMesh.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestRelay.cs">
       <Link>TestRelay.cs</Link>
     </Compile>

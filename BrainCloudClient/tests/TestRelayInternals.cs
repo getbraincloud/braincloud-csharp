@@ -5,6 +5,7 @@ using BrainCloud.Internal;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using BrainCloud.JsonFx.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -110,6 +111,240 @@ namespace BrainCloudTests
             Receive(Packet(false, true, 0, 2, 1));
             Receive(Packet(false, true, 0, 3, 1));
             Assert.That(_delivered, Is.EqualTo(new[] { 0, 3 }));
+        }
+
+        [Test]
+        public void UnorderedReliable_AResendIsDeliveredOnce_BetweenPlayersDirectly()
+        {
+            _channel.PeerToPeer = true;
+            // A resend whose first ACK was lost: the same header twice. Another sender, channel or
+            // packet id is another packet.
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 2));
+            Receive(Packet(true, false, 1, 5, 1));
+            Receive(Packet(true, false, 0, 6, 1));
+            Assert.That(_delivered, Is.EqualTo(new[] { 5, 5, 5, 6 }));
+        }
+
+        [Test]
+        public void UnorderedReliable_IdsAreForgottenLongBeforeAStreamWrapsRound()
+        {
+            _channel.PeerToPeer = true;
+            // A stream's ids wrap after 4096 packets; by then its earlier ones are forgotten, so the
+            // wrapped ids are delivered
+            for (int i = 0; i <= RelayReliableChannel.MAX_PACKET_ID + 1; ++i) Receive(Packet(true, false, 0, i & RelayReliableChannel.MAX_PACKET_ID, 1));
+            Assert.That(_delivered.Count, Is.EqualTo(RelayReliableChannel.MAX_PACKET_ID + 2));
+        }
+
+        [Test]
+        public void UnorderedReliable_ThroughARelayServer_IsLeftAsItWas()
+        {
+            // The relay drops repeats itself; a member rejoining with a recycled net id restarts its ids
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 1));
+            Assert.That(_delivered, Is.EqualTo(new[] { 5, 5 }));
+        }
+
+        [Test]
+        public void BetweenPlayersDirectly_APeerCannotMakeThisPlayerHoldWithoutLimit()
+        {
+            // Ordered reliable packets, each in a stream of its own (another player mask): every
+            // stream is remembered, so there can only be so many
+            _channel.PeerToPeer = true;
+            RelayReliableChannel.ReceiveOutcome outcome = RelayReliableChannel.ReceiveOutcome.Accepted;
+            int sent = 0;
+            for (int mask = 0; mask < 5000 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++mask, ++sent)
+            {
+                byte[] packet = Packet(true, true, 0, 0, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                outcome = _channel.Receive(packet, (netId, data) => _delivered.Add(IdOf(data)));
+            }
+            Assert.That(outcome, Is.EqualTo(RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder));
+            Assert.That(sent, Is.GreaterThan(4000).And.LessThan(5000));
+
+            // A peer sending in order to many player masks (teams, players in range) is legitimate:
+            // each stream is counted once, and there is room for thousands
+            var legitimate = new RelayReliableChannel(null, null) { PeerToPeer = true };
+            for (int mask = 0; mask < 3000; ++mask)
+            {
+                byte[] packet = Packet(true, true, 0, 0, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                Assert.That(legitimate.Receive(packet, (netId, data) => { }), Is.EqualTo(RelayReliableChannel.ReceiveOutcome.Accepted), "mask " + mask);
+            }
+
+            // A few streams, each below its own limit, but holding too many between them
+            var held = new RelayReliableChannel(null, null) { PeerToPeer = true };
+            outcome = RelayReliableChannel.ReceiveOutcome.Accepted;
+            sent = 0;
+            for (int stream = 0; stream < 3 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++stream)
+            {
+                for (int id = 1; id <= 500 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++id, ++sent)
+                {
+                    byte[] packet = Packet(true, true, stream, id, 1);
+                    outcome = held.Receive(packet, (netId, data) => { });
+                }
+            }
+            Assert.That(outcome, Is.EqualTo(RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder));
+            Assert.That(sent, Is.LessThan(1500));
+
+            // Through a relay server the same packets are held as before
+            var relayed = new RelayReliableChannel(null, null);
+            for (int mask = 0; mask < 1000; ++mask)
+            {
+                byte[] packet = Packet(true, true, 0, 1, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                Assert.That(relayed.Receive(packet, (netId, data) => { }), Is.EqualTo(RelayReliableChannel.ReceiveOutcome.Accepted));
+            }
+        }
+
+        [Test]
+        public void MeshEvents_ReachTheGameInTheOrderTheyArrived_ConnectBeforeData()
+        {
+            var comms = new RelayComms(new BrainCloudClient());
+            var seen = new List<string>();
+            comms.RegisterSystemCallback(json => seen.Add("system"));
+            comms.RegisterRelayCallback((netId, data) => seen.Add("relay " + netId));
+            IDirectMeshListener mesh = comms;
+            mesh.OnMeshSystem("{\"op\":\"CONNECT\",\"cxId\":\"1:b:cx\",\"ownerCxId\":\"1:a:cx\",\"netId\":1}");
+            mesh.OnMeshRelay(1, Packet(false, false, 0, 0, 1));
+            comms.Update();
+            comms.Update();
+            Assert.That(seen, Is.EqualTo(new[] { "system", "relay 1" }));
+        }
+
+        /// <summary>
+        /// Two players' RelayComms connected directly, as a game drives them: Connect(DIRECT), then
+        /// Send, EndMatch and Disconnect, with the mesh underneath. in_lost drops the owner's
+        /// datagrams it returns true for.
+        /// </summary>
+        private sealed class MeshPair : IDisposable
+        {
+            public readonly RelayComms A, B;
+            public readonly List<string> SystemA = new List<string>(), SystemB = new List<string>();
+            public readonly List<string> DataB = new List<string>();
+            public readonly List<ServerCall> CallsA = new List<ServerCall>(), CallsB = new List<ServerCall>();
+            private readonly int m_keepAliveRateSecs;
+            public int Takes;
+            private readonly System.Net.Sockets.Socket m_a, m_b;
+
+            public MeshPair(int in_keepAliveRateSecs = 0)
+            {
+                m_keepAliveRateSecs = in_keepAliveRateSecs;
+                m_a = Bound();
+                m_b = Bound();
+                byte[] key = new byte[16];
+                for (int i = 0; i < key.Length; ++i) key[i] = (byte)(i + 1);
+                A = Comms("1:a:cx", 0, 1, "1:b:cx", m_a, m_b, key);
+                B = Comms("1:b:cx", 1, 0, "1:a:cx", m_b, m_a, key);
+                A.LobbyCallsForTests = call => CallsA.Add(call);
+                B.LobbyCallsForTests = call => CallsB.Add(call);
+                A.RegisterSystemCallback(json => SystemA.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
+                B.RegisterSystemCallback(json => SystemB.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
+                B.RegisterRelayCallback((netId, data) => DataB.Add(netId + ":" + System.Text.Encoding.UTF8.GetString(data)));
+            }
+
+            private static System.Net.Sockets.Socket Bound()
+            {
+                var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
+                socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 0));
+                return socket;
+            }
+
+            private RelayComms Comms(string in_cx, int in_netId, int in_peerNetId, string in_peerCx, System.Net.Sockets.Socket in_socket, System.Net.Sockets.Socket in_peerSocket, byte[] in_key)
+            {
+                var comms = new RelayComms(new BrainCloudClient()) { AssumeAuthenticatedForTests = true, CxIdForTests = in_cx };
+                var peer = new DirectPeer(in_peerCx, in_peerNetId).Clear();
+                peer.Address = (System.Net.IPEndPoint)in_peerSocket.LocalEndPoint;
+                var session = new DirectSession(DirectPacket.SupportedCiphers[0], in_netId, new Dictionary<int, byte[]> { { in_peerNetId, in_key } });
+                var connection = new DirectConnection("1:lobby:1", in_socket, session, "1:a:cx", new List<DirectPeer> { peer }, m_keepAliveRateSecs);
+                bool taken = false;
+                comms.TakeDirectConnectionForTests = lobbyId =>
+                {
+                    ++Takes;
+                    if (taken || lobbyId != "1:lobby:1") return null;
+                    taken = true;
+                    return connection;
+                };
+                return comms;
+            }
+
+            public void Connect(RelayComms in_comms)
+            {
+                in_comms.Connect(RelayConnectionType.DIRECT, new RelayConnectOptions(false, null, 0, null, "1:lobby:1"));
+            }
+
+            public void Pump(int in_rounds)
+            {
+                for (int i = 0; i < in_rounds; ++i)
+                {
+                    A.Update();
+                    B.Update();
+                    Thread.Sleep(5);
+                }
+            }
+
+            public void Dispose()
+            {
+                m_a.Close();
+                m_b.Close();
+            }
+        }
+
+        [Test]
+        public void Direct_ThroughRelayComms_ConnectsSendsAndEndsTheMatch_EvenWhenTheGameLeavesAtOnce()
+        {
+            using (var pair = new MeshPair())
+            {
+                pair.Connect(pair.A);
+                pair.Connect(pair.A);   // again, before connecting: the same connection carries on
+                pair.Connect(pair.B);
+                pair.Pump(20);
+                Assert.That(pair.A.IsConnected() && pair.B.IsConnected(), Is.True);
+                Assert.That(pair.A.ConnectionType, Is.EqualTo(RelayConnectionType.DIRECT));
+                Assert.That(pair.A.MeshForTests, Is.Not.Null);
+                Assert.That(pair.SystemB, Is.EqualTo(new[] { "CONNECT", "CONNECT" }));
+
+                pair.A.Send(System.Text.Encoding.UTF8.GetBytes("hello"), 1UL << 1, true, true, 0);
+                pair.Pump(10);
+                Assert.That(pair.DataB, Is.EqualTo(new[] { "0:hello" }));
+
+                // The owner ends the match and leaves in the same frame; its first END_MATCH is lost
+                int lost = 0;
+                pair.A.MeshForTests.DropForTests = (to, packet) => packet[0] == DirectMeshTransport.END_MATCH && lost++ < 1;
+                pair.A.EndMatch(new Dictionary<string, object> { { "winner", "a" } });
+                pair.A.Disconnect();
+                pair.Pump(80);
+                Assert.That(pair.SystemA.Last(), Is.EqualTo("END_MATCH"));
+                Assert.That(pair.SystemB, Is.EqualTo(new[] { "CONNECT", "CONNECT", "END_MATCH" }), "no DISCONNECT or MIGRATE_OWNER");
+                Assert.That(pair.A.IsConnected() || pair.B.IsConnected(), Is.False);
+                Assert.That(pair.A.ConnectionType, Is.EqualTo(RelayConnectionType.INVALID));
+            }
+        }
+
+        [Test]
+        public void Direct_ThroughRelayComms_PlayersLeavingTogether_StopTheLobbyOnce()
+        {
+            using (var pair = new MeshPair(30))
+            {
+                pair.Connect(pair.A);
+                pair.Connect(pair.B);
+                pair.Pump(20);
+                Assert.That(pair.A.IsConnected() && pair.B.IsConnected(), Is.True);
+
+                // Both games leave in the same frame
+                pair.A.Disconnect();
+                pair.B.Disconnect();
+                pair.Pump(80);
+                Assert.That(pair.A.IsConnected() || pair.B.IsConnected(), Is.False);
+                int stopsA = pair.CallsA.Count(c => c.GetOperation() == ServiceOperation.RoomStopped.Value);
+                int stopsB = pair.CallsB.Count(c => c.GetOperation() == ServiceOperation.RoomStopped.Value);
+                Assert.That(stopsA + stopsB, Is.EqualTo(1), "brainCloud gets it once");
+                Assert.That(stopsA, Is.EqualTo(1), "from the lowest net id");
+            }
         }
 
         [Test]

@@ -490,6 +490,8 @@ namespace BrainCloud
         public static readonly ServiceOperation GetLobbyInstancesWithPingData = new ServiceOperation("GET_LOBBY_INSTANCES_WITH_PING_DATA");
         public static readonly ServiceOperation SendDirectConnectCandidates = new ServiceOperation("SEND_DIRECT_CONNECT_CANDIDATES");
         public static readonly ServiceOperation DirectConnectResult = new ServiceOperation("DIRECT_CONNECT_RESULT");
+        public static readonly ServiceOperation RoomKeepAlive = new ServiceOperation("ROOM_KEEP_ALIVE");
+        public static readonly ServiceOperation RoomStopped = new ServiceOperation("ROOM_STOPPED");
 
         
         //ItemCatalog

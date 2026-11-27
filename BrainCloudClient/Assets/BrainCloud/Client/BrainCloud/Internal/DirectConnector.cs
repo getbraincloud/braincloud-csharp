@@ -36,6 +36,26 @@ namespace BrainCloud.Internal
         /// </summary>
         public IPEndPoint Address { get; internal set; }
 
+        // The epoch count and sequence number of the datagram Address came from
+        internal bool AddressFromDatagram;
+        internal uint AddressEpochCount;
+        internal ulong AddressSequence;
+
+        /// <summary>
+        /// Moves the peer to in_from when the datagram that opened from there (in_epoch, in_sequence)
+        /// is later than the one Address came from: a datagram held up on the way, from where the
+        /// peer was before, must not move it back.
+        /// </summary>
+        internal void MoveAddress(IPEndPoint in_from, byte[] in_epoch, ulong in_sequence)
+        {
+            uint count = DirectPacket.EpochCount(in_epoch);
+            if (AddressFromDatagram && (count < AddressEpochCount || (count == AddressEpochCount && in_sequence <= AddressSequence))) return;
+            Address = in_from;
+            AddressFromDatagram = true;
+            AddressEpochCount = count;
+            AddressSequence = in_sequence;
+        }
+
         /// True once a PUNCH_ACK from the peer has opened: a full round trip.
         public bool Reached { get; internal set; }
 
@@ -50,6 +70,7 @@ namespace BrainCloud.Internal
         {
             Candidates.Clear();
             Address = null;
+            AddressFromDatagram = false;
             Reached = false;
             RoundTripMs = -1;
             Triggered.Clear();
@@ -63,13 +84,15 @@ namespace BrainCloud.Internal
     /// </summary>
     internal sealed class DirectConnection
     {
-        internal DirectConnection(string in_lobbyId, Socket in_socket, DirectSession in_session, string in_ownerCxId, List<DirectPeer> in_peers)
+        internal DirectConnection(string in_lobbyId, Socket in_socket, DirectSession in_session, string in_ownerCxId, List<DirectPeer> in_peers, int in_keepAliveRateSecs)
         {
             LobbyId = in_lobbyId;
             Socket = in_socket;
             Session = in_session;
             OwnerCxId = in_ownerCxId;
             Peers = in_peers;
+            KeepAliveRateSecs = in_keepAliveRateSecs;
+            LobbyOwner = new DirectLobbyOwner { CxId = in_ownerCxId };
         }
 
         public string LobbyId { get; private set; }
@@ -77,6 +100,30 @@ namespace BrainCloud.Internal
         public DirectSession Session { get; private set; }
         public string OwnerCxId { get; private set; }
         public List<DirectPeer> Peers { get; private set; }
+
+        /// From the direct ROOM_READY: how often the owner keeps the lobby alive, or 0 for a lobby that does not outlive its match.
+        public int KeepAliveRateSecs { get; private set; }
+
+        /// <summary>
+        /// brainCloud's owner of the lobby, kept up to date from the lobby's events. It changes only
+        /// when the owner leaves the lobby, so it can differ from the players' own owner, who changes
+        /// when the owner leaves the match. It also keeps the lobby alive when it is not the players'
+        /// owner, and tells brainCloud the match stopped on the players' owner's END_MATCH.
+        /// </summary>
+        public string LobbyOwnerCxId
+        {
+            get { return LobbyOwner.CxId; }
+            internal set { LobbyOwner.CxId = value; }
+        }
+
+        /// The connector keeps this alone, to follow the lobby owner, not the socket or keys.
+        internal DirectLobbyOwner LobbyOwner { get; private set; }
+    }
+
+    /// brainCloud's owner of a lobby whose connection has been taken over, followed from its events.
+    internal sealed class DirectLobbyOwner
+    {
+        public string CxId;
     }
 
     /// <summary>
@@ -133,6 +180,11 @@ namespace BrainCloud.Internal
         /// single punch back would make one lost packet cost the direct connection.
         /// </summary>
         public const int TRIGGERED_PUNCHES = 5;
+        /// <summary>
+        /// While waiting to be taken over, each peer is punched this often: the peers stop punching
+        /// once reached, and a router can forget an idle mapping in as little as 30 seconds.
+        /// </summary>
+        public const int KEEP_MAPPING_MS = 5000;
         // The only datagram this exchanges: a 5-byte PUNCH or PUNCH_ACK, sealed
         private const int PUNCH_DATAGRAM_LENGTH = DirectPacket.OVERHEAD + 5;
         // Candidates that arrive before DIRECT_CONNECT are kept, for this many peers at most
@@ -160,6 +212,16 @@ namespace BrainCloud.Internal
         private int m_lastPunchMs;
         private int m_connectedAtMs;
         private bool m_reported;
+        private bool m_roomReady;
+        private int m_keepAliveRateSecs;
+        // brainCloud's lobby owner, from the lobby's events during the attempt (null: as DIRECT_CONNECT named)
+        private string m_lobbyOwnerCxId;
+        // The lobby of the last connection taken over, and its owner, kept up to date; nothing else of it
+        // Peers DIRECT_CONNECT named with a net id that cannot be used; reported as not reached
+        private readonly List<string> m_unusablePeers = new List<string>();
+        private string m_handedOverLobbyId;
+        private DirectLobbyOwner m_handedOverOwner;
+        private int m_lastKeepMappingMs;
         private readonly byte[] m_buffer = new byte[DirectPacket.MAX_DATAGRAM_LENGTH];
 
         // The gathering thread's job and result. The job owns the socket while it runs: closing a
@@ -236,6 +298,9 @@ namespace BrainCloud.Internal
         /// For the tests: the punching time allowed, in place of the one DIRECT_CONNECT gives.
         internal int PunchBudgetMsForTests { get; set; }
 
+        /// For the tests: how often a connected attempt punches its peers, in place of KEEP_MAPPING_MS.
+        internal int KeepMappingMsForTests { get; set; }
+
         /// For the tests: how long a punch is remembered, in place of PUNCH_RECORD_MS.
         internal int PunchRecordMsForTests { get; set; }
 
@@ -259,11 +324,20 @@ namespace BrainCloud.Internal
         /// </summary>
         internal bool FilterEvent(string in_service, string in_operation, ref string io_json)
         {
-            if (!string.Equals(in_service, "lobby", StringComparison.Ordinal) || in_operation == null ||
-                !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
+            if (!string.Equals(in_service, "lobby", StringComparison.Ordinal) || in_operation == null) return false;
+            if (string.Equals(in_operation, "room_ready", StringComparison.Ordinal))
             {
+                // Noted, and passed on: the game connects from it
+                if (!StandAside) OnRoomReady(DataOf(io_json));
                 return false;
             }
+            if (!StandAside && (m_handedOverOwner != null || m_state == AttemptState.Connected) && !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
+            {
+                // Who brainCloud has as the lobby's owner, for the connection taken over or about to be
+                noteLobbyOwner(DataOf(io_json));
+                return false;
+            }
+            if (!in_operation.StartsWith("direct_connect", StringComparison.Ordinal)) return false;
             if (OnLobbyEvent(in_operation.ToUpperInvariant(), DataOf(io_json))) return true;
             // The game is told the attempt started, but not the pair keys, unless it is a tool playing the attempt itself
             if (string.Equals(in_operation, "direct_connect", StringComparison.Ordinal) && !StandAside)
@@ -314,19 +388,60 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
+        /// Takes the lobby's ROOM_READY. A direct one for a successful attempt's lobby means every
+        /// member reached every other, so the connection may be taken over. One that names a server
+        /// means the lobby uses it after all, so the attempt's socket is closed.
+        /// </summary>
+        public void OnRoomReady(Dictionary<string, object> in_data)
+        {
+            if (in_data == null || m_state != AttemptState.Connected || !string.Equals(str(in_data, "lobbyId"), m_lobbyId)) return;
+            object value;
+            var connectData = in_data.TryGetValue("connectData", out value) ? value as Dictionary<string, object> : null;
+            if (connectData != null && string.Equals(str(connectData, "type"), "direct", StringComparison.Ordinal))
+            {
+                m_roomReady = true;
+                m_keepAliveRateSecs = Math.Max(0, integer(connectData, "keepAliveRateSecs", 0));
+                // Waiting for the game to connect from it
+                m_connectedAtMs = nowMs;
+            }
+            else
+            {
+                log("the lobby is using a server after all; closing the attempt's socket");
+                fail();
+            }
+        }
+
+        /// <summary>
         /// Takes over a successful attempt's socket, keys and peers, for the lobby in_lobbyId, or
-        /// returns null when there is none. The attempt is then over.
+        /// returns null when there is none: no successful attempt for that lobby, or its direct
+        /// ROOM_READY has not arrived, so some member may not have reached every other yet. The
+        /// attempt is then over.
         /// </summary>
         public DirectConnection TakeConnection(string in_lobbyId)
         {
-            if (m_state != AttemptState.Connected || !string.Equals(in_lobbyId, m_lobbyId)) return null;
-            var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values));
+            if (m_state != AttemptState.Connected || !m_roomReady || !string.Equals(in_lobbyId, m_lobbyId)) return null;
+            var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values), m_keepAliveRateSecs);
+            if (m_lobbyOwnerCxId != null) connection.LobbyOwnerCxId = m_lobbyOwnerCxId;
+            m_handedOverLobbyId = m_lobbyId;
+            m_handedOverOwner = connection.LobbyOwner;
             m_socket = null;
             m_session = null;
             m_punches.Clear();
             m_state = AttemptState.None;
             ++m_attempt;
             return connection;
+        }
+
+        // A lobby event's lobby.ownerCxId, for the lobby of the attempt or of the connection taken over
+        private void noteLobbyOwner(Dictionary<string, object> in_data)
+        {
+            string lobbyId = str(in_data, "lobbyId");
+            object value;
+            var lobby = in_data != null && in_data.TryGetValue("lobby", out value) ? value as Dictionary<string, object> : null;
+            string owner = str(lobby, "ownerCxId");
+            if (lobbyId == null || owner == null) return;
+            if (m_handedOverOwner != null && lobbyId == m_handedOverLobbyId) m_handedOverOwner.CxId = owner;
+            if (m_state == AttemptState.Connected && lobbyId == m_lobbyId) m_lobbyOwnerCxId = owner;
         }
 
         #region DIRECT_CONNECT
@@ -340,19 +455,29 @@ namespace BrainCloud.Internal
             m_peersByNetId.Clear();
             m_punches.Clear();
             m_reported = false;
+            m_roomReady = false;
+            m_keepAliveRateSecs = 0;
             m_lobbyId = str(in_data, "lobbyId");
             m_ownerCxId = str(in_data, "ownerCxId");
+            m_lobbyOwnerCxId = null;
             string cipher = str(in_data, "cipher");
             int timeoutSecs = integer(in_data, "timeoutSecs", 0);
             int myNetId = integer(in_data, "netId", -1);
 
             var pairKeys = new Dictionary<int, byte[]>();
             bool everyPeerHasAKey = true;
+            m_unusablePeers.Clear();
             foreach (Dictionary<string, object> entry in objects(in_data, "peers"))
             {
                 string cxId = str(entry, "cxId");
                 int netId = integer(entry, "netId", -1);
-                if (cxId == null || netId < 0 || netId > 255 || m_peers.ContainsKey(cxId) || m_peersByNetId.ContainsKey(netId)) continue;
+                // A net id the relay protocol cannot address (it has 40), or one already taken
+                if (cxId == null || netId < 0 || netId >= RelayComms.MAX_PLAYERS || m_peers.ContainsKey(cxId) || m_peersByNetId.ContainsKey(netId))
+                {
+                    // Reported as not reached with the others, so brainCloud is not left waiting on it
+                    if (cxId != null && !m_peers.ContainsKey(cxId) && !m_unusablePeers.Contains(cxId)) m_unusablePeers.Add(cxId);
+                    continue;
+                }
                 var peer = new DirectPeer(cxId, netId).Clear();
                 m_peers[cxId] = peer;
                 m_peersByNetId[netId] = peer;
@@ -371,11 +496,15 @@ namespace BrainCloud.Internal
             if (refusal == null && m_peers.Count == 0) refusal = "DIRECT_CONNECT named no peers";
             if (refusal == null && !DirectPacket.IsSupported(cipher)) refusal = "this library does not support the cipher " + (cipher ?? "(none)");
             if (refusal == null && !everyPeerHasAKey) refusal = "a peer came without a usable pairKey";
+            if (refusal == null && (myNetId < 0 || myNetId >= RelayComms.MAX_PLAYERS)) refusal = "this player's net id is not usable: " + myNetId;
+            if (refusal == null && m_unusablePeers.Count > 0) refusal = "a peer's net id is not usable";
             if (refusal == null)
             {
                 try
                 {
                     m_session = new DirectSession(cipher, myNetId, pairKeys);
+                    // The session keeps its own copies
+                    foreach (byte[] key in pairKeys.Values) Array.Clear(key, 0, key.Length);
                 }
                 catch (ArgumentException e)
                 {
@@ -664,6 +793,7 @@ namespace BrainCloud.Internal
                         {
                             m_state = AttemptState.Connected;
                             m_connectedAtMs = nowMs;
+                            m_lastKeepMappingMs = m_connectedAtMs;
                         }
                         else
                         {
@@ -681,8 +811,23 @@ namespace BrainCloud.Internal
                     {
                         log("nothing took the connection over; closing it");
                         fail();
+                        break;
                     }
+                    keepMappings();
                     break;
+            }
+        }
+
+        // Punches each peer at its address now and then while waiting, so the routers keep the path open
+        private void keepMappings()
+        {
+            int now = nowMs;
+            if (now - m_lastKeepMappingMs < (KeepMappingMsForTests > 0 ? KeepMappingMsForTests : KEEP_MAPPING_MS)) return;
+            m_lastKeepMappingMs = now;
+            prunePunches(now);
+            foreach (DirectPeer peer in m_peers.Values)
+            {
+                if (peer.Address != null) punchAt(peer, peer.Address, now);
             }
         }
 
@@ -803,10 +948,10 @@ namespace BrainCloud.Internal
             if (!m_peersByNetId.TryGetValue(sender, out peer)) return;
             ++DatagramsOpened;
             byte[] packet = m_session.ReceiverFor(sender).Open(in_datagram, in_length);
-            if (packet == null || packet.Length != 5) return;
+            if (packet == null || packet.Length != 5 || (packet[0] != PUNCH && packet[0] != PUNCH_ACK)) return;
 
-            // It opened, so it is from the peer: this is where to send to it now
-            peer.Address = in_from;
+            // It opened, so it is from the peer: this is where to send to it now, unless it was overtaken
+            peer.MoveAddress(in_from, epoch, sequence);
             uint id = ((uint)packet[1] << 24) | ((uint)packet[2] << 16) | ((uint)packet[3] << 8) | packet[4];
             if (packet[0] == PUNCH)
             {
@@ -846,10 +991,11 @@ namespace BrainCloud.Internal
         /// Reports which peers were reached, once per attempt.
         private void report()
         {
-            if (m_reported || m_lobbyId == null || m_peers.Count == 0) return;
+            if (m_reported || m_lobbyId == null || (m_peers.Count == 0 && m_unusablePeers.Count == 0)) return;
             m_reported = true;
             var peers = new Dictionary<string, object>();
             foreach (DirectPeer peer in m_peers.Values) peers[peer.CxId] = peer.Reached;
+            foreach (string cxId in m_unusablePeers) peers[cxId] = false;
             var data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = m_lobbyId;
             data[OperationParam.LobbyPeers.Value] = peers;
@@ -873,6 +1019,11 @@ namespace BrainCloud.Internal
 
         private void close()
         {
+            if (m_session != null)
+            {
+                m_session.Clear();
+                m_session = null;
+            }
             Socket socket = m_socket;
             m_socket = null;
             bool gathererClosesIt = false;

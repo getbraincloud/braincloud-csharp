@@ -14,7 +14,7 @@ namespace BrainCloud.Internal
     using System.Linq;
     using System.Text;
 
-    internal sealed class RelayComms : IRelayTransportListener
+    internal sealed class RelayComms : IRelayTransportListener, IDirectMeshListener
     {
         #region public consts
         public const int MAX_PACKETSIZE = 1024;
@@ -88,7 +88,7 @@ namespace BrainCloud.Internal
             }
 #endif
             Ping = 999;
-            if (!IsConnected() && m_clientRef.IsAuthenticated())
+            if (!IsConnected() && (m_clientRef.IsAuthenticated() || AssumeAuthenticatedForTests))
             {
                 m_lastRecvTime = m_clientRef.NowMs;
                 m_lastNowMS = m_clientRef.NowMs;
@@ -124,7 +124,8 @@ namespace BrainCloud.Internal
         {
             if (IsConnected())
             {
-                send(buildDisconnectRequest());
+                if (m_mesh != null) m_mesh.SendDisconnect();
+                else send(buildDisconnectRequest());
 
                 m_channel.ClearTrackedPacketIds();
 
@@ -141,7 +142,28 @@ namespace BrainCloud.Internal
         {
             if (IsConnected())
             {
-                send(buildEndMatchRequest(in_jsonPayload));
+                if (m_mesh != null)
+                {
+                    // The mesh raises END_MATCH for this player too, as the relay sends it back
+                    string refusal = m_mesh.EndMatch(in_jsonPayload, m_clientRef.NowMs);
+                    if (refusal != null && refusal.StartsWith(DirectMeshTransport.END_MATCH_TOO_BIG, StringComparison.Ordinal))
+                    {
+                        // Nothing was sent: as Send does with a packet too big, the connection ends and the game is told
+                        m_mesh.SendDisconnect();
+                        disconnect();
+                        queueErrorEvent("Relay: EndMatch not sent: " + refusal);
+                        return;
+                    }
+                    // Otherwise as with a relay server, which ignores END_MATCH from anyone but the owner
+                    if (refusal != null && m_clientRef.LoggingEnabled)
+                    {
+                        m_clientRef.Log("Relay: EndMatch ignored: " + refusal);
+                    }
+                }
+                else
+                {
+                    send(buildEndMatchRequest(in_jsonPayload));
+                }
 
                 m_endMatchRequested = true;
             }
@@ -153,6 +175,32 @@ namespace BrainCloud.Internal
         public bool IsConnected()
         {
             return m_bIsConnected;
+        }
+
+        /// For the tests: where Connect(DIRECT) takes its connection from, in place of the DirectConnector.
+        internal Func<string, DirectConnection> TakeDirectConnectionForTests { get; set; }
+
+        /// For the tests: where a direct connection's lobby calls go, in place of the client.
+        internal Action<ServerCall> LobbyCallsForTests { get; set; }
+
+        /// For the tests: Connect without logging in.
+        internal bool AssumeAuthenticatedForTests { get; set; }
+
+        /// For the tests: this player's RTT connection id, in place of the client's.
+        internal string CxIdForTests { get; set; }
+
+        /// For the tests: the direct connection, while there is one.
+        internal DirectMeshTransport MeshForTests { get { return m_mesh; } }
+
+        private string myCxId { get { return CxIdForTests ?? m_clientRef.RTTConnectionID; } }
+
+        /// <summary>
+        /// How this client is connecting or connected: INVALID when it is neither, DIRECT when the
+        /// players are connected directly, without a relay server.
+        /// </summary>
+        public RelayConnectionType ConnectionType
+        {
+            get { return m_connectionType; }
         }
 
         public void RegisterRelayCallback(RelayCallback in_callback)
@@ -185,8 +233,16 @@ namespace BrainCloud.Internal
             if (!IsConnected()) return;
             if (in_data.Length > MAX_PACKETSIZE)
             {
+                // The other players are told this one is leaving, rather than left to time it out
+                if (m_mesh != null) m_mesh.SendDisconnect();
                 disconnect();
                 queueErrorEvent("Packet too big: " + in_data.Length.ToString() + " > max " + MAX_PACKETSIZE.ToString());
+                return;
+            }
+
+            if (m_mesh != null)
+            {
+                m_mesh.SendRelay(in_data, in_playerMask, in_reliable, in_ordered, in_channel, m_clientRef.NowMs);
                 return;
             }
 
@@ -199,13 +255,7 @@ namespace BrainCloud.Internal
             if (in_ordered) rh |= ORDERED_BIT;
             rh |= (ushort)((in_channel << 12) & 0x3000);
 
-            // Store inverted player mask
-            ulong playerMask = 0;
-            for (int i = 0, len = (int)MAX_PLAYERS; i < len; ++i)
-            {
-                playerMask |= ((in_playerMask >> (MAX_PLAYERS - i - 1)) & 1) << i;
-            }
-            playerMask = (playerMask << 8) & 0x0000FFFFFFFFFF00;
+            ulong playerMask = EncodePlayerMask(in_playerMask);
 
             // AckId without packet id
             ulong ackIdWithoutPacketId = (((ulong)rh << 48) & 0xFFFF000000000000) | playerMask;
@@ -243,12 +293,27 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
+        /// The player mask as the relay header carries it: bit n of in_playerMask (net id n) at bit
+        /// 47 - n, leaving the low byte for the sender's net id.
+        /// </summary>
+        internal static ulong EncodePlayerMask(ulong in_playerMask)
+        {
+            ulong playerMask = 0;
+            for (int i = 0, len = (int)MAX_PLAYERS; i < len; ++i)
+            {
+                playerMask |= ((in_playerMask >> (MAX_PLAYERS - i - 1)) & 1) << i;
+            }
+            return (playerMask << 8) & 0x0000FFFFFFFFFF00;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         public void SetPingInterval(float in_interval)
         {
             m_timeSinceLastPingRequest = 0;
             m_pingInterval = (int)(in_interval * 1000);
+            if (m_mesh != null) m_mesh.PingIntervalMs = m_pingInterval;
         }
 
         public string GetOwnerProfileId()
@@ -306,6 +371,20 @@ namespace BrainCloud.Internal
         /// </summary>
         public void Update()
         {
+            // A direct connection that has ended, still delivering END_MATCH
+            if (m_closingMesh != null && !m_closingMesh.UpdateClosing(m_clientRef.NowMs))
+            {
+                m_closingMesh = null;
+            }
+
+            // A direct connection reads its socket here, and keeps its own peers, pings and resends
+            if (m_mesh != null)
+            {
+                m_mesh.Update(m_clientRef.NowMs);
+                int roundTripMs = m_mesh.RoundTripMs;
+                if (roundTripMs >= 0) Ping = roundTripMs * TimeSpan.TicksPerMillisecond;
+            }
+
             // ** Resend connect request **
             // A UDP client needs to resend that until a confirmation is received that they are connected.
             // A subsequent connection request will just be ignored if already connected.
@@ -331,7 +410,7 @@ namespace BrainCloud.Internal
                 m_timeSinceLastPingRequest += (int)(nowMS - m_lastNowMS);
                 m_lastNowMS = nowMS;
 
-                if (m_timeSinceLastPingRequest >= m_pingInterval)
+                if (m_timeSinceLastPingRequest >= m_pingInterval && m_mesh == null)
                 {
                     m_timeSinceLastPingRequest = 0;
                     ping();
@@ -414,6 +493,12 @@ namespace BrainCloud.Internal
                                 m_connectedObj = null;
                                 callback(200, ReasonCodes.RS_ENDMATCH_REQUESTED, buildRSRequestError(evt.message), callbackObj);
                             }
+                            break;
+                        case EventType.MeshSystem:
+                            onSystemMessage(evt.message);
+                            break;
+                        case EventType.MeshRelay:
+                            queueRelayEvent(evt.netId, evt.data);
                             break;
                         case EventType.System:
                             if (m_registeredSystemCallback != null)
@@ -510,6 +595,14 @@ namespace BrainCloud.Internal
             m_transport?.Close();
             m_transport = null;
 
+            if (m_mesh != null)
+            {
+                // Still delivering END_MATCH, if the match just ended: Update finishes that
+                if (m_closingMesh != null) m_closingMesh.CloseNow();
+                m_closingMesh = m_mesh.Close(m_clientRef.NowMs) ? m_mesh : null;
+                m_mesh = null;
+            }
+
             // cleanup UDP stuff
             m_channel.Reset();
         }
@@ -581,10 +674,23 @@ namespace BrainCloud.Internal
             int port = m_connectOptions.port;
             // Connect() again before the relay accepted us replaces the earlier attempt. What its
             // transport has already queued belongs to that attempt, not this one.
-            if (m_transport != null)
+            // Connect again, for the lobby whose direct connection is already open and not yet
+            // connected: it carries on, with the callbacks just given
+            if (m_connectionType == RelayConnectionType.DIRECT && m_mesh != null && m_mesh.LobbyId == m_connectOptions.lobbyId)
             {
-                m_transport.Close();
+                return;
+            }
+            if (m_transport != null || m_mesh != null)
+            {
+                m_transport?.Close();
                 m_transport = null;
+                if (m_mesh != null)
+                {
+                    // The other players heard from it already: told it is leaving, not left to time it out
+                    m_mesh.SendDisconnect();
+                    m_mesh.CloseNow();
+                    m_mesh = null;
+                }
                 lock (m_events)
                 {
                     m_events.Clear();
@@ -592,6 +698,26 @@ namespace BrainCloud.Internal
             }
             switch (m_connectionType)
             {
+                case RelayConnectionType.DIRECT:
+                    {
+                        // The socket, keys and peers of the lobby's direct connect attempt, which
+                        // reached every peer: there is no server to connect to
+                        DirectConnection connection = TakeDirectConnectionForTests != null
+                            ? TakeDirectConnectionForTests(m_connectOptions.lobbyId)
+                            : m_clientRef.DirectConnector.TakeConnection(m_connectOptions.lobbyId);
+                        if (connection == null)
+                        {
+                            m_connectionType = RelayConnectionType.INVALID;
+                            queueErrorEvent("Relay: no direct connection for lobby " + (m_connectOptions.lobbyId ?? "(none)") +
+                                ": the lobby's direct connect attempt did not succeed, its ROOM_READY has not arrived, or the connection was already used");
+                            return;
+                        }
+                        initUDPConnection();
+                        m_mesh = new DirectMeshTransport(connection, myCxId, this, m_clientRef, LobbyCallsForTests);
+                        m_mesh.PingIntervalMs = m_pingInterval;
+                        m_mesh.Start(m_clientRef.NowMs);
+                        return;
+                    }
                 case RelayConnectionType.WEBSOCKET:
                     m_transport = new RelayWebSocketTransport(this);
                     break;
@@ -637,6 +763,39 @@ namespace BrainCloud.Internal
         void IRelayTransportListener.OnTransportError(string message)
         {
             queueErrorEvent(message);
+        }
+        #endregion
+
+        #region IDirectMeshListener
+        void IDirectMeshListener.OnMeshSystem(string in_json)
+        {
+            // Handled in the event loop, after the mesh has returned: it can end the connection
+            var evt = new Event();
+            evt.type = EventType.MeshSystem;
+            evt.message = in_json;
+            lock (m_events)
+            {
+                m_events.Add(evt);
+            }
+        }
+
+        void IDirectMeshListener.OnMeshRelay(short in_netId, byte[] in_packet)
+        {
+            // Through the event loop like the system messages, so the game gets both in the order
+            // they arrived: a peer's CONNECT before its data, as from a relay server
+            var evt = new Event();
+            evt.type = EventType.MeshRelay;
+            evt.netId = in_netId;
+            evt.data = in_packet;
+            lock (m_events)
+            {
+                m_events.Add(evt);
+            }
+        }
+
+        void IDirectMeshListener.OnMeshError(string in_message)
+        {
+            queueSocketErrorEvent(in_message);
         }
         #endregion
 
@@ -705,6 +864,15 @@ namespace BrainCloud.Internal
             }
 
             string jsonMessage = Encoding.ASCII.GetString(in_data, stringOffset, stringLen);
+            onSystemMessage(jsonMessage);
+        }
+
+        /// <summary>
+        /// A system message, from the relay server or raised by a direct mesh: updates the net ids
+        /// and owner, then passes it to the game's system callback.
+        /// </summary>
+        private void onSystemMessage(string jsonMessage)
+        {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
             if (m_clientRef.LoggingEnabled)
             {
@@ -721,7 +889,7 @@ namespace BrainCloud.Internal
                         string cxId = parsedDict["cxId"] as string;
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
-                        if (cxId == m_clientRef.RTTConnectionID && !m_bIsConnected)
+                        if (cxId == myCxId && !m_bIsConnected)
                         {
                             m_netId = netId;
                             m_ownerCxId = parsedDict["ownerCxId"] as string;
@@ -1032,6 +1200,11 @@ namespace BrainCloud.Internal
         // The connection to the relay server, and the reliability layer over it
         private IRelayTransport m_transport = null;
         private RelayReliableChannel m_channel;
+
+        // A direct connection between the players, in place of the transport and channel above
+        private DirectMeshTransport m_mesh = null;
+        // A direct connection that has ended, still delivering END_MATCH
+        private DirectMeshTransport m_closingMesh = null;
         private Func<byte[], bool> m_sendDelegate;
         private Action<short, byte[]> m_queueRelayEventDelegate;
 
@@ -1073,7 +1246,9 @@ namespace BrainCloud.Internal
             ConnectSuccess,
             ConnectFailure,
             Relay,
-            System
+            System,
+            MeshSystem,
+            MeshRelay
         }
 
         private class Event
@@ -1099,6 +1274,8 @@ namespace BrainCloud
         WEBSOCKET,
         TCP,
         UDP,
+        /// Peer to peer, without a relay server: the lobby's direct connect attempt succeeded
+        DIRECT,
 
         MAX
     }

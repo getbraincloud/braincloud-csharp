@@ -84,6 +84,14 @@ namespace BrainCloudTests
             };
         }
 
+        /// A direct ROOM_READY's data, as brainCloud sends it once every member reached every other.
+        private static Dictionary<string, object> RoomReady(string in_lobbyId, int in_keepAliveRateSecs = 0)
+        {
+            var connectData = new Dictionary<string, object> { { "type", "direct" }, { "peers", new object[0] } };
+            if (in_keepAliveRateSecs > 0) connectData["keepAliveRateSecs"] = in_keepAliveRateSecs;
+            return new Dictionary<string, object> { { "lobbyId", in_lobbyId }, { "connectData", connectData } };
+        }
+
         /// The candidates player in_from sent to brainCloud, as brainCloud passes them on.
         private static Dictionary<string, object> CandidatesFrom(Player in_from, ServerCall in_call)
         {
@@ -166,15 +174,93 @@ namespace BrainCloudTests
             Assert.That(first["ip"], Is.EqualTo("127.0.0.1"));
             Assert.That(first["port"], Is.EqualTo(a.Connector.Port));
 
+            // Not before the direct ROOM_READY: until then another member may still fail to reach someone
+            Assert.That(a.Connector.TakeConnection(LOBBY), Is.Null, "before ROOM_READY");
+
             // The connection takes the socket and keys over, and the attempt is then over
+            a.Connector.OnRoomReady(RoomReady(LOBBY, 30));
             DirectConnection connection = a.Connector.TakeConnection(LOBBY);
             Assert.That(connection, Is.Not.Null);
+            Assert.That(connection.KeepAliveRateSecs, Is.EqualTo(30));
             Assert.That(connection.Socket, Is.Not.Null);
             Assert.That(connection.Session.NetId, Is.EqualTo(0));
             Assert.That(connection.OwnerCxId, Is.EqualTo(CX_A));
             Assert.That(connection.Peers.Single().CxId, Is.EqualTo(CX_B));
             Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.None));
             Assert.That(a.Connector.TakeConnection(LOBBY), Is.Null, "taken once");
+            connection.Socket.Close();
+        }
+
+        [Test]
+        public void ARoomReadyForAnotherLobby_OrNamingAServer_DoesNotHandOver()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+
+            a.Connector.OnRoomReady(RoomReady("24223:otherLobby:2"));
+            Assert.That(a.Connector.TakeConnection(LOBBY), Is.Null, "another lobby's ROOM_READY");
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+
+            // The lobby went to a server after all (another member gave up, say): the socket is closed
+            var relay = new Dictionary<string, object>
+            {
+                { "lobbyId", LOBBY },
+                { "connectData", new Dictionary<string, object> { { "address", "relay.example" }, { "ports", new Dictionary<string, object> { { "udp", 9000 } } } } }
+            };
+            a.Connector.OnRoomReady(relay);
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Failed));
+            Assert.That(a.Connector.SocketForTests, Is.Null);
+            Assert.That(a.Connector.TakeConnection(LOBBY), Is.Null);
+        }
+
+        [Test]
+        public void RoomReady_ReachesTheConnectorThroughFilterEvent_AndIsPassedOn()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            string json = BrainCloud.JsonFx.Json.JsonWriter.Serialize(new Dictionary<string, object>
+            {
+                { "service", "lobby" }, { "operation", "ROOM_READY" }, { "data", RoomReady(LOBBY, 15) }
+            });
+            string passedOn = json;
+            Assert.That(a.Connector.FilterEvent("lobby", "room_ready", ref passedOn), Is.False, "the game connects from it");
+            Assert.That(passedOn, Is.EqualTo(json), "unchanged");
+            DirectConnection connection = a.Connector.TakeConnection(LOBBY);
+            Assert.That(connection, Is.Not.Null);
+            Assert.That(connection.KeepAliveRateSecs, Is.EqualTo(15));
+            connection.Socket.Close();
+        }
+
+        [Test]
+        public void TheLobbyOwner_IsFollowedFromTheLobbysEvents_AfterTheHandOver()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            a.Connector.OnRoomReady(RoomReady(LOBBY, 30));
+            DirectConnection connection = a.Connector.TakeConnection(LOBBY);
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_A), "as DIRECT_CONNECT named");
+
+            string left = BrainCloud.JsonFx.Json.JsonWriter.Serialize(new Dictionary<string, object>
+            {
+                { "service", "lobby" }, { "operation", "MEMBER_LEFT" },
+                { "data", new Dictionary<string, object> { { "lobbyId", LOBBY }, { "lobby", new Dictionary<string, object> { { "ownerCxId", CX_B } } } } }
+            });
+            string passedOn = left;
+            Assert.That(a.Connector.FilterEvent("lobby", "member_left", ref passedOn), Is.False);
+            Assert.That(passedOn, Is.EqualTo(left), "passed on unchanged");
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_B));
+
+            // Another lobby's events change nothing
+            string other = left.Replace(LOBBY, "24223:otherLobby:2").Replace(CX_B, CX_C);
+            a.Connector.FilterEvent("lobby", "member_left", ref other);
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_B));
             connection.Socket.Close();
         }
 
@@ -273,6 +359,60 @@ namespace BrainCloudTests
             a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, in_cipher, CX_B, 1, KEY_AB));
             Assert.That(Reported(a), Is.EqualTo(new Dictionary<string, object> { { CX_B, false } }));
             Assert.That(a.Calls(ServiceOperation.SendDirectConnectCandidates), Is.Empty);
+        }
+
+        [Test]
+        public void ANetIdTheRelayProtocolCannotAddress_IsRefused_AndReported()
+        {
+            // The relay protocol has net ids 0 to 39
+            Player a = NewPlayer(CX_A);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 40, KEY_AB));
+            Assert.That(Reported(a), Is.EqualTo(new Dictionary<string, object> { { CX_B, false } }), "reported, so brainCloud is not left waiting");
+            Assert.That(a.Calls(ServiceOperation.SendDirectConnectCandidates), Is.Empty);
+
+            Player c = NewPlayer(CX_C);
+            c.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(40, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Assert.That(Reported(c), Is.EqualTo(new Dictionary<string, object> { { CX_A, false } }), "this player's own");
+        }
+
+        [Test]
+        public void WhileWaitingToBeTakenOver_EachPeerIsPunched_ToKeepThePathOpen()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+
+            a.Connector.KeepMappingMsForTests = 50;
+            int openedByB = b.Connector.DatagramsOpened;
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            while (clock.ElapsedMilliseconds < 400)
+            {
+                a.Connector.Update();
+                b.Connector.Update();
+                Thread.Sleep(5);
+            }
+            Assert.That(b.Connector.DatagramsOpened - openedByB, Is.GreaterThanOrEqualTo(3), "A kept punching B");
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+        }
+
+        [Test]
+        public void APeersAddress_OnlyMovesToALaterDatagram()
+        {
+            var peer = new DirectPeer(CX_B, 1).Clear();
+            var first = new IPEndPoint(IPAddress.Loopback, 1000);
+            var second = new IPEndPoint(IPAddress.Loopback, 2000);
+            byte[] epoch1 = DirectPacket.MakeEpoch(new byte[4], 1), epoch2 = DirectPacket.MakeEpoch(new byte[4], 2);
+            peer.MoveAddress(first, epoch1, 5);
+            peer.MoveAddress(second, epoch1, 4);
+            Assert.That(peer.Address, Is.EqualTo(first), "an earlier sequence number");
+            peer.MoveAddress(second, epoch1, 5);
+            Assert.That(peer.Address, Is.EqualTo(first), "the same datagram again");
+            peer.MoveAddress(second, epoch2, 0);
+            Assert.That(peer.Address, Is.EqualTo(second), "a later epoch");
+            peer.MoveAddress(first, epoch1, 99);
+            Assert.That(peer.Address, Is.EqualTo(second), "an earlier epoch");
         }
 
         [Test]

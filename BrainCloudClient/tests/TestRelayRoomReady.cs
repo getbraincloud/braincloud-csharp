@@ -42,6 +42,10 @@ namespace BrainCloudTests
             ""lobbyId"":""l5"",""passcode"":"""",
             ""connectData"":{""type"":""direct"",""peers"":[{""cxId"":""a"",""netId"":0},{""cxId"":""b"",""netId"":1}]}}}";
 
+        private const string DIRECT_NO_LOBBY = @"{""operation"":""ROOM_READY"",""data"":{
+            ""passcode"":"""",
+            ""connectData"":{""type"":""direct"",""peers"":[{""cxId"":""a"",""netId"":0},{""cxId"":""b"",""netId"":1}]}}}";
+
         private static Dictionary<string, object> Parse(string in_json)
         {
             return (Dictionary<string, object>)JsonReader.Deserialize(in_json);
@@ -146,11 +150,22 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void DirectRoom_IsNotSupportedYet()
+        public void DirectRoom_ConnectsDirectly_WithTheLobbyIdAlone()
         {
             RelayConnectionType type;
             RelayConnectOptions options;
-            Assert.That(Resolve(DIRECT, RelayConnectionType.UDP, false, out type, out options), Does.Contain("directly between the players"));
+            // Whatever was preferred, and with or without SSL: there is no server to choose a port of
+            foreach (RelayConnectionType preferred in new[] { RelayConnectionType.UDP, RelayConnectionType.WEBSOCKET, RelayConnectionType.TCP })
+            {
+                foreach (bool ssl in new[] { false, true })
+                {
+                    Assert.That(Resolve(DIRECT, preferred, ssl, out type, out options), Is.Null);
+                    Assert.That(type, Is.EqualTo(RelayConnectionType.DIRECT));
+                    Assert.That(options.lobbyId, Is.EqualTo("l5"));
+                    Assert.That(options.host, Is.Null);
+                }
+            }
+            Assert.That(Resolve(DIRECT_NO_LOBBY, RelayConnectionType.UDP, false, out type, out options), Does.Contain("no lobbyId"));
         }
 
         [Test]
@@ -177,7 +192,7 @@ namespace BrainCloudTests
         public void ConnectFromRoomReady_ReportsAnUnusableEventToTheFailureCallback()
         {
             var client = new BrainCloudClient();
-            foreach (string json in new[] { "not json", "[1, 2]", null, DIRECT })
+            foreach (string json in new[] { "not json", "[1, 2]", null, DIRECT_NO_LOBBY })
             {
                 int status = 0, reason = 0;
                 string error = null;

@@ -318,6 +318,9 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectConnector.cs">
       <Link>BrainCloud\Internal\DirectConnector.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectMeshTransport.cs">
+      <Link>BrainCloud\Internal\DirectMeshTransport.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\Sha256.cs">
       <Link>BrainCloud\Internal\Sha256.cs</Link>
     </Compile>

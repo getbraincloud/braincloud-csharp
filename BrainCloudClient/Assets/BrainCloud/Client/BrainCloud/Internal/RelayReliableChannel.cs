@@ -34,6 +34,9 @@ namespace BrainCloud.Internal
         public const int RELIABLE_GIVE_UP_MS = 10000;
 
         private const int MAX_PACKET_ID_HISTORY = 60 * 10; // So we last 10 seconds at 60 fps
+        // Limits on what one peer can make this player hold, between players directly
+        private const int MAX_PEER_STREAMS = 4096;
+        private const int MAX_PEER_HELD_PACKETS = 2 * MAX_PACKET_ID_HISTORY;
         private const int MAX_RELIABLE_RESEND_INTERVAL = 500;
         private const int PACKET_LOWER_THRESHOLD = MAX_PACKET_ID * 25 / 100;
         private const int PACKET_HIGHER_THRESHOLD = MAX_PACKET_ID * 75 / 100;
@@ -53,6 +56,14 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
+        // Recent reliable unordered packets, by header, so a resent one is not delivered again
+        // (PeerToPeer only)
+        private readonly HashSet<ulong> m_unorderedSeen = new HashSet<ulong>();
+        private readonly Queue<ulong> m_unorderedSeenOrder = new Queue<ulong>();
+        // Ordered packets held across every stream, waiting for earlier ones
+        private int m_heldCount = 0;
+        // Ordered streams received from (PeerToPeer only)
+        private readonly HashSet<ulong> m_peerStreams = new HashSet<ulong>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -75,6 +86,14 @@ namespace BrainCloud.Internal
             m_log = in_log ?? (message => { });
         }
 
+        /// <summary>
+        /// For a link straight to one other player, with no relay server between: repeats of
+        /// reliable unordered packets are dropped (a relay server drops those itself), and how many
+        /// streams and held packets the peer can make this player keep is limited; going over drops
+        /// the link (ReceiveOutcome.TooManyOutOfOrder).
+        /// </summary>
+        public bool PeerToPeer { get; set; }
+
         /// Reliable packets sent and not yet acknowledged.
         public int UnacknowledgedCount
         {
@@ -88,6 +107,10 @@ namespace BrainCloud.Internal
             m_recvPacketId.Clear();
             m_reliables.Clear();
             m_orderedReliablePackets.Clear();
+            m_unorderedSeen.Clear();
+            m_unorderedSeenOrder.Clear();
+            m_heldCount = 0;
+            m_peerStreams.Clear();
             ClearTrackedPacketIds();
         }
 
@@ -195,6 +218,12 @@ namespace BrainCloud.Internal
 
             if (ordered)
             {
+                if (PeerToPeer && !m_peerStreams.Contains(ackIdWithoutPacketId))
+                {
+                    if (m_peerStreams.Count >= MAX_PEER_STREAMS) return ReceiveOutcome.TooManyOutOfOrder;
+                    m_peerStreams.Add(ackIdWithoutPacketId);
+                }
+
                 int prevPacketId = MAX_PACKET_ID;
                 if (m_recvPacketId.ContainsKey(ackIdWithoutPacketId))
                 {
@@ -228,7 +257,8 @@ namespace BrainCloud.Internal
                     List<UDPPacket> orderedReliablePackets = m_orderedReliablePackets[ackIdWithoutPacketId];
                     if (packetId != ((prevPacketId + 1) & MAX_PACKET_ID))
                     {
-                        if ((int)orderedReliablePackets.Count > MAX_PACKET_ID_HISTORY)
+                        if ((int)orderedReliablePackets.Count > MAX_PACKET_ID_HISTORY ||
+                            (PeerToPeer && m_heldCount >= MAX_PEER_HELD_PACKETS))
                         {
                             return ReceiveOutcome.TooManyOutOfOrder;
                         }
@@ -248,6 +278,7 @@ namespace BrainCloud.Internal
                         }
                         var newPacket = new UDPPacket(in_data, channel, packetId, netId, 0);
                         orderedReliablePackets.Insert(insertIdx, newPacket);
+                        ++m_heldCount;
 #if BC_DEBUG_RELAY_LOGS_ENABLED
                         if (m_loggingEnabled()) m_log("Queuing out of order reliable from " + netId.ToString() + ". got " + packetId.ToString());
 #endif
@@ -266,6 +297,7 @@ namespace BrainCloud.Internal
                         {
                             in_deliver(packet.NetId, packet.RawData);
                             orderedReliablePackets.RemoveAt(0);
+                            --m_heldCount;
                             packetId = packet.Id;
                             m_recvPacketId[ackIdWithoutPacketId] = packetId;
                             continue;
@@ -285,6 +317,23 @@ namespace BrainCloud.Internal
                         return ReceiveOutcome.Accepted;
                     }
                     m_recvPacketId[ackIdWithoutPacketId] = packetId;
+                }
+            }
+            else if (reliable && PeerToPeer)
+            {
+                // The same header again is a resend whose acknowledgement was lost. Remembered for
+                // MAX_PACKET_ID_HISTORY packets, far fewer than a stream sends before its ids wrap.
+                if (!m_unorderedSeen.Add(ackId))
+                {
+#if BC_DEBUG_RELAY_LOGS_ENABLED
+                    if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+#endif
+                    return ReceiveOutcome.Accepted;
+                }
+                m_unorderedSeenOrder.Enqueue(ackId);
+                if (m_unorderedSeenOrder.Count > MAX_PACKET_ID_HISTORY)
+                {
+                    m_unorderedSeen.Remove(m_unorderedSeenOrder.Dequeue());
                 }
             }
 
