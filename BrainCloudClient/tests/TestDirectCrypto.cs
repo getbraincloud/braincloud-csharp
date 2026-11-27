@@ -271,6 +271,32 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void ANullCipherName_IsRefusedCleanly_Everywhere()
+        {
+            // A DIRECT_CONNECT that names no cipher: refused as unknown, never a NullReferenceException
+            Assert.That(() => DirectPacket.DeriveKey(PAIR_KEY, null, 0, 1, EPOCH), Throws.InstanceOf<ArgumentException>());
+            Assert.That(() => new DirectSession(null, 0, new Dictionary<int, byte[]> { { 1, PAIR_KEY } }), Throws.InstanceOf<ArgumentException>());
+            Assert.That(() => DirectPacket.Seal(null, H(KEY_0_TO_1), 0, 1, EPOCH, 0, PUNCH, 0, PUNCH.Length), Throws.InstanceOf<ArgumentException>());
+            byte[] datagram = SealedPunch();
+            // Refused loudly, as an unknown cipher is: dropping every datagram would hide the mistake
+            Assert.That(() => DirectPacket.Open(null, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length), Throws.InstanceOf<ArgumentException>());
+            Assert.That(DirectPacket.SupportedCiphers, Has.No.Null);
+        }
+
+        [Test]
+        public void RandomPrefix_IsFourBytes_AndNewEachTime()
+        {
+            var seen = new HashSet<string>();
+            // 16 draws from 2^32: a chance repeat about once in 36 million runs
+            for (int i = 0; i < 16; ++i)
+            {
+                byte[] prefix = DirectPacket.RandomPrefix();
+                Assert.That(prefix.Length, Is.EqualTo(4));
+                Assert.That(seen.Add(Hex(prefix)), Is.True, "a repeat in 16 draws from 2^32");
+            }
+        }
+
+        [Test]
         public void Open_ReadsTheHeaderAndThePacket_FromABiggerReceiveBuffer()
         {
             byte[] datagram = SealedPunch();
@@ -783,6 +809,48 @@ namespace BrainCloudTests
             Assert.That(Hex(datagram), Is.EqualTo(PUNCH_DATAGRAM_HMAC));
             Assert.That(datagram.Skip(DirectPacket.HEADER_LENGTH).Take(PUNCH.Length).ToArray(), Is.EqualTo(PUNCH), "the packet travels readable");
             Assert.That(DirectPacket.Open(DirectPacket.CIPHER_HMAC_SHA256, H(KEY_HMAC_0_TO_1), 0, 1, datagram, datagram.Length), Is.EqualTo(PUNCH));
+        }
+
+        // A full-size packet: RELAY, its header (reliable, ordered, channel 1, packet id 0x123, to net
+        // id 1, from net id 0), then 1,024 bytes of game data (i & 0xff): the most the relay API sends.
+        // From net id 0 to 1, epoch 0x10..0x17, sequence 0x0102030405060708, pair key 0..15. The
+        // expected values were computed independently, from the design's section 7 with Node's own
+        // HKDF, HMAC and ChaCha20-Poly1305, which also reproduces the small vectors above. Other
+        // client libraries can check against the same values.
+        private static byte[] FullSizePacket()
+        {
+            byte[] packet = new byte[9 + 1024];
+            byte[] header = { 2, 0xd1, 0x23, 0x40, 0, 0, 0, 0, 0 };
+            Buffer.BlockCopy(header, 0, packet, 0, header.Length);
+            for (int i = 0; i < 1024; ++i) packet[9 + i] = (byte)i;
+            return packet;
+        }
+
+        private const ulong FULL_SIZE_SEQUENCE = 0x0102030405060708UL;
+
+        private static string Sha256Hex(byte[] in_bytes)
+        {
+            using (var sha = System.Security.Cryptography.SHA256.Create()) return Hex(sha.ComputeHash(in_bytes));
+        }
+
+        [TestCase(DirectPacket.CIPHER_HMAC_SHA256,
+            "92f1d6b388acb8089b2bc4875aae5d1e805a59a85311f88d4c2fc11acefccae9", "e6be093c0d74a1aa68484a5b009c2279")]
+#if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
+        [TestCase(DirectPacket.CIPHER_CHACHA20_POLY1305,
+            "6e7704334254948a33fc33d70fce8ff6e9f6da23bbe812ee28b0d05012b5e1dc", "af8efa21e96fc8e5d60c9bf5d1974461")]
+#endif
+        public void AFullSizeDatagram_MatchesTheFixedValues(string in_cipher, string in_sha256, string in_tag)
+        {
+            byte[] packet = FullSizePacket();
+            Assert.That(packet.Length - 9, Is.EqualTo(RelayComms.MAX_PACKETSIZE), "the most game data a packet carries");
+            byte[] key = DirectPacket.DeriveKey(PAIR_KEY, in_cipher, 0, 1, EPOCH);
+            byte[] datagram = DirectPacket.Seal(in_cipher, key, 0, 1, EPOCH, FULL_SIZE_SEQUENCE, packet, 0, packet.Length);
+
+            Assert.That(datagram.Length, Is.EqualTo(1068));
+            Assert.That(datagram.Length, Is.LessThanOrEqualTo(DirectPacket.MAX_DATAGRAM_LENGTH));
+            Assert.That(Sha256Hex(datagram), Is.EqualTo(in_sha256));
+            Assert.That(Hex(datagram.Skip(datagram.Length - DirectPacket.TAG_LENGTH).ToArray()), Is.EqualTo(in_tag));
+            Assert.That(DirectPacket.Open(in_cipher, key, 0, 1, datagram, datagram.Length), Is.EqualTo(packet));
         }
 
         [Test]
