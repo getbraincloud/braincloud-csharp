@@ -611,6 +611,61 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void ARepeatPunch_RenewsTheCount_WithoutAnExtraPunchNow()
+        {
+            Player b = NewPlayer(CX_B, in_budgetMs: 1500);
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            RunAll(new List<Player> { b }, 200, (from, to) => false);
+            var aSession = new DirectSession(CIPHER, 0, new Dictionary<int, byte[]> { { 1, KEY_AB } });
+            using (var a = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                a.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                var toB = new IPEndPoint(IPAddress.Loopback, b.Connector.Port);
+                // Two punches arriving together: two acknowledgements, and the punches of one, not two
+                a.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 1 }, 0, 5), toB);
+                a.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 2 }, 0, 5), toB);
+                Thread.Sleep(20);
+                RunAll(new List<Player> { b }, 1000, (from, to) => false);
+                Assert.That(Drain(a), Is.EqualTo(2 + DirectConnector.TRIGGERED_PUNCHES));
+            }
+        }
+
+        [Test]
+        public void AnAddressThatIsPaidUp_GivesItsSlotBack()
+        {
+            // Spoofed punches from MAX_CANDIDATES addresses fill every slot; once they have had their
+            // punches, a punch from yet another address must still be punched back
+            Player b = NewPlayer(CX_B, in_budgetMs: 2500);
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            RunAll(new List<Player> { b }, 200, (from, to) => false);
+            var aSession = new DirectSession(CIPHER, 0, new Dictionary<int, byte[]> { { 1, KEY_AB } });
+            var toB = new IPEndPoint(IPAddress.Loopback, b.Connector.Port);
+            var fillers = new List<Socket>();
+            try
+            {
+                for (int i = 0; i < DirectConnector.MAX_CANDIDATES; ++i)
+                {
+                    var filler = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    filler.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                    fillers.Add(filler);
+                    filler.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 1, (byte)i }, 0, 5), toB);
+                }
+                RunAll(new List<Player> { b }, 800, (from, to) => false);
+                using (var late = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+                {
+                    late.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                    late.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 2, 0 }, 0, 5), toB);
+                    RunAll(new List<Player> { b }, 300, (from, to) => false);
+                    Assert.That(Drain(late), Is.GreaterThan(1), "its acknowledgement and at least one punch back");
+                }
+            }
+            finally
+            {
+                foreach (Socket filler in fillers) filler.Close();
+            }
+        }
+
+        [Test]
         public void TwoUnknownAddressesInOneBurst_AreBothPunchedBack()
         {
             // A peer on two networks: its punches arrive from two addresses it did not list
@@ -626,7 +681,7 @@ namespace BrainCloudTests
                 var toB = new IPEndPoint(IPAddress.Loopback, b.Connector.Port);
                 first.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 1 }, 0, 5), toB);
                 second.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 2 }, 0, 5), toB);
-                RunAll(new List<Player> { b }, 600, (from, to) => false);
+                RunAll(new List<Player> { b }, 1000, (from, to) => false);
                 Assert.That(Drain(first), Is.EqualTo(1 + DirectConnector.TRIGGERED_PUNCHES));
                 Assert.That(Drain(second), Is.EqualTo(1 + DirectConnector.TRIGGERED_PUNCHES), "neither starves the other");
             }

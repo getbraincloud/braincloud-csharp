@@ -713,14 +713,15 @@ namespace BrainCloud.Internal
                 {
                     punchAt(peer, address, now);
                 }
-                // Addresses the peer's punches came from, while they are owed punches
+                // Addresses the peer's punches came from, while they are owed punches. One that is paid
+                // up, or has become a candidate, gives its slot back.
                 if (peer.Triggered.Count == 0) continue;
                 foreach (IPEndPoint address in new List<IPEndPoint>(peer.Triggered.Keys))
                 {
                     int owed = peer.Triggered[address];
-                    if (owed <= 0) continue;
-                    peer.Triggered[address] = owed - 1;
-                    punchAt(peer, address, now);
+                    if (owed <= 1 || peer.Candidates.Contains(address)) peer.Triggered.Remove(address);
+                    else peer.Triggered[address] = owed - 1;
+                    if (owed >= 1 && !peer.Candidates.Contains(address)) punchAt(peer, address, now);
                 }
             }
         }
@@ -812,15 +813,22 @@ namespace BrainCloud.Internal
                 // Answered even once the peer is reached: its own punches may still be getting through
                 sendTo(peer, PUNCH_ACK, id, in_from);
                 // A punch from none of the peer's candidates (a router can map its socket to an address
-                // it could not know to offer) earns that address TRIGGERED_PUNCHES punches on the punch
-                // schedule, the first now. Only in answer to punches that arrive, never indefinitely:
-                // anyone on the path can resend a genuine punch from an address of their choosing, and
-                // must not get a stream sent there. Another punch from it renews the count; it does not add.
-                if (!peer.Reached && !peer.Candidates.Contains(in_from) &&
-                    (peer.Triggered.ContainsKey(in_from) || peer.Triggered.Count < MAX_CANDIDATES))
+                // it could not know to offer) earns that address TRIGGERED_PUNCHES punches, the first now
+                // and the rest on the punch schedule. Only in answer to punches that arrive, never
+                // indefinitely: anyone on the path can resend a genuine punch from an address of their
+                // choosing, and must not get a stream sent there. Another punch from an address still
+                // owed punches only renews the count, with no extra punch now.
+                if (!peer.Reached && !peer.Candidates.Contains(in_from))
                 {
-                    peer.Triggered[in_from] = TRIGGERED_PUNCHES - 1;
-                    punchAt(peer, in_from, nowMs);
+                    if (peer.Triggered.ContainsKey(in_from))
+                    {
+                        peer.Triggered[in_from] = TRIGGERED_PUNCHES - 1;
+                    }
+                    else if (peer.Triggered.Count < MAX_CANDIDATES)
+                    {
+                        peer.Triggered[in_from] = TRIGGERED_PUNCHES - 1;
+                        punchAt(peer, in_from, nowMs);
+                    }
                 }
             }
             else if (packet[0] == PUNCH_ACK && !peer.Reached)
