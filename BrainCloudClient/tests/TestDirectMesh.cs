@@ -827,6 +827,41 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TheLastToLeave_StopsTheLobbyInTheSameCallAsDisconnect()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            // Sent before Close, so it reaches brainCloud ahead of a LeaveLobby the game makes next
+            nodes[0].Mesh.SendDisconnect();
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
+            nodes[0].Mesh.Close(m_now);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1), "once");
+        }
+
+        [Test]
+        public void PlayersLeavingTogether_HearingEachOtherBeforeClosing_StillStopTheLobbyOnce()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            // Both leave; each hears the other in the Update that runs before its Close, as through RelayComms
+            foreach (Node node in nodes) node.Mesh.SendDisconnect();
+            Thread.Sleep(20);
+            m_now += 10;
+            foreach (Node node in nodes) node.Mesh.Update(m_now);
+            Assert.That(nodes.All(n => n.Listener.Ops("DISCONNECT").Count() == 1), Is.True, "each heard the other leave");
+            foreach (Node node in nodes) node.Mesh.Close(m_now);
+            PumpClosing(nodes);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "brainCloud gets it once");
+        }
+
+        [Test]
         public void APlayerLeavingAlone_DoesNotStopTheLobby_WhileItListensForOthersLeaving()
         {
             List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
@@ -894,14 +929,16 @@ namespace BrainCloudTests
             Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
         }
 
-        [Test]
-        public void KeepAlivesStop_OnceBrainCloudSaysTheMatchIsOver()
+        // The match is over (another member stopped it), the lobby is gone, or this player has left it
+        [TestCase(ReasonCodes.INVALID_REQUEST)]
+        [TestCase(ReasonCodes.LOBBY_NOT_FOUND)]
+        [TestCase(ReasonCodes.LOBBY_MEMBER_NOT_FOUND)]
+        public void KeepAlivesStop_OnceBrainCloudSaysTheMatchIsOver(int in_reasonCode)
         {
             List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
             StartAll(nodes);
             ServerCall first = nodes[0].Calls(ServiceOperation.RoomKeepAlive).Single();
-            // Another member stopped it: brainCloud refuses the keep-alive
-            first.GetCallback().OnErrorCallback(400, ReasonCodes.INVALID_REQUEST, "The lobby is not running direct connected.");
+            first.GetCallback().OnErrorCallback(400, in_reasonCode, "refused");
             Pump(10, 500);
             Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(1), "no more, each one billed");
         }

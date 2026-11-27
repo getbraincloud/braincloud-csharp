@@ -380,6 +380,9 @@ namespace BrainCloud.Internal
             {
                 if (!peer.Lost) sendDisconnect(peer);
             }
+            // Already the last one playing: told now, in the frame the game leaves, so the call goes
+            // to brainCloud ahead of a LeaveLobby the game makes next, after which it would be refused
+            if (m_started && everyPeerLost()) stopIfLastToLeave();
         }
 
         private void sendDisconnect(MeshPeer in_peer)
@@ -463,9 +466,14 @@ namespace BrainCloud.Internal
             m_lastKeepAliveMs = in_nowMs;
             postLobby(ServiceOperation.RoomKeepAlive, "keeping the lobby alive failed: ", reasonCode =>
             {
-                // The lobby is no longer running this match (another member stopped it): every
-                // further keep-alive would be refused, and each is a call the app pays for
-                if (reasonCode == ReasonCodes.INVALID_REQUEST) m_keepAliveRefused = true;
+                // The lobby is no longer running this match (another member stopped it), is gone, or
+                // this player has left it: every further keep-alive would be refused, and each is a
+                // call the app pays for
+                if (reasonCode == ReasonCodes.INVALID_REQUEST || reasonCode == ReasonCodes.LOBBY_NOT_FOUND ||
+                    reasonCode == ReasonCodes.LOBBY_MEMBER_NOT_FOUND)
+                {
+                    m_keepAliveRefused = true;
+                }
             });
         }
 

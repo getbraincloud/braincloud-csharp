@@ -180,6 +180,9 @@ namespace BrainCloud.Internal
         /// For the tests: where Connect(DIRECT) takes its connection from, in place of the DirectConnector.
         internal Func<string, DirectConnection> TakeDirectConnectionForTests { get; set; }
 
+        /// For the tests: where a direct connection's lobby calls go, in place of the client.
+        internal Action<ServerCall> LobbyCallsForTests { get; set; }
+
         /// For the tests: Connect without logging in.
         internal bool AssumeAuthenticatedForTests { get; set; }
 
@@ -710,7 +713,7 @@ namespace BrainCloud.Internal
                             return;
                         }
                         initUDPConnection();
-                        m_mesh = new DirectMeshTransport(connection, myCxId, this, m_clientRef);
+                        m_mesh = new DirectMeshTransport(connection, myCxId, this, m_clientRef, LobbyCallsForTests);
                         m_mesh.PingIntervalMs = m_pingInterval;
                         m_mesh.Start(m_clientRef.NowMs);
                         return;

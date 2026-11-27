@@ -226,17 +226,22 @@ namespace BrainCloudTests
             public readonly RelayComms A, B;
             public readonly List<string> SystemA = new List<string>(), SystemB = new List<string>();
             public readonly List<string> DataB = new List<string>();
+            public readonly List<ServerCall> CallsA = new List<ServerCall>(), CallsB = new List<ServerCall>();
+            private readonly int m_keepAliveRateSecs;
             public int Takes;
             private readonly System.Net.Sockets.Socket m_a, m_b;
 
-            public MeshPair()
+            public MeshPair(int in_keepAliveRateSecs = 0)
             {
+                m_keepAliveRateSecs = in_keepAliveRateSecs;
                 m_a = Bound();
                 m_b = Bound();
                 byte[] key = new byte[16];
                 for (int i = 0; i < key.Length; ++i) key[i] = (byte)(i + 1);
                 A = Comms("1:a:cx", 0, 1, "1:b:cx", m_a, m_b, key);
                 B = Comms("1:b:cx", 1, 0, "1:a:cx", m_b, m_a, key);
+                A.LobbyCallsForTests = call => CallsA.Add(call);
+                B.LobbyCallsForTests = call => CallsB.Add(call);
                 A.RegisterSystemCallback(json => SystemA.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
                 B.RegisterSystemCallback(json => SystemB.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
                 B.RegisterRelayCallback((netId, data) => DataB.Add(netId + ":" + System.Text.Encoding.UTF8.GetString(data)));
@@ -255,7 +260,7 @@ namespace BrainCloudTests
                 var peer = new DirectPeer(in_peerCx, in_peerNetId).Clear();
                 peer.Address = (System.Net.IPEndPoint)in_peerSocket.LocalEndPoint;
                 var session = new DirectSession(DirectPacket.SupportedCiphers[0], in_netId, new Dictionary<int, byte[]> { { in_peerNetId, in_key } });
-                var connection = new DirectConnection("1:lobby:1", in_socket, session, "1:a:cx", new List<DirectPeer> { peer }, 0);
+                var connection = new DirectConnection("1:lobby:1", in_socket, session, "1:a:cx", new List<DirectPeer> { peer }, m_keepAliveRateSecs);
                 bool taken = false;
                 comms.TakeDirectConnectionForTests = lobbyId =>
                 {
@@ -317,6 +322,28 @@ namespace BrainCloudTests
                 Assert.That(pair.SystemB, Is.EqualTo(new[] { "CONNECT", "CONNECT", "END_MATCH" }), "no DISCONNECT or MIGRATE_OWNER");
                 Assert.That(pair.A.IsConnected() || pair.B.IsConnected(), Is.False);
                 Assert.That(pair.A.ConnectionType, Is.EqualTo(RelayConnectionType.INVALID));
+            }
+        }
+
+        [Test]
+        public void Direct_ThroughRelayComms_PlayersLeavingTogether_StopTheLobbyOnce()
+        {
+            using (var pair = new MeshPair(30))
+            {
+                pair.Connect(pair.A);
+                pair.Connect(pair.B);
+                pair.Pump(20);
+                Assert.That(pair.A.IsConnected() && pair.B.IsConnected(), Is.True);
+
+                // Both games leave in the same frame
+                pair.A.Disconnect();
+                pair.B.Disconnect();
+                pair.Pump(80);
+                Assert.That(pair.A.IsConnected() || pair.B.IsConnected(), Is.False);
+                int stopsA = pair.CallsA.Count(c => c.GetOperation() == ServiceOperation.RoomStopped.Value);
+                int stopsB = pair.CallsB.Count(c => c.GetOperation() == ServiceOperation.RoomStopped.Value);
+                Assert.That(stopsA + stopsB, Is.EqualTo(1), "brainCloud gets it once");
+                Assert.That(stopsA, Is.EqualTo(1), "from the lowest net id");
             }
         }
 
