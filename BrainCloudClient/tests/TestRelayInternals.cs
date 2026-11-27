@@ -113,8 +113,9 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void UnorderedReliable_AResendIsDeliveredOnce()
+        public void UnorderedReliable_AResendIsDeliveredOnce_BetweenPlayersDirectly()
         {
+            _channel.PeerToPeer = true;
             // A resend whose first ACK was lost: the same header twice. Another sender, channel or
             // packet id is another packet.
             Receive(Packet(true, false, 0, 5, 1));
@@ -128,10 +129,79 @@ namespace BrainCloudTests
         [Test]
         public void UnorderedReliable_IdsAreForgottenLongBeforeAStreamWrapsRound()
         {
+            _channel.PeerToPeer = true;
             // A stream's ids wrap after 4096 packets; by then its earlier ones are forgotten, so the
             // wrapped ids are delivered
             for (int i = 0; i <= RelayReliableChannel.MAX_PACKET_ID + 1; ++i) Receive(Packet(true, false, 0, i & RelayReliableChannel.MAX_PACKET_ID, 1));
             Assert.That(_delivered.Count, Is.EqualTo(RelayReliableChannel.MAX_PACKET_ID + 2));
+        }
+
+        [Test]
+        public void UnorderedReliable_ThroughARelayServer_IsLeftAsItWas()
+        {
+            // The relay drops repeats itself; a member rejoining with a recycled net id restarts its ids
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 1));
+            Assert.That(_delivered, Is.EqualTo(new[] { 5, 5 }));
+        }
+
+        [Test]
+        public void BetweenPlayersDirectly_APeerCannotMakeThisPlayerHoldWithoutLimit()
+        {
+            // Ordered reliable packets that never become deliverable, each in a stream of its own
+            // (another player mask), or many held in a few streams
+            _channel.PeerToPeer = true;
+            RelayReliableChannel.ReceiveOutcome outcome = RelayReliableChannel.ReceiveOutcome.Accepted;
+            int sent = 0;
+            for (int mask = 0; mask < 5000 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++mask, ++sent)
+            {
+                byte[] packet = Packet(true, true, 0, 1, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                outcome = _channel.Receive(packet, (netId, data) => _delivered.Add(IdOf(data)));
+            }
+            Assert.That(outcome, Is.EqualTo(RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder));
+            Assert.That(sent, Is.LessThan(1000));
+
+            // A few streams, each below its own limit, but holding too many between them
+            var held = new RelayReliableChannel(null, null) { PeerToPeer = true };
+            outcome = RelayReliableChannel.ReceiveOutcome.Accepted;
+            sent = 0;
+            for (int stream = 0; stream < 3 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++stream)
+            {
+                for (int id = 1; id <= 500 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++id, ++sent)
+                {
+                    byte[] packet = Packet(true, true, stream, id, 1);
+                    outcome = held.Receive(packet, (netId, data) => { });
+                }
+            }
+            Assert.That(outcome, Is.EqualTo(RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder));
+            Assert.That(sent, Is.LessThan(1500));
+
+            // Through a relay server the same packets are held as before
+            var relayed = new RelayReliableChannel(null, null);
+            for (int mask = 0; mask < 1000; ++mask)
+            {
+                byte[] packet = Packet(true, true, 0, 1, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                Assert.That(relayed.Receive(packet, (netId, data) => { }), Is.EqualTo(RelayReliableChannel.ReceiveOutcome.Accepted));
+            }
+        }
+
+        [Test]
+        public void MeshEvents_ReachTheGameInTheOrderTheyArrived_ConnectBeforeData()
+        {
+            var comms = new RelayComms(new BrainCloudClient());
+            var seen = new List<string>();
+            comms.RegisterSystemCallback(json => seen.Add("system"));
+            comms.RegisterRelayCallback((netId, data) => seen.Add("relay " + netId));
+            IDirectMeshListener mesh = comms;
+            mesh.OnMeshSystem("{\"op\":\"CONNECT\",\"cxId\":\"1:b:cx\",\"ownerCxId\":\"1:a:cx\",\"netId\":1}");
+            mesh.OnMeshRelay(1, Packet(false, false, 0, 0, 1));
+            comms.Update();
+            comms.Update();
+            Assert.That(seen, Is.EqualTo(new[] { "system", "relay 1" }));
         }
 
         [Test]

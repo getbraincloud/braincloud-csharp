@@ -146,6 +146,13 @@ namespace BrainCloud.Internal
                 {
                     // The mesh raises END_MATCH for this player too, as the relay sends it back
                     string refusal = m_mesh.EndMatch(in_jsonPayload, m_clientRef.NowMs);
+                    if (refusal != null && refusal.StartsWith(DirectMeshTransport.END_MATCH_TOO_BIG, StringComparison.Ordinal))
+                    {
+                        // Nothing was sent: the game is told, as Send tells it of a packet too big
+                        queueErrorEvent("Relay: EndMatch not sent: " + refusal);
+                        return;
+                    }
+                    // Otherwise as with a relay server, which ignores END_MATCH from anyone but the owner
                     if (refusal != null && m_clientRef.LoggingEnabled)
                     {
                         m_clientRef.Log("Relay: EndMatch ignored: " + refusal);
@@ -469,6 +476,9 @@ namespace BrainCloud.Internal
                         case EventType.MeshSystem:
                             onSystemMessage(evt.message);
                             break;
+                        case EventType.MeshRelay:
+                            queueRelayEvent(evt.netId, evt.data);
+                            break;
                         case EventType.System:
                             if (m_registeredSystemCallback != null)
                             {
@@ -737,7 +747,16 @@ namespace BrainCloud.Internal
 
         void IDirectMeshListener.OnMeshRelay(short in_netId, byte[] in_packet)
         {
-            queueRelayEvent(in_netId, in_packet);
+            // Through the event loop like the system messages, so the game gets both in the order
+            // they arrived: a peer's CONNECT before its data, as from a relay server
+            var evt = new Event();
+            evt.type = EventType.MeshRelay;
+            evt.netId = in_netId;
+            evt.data = in_packet;
+            lock (m_events)
+            {
+                m_events.Add(evt);
+            }
         }
 
         void IDirectMeshListener.OnMeshError(string in_message)
@@ -1194,7 +1213,8 @@ namespace BrainCloud.Internal
             ConnectFailure,
             Relay,
             System,
-            MeshSystem
+            MeshSystem,
+            MeshRelay
         }
 
         private class Event

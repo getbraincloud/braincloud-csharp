@@ -295,7 +295,93 @@ namespace BrainCloudTests
             Assert.That(nodes[0].Listener.Ops("DISCONNECT"), Is.Empty);
             Pump(3, 1000);
             Assert.That(nodes[0].Listener.Ops("DISCONNECT").Single()["cxId"], Is.EqualTo(CX[1]));
-            Assert.That(nodes[0].Listener.Errors, Is.Empty, "the connection goes on, as with the relay when a member leaves");
+            // Its only peer went quiet: this player is the one cut off, as a relay socket timing out
+            Assert.That(nodes[0].Listener.Errors.Single(), Does.Contain("no other player"));
+        }
+
+        [Test]
+        public void OnePeerOfTwoGoingQuiet_IsADisconnect_NotAFailure()
+        {
+            List<Node> nodes = Lobby(3);
+            StartAll(nodes);
+            Pump();
+
+            nodes[2].Paused = true;
+            Pump(12, 1000);
+            Assert.That(nodes[0].Listener.Ops("DISCONNECT").Single()["cxId"], Is.EqualTo(CX[2]));
+            Assert.That(nodes[0].Listener.Errors, Is.Empty, "B is still here");
+        }
+
+        [Test]
+        public void APlayerCutOff_StopsKeepingTheLobbyAlive_AndDoesNotStopIt()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            StartAll(nodes);
+            Pump();
+            nodes[1].Paused = true;
+            Pump(12, 1000);
+            Assert.That(nodes[0].Listener.Errors.Count, Is.EqualTo(1));
+            int keepAlives = nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count();
+            Pump(6, 1000);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(keepAlives), "no more keep-alives");
+            nodes[0].Mesh.Close(m_now);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "the others may still be playing");
+        }
+
+        [Test]
+        public void TheOwner_LastToLeave_TellsBrainCloudTheMatchStopped()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            Assert.That(nodes[0].Listener.Errors, Is.Empty, "B left: A stays, as with a relay server");
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "not while A is still playing");
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "B is not the owner");
+        }
+
+        [Test]
+        public void AMemberCannotMakeItselfOwner()
+        {
+            List<Node> nodes = Lobby(3);
+            StartAll(nodes);
+            Pump();
+
+            // C announces itself owner while A, the owner, is still here, then ends the match
+            byte[] owner = { DirectMeshTransport.OWNER, 0, 50, 2 };
+            byte[] endMatch = { DirectMeshTransport.END_MATCH, 0, 51, (byte)'{', (byte)'}' };
+            foreach (Node target in new[] { nodes[0], nodes[1] })
+            {
+                foreach (byte[] packet in new[] { owner, endMatch })
+                {
+                    nodes[2].Socket.SendTo(nodes[2].Session.SenderFor(target.NetId).Seal(packet, 0, packet.Length), target.Socket.LocalEndPoint);
+                }
+            }
+            Pump();
+            foreach (Node node in new[] { nodes[0], nodes[1] })
+            {
+                Assert.That(node.Listener.Ops("MIGRATE_OWNER"), Is.Empty, "net id " + node.NetId);
+                Assert.That(node.Listener.Ops("END_MATCH"), Is.Empty, "net id " + node.NetId);
+                Assert.That(node.Mesh.OwnerCxId, Is.EqualTo(CX[0]));
+            }
+        }
+
+        [Test]
+        public void SystemMessages_CarryTheProfileIds_AsTheRelayAddsThem()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            var connects = nodes[0].Listener.Ops("CONNECT").ToList();
+            Assert.That(connects[0]["profileId"], Is.EqualTo("a"));
+            Assert.That(connects[1]["profileId"], Is.EqualTo("b"));
+            Assert.That(connects[1]["ownerId"], Is.EqualTo("a"));
         }
 
         [Test]
@@ -326,6 +412,7 @@ namespace BrainCloudTests
             nodes[1].Mesh.Close(m_now);
             Pump();
             Assert.That(nodes[0].Listener.Ops("DISCONNECT").Single()["cxId"], Is.EqualTo(CX[1]));
+            Assert.That(nodes[0].Listener.Errors, Is.Empty, "B left: A stays connected, as with a relay server");
         }
 
         [Test]

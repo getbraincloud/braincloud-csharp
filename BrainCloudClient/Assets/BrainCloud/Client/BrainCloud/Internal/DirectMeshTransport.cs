@@ -76,6 +76,8 @@ namespace BrainCloud.Internal
         public const int CONTROL_GIVE_UP_MS = 5000;
         /// After the match ends, repeats of END_MATCH are still acknowledged for this long.
         public const int END_MATCH_LINGER_MS = 1000;
+        /// How EndMatch's refusal of a payload too big for one datagram begins.
+        public const string END_MATCH_TOO_BIG = "the END_MATCH payload is too big: ";
         /// The most packet bytes one datagram can carry.
         public const int MAX_PACKET_LENGTH = DirectPacket.MAX_DATAGRAM_LENGTH - DirectPacket.OVERHEAD;
 
@@ -94,6 +96,8 @@ namespace BrainCloud.Internal
             public IPEndPoint Address;
             public bool Connected;
             public bool Lost;
+            // Lost because it went quiet, not because it said it was leaving
+            public bool TimedOut;
             public long LastHeardMs;
             public int RoundTripMs = -1;
             public RelayReliableChannel Channel;
@@ -134,6 +138,8 @@ namespace BrainCloud.Internal
         private bool m_started;
         private bool m_closing;
         private bool m_closed;
+        private bool m_cutOff;
+        private bool m_stoppedSent;
 
         /// <param name="in_connection">What the attempt handed over (DirectConnector.TakeConnection).</param>
         /// <param name="in_myCxId">This player's RTT connection id.</param>
@@ -163,7 +169,7 @@ namespace BrainCloud.Internal
                     CxId = source.CxId,
                     NetId = source.NetId,
                     Address = source.Address,
-                    Channel = new RelayReliableChannel(() => loggingEnabled, log)
+                    Channel = new RelayReliableChannel(() => loggingEnabled, log) { PeerToPeer = true }
                 };
                 peer.Resend = packet => sendTo(peer, packet);
                 m_peers.Add(peer);
@@ -225,6 +231,8 @@ namespace BrainCloud.Internal
             connect["ownerCxId"] = m_ownerCxId;
             connect["netId"] = m_myNetId;
             if (m_version != null) connect["version"] = m_version;
+            addProfileId(connect, "profileId", m_myCxId);
+            addProfileId(connect, "ownerId", m_ownerCxId);
             m_listener.OnMeshSystem(JsonWriter.Serialize(connect));
 
             ping(in_nowMs);
@@ -298,10 +306,14 @@ namespace BrainCloud.Internal
             byte[] json = Encoding.UTF8.GetBytes(JsonWriter.Serialize(payload));
             if (3 + json.Length > MAX_PACKET_LENGTH)
             {
-                return "the END_MATCH payload is too big: " + json.Length + " bytes, at most " + (MAX_PACKET_LENGTH - 3);
+                return END_MATCH_TOO_BIG + json.Length + " bytes, at most " + (MAX_PACKET_LENGTH - 3);
             }
             sendControl(END_MATCH, json, in_nowMs);
-            if (m_keepAliveMs > 0) postLobby(ServiceOperation.RoomStopped, "telling brainCloud the match stopped failed: ");
+            if (m_keepAliveMs > 0)
+            {
+                m_stoppedSent = true;
+                postLobby(ServiceOperation.RoomStopped, "telling brainCloud the match stopped failed: ");
+            }
 
             var endMatch = new Dictionary<string, object>();
             endMatch["op"] = "END_MATCH";
@@ -424,16 +436,31 @@ namespace BrainCloud.Internal
                 if (peer.Lost) continue;
                 if (peer.Connected && in_nowMs - peer.LastHeardMs > PEER_TIMEOUT_MS)
                 {
+                    peer.TimedOut = true;
                     lose(peer, "nothing heard for " + (PEER_TIMEOUT_MS / 1000) + " seconds", in_nowMs);
                 }
                 else if (!peer.Connected && in_nowMs - m_startMs > CONNECT_TIMEOUT_MS)
                 {
+                    peer.TimedOut = true;
                     lose(peer, "it never connected", in_nowMs);
                 }
                 else if (peer.Connected && !peer.Channel.ProcessResends(in_nowMs, peer.Resend))
                 {
+                    peer.TimedOut = true;
                     lose(peer, "a reliable packet went unacknowledged for " + (RelayReliableChannel.RELIABLE_GIVE_UP_MS / 1000) + " seconds", in_nowMs);
                 }
+            }
+
+            // Every peer gone quiet, not one of them having said it was leaving: this player has most
+            // likely lost its own network, and a player cannot rejoin a running match, so the
+            // connection has failed, as a relay connection does when its socket times out. It must
+            // not go on keeping the lobby alive, or stop it, as if it were the last one playing.
+            if (!m_cutOff && everyPeerLost() && anyPeerTimedOut())
+            {
+                m_cutOff = true;
+                log("cut off from every peer");
+                m_listener.OnMeshError("Direct connection lost: no other player heard from");
+                return;
             }
 
             if (in_nowMs - m_lastPingMs >= PingIntervalMs)
@@ -442,7 +469,25 @@ namespace BrainCloud.Internal
                 ping(in_nowMs);
             }
             processControls(in_nowMs);
-            if (m_keepAliveMs > 0 && isOwner && in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs) keepAlive(in_nowMs);
+            if (m_keepAliveMs > 0 && isOwner && !m_cutOff && in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs) keepAlive(in_nowMs);
+        }
+
+        private bool everyPeerLost()
+        {
+            foreach (MeshPeer peer in m_peers)
+            {
+                if (!peer.Lost) return false;
+            }
+            return true;
+        }
+
+        private bool anyPeerTimedOut()
+        {
+            foreach (MeshPeer peer in m_peers)
+            {
+                if (peer.TimedOut) return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -452,6 +497,14 @@ namespace BrainCloud.Internal
         public bool Close(long in_nowMs)
         {
             if (m_closed) return false;
+            // The last one playing, leaving without ending the match: the relay server tells brainCloud
+            // the room stopped when its last player goes, so the lobby returns to setup. Only when the
+            // others left, not when they went quiet: then this player is the one cut off.
+            if (!m_closing && m_started && m_keepAliveMs > 0 && isOwner && !m_stoppedSent && !m_cutOff && everyPeerLost() && !anyPeerTimedOut())
+            {
+                m_stoppedSent = true;
+                postLobby(ServiceOperation.RoomStopped, "telling brainCloud the match stopped failed: ");
+            }
             m_closing = true;
             if (m_controls.Count == 0 && in_nowMs - m_lingerUntilMs >= 0)
             {
@@ -568,15 +621,8 @@ namespace BrainCloud.Internal
                 case DirectConnector.PUNCH_ACK:
                     return;
                 case DISCONNECT:
-                    if (!peer.Connected)
-                    {
-                        peer.Lost = true;
-                        log("net id " + peer.NetId + " left before connecting");
-                    }
-                    else
-                    {
-                        lose(peer, "it left", in_nowMs);
-                    }
+                    // No DISCONNECT event for a peer that never connected; lose() knows
+                    lose(peer, peer.Connected ? "it left" : "it left before connecting", in_nowMs);
                     return;
                 case RELAY:
                 case ACK:
@@ -639,6 +685,8 @@ namespace BrainCloud.Internal
             connect["cxId"] = in_peer.CxId;
             connect["ownerCxId"] = m_ownerCxId;
             connect["netId"] = in_peer.NetId;
+            addProfileId(connect, "profileId", in_peer.CxId);
+            addProfileId(connect, "ownerId", m_ownerCxId);
             m_listener.OnMeshSystem(JsonWriter.Serialize(connect));
         }
 
@@ -702,8 +750,16 @@ namespace BrainCloud.Internal
         private void onOwner(MeshPeer in_peer, byte[] in_packet)
         {
             if (in_packet.Length != 4 || !acknowledge(in_peer, in_packet)) return;
-            // A peer can only name itself
+            // A peer can only name itself, and only as the member this player's own election would pick
+            // once the owner is gone: otherwise any member could make itself owner and end the match.
+            // A player that has not lost the owner yet runs the same election when it does.
             if (in_packet[3] != in_peer.NetId) return;
+            MeshPeer owner = peerFor(m_ownerCxId);
+            if (owner == null || !owner.Lost || !string.Equals(electedCxId(), in_peer.CxId, StringComparison.Ordinal))
+            {
+                log("ignored OWNER from net id " + in_peer.NetId);
+                return;
+            }
             setOwner(in_peer.CxId);
         }
 
@@ -742,6 +798,7 @@ namespace BrainCloud.Internal
                 var disconnect = new Dictionary<string, object>();
                 disconnect["op"] = "DISCONNECT";
                 disconnect["cxId"] = in_peer.CxId;
+                addProfileId(disconnect, "profileId", in_peer.CxId);
                 m_listener.OnMeshSystem(JsonWriter.Serialize(disconnect));
             }
             if (string.Equals(in_peer.CxId, m_ownerCxId, StringComparison.Ordinal)) electOwner(in_nowMs);
@@ -754,6 +811,19 @@ namespace BrainCloud.Internal
         /// </summary>
         private void electOwner(long in_nowMs)
         {
+            setOwner(electedCxId());
+            if (isOwner)
+            {
+                sendControl(OWNER, new byte[] { (byte)m_myNetId }, in_nowMs);
+                // On the regular schedule, from the next Update: by then this player knows whether it
+                // is the one cut off
+                if (m_keepAliveMs > 0) m_lastKeepAliveMs = in_nowMs - m_keepAliveMs;
+            }
+        }
+
+        // The member still here with the lowest net id, this player included
+        private string electedCxId()
+        {
             int lowest = m_myNetId;
             string owner = m_myCxId;
             foreach (MeshPeer peer in m_peers)
@@ -764,12 +834,29 @@ namespace BrainCloud.Internal
                     owner = peer.CxId;
                 }
             }
-            setOwner(owner);
-            if (isOwner)
+            return owner;
+        }
+
+        private MeshPeer peerFor(string in_cxId)
+        {
+            foreach (MeshPeer peer in m_peers)
             {
-                sendControl(OWNER, new byte[] { (byte)m_myNetId }, in_nowMs);
-                if (m_keepAliveMs > 0) keepAlive(in_nowMs);
+                if (string.Equals(peer.CxId, in_cxId, StringComparison.Ordinal)) return peer;
             }
+            return null;
+        }
+
+        // The profile id inside an RTT connection id (appId:profileId:connection), as the relay adds it
+        private static string profileIdOf(string in_cxId)
+        {
+            string[] parts = in_cxId != null ? in_cxId.Split(':') : new string[0];
+            return parts.Length == 3 ? parts[1] : null;
+        }
+
+        private static void addProfileId(Dictionary<string, object> io_message, string in_key, string in_cxId)
+        {
+            string profileId = profileIdOf(in_cxId);
+            if (profileId != null) io_message[in_key] = profileId;
         }
 
         private void setOwner(string in_cxId)
@@ -780,6 +867,7 @@ namespace BrainCloud.Internal
             var migrate = new Dictionary<string, object>();
             migrate["op"] = "MIGRATE_OWNER";
             migrate["cxId"] = in_cxId;
+            addProfileId(migrate, "profileId", in_cxId);
             m_listener.OnMeshSystem(JsonWriter.Serialize(migrate));
         }
 
