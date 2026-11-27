@@ -440,6 +440,7 @@ namespace BrainCloud
 
         // rtt
         public static readonly ServiceOperation RequestClientConnection = new ServiceOperation("REQUEST_CLIENT_CONNECTION");
+        public static readonly ServiceOperation SetNatInfo = new ServiceOperation("SET_NAT_INFO");
 
         // chat
         public static readonly ServiceOperation ChannelConnect = new ServiceOperation("CHANNEL_CONNECT");
@@ -487,6 +488,10 @@ namespace BrainCloud
         public static readonly ServiceOperation GetRegionsForLobbies = new ServiceOperation("GET_REGIONS_FOR_LOBBIES");
         public static readonly ServiceOperation GetLobbyInstances = new ServiceOperation("GET_LOBBY_INSTANCES");
         public static readonly ServiceOperation GetLobbyInstancesWithPingData = new ServiceOperation("GET_LOBBY_INSTANCES_WITH_PING_DATA");
+        public static readonly ServiceOperation SendDirectConnectCandidates = new ServiceOperation("SEND_DIRECT_CONNECT_CANDIDATES");
+        public static readonly ServiceOperation DirectConnectResult = new ServiceOperation("DIRECT_CONNECT_RESULT");
+        public static readonly ServiceOperation RoomKeepAlive = new ServiceOperation("ROOM_KEEP_ALIVE");
+        public static readonly ServiceOperation RoomStopped = new ServiceOperation("ROOM_STOPPED");
 
         
         //ItemCatalog

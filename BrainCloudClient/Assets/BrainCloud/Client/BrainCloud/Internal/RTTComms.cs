@@ -20,6 +20,8 @@ namespace BrainCloud.Internal
         public RTTComms(BrainCloudClient in_client)
         {
             m_clientRef = in_client;
+            m_natProbe = new NatProbe(in_client);
+            m_directConnector = new DirectConnector(in_client, m_natProbe);
         }
 
         /// <summary>
@@ -73,7 +75,10 @@ namespace BrainCloud.Internal
             {
                 return;
             }
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "DisableRTT Called"));
+            // The server drops the report with the connection; nothing to withdraw before Update disconnects
+            m_natProbe.OnRttDisconnected();
+            m_directConnector.OnRttDisconnected();
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "disconnect", "DisableRTT Called"));
         }
 
         /// <summary>
@@ -97,7 +102,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void RegisterRTTCallback(ServiceName in_serviceName, RTTCallback in_callback)
         {
-            m_registeredCallbacks[in_serviceName.Value.ToLower()] = in_callback;
+            m_registeredCallbacks[in_serviceName.Value.ToLowerInvariant()] = in_callback;
         }
 
         /// <summary>
@@ -105,7 +110,7 @@ namespace BrainCloud.Internal
         /// </summary>
         public void DeregisterRTTCallback(ServiceName in_serviceName)
         {
-            string toCheck = in_serviceName.Value.ToLower();
+            string toCheck = in_serviceName.Value.ToLowerInvariant();
             if (m_registeredCallbacks.ContainsKey(toCheck))
             {
                 m_registeredCallbacks.Remove(toCheck);
@@ -128,6 +133,12 @@ namespace BrainCloud.Internal
             m_heartBeatTime = TimeSpan.FromMilliseconds(in_value * 1000);
         }
 
+        /// <summary>The direct connect network test, run once per RTT connection.</summary>
+        public NatProbe DirectConnectProbe { get { return m_natProbe; } }
+
+        /// <summary>This player's part in a lobby's direct connect attempt.</summary>
+        public DirectConnector DirectConnector { get { return m_directConnector; } }
+
         public string RTTConnectionID { get; private set; }
         public string RTTEventServer { get; private set; }
 
@@ -148,11 +159,23 @@ namespace BrainCloud.Internal
                     if (m_webSocketStatus == WebsocketStatus.CLOSED || m_tcpDisconnected)
                     {
                         m_rttConnectionStatus = RTTConnectionStatus.DISCONNECTING;
+                        m_natProbe.OnRttDisconnected();
+                        m_directConnector.OnRttDisconnected();
                         if (m_connectionFailureCallback != null)
-                            m_connectionFailureCallback(400, -1, toProcessResponse.JsonMessage, m_connectedObj);
+                        {
+                            m_connectionFailureCallback(400, -1, ForFailureCallback(toProcessResponse.Operation, toProcessResponse.JsonMessage), m_connectedObj);
+                        }
                         disconnect();
                         break;
                     }
+
+                    // Direct connect events go to the library first; peers' addresses never reach the game
+                    string json = toProcessResponse.JsonMessage;
+                    if (m_directConnector.FilterEvent(toProcessResponse.Service, toProcessResponse.Operation, ref json))
+                    {
+                        continue;
+                    }
+                    toProcessResponse.JsonMessage = json;
 
                     // does this go to one of our registered service listeners? 
                     if (m_registeredCallbacks.ContainsKey(toProcessResponse.Service))
@@ -165,6 +188,7 @@ namespace BrainCloud.Internal
                     {
                         m_lastHeartbeatMs = m_clientRef.NowMs;
                         m_rttConnectionStatus = RTTConnectionStatus.CONNECTED;
+                        m_natProbe.OnRttConnected();
                         m_connectedSuccessCallback(toProcessResponse.JsonMessage, m_connectedObj);
                     }
 
@@ -227,6 +251,9 @@ namespace BrainCloud.Internal
                     send(buildHeartbeatRequest(), true);
                 }
             }
+
+            m_natProbe.Update();
+            m_directConnector.Update();
         }
 
         #region private
@@ -268,7 +295,7 @@ namespace BrainCloud.Internal
                     // Signal socket open — Update() will transition DISCONNECTED→CONNECTING
                     // and send the CONNECT handshake (same two-step as WebSocket OnOpen).
                     addRTTCommandResponse(new RTTCommandResponse(
-                        ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
+                        ServiceName.RTTRegistration.Value.ToLowerInvariant(), "connect", ""));
 
                     // Receive loop: 4-byte big-endian length prefix + UTF-8 payload.
                     byte[] lenBuf = new byte[4];
@@ -299,7 +326,7 @@ namespace BrainCloud.Internal
                 {
                     m_tcpDisconnected = true;
                     addRTTCommandResponse(new RTTCommandResponse(
-                        ServiceName.RTTRegistration.Value.ToLower(), "disconnect", "RTT TCP connection closed"));
+                        ServiceName.RTTRegistration.Value.ToLowerInvariant(), "disconnect", "RTT TCP connection closed"));
                 }
             });
             m_tcpReceiveThread.IsBackground = true;
@@ -325,6 +352,10 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
+            // Before the failure callback, which may turn direct connect off: the report is already gone
+            m_natProbe.OnRttDisconnected();
+            m_directConnector.OnRttDisconnected();
+
             if (m_webSocket != null) m_webSocket.Close();
 
             // TCP cleanup — set the flag first so the receive thread's catch block knows
@@ -433,7 +464,7 @@ namespace BrainCloud.Internal
             {
                 if (m_clientRef.LoggingEnabled)
                     m_clientRef.Log("send exception: " + socketException);
-                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(socketException.ToString())));
+                addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "error", buildRTTRequestError(socketException.ToString())));
             }
 
             return bMessageSent;
@@ -479,7 +510,7 @@ namespace BrainCloud.Internal
                 m_clientRef.Log("RTT: Connection closed: " + reason);
             }
             m_webSocketStatus = WebsocketStatus.CLOSED;
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "disconnect", reason));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "disconnect", reason));
         }
 
         private void Websocket_OnOpen(BrainCloudWebSocket accepted)
@@ -489,7 +520,7 @@ namespace BrainCloud.Internal
                 m_clientRef.Log("RTT: Connection established.");
             }
             m_webSocketStatus = WebsocketStatus.OPEN;
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "connect", ""));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "connect", ""));
         }
 
         private void WebSocket_OnMessage(BrainCloudWebSocket sender, byte[] data)
@@ -507,17 +538,43 @@ namespace BrainCloud.Internal
                 m_clientRef.Log("RTT Error: " + message);
             }
             m_webSocketStatus = WebsocketStatus.ERROR;
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", buildRTTRequestError(message)));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "error", buildRTTRequestError(message)));
         }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <summary>
+        /// The next queued message, for the failure callback when the socket closed; never a direct
+        /// connect one, which can hold other players' addresses or pair keys.
+        /// </summary>
+        internal static string ForFailureCallback(string in_operation, string in_json)
+        {
+            bool directConnect = in_operation != null && in_operation.StartsWith("direct_connect", StringComparison.Ordinal);
+            return directConnect ? "RTT connection closed" : in_json;
+        }
+
+        /// For the tests: a message as if it had arrived from the event server.
+        internal void ReceiveForTests(string in_message)
+        {
+            onRecv(in_message);
+        }
+
+        /// <summary>
+        /// An RTT name lowercased invariantly: in a Turkish or Azeri culture "I" becomes a dotless i,
+        /// and names such as "DISCONNECT" stop matching.
+        /// </summary>
+        internal static string EventName(string in_name)
+        {
+            return in_name.ToLowerInvariant();
+        }
+
         private void onRecv(string in_message)
         {
             if (m_clientRef.LoggingEnabled)
             {
-                m_clientRef.Log("RTT RECV: " + in_message);
+                // Direct connect pair keys and other players' addresses have no place in a log
+                m_clientRef.Log("RTT RECV: " + DirectConnector.RedactForLog(in_message));
             }
 
             Dictionary<string, object> response = (Dictionary<string, object>)JsonReader.Deserialize(in_message);
@@ -550,7 +607,8 @@ namespace BrainCloud.Internal
                 m_disconnectJson["severity"] = "ERROR";
             }
 
-            if (data != null)
+            // Only CONNECT carries this player's cxId; others, such as DIRECT_CONNECT_CANDIDATES, carry a peer's
+            if (data != null && operation == "CONNECT")
             {
                 if (data.ContainsKey("cxId")) RTTConnectionID = (string)data["cxId"];
                 if (data.ContainsKey("evs")) RTTEventServer = (string)data["evs"];
@@ -558,7 +616,7 @@ namespace BrainCloud.Internal
 
             if (operation != "HEARTBEAT")
             {
-                addRTTCommandResponse(new RTTCommandResponse(service.ToLower(), operation.ToLower(), in_message));
+                addRTTCommandResponse(new RTTCommandResponse(EventName(service), EventName(operation), in_message));
             }
         }
 
@@ -571,6 +629,8 @@ namespace BrainCloud.Internal
             Dictionary<string, object> jsonData = (Dictionary<string, object>)jsonMessage["data"];
             Array endpoints = (Array)jsonData["endpoints"];
             m_rttHeaders = (Dictionary<string, object>)jsonData["auth"];
+            // Present only when direct connect is available to this app
+            m_natProbe.SetStunSection(jsonData.ContainsKey("stun") ? jsonData["stun"] as Dictionary<string, object> : null);
 
             if (m_currentConnectionType == RTTConnectionType.WEBSOCKET)
             {
@@ -642,7 +702,7 @@ namespace BrainCloud.Internal
             {
                 m_clientRef.Log("RTT Connection Server Error: \n" + jsonError);
             }
-            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLower(), "error", jsonError));
+            addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "error", jsonError));
         }
 
         private void addRTTCommandResponse(RTTCommandResponse in_command)
@@ -684,6 +744,8 @@ namespace BrainCloud.Internal
         private TimeSpan m_heartBeatTime = TimeSpan.FromMilliseconds(10 * 1000);
 
         private BrainCloudClient m_clientRef;
+        private readonly NatProbe m_natProbe;
+        private readonly DirectConnector m_directConnector;
 
         // success callbacks
         private SuccessCallback m_connectedSuccessCallback = null;

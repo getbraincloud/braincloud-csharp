@@ -120,10 +120,27 @@ namespace BrainCloud.Internal
         public void Close()
         {
 #if DOT_NET || GODOT
-            if (ClientWebSocket == null)
+            ClientWebSocket socket = ClientWebSocket;
+            if (socket == null)
                 return;
-            ClientWebSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
             ClientWebSocket = null;
+            try
+            {
+                // CloseAsync throws unless open, so abort one still connecting or failed.
+                // .NET's Abort() also stops a connect in progress; Mono's does not.
+                if (socket.State == WebSocketState.Open || socket.State == WebSocketState.CloseReceived)
+                {
+                    socket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+                }
+                else
+                {
+                    socket.Abort();
+                }
+            }
+            catch (Exception)
+            {
+                // Closing either way; nothing to report
+            }
 #elif UNITY_WEBGL && !UNITY_EDITOR
             if (NativeWebSocket == null)
                 return;

@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -202,8 +202,26 @@
     <Compile Include="..\..\..\tests\TestRTT.cs">
       <Link>TestRTT.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestStunClient.cs">
+      <Link>TestStunClient.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestDirectCrypto.cs">
+      <Link>TestDirectCrypto.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestDirectConnector.cs">
+      <Link>TestDirectConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestDirectMesh.cs">
+      <Link>TestDirectMesh.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestRelay.cs">
       <Link>TestRelay.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestRelayInternals.cs">
+      <Link>TestRelayInternals.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\tests\TestRelayRoomReady.cs">
+      <Link>TestRelayRoomReady.cs</Link>
     </Compile>
     <Compile Include="..\..\..\tests\TestS3Handling.cs">
       <Link>TestS3Handling.cs</Link>

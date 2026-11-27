@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -36,7 +36,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug_Unity\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES, DOT_NET</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NO_UNITY_DEFINES, DOT_NET;BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -267,6 +267,21 @@
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayComms.cs">
       <Link>BrainCloud\Internal\RelayComms.cs</Link>
     </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayReliableChannel.cs">
+      <Link>BrainCloud\Internal\RelayReliableChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\IRelayTransport.cs">
+      <Link>BrainCloud\Internal\IRelayTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayTcpTransport.cs">
+      <Link>BrainCloud\Internal\RelayTcpTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayUdpTransport.cs">
+      <Link>BrainCloud\Internal\RelayUdpTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RelayWebSocketTransport.cs">
+      <Link>BrainCloud\Internal\RelayWebSocketTransport.cs</Link>
+    </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\EndOfBundleMarker.cs">
       <Link>BrainCloud\Internal\EndOfBundleMarker.cs</Link>
     </Compile>
@@ -290,6 +305,27 @@
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\RTTComms.cs">
       <Link>BrainCloud\Internal\RTTComms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\NatProbe.cs">
+      <Link>BrainCloud\Internal\NatProbe.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\ChaCha20Poly1305.cs">
+      <Link>BrainCloud\Internal\ChaCha20Poly1305.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectPacket.cs">
+      <Link>BrainCloud\Internal\DirectPacket.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectConnector.cs">
+      <Link>BrainCloud\Internal\DirectConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\DirectMeshTransport.cs">
+      <Link>BrainCloud\Internal\DirectMeshTransport.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\Sha256.cs">
+      <Link>BrainCloud\Internal\Sha256.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\StunClient.cs">
+      <Link>BrainCloud\Internal\StunClient.cs</Link>
     </Compile>
     <Compile Include="..\..\Assets\BrainCloud\Client\BrainCloud\Internal\WrapperAuthCallbackObject.cs">
       <Link>BrainCloud\Internal\WrapperAuthCallbackObject.cs</Link>

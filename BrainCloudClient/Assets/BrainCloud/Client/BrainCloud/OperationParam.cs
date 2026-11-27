@@ -532,6 +532,8 @@ namespace BrainCloud
         public static readonly OperationParam LobbyExtraJson = new OperationParam("extraJson");
         public static readonly OperationParam LobbyTeamCode = new OperationParam("teamCode");
         public static readonly OperationParam LobbyIdentifier = new OperationParam("lobbyId");
+        public static readonly OperationParam LobbyCandidates = new OperationParam("candidates");
+        public static readonly OperationParam LobbyPeers = new OperationParam("peers");
         public static readonly OperationParam LobbyToTeamName = new OperationParam("toTeamCode");
         public static readonly OperationParam LobbySignalData = new OperationParam("signalData");
         public static readonly OperationParam LobbyConnectionId = new OperationParam("cxId");
@@ -595,6 +597,9 @@ namespace BrainCloud
         //global app
         public static readonly OperationParam GlobalAppPropertyNames = new OperationParam("propertyNames");
         public static readonly OperationParam GlobalAppCategories = new OperationParam("categories");
+
+        //rtt
+        public static readonly OperationParam RTTNatInfo = new OperationParam("natInfo");
 
         //campaigns
         public static readonly OperationParam CampaignOptionsJson = new OperationParam("optionsJson");
