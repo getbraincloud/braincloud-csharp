@@ -369,7 +369,7 @@ namespace BrainCloud
 
         /// <summary>
         /// Opts this player in to direct connect: players in a small relay lobby connect peer to peer
-        /// instead of through a relay server. Off by default; no effect on WebGL.
+        /// instead of through a relay server. Off by default; always off on WebGL.
         ///
         /// Call once after initializing brainCloud. It lasts through RTT reconnects and logins (even of
         /// another player) until a wrapper Init(). While on, each RTT connect tests the network and
@@ -379,6 +379,10 @@ namespace BrainCloud
         /// </summary>
         public void EnableDirectConnect(bool in_enable)
         {
+#if UNITY_WEBGL
+            // No UDP in a browser
+            in_enable = false;
+#endif
             m_clientRef.DirectConnectProbe.Enabled = in_enable;
         }
 
