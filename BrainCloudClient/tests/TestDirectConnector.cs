@@ -537,10 +537,10 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void APunchFromAnUnknownAddress_IsPunchedBackOnce_NotContinuously()
+        public void APunchFromAnUnknownAddress_EarnsAFewPunchesBack_NotAStream()
         {
             // Anyone on the path can resend a genuine punch from an address of their choosing: that
-            // address gets one punch back per punch that arrives, not a stream
+            // address gets a few punches back for each punch that arrives, not a stream
             Player b = NewPlayer(CX_B, in_budgetMs: 1500);
             b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
             RunAll(new List<Player> { b }, 200, (from, to) => false);
@@ -553,15 +553,82 @@ namespace BrainCloudTests
                 elsewhere.Bind(new IPEndPoint(IPAddress.Loopback, 0));
                 elsewhere.SendTo(punch, new IPEndPoint(IPAddress.Loopback, b.Connector.Port));
                 RunAll(new List<Player> { b }, 1000, (from, to) => false);
-                int received = 0;
+                Assert.That(Drain(elsewhere), Is.EqualTo(1 + DirectConnector.TRIGGERED_PUNCHES), "its PUNCH_ACK, and TRIGGERED_PUNCHES punches back");
+                RunAll(new List<Player> { b }, 400, (from, to) => false);
+                Assert.That(Drain(elsewhere), Is.EqualTo(0), "and then nothing more");
+            }
+        }
+
+        private static int Drain(Socket in_socket)
+        {
+            int received = 0;
+            var buffer = new byte[2000];
+            while (in_socket.Available > 0)
+            {
+                EndPoint from = new IPEndPoint(IPAddress.Any, 0);
+                in_socket.ReceiveFrom(buffer, ref from);
+                ++received;
+            }
+            return received;
+        }
+
+        [Test]
+        public void ALostPunchBack_IsRetried()
+        {
+            // A has reached B and stopped punching, so nothing more will arrive from it: B's first
+            // punch back is lost, and only a retry reaches A
+            Player b = NewPlayer(CX_B, in_budgetMs: 2000);
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            RunAll(new List<Player> { b }, 200, (from, to) => false);
+
+            var aSession = new DirectSession(CIPHER, 0, new Dictionary<int, byte[]> { { 1, KEY_AB } });
+            using (var a = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                a.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                var toB = new IPEndPoint(IPAddress.Loopback, b.Connector.Port);
+                a.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 1 }, 0, 5), toB);
+
+                int punchesSeen = 0;
                 var buffer = new byte[2000];
-                while (elsewhere.Available > 0)
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                while (!b.Connector.Peers.Single().Reached && clock.ElapsedMilliseconds < 1500)
                 {
-                    EndPoint from = new IPEndPoint(IPAddress.Any, 0);
-                    elsewhere.ReceiveFrom(buffer, ref from);
-                    ++received;
+                    b.Connector.Update();
+                    while (a.Available > 0)
+                    {
+                        EndPoint from = new IPEndPoint(IPAddress.Any, 0);
+                        int n = a.ReceiveFrom(buffer, ref from);
+                        byte[] packet = aSession.ReceiverFor(1).Open(buffer, n);
+                        if (packet == null || packet[0] != DirectConnector.PUNCH) continue;
+                        // The first is lost; the second is answered
+                        if (++punchesSeen == 2) a.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH_ACK, packet[1], packet[2], packet[3], packet[4] }, 0, 5), toB);
+                    }
+                    Thread.Sleep(5);
                 }
-                Assert.That(received, Is.EqualTo(2), "its PUNCH_ACK, and one punch back");
+                Assert.That(punchesSeen, Is.GreaterThanOrEqualTo(2));
+                Assert.That(b.Connector.Peers.Single().Reached, Is.True);
+            }
+        }
+
+        [Test]
+        public void TwoUnknownAddressesInOneBurst_AreBothPunchedBack()
+        {
+            // A peer on two networks: its punches arrive from two addresses it did not list
+            Player b = NewPlayer(CX_B, in_budgetMs: 1500);
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            RunAll(new List<Player> { b }, 200, (from, to) => false);
+            var aSession = new DirectSession(CIPHER, 0, new Dictionary<int, byte[]> { { 1, KEY_AB } });
+            using (var first = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            using (var second = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                first.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                second.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                var toB = new IPEndPoint(IPAddress.Loopback, b.Connector.Port);
+                first.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 1 }, 0, 5), toB);
+                second.SendTo(aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 2 }, 0, 5), toB);
+                RunAll(new List<Player> { b }, 600, (from, to) => false);
+                Assert.That(Drain(first), Is.EqualTo(1 + DirectConnector.TRIGGERED_PUNCHES));
+                Assert.That(Drain(second), Is.EqualTo(1 + DirectConnector.TRIGGERED_PUNCHES), "neither starves the other");
             }
         }
 

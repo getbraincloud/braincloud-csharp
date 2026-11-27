@@ -42,9 +42,9 @@ namespace BrainCloud.Internal
         /// The round trip of the punch that reached the peer, in milliseconds, or -1.
         public int RoundTripMs { get; internal set; }
 
-        // When this player last punched back at an address the peer's punches came from (see DirectConnector.handle)
-        internal int TriggeredAtMs;
-        internal bool Triggered;
+        // Addresses the peer's punches came from that are none of its candidates, and how many more
+        // punches each is owed (see DirectConnector.handle)
+        internal readonly Dictionary<IPEndPoint, int> Triggered = new Dictionary<IPEndPoint, int>();
 
         internal DirectPeer Clear()
         {
@@ -52,7 +52,7 @@ namespace BrainCloud.Internal
             Address = null;
             Reached = false;
             RoundTripMs = -1;
-            Triggered = false;
+            Triggered.Clear();
             return this;
         }
     }
@@ -126,6 +126,13 @@ namespace BrainCloud.Internal
         public const int CONNECTED_IDLE_MS = 60000;
         /// A PUNCH_ACK is only matched to a punch sent this recently; older records are dropped.
         public const int PUNCH_RECORD_MS = 5000;
+        /// <summary>
+        /// How many punches an authenticated punch from an address that is none of the peer's
+        /// candidates earns that address, one per PUNCH_INTERVAL_MS, as ICE retransmits its
+        /// triggered checks: the peer may stop punching as soon as it has reached this player, so a
+        /// single punch back would make one lost packet cost the direct connection.
+        /// </summary>
+        public const int TRIGGERED_PUNCHES = 5;
         // The only datagram this exchanges: a 5-byte PUNCH or PUNCH_ACK, sealed
         private const int PUNCH_DATAGRAM_LENGTH = DirectPacket.OVERHEAD + 5;
         // Candidates that arrive before DIRECT_CONNECT are kept, for this many peers at most
@@ -706,6 +713,15 @@ namespace BrainCloud.Internal
                 {
                     punchAt(peer, address, now);
                 }
+                // Addresses the peer's punches came from, while they are owed punches
+                if (peer.Triggered.Count == 0) continue;
+                foreach (IPEndPoint address in new List<IPEndPoint>(peer.Triggered.Keys))
+                {
+                    int owed = peer.Triggered[address];
+                    if (owed <= 0) continue;
+                    peer.Triggered[address] = owed - 1;
+                    punchAt(peer, address, now);
+                }
             }
         }
 
@@ -796,15 +812,15 @@ namespace BrainCloud.Internal
                 // Answered even once the peer is reached: its own punches may still be getting through
                 sendTo(peer, PUNCH_ACK, id, in_from);
                 // A punch from none of the peer's candidates (a router can map its socket to an address
-                // it could not know to offer) is punched back once, at most every PUNCH_INTERVAL_MS. Only
-                // in answer to a punch that arrived, never continuously: anyone on the path can resend a
-                // genuine punch from an address of their choosing, and must not get a stream sent there.
-                int now = nowMs;
-                if (!peer.Reached && !peer.Candidates.Contains(in_from) && (!peer.Triggered || now - peer.TriggeredAtMs >= PUNCH_INTERVAL_MS))
+                // it could not know to offer) earns that address TRIGGERED_PUNCHES punches on the punch
+                // schedule, the first now. Only in answer to punches that arrive, never indefinitely:
+                // anyone on the path can resend a genuine punch from an address of their choosing, and
+                // must not get a stream sent there. Another punch from it renews the count; it does not add.
+                if (!peer.Reached && !peer.Candidates.Contains(in_from) &&
+                    (peer.Triggered.ContainsKey(in_from) || peer.Triggered.Count < MAX_CANDIDATES))
                 {
-                    peer.Triggered = true;
-                    peer.TriggeredAtMs = now;
-                    punchAt(peer, in_from, now);
+                    peer.Triggered[in_from] = TRIGGERED_PUNCHES - 1;
+                    punchAt(peer, in_from, nowMs);
                 }
             }
             else if (packet[0] == PUNCH_ACK && !peer.Reached)
