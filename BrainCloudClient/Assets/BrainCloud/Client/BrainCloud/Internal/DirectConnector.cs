@@ -503,6 +503,8 @@ namespace BrainCloud.Internal
                 try
                 {
                     m_session = new DirectSession(cipher, myNetId, pairKeys);
+                    // The session keeps its own copies
+                    foreach (byte[] key in pairKeys.Values) Array.Clear(key, 0, key.Length);
                 }
                 catch (ArgumentException e)
                 {

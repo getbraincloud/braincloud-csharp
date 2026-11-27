@@ -441,9 +441,14 @@ namespace BrainCloud.Internal
             return DirectPacket.Seal(m_cipher, m_key, m_sender, m_receiver, m_epoch, sequence, in_packet, in_offset, in_length);
         }
 
+        /// Stops this sender for good, and overwrites its key.
         internal void Retire()
         {
-            lock (m_lock) m_retired = true;
+            lock (m_lock)
+            {
+                m_retired = true;
+                Array.Clear(m_key, 0, m_key.Length);
+            }
         }
     }
 
@@ -475,6 +480,7 @@ namespace BrainCloud.Internal
         private byte[] m_epoch = null;
         private byte[] m_key = null;
         private ReplayWindow m_window = null;
+        private bool m_wiped = false;
         private readonly object m_lock = new object();
 
         /// in_sender is the peer's net id, in_receiver this player's. Made by DirectSession, or by the tests.
@@ -506,7 +512,19 @@ namespace BrainCloud.Internal
             if (sender != m_sender || receiver != m_receiver) return null;
             lock (m_lock)
             {
+                if (m_wiped) return null;
                 return open(datagram, epoch, sequence);
+            }
+        }
+
+        /// Overwrites this receiver's keys; it opens nothing afterwards.
+        internal void Wipe()
+        {
+            lock (m_lock)
+            {
+                m_wiped = true;
+                Array.Clear(m_extracted, 0, m_extracted.Length);
+                if (m_key != null) Array.Clear(m_key, 0, m_key.Length);
             }
         }
 
@@ -601,9 +619,10 @@ namespace BrainCloud.Internal
         public int NetId { get { return m_netId; } }
 
         /// <summary>
-        /// Forgets the attempt's keys, when the attempt or the match is over: the pair keys are
-        /// overwritten, every sender is retired, and every peer stops being one. Nothing can seal or
-        /// open with this session afterwards.
+        /// Forgets the attempt's keys, when the attempt or the match is over: the pair keys and every
+        /// key derived from them are overwritten, and every peer stops being one. Nothing can seal or
+        /// open with this session afterwards. (Copies the session never had, such as the RTT message
+        /// the pair keys arrived in, are not reached.)
         /// </summary>
         public void Clear()
         {
@@ -611,6 +630,7 @@ namespace BrainCloud.Internal
             {
                 foreach (byte[] key in m_pairKeys.Values) Array.Clear(key, 0, key.Length);
                 foreach (DirectSender sender in m_senders.Values) sender.Retire();
+                foreach (DirectReceiver receiver in m_receivers.Values) receiver.Wipe();
                 m_pairKeys.Clear();
                 m_senders.Clear();
                 m_receivers.Clear();

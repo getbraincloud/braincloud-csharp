@@ -108,7 +108,8 @@ namespace BrainCloudTests
         /// in_count players, net ids 0 up, owner net id 0, each with what a successful attempt hands
         /// over. Not started.
         /// </summary>
-        private List<Node> Lobby(int in_count, int in_keepAliveRateSecs = 0)
+        /// <param name="in_beforeMesh">Runs once every node has its session and the attempt's peers, before the meshes take them over.</param>
+        private List<Node> Lobby(int in_count, int in_keepAliveRateSecs = 0, Action<List<Node>> in_beforeMesh = null)
         {
             var nodes = new List<Node>();
             for (int i = 0; i < in_count; ++i) nodes.Add(new Node { NetId = i, Socket = NewSocket() });
@@ -126,10 +127,13 @@ namespace BrainCloudTests
                     peers.Add(peer);
                 }
                 node.Session = new DirectSession(CIPHER, node.NetId, keys);
-                var connection = new DirectConnection(LOBBY, node.Socket, node.Session, CX[0], peers, in_keepAliveRateSecs);
-                node.Connection = connection;
+                node.Connection = new DirectConnection(LOBBY, node.Socket, node.Session, CX[0], peers, in_keepAliveRateSecs);
+            }
+            if (in_beforeMesh != null) in_beforeMesh(nodes);
+            foreach (Node node in nodes)
+            {
                 Node self = node;
-                node.Mesh = new DirectMeshTransport(connection, CX[node.NetId], node.Listener, null, call => self.Sent.Add(call));
+                node.Mesh = new DirectMeshTransport(node.Connection, CX[node.NetId], node.Listener, null, call => self.Sent.Add(call));
             }
             m_nodes.AddRange(nodes);
             return nodes;
@@ -1043,6 +1047,73 @@ namespace BrainCloudTests
             nodes[0].Mesh.CloseNow();
             Assert.That(() => nodes[0].Session.SenderFor(1), Throws.ArgumentException);
             Assert.That(() => nodes[0].Session.ReceiverFor(1), Throws.ArgumentException);
+        }
+
+        [Test]
+        public void AHeldUpDatagramArrivingJustAfterTheHandover_DoesNotMoveThePeerBack()
+        {
+            // During the attempt, B's later punch moved A to B's current address; an earlier datagram
+            // of B's, from where it was before, is still on its way
+            byte[] ping = { DirectMeshTransport.PING, 0, 0, 0, 1 };
+            byte[] earlier = null;
+            Socket before = NewSocket();
+            m_extraSockets.Add(before);
+            List<Node> nodes = Lobby(2, 0, all =>
+            {
+                earlier = all[1].Session.SenderFor(0).Seal(ping, 0, ping.Length);
+                byte[] later = all[1].Session.SenderFor(0).Seal(ping, 0, ping.Length);
+                int sender, receiver;
+                byte[] epoch;
+                ulong sequence;
+                DirectPacket.TryReadHeader(later, later.Length, out sender, out receiver, out epoch, out sequence);
+                all[0].Connection.Peers.Single().MoveAddress((IPEndPoint)all[1].Socket.LocalEndPoint, epoch, sequence);
+            });
+            nodes[0].Mesh.Start(m_now);
+            nodes[1].Paused = true;
+            before.SendTo(earlier, nodes[0].Socket.LocalEndPoint);
+            Pump(3);
+            Assert.That(nodes[0].Mesh.PeerAddressForTests(1), Is.EqualTo(nodes[1].Socket.LocalEndPoint), "the attempt's ordering carried over");
+        }
+
+        [Test]
+        public void AnOwnerElectedBeforeALowerNetIdConnected_GivesWay_SoEveryPlayerAgrees()
+        {
+            List<Node> nodes = Lobby(3);
+            // B (net id 1) is slow to take its connection over; A (the owner) and C have
+            nodes[0].Mesh.Start(m_now);
+            nodes[2].Mesh.Start(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            nodes[0].Paused = true;
+            Pump();
+            Assert.That(nodes[2].Mesh.OwnerCxId, Is.EqualTo(CX[2]), "C elected itself: B had not connected");
+
+            // B connects at last: C elects again, and B, losing A, elects itself
+            nodes[1].Mesh.Start(m_now);
+            nodes[1].Paused = false;
+            Pump(65, 1000);
+            Assert.That(nodes[2].Mesh.OwnerCxId, Is.EqualTo(CX[1]));
+            Assert.That(nodes[1].Mesh.OwnerCxId, Is.EqualTo(CX[1]));
+            Assert.That(nodes[1].Mesh.EndMatch(null, m_now), Is.Null);
+            Pump();
+            Assert.That(nodes[2].Listener.Ops("END_MATCH").Count(), Is.EqualTo(1), "C takes B's END_MATCH");
+        }
+
+        [Test]
+        public void ClosingOverwritesTheDerivedKeysToo()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            DirectReceiver receiver = nodes[0].Session.ReceiverFor(1);
+            DirectSender sender = nodes[0].Session.SenderFor(1);
+            byte[] ping = { DirectMeshTransport.PING, 0, 0, 0, 7 };
+            byte[] fromB = nodes[1].Session.SenderFor(0).Seal(ping, 0, ping.Length);
+            nodes[0].Mesh.CloseNow();
+            Assert.That(receiver.Open(fromB, fromB.Length), Is.Null, "a genuine datagram no longer opens");
+            Assert.That(() => sender.Seal(ping, 0, ping.Length), Throws.InstanceOf<InvalidOperationException>());
         }
 
         [Test]

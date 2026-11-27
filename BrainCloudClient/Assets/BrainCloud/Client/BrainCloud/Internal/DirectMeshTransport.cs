@@ -151,6 +151,8 @@ namespace BrainCloud.Internal
         private bool m_closing;
         private bool m_closed;
         private bool m_stoppedSent;
+        // The owner is one this player elected, not the one DIRECT_CONNECT named
+        private bool m_ownerElected;
         // This player ended the match, or the owner did: nothing more is sent, or taken in, but
         // what finishes END_MATCH
         private bool m_endMatchSent;
@@ -200,7 +202,11 @@ namespace BrainCloud.Internal
                 {
                     CxId = source.CxId,
                     NetId = source.NetId,
+                    // With where it came from, so only a later datagram moves it, across the handover too
                     Address = source.Address,
+                    AddressFromDatagram = source.AddressFromDatagram,
+                    AddressEpochCount = source.AddressEpochCount,
+                    AddressSequence = source.AddressSequence,
                     Channel = new RelayReliableChannel(() => loggingEnabled, log) { PeerToPeer = true }
                 };
                 peer.Resend = packet => sendTo(peer, packet);
@@ -818,6 +824,11 @@ namespace BrainCloud.Internal
             addProfileId(connect, "profileId", in_peer.CxId);
             addProfileId(connect, "ownerId", m_ownerCxId);
             m_listener.OnMeshSystem(JsonWriter.Serialize(connect));
+
+            // An elected owner is the lowest net id among the peers connected at the time. A peer
+            // connecting later with a lower one (slow to take its connection over) would be elected
+            // by players it reached first: elected again here, every player ends up with the same owner.
+            if (m_ownerElected && !string.Equals(electedCxId(), m_ownerCxId, StringComparison.Ordinal)) electOwner(in_nowMs);
         }
 
         private void onRelay(MeshPeer in_peer, byte[] in_packet, long in_nowMs)
@@ -1003,6 +1014,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void electOwner(long in_nowMs)
         {
+            m_ownerElected = true;
             setOwner(electedCxId());
             if (m_pendingEndMatchFrom != null)
             {
