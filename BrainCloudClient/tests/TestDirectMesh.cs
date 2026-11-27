@@ -458,7 +458,7 @@ namespace BrainCloudTests
             nodes[0].Mesh.SendDisconnect();
             nodes[0].Mesh.Close(m_now);
             Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
-            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "B is not the owner");
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "B left while A was still playing");
         }
 
         [Test]
@@ -762,7 +762,7 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void WhenBrainCloudsLobbyOwnerIsNotThePlayersOwner_ItIsTheOneThatStopsTheLobby()
+        public void WhenBrainCloudsLobbyOwnerIsNotThePlayersOwner_BothTellBrainCloudTheMatchStopped()
         {
             List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
             // A left the lobby and came back, say: brainCloud's owner is now B, while A still owns the match
@@ -772,9 +772,28 @@ namespace BrainCloudTests
             Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.GreaterThan(0), "the players' owner");
             Assert.That(nodes[1].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.GreaterThan(0), "brainCloud's owner");
 
+            // A, ending the match, tells brainCloud; B, its lobby owner, does too, in case brainCloud
+            // no longer counts A a member. The first one wins, and the repeat changes nothing.
             nodes[0].Mesh.EndMatch(null, m_now);
             Pump();
-            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "brainCloud would refuse it from A");
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
+        }
+
+        [Test]
+        public void TheLastToLeave_StopsTheLobby_WhetherOrNotItIsAnOwner()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            // A, both owners, leaves the match and stays in the lobby; B plays on, then leaves
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            nodes[0].Paused = true;
+            Pump();
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "B is still playing");
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
             Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
         }
 

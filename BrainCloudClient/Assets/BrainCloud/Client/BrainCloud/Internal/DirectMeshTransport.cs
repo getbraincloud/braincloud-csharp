@@ -340,12 +340,12 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// Tells brainCloud the match stopped, for a lobby that outlives its match, so it returns to
-        /// setup. brainCloud takes it from its lobby owner alone, who is usually also the players'
-        /// owner; when they differ, the lobby owner sends it on the players' owner's END_MATCH.
+        /// setup: from the owner who ends it, or the last player to leave. brainCloud takes it from
+        /// any member, once; a repeat from another member is refused and changes nothing.
         /// </summary>
         private void roomStopped()
         {
-            if (m_keepAliveMs <= 0 || m_stoppedSent || !isLobbyOwner) return;
+            if (m_keepAliveMs <= 0 || m_stoppedSent) return;
             m_stoppedSent = true;
             postLobby(ServiceOperation.RoomStopped, "telling brainCloud the match stopped failed: ");
         }
@@ -768,12 +768,14 @@ namespace BrainCloud.Internal
             raiseEndMatch(payload, in_peer.LastHeardMs, true);
         }
 
-        /// in_fromPeer: the owner's END_MATCH, received; brainCloud's lobby owner then tells brainCloud, when that is not the owner.
+        /// in_fromPeer: the owner's END_MATCH, received.
         private void raiseEndMatch(object in_payload, long in_nowMs, bool in_fromPeer)
         {
             // Nothing after it is taken in: RelayComms closes the connection on END_MATCH
             m_matchEnded = true;
-            if (in_fromPeer) roomStopped();
+            // brainCloud's lobby owner, when that is not the owner who ended the match, tells it too,
+            // in case brainCloud no longer counts that owner a member (its RTT connection dropped)
+            if (in_fromPeer && isLobbyOwner) roomStopped();
             var endMatch = new Dictionary<string, object>();
             endMatch["op"] = "END_MATCH";
             endMatch["data"] = in_payload;
