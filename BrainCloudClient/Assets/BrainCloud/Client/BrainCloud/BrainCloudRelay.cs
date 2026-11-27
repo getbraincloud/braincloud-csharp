@@ -5,7 +5,7 @@
 
 using System.Runtime.CompilerServices;
 
-// The unit tests check how ROOM_READY is read without a server.
+// Lets the unit tests check ROOM_READY parsing without a server.
 [assembly: InternalsVisibleTo("UnitTest")]
 
 namespace BrainCloud
@@ -42,7 +42,7 @@ namespace BrainCloud
         public const int CHANNEL_NORMAL_PRIORITY = 2;
         public const int CHANNEL_LOW_PRIORITY = 3;
 
-        // Why ConnectFromRoomReady cannot use a ROOM_READY event, as reported to the failure callback
+        // Why ConnectFromRoomReady cannot use an event, as reported to the failure callback
         private const string ROOM_READY_ERROR_PREFIX = "Relay: cannot connect from ROOM_READY: ";
         private const string ROOM_READY_NOT_AN_OBJECT = "no ROOM_READY event was given, or it is not a JSON object";
         private const string ROOM_READY_WRONG_EVENT = "expected a ROOM_READY event, not ";
@@ -129,9 +129,8 @@ namespace BrainCloud
         /// <summary>
         /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
         ///
-        /// With RelayConnectionType.DIRECT, for a lobby whose ROOM_READY has connectData type "direct",
-        /// only the options' lobbyId is used: the players connect to each other on the socket the
-        /// lobby's direct connect attempt reached them on. ConnectFromRoomReady does this itself.
+        /// With RelayConnectionType.DIRECT (ROOM_READY connectData type "direct"), only in_options.lobbyId
+        /// is used: players connect over the sockets the direct connect attempt established.
         /// </summary>
         /// <param name="in_connectionType"></param>
         /// <param name="in_options"></param>
@@ -144,44 +143,35 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// True while connecting or connected directly to the other players, without a relay server.
+        /// True while connecting or connected peer to peer, without a relay server.
         /// </summary>
         public bool IsDirect { get { return m_commsLayer.ConnectionType == RelayConnectionType.DIRECT; } }
 
         /// <summary>
-        /// How this client is connecting or connected to the lobby's other players: WEBSOCKET, TCP or
-        /// UDP to a relay server, DIRECT without one, or INVALID when it is neither.
+        /// The current transport: WEBSOCKET, TCP or UDP via a relay server, DIRECT peer to peer, or
+        /// INVALID when not connecting or connected.
         /// </summary>
         public RelayConnectionType ConnectionType { get { return m_commsLayer.ConnectionType; } }
 
         /// <summary>
-        /// Connects to the lobby's server from its ROOM_READY event, whatever kind of server the
-        /// lobby launched, or to the other players directly when the lobby's direct connect attempt
-        /// succeeded (see EnableDirectConnect). It reads the address, port, passcode and lobby id
-        /// from the event, so the game does not have to, and applies the rules for each kind of
-        /// server:
+        /// Connects using a lobby's ROOM_READY event, reading the address, port, passcode and lobby id
+        /// from it, for whichever kind of server the lobby launched:
         /// <list type="bullet">
-        /// <item>Direct (connectData type "direct"): the socket the attempt reached the other players
-        /// on, as RelayConnectionType.DIRECT. in_preferredType and in_useSsl do not apply: the traffic
-        /// is protected with the lobby's cipher, encrypted when the lobby requires it.</item>
-        /// <item>brainCloud relay servers and Edgegap: the port for in_preferredType (WEBSOCKET, TCP
-        /// or UDP). There is no fallback to another type: if the server does not offer that port, the
-        /// connect fails. With in_useSsl and WEBSOCKET, the secure WebSocket URL the server sent
-        /// (secureUrl).</item>
+        /// <item>Direct (connectData type "direct", see EnableDirectConnect): peer to peer as DIRECT.
+        /// in_preferredType and in_useSsl do not apply; traffic is protected with the lobby's cipher.</item>
+        /// <item>brainCloud relay and Edgegap: the port for in_preferredType, with no fallback to
+        /// another type. With in_useSsl and WEBSOCKET, the server's secureUrl.</item>
         /// <item>GameLift and i3D: their one port, over WebSocket, whatever type was preferred.</item>
         /// </list>
-        /// in_useSsl applies only to WebSocket. A server that offers no secure WebSocket (Edgegap,
-        /// GameLift, i3D, or a relay server without secure connections enabled) makes the connect
-        /// fail rather than fall back to an insecure one.
-        ///
-        /// Anything wrong with the event is reported to in_failure (status 403, reason
-        /// RS_CLIENT_ERROR) before this call returns, as Connect does for its own early failures.
+        /// in_useSsl applies only to WebSocket and never falls back to insecure: the connect fails if
+        /// the server offers no secure WebSocket (Edgegap, GameLift, i3D, or relay without it enabled).
+        /// An unusable event is reported to in_failure (403, RS_CLIENT_ERROR) before this returns.
         /// </summary>
-        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
-        /// <param name="in_useSsl">Connect over a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP, where the server offers a choice.</param>
+        /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
         /// <param name="in_roomReadyJson">The ROOM_READY event as the lobby callback received it.</param>
         /// <param name="in_success">As for Connect.</param>
-        /// <param name="in_failure">As for Connect, and also called when the event cannot be used.</param>
+        /// <param name="in_failure">As for Connect; also called when the event is unusable.</param>
         /// <param name="cb_object">As for Connect.</param>
         public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, string in_roomReadyJson, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
@@ -189,13 +179,13 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// As ConnectFromRoomReady with the event's JSON, for a game that has already parsed it.
+        /// ConnectFromRoomReady for an already-parsed event.
         /// </summary>
-        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
-        /// <param name="in_useSsl">Connect over a secure WebSocket (wss) when connecting over WebSocket.</param>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP, where the server offers a choice.</param>
+        /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
         /// <param name="in_roomReady">The parsed ROOM_READY event, or its "data" object.</param>
         /// <param name="in_success">As for Connect.</param>
-        /// <param name="in_failure">As for Connect, and also called when the event cannot be used.</param>
+        /// <param name="in_failure">As for Connect; also called when the event is unusable.</param>
         /// <param name="cb_object">As for Connect.</param>
         public void ConnectFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady, SuccessCallback in_success = null, FailureCallback in_failure = null, object cb_object = null)
         {
@@ -210,7 +200,7 @@ namespace BrainCloud
                 }
                 if (in_failure != null)
                 {
-                    // The same status, reason and shape as the relay's own client-side errors
+                    // Same status, reason and shape as the relay's own client-side errors
                     var json = new Dictionary<string, object>();
                     json["status"] = StatusCodes.FORBIDDEN;
                     json["reason_code"] = ReasonCodes.RS_CLIENT_ERROR;
@@ -224,17 +214,16 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Works out what ConnectFromRoomReady would connect with, without connecting: for a game
-        /// that wants to log the choice, or adjust it before calling Connect itself. The rules are
-        /// the ones ConnectFromRoomReady describes.
+        /// What ConnectFromRoomReady would connect with, without connecting, e.g. to log or adjust it
+        /// before calling Connect. Same rules as ConnectFromRoomReady.
         /// </summary>
-        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP, where the server offers a choice.</param>
         /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
         /// <param name="in_roomReadyJson">The ROOM_READY event as the lobby callback received it.</param>
         /// <param name="out_connectionType">The transport to pass to Connect.</param>
         /// <param name="out_options">The options to pass to Connect.</param>
-        /// <param name="out_error">Why the event cannot be used, when this returns false; otherwise null.</param>
-        /// <returns>True when the event can be used.</returns>
+        /// <param name="out_error">Why the event is unusable, or null.</param>
+        /// <returns>True when the event is usable.</returns>
         public bool TryGetConnectOptionsFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, string in_roomReadyJson,
             out RelayConnectionType out_connectionType, out RelayConnectOptions out_options, out string out_error)
         {
@@ -243,15 +232,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// As TryGetConnectOptionsFromRoomReady with the event's JSON, for a game that has already parsed it.
+        /// TryGetConnectOptionsFromRoomReady for an already-parsed event.
         /// </summary>
-        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP: the transport to use where the server offers a choice.</param>
+        /// <param name="in_preferredType">WEBSOCKET, TCP or UDP, where the server offers a choice.</param>
         /// <param name="in_useSsl">Use a secure WebSocket (wss) when connecting over WebSocket.</param>
         /// <param name="in_roomReady">The parsed ROOM_READY event, or its "data" object.</param>
         /// <param name="out_connectionType">The transport to pass to Connect.</param>
         /// <param name="out_options">The options to pass to Connect.</param>
-        /// <param name="out_error">Why the event cannot be used, when this returns false; otherwise null.</param>
-        /// <returns>True when the event can be used.</returns>
+        /// <param name="out_error">Why the event is unusable, or null.</param>
+        /// <returns>True when the event is usable.</returns>
         public bool TryGetConnectOptionsFromRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady,
             out RelayConnectionType out_connectionType, out RelayConnectOptions out_options, out string out_error)
         {
@@ -268,14 +257,14 @@ namespace BrainCloud
             }
             catch (Exception)
             {
-                // Reported by the caller as an event that cannot be used
+                // The caller reports null as an unusable event
                 return null;
             }
         }
 
         /// <summary>
-        /// Works out how to connect from a ROOM_READY event (the whole event or its "data" object).
-        /// Returns null and sets the outs, or returns why the event cannot be used.
+        /// How to connect from a ROOM_READY event (whole, or its "data" object). Returns null and sets
+        /// the outs, or returns why the event is unusable.
         /// </summary>
         internal static string ResolveRoomReady(RelayConnectionType in_preferredType, bool in_useSsl, Dictionary<string, object> in_roomReady,
             out RelayConnectionType out_connectionType, out RelayConnectOptions out_options)
@@ -292,7 +281,7 @@ namespace BrainCloud
             if (connectData == null) return ROOM_READY_NO_CONNECT_DATA;
             if (valueOf(connectData, "type") as string == "direct")
             {
-                // The players reached each other: no server, address or passcode, only the lobby
+                // Peer to peer: no server, address or passcode, only the lobby id
                 out_connectionType = RelayConnectionType.DIRECT;
                 out_options.lobbyId = valueOf(data, "lobbyId") as string;
                 if (string.IsNullOrEmpty(out_options.lobbyId)) return ROOM_READY_NO_LOBBY_ID;
@@ -314,8 +303,8 @@ namespace BrainCloud
             }
             else if (in_useSsl && in_preferredType == RelayConnectionType.WEBSOCKET)
             {
-                // A complete wss:// URL, used as given. Only brainCloud relay servers send one; a wss
-                // port on a bare IP address (Edgegap) would not match its certificate, so is not used.
+                // A complete wss:// URL, used as given. Only brainCloud relays send one: a wss port on
+                // a bare IP address (Edgegap) would not match its certificate.
                 string secureUrl = valueOf(connectData, "secureUrl") as string;
                 if (string.IsNullOrEmpty(secureUrl)) return ROOM_READY_NO_SECURE_WEBSOCKET;
                 out_options.host = secureUrl;
@@ -379,19 +368,15 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Opts this player in to direct connect, where the players of a small relay lobby connect to
-        /// each other peer to peer instead of through a relay server. Off by default.
+        /// Opts this player in to direct connect: players in a small relay lobby connect peer to peer
+        /// instead of through a relay server. Off by default; no effect on WebGL.
         ///
-        /// Call it once, after initializing brainCloud. It lasts for the life of the client, through RTT
-        /// reconnections and logins, including a different player logging in; a wrapper Init() starts
-        /// again with it off. While it is on, each time RTT connects the library tests the player's
-        /// network and reports the result to brainCloud; a lobby only tries direct connect when every
-        /// member has reported a network a peer can reach. Direct connect shares players' IP addresses
-        /// with the other players in their lobby, so a game can tie this to a player setting; if it does,
-        /// set it again after each login. Turning it off withdraws the report, and that player's lobbies
-        /// use the relay server. It has no effect on WebGL.
+        /// Call once after initializing brainCloud. It lasts through RTT reconnects and logins (even of
+        /// another player) until a wrapper Init(). While on, each RTT connect tests the network and
+        /// reports it; a lobby tries direct connect only if every member is reachable. Direct connect
+        /// shares IP addresses within the lobby, so a game may tie it to a player setting (then set it
+        /// again after each login). Turning it off withdraws the report, so the relay is used.
         /// </summary>
-        /// <param name="in_enable">True to take part in direct connect</param>
         public void EnableDirectConnect(bool in_enable)
         {
             m_clientRef.DirectConnectProbe.Enabled = in_enable;
@@ -406,16 +391,11 @@ namespace BrainCloud
         }
 
         /// <summary>
-        /// Whether direct connect offers this player's local-network addresses to the other players
-        /// in its lobby, so that two players behind the same router can connect to each other.
-        ///
-        /// On by default everywhere except iOS. On iOS, sending to another device's local address may
-        /// make iOS ask the player for local network access. A game that already has that permission
-        /// (for example for local multiplayer, with NSLocalNetworkUsageDescription in its Info.plist)
-        /// can turn this on. Without local addresses, two players on the same network usually use the
-        /// relay server instead.
+        /// Whether direct connect offers this player's local-network addresses, so two players behind
+        /// the same router can connect; without them they usually use the relay. On by default except
+        /// on iOS, where it may prompt for local network access: enable it there only if the game
+        /// already has that permission (NSLocalNetworkUsageDescription in Info.plist).
         /// </summary>
-        /// <param name="in_include">True to offer local-network addresses</param>
         public void SetDirectConnectLocalAddresses(bool in_include)
         {
             m_clientRef.DirectConnector.IncludeLocalAddresses = in_include;

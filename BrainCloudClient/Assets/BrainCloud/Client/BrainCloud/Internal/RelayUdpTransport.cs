@@ -16,8 +16,8 @@ namespace BrainCloud.Internal
         private UdpClient m_udpClient = null;
         private readonly object m_lock = new object();
 
-        // Set by Close(). A connect or receive still in flight on this socket then reports nothing,
-        // because RelayComms may already have a new transport connecting.
+        // Set by Close(): in-flight callbacks then report nothing, as RelayComms may already be
+        // connecting a new transport.
         private volatile bool m_closed = false;
 
         public RelayUdpTransport(IRelayTransportListener in_listener)

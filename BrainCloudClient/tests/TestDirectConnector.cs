@@ -14,10 +14,8 @@ using System.Threading;
 namespace BrainCloudTests
 {
     /// <summary>
-    /// A lobby's direct connect attempt, with no server: two players in this process, on
-    /// localhost, each given the lobby events brainCloud would send, and each one's calls to
-    /// brainCloud captured, so the test can pass one player's addresses to the other as
-    /// brainCloud does.
+    /// Direct connect attempts with no server: two players on localhost, given the lobby events
+    /// brainCloud would send, with their calls to brainCloud captured.
     /// </summary>
     [TestFixture]
     public class TestDirectConnector
@@ -106,8 +104,7 @@ namespace BrainCloudTests
         }
 
         /// <summary>
-        /// Runs the players, passing each one's candidates to every other as brainCloud does, when
-        /// in_deliver says so, until all are done or in_ms pass.
+        /// Runs the players, passing candidates between them when in_deliver allows, until all are done or in_ms pass.
         /// </summary>
         private void RunAll(List<Player> in_players, int in_ms, Func<Player, Player, bool> in_deliver)
         {
@@ -167,7 +164,6 @@ namespace BrainCloudTests
             Assert.That(bSeenByA.Address, Is.EqualTo(new IPEndPoint(IPAddress.Loopback, b.Connector.Port)));
             Assert.That(bSeenByA.RoundTripMs, Is.GreaterThanOrEqualTo(0));
 
-            // The candidates went to brainCloud as it expects them
             var sent = (IEnumerable)a.Calls(ServiceOperation.SendDirectConnectCandidates).Single().GetJsonData()["candidates"];
             var first = sent.Cast<Dictionary<string, object>>().Single();
             Assert.That(first["type"], Is.EqualTo("host"));
@@ -418,7 +414,7 @@ namespace BrainCloudTests
         [Test]
         public void APeerWithoutAPairKey_IsRefused()
         {
-            // As from a server from before pair keys
+            // As from a server that sends no pair keys
             Player a = NewPlayer(CX_A);
             a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, null));
             Assert.That(Reported(a), Is.EqualTo(new Dictionary<string, object> { { CX_B, false } }));
@@ -433,7 +429,6 @@ namespace BrainCloudTests
             string forGame = DirectConnector.WithoutPairKeys(json);
             Assert.That(forGame, Does.Not.Contain("pairKey"));
             Assert.That(forGame, Does.Not.Contain("AQIDBAUGBwgJCgsMDQ4PEA=="));
-            // Everything else is still there
             Dictionary<string, object> data = DirectConnector.DataOf(forGame);
             Assert.That(data["lobbyId"], Is.EqualTo(LOBBY));
             Assert.That(data["cipher"], Is.EqualTo("hmac-sha256"));
@@ -679,8 +674,7 @@ namespace BrainCloudTests
         [Test]
         public void APunchFromAnUnknownAddress_EarnsAFewPunchesBack_NotAStream()
         {
-            // Anyone on the path can resend a genuine punch from an address of their choosing: that
-            // address gets a few punches back for each punch that arrives, not a stream
+            // Anyone on the path can replay a genuine punch from an address of their choosing
             Player b = NewPlayer(CX_B, in_budgetMs: 1500);
             b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
             RunAll(new List<Player> { b }, 200, (from, to) => false);
@@ -715,8 +709,7 @@ namespace BrainCloudTests
         [Test]
         public void ALostPunchBack_IsRetried()
         {
-            // A has reached B and stopped punching, so nothing more will arrive from it: B's first
-            // punch back is lost, and only a retry reaches A
+            // A has reached B and stopped punching: B's first punch back is lost, so only a retry reaches A
             Player b = NewPlayer(CX_B, in_budgetMs: 2000);
             b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
             RunAll(new List<Player> { b }, 200, (from, to) => false);

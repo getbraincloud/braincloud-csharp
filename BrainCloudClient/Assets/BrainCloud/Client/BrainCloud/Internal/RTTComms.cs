@@ -75,8 +75,7 @@ namespace BrainCloud.Internal
             {
                 return;
             }
-            // The disconnect happens on the next Update; the server drops the report with the connection,
-            // so turning direct connect off in the meantime must not try to withdraw it
+            // The server drops the report with the connection; nothing to withdraw before Update disconnects
             m_natProbe.OnRttDisconnected();
             m_directConnector.OnRttDisconnected();
             addRTTCommandResponse(new RTTCommandResponse(ServiceName.RTTRegistration.Value.ToLowerInvariant(), "disconnect", "DisableRTT Called"));
@@ -170,8 +169,7 @@ namespace BrainCloud.Internal
                         break;
                     }
 
-                    // The direct connect attempt's lobby events are the library's first; a peer's
-                    // addresses never reach the game
+                    // Direct connect events go to the library first; peers' addresses never reach the game
                     string json = toProcessResponse.JsonMessage;
                     if (m_directConnector.FilterEvent(toProcessResponse.Service, toProcessResponse.Operation, ref json))
                     {
@@ -354,8 +352,7 @@ namespace BrainCloud.Internal
         /// </summary>
         private void disconnect()
         {
-            // Before the game's failure callback, which may turn direct connect off: the server has
-            // dropped this connection's report, so there is nothing left to withdraw
+            // Before the failure callback, which may turn direct connect off: the report is already gone
             m_natProbe.OnRttDisconnected();
             m_directConnector.OnRttDisconnected();
 
@@ -548,9 +545,8 @@ namespace BrainCloud.Internal
         /// 
         /// </summary>
         /// <summary>
-        /// What the game's failure callback is given when the socket closed: whatever message
-        /// happened to be next in the queue, but never a direct connect one, which can hold other
-        /// players' addresses or pair keys.
+        /// The next queued message, for the failure callback when the socket closed; never a direct
+        /// connect one, which can hold other players' addresses or pair keys.
         /// </summary>
         internal static string ForFailureCallback(string in_operation, string in_json)
         {
@@ -565,9 +561,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// An RTT service or operation name as the event queue keys it: lowercased whatever the
-        /// player's language. With the current culture, a Turkish or Azeri player's "I" becomes a
-        /// dotless i, and names such as "DISCONNECT" and "DIRECT_CONNECT" stop matching.
+        /// An RTT name lowercased invariantly: in a Turkish or Azeri culture "I" becomes a dotless i,
+        /// and names such as "DISCONNECT" stop matching.
         /// </summary>
         internal static string EventName(string in_name)
         {
@@ -612,8 +607,7 @@ namespace BrainCloud.Internal
                 m_disconnectJson["severity"] = "ERROR";
             }
 
-            // Only the connection's own CONNECT names this player's connection: other messages carry a
-            // cxId too, such as a peer's in DIRECT_CONNECT_CANDIDATES
+            // Only CONNECT carries this player's cxId; others, such as DIRECT_CONNECT_CANDIDATES, carry a peer's
             if (data != null && operation == "CONNECT")
             {
                 if (data.ContainsKey("cxId")) RTTConnectionID = (string)data["cxId"];

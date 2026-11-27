@@ -15,9 +15,8 @@ using System.Threading;
 namespace BrainCloudTests
 {
     /// <summary>
-    /// The direct mesh, with no server: two or three players in this process, on localhost, each
-    /// with the socket, keys and peer addresses a successful attempt would hand over, and a clock
-    /// the test moves on.
+    /// The direct mesh, with no server: two or three players on localhost, each with what a
+    /// successful attempt hands over, and a clock the test moves on.
     /// </summary>
     [TestFixture]
     public class TestDirectMesh
@@ -105,8 +104,7 @@ namespace BrainCloudTests
         }
 
         /// <summary>
-        /// in_count players, net ids 0 up, owner net id 0, each with what a successful attempt hands
-        /// over. Not started.
+        /// in_count players (net ids from 0, owner 0), each with what a successful attempt hands over. Not started.
         /// </summary>
         /// <param name="in_beforeMesh">Runs once every node has its session and the attempt's peers, before the meshes take them over.</param>
         private List<Node> Lobby(int in_count, int in_keepAliveRateSecs = 0, Action<List<Node>> in_beforeMesh = null)

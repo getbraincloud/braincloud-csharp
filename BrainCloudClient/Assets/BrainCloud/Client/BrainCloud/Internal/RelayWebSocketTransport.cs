@@ -43,8 +43,8 @@ namespace BrainCloud.Internal
             BrainCloudWebSocket webSocket = m_webSocket;
             if (webSocket != null)
             {
-                // Forget it first: Close() can be called on a socket still connecting, or one whose
-                // connect failed, and nothing that goes wrong closing it may leave it in place
+                // Forget it first, so a socket still connecting or already failed can't stay in place
+                // if closing it throws
                 m_webSocket = null;
                 webSocket.OnClose -= WebSocket_OnClose;
                 webSocket.OnOpen -= Websocket_OnOpen;

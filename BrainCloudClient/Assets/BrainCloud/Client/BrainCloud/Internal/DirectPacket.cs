@@ -9,36 +9,29 @@ namespace BrainCloud.Internal
     using System.Text;
 
     /// <summary>
-    /// The datagram players send each other when connected directly: a short header, then the
-    /// packet and a tag authenticating it with the header. With chacha20-poly1305 the packet is
-    /// encrypted; with hmac-sha256 it is only authenticated, and travels readable, as it does
-    /// through a relay server. Every client library must produce these byte for byte; the format is
-    /// section 7 of the client design (Confluence BCSD 4389666817).
+    /// The datagram players send each other when connected directly. Every client library must
+    /// produce it byte for byte. chacha20-poly1305 encrypts the packet; hmac-sha256 only
+    /// authenticates it, leaving it readable as it is through a relay server.
     ///
     /// <code>
     /// offset  size  field
     ///      0     1  FORMAT (0xB1): brainCloud direct connect, format 1
     ///      1     1  sender's net id
     ///      2     1  receiver's net id
-    ///      3     8  the sender's epoch: 4 random bytes, the same for every sender in this
-    ///               attempt, then a 4-byte big-endian count that goes up with every new sender
+    ///      3     8  sender's epoch: 4 random bytes, fixed for this player's attempt, then a
+    ///               4-byte big-endian count that goes up with every new sender
     ///     11     8  sequence number, big-endian, from 0 within the epoch
-    ///     19     n  the packet: encrypted with chacha20-poly1305, unchanged with hmac-sha256
+    ///     19     n  packet: encrypted with chacha20-poly1305, unchanged with hmac-sha256
     ///   19+n    16  authentication tag
     /// </code>
     ///
-    /// Each pair of players in an attempt has its own secret, from brainCloud, which only those two
-    /// players have: so no member of an attempt can make or read a datagram between two others.
-    /// Each epoch of each direction between two players has its own key (DeriveKey), and the
-    /// cipher's name is part of it. With chacha20-poly1305 the nonce is 4 zero bytes then the
-    /// sequence number, and the header is the associated data; with hmac-sha256 the tag is the
-    /// first 16 bytes of HMAC-SHA256 of the header and the packet. A key is never
-    /// used with the same nonce twice: the sequence only goes up within an epoch, and a sender that
-    /// starts again, for whatever reason, starts a new epoch and so gets a new key. Epochs are
-    /// ordered, so a receiver only ever moves forward (see DirectReceiver).
-    ///
-    /// Use DirectSession, which keeps those rules for one attempt; the static methods here are the
-    /// format itself.
+    /// Each pair of players has its own secret from brainCloud, so no member can make or read a
+    /// datagram between two others. Each epoch of each direction has its own key (DeriveKey),
+    /// bound to the cipher name. chacha20-poly1305: nonce = 4 zero bytes then the sequence number;
+    /// associated data = the header. hmac-sha256: tag = first 16 bytes of HMAC-SHA256 of header
+    /// then packet. A key never reuses a nonce: the sequence only goes up within an epoch, and a
+    /// restarted sender starts a new epoch, so gets a new key. Receivers only move forward through
+    /// epochs (DirectReceiver). DirectSession enforces these rules; the static methods are the format.
     /// </summary>
     internal static class DirectPacket
     {
@@ -50,23 +43,19 @@ namespace BrainCloud.Internal
         public const int TAG_LENGTH = 16;
         public const int OVERHEAD = HEADER_LENGTH + TAG_LENGTH;
         /// <summary>
-        /// The largest datagram sent or accepted: the most UDP payload that fits the 1,280 bytes
-        /// every IPv6 link carries without fragmenting. A full game packet is 1,068 bytes. Anything
-        /// larger is dropped before any decrypting, so it cannot be used to make a receiver work harder.
+        /// Largest datagram sent or accepted: the UDP payload that fits IPv6's 1,280-byte minimum MTU.
+        /// A full game packet is 1,068 bytes. Larger datagrams are dropped before any decrypting.
         /// </summary>
         public const int MAX_DATAGRAM_LENGTH = 1232;
-        /// The length of the secret brainCloud gives each pair of players (DIRECT_CONNECT's peers[].pairKey).
+        /// Length of the secret brainCloud gives each pair of players (DIRECT_CONNECT peers[].pairKey).
         public const int PAIR_KEY_LENGTH = 16;
 
-        /// Encrypts and authenticates. Only when an implementation is included: see DirectCipher.
+        /// Encrypts and authenticates. Available only when an implementation is included (DirectCipher).
         public const string CIPHER_CHACHA20_POLY1305 = "chacha20-poly1305";
-        /// Authenticates only: no one can make, change or replay a packet, but anyone on the path can read it.
+        /// Authenticates only: packets cannot be forged, changed or replayed, but are readable on the path.
         public const string CIPHER_HMAC_SHA256 = "hmac-sha256";
 
-        /// <summary>
-        /// The ciphers this player can use, most preferred first, to report with its network test.
-        /// hmac-sha256 is always there; chacha20-poly1305 only when an implementation is included.
-        /// </summary>
+        /// <summary>Ciphers this player can use, most preferred first, reported with its network test.</summary>
         public static System.Collections.ObjectModel.ReadOnlyCollection<string> SupportedCiphers
         {
             get
@@ -80,7 +69,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        /// Whether this player can use in_cipher, which may be one DIRECT_CONNECT names. Never throws.
+        /// Whether this player can use in_cipher. Never throws.
         public static bool IsSupported(string in_cipher)
         {
             return DirectCipher.For(in_cipher) != null;
@@ -89,17 +78,16 @@ namespace BrainCloud.Internal
         private static readonly byte[] KEY_SALT = Encoding.ASCII.GetBytes("brainCloud direct connect");
 
         /// <summary>
-        /// The key for packets from in_sender to in_receiver in the sender's epoch in_epoch:
-        /// HKDF-SHA256 with the pair's 16-byte pair key as the input key material,
-        /// "brainCloud direct connect" as the salt, and as the info the cipher name, a 0 byte, the
-        /// sender's net id, the receiver's net id and the 8 epoch bytes.
+        /// Key for in_sender to in_receiver in the sender's epoch: HKDF-SHA256 with the 16-byte pair key
+        /// as input key material, salt "brainCloud direct connect", and info = cipher name, a 0 byte,
+        /// sender net id, receiver net id, the 8 epoch bytes.
         /// </summary>
         public static byte[] DeriveKey(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
             return DeriveKeyFromExtracted(ExtractKey(in_pairKey), in_cipher, in_sender, in_receiver, in_epoch);
         }
 
-        /// The first, epoch-independent step of DeriveKey, which a receiver can do once.
+        /// The epoch-independent first step of DeriveKey, which a receiver can do once.
         public static byte[] ExtractKey(byte[] in_pairKey)
         {
             if (in_pairKey == null || in_pairKey.Length != PAIR_KEY_LENGTH) throw new ArgumentException("a pair key must be 16 bytes");
@@ -123,7 +111,7 @@ namespace BrainCloud.Internal
             return HmacSha256.HkdfExpand(in_extracted, info, KEY_LENGTH);
         }
 
-        /// <summary>The datagram carrying in_length bytes of in_packet from in_offset, with in_cipher and in_key.</summary>
+        /// <summary>The datagram carrying in_length bytes of in_packet from in_offset.</summary>
         public static byte[] Seal(string in_cipher, byte[] in_key, int in_sender, int in_receiver, byte[] in_epoch, ulong in_sequence, byte[] in_packet, int in_offset, int in_length)
         {
             checkNetId(in_sender);
@@ -144,10 +132,7 @@ namespace BrainCloud.Internal
             return datagram;
         }
 
-        /// <summary>
-        /// Reads the header of the first in_length bytes of a received datagram. False when they are
-        /// not a datagram of this format.
-        /// </summary>
+        /// <summary>Reads the header of a received datagram's first in_length bytes; false if not this format.</summary>
         public static bool TryReadHeader(byte[] in_datagram, int in_length, out int out_sender, out int out_receiver, out byte[] out_epoch, out ulong out_sequence)
         {
             out_sender = out_receiver = -1;
@@ -163,10 +148,9 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// The packet in the first in_length bytes of a received datagram, or null when it is not
-        /// from in_expectedSender to in_expectedReceiver or does not open with in_cipher and in_key. The
-        /// expected ids are the ones the key belongs to; never take them from the header, or a
-        /// datagram could be bounced back to its sender or passed on to another player.
+        /// The packet in a received datagram, or null if it is not from in_expectedSender to
+        /// in_expectedReceiver or does not open. Take the expected ids from the key, never the header,
+        /// or a datagram could be bounced back to its sender or passed on to another player.
         /// </summary>
         public static byte[] Open(string in_cipher, byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram, int in_length)
         {
@@ -175,10 +159,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// The first in_length bytes of a received datagram, copied, or null when they cannot be a
-        /// datagram of this format. Everything after is read from the copy alone, so a receive buffer
-        /// that changes while a datagram is being opened cannot make the bytes that were checked
-        /// differ from the bytes that are used.
+        /// A copy of a received datagram's first in_length bytes, or null for a bad length. Everything
+        /// after reads only the copy, so a changing receive buffer cannot split checked from used bytes.
         /// </summary>
         internal static byte[] CopyReceived(byte[] in_datagram, int in_length)
         {
@@ -188,7 +170,7 @@ namespace BrainCloud.Internal
             return datagram;
         }
 
-        /// Open, for a datagram already copied with CopyReceived: in_datagram is not shared with anyone.
+        /// Open, for a datagram already copied with CopyReceived.
         internal static byte[] OpenCopy(string in_cipher, byte[] in_key, int in_expectedSender, int in_expectedReceiver, byte[] in_datagram)
         {
             int sender, receiver;
@@ -201,7 +183,7 @@ namespace BrainCloud.Internal
             return implementation(in_cipher).Open(in_key, nonceFor(header), header, in_datagram, HEADER_LENGTH, in_datagram.Length - HEADER_LENGTH);
         }
 
-        // The datagram does not name its cipher: every member of an attempt uses the one the server chose.
+        // The datagram does not name its cipher: the whole attempt uses the one the server chose.
         private static IDirectAead implementation(string in_cipher)
         {
             IDirectAead aead = DirectCipher.For(in_cipher);
@@ -209,14 +191,11 @@ namespace BrainCloud.Internal
             return aead;
         }
 
-        /// <summary>
-        /// A new random epoch prefix, for one attempt. It is random per attempt, not per process, so
-        /// it does not link a player's sessions together.
-        /// </summary>
+        /// <summary>A new random epoch prefix, per attempt rather than per process, so sessions cannot be linked.</summary>
         public static byte[] RandomPrefix()
         {
-            // From a cryptographic generator: a guessable prefix would let a player's attempts be
-            // linked. A Guid is not promised to be random: some platforms make it from the time.
+            // A cryptographic generator, not a Guid (some platforms make Guids from the time): a
+            // guessable prefix would link a player's attempts.
             byte[] prefix = new byte[4];
             using (var random = System.Security.Cryptography.RandomNumberGenerator.Create())
             {
@@ -261,23 +240,21 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// How one cipher protects a packet as direct connect uses it: a 32-byte key, a 12-byte nonce,
-    /// the header as associated data, and a 16-byte tag after the packet. Its implementation can come
-    /// from this library, or from the operating system (DirectCipher).
+    /// A cipher as direct connect uses it: 32-byte key, 12-byte nonce, header as associated data,
+    /// 16-byte tag after the packet. Implemented here or by the operating system (DirectCipher).
     /// </summary>
     internal interface IDirectAead
     {
-        /// The protected form of in_length bytes of in_plaintext from in_offset, followed by the tag.
+        /// The protected form of in_length bytes of in_plaintext from in_offset, then the tag.
         byte[] Seal(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_plaintext, int in_offset, int in_length);
 
-        /// The packet in in_length bytes of in_sealed from in_offset (protected packet and tag), or null when the tag does not match.
+        /// The packet from in_length bytes of in_sealed at in_offset (packet and tag), or null if the tag does not match.
         byte[] Open(byte[] in_key, byte[] in_nonce, byte[] in_aad, byte[] in_sealed, int in_offset, int in_length);
     }
 
     /// <summary>
-    /// hmac-sha256: the packet is sent as it is, followed by the first 16 bytes of HMAC-SHA256 of the
-    /// header and the packet. Nothing is encrypted, so this needs no encryption implementation and
-    /// is always available. The header carries the sequence number, so the nonce adds nothing.
+    /// hmac-sha256: the packet in the clear, then the first 16 bytes of HMAC-SHA256 of header then
+    /// packet. Always available. The nonce is unused: the header already carries the sequence number.
     /// </summary>
     internal sealed class HmacSha256Authentication : IDirectAead
     {
@@ -295,11 +272,11 @@ namespace BrainCloud.Internal
         {
             if (in_sealed == null || in_offset < 0 || in_length < DirectPacket.TAG_LENGTH || in_length > in_sealed.Length - in_offset) return null;
             int packetLength = in_length - DirectPacket.TAG_LENGTH;
-            // The packet is copied once, and the copy is both checked and returned: bytes changed in
-            // the caller's buffer after the check can never be handed back as authenticated
+            // Check and return the same copy, so bytes changed in the caller's buffer after the
+            // check are never returned as authenticated
             byte[] message = macInput(in_aad, in_sealed, in_offset, packetLength);
             byte[] expected = mac(in_key, message);
-            // Every byte is compared, whatever the first difference, so the time taken says nothing about the tag
+            // Constant-time compare: the timing reveals nothing about the tag
             int difference = 0;
             for (int i = 0; i < DirectPacket.TAG_LENGTH; ++i) difference |= expected[i] ^ in_sealed[in_offset + packetLength + i];
             if (difference != 0) return null;
@@ -342,21 +319,12 @@ namespace BrainCloud.Internal
 #endif
 
     /// <summary>
-    /// Which implementation protects direct-connect traffic with each cipher.
-    ///
-    /// hmac-sha256 authenticates without encrypting, and is always available.
-    ///
-    /// chacha20-poly1305 encrypts, and is available only when a game includes an implementation
-    /// of it. This library's own is compiled in only when the game defines the scripting symbol
-    /// BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION; without it, the library contains no encryption code
-    /// at all. That is deliberate: an app store may ask whether a game implements encryption of
-    /// its own (Apple asks every app whether it uses standard encryption "instead of, or in
-    /// addition to" the operating system's), and a game should only have to answer yes when it
-    /// chose to. A game that wants direct connect encrypted, and lobby types that require it,
-    /// defines the symbol for each platform it builds.
-    ///
-    /// Key derivation (HKDF-SHA256) is always in this library: it hashes and authenticates, and
-    /// does not encrypt.
+    /// Which implementation protects direct-connect traffic with each cipher. hmac-sha256 (and HKDF
+    /// key derivation, which does not encrypt) is always available. chacha20-poly1305 needs an
+    /// implementation: this library's is compiled in only when the game defines the scripting symbol
+    /// BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION. Without it the library has no encryption code, so a game
+    /// need not declare any to app stores (as Apple asks) unless it chose to. Define it for each
+    /// platform to use encrypted direct connect, which some lobby types require.
     /// </summary>
     internal static class DirectCipher
     {
@@ -376,9 +344,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Replaces the ChaCha20-Poly1305 implementation, or with null removes it: for one backed
-        /// by the operating system, and for the tests. Install it at startup, before any attempt.
-        /// Every implementation is the same cipher, so datagrams are the same either way.
+        /// Replaces the ChaCha20-Poly1305 implementation (null removes it), e.g. with an OS-backed one
+        /// or for tests. Set it at startup, before any attempt; datagrams are identical either way.
         /// </summary>
         internal static IDirectAead ChaCha20Poly1305Implementation
         {
@@ -388,9 +355,8 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// Everything this player sends to one peer in one epoch: the key, and the sequence number,
-    /// which only goes up. Get one from DirectSession, which gives each a new epoch and retires the
-    /// one it replaces. Safe to use from more than one thread.
+    /// What this player sends to one peer in one epoch: the key and a rising sequence number. Get one
+    /// from DirectSession, which gives each a new epoch and retires the one it replaces. Thread-safe.
     /// </summary>
     internal sealed class DirectSender
     {
@@ -403,10 +369,7 @@ namespace BrainCloud.Internal
         private ulong m_next = 0;
         private bool m_retired = false;
 
-        /// <summary>
-        /// Made by DirectSession, or by the tests with a chosen epoch. Reusing an epoch with the
-        /// same pair key reuses nonces, so nothing else may call this.
-        /// </summary>
+        /// <summary>For DirectSession and tests only: reusing an epoch with the same pair key reuses nonces.</summary>
         internal DirectSender(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver, byte[] in_epoch)
         {
             m_cipher = in_cipher;
@@ -426,7 +389,7 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// The datagram carrying in_length bytes of in_packet from in_offset. Throws once this sender
-        /// has been replaced: the peer would drop its datagrams anyway, since it only moves forward.
+        /// is replaced: the peer only moves forward, so would drop it anyway.
         /// </summary>
         public byte[] Seal(byte[] in_packet, int in_offset, int in_length)
         {
@@ -434,7 +397,7 @@ namespace BrainCloud.Internal
             lock (m_lock)
             {
                 if (m_retired) throw new InvalidOperationException("this sender was replaced by a newer one");
-                // Two threads must never get the same sequence number: that would be the same nonce
+                // A sequence number used twice would reuse a nonce
                 if (m_next == ulong.MaxValue) throw new InvalidOperationException("sequence numbers used up; start a new sender");
                 sequence = m_next++;
             }
@@ -453,23 +416,17 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// Everything this player receives from one peer. It accepts only datagrams from that peer to
-    /// this player that decrypt, each sequence number once, and only ever moves forward:
+    /// What this player receives from one peer. Accepts only datagrams from that peer to this player
+    /// that decrypt, each sequence number once, and only moves forward:
     /// <list type="bullet">
-    /// <item>The first datagram that decrypts fixes the peer's epoch prefix. A peer keeps its
-    /// prefix for the whole attempt, and a player cannot rejoin a running attempt (a new attempt
-    /// has new pair keys), so another prefix is never genuine and is dropped without deriving any
-    /// key.</item>
-    /// <item>A higher count than the current epoch's means the peer started sending again: the
-    /// first datagram of it that decrypts moves this receiver to it. A lower or equal count is an
-    /// old epoch, and is dropped without deriving any key.</item>
+    /// <item>The first datagram that decrypts fixes the peer's epoch prefix. A peer keeps it for the
+    /// whole attempt and cannot rejoin one, so any other prefix is dropped without deriving a key.</item>
+    /// <item>A higher epoch count means the peer restarted sending; its first datagram that decrypts
+    /// moves this receiver to it. A lower count is dropped without deriving a key.</item>
     /// </list>
-    /// There must be exactly one for each peer for the whole attempt, which DirectSession ensures: a
-    /// new one would accept a replay of everything the old one had received. Safe to use from more
-    /// than one thread.
-    ///
-    /// It does not say where a datagram came from. Never move a peer to a new address just because
-    /// a datagram from there decrypted: an attacker can resend a genuine one from anywhere.
+    /// Exactly one per peer per attempt (DirectSession ensures it): a new one would accept replays.
+    /// Thread-safe. Never move a peer to a new address because a datagram from there decrypted:
+    /// anyone can resend a genuine one from anywhere.
     /// </summary>
     internal sealed class DirectReceiver
     {
@@ -483,11 +440,11 @@ namespace BrainCloud.Internal
         private bool m_wiped = false;
         private readonly object m_lock = new object();
 
-        /// in_sender is the peer's net id, in_receiver this player's. Made by DirectSession, or by the tests.
+        /// in_sender is the peer's net id, in_receiver this player's.
         internal DirectReceiver(byte[] in_pairKey, string in_cipher, int in_sender, int in_receiver)
         {
             m_extracted = DirectPacket.ExtractKey(in_pairKey);
-            // Checks the cipher and ids now rather than on the first datagram
+            // Fails now, not on the first datagram, for a bad cipher or id
             DirectPacket.DeriveKeyFromExtracted(m_extracted, in_cipher, in_sender, in_receiver, new byte[DirectPacket.EPOCH_LENGTH]);
             m_cipher = in_cipher;
             m_sender = in_sender;
@@ -495,14 +452,12 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// The packet in the first in_length bytes of a received datagram, or null when it is to be
-        /// dropped: not from this peer to this player, a repeat, from an earlier epoch or another
-        /// prefix, or not decrypting.
+        /// The packet in a received datagram, or null to drop it: wrong sender or receiver, a repeat,
+        /// an earlier epoch or other prefix, or not decrypting.
         /// </summary>
         public byte[] Open(byte[] in_datagram, int in_length)
         {
-            // One copy, made first: the epoch and sequence the replay window records are then always
-            // the ones the tag was checked over, whatever happens to the caller's buffer meanwhile
+            // Copy first, so the epoch and sequence the replay window records are the ones the tag covered
             byte[] datagram = DirectPacket.CopyReceived(in_datagram, in_length);
             if (datagram == null) return null;
             int sender, receiver;
@@ -544,7 +499,7 @@ namespace BrainCloud.Internal
                 }
             }
 
-            // The first epoch, or a later one: only a datagram that decrypts with its key moves this receiver to it
+            // First or later epoch: move to it only if a datagram decrypts with its key
             byte[] key = DirectPacket.DeriveKeyFromExtracted(m_extracted, m_cipher, m_sender, m_receiver, epoch);
             byte[] opened = DirectPacket.OpenCopy(m_cipher, key, m_sender, m_receiver, datagram);
             if (opened == null) return null;
@@ -557,21 +512,16 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// This player's side of one direct connect attempt: what DIRECT_CONNECT gave it (the cipher,
-    /// its net id, and each peer's net id with the key this player shares with that peer alone),
-    /// one receiver for each peer for the whole attempt, and the current sender to each. Create one
-    /// when DIRECT_CONNECT arrives and drop it when the attempt or the match ends. It keeps the rules
-    /// the format depends on:
+    /// This player's side of one direct connect attempt: the cipher, net ids and pair keys from
+    /// DIRECT_CONNECT, one receiver per peer for the whole attempt, and the current sender to each.
+    /// Create it when DIRECT_CONNECT arrives; Clear it when the attempt or match ends. It enforces:
     /// <list type="bullet">
-    /// <item>only the peers DIRECT_CONNECT named, each with its own pair key, so no member can make
-    /// or read a datagram between two others;</item>
-    /// <item>exactly one receiver per peer, so nothing already received can be replayed to it;</item>
-    /// <item>every sender gets a new epoch (this attempt's random prefix and a count that goes up),
-    /// so no key ever reuses a nonce;</item>
-    /// <item>a new sender to a peer retires the one it replaces, which the peer would no longer
-    /// accept anyway.</item>
+    /// <item>only DIRECT_CONNECT's peers, each with its own pair key;</item>
+    /// <item>exactly one receiver per peer, so nothing received can be replayed;</item>
+    /// <item>a new epoch for every sender (the attempt's prefix, a rising count), so no nonce is reused;</item>
+    /// <item>a new sender retires the one it replaces.</item>
     /// </list>
-    /// Safe to use from more than one thread.
+    /// Thread-safe.
     /// </summary>
     internal sealed class DirectSession
     {
@@ -584,10 +534,7 @@ namespace BrainCloud.Internal
         private readonly System.Collections.Generic.Dictionary<int, DirectReceiver> m_receivers = new System.Collections.Generic.Dictionary<int, DirectReceiver>();
         private readonly object m_lock = new object();
 
-        /// <summary>
-        /// in_netId is this player's net id; in_pairKeys holds, for each peer's net id, the 16 bytes
-        /// of that peer's pairKey in DIRECT_CONNECT.
-        /// </summary>
+        /// <summary>in_pairKeys maps each peer's net id to its 16-byte pairKey from DIRECT_CONNECT.</summary>
         public DirectSession(string in_cipher, int in_netId, System.Collections.Generic.IDictionary<int, byte[]> in_pairKeys)
             : this(in_cipher, in_netId, in_pairKeys, DirectPacket.RandomPrefix())
         {
@@ -606,7 +553,7 @@ namespace BrainCloud.Internal
                 DirectPacket.ExtractKey(peer.Value);   // checks the key now
                 foreach (byte[] other in m_pairKeys.Values)
                 {
-                    // Each pair's key is its own; the same one for two peers means one secret is shared beyond a pair
+                    // A key given for two peers would be shared beyond a pair
                     if (sameBytes(other, peer.Value)) throw new ArgumentException("two peers were given the same pair key");
                 }
                 m_pairKeys[peer.Key] = (byte[])peer.Value.Clone();
@@ -619,10 +566,8 @@ namespace BrainCloud.Internal
         public int NetId { get { return m_netId; } }
 
         /// <summary>
-        /// Forgets the attempt's keys, when the attempt or the match is over: the pair keys and every
-        /// key derived from them are overwritten, and every peer stops being one. Nothing can seal or
-        /// open with this session afterwards. (Copies the session never had, such as the RTT message
-        /// the pair keys arrived in, are not reached.)
+        /// When the attempt or match ends: overwrites the pair keys and all keys derived from them and
+        /// forgets every peer. Copies held elsewhere (e.g. the RTT message) are not reached.
         /// </summary>
         public void Clear()
         {
@@ -643,7 +588,7 @@ namespace BrainCloud.Internal
             return m_pairKeys.ContainsKey(in_netId);
         }
 
-        /// The receiver for packets from in_peerNetId, always the same one for this attempt. Throws for a net id that is not a peer.
+        /// The receiver for in_peerNetId, the same one for the whole attempt. Throws if not a peer.
         public DirectReceiver ReceiverFor(int in_peerNetId)
         {
             lock (m_lock)
@@ -658,7 +603,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        /// The current sender to in_peerNetId, made on first use. Throws for a net id that is not a peer.
+        /// The current sender to in_peerNetId, made on first use. Throws if not a peer.
         public DirectSender SenderFor(int in_peerNetId)
         {
             lock (m_lock)
@@ -673,10 +618,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        /// <summary>
-        /// A new sender to in_peerNetId, in a new epoch, for when this player starts sending to it
-        /// again (a rebuilt socket, say). The one it replaces is retired and refuses to seal.
-        /// </summary>
+        /// <summary>A new sender to in_peerNetId in a new epoch, e.g. after a rebuilt socket. Retires the old one.</summary>
         public DirectSender RestartSender(int in_peerNetId)
         {
             lock (m_lock)
@@ -717,11 +659,9 @@ namespace BrainCloud.Internal
     }
 
     /// <summary>
-    /// Which sequence numbers have been received in one epoch from one peer, so a repeated or
-    /// replayed datagram is dropped: the highest seen and a bit for each of the 63 before it, as
-    /// DTLS does. Anything older than that is dropped too. Check before decrypting, and Accept only
-    /// after a datagram has decrypted, so a forged one cannot move the window. DirectReceiver keeps
-    /// one, for its current epoch, and starts a new one when it moves to a later epoch.
+    /// Replay protection for one epoch from one peer, as in DTLS: the highest sequence seen plus a bit
+    /// for each of the 63 before it; anything older is dropped. Check IsNew before decrypting and
+    /// Accept only after, so a forged datagram cannot move the window.
     /// </summary>
     internal sealed class ReplayWindow
     {
@@ -753,7 +693,7 @@ namespace BrainCloud.Internal
             if (in_sequence > m_highest)
             {
                 ulong ahead = in_sequence - m_highest;
-                // A shift by 64 or more is masked to the low 6 bits in C#, so it must not be shifted at all
+                // C# masks shift counts to 6 bits, so a shift of 64 or more must be avoided
                 m_seen = ahead >= SIZE ? 0 : m_seen << (int)ahead;
                 m_seen |= 1;
                 m_highest = in_sequence;

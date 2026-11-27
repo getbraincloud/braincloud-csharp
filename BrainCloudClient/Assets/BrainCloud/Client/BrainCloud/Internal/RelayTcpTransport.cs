@@ -29,8 +29,8 @@ namespace BrainCloud.Internal
         private object fLock = new object();
         private Queue<byte[]> fToSend = new Queue<byte[]>();
 
-        // Set by Close(). A connect or read still in flight on this socket then reports nothing,
-        // because RelayComms may already have a new transport connecting.
+        // Set by Close(): in-flight callbacks then report nothing, as RelayComms may already be
+        // connecting a new transport.
         private volatile bool m_closed = false;
 
         public RelayTcpTransport(IRelayTransportListener in_listener)
@@ -87,8 +87,7 @@ namespace BrainCloud.Internal
                 lock (fLock)
                 {
                     fToSend.Enqueue(message);
-                    // Start writing only if no write is in progress; otherwise the one in progress
-                    // carries on to this message when it finishes.
+                    // Start only if idle; a write in progress continues to this message when it finishes
                     if (fToSend.Count == 1)
                     {
                         writeQueued();
@@ -102,9 +101,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Writes the message at the head of the queue, and the ones after it for as long as writes
-        /// complete straight away. A message stays at the head until its write has finished.
-        /// Call with fLock held.
+        /// Writes queued messages while writes complete synchronously; a message stays at the head
+        /// until written. Call with fLock held.
         /// </summary>
         private void writeQueued()
         {
@@ -117,8 +115,7 @@ namespace BrainCloud.Internal
                     // tcpFinishWrite carries on when it finishes
                     return;
                 }
-                // Finished already. Carry on here rather than in tcpFinishWrite, which would go
-                // one call deeper for every message queued.
+                // Done already: continue here, not in tcpFinishWrite, which would recurse once per message
                 m_tcpStream.EndWrite(result);
                 fToSend.Dequeue();
             }
@@ -189,9 +186,8 @@ namespace BrainCloud.Internal
                     m_tcpBytesToRead -= SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY;
                     if (m_tcpBytesToRead <= 0)
                     {
-                        // Every relay packet has at least its control byte after the length. A
-                        // shorter length means the stream is out of step: a read of 0 bytes would
-                        // look like the server closing, and a negative one throws.
+                        // Every relay packet has a control byte after the length; shorter means the stream
+                        // is out of step (a 0-byte read looks like a close, a negative one throws)
                         reportError("Bad packet length " + (m_tcpBytesToRead + SIZE_OF_LENGTH_PREFIX_BYTE_ARRAY));
                         return;
                     }

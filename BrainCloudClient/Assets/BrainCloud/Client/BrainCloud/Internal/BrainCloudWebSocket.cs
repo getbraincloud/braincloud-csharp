@@ -126,9 +126,8 @@ namespace BrainCloud.Internal
             ClientWebSocket = null;
             try
             {
-                // CloseAsync throws unless the socket is open. One still connecting, or whose
-                // connect failed, is aborted instead. On .NET that also stops a connect in
-                // progress; Mono's Abort() does not.
+                // CloseAsync throws unless open, so abort one still connecting or failed.
+                // .NET's Abort() also stops a connect in progress; Mono's does not.
                 if (socket.State == WebSocketState.Open || socket.State == WebSocketState.CloseReceived)
                 {
                     socket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
@@ -140,7 +139,7 @@ namespace BrainCloud.Internal
             }
             catch (Exception)
             {
-                // It is being closed either way; there is no one left to tell
+                // Closing either way; nothing to report
             }
 #elif UNITY_WEBGL && !UNITY_EDITOR
             if (NativeWebSocket == null)

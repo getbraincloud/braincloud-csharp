@@ -8,9 +8,8 @@ namespace BrainCloud.Internal
     using System;
 
     /// <summary>
-    /// SHA-256 (FIPS 180-4), for deriving the keys players use when connected directly. In plain C#
-    /// for the same reason as ChaCha20Poly1305: under Unity the library takes no hashing or ciphers
-    /// from the platform's cryptography, only its random number generator.
+    /// SHA-256 (FIPS 180-4) for direct-connect key derivation. Plain C#: under Unity the library takes
+    /// nothing from platform cryptography except its random number generator.
     /// </summary>
     internal sealed class Sha256
     {
@@ -156,8 +155,8 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// HKDF-SHA256: in_length bytes of key material from in_ikm, with in_salt (null or empty
-        /// means a block of zeros, as the RFC says) and in_info.
+        /// HKDF-SHA256: in_length bytes of key material from in_ikm, in_salt and in_info. A null or
+        /// empty salt means zeros, per the RFC.
         /// </summary>
         public static byte[] Hkdf(byte[] in_salt, byte[] in_ikm, byte[] in_info, int in_length)
         {

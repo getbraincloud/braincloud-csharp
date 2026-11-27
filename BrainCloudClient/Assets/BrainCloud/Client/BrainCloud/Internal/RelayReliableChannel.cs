@@ -17,24 +17,20 @@ namespace BrainCloud.Internal
     using System.Collections.Generic;
 
     /// <summary>
-    /// The reliability layer of one relay link. Going out: packet ids, and resending reliable
-    /// packets until they are acknowledged. Coming in: dropping duplicates and putting ordered
-    /// packets back in order.
-    ///
-    /// Packets are in the relay wire format: a 2-byte length prefix, a control byte, then an
-    /// 8-byte header (2 bytes of flags, channel and packet id, then a 6-byte player mask whose
-    /// low byte is the sender's net id), then the payload.
+    /// Reliability for one relay link: packet ids and resends going out; duplicate dropping and
+    /// reordering coming in. Packets use relay framing: 2-byte length, control byte, 8-byte header
+    /// (2 bytes flags/channel/packet id, 6-byte player mask with the sender's net id in the low byte), payload.
     /// </summary>
     internal sealed class RelayReliableChannel
     {
         public const int MAX_PACKET_ID = 0xFFF;
         public const int MAX_CHANNELS = 4;
 
-        /// A reliable packet not acknowledged for this long means the link is lost.
+        /// A reliable packet unacknowledged this long means the link is lost.
         public const int RELIABLE_GIVE_UP_MS = 10000;
 
         private const int MAX_PACKET_ID_HISTORY = 60 * 10; // So we last 10 seconds at 60 fps
-        // Limits on what one peer can make this player hold, between players directly
+        // PeerToPeer limits on what one peer can make this player hold
         private const int MAX_PEER_STREAMS = 4096;
         private const int MAX_PEER_HELD_PACKETS = 2 * MAX_PACKET_ID_HISTORY;
         private const int MAX_RELIABLE_RESEND_INTERVAL = 500;
@@ -45,7 +41,7 @@ namespace BrainCloud.Internal
         {
             Accepted,
 
-            /// Too many packets are waiting for an earlier one that never came: the link should be dropped.
+            /// Too many packets are held waiting for a missing one: drop the link.
             TooManyOutOfOrder
         }
 
@@ -56,11 +52,10 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
-        // Recent reliable unordered packets, by header, so a resent one is not delivered again
-        // (PeerToPeer only)
+        // Recent reliable unordered headers, so a resend is not delivered twice (PeerToPeer only)
         private readonly HashSet<ulong> m_unorderedSeen = new HashSet<ulong>();
         private readonly Queue<ulong> m_unorderedSeenOrder = new Queue<ulong>();
-        // Ordered packets held across every stream, waiting for earlier ones
+        // Ordered packets held across all streams
         private int m_heldCount = 0;
         // Ordered streams received from (PeerToPeer only)
         private readonly HashSet<ulong> m_peerStreams = new HashSet<ulong>();
@@ -78,8 +73,7 @@ namespace BrainCloud.Internal
             new Dictionary<int, int>()
         };
 
-        /// <param name="in_loggingEnabled">Whether to build and log diagnostic messages; checked each time.</param>
-        /// <param name="in_log">Logs a diagnostic message.</param>
+        /// <param name="in_loggingEnabled">Checked before each log message is built.</param>
         public RelayReliableChannel(Func<bool> in_loggingEnabled, Action<string> in_log)
         {
             m_loggingEnabled = in_loggingEnabled ?? (() => false);
@@ -87,20 +81,17 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// For a link straight to one other player, with no relay server between: repeats of
-        /// reliable unordered packets are dropped (a relay server drops those itself), and how many
-        /// streams and held packets the peer can make this player keep is limited; going over drops
-        /// the link (ReceiveOutcome.TooManyOutOfOrder).
+        /// For a direct link with no relay server: drops repeated reliable unordered packets (a relay
+        /// does this itself) and caps streams and held packets (exceeding returns TooManyOutOfOrder).
         /// </summary>
         public bool PeerToPeer { get; set; }
 
-        /// Reliable packets sent and not yet acknowledged.
         public int UnacknowledgedCount
         {
             get { return m_reliables.Count; }
         }
 
-        /// Forgets everything about the link, for a new connection.
+        /// Clears all link state, for a new connection.
         public void Reset()
         {
             m_sendPacketId.Clear();
@@ -125,8 +116,7 @@ namespace BrainCloud.Internal
         #region outgoing
 
         /// <summary>
-        /// The packet id for the next packet of a stream, where the stream is the header without
-        /// its packet id (flags, channel and player mask).
+        /// Next packet id for a stream: the header without its packet id (flags, channel, player mask).
         /// </summary>
         public int NextPacketId(ulong in_ackIdWithoutPacketId)
         {
@@ -142,8 +132,8 @@ namespace BrainCloud.Internal
         /// <summary>
         /// Keeps a reliable packet to resend until it is acknowledged.
         /// </summary>
-        /// <param name="in_ackId">The 8 header bytes as sent, read as a native ulong (what an ACK carries back).</param>
-        /// <param name="in_packetData">The packet as sent, without the length prefix.</param>
+        /// <param name="in_ackId">The 8 header bytes as sent, read as a native ulong; an ACK echoes them.</param>
+        /// <param name="in_packetData">Without the length prefix.</param>
         public void TrackReliable(ulong in_ackId, byte[] in_packetData, int in_channel, int in_packetId, long in_nowMs)
         {
             m_reliables[in_ackId] = new UDPPacket(in_packetData, in_channel, in_packetId, 0, in_nowMs);
@@ -155,9 +145,9 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Resends reliable packets whose resend time has come.
+        /// Resends reliable packets that are due.
         /// </summary>
-        /// <returns>False when a packet has gone unacknowledged too long: the link should be dropped.</returns>
+        /// <returns>False if a packet has gone unacknowledged too long: drop the link.</returns>
         public bool ProcessResends(long in_nowMs, Func<byte[], bool> in_send)
         {
             foreach (var kv in m_reliables)
@@ -181,8 +171,7 @@ namespace BrainCloud.Internal
         #region incoming
 
         /// <summary>
-        /// The packet id a peer's ordered stream on this channel had reached when we joined, so the
-        /// next packet from it is taken as in order.
+        /// The packet id a peer's ordered stream had reached when we joined, so its next packet counts as in order.
         /// </summary>
         public void SetTrackedPacketId(int in_channel, int in_netId, int in_packetId)
         {
@@ -190,12 +179,11 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// Takes a received RELAY packet and hands the packets that are now ready to the game, in
-        /// order. A duplicate is dropped; an ordered packet that arrives early is held until the
-        /// ones before it have arrived.
+        /// Delivers a received RELAY packet and any it releases, in order. Duplicates are dropped;
+        /// early ordered packets are held until the gap fills.
         /// </summary>
-        /// <param name="in_data">The packet as received, with its length prefix.</param>
-        /// <param name="in_deliver">Called for each packet ready for the game, with the sender's net id.</param>
+        /// <param name="in_data">With its length prefix.</param>
+        /// <param name="in_deliver">Called per ready packet, with the sender's net id.</param>
         public ReceiveOutcome Receive(byte[] in_data, Action<short, byte[]> in_deliver)
         {
             // Big-endian on the wire
@@ -321,8 +309,8 @@ namespace BrainCloud.Internal
             }
             else if (reliable && PeerToPeer)
             {
-                // The same header again is a resend whose acknowledgement was lost. Remembered for
-                // MAX_PACKET_ID_HISTORY packets, far fewer than a stream sends before its ids wrap.
+                // A repeated header is a resend whose ACK was lost. The history is far shorter than a
+                // stream's id wrap.
                 if (!m_unorderedSeen.Add(ackId))
                 {
 #if BC_DEBUG_RELAY_LOGS_ENABLED
@@ -343,7 +331,7 @@ namespace BrainCloud.Internal
 
         #endregion
 
-        /// True when packet id a comes at or before b, allowing for the ids wrapping round.
+        /// True when packet id a is at or before b, allowing for wraparound.
         public static bool packetLE(int a, int b)
         {
             if (a > PACKET_HIGHER_THRESHOLD && b <= PACKET_LOWER_THRESHOLD)

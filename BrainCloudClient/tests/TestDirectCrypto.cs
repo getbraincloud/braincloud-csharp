@@ -10,9 +10,8 @@ using System.Text;
 namespace BrainCloudTests
 {
     /// <summary>
-    /// The cryptography for direct connect, with no server: the cipher against the test vectors in
-    /// RFC 8439, the key derivation against RFC 5869, SHA-256 and HMAC against the platform's own,
-    /// and the datagram format against fixed values that other client libraries can check too.
+    /// Direct connect cryptography, with no server: the cipher against RFC 8439, HKDF against
+    /// RFC 5869, SHA-256 and HMAC against the platform's, and the datagram format against fixed values.
     /// </summary>
     [TestFixture]
     public class TestDirectCrypto
@@ -215,9 +214,8 @@ namespace BrainCloudTests
         // hmac-sha256: the key from 0 to 1, and the same PUNCH datagram, authenticated only
         private const string KEY_HMAC_0_TO_1 = "0c3cf0a6686f46f4848d36128969a1bc1ca024809751e8ba972b2d4f42552732";
         private const string PUNCH_DATAGRAM_HMAC = "b100011011121314151617000000000000000510000000018b81b3f2d111c7a9e48463375ac28c13";
-        // The most preferred cipher this build supports: chacha20-poly1305 when it is built with
-        // BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION, as games that want encryption are, otherwise hmac-sha256.
-        // The tests that do not depend on the cipher run with it, so they run in both builds.
+        // The most preferred cipher in this build: chacha20-poly1305 with BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION,
+        // otherwise hmac-sha256. Cipher-independent tests use it, so they run in both builds.
         private static readonly string CIPHER = DirectPacket.SupportedCiphers[0];
 
 #if BRAINCLOUD_DIRECT_CONNECT_ENCRYPTION
@@ -813,10 +811,8 @@ namespace BrainCloudTests
 
         // A full-size packet: RELAY, its header (reliable, ordered, channel 1, packet id 0x123, to net
         // id 1, from net id 0), then 1,024 bytes of game data (i & 0xff): the most the relay API sends.
-        // From net id 0 to 1, epoch 0x10..0x17, sequence 0x0102030405060708, pair key 0..15. The
-        // expected values were computed independently, from the design's section 7 with Node's own
-        // HKDF, HMAC and ChaCha20-Poly1305, which also reproduces the small vectors above. Other
-        // client libraries can check against the same values.
+        // From net id 0 to 1, epoch 0x10..0x17, sequence 0x0102030405060708, pair key 0..15.
+        // Expected values computed independently with Node's HKDF, HMAC and ChaCha20-Poly1305.
         private static byte[] FullSizePacket()
         {
             byte[] packet = new byte[9 + 1024];

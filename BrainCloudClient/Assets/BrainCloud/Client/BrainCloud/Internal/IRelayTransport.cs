@@ -6,8 +6,7 @@
 namespace BrainCloud.Internal
 {
     /// <summary>
-    /// What a relay transport reports back to RelayComms. Calls can come from any thread;
-    /// RelayComms queues them and handles them on the main thread in Update().
+    /// Transport callbacks to RelayComms, from any thread; RelayComms queues them for Update().
     /// </summary>
     internal interface IRelayTransportListener
     {
@@ -20,14 +19,14 @@ namespace BrainCloud.Internal
 
         void OnTransportConnected();
 
-        /// The data includes the 2-byte length prefix the relay protocol puts on every packet.
+        /// data includes the relay's 2-byte length prefix.
         void OnTransportData(byte[] data, int length);
 
         void OnTransportError(string message);
     }
 
     /// <summary>
-    /// Where the bytes of a relay connection go: a WebSocket, TCP or UDP connection to a relay server.
+    /// A WebSocket, TCP or UDP connection to a relay server.
     /// </summary>
     internal interface IRelayTransport
     {
