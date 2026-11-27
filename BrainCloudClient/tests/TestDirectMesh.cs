@@ -797,6 +797,115 @@ namespace BrainCloudTests
             Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
         }
 
+        /// Runs the closing connections of in_nodes until they finish, with the others updating.
+        private void PumpClosing(List<Node> in_nodes, int in_rounds = 40)
+        {
+            for (int i = 0; i < in_rounds; ++i)
+            {
+                Thread.Sleep(2);
+                m_now += 50;
+                foreach (Node node in in_nodes)
+                {
+                    if (!node.Mesh.IsClosed) node.Mesh.UpdateClosing(m_now);
+                }
+            }
+        }
+
+        [Test]
+        public void PlayersLeavingTogether_TellBrainCloudTheMatchStopped_Once()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            // Both leave in the same moment: neither has heard the other leave
+            foreach (Node node in nodes) node.Mesh.SendDisconnect();
+            foreach (Node node in nodes) Assert.That(node.Mesh.Close(m_now), Is.True, "listening for the others leaving");
+            PumpClosing(nodes);
+            Assert.That(nodes.All(n => n.Mesh.IsClosed), Is.True);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1), "the lowest net id among them");
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "brainCloud gets it once");
+        }
+
+        [Test]
+        public void APlayerLeavingAlone_DoesNotStopTheLobby_WhileItListensForOthersLeaving()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            nodes[0].Mesh.SendDisconnect();
+            Assert.That(nodes[0].Mesh.Close(m_now), Is.True);
+            PumpClosing(new List<Node> { nodes[0] });
+            Assert.That(nodes[0].Mesh.IsClosed, Is.True, "stops listening after a while");
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "B is still playing");
+        }
+
+        [Test]
+        public void DisconnectThenEndMatch_InOneFrame_EndsNothing()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            nodes[0].Mesh.SendDisconnect();
+            Assert.That(nodes[0].Mesh.EndMatch(null, m_now), Does.Contain("closing"));
+            Assert.That(nodes[0].Listener.Ops("END_MATCH"), Is.Empty);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "B plays on, as with the relay");
+        }
+
+        [Test]
+        public void EndMatchTwice_EndsTheMatchOnce()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            Assert.That(nodes[0].Mesh.EndMatch(null, m_now), Is.Null);
+            Assert.That(nodes[0].Mesh.EndMatch(null, m_now), Is.Null);
+            Pump();
+            Assert.That(nodes[0].Listener.Ops("END_MATCH").Count(), Is.EqualTo(1));
+            Assert.That(nodes[1].Listener.Ops("END_MATCH").Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void APlayerCutOffFromTheOwnerAlone_DoesNotStopTheLobbyOnTakingOver()
+        {
+            List<Node> nodes = Lobby(3, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            // The path between A (owner) and B fails; C hears both
+            nodes[0].Mesh.DropForTests = (to, packet) => to == 1;
+            nodes[1].Mesh.DropForTests = (to, packet) => to == 0;
+            Pump(12, 1000);
+            Assert.That(nodes[1].Mesh.OwnerCxId, Is.EqualTo(CX[1]), "B took over from the owner it lost");
+            Assert.That(nodes[1].Mesh.EndMatch(null, m_now), Is.Null);
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped), Is.Empty, "A and C may still be playing");
+        }
+
+        [Test]
+        public void TakingOverFromAnOwnerThatLeft_StopsTheLobbyOnEndMatch()
+        {
+            List<Node> nodes = Lobby(3, in_keepAliveRateSecs: 30);
+            StartAll(nodes);
+            Pump();
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            nodes[0].Paused = true;
+            Pump();
+            Assert.That(nodes[1].Mesh.OwnerCxId, Is.EqualTo(CX[1]));
+            Assert.That(nodes[1].Mesh.EndMatch(null, m_now), Is.Null);
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void KeepAlivesStop_OnceBrainCloudSaysTheMatchIsOver()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            StartAll(nodes);
+            ServerCall first = nodes[0].Calls(ServiceOperation.RoomKeepAlive).Single();
+            // Another member stopped it: brainCloud refuses the keep-alive
+            first.GetCallback().OnErrorCallback(400, ReasonCodes.INVALID_REQUEST, "The lobby is not running direct connected.");
+            Pump(10, 500);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(1), "no more, each one billed");
+        }
+
         [Test]
         public void AnEndMatchPayloadTooBigForOneDatagram_IsRefused()
         {

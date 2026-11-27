@@ -77,6 +77,8 @@ namespace BrainCloud.Internal
         public const int CONTROL_RESEND_MS = 200;
         /// ...for this long at most.
         public const int CONTROL_GIVE_UP_MS = 5000;
+        /// After leaving, peers leaving at the same moment are listened for this long, so one of them tells brainCloud the match stopped.
+        public const int LEAVE_LINGER_MS = 1000;
         /// After the match ends, repeats of END_MATCH are still acknowledged for this long.
         public const int END_MATCH_LINGER_MS = 1000;
         /// How many copies of DISCONNECT are sent; the first that arrives counts.
@@ -101,6 +103,8 @@ namespace BrainCloud.Internal
             public IPEndPoint Address;
             public bool Connected;
             public bool Lost;
+            // Said it was leaving after this player had said so too: the two left together
+            public bool LeftWithThisPlayer;
             public long LastHeardMs;
             public int RoundTripMs = -1;
             public RelayReliableChannel Channel;
@@ -147,6 +151,15 @@ namespace BrainCloud.Internal
         // what finishes END_MATCH
         private bool m_endMatchSent;
         private bool m_matchEnded;
+        // This player said it is leaving (SendDisconnect)
+        private bool m_leaving;
+        // After Close, still listening for peers leaving at the same moment
+        private bool m_lingerForLeavers;
+        // This player owns the match because it was given it, or its owner left: not because it
+        // stopped hearing from the owner, which may be its own path failing while the owner plays on
+        private bool m_ownershipConfirmed = true;
+        // brainCloud refused a keep-alive: the lobby is no longer running this match
+        private bool m_keepAliveRefused;
         // Whether the last peer lost said it was leaving. When every peer is lost and the last one
         // went quiet instead, this player may be the one cut off, while the others play on.
         private bool m_lastLossGraceful;
@@ -321,7 +334,10 @@ namespace BrainCloud.Internal
         /// </summary>
         public string EndMatch(Dictionary<string, object> in_payload, long in_nowMs)
         {
-            if (m_closing) return "the connection is closing";
+            // After Disconnect, as with the relay, which takes no END_MATCH once its sender has left
+            if (m_closing || m_leaving) return "the connection is closing";
+            // Once: a second call in the same frame would raise END_MATCH again
+            if (m_endMatchSent || m_matchEnded) return null;
             if (!isOwner) return "only the owner may end the match";
             Dictionary<string, object> payload = in_payload ?? new Dictionary<string, object>();
             byte[] json = Encoding.UTF8.GetBytes(JsonWriter.Serialize(payload));
@@ -331,9 +347,9 @@ namespace BrainCloud.Internal
             }
             sendControl(END_MATCH, json, in_nowMs);
             m_endMatchSent = true;
-            // Not when this player may be the one cut off: brainCloud would start the lobby's next
-            // round while the others are still playing this one
-            if (!everyPeerLost() || m_lastLossGraceful) roomStopped();
+            // Not when this player may be the one cut off, from everyone or from the owner it took
+            // over from: brainCloud would start the lobby's next round while the others play on
+            if (m_ownershipConfirmed && (!everyPeerLost() || m_lastLossGraceful)) roomStopped();
             raiseEndMatch(payload, in_nowMs, false);
             return null;
         }
@@ -359,6 +375,7 @@ namespace BrainCloud.Internal
             // After END_MATCH, as the relay: the match is over for everyone, and a DISCONNECT that
             // overtook a lost END_MATCH would have the others elect a new owner and drop the END_MATCH
             if (m_closing || m_endMatchSent || m_matchEnded) return;
+            m_leaving = true;
             foreach (MeshPeer peer in m_peers)
             {
                 if (!peer.Lost) sendDisconnect(peer);
@@ -444,17 +461,26 @@ namespace BrainCloud.Internal
         private void keepAlive(long in_nowMs)
         {
             m_lastKeepAliveMs = in_nowMs;
-            postLobby(ServiceOperation.RoomKeepAlive, "keeping the lobby alive failed: ");
+            postLobby(ServiceOperation.RoomKeepAlive, "keeping the lobby alive failed: ", reasonCode =>
+            {
+                // The lobby is no longer running this match (another member stopped it): every
+                // further keep-alive would be refused, and each is a call the app pays for
+                if (reasonCode == ReasonCodes.INVALID_REQUEST) m_keepAliveRefused = true;
+            });
         }
 
-        private void postLobby(ServiceOperation in_operation, string in_failureLog)
+        private void postLobby(ServiceOperation in_operation, string in_failureLog, Action<int> in_onFailure = null)
         {
             if (m_send == null || m_lobbyId == null) return;
             var data = new Dictionary<string, object>();
             data[OperationParam.LobbyIdentifier.Value] = m_lobbyId;
             ServerCallback callback = BrainCloudClient.CreateServerCallback(
                 (response, cbObject) => { },
-                (status, reasonCode, error, cbObject) => log(in_failureLog + status + " " + reasonCode + " " + error));
+                (status, reasonCode, error, cbObject) =>
+                {
+                    log(in_failureLog + status + " " + reasonCode + " " + error);
+                    if (in_onFailure != null) in_onFailure(reasonCode);
+                });
             m_send(new ServerCall(ServiceName.Lobby, in_operation, data, callback));
         }
 
@@ -494,7 +520,7 @@ namespace BrainCloud.Internal
             processControls(in_nowMs);
             // brainCloud's lobby owner too, when it is not the players' owner: brainCloud changes its owner
             // only when the owner leaves the lobby, and takes keep-alives from any member
-            if (m_keepAliveMs > 0 && (isOwner || isLobbyOwner) && in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs) keepAlive(in_nowMs);
+            if (m_keepAliveMs > 0 && (isOwner || isLobbyOwner) && !m_matchEnded && !m_keepAliveRefused && in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs) keepAlive(in_nowMs);
         }
 
         private bool everyPeerLost()
@@ -517,7 +543,17 @@ namespace BrainCloud.Internal
             // the room stopped when its last player goes, so the lobby returns to setup. Only when the
             // last of the others said it was leaving: when it went quiet, this player may be the one
             // cut off, and the others still playing. Then brainCloud's own timeout ends the lobby.
-            if (!m_closing && m_started && everyPeerLost() && m_lastLossGraceful) roomStopped();
+            if (!m_closing && m_started)
+            {
+                if (everyPeerLost()) stopIfLastToLeave();
+                else if (m_leaving && m_keepAliveMs > 0 && !m_stoppedSent)
+                {
+                    // Others may be leaving at this same moment, their DISCONNECT still on its way:
+                    // listened for a little while, so the last of them all tells brainCloud
+                    m_lingerForLeavers = true;
+                    if (in_nowMs + LEAVE_LINGER_MS - m_lingerUntilMs > 0) m_lingerUntilMs = in_nowMs + LEAVE_LINGER_MS;
+                }
+            }
             m_closing = true;
             if (m_controls.Count == 0 && in_nowMs - m_lingerUntilMs >= 0)
             {
@@ -618,6 +654,7 @@ namespace BrainCloud.Internal
                 // Only finishing END_MATCH: acknowledgements of it, and repeats of one received
                 if (type == CONTROL_ACK) onControlAck(peer, packet);
                 else if (type == END_MATCH && packet.Length >= 3) acknowledge(peer, packet);
+                else if (type == DISCONNECT && m_lingerForLeavers && !m_stoppedSent) onLeftTogether(peer, in_nowMs);
                 return;
             }
 
@@ -825,10 +862,38 @@ namespace BrainCloud.Internal
         #region peers and owner
 
         /// in_graceful: the peer said it was leaving, rather than going quiet.
+        /// <summary>
+        /// Tells brainCloud the match stopped when every peer is gone and the last of them said it
+        /// was leaving. When several left together, each having said so before hearing the others,
+        /// only the one with the lowest net id among them sends it, so brainCloud gets it once.
+        /// </summary>
+        private void stopIfLastToLeave()
+        {
+            if (!everyPeerLost() || !m_lastLossGraceful) return;
+            foreach (MeshPeer peer in m_peers)
+            {
+                if (peer.LeftWithThisPlayer && peer.NetId < m_myNetId) return;
+            }
+            roomStopped();
+        }
+
+        // A peer's DISCONNECT while this player, having left too, waits for peers leaving with it
+        private void onLeftTogether(MeshPeer in_peer, long in_nowMs)
+        {
+            // No events: the game has disconnected
+            in_peer.Lost = true;
+            in_peer.LeftWithThisPlayer = true;
+            m_lastLossGraceful = true;
+            if (!everyPeerLost()) return;
+            stopIfLastToLeave();
+            m_lingerUntilMs = in_nowMs;
+        }
+
         private void lose(MeshPeer in_peer, string in_reason, bool in_graceful, long in_nowMs)
         {
             if (in_peer.Lost) return;
             in_peer.Lost = true;
+            if (in_graceful && m_leaving) in_peer.LeftWithThisPlayer = true;
             m_lastLossGraceful = in_graceful;
             log("lost net id " + in_peer.NetId + ": " + in_reason);
             in_peer.Channel.Reset();
@@ -840,7 +905,13 @@ namespace BrainCloud.Internal
                 addProfileId(disconnect, "profileId", in_peer.CxId);
                 m_listener.OnMeshSystem(JsonWriter.Serialize(disconnect));
             }
-            if (string.Equals(in_peer.CxId, m_ownerCxId, StringComparison.Ordinal)) electOwner(in_nowMs);
+            if (string.Equals(in_peer.CxId, m_ownerCxId, StringComparison.Ordinal))
+            {
+                // Taking over from an owner that left is certain; from one gone quiet, it may be this
+                // player's own path that failed
+                m_ownershipConfirmed = in_graceful;
+                electOwner(in_nowMs);
+            }
         }
 
         /// <summary>

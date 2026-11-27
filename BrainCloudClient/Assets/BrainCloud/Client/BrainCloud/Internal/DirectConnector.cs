@@ -86,7 +86,8 @@ namespace BrainCloud.Internal
         /// <summary>
         /// brainCloud's owner of the lobby, kept up to date from the lobby's events. It changes only
         /// when the owner leaves the lobby, so it can differ from the players' own owner, who changes
-        /// when the owner leaves the match. brainCloud takes ROOM_STOPPED from this one alone.
+        /// when the owner leaves the match. It also keeps the lobby alive when it is not the players'
+        /// owner, and tells brainCloud the match stopped on the players' owner's END_MATCH.
         /// </summary>
         public string LobbyOwnerCxId { get; internal set; }
     }
