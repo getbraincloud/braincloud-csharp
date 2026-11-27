@@ -211,13 +211,17 @@ namespace BrainCloud.Internal
 
         /// <summary>
         /// A new random epoch prefix, for one attempt. It is random per attempt, not per process, so
-        /// it does not link a player's sessions together. A version 4 GUID's randomness is plenty:
-        /// it only has to differ from other players' in the same attempt.
+        /// it does not link a player's sessions together.
         /// </summary>
         public static byte[] RandomPrefix()
         {
+            // From a cryptographic generator: a guessable prefix would let a player's attempts be
+            // linked. A Guid is not promised to be random: some platforms make it from the time.
             byte[] prefix = new byte[4];
-            Buffer.BlockCopy(Guid.NewGuid().ToByteArray(), 0, prefix, 0, 4);
+            using (var random = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                random.GetBytes(prefix);
+            }
             return prefix;
         }
 
