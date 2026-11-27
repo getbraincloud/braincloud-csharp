@@ -975,6 +975,77 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void ADatagramHeldUpOnTheWay_DoesNotMoveThePeerBackToWhereItWas()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            nodes[1].Paused = true;
+
+            // B moves: a later datagram from its new address, then an earlier one, held up, from the old one
+            Socket moved = NewSocket(), before = NewSocket();
+            m_extraSockets.Add(moved);
+            m_extraSockets.Add(before);
+            byte[] ping = { DirectMeshTransport.PING, 0, 0, 0, 1 };
+            byte[] earlier = nodes[1].Session.SenderFor(0).Seal(ping, 0, ping.Length);
+            byte[] later = nodes[1].Session.SenderFor(0).Seal(ping, 0, ping.Length);
+            moved.SendTo(later, nodes[0].Socket.LocalEndPoint);
+            Pump(3);
+            Assert.That(nodes[0].Mesh.PeerAddressForTests(1), Is.EqualTo(moved.LocalEndPoint));
+            before.SendTo(earlier, nodes[0].Socket.LocalEndPoint);
+            Pump(3);
+            Assert.That(nodes[0].Mesh.PeerAddressForTests(1), Is.EqualTo(moved.LocalEndPoint), "the held-up datagram opened, but did not move B back");
+        }
+
+        [TestCase(new byte[] { DirectMeshTransport.PING, 0, 0, 0, 1, 9 })]
+        [TestCase(new byte[] { DirectMeshTransport.OWNER, 0, 1 })]
+        [TestCase(new byte[] { DirectMeshTransport.ACK, 0, 0 })]
+        [TestCase(new byte[] { 99, 1, 2, 3 })]
+        public void APacketOfTheWrongLengthOrAnUnknownType_ChangesNothing(byte[] in_packet)
+        {
+            List<Node> nodes = Lobby(2);
+            nodes[0].Mesh.Start(m_now);
+            nodes[1].Paused = true;
+            IPEndPoint before = nodes[0].Mesh.PeerAddressForTests(1);
+
+            Socket elsewhere = NewSocket();
+            m_extraSockets.Add(elsewhere);
+            elsewhere.SendTo(nodes[1].Session.SenderFor(0).Seal(in_packet, 0, in_packet.Length), nodes[0].Socket.LocalEndPoint);
+            Pump(3);
+            Assert.That(nodes[0].Mesh.PeerAddressForTests(1), Is.EqualTo(before), "not moved");
+            Assert.That(nodes[0].Listener.Ops("CONNECT").Count(), Is.EqualTo(1), "B did not connect");
+        }
+
+        [Test]
+        public void WhenTheOwnerLeaves_APeerThatHasNotConnectedYet_IsNotMadeOwner()
+        {
+            List<Node> nodes = Lobby(3);
+            // B (net id 1) has not taken its connection over; A and C have
+            nodes[0].Mesh.Start(m_now);
+            nodes[2].Mesh.Start(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            nodes[0].Paused = true;
+            Pump();
+            Assert.That(nodes[2].Mesh.OwnerCxId, Is.EqualTo(CX[2]), "C, not B, which cannot act as owner");
+            Assert.That(nodes[2].Listener.Ops("MIGRATE_OWNER").Single()["cxId"], Is.EqualTo(CX[2]));
+            Assert.That(nodes[2].Mesh.EndMatch(null, m_now), Is.Null, "and may end the match");
+        }
+
+        [Test]
+        public void ClosingForgetsTheKeys()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            nodes[0].Mesh.CloseNow();
+            Assert.That(() => nodes[0].Session.SenderFor(1), Throws.ArgumentException);
+            Assert.That(() => nodes[0].Session.ReceiverFor(1), Throws.ArgumentException);
+        }
+
+        [Test]
         public void AnEndMatchPayloadTooBigForOneDatagram_IsRefused()
         {
             List<Node> nodes = Lobby(2);

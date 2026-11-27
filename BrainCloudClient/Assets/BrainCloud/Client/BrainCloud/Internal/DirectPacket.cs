@@ -600,6 +600,23 @@ namespace BrainCloud.Internal
 
         public int NetId { get { return m_netId; } }
 
+        /// <summary>
+        /// Forgets the attempt's keys, when the attempt or the match is over: the pair keys are
+        /// overwritten, every sender is retired, and every peer stops being one. Nothing can seal or
+        /// open with this session afterwards.
+        /// </summary>
+        public void Clear()
+        {
+            lock (m_lock)
+            {
+                foreach (byte[] key in m_pairKeys.Values) Array.Clear(key, 0, key.Length);
+                foreach (DirectSender sender in m_senders.Values) sender.Retire();
+                m_pairKeys.Clear();
+                m_senders.Clear();
+                m_receivers.Clear();
+            }
+        }
+
         /// Whether in_netId is one of this attempt's peers.
         public bool IsPeer(int in_netId)
         {

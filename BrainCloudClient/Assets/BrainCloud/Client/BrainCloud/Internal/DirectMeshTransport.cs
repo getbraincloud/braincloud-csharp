@@ -101,6 +101,10 @@ namespace BrainCloud.Internal
             public string CxId;
             public int NetId;
             public IPEndPoint Address;
+            // The epoch count and sequence number of the datagram Address came from (see moveAddress)
+            public bool AddressFromDatagram;
+            public uint AddressEpochCount;
+            public ulong AddressSequence;
             public bool Connected;
             public bool Lost;
             // Said it was leaving after this player had said so too: the two left together
@@ -122,7 +126,7 @@ namespace BrainCloud.Internal
         }
 
         private readonly BrainCloudClient m_clientRef;
-        private readonly DirectConnection m_connection;
+        private readonly DirectLobbyOwner m_lobbyOwner;
         private readonly Action<ServerCall> m_send;
         private readonly IDirectMeshListener m_listener;
         private readonly Socket m_socket;
@@ -176,7 +180,7 @@ namespace BrainCloud.Internal
         internal DirectMeshTransport(DirectConnection in_connection, string in_myCxId, IDirectMeshListener in_listener, BrainCloudClient in_client, Action<ServerCall> in_send = null)
         {
             m_clientRef = in_client;
-            m_connection = in_connection;
+            m_lobbyOwner = in_connection.LobbyOwner;
             m_send = in_send ?? (in_client != null ? (Action<ServerCall>)in_client.SendRequest : null);
             m_listener = in_listener;
             m_socket = in_connection.Socket;
@@ -235,7 +239,7 @@ namespace BrainCloud.Internal
         private bool isOwner { get { return string.Equals(m_ownerCxId, m_myCxId, StringComparison.Ordinal); } }
 
         // brainCloud's lobby owner, which changes only when a member leaves the lobby
-        private bool isLobbyOwner { get { return string.Equals(m_connection.LobbyOwnerCxId, m_myCxId, StringComparison.Ordinal); } }
+        private bool isLobbyOwner { get { return string.Equals(m_lobbyOwner.CxId, m_myCxId, StringComparison.Ordinal); } }
 
         /// The lobby this connects.
         public string LobbyId { get { return m_lobbyId; } }
@@ -605,6 +609,8 @@ namespace BrainCloud.Internal
             if (m_closed) return;
             m_closed = true;
             m_controls.Clear();
+            // The keys are no use any more, and are not kept
+            m_session.Clear();
             try
             {
                 m_socket.Close();
@@ -657,11 +663,15 @@ namespace BrainCloud.Internal
             byte[] packet = m_session.ReceiverFor(sender).Open(in_datagram, in_length);
             if (packet == null || packet.Length == 0) return;
 
-            // It opened, and is not a repeat: it is from the peer, and this is where to send to it now
-            peer.Address = in_from;
+            // Only a packet of a known type and the right length changes anything
+            byte type = packet[0];
+            if (!wellFormed(type, packet.Length)) return;
+
+            // It opened, and is not a repeat: it is from the peer, and this is where to send to it now,
+            // unless a later datagram from it came from elsewhere
+            moveAddress(peer, in_from, epoch, sequence);
             peer.LastHeardMs = in_nowMs;
 
-            byte type = packet[0];
             if (m_closing || m_matchEnded)
             {
                 // Only finishing END_MATCH: acknowledgements of it, and repeats of one received
@@ -736,6 +746,63 @@ namespace BrainCloud.Internal
                     onControlAck(peer, packet);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Whether a packet that opened is one this player understands, at the length its type has:
+        /// checked before anything about the peer changes.
+        /// </summary>
+        private static bool wellFormed(byte in_type, int in_length)
+        {
+            switch (in_type)
+            {
+                case DirectConnector.PUNCH:
+                case DirectConnector.PUNCH_ACK:
+                case PING:
+                case PONG:
+                    return in_length == 5;
+                case RELAY:
+                    return in_length >= RELAY_HEADER_LENGTH;
+                case ACK:
+                    return in_length == RELAY_HEADER_LENGTH;
+                case DISCONNECT:
+                    return in_length == 1;
+                case END_MATCH:
+                    return in_length >= 3;
+                case OWNER:
+                    return in_length == 4;
+                case CONTROL_ACK:
+                    return in_length == 3;
+                default:
+                    // A later format's packet: not understood, so ignored
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Moves a peer to where a datagram from it came from, only when that datagram is later (by
+        /// epoch, then sequence number) than the one the current address came from: one held up on
+        /// the way, from where the peer was before, must not move it back.
+        /// </summary>
+        private static void moveAddress(MeshPeer in_peer, IPEndPoint in_from, byte[] in_epoch, ulong in_sequence)
+        {
+            uint count = DirectPacket.EpochCount(in_epoch);
+            if (in_peer.AddressFromDatagram &&
+                (count < in_peer.AddressEpochCount || (count == in_peer.AddressEpochCount && in_sequence <= in_peer.AddressSequence)))
+            {
+                return;
+            }
+            in_peer.Address = in_from;
+            in_peer.AddressFromDatagram = true;
+            in_peer.AddressEpochCount = count;
+            in_peer.AddressSequence = in_sequence;
+        }
+
+        /// For the tests: where this player sends to in_netId.
+        internal IPEndPoint PeerAddressForTests(int in_netId)
+        {
+            MeshPeer peer;
+            return m_peersByNetId.TryGetValue(in_netId, out peer) ? peer.Address : null;
         }
 
         private void connect(MeshPeer in_peer, long in_nowMs)
@@ -928,9 +995,11 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
-        /// The owner was lost: the new one is the member still here with the lowest net id. Every
-        /// player works it out alone, from the net ids brainCloud gave them all, and brainCloud follows
-        /// the same rule when the owner leaves the lobby. The new owner also announces itself.
+        /// The owner was lost: the new one is the member connected and still here with the lowest net
+        /// id. Every player works it out alone, from the net ids brainCloud gave them all, and the new
+        /// owner also announces itself. brainCloud picks the lowest net id among the lobby's members
+        /// when the owner leaves the lobby; it cannot see who is connected, so the two can differ, and
+        /// keep-alives and ROOM_STOPPED are accepted from any member for that reason.
         /// </summary>
         private void electOwner(long in_nowMs)
         {
@@ -956,7 +1025,7 @@ namespace BrainCloud.Internal
             }
         }
 
-        // The member still here with the lowest net id, this player included
+        // The member connected and still here with the lowest net id, this player included
         private string electedCxId()
         {
             return lowestCxId(null);
@@ -974,7 +1043,9 @@ namespace BrainCloud.Internal
             string owner = lowest == int.MaxValue ? null : m_myCxId;
             foreach (MeshPeer peer in m_peers)
             {
-                if (!peer.Lost && peer.NetId < lowest && !string.Equals(peer.CxId, in_except, StringComparison.Ordinal))
+                // Only a peer that has connected and is still here: one that has not taken the
+                // connection over yet cannot act as owner
+                if (peer.Connected && !peer.Lost && peer.NetId < lowest && !string.Equals(peer.CxId, in_except, StringComparison.Ordinal))
                 {
                     lowest = peer.NetId;
                     owner = peer.CxId;

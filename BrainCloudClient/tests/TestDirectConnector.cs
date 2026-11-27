@@ -362,6 +362,60 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void ANetIdTheRelayProtocolCannotAddress_IsRefused_AndReported()
+        {
+            // The relay protocol has net ids 0 to 39
+            Player a = NewPlayer(CX_A);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 40, KEY_AB));
+            Assert.That(Reported(a), Is.EqualTo(new Dictionary<string, object> { { CX_B, false } }), "reported, so brainCloud is not left waiting");
+            Assert.That(a.Calls(ServiceOperation.SendDirectConnectCandidates), Is.Empty);
+
+            Player c = NewPlayer(CX_C);
+            c.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(40, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Assert.That(Reported(c), Is.EqualTo(new Dictionary<string, object> { { CX_A, false } }), "this player's own");
+        }
+
+        [Test]
+        public void WhileWaitingToBeTakenOver_EachPeerIsPunched_ToKeepThePathOpen()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+
+            a.Connector.KeepMappingMsForTests = 50;
+            int openedByB = b.Connector.DatagramsOpened;
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            while (clock.ElapsedMilliseconds < 400)
+            {
+                a.Connector.Update();
+                b.Connector.Update();
+                Thread.Sleep(5);
+            }
+            Assert.That(b.Connector.DatagramsOpened - openedByB, Is.GreaterThanOrEqualTo(3), "A kept punching B");
+            Assert.That(a.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Connected));
+        }
+
+        [Test]
+        public void APeersAddress_OnlyMovesToALaterDatagram()
+        {
+            var peer = new DirectPeer(CX_B, 1).Clear();
+            var first = new IPEndPoint(IPAddress.Loopback, 1000);
+            var second = new IPEndPoint(IPAddress.Loopback, 2000);
+            byte[] epoch1 = DirectPacket.MakeEpoch(new byte[4], 1), epoch2 = DirectPacket.MakeEpoch(new byte[4], 2);
+            peer.MoveAddress(first, epoch1, 5);
+            peer.MoveAddress(second, epoch1, 4);
+            Assert.That(peer.Address, Is.EqualTo(first), "an earlier sequence number");
+            peer.MoveAddress(second, epoch1, 5);
+            Assert.That(peer.Address, Is.EqualTo(first), "the same datagram again");
+            peer.MoveAddress(second, epoch2, 0);
+            Assert.That(peer.Address, Is.EqualTo(second), "a later epoch");
+            peer.MoveAddress(first, epoch1, 99);
+            Assert.That(peer.Address, Is.EqualTo(second), "an earlier epoch");
+        }
+
+        [Test]
         public void APeerWithoutAPairKey_IsRefused()
         {
             // As from a server from before pair keys
