@@ -208,6 +208,9 @@
     <Compile Include="..\..\..\tests\TestDirectCrypto.cs">
       <Link>TestDirectCrypto.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\tests\TestDirectConnector.cs">
+      <Link>TestDirectConnector.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\tests\TestRelay.cs">
       <Link>TestRelay.cs</Link>
     </Compile>

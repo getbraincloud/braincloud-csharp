@@ -210,7 +210,8 @@ namespace BrainCloudTests
             Assert.That(report.Detail, Is.EqualTo("2 of 2 STUN addresses answered"));
 
             Dictionary<string, object> natInfo = report.ToNatInfo();
-            Assert.That(natInfo.Keys, Is.EquivalentTo(new[] { "v", "mapping", "udp" }));
+            // Never an address: only the version, the mapping, whether UDP works, and the ciphers
+            Assert.That(natInfo.Keys, Is.EquivalentTo(new[] { "v", "mapping", "udp", "crypto" }));
             Assert.That(natInfo["v"], Is.EqualTo(1));
             Assert.That(natInfo["mapping"], Is.EqualTo("eim"));
             Assert.That(natInfo["udp"], Is.EqualTo(true));

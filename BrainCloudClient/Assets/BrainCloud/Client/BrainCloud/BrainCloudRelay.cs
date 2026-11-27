@@ -381,6 +381,30 @@ namespace BrainCloud
         {
             return m_clientRef.DirectConnectProbe.Enabled;
         }
+
+        /// <summary>
+        /// Whether direct connect offers this player's local-network addresses to the other players
+        /// in its lobby, so that two players behind the same router can connect to each other.
+        ///
+        /// On by default everywhere except iOS. On iOS, sending to another device's local address may
+        /// make iOS ask the player for local network access. A game that already has that permission
+        /// (for example for local multiplayer, with NSLocalNetworkUsageDescription in its Info.plist)
+        /// can turn this on. Without local addresses, two players on the same network usually use the
+        /// relay server instead.
+        /// </summary>
+        /// <param name="in_include">True to offer local-network addresses</param>
+        public void SetDirectConnectLocalAddresses(bool in_include)
+        {
+            m_clientRef.DirectConnector.IncludeLocalAddresses = in_include;
+        }
+
+        /// <summary>
+        /// Returns true if direct connect offers this player's local-network addresses
+        /// </summary>
+        public bool GetDirectConnectLocalAddresses()
+        {
+            return m_clientRef.DirectConnector.IncludeLocalAddresses;
+        }
         
         /// <summary>
         /// Terminate the match instance by the owner.
