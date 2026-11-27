@@ -944,6 +944,37 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void KeepAlivesGoOn_AfterAFailureThatMayPass()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            StartAll(nodes);
+            // A network timeout or a server error says nothing about the match: stopping would let
+            // brainCloud drop a lobby still being played
+            nodes[0].Calls(ServiceOperation.RoomKeepAlive).Single().GetCallback().OnErrorCallback(900, ReasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT, "timed out");
+            Pump(10, 250);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void NoKeepAlive_FollowsThisPlayersOwnStop()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            StartAll(nodes);
+            Pump();
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            // A leaves last; the next frame's Update, before RelayComms closes it, finds a keep-alive due
+            nodes[0].Mesh.SendDisconnect();
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
+            int keepAlives = nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count();
+            m_now += 5000;
+            nodes[0].Mesh.Update(m_now);
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(keepAlives));
+        }
+
+        [Test]
         public void AnEndMatchPayloadTooBigForOneDatagram_IsRefused()
         {
             List<Node> nodes = Lobby(2);

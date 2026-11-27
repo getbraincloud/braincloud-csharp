@@ -234,7 +234,7 @@ namespace BrainCloud.Internal
 
         private bool isOwner { get { return string.Equals(m_ownerCxId, m_myCxId, StringComparison.Ordinal); } }
 
-        // brainCloud's lobby owner, who alone may tell it the match stopped
+        // brainCloud's lobby owner, which changes only when a member leaves the lobby
         private bool isLobbyOwner { get { return string.Equals(m_connection.LobbyOwnerCxId, m_myCxId, StringComparison.Ordinal); } }
 
         /// The lobby this connects.
@@ -528,7 +528,12 @@ namespace BrainCloud.Internal
             processControls(in_nowMs);
             // brainCloud's lobby owner too, when it is not the players' owner: brainCloud changes its owner
             // only when the owner leaves the lobby, and takes keep-alives from any member
-            if (m_keepAliveMs > 0 && (isOwner || isLobbyOwner) && !m_matchEnded && !m_keepAliveRefused && in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs) keepAlive(in_nowMs);
+            // None once this player has left or stopped the match: brainCloud would refuse it, billed
+            if (m_keepAliveMs > 0 && (isOwner || isLobbyOwner) && !m_matchEnded && !m_keepAliveRefused && !m_leaving && !m_stoppedSent &&
+                in_nowMs - m_lastKeepAliveMs >= m_keepAliveMs)
+            {
+                keepAlive(in_nowMs);
+            }
         }
 
         private bool everyPeerLost()
@@ -869,7 +874,6 @@ namespace BrainCloud.Internal
 
         #region peers and owner
 
-        /// in_graceful: the peer said it was leaving, rather than going quiet.
         /// <summary>
         /// Tells brainCloud the match stopped when every peer is gone and the last of them said it
         /// was leaving. When several left together, each having said so before hearing the others,
@@ -897,6 +901,7 @@ namespace BrainCloud.Internal
             m_lingerUntilMs = in_nowMs;
         }
 
+        /// in_graceful: the peer said it was leaving, rather than going quiet.
         private void lose(MeshPeer in_peer, string in_reason, bool in_graceful, long in_nowMs)
         {
             if (in_peer.Lost) return;
