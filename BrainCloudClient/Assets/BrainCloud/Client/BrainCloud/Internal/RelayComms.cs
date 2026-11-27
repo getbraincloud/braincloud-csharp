@@ -148,7 +148,8 @@ namespace BrainCloud.Internal
                     string refusal = m_mesh.EndMatch(in_jsonPayload, m_clientRef.NowMs);
                     if (refusal != null && refusal.StartsWith(DirectMeshTransport.END_MATCH_TOO_BIG, StringComparison.Ordinal))
                     {
-                        // Nothing was sent: the game is told, as Send tells it of a packet too big
+                        // Nothing was sent: as Send does with a packet too big, the connection ends and the game is told
+                        disconnect();
                         queueErrorEvent("Relay: EndMatch not sent: " + refusal);
                         return;
                     }

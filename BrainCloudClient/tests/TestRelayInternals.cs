@@ -148,20 +148,31 @@ namespace BrainCloudTests
         [Test]
         public void BetweenPlayersDirectly_APeerCannotMakeThisPlayerHoldWithoutLimit()
         {
-            // Ordered reliable packets that never become deliverable, each in a stream of its own
-            // (another player mask), or many held in a few streams
+            // Ordered reliable packets, each in a stream of its own (another player mask): every
+            // stream is remembered, so there can only be so many
             _channel.PeerToPeer = true;
             RelayReliableChannel.ReceiveOutcome outcome = RelayReliableChannel.ReceiveOutcome.Accepted;
             int sent = 0;
             for (int mask = 0; mask < 5000 && outcome == RelayReliableChannel.ReceiveOutcome.Accepted; ++mask, ++sent)
             {
-                byte[] packet = Packet(true, true, 0, 1, 1);
+                byte[] packet = Packet(true, true, 0, 0, 1);
                 packet[7] = (byte)(mask >> 8);
                 packet[8] = (byte)mask;
                 outcome = _channel.Receive(packet, (netId, data) => _delivered.Add(IdOf(data)));
             }
             Assert.That(outcome, Is.EqualTo(RelayReliableChannel.ReceiveOutcome.TooManyOutOfOrder));
-            Assert.That(sent, Is.LessThan(1000));
+            Assert.That(sent, Is.GreaterThan(4000).And.LessThan(5000));
+
+            // A peer sending in order to many player masks (teams, players in range) is legitimate:
+            // each stream is counted once, and there is room for thousands
+            var legitimate = new RelayReliableChannel(null, null) { PeerToPeer = true };
+            for (int mask = 0; mask < 3000; ++mask)
+            {
+                byte[] packet = Packet(true, true, 0, 0, 1);
+                packet[7] = (byte)(mask >> 8);
+                packet[8] = (byte)mask;
+                Assert.That(legitimate.Receive(packet, (netId, data) => { }), Is.EqualTo(RelayReliableChannel.ReceiveOutcome.Accepted), "mask " + mask);
+            }
 
             // A few streams, each below its own limit, but holding too many between them
             var held = new RelayReliableChannel(null, null) { PeerToPeer = true };

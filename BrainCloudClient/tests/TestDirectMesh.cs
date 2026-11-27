@@ -295,8 +295,8 @@ namespace BrainCloudTests
             Assert.That(nodes[0].Listener.Ops("DISCONNECT"), Is.Empty);
             Pump(3, 1000);
             Assert.That(nodes[0].Listener.Ops("DISCONNECT").Single()["cxId"], Is.EqualTo(CX[1]));
-            // Its only peer went quiet: this player is the one cut off, as a relay socket timing out
-            Assert.That(nodes[0].Listener.Errors.Single(), Does.Contain("no other player"));
+            // As with a relay server when a member's connection drops: the others stay
+            Assert.That(nodes[0].Listener.Errors, Is.Empty);
         }
 
         [Test]
@@ -313,19 +313,98 @@ namespace BrainCloudTests
         }
 
         [Test]
-        public void APlayerCutOff_StopsKeepingTheLobbyAlive_AndDoesNotStopIt()
+        public void WhenTheLastPeerWentQuiet_TheLobbyIsNeverStopped_ThisPlayerMayBeTheOneCutOff()
         {
-            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            foreach (bool endMatch in new[] { false, true })
+            {
+                CloseSockets();
+                List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+                StartAll(nodes);
+                Pump();
+                nodes[1].Paused = true;
+                Pump(12, 1000);
+                Assert.That(nodes[0].Listener.Ops("DISCONNECT").Count(), Is.EqualTo(1));
+                if (endMatch) Assert.That(nodes[0].Mesh.EndMatch(null, m_now), Is.Null);
+                nodes[0].Mesh.Close(m_now);
+                Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, endMatch ? "on EndMatch" : "on leaving");
+            }
+        }
+
+        [Test]
+        public void APeerThatWentQuietLongAgo_DoesNotStopTheOwnerLastToLeaveFromStoppingTheLobby()
+        {
+            List<Node> nodes = Lobby(3, in_keepAliveRateSecs: 30);
             StartAll(nodes);
             Pump();
-            nodes[1].Paused = true;
+            // C goes quiet; much later B leaves properly
+            nodes[2].Paused = true;
             Pump(12, 1000);
-            Assert.That(nodes[0].Listener.Errors.Count, Is.EqualTo(1));
-            int keepAlives = nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count();
-            Pump(6, 1000);
-            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.EqualTo(keepAlives), "no more keep-alives");
+            Pump(30, 1000);
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            Assert.That(nodes[0].Listener.Ops("DISCONNECT").Count(), Is.EqualTo(2));
+            Assert.That(nodes[0].Listener.Errors, Is.Empty);
+            nodes[0].Mesh.SendDisconnect();
             nodes[0].Mesh.Close(m_now);
-            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "the others may still be playing");
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped).Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void DisconnectIsSentThreeTimes_SoOneLostCopyIsNotTakenForGoingQuiet()
+        {
+            List<Node> nodes = Lobby(2);
+            StartAll(nodes);
+            Pump();
+            int lost = 0;
+            nodes[1].Mesh.DropForTests = (to, packet) => packet[0] == DirectMeshTransport.DISCONNECT && lost++ < DirectMeshTransport.DISCONNECT_COPIES - 1;
+            nodes[1].Mesh.SendDisconnect();
+            nodes[1].Mesh.Close(m_now);
+            nodes[1].Paused = true;
+            Pump();
+            Assert.That(nodes[0].Listener.Ops("DISCONNECT").Count(), Is.EqualTo(1), "the last copy got through");
+        }
+
+        [Test]
+        public void EndMatchFromTheNewOwner_ReachesAPlayerThatHasNotLostTheOldOneYet()
+        {
+            List<Node> nodes = Lobby(3);
+            StartAll(nodes);
+            Pump();
+            // A, the owner, leaves; its DISCONNECT reaches B but not C
+            nodes[0].Mesh.DropForTests = (to, packet) => to == 2 && packet[0] == DirectMeshTransport.DISCONNECT;
+            nodes[0].Mesh.SendDisconnect();
+            nodes[0].Mesh.Close(m_now);
+            nodes[0].Paused = true;
+            Pump();
+            Assert.That(nodes[1].Mesh.OwnerCxId, Is.EqualTo(CX[1]));
+            Assert.That(nodes[2].Mesh.OwnerCxId, Is.EqualTo(CX[0]), "C has not lost A yet");
+
+            // B, owner in its own view, ends the match at once
+            Assert.That(nodes[1].Mesh.EndMatch(new Dictionary<string, object> { { "winner", "b" } }, m_now), Is.Null);
+            Pump();
+            Assert.That(nodes[2].Listener.Ops("END_MATCH"), Is.Empty, "held while A is still the owner here");
+
+            // C loses A, makes B owner too, and the match ends there as well
+            Pump(12, 1000);
+            Assert.That(nodes[2].Listener.Ops("MIGRATE_OWNER").Single()["cxId"], Is.EqualTo(CX[1]));
+            Assert.That(((Dictionary<string, object>)nodes[2].Listener.Ops("END_MATCH").Single()["data"])["winner"], Is.EqualTo("b"));
+        }
+
+        [Test]
+        public void EndMatchFromAMemberThatWouldNotBeOwner_IsNeverHeld()
+        {
+            List<Node> nodes = Lobby(3);
+            StartAll(nodes);
+            Pump();
+            // C (net id 2) is not A's successor (B is), so its END_MATCH is dropped, not held
+            byte[] endMatch = { DirectMeshTransport.END_MATCH, 0, 60, (byte)'{', (byte)'}' };
+            nodes[2].Socket.SendTo(nodes[2].Session.SenderFor(1).Seal(endMatch, 0, endMatch.Length), nodes[1].Socket.LocalEndPoint);
+            Pump();
+            nodes[0].Paused = true;
+            Pump(12, 1000);
+            Assert.That(nodes[1].Listener.Ops("END_MATCH"), Is.Empty);
         }
 
         [Test]

@@ -35,7 +35,7 @@ namespace BrainCloud.Internal
 
         private const int MAX_PACKET_ID_HISTORY = 60 * 10; // So we last 10 seconds at 60 fps
         // Limits on what one peer can make this player hold, between players directly
-        private const int MAX_PEER_STREAMS = 512;
+        private const int MAX_PEER_STREAMS = 4096;
         private const int MAX_PEER_HELD_PACKETS = 2 * MAX_PACKET_ID_HISTORY;
         private const int MAX_RELIABLE_RESEND_INTERVAL = 500;
         private const int PACKET_LOWER_THRESHOLD = MAX_PACKET_ID * 25 / 100;
@@ -217,7 +217,7 @@ namespace BrainCloud.Internal
             {
                 if (PeerToPeer && !m_recvPacketId.ContainsKey(ackIdWithoutPacketId) &&
                     !m_orderedReliablePackets.ContainsKey(ackIdWithoutPacketId) &&
-                    m_recvPacketId.Count + m_orderedReliablePackets.Count >= MAX_PEER_STREAMS)
+                    streamCount() >= MAX_PEER_STREAMS)
                 {
                     return ReceiveOutcome.TooManyOutOfOrder;
                 }
@@ -340,6 +340,17 @@ namespace BrainCloud.Internal
         }
 
         #endregion
+
+        // Ordered streams received from, each counted once: a reliable one is usually in both maps
+        private int streamCount()
+        {
+            int count = m_recvPacketId.Count;
+            foreach (ulong stream in m_orderedReliablePackets.Keys)
+            {
+                if (!m_recvPacketId.ContainsKey(stream)) ++count;
+            }
+            return count;
+        }
 
         /// True when packet id a comes at or before b, allowing for the ids wrapping round.
         public static bool packetLE(int a, int b)
