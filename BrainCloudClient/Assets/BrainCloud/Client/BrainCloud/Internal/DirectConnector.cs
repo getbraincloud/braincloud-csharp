@@ -42,12 +42,17 @@ namespace BrainCloud.Internal
         /// The round trip of the punch that reached the peer, in milliseconds, or -1.
         public int RoundTripMs { get; internal set; }
 
+        // When this player last punched back at an address the peer's punches came from (see DirectConnector.handle)
+        internal int TriggeredAtMs;
+        internal bool Triggered;
+
         internal DirectPeer Clear()
         {
             Candidates.Clear();
             Address = null;
             Reached = false;
             RoundTripMs = -1;
+            Triggered = false;
             return this;
         }
     }
@@ -701,12 +706,6 @@ namespace BrainCloud.Internal
                 {
                     punchAt(peer, address, now);
                 }
-                // Where the peer's own punches come from, when that is none of its candidates: a
-                // router can map its socket to an address it could not know to offer
-                if (peer.Address != null && !peer.Candidates.Contains(peer.Address))
-                {
-                    punchAt(peer, peer.Address, now);
-                }
             }
         }
 
@@ -796,6 +795,17 @@ namespace BrainCloud.Internal
             {
                 // Answered even once the peer is reached: its own punches may still be getting through
                 sendTo(peer, PUNCH_ACK, id, in_from);
+                // A punch from none of the peer's candidates (a router can map its socket to an address
+                // it could not know to offer) is punched back once, at most every PUNCH_INTERVAL_MS. Only
+                // in answer to a punch that arrived, never continuously: anyone on the path can resend a
+                // genuine punch from an address of their choosing, and must not get a stream sent there.
+                int now = nowMs;
+                if (!peer.Reached && !peer.Candidates.Contains(in_from) && (!peer.Triggered || now - peer.TriggeredAtMs >= PUNCH_INTERVAL_MS))
+                {
+                    peer.Triggered = true;
+                    peer.TriggeredAtMs = now;
+                    punchAt(peer, in_from, now);
+                }
             }
             else if (packet[0] == PUNCH_ACK && !peer.Reached)
             {

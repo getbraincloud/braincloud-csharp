@@ -503,6 +503,69 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void ThroughRTTComms_TheAttemptsEventsAreTheLibrarys_WhateverThePlayersLanguage()
+        {
+            // The real receive path: the event server's message, lowercased and queued by RTTComms,
+            // then dispatched by its Update to the game's lobby callback
+            System.Globalization.CultureInfo original = System.Globalization.CultureInfo.CurrentCulture;
+            try
+            {
+                System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("tr-TR");
+                var rtt = new RTTComms(new BrainCloudClient());
+                var toGame = new List<string>();
+                rtt.RegisterRTTCallback(ServiceName.Lobby, json => toGame.Add(json));
+                rtt.ReceiveForTests("{\"service\":\"lobby\",\"operation\":\"DIRECT_CONNECT_CANDIDATES\",\"data\":{\"lobbyId\":\"" + LOBBY + "\",\"cxId\":\"" + CX_B +
+                    "\",\"candidates\":[{\"type\":\"host\",\"ip\":\"10.1.2.3\",\"port\":4000}]}}");
+                rtt.ReceiveForTests("{\"service\":\"lobby\",\"operation\":\"STARTING\",\"data\":{\"lobbyId\":\"" + LOBBY + "\"}}");
+                rtt.Update();
+                Assert.That(toGame.Count, Is.EqualTo(1), "only STARTING reaches the game");
+                Assert.That(toGame[0], Does.Contain("STARTING"));
+                Assert.That(string.Join("", toGame), Does.Not.Contain("10.1.2.3"));
+            }
+            finally
+            {
+                System.Globalization.CultureInfo.CurrentCulture = original;
+            }
+        }
+
+        [Test]
+        public void TheFailureCallback_NeverGetsADirectConnectMessage()
+        {
+            Assert.That(RTTComms.ForFailureCallback("direct_connect_candidates", "{\"candidates\":[{\"ip\":\"10.1.2.3\"}]}"), Is.EqualTo("RTT connection closed"));
+            Assert.That(RTTComms.ForFailureCallback("direct_connect", "{\"pairKey\":\"AQID\"}"), Is.EqualTo("RTT connection closed"));
+            Assert.That(RTTComms.ForFailureCallback("starting", "{\"x\":1}"), Is.EqualTo("{\"x\":1}"), "anything else as before");
+        }
+
+        [Test]
+        public void APunchFromAnUnknownAddress_IsPunchedBackOnce_NotContinuously()
+        {
+            // Anyone on the path can resend a genuine punch from an address of their choosing: that
+            // address gets one punch back per punch that arrives, not a stream
+            Player b = NewPlayer(CX_B, in_budgetMs: 1500);
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            RunAll(new List<Player> { b }, 200, (from, to) => false);
+            Assert.That(b.Connector.State, Is.EqualTo(DirectConnector.AttemptState.Punching));
+
+            var aSession = new DirectSession(CIPHER, 0, new Dictionary<int, byte[]> { { 1, KEY_AB } });
+            byte[] punch = aSession.SenderFor(1).Seal(new byte[] { DirectConnector.PUNCH, 0, 0, 0, 9 }, 0, 5);
+            using (var elsewhere = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                elsewhere.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                elsewhere.SendTo(punch, new IPEndPoint(IPAddress.Loopback, b.Connector.Port));
+                RunAll(new List<Player> { b }, 1000, (from, to) => false);
+                int received = 0;
+                var buffer = new byte[2000];
+                while (elsewhere.Available > 0)
+                {
+                    EndPoint from = new IPEndPoint(IPAddress.Any, 0);
+                    elsewhere.ReceiveFrom(buffer, ref from);
+                    ++received;
+                }
+                Assert.That(received, Is.EqualTo(2), "its PUNCH_ACK, and one punch back");
+            }
+        }
+
+        [Test]
         public void OtherEvents_PassThroughUnchanged()
         {
             Player a = NewPlayer(CX_A);
@@ -531,12 +594,18 @@ namespace BrainCloudTests
         private sealed class LoopbackStun : IDisposable
         {
             private readonly Socket m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            private readonly Thread m_thread;
+            private volatile bool m_stop;
             private int m_requests;
 
             public LoopbackStun()
             {
                 m_socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
-                new Thread(run) { IsBackground = true }.Start();
+                // Closing a socket another thread is blocked on can hang (.NET on macOS), so the
+                // thread wakes regularly and is stopped before the socket is closed
+                m_socket.ReceiveTimeout = 100;
+                m_thread = new Thread(run) { IsBackground = true };
+                m_thread.Start();
             }
 
             public int Port { get { return ((IPEndPoint)m_socket.LocalEndPoint).Port; } }
@@ -544,13 +613,15 @@ namespace BrainCloudTests
 
             public void Dispose()
             {
+                m_stop = true;
+                m_thread.Join(2000);
                 m_socket.Close();
             }
 
             private void run()
             {
                 byte[] buffer = new byte[1500];
-                while (true)
+                while (!m_stop)
                 {
                     EndPoint from = new IPEndPoint(IPAddress.Any, 0);
                     int n;

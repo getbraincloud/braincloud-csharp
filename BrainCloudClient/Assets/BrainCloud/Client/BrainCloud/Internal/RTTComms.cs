@@ -164,10 +164,7 @@ namespace BrainCloud.Internal
                         m_directConnector.OnRttDisconnected();
                         if (m_connectionFailureCallback != null)
                         {
-                            // Whatever message happened to be next; never a direct connect one, which can
-                            // hold other players' addresses or pair keys
-                            bool directConnect = toProcessResponse.Operation != null && toProcessResponse.Operation.StartsWith("direct_connect", StringComparison.Ordinal);
-                            m_connectionFailureCallback(400, -1, directConnect ? "RTT connection closed" : toProcessResponse.JsonMessage, m_connectedObj);
+                            m_connectionFailureCallback(400, -1, ForFailureCallback(toProcessResponse.Operation, toProcessResponse.JsonMessage), m_connectedObj);
                         }
                         disconnect();
                         break;
@@ -550,6 +547,23 @@ namespace BrainCloud.Internal
         /// <summary>
         /// 
         /// </summary>
+        /// <summary>
+        /// What the game's failure callback is given when the socket closed: whatever message
+        /// happened to be next in the queue, but never a direct connect one, which can hold other
+        /// players' addresses or pair keys.
+        /// </summary>
+        internal static string ForFailureCallback(string in_operation, string in_json)
+        {
+            bool directConnect = in_operation != null && in_operation.StartsWith("direct_connect", StringComparison.Ordinal);
+            return directConnect ? "RTT connection closed" : in_json;
+        }
+
+        /// For the tests: a message as if it had arrived from the event server.
+        internal void ReceiveForTests(string in_message)
+        {
+            onRecv(in_message);
+        }
+
         /// <summary>
         /// An RTT service or operation name as the event queue keys it: lowercased whatever the
         /// player's language. With the current culture, a Turkish or Azeri player's "I" becomes a
