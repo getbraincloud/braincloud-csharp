@@ -53,6 +53,10 @@ namespace BrainCloud.Internal
         private Dictionary<ulong, int> m_recvPacketId = new Dictionary<ulong, int>();
         private Dictionary<ulong, UDPPacket> m_reliables = new Dictionary<ulong, UDPPacket>();
         private Dictionary<ulong, List<UDPPacket>> m_orderedReliablePackets = new Dictionary<ulong, List<UDPPacket>>();
+        // Recent reliable unordered packets, by header, so a resent one is not delivered again. A
+        // relay server drops these repeats itself; between players directly nothing else would.
+        private readonly HashSet<ulong> m_unorderedSeen = new HashSet<ulong>();
+        private readonly Queue<ulong> m_unorderedSeenOrder = new Queue<ulong>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -88,6 +92,8 @@ namespace BrainCloud.Internal
             m_recvPacketId.Clear();
             m_reliables.Clear();
             m_orderedReliablePackets.Clear();
+            m_unorderedSeen.Clear();
+            m_unorderedSeenOrder.Clear();
             ClearTrackedPacketIds();
         }
 
@@ -285,6 +291,23 @@ namespace BrainCloud.Internal
                         return ReceiveOutcome.Accepted;
                     }
                     m_recvPacketId[ackIdWithoutPacketId] = packetId;
+                }
+            }
+            else if (reliable)
+            {
+                // The same header again is a resend whose acknowledgement was lost. Remembered for
+                // MAX_PACKET_ID_HISTORY packets, far fewer than a stream sends before its ids wrap.
+                if (!m_unorderedSeen.Add(ackId))
+                {
+#if BC_DEBUG_RELAY_LOGS_ENABLED
+                    if (m_loggingEnabled()) m_log("Duplicated packet from " + netId.ToString() + ". got " + packetId.ToString());
+#endif
+                    return ReceiveOutcome.Accepted;
+                }
+                m_unorderedSeenOrder.Enqueue(ackId);
+                if (m_unorderedSeenOrder.Count > MAX_PACKET_ID_HISTORY)
+                {
+                    m_unorderedSeen.Remove(m_unorderedSeenOrder.Dequeue());
                 }
             }
 

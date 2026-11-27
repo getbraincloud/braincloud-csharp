@@ -63,13 +63,14 @@ namespace BrainCloud.Internal
     /// </summary>
     internal sealed class DirectConnection
     {
-        internal DirectConnection(string in_lobbyId, Socket in_socket, DirectSession in_session, string in_ownerCxId, List<DirectPeer> in_peers)
+        internal DirectConnection(string in_lobbyId, Socket in_socket, DirectSession in_session, string in_ownerCxId, List<DirectPeer> in_peers, int in_keepAliveRateSecs)
         {
             LobbyId = in_lobbyId;
             Socket = in_socket;
             Session = in_session;
             OwnerCxId = in_ownerCxId;
             Peers = in_peers;
+            KeepAliveRateSecs = in_keepAliveRateSecs;
         }
 
         public string LobbyId { get; private set; }
@@ -77,6 +78,9 @@ namespace BrainCloud.Internal
         public DirectSession Session { get; private set; }
         public string OwnerCxId { get; private set; }
         public List<DirectPeer> Peers { get; private set; }
+
+        /// From the direct ROOM_READY: how often the owner keeps the lobby alive, or 0 for a lobby that does not outlive its match.
+        public int KeepAliveRateSecs { get; private set; }
     }
 
     /// <summary>
@@ -160,6 +164,8 @@ namespace BrainCloud.Internal
         private int m_lastPunchMs;
         private int m_connectedAtMs;
         private bool m_reported;
+        private bool m_roomReady;
+        private int m_keepAliveRateSecs;
         private readonly byte[] m_buffer = new byte[DirectPacket.MAX_DATAGRAM_LENGTH];
 
         // The gathering thread's job and result. The job owns the socket while it runs: closing a
@@ -259,11 +265,14 @@ namespace BrainCloud.Internal
         /// </summary>
         internal bool FilterEvent(string in_service, string in_operation, ref string io_json)
         {
-            if (!string.Equals(in_service, "lobby", StringComparison.Ordinal) || in_operation == null ||
-                !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
+            if (!string.Equals(in_service, "lobby", StringComparison.Ordinal) || in_operation == null) return false;
+            if (string.Equals(in_operation, "room_ready", StringComparison.Ordinal))
             {
+                // Noted, and passed on: the game connects from it
+                if (!StandAside) OnRoomReady(DataOf(io_json));
                 return false;
             }
+            if (!in_operation.StartsWith("direct_connect", StringComparison.Ordinal)) return false;
             if (OnLobbyEvent(in_operation.ToUpperInvariant(), DataOf(io_json))) return true;
             // The game is told the attempt started, but not the pair keys, unless it is a tool playing the attempt itself
             if (string.Equals(in_operation, "direct_connect", StringComparison.Ordinal) && !StandAside)
@@ -314,13 +323,39 @@ namespace BrainCloud.Internal
         }
 
         /// <summary>
+        /// Takes the lobby's ROOM_READY. A direct one for a successful attempt's lobby means every
+        /// member reached every other, so the connection may be taken over. One that names a server
+        /// means the lobby uses it after all, so the attempt's socket is closed.
+        /// </summary>
+        public void OnRoomReady(Dictionary<string, object> in_data)
+        {
+            if (in_data == null || m_state != AttemptState.Connected || !string.Equals(str(in_data, "lobbyId"), m_lobbyId)) return;
+            object value;
+            var connectData = in_data.TryGetValue("connectData", out value) ? value as Dictionary<string, object> : null;
+            if (connectData != null && string.Equals(str(connectData, "type"), "direct", StringComparison.Ordinal))
+            {
+                m_roomReady = true;
+                m_keepAliveRateSecs = Math.Max(0, integer(connectData, "keepAliveRateSecs", 0));
+                // Waiting for the game to connect from it
+                m_connectedAtMs = nowMs;
+            }
+            else
+            {
+                log("the lobby is using a server after all; closing the attempt's socket");
+                fail();
+            }
+        }
+
+        /// <summary>
         /// Takes over a successful attempt's socket, keys and peers, for the lobby in_lobbyId, or
-        /// returns null when there is none. The attempt is then over.
+        /// returns null when there is none: no successful attempt for that lobby, or its direct
+        /// ROOM_READY has not arrived, so some member may not have reached every other yet. The
+        /// attempt is then over.
         /// </summary>
         public DirectConnection TakeConnection(string in_lobbyId)
         {
-            if (m_state != AttemptState.Connected || !string.Equals(in_lobbyId, m_lobbyId)) return null;
-            var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values));
+            if (m_state != AttemptState.Connected || !m_roomReady || !string.Equals(in_lobbyId, m_lobbyId)) return null;
+            var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values), m_keepAliveRateSecs);
             m_socket = null;
             m_session = null;
             m_punches.Clear();
@@ -340,6 +375,8 @@ namespace BrainCloud.Internal
             m_peersByNetId.Clear();
             m_punches.Clear();
             m_reported = false;
+            m_roomReady = false;
+            m_keepAliveRateSecs = 0;
             m_lobbyId = str(in_data, "lobbyId");
             m_ownerCxId = str(in_data, "ownerCxId");
             string cipher = str(in_data, "cipher");

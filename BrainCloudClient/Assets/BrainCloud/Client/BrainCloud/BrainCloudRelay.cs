@@ -47,7 +47,6 @@ namespace BrainCloud
         private const string ROOM_READY_NOT_AN_OBJECT = "no ROOM_READY event was given, or it is not a JSON object";
         private const string ROOM_READY_WRONG_EVENT = "expected a ROOM_READY event, not ";
         private const string ROOM_READY_NO_CONNECT_DATA = "the event has no connectData";
-        private const string ROOM_READY_DIRECT = "this room is connected directly between the players, which this version of the library does not support";
         private const string ROOM_READY_NO_ADDRESS = "connectData has no address or ports";
         private const string ROOM_READY_NO_SECURE_WEBSOCKET = "a secure WebSocket was asked for, but this server offers none (secure relay connections are not enabled for this app, or not available from this host)";
         private const string ROOM_READY_BAD_TYPE = "the preferred connection type must be WEBSOCKET, TCP or UDP, not ";
@@ -129,6 +128,10 @@ namespace BrainCloud
 
         /// <summary>
         /// Start off a connection, based off connection type to brainClouds Relay Servers.  Connect options come in from "ROOM_ASSIGNED" lobby callback
+        ///
+        /// With RelayConnectionType.DIRECT, for a lobby whose ROOM_READY has connectData type "direct",
+        /// only the options' lobbyId is used: the players connect to each other on the socket the
+        /// lobby's direct connect attempt reached them on. ConnectFromRoomReady does this itself.
         /// </summary>
         /// <param name="in_connectionType"></param>
         /// <param name="in_options"></param>
@@ -141,10 +144,26 @@ namespace BrainCloud
         }
 
         /// <summary>
+        /// True while connecting or connected directly to the other players, without a relay server.
+        /// </summary>
+        public bool IsDirect { get { return m_commsLayer.ConnectionType == RelayConnectionType.DIRECT; } }
+
+        /// <summary>
+        /// How this client is connecting or connected to the lobby's other players: WEBSOCKET, TCP or
+        /// UDP to a relay server, DIRECT without one, or INVALID when it is neither.
+        /// </summary>
+        public RelayConnectionType ConnectionType { get { return m_commsLayer.ConnectionType; } }
+
+        /// <summary>
         /// Connects to the lobby's server from its ROOM_READY event, whatever kind of server the
-        /// lobby launched. It reads the address, port, passcode and lobby id from the event, so the
-        /// game does not have to, and applies the rules for each kind of server:
+        /// lobby launched, or to the other players directly when the lobby's direct connect attempt
+        /// succeeded (see EnableDirectConnect). It reads the address, port, passcode and lobby id
+        /// from the event, so the game does not have to, and applies the rules for each kind of
+        /// server:
         /// <list type="bullet">
+        /// <item>Direct (connectData type "direct"): the socket the attempt reached the other players
+        /// on, as RelayConnectionType.DIRECT. in_preferredType and in_useSsl do not apply: the traffic
+        /// is protected with the lobby's cipher, encrypted when the lobby requires it.</item>
         /// <item>brainCloud relay servers and Edgegap: the port for in_preferredType (WEBSOCKET, TCP
         /// or UDP). There is no fallback to another type: if the server does not offer that port, the
         /// connect fails. With in_useSsl and WEBSOCKET, the secure WebSocket URL the server sent
@@ -273,7 +292,11 @@ namespace BrainCloud
             if (connectData == null) return ROOM_READY_NO_CONNECT_DATA;
             if (valueOf(connectData, "type") as string == "direct")
             {
-                return ROOM_READY_DIRECT;
+                // The players reached each other: no server, address or passcode, only the lobby
+                out_connectionType = RelayConnectionType.DIRECT;
+                out_options.lobbyId = valueOf(data, "lobbyId") as string;
+                if (string.IsNullOrEmpty(out_options.lobbyId)) return ROOM_READY_NO_LOBBY_ID;
+                return null;
             }
 
             string address = valueOf(connectData, "address") as string;

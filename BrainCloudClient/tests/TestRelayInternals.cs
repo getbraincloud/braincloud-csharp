@@ -113,6 +113,28 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void UnorderedReliable_AResendIsDeliveredOnce()
+        {
+            // A resend whose first ACK was lost: the same header twice. Another sender, channel or
+            // packet id is another packet.
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 1));
+            Receive(Packet(true, false, 0, 5, 2));
+            Receive(Packet(true, false, 1, 5, 1));
+            Receive(Packet(true, false, 0, 6, 1));
+            Assert.That(_delivered, Is.EqualTo(new[] { 5, 5, 5, 6 }));
+        }
+
+        [Test]
+        public void UnorderedReliable_IdsAreForgottenLongBeforeAStreamWrapsRound()
+        {
+            // A stream's ids wrap after 4096 packets; by then its earlier ones are forgotten, so the
+            // wrapped ids are delivered
+            for (int i = 0; i <= RelayReliableChannel.MAX_PACKET_ID + 1; ++i) Receive(Packet(true, false, 0, i & RelayReliableChannel.MAX_PACKET_ID, 1));
+            Assert.That(_delivered.Count, Is.EqualTo(RelayReliableChannel.MAX_PACKET_ID + 2));
+        }
+
+        [Test]
         public void UnreliableUnordered_IsAlwaysDelivered()
         {
             Receive(Packet(false, false, 0, 1, 1));
