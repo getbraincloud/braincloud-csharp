@@ -62,6 +62,8 @@ namespace BrainCloud.Internal
         private readonly Queue<ulong> m_unorderedSeenOrder = new Queue<ulong>();
         // Ordered packets held across every stream, waiting for earlier ones
         private int m_heldCount = 0;
+        // Ordered streams received from (PeerToPeer only)
+        private readonly HashSet<ulong> m_peerStreams = new HashSet<ulong>();
         /*
         Tracking packet IDs for each player
         index of array represents channel ids 0 to 3
@@ -108,6 +110,7 @@ namespace BrainCloud.Internal
             m_unorderedSeen.Clear();
             m_unorderedSeenOrder.Clear();
             m_heldCount = 0;
+            m_peerStreams.Clear();
             ClearTrackedPacketIds();
         }
 
@@ -215,11 +218,10 @@ namespace BrainCloud.Internal
 
             if (ordered)
             {
-                if (PeerToPeer && !m_recvPacketId.ContainsKey(ackIdWithoutPacketId) &&
-                    !m_orderedReliablePackets.ContainsKey(ackIdWithoutPacketId) &&
-                    streamCount() >= MAX_PEER_STREAMS)
+                if (PeerToPeer && !m_peerStreams.Contains(ackIdWithoutPacketId))
                 {
-                    return ReceiveOutcome.TooManyOutOfOrder;
+                    if (m_peerStreams.Count >= MAX_PEER_STREAMS) return ReceiveOutcome.TooManyOutOfOrder;
+                    m_peerStreams.Add(ackIdWithoutPacketId);
                 }
 
                 int prevPacketId = MAX_PACKET_ID;
@@ -340,17 +342,6 @@ namespace BrainCloud.Internal
         }
 
         #endregion
-
-        // Ordered streams received from, each counted once: a reliable one is usually in both maps
-        private int streamCount()
-        {
-            int count = m_recvPacketId.Count;
-            foreach (ulong stream in m_orderedReliablePackets.Keys)
-            {
-                if (!m_recvPacketId.ContainsKey(stream)) ++count;
-            }
-            return count;
-        }
 
         /// True when packet id a comes at or before b, allowing for the ids wrapping round.
         public static bool packetLE(int a, int b)

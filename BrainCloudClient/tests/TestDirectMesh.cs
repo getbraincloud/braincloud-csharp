@@ -23,7 +23,7 @@ namespace BrainCloudTests
     public class TestDirectMesh
     {
         private const string LOBBY = "24223:directLobby:1";
-        private static readonly string[] CX = { "24223:a:cx", "24223:b:cx", "24223:c:cx" };
+        private static readonly string[] CX = { "24223:a:cx", "24223:b:cx", "24223:c:cx", "24223:d:cx" };
         private static readonly string CIPHER = DirectPacket.SupportedCiphers[0];
 
         private sealed class Listener : IDirectMeshListener
@@ -395,16 +395,50 @@ namespace BrainCloudTests
         [Test]
         public void EndMatchFromAMemberThatWouldNotBeOwner_IsNeverHeld()
         {
+            List<Node> nodes = Lobby(4);
+            StartAll(nodes);
+            Pump();
+            Node a = nodes[0], b = nodes[1], c = nodes[2], d = nodes[3];
+
+            // At D, C ends the match while A owns it and B is A's successor: not held
+            byte[] endMatch = { DirectMeshTransport.END_MATCH, 0, 60, (byte)'{', (byte)'}' };
+            c.Socket.SendTo(c.Session.SenderFor(3).Seal(endMatch, 0, endMatch.Length), d.Socket.LocalEndPoint);
+            Pump();
+
+            // B leaves, then A goes quiet: D makes C owner, and must not end the match on C's old END_MATCH
+            b.Mesh.SendDisconnect();
+            b.Mesh.Close(m_now);
+            b.Paused = true;
+            Pump();
+            a.Paused = true;
+            Pump(12, 1000);
+            Assert.That(d.Mesh.OwnerCxId, Is.EqualTo(CX[2]));
+            Assert.That(d.Listener.Ops("END_MATCH"), Is.Empty);
+        }
+
+        [Test]
+        public void AHeldEndMatch_IsDropped_WhenItsSenderIsLostBeforeTheOwner()
+        {
             List<Node> nodes = Lobby(3);
             StartAll(nodes);
             Pump();
-            // C (net id 2) is not A's successor (B is), so its END_MATCH is dropped, not held
-            byte[] endMatch = { DirectMeshTransport.END_MATCH, 0, 60, (byte)'{', (byte)'}' };
-            nodes[2].Socket.SendTo(nodes[2].Session.SenderFor(1).Seal(endMatch, 0, endMatch.Length), nodes[1].Socket.LocalEndPoint);
+            Node a = nodes[0], b = nodes[1], c = nodes[2];
+
+            // B, A's successor, ends the match towards C (held there), then goes quiet
+            byte[] endMatch = { DirectMeshTransport.END_MATCH, 0, 61, (byte)'{', (byte)'}' };
+            b.Socket.SendTo(b.Session.SenderFor(2).Seal(endMatch, 0, endMatch.Length), c.Socket.LocalEndPoint);
             Pump();
-            nodes[0].Paused = true;
+            b.Paused = true;
             Pump(12, 1000);
-            Assert.That(nodes[1].Listener.Ops("END_MATCH"), Is.Empty);
+            Assert.That(c.Listener.Ops("DISCONNECT").Single()["cxId"], Is.EqualTo(CX[1]));
+
+            // Then A leaves: C becomes owner, and B's END_MATCH is not applied
+            a.Mesh.SendDisconnect();
+            a.Mesh.Close(m_now);
+            a.Paused = true;
+            Pump();
+            Assert.That(c.Mesh.OwnerCxId, Is.EqualTo(CX[2]));
+            Assert.That(c.Listener.Ops("END_MATCH"), Is.Empty);
         }
 
         [Test]

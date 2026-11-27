@@ -149,6 +149,7 @@ namespace BrainCloud.Internal
                     if (refusal != null && refusal.StartsWith(DirectMeshTransport.END_MATCH_TOO_BIG, StringComparison.Ordinal))
                     {
                         // Nothing was sent: as Send does with a packet too big, the connection ends and the game is told
+                        m_mesh.SendDisconnect();
                         disconnect();
                         queueErrorEvent("Relay: EndMatch not sent: " + refusal);
                         return;
@@ -215,6 +216,8 @@ namespace BrainCloud.Internal
             if (!IsConnected()) return;
             if (in_data.Length > MAX_PACKETSIZE)
             {
+                // The other players are told this one is leaving, rather than left to time it out
+                if (m_mesh != null) m_mesh.SendDisconnect();
                 disconnect();
                 queueErrorEvent("Packet too big: " + in_data.Length.ToString() + " > max " + MAX_PACKETSIZE.ToString());
                 return;
