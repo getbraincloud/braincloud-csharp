@@ -9,8 +9,8 @@ namespace BrainCloud.Internal
 
     /// <summary>
     /// SHA-256 (FIPS 180-4), for deriving the keys players use when connected directly. In plain C#
-    /// for the same reason as ChaCha20Poly1305: the library takes nothing from the platform's
-    /// cryptography under Unity.
+    /// for the same reason as ChaCha20Poly1305: under Unity the library takes no hashing or ciphers
+    /// from the platform's cryptography, only its random number generator.
     /// </summary>
     internal sealed class Sha256
     {

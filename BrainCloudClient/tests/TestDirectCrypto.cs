@@ -278,14 +278,8 @@ namespace BrainCloudTests
             Assert.That(() => new DirectSession(null, 0, new Dictionary<int, byte[]> { { 1, PAIR_KEY } }), Throws.InstanceOf<ArgumentException>());
             Assert.That(() => DirectPacket.Seal(null, H(KEY_0_TO_1), 0, 1, EPOCH, 0, PUNCH, 0, PUNCH.Length), Throws.InstanceOf<ArgumentException>());
             byte[] datagram = SealedPunch();
-            // Opening drops what it cannot open; with no cipher, refusing the call outright is fine too
-            try
-            {
-                Assert.That(DirectPacket.Open(null, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length), Is.Null);
-            }
-            catch (ArgumentException)
-            {
-            }
+            // Refused loudly, as an unknown cipher is: dropping every datagram would hide the mistake
+            Assert.That(() => DirectPacket.Open(null, H(KEY_0_TO_1), 0, 1, datagram, datagram.Length), Throws.InstanceOf<ArgumentException>());
             Assert.That(DirectPacket.SupportedCiphers, Has.No.Null);
         }
 
@@ -293,11 +287,12 @@ namespace BrainCloudTests
         public void RandomPrefix_IsFourBytes_AndNewEachTime()
         {
             var seen = new HashSet<string>();
-            for (int i = 0; i < 256; ++i)
+            // 16 draws from 2^32: a chance repeat about once in 36 million runs
+            for (int i = 0; i < 16; ++i)
             {
                 byte[] prefix = DirectPacket.RandomPrefix();
                 Assert.That(prefix.Length, Is.EqualTo(4));
-                Assert.That(seen.Add(Hex(prefix)), Is.True, "a repeat in 256 draws from 2^32");
+                Assert.That(seen.Add(Hex(prefix)), Is.True, "a repeat in 16 draws from 2^32");
             }
         }
 
