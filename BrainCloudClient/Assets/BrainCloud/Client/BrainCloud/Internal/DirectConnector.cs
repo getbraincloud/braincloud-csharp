@@ -71,6 +71,7 @@ namespace BrainCloud.Internal
             OwnerCxId = in_ownerCxId;
             Peers = in_peers;
             KeepAliveRateSecs = in_keepAliveRateSecs;
+            LobbyOwnerCxId = in_ownerCxId;
         }
 
         public string LobbyId { get; private set; }
@@ -81,6 +82,13 @@ namespace BrainCloud.Internal
 
         /// From the direct ROOM_READY: how often the owner keeps the lobby alive, or 0 for a lobby that does not outlive its match.
         public int KeepAliveRateSecs { get; private set; }
+
+        /// <summary>
+        /// brainCloud's owner of the lobby, kept up to date from the lobby's events. It changes only
+        /// when the owner leaves the lobby, so it can differ from the players' own owner, who changes
+        /// when the owner leaves the match. brainCloud takes ROOM_STOPPED from this one alone.
+        /// </summary>
+        public string LobbyOwnerCxId { get; internal set; }
     }
 
     /// <summary>
@@ -166,6 +174,10 @@ namespace BrainCloud.Internal
         private bool m_reported;
         private bool m_roomReady;
         private int m_keepAliveRateSecs;
+        // brainCloud's lobby owner, from the lobby's events during the attempt (null: as DIRECT_CONNECT named)
+        private string m_lobbyOwnerCxId;
+        // The last connection taken over, whose lobby owner is kept up to date
+        private DirectConnection m_handedOver;
         private readonly byte[] m_buffer = new byte[DirectPacket.MAX_DATAGRAM_LENGTH];
 
         // The gathering thread's job and result. The job owns the socket while it runs: closing a
@@ -272,6 +284,12 @@ namespace BrainCloud.Internal
                 if (!StandAside) OnRoomReady(DataOf(io_json));
                 return false;
             }
+            if (!StandAside && (m_handedOver != null || m_state == AttemptState.Connected) && !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
+            {
+                // Who brainCloud has as the lobby's owner, for the connection taken over or about to be
+                noteLobbyOwner(DataOf(io_json));
+                return false;
+            }
             if (!in_operation.StartsWith("direct_connect", StringComparison.Ordinal)) return false;
             if (OnLobbyEvent(in_operation.ToUpperInvariant(), DataOf(io_json))) return true;
             // The game is told the attempt started, but not the pair keys, unless it is a tool playing the attempt itself
@@ -356,12 +374,26 @@ namespace BrainCloud.Internal
         {
             if (m_state != AttemptState.Connected || !m_roomReady || !string.Equals(in_lobbyId, m_lobbyId)) return null;
             var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values), m_keepAliveRateSecs);
+            if (m_lobbyOwnerCxId != null) connection.LobbyOwnerCxId = m_lobbyOwnerCxId;
+            m_handedOver = connection;
             m_socket = null;
             m_session = null;
             m_punches.Clear();
             m_state = AttemptState.None;
             ++m_attempt;
             return connection;
+        }
+
+        // A lobby event's lobby.ownerCxId, for the lobby of the attempt or of the connection taken over
+        private void noteLobbyOwner(Dictionary<string, object> in_data)
+        {
+            string lobbyId = str(in_data, "lobbyId");
+            object value;
+            var lobby = in_data != null && in_data.TryGetValue("lobby", out value) ? value as Dictionary<string, object> : null;
+            string owner = str(lobby, "ownerCxId");
+            if (lobbyId == null || owner == null) return;
+            if (m_handedOver != null && lobbyId == m_handedOver.LobbyId) m_handedOver.LobbyOwnerCxId = owner;
+            if (m_state == AttemptState.Connected && lobbyId == m_lobbyId) m_lobbyOwnerCxId = owner;
         }
 
         #region DIRECT_CONNECT
@@ -379,6 +411,7 @@ namespace BrainCloud.Internal
             m_keepAliveRateSecs = 0;
             m_lobbyId = str(in_data, "lobbyId");
             m_ownerCxId = str(in_data, "ownerCxId");
+            m_lobbyOwnerCxId = null;
             string cipher = str(in_data, "cipher");
             int timeoutSecs = integer(in_data, "timeoutSecs", 0);
             int myNetId = integer(in_data, "netId", -1);

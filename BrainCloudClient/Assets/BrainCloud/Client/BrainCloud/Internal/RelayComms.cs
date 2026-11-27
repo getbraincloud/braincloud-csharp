@@ -88,7 +88,7 @@ namespace BrainCloud.Internal
             }
 #endif
             Ping = 999;
-            if (!IsConnected() && m_clientRef.IsAuthenticated())
+            if (!IsConnected() && (m_clientRef.IsAuthenticated() || AssumeAuthenticatedForTests))
             {
                 m_lastRecvTime = m_clientRef.NowMs;
                 m_lastNowMS = m_clientRef.NowMs;
@@ -176,6 +176,20 @@ namespace BrainCloud.Internal
         {
             return m_bIsConnected;
         }
+
+        /// For the tests: where Connect(DIRECT) takes its connection from, in place of the DirectConnector.
+        internal Func<string, DirectConnection> TakeDirectConnectionForTests { get; set; }
+
+        /// For the tests: Connect without logging in.
+        internal bool AssumeAuthenticatedForTests { get; set; }
+
+        /// For the tests: this player's RTT connection id, in place of the client's.
+        internal string CxIdForTests { get; set; }
+
+        /// For the tests: the direct connection, while there is one.
+        internal DirectMeshTransport MeshForTests { get { return m_mesh; } }
+
+        private string myCxId { get { return CxIdForTests ?? m_clientRef.RTTConnectionID; } }
 
         /// <summary>
         /// How this client is connecting or connected: INVALID when it is neither, DIRECT when the
@@ -657,12 +671,23 @@ namespace BrainCloud.Internal
             int port = m_connectOptions.port;
             // Connect() again before the relay accepted us replaces the earlier attempt. What its
             // transport has already queued belongs to that attempt, not this one.
+            // Connect again, for the lobby whose direct connection is already open and not yet
+            // connected: it carries on, with the callbacks just given
+            if (m_connectionType == RelayConnectionType.DIRECT && m_mesh != null && m_mesh.LobbyId == m_connectOptions.lobbyId)
+            {
+                return;
+            }
             if (m_transport != null || m_mesh != null)
             {
                 m_transport?.Close();
                 m_transport = null;
-                m_mesh?.CloseNow();
-                m_mesh = null;
+                if (m_mesh != null)
+                {
+                    // The other players heard from it already: told it is leaving, not left to time it out
+                    m_mesh.SendDisconnect();
+                    m_mesh.CloseNow();
+                    m_mesh = null;
+                }
                 lock (m_events)
                 {
                     m_events.Clear();
@@ -674,7 +699,9 @@ namespace BrainCloud.Internal
                     {
                         // The socket, keys and peers of the lobby's direct connect attempt, which
                         // reached every peer: there is no server to connect to
-                        DirectConnection connection = m_clientRef.DirectConnector.TakeConnection(m_connectOptions.lobbyId);
+                        DirectConnection connection = TakeDirectConnectionForTests != null
+                            ? TakeDirectConnectionForTests(m_connectOptions.lobbyId)
+                            : m_clientRef.DirectConnector.TakeConnection(m_connectOptions.lobbyId);
                         if (connection == null)
                         {
                             m_connectionType = RelayConnectionType.INVALID;
@@ -683,7 +710,7 @@ namespace BrainCloud.Internal
                             return;
                         }
                         initUDPConnection();
-                        m_mesh = new DirectMeshTransport(connection, m_clientRef.RTTConnectionID, this, m_clientRef);
+                        m_mesh = new DirectMeshTransport(connection, myCxId, this, m_clientRef);
                         m_mesh.PingIntervalMs = m_pingInterval;
                         m_mesh.Start(m_clientRef.NowMs);
                         return;
@@ -859,7 +886,7 @@ namespace BrainCloud.Internal
                         string cxId = parsedDict["cxId"] as string;
                         m_cxIdToNetId[cxId] = netId;
                         m_netIdToCxId[netId] = cxId;
-                        if (cxId == m_clientRef.RTTConnectionID && !m_bIsConnected)
+                        if (cxId == myCxId && !m_bIsConnected)
                         {
                             m_netId = netId;
                             m_ownerCxId = parsedDict["ownerCxId"] as string;

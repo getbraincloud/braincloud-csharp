@@ -5,6 +5,7 @@ using BrainCloud.Internal;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using BrainCloud.JsonFx.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -213,6 +214,110 @@ namespace BrainCloudTests
             comms.Update();
             comms.Update();
             Assert.That(seen, Is.EqualTo(new[] { "system", "relay 1" }));
+        }
+
+        /// <summary>
+        /// Two players' RelayComms connected directly, as a game drives them: Connect(DIRECT), then
+        /// Send, EndMatch and Disconnect, with the mesh underneath. in_lost drops the owner's
+        /// datagrams it returns true for.
+        /// </summary>
+        private sealed class MeshPair : IDisposable
+        {
+            public readonly RelayComms A, B;
+            public readonly List<string> SystemA = new List<string>(), SystemB = new List<string>();
+            public readonly List<string> DataB = new List<string>();
+            public int Takes;
+            private readonly System.Net.Sockets.Socket m_a, m_b;
+
+            public MeshPair()
+            {
+                m_a = Bound();
+                m_b = Bound();
+                byte[] key = new byte[16];
+                for (int i = 0; i < key.Length; ++i) key[i] = (byte)(i + 1);
+                A = Comms("1:a:cx", 0, 1, "1:b:cx", m_a, m_b, key);
+                B = Comms("1:b:cx", 1, 0, "1:a:cx", m_b, m_a, key);
+                A.RegisterSystemCallback(json => SystemA.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
+                B.RegisterSystemCallback(json => SystemB.Add((string)((Dictionary<string, object>)JsonReader.Deserialize(json))["op"]));
+                B.RegisterRelayCallback((netId, data) => DataB.Add(netId + ":" + System.Text.Encoding.UTF8.GetString(data)));
+            }
+
+            private static System.Net.Sockets.Socket Bound()
+            {
+                var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
+                socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 0));
+                return socket;
+            }
+
+            private RelayComms Comms(string in_cx, int in_netId, int in_peerNetId, string in_peerCx, System.Net.Sockets.Socket in_socket, System.Net.Sockets.Socket in_peerSocket, byte[] in_key)
+            {
+                var comms = new RelayComms(new BrainCloudClient()) { AssumeAuthenticatedForTests = true, CxIdForTests = in_cx };
+                var peer = new DirectPeer(in_peerCx, in_peerNetId).Clear();
+                peer.Address = (System.Net.IPEndPoint)in_peerSocket.LocalEndPoint;
+                var session = new DirectSession(DirectPacket.SupportedCiphers[0], in_netId, new Dictionary<int, byte[]> { { in_peerNetId, in_key } });
+                var connection = new DirectConnection("1:lobby:1", in_socket, session, "1:a:cx", new List<DirectPeer> { peer }, 0);
+                bool taken = false;
+                comms.TakeDirectConnectionForTests = lobbyId =>
+                {
+                    ++Takes;
+                    if (taken || lobbyId != "1:lobby:1") return null;
+                    taken = true;
+                    return connection;
+                };
+                return comms;
+            }
+
+            public void Connect(RelayComms in_comms)
+            {
+                in_comms.Connect(RelayConnectionType.DIRECT, new RelayConnectOptions(false, null, 0, null, "1:lobby:1"));
+            }
+
+            public void Pump(int in_rounds)
+            {
+                for (int i = 0; i < in_rounds; ++i)
+                {
+                    A.Update();
+                    B.Update();
+                    Thread.Sleep(5);
+                }
+            }
+
+            public void Dispose()
+            {
+                m_a.Close();
+                m_b.Close();
+            }
+        }
+
+        [Test]
+        public void Direct_ThroughRelayComms_ConnectsSendsAndEndsTheMatch_EvenWhenTheGameLeavesAtOnce()
+        {
+            using (var pair = new MeshPair())
+            {
+                pair.Connect(pair.A);
+                pair.Connect(pair.A);   // again, before connecting: the same connection carries on
+                pair.Connect(pair.B);
+                pair.Pump(20);
+                Assert.That(pair.A.IsConnected() && pair.B.IsConnected(), Is.True);
+                Assert.That(pair.A.ConnectionType, Is.EqualTo(RelayConnectionType.DIRECT));
+                Assert.That(pair.A.MeshForTests, Is.Not.Null);
+                Assert.That(pair.SystemB, Is.EqualTo(new[] { "CONNECT", "CONNECT" }));
+
+                pair.A.Send(System.Text.Encoding.UTF8.GetBytes("hello"), 1UL << 1, true, true, 0);
+                pair.Pump(10);
+                Assert.That(pair.DataB, Is.EqualTo(new[] { "0:hello" }));
+
+                // The owner ends the match and leaves in the same frame; its first END_MATCH is lost
+                int lost = 0;
+                pair.A.MeshForTests.DropForTests = (to, packet) => packet[0] == DirectMeshTransport.END_MATCH && lost++ < 1;
+                pair.A.EndMatch(new Dictionary<string, object> { { "winner", "a" } });
+                pair.A.Disconnect();
+                pair.Pump(80);
+                Assert.That(pair.SystemA.Last(), Is.EqualTo("END_MATCH"));
+                Assert.That(pair.SystemB, Is.EqualTo(new[] { "CONNECT", "CONNECT", "END_MATCH" }), "no DISCONNECT or MIGRATE_OWNER");
+                Assert.That(pair.A.IsConnected() || pair.B.IsConnected(), Is.False);
+                Assert.That(pair.A.ConnectionType, Is.EqualTo(RelayConnectionType.INVALID));
+            }
         }
 
         [Test]

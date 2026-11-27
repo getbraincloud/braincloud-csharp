@@ -237,6 +237,34 @@ namespace BrainCloudTests
         }
 
         [Test]
+        public void TheLobbyOwner_IsFollowedFromTheLobbysEvents_AfterTheHandOver()
+        {
+            Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);
+            a.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(0, CX_A, CIPHER, CX_B, 1, KEY_AB));
+            b.Connector.OnLobbyEvent("DIRECT_CONNECT", DirectConnect(1, CX_A, CIPHER, CX_A, 0, KEY_AB));
+            Run(a, b);
+            a.Connector.OnRoomReady(RoomReady(LOBBY, 30));
+            DirectConnection connection = a.Connector.TakeConnection(LOBBY);
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_A), "as DIRECT_CONNECT named");
+
+            string left = BrainCloud.JsonFx.Json.JsonWriter.Serialize(new Dictionary<string, object>
+            {
+                { "service", "lobby" }, { "operation", "MEMBER_LEFT" },
+                { "data", new Dictionary<string, object> { { "lobbyId", LOBBY }, { "lobby", new Dictionary<string, object> { { "ownerCxId", CX_B } } } } }
+            });
+            string passedOn = left;
+            Assert.That(a.Connector.FilterEvent("lobby", "member_left", ref passedOn), Is.False);
+            Assert.That(passedOn, Is.EqualTo(left), "passed on unchanged");
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_B));
+
+            // Another lobby's events change nothing
+            string other = left.Replace(LOBBY, "24223:otherLobby:2").Replace(CX_B, CX_C);
+            a.Connector.FilterEvent("lobby", "member_left", ref other);
+            Assert.That(connection.LobbyOwnerCxId, Is.EqualTo(CX_B));
+            connection.Socket.Close();
+        }
+
+        [Test]
         public void CandidatesThatArriveBeforeDirectConnect_AreKept()
         {
             Player a = NewPlayer(CX_A), b = NewPlayer(CX_B);

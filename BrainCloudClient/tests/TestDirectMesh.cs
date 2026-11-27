@@ -67,6 +67,7 @@ namespace BrainCloudTests
             public Socket Socket;
             public DirectSession Session;
             public DirectMeshTransport Mesh;
+            public DirectConnection Connection;
             public readonly Listener Listener = new Listener();
             public readonly List<ServerCall> Sent = new List<ServerCall>();
             public bool Paused;
@@ -126,6 +127,7 @@ namespace BrainCloudTests
                 }
                 node.Session = new DirectSession(CIPHER, node.NetId, keys);
                 var connection = new DirectConnection(LOBBY, node.Socket, node.Session, CX[0], peers, in_keepAliveRateSecs);
+                node.Connection = connection;
                 Node self = node;
                 node.Mesh = new DirectMeshTransport(connection, CX[node.NetId], node.Listener, null, call => self.Sent.Add(call));
             }
@@ -503,7 +505,7 @@ namespace BrainCloudTests
             List<Node> nodes = Lobby(2);
             nodes[0].Mesh.Start(m_now);
             nodes[1].Paused = true;
-            Pump(35, 1000);
+            Pump(DirectMeshTransport.CONNECT_TIMEOUT_MS / 1000 + 5, 1000);
             Assert.That(nodes[0].Listener.Ops("CONNECT").Count(), Is.EqualTo(1), "only itself");
             Assert.That(nodes[0].Listener.Ops("DISCONNECT"), Is.Empty, "never connected, so never disconnected");
             // Nothing is sent to it any more, not even pings
@@ -728,6 +730,52 @@ namespace BrainCloudTests
                 if (opened != null) types.Add(opened[0]);
             }
             Assert.That(types, Does.Contain(DirectConnector.PUNCH_ACK));
+        }
+
+        [Test]
+        public void EndMatchThenDisconnect_InOneFrame_StillEndsTheMatchForEveryone()
+        {
+            List<Node> nodes = Lobby(3);
+            StartAll(nodes);
+            Pump();
+
+            // The first END_MATCH copies are lost; the game leaves at once, as games do
+            int lost = 0;
+            nodes[0].Mesh.DropForTests = (to, packet) => packet[0] == DirectMeshTransport.END_MATCH && lost++ < 2;
+            nodes[0].Mesh.EndMatch(new Dictionary<string, object> { { "winner", "a" } }, m_now);
+            nodes[0].Mesh.SendDisconnect();
+            Assert.That(nodes[0].Mesh.Close(m_now), Is.True);
+            for (int i = 0; i < 40 && !nodes[0].Mesh.IsClosed; ++i)
+            {
+                Thread.Sleep(2);
+                m_now += 50;
+                nodes[0].Mesh.UpdateClosing(m_now);
+                nodes[1].Mesh.Update(m_now);
+                nodes[2].Mesh.Update(m_now);
+            }
+            foreach (Node node in new[] { nodes[1], nodes[2] })
+            {
+                Assert.That(node.Listener.Ops("END_MATCH").Count(), Is.EqualTo(1), "net id " + node.NetId);
+                Assert.That(node.Listener.Ops("DISCONNECT"), Is.Empty, "no DISCONNECT after END_MATCH, as with the relay");
+                Assert.That(node.Listener.Ops("MIGRATE_OWNER"), Is.Empty);
+            }
+        }
+
+        [Test]
+        public void WhenBrainCloudsLobbyOwnerIsNotThePlayersOwner_ItIsTheOneThatStopsTheLobby()
+        {
+            List<Node> nodes = Lobby(2, in_keepAliveRateSecs: 2);
+            // A left the lobby and came back, say: brainCloud's owner is now B, while A still owns the match
+            foreach (Node node in nodes) node.Connection.LobbyOwnerCxId = CX[1];
+            StartAll(nodes);
+            Pump();
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.GreaterThan(0), "the players' owner");
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomKeepAlive).Count(), Is.GreaterThan(0), "brainCloud's owner");
+
+            nodes[0].Mesh.EndMatch(null, m_now);
+            Pump();
+            Assert.That(nodes[0].Calls(ServiceOperation.RoomStopped), Is.Empty, "brainCloud would refuse it from A");
+            Assert.That(nodes[1].Calls(ServiceOperation.RoomStopped).Single().GetJsonData()["lobbyId"], Is.EqualTo(LOBBY));
         }
 
         [Test]
