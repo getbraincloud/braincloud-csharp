@@ -119,6 +119,10 @@ namespace BrainCloud.Internal
         public const int MAX_CANDIDATES = 16;
         /// How long a successful attempt's socket stays open with nothing taking it over.
         public const int CONNECTED_IDLE_MS = 60000;
+        /// A PUNCH_ACK is only matched to a punch sent this recently; older records are dropped.
+        public const int PUNCH_RECORD_MS = 5000;
+        // The only datagram this exchanges: a 5-byte PUNCH or PUNCH_ACK, sealed
+        private const int PUNCH_DATAGRAM_LENGTH = DirectPacket.OVERHEAD + 5;
         // Candidates that arrive before DIRECT_CONNECT are kept, for this many peers at most
         private const int MAX_EARLY_PEERS = 64;
         // Datagrams read per Update at most, so a flood cannot stall a frame
@@ -146,14 +150,24 @@ namespace BrainCloud.Internal
         private bool m_reported;
         private readonly byte[] m_buffer = new byte[DirectPacket.MAX_DATAGRAM_LENGTH];
 
-        // The gathering thread's result, taken by Update
+        // The gathering thread's job and result. The job owns the socket while it runs: closing a
+        // socket another thread is waiting on can block for as long as that wait, so an abandoned
+        // job closes its socket itself when it ends.
         private readonly object m_gatheredLock = new object();
+        private GatherJob m_job;
         private Gathered m_gathered;
 
         private struct Punch
         {
             public DirectPeer Peer;
             public int SentAtMs;
+        }
+
+        private sealed class GatherJob
+        {
+            public Socket Socket;
+            public bool Abandoned;
+            public bool Done;
         }
 
         private sealed class Gathered
@@ -210,6 +224,9 @@ namespace BrainCloud.Internal
         /// For the tests: the punching time allowed, in place of the one DIRECT_CONNECT gives.
         internal int PunchBudgetMsForTests { get; set; }
 
+        /// For the tests: how long a punch is remembered, in place of PUNCH_RECORD_MS.
+        internal int PunchRecordMsForTests { get; set; }
+
         /// For the tests: the socket's port, once it is open.
         internal int Port { get { return m_socket != null ? ((IPEndPoint)m_socket.LocalEndPoint).Port : 0; } }
 
@@ -221,6 +238,28 @@ namespace BrainCloud.Internal
         }
 
         private static int nowMs { get { return Environment.TickCount; } }
+
+        /// <summary>
+        /// For RTTComms: takes an RTT event before the game's callbacks. Returns true when it is the
+        /// library's alone and must not be passed on. A DIRECT_CONNECT that is passed on has its
+        /// pair keys removed first. in_service and in_operation are the event's names, lowercased
+        /// without regard to the player's language (ToLowerInvariant).
+        /// </summary>
+        internal bool FilterEvent(string in_service, string in_operation, ref string io_json)
+        {
+            if (!string.Equals(in_service, "lobby", StringComparison.Ordinal) || in_operation == null ||
+                !in_operation.StartsWith("direct_connect", StringComparison.Ordinal))
+            {
+                return false;
+            }
+            if (OnLobbyEvent(in_operation.ToUpperInvariant(), DataOf(io_json))) return true;
+            // The game is told the attempt started, but not the pair keys, unless it is a tool playing the attempt itself
+            if (string.Equals(in_operation, "direct_connect", StringComparison.Ordinal) && !StandAside)
+            {
+                io_json = WithoutPairKeys(io_json);
+            }
+            return false;
+        }
 
         /// <summary>
         /// Takes a lobby event of the direct connect attempt. Returns true when the event is the
@@ -272,6 +311,7 @@ namespace BrainCloud.Internal
             var connection = new DirectConnection(m_lobbyId, m_socket, m_session, m_ownerCxId, new List<DirectPeer>(m_peers.Values));
             m_socket = null;
             m_session = null;
+            m_punches.Clear();
             m_state = AttemptState.None;
             ++m_attempt;
             return connection;
@@ -365,6 +405,11 @@ namespace BrainCloud.Internal
         private void gather(int in_attempt)
         {
             Socket socket = m_socket;
+            var job = new GatherJob { Socket = socket };
+            lock (m_gatheredLock)
+            {
+                m_job = job;
+            }
             string host = m_probe.StunHost;
             int port = m_probe.StunPort;
             byte[] token = m_probe.StunToken;
@@ -407,10 +452,15 @@ namespace BrainCloud.Internal
                         gathered.Detail = (gathered.Detail != null ? gathered.Detail + "; " : "") + "local addresses: " + e.Message;
                     }
                 }
+                bool closeIt;
                 lock (m_gatheredLock)
                 {
-                    m_gathered = gathered;
+                    job.Done = true;
+                    closeIt = job.Abandoned;
+                    // Only the current job's result: an earlier attempt's must not replace it
+                    if (!closeIt && job == m_job) m_gathered = gathered;
                 }
+                if (closeIt) closeQuietly(socket);
             });
         }
 
@@ -643,17 +693,49 @@ namespace BrainCloud.Internal
             int now = nowMs;
             if (now - m_lastPunchMs < PUNCH_INTERVAL_MS) return;
             m_lastPunchMs = now;
+            prunePunches(now);
             foreach (DirectPeer peer in m_peers.Values)
             {
                 if (peer.Reached) continue;
                 foreach (IPEndPoint address in peer.Candidates)
                 {
-                    uint id = ++m_nextPunchId;
-                    m_punches[id] = new Punch { Peer = peer, SentAtMs = now };
-                    sendTo(peer, PUNCH, id, address);
+                    punchAt(peer, address, now);
+                }
+                // Where the peer's own punches come from, when that is none of its candidates: a
+                // router can map its socket to an address it could not know to offer
+                if (peer.Address != null && !peer.Candidates.Contains(peer.Address))
+                {
+                    punchAt(peer, peer.Address, now);
                 }
             }
         }
+
+        private void punchAt(DirectPeer in_peer, IPEndPoint in_address, int in_now)
+        {
+            uint id = ++m_nextPunchId;
+            m_punches[id] = new Punch { Peer = in_peer, SentAtMs = in_now };
+            sendTo(in_peer, PUNCH, id, in_address);
+        }
+
+        private void prunePunches(int in_now)
+        {
+            List<uint> old = null;
+            foreach (KeyValuePair<uint, Punch> punch in m_punches)
+            {
+                if (in_now - punch.Value.SentAtMs > (PunchRecordMsForTests > 0 ? PunchRecordMsForTests : PUNCH_RECORD_MS)) (old ?? (old = new List<uint>())).Add(punch.Key);
+            }
+            if (old == null) return;
+            foreach (uint id in old) m_punches.Remove(id);
+        }
+
+        /// For the tests: how many received datagrams were opened (decrypted or authenticated).
+        internal int DatagramsOpened { get; private set; }
+
+        /// For the tests: the attempt's socket, while it has one.
+        internal Socket SocketForTests { get { return m_socket; } }
+
+        /// For the tests: how many punches are remembered.
+        internal int PunchesRemembered { get { return m_punches.Count; } }
 
         private void sendTo(DirectPeer in_peer, byte in_type, uint in_id, IPEndPoint in_address)
         {
@@ -695,12 +777,15 @@ namespace BrainCloud.Internal
 
         private void handle(byte[] in_datagram, int in_length, IPEndPoint in_from)
         {
+            // Only punches are exchanged here: anything else is dropped before any key is derived or anything decrypted
+            if (in_length != PUNCH_DATAGRAM_LENGTH) return;
             int sender, receiver;
             byte[] epoch;
             ulong sequence;
             if (!DirectPacket.TryReadHeader(in_datagram, in_length, out sender, out receiver, out epoch, out sequence)) return;
             DirectPeer peer;
             if (!m_peersByNetId.TryGetValue(sender, out peer)) return;
+            ++DatagramsOpened;
             byte[] packet = m_session.ReceiverFor(sender).Open(in_datagram, in_length);
             if (packet == null || packet.Length != 5) return;
 
@@ -748,26 +833,38 @@ namespace BrainCloud.Internal
         private void fail()
         {
             close();
+            m_punches.Clear();
             m_state = AttemptState.Failed;
         }
 
         private void close()
         {
-            if (m_socket != null)
-            {
-                try
-                {
-                    m_socket.Close();
-                }
-                catch (Exception)
-                {
-                    // Closing is best effort
-                }
-                m_socket = null;
-            }
+            Socket socket = m_socket;
+            m_socket = null;
+            bool gathererClosesIt = false;
             lock (m_gatheredLock)
             {
+                if (m_job != null && !m_job.Done && m_job.Socket == socket)
+                {
+                    // The gathering thread may be waiting on the socket: it closes it when it ends
+                    m_job.Abandoned = true;
+                    gathererClosesIt = true;
+                }
+                m_job = null;
                 m_gathered = null;
+            }
+            if (socket != null && !gathererClosesIt) closeQuietly(socket);
+        }
+
+        private static void closeQuietly(Socket in_socket)
+        {
+            try
+            {
+                in_socket.Close();
+            }
+            catch (Exception)
+            {
+                // Closing is best effort
             }
         }
 
@@ -834,8 +931,33 @@ namespace BrainCloud.Internal
             }
             catch (Exception)
             {
-                return in_json;
+                // Never the keys, even when the message cannot be read
+                return RedactForLog(in_json);
             }
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex PAIR_KEY_JSON =
+            new System.Text.RegularExpressions.Regex("\"pairKey\"\\s*:\\s*\"[^\"]*\"");
+        private static readonly System.Text.RegularExpressions.Regex CANDIDATES_JSON =
+            new System.Text.RegularExpressions.Regex("\"candidates\"\\s*:\\s*\\[[^\\]]*\\]");
+
+        /// <summary>
+        /// An RTT message as it may appear in a log: without pair keys, which are secrets between two
+        /// players, and without other players' addresses.
+        /// </summary>
+        internal static string RedactForLog(string in_message)
+        {
+            if (in_message == null) return null;
+            string redacted = in_message;
+            if (redacted.IndexOf("\"pairKey\"", StringComparison.Ordinal) >= 0)
+            {
+                redacted = PAIR_KEY_JSON.Replace(redacted, "\"pairKey\":\"(redacted)\"");
+            }
+            if (redacted.IndexOf("\"candidates\"", StringComparison.Ordinal) >= 0)
+            {
+                redacted = CANDIDATES_JSON.Replace(redacted, "\"candidates\":\"(redacted)\"");
+            }
+            return redacted;
         }
 
         /// Parses an RTT lobby message's data, or null.
